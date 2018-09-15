@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorAccent">#FF661FFF</color>
+
+    <color name="colorAccentScrim">#1F661FFF</color>
+
+    <color name="colorControlNormal">#5F6368</color>
+
+    <color name="colorTextPrimary">#000000</color>
+    <color name="colorTextSecondary">#808080</color>
+
+    <color name="indigo">#4768FD</color>
+    <color name="teal">#31E7B6</color>
+    <color name="lightBlue">#27E5FD</color>
+    <color name="yellow">#FCD230</color>
+    <color name="orange">#FF6C00</color>
+
+    <integer-array name="swipe_refresh">
+        <item>@color/indigo</item>
+        <item>@color/teal</item>
+        <item>@color/lightBlue</item>
+        <item>@color/yellow</item>
+        <item>@color/orange</item>
+    </integer-array>
+
+</resources>

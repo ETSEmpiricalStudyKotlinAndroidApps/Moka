@@ -1,0 +1,93 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion versions.compile_sdk_version
+    defaultConfig {
+        applicationId "io.github.tonnyl.moka"
+        minSdkVersion versions.min_sdk_version
+        targetSdkVersion versions.target_sdk_version
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        Properties properties = new Properties()
+        boolean hasPropertiesFile = false
+        if (project.rootProject.file('local.properties').exists()) {
+            hasPropertiesFile = true
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        }
+
+        if (hasPropertiesFile) {
+            buildConfigField "String", "CLIENT_ID", "\"${properties.CLIENT_ID}\""
+            buildConfigField "String", "CLIENT_SECRET", "\"${properties.CLIENT_SECRET}\""
+        } else { // CI
+            buildConfigField "String", "CLIENT_ID", "\"${System.getenv("CLIENT_ID")}\""
+            buildConfigField "String", "CLIENT_SECRET", "\"${System.getenv("CLIENT_SECRET")}\""
+        }
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            versionNameSuffix "-debug"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+
+    implementation "androidx.constraintlayout:constraintlayout:${versions.constraint_layout}"
+    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
+    implementation "androidx.browser:browser:${versions.browser}"
+    implementation "androidx.fragment:fragment:${versions.fragment}"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:${versions.swipe_refresh_layout}"
+    implementation "androidx.legacy:legacy-preference-v14:${versions.preference_v14}"
+    implementation "com.google.android.material:material:${versions.material}"
+
+    implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava2}"
+    implementation "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"
+
+    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+    implementation "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
+    kapt "com.github.bumptech.glide:compiler:${versions.glide}"
+
+    // Retrofit series
+    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp_logging_interceptor}"
+    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+
+    implementation "com.apollographql.apollo:apollo-runtime:${versions.apollo}"
+    implementation "com.apollographql.apollo:apollo-http-cache:${versions.apollo}"
+
+    implementation "com.airbnb.android:mvrx:${versions.mvrx}"
+    implementation "com.airbnb.android:lottie:${versions.lottie}"
+
+    testImplementation "junit:junit:${versions.junit}"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "org.hamcrest:hamcrest-all:${versions.hamcrest}"
+
+    androidTestImplementation "androidx.test:rules:${versions.android_test_runner_rules}"
+    androidTestImplementation "androidx.test:runner:${versions.android_test_runner_rules}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:${versions.espresso}"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:${versions.espresso}"
+    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
+}

@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.apollographql.android'
 
 android {
     compileSdkVersion versions.compile_sdk_version
@@ -23,9 +24,11 @@ android {
         if (hasPropertiesFile) {
             buildConfigField "String", "CLIENT_ID", "\"${properties.CLIENT_ID}\""
             buildConfigField "String", "CLIENT_SECRET", "\"${properties.CLIENT_SECRET}\""
+            buildConfigField "String", "TEST_TOKEN", "\"${properties.TEST_TOKEN}\""
         } else { // CI
             buildConfigField "String", "CLIENT_ID", "\"${System.getenv("CLIENT_ID")}\""
             buildConfigField "String", "CLIENT_SECRET", "\"${System.getenv("CLIENT_SECRET")}\""
+            buildConfigField "String", "TEST_TOKEN", "\"${System.getenv("TEST_TOKEN")}\""
         }
 
     }
@@ -46,6 +49,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+}
+
+apollo {
+    customTypeMapping = [
+            "DateTime": "java.util.Date",
+            "HTML"    : "java.lang.String",
+            "URI"     : "android.net.Uri",
+            "ID"      : "java.lang.String"
+    ]
 }
 
 dependencies {
@@ -76,8 +88,8 @@ dependencies {
 
     implementation "com.apollographql.apollo:apollo-runtime:${versions.apollo}"
     implementation "com.apollographql.apollo:apollo-http-cache:${versions.apollo}"
+    implementation "com.apollographql.apollo:apollo-rx2-support:${versions.apollo}"
 
-    implementation "com.airbnb.android:mvrx:${versions.mvrx}"
     implementation "com.airbnb.android:lottie:${versions.lottie}"
 
     testImplementation "junit:junit:${versions.junit}"

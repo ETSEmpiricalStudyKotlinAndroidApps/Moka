@@ -13,29 +13,32 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imageView"
+        android:id="@+id/avatar_image_view"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:contentDescription="@string/nav_header_desc"
+        android:contentDescription="@string/navigation_header_avatar_desc"
         tools:src="@tools:sample/avatars" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="8dp" />
-
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/username_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/nav_header_title"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@color/colorTextPrimary" />
+        android:textColor="@color/colorTextPrimary"
+        tools:text="@sample/user.json/users/name" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/textView"
+        android:id="@+id/login_name_text_view"
+        style="@style/TextAppearance.MaterialComponents.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nav_header_subtitle"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-        android:textColor="@color/colorTextSecondary" />
+        android:textColor="@color/colorTextSecondary"
+        tools:text="@sample/user.json/users/login" />
 
 </LinearLayout>

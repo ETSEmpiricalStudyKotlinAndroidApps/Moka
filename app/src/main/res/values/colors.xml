@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#FFFFFF</color>
     <color name="colorAccent">#FF661FFF</color>
 
+    <color name="colorNavigationBarDivider">#1F000000</color>
+
     <color name="colorAccentScrim">#1F661FFF</color>
 
     <color name="colorControlNormal">#5F6368</color>
@@ -24,5 +26,10 @@
         <item>@color/yellow</item>
         <item>@color/orange</item>
     </integer-array>
+
+    <color name="list_item_text_title">#DE000000</color>
+    <color name="list_item_text_caption">#99000000</color>
+    <color name="repository_item_star">#99000000</color>
+    <color name="repository_item_unstar">#FF6200EE</color>
 
 </resources>

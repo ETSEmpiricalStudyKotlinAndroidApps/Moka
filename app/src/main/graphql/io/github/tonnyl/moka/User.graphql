@@ -1,0 +1,60 @@
+query User($login: String!) {
+  user(login: $login) {
+    avatarUrl
+    bio
+    bioHTML
+    company
+    companyHTML
+    createdAt
+    databaseId
+    email
+    id
+    isBountyHunter
+    isCampusExpert
+    isDeveloperProgramMember
+    isEmployee
+    isHireable
+    isSiteAdmin
+    isViewer
+    location
+    login
+    name
+    resourcePath
+    updatedAt
+    url
+    viewerCanFollow
+    viewerIsFollowing
+    websiteUrl
+  }
+}
+
+# The currently authenticated user.
+query viewer {
+  viewer {
+    avatarUrl
+    bio
+    bioHTML
+    company
+    companyHTML
+    createdAt
+    databaseId
+    email
+    id
+    isBountyHunter
+    isCampusExpert
+    isDeveloperProgramMember
+    isHireable
+    isEmployee
+    isSiteAdmin
+    isViewer
+    location
+    login
+    name
+    resourcePath
+    updatedAt
+    url
+    viewerCanFollow
+    viewerIsFollowing
+    websiteUrl
+  }
+}

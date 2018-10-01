@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
@@ -21,12 +22,14 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <androidx.appcompat.widget.AppCompatTextView
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:fontFamily="sans-serif-medium"
                 android:text="@string/app_name"
                 android:textColor="@color/colorControlNormal"
+                android:textSize="@dimen/title_text"
                 app:layout_scrollFlags="scroll|snap|exitUntilCollapsed" />
 
         </androidx.appcompat.widget.Toolbar>

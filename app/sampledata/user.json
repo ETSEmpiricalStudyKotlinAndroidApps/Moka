@@ -1,0 +1,88 @@
+{
+  "users": [
+    {
+      "name": "Li Zhao Tai Lang",
+      "bio": "Android developer @sundayfun",
+      "login": "TonnyL",
+      "email": "lizhaotailang@gmail.com",
+      "location": "Guangzhou, China",
+      "site": "tonnyl.io",
+      "followerCount": 760,
+      "followingCount": 91,
+      "repositoryCount": 32,
+      "starCount": 155,
+      "company": "Sunday Morning",
+      "createdAt": "2015-07-14T08:04:57Z"
+    },
+    {
+      "name": "Jiaheng Ge",
+      "bio": "Android Engineer @ Zhihu",
+      "login": "gejiaheng",
+      "email": "gejiaheng@gmail.com",
+      "location": "Earth",
+      "site": "",
+      "followerCount": 195,
+      "followingCount": 231,
+      "repositoryCount": 18,
+      "starCount": 839,
+      "company": "Zhihu",
+      "createdAt": "2013-03-05T14:37:57Z"
+    },
+    {
+      "name": "Gwo Fung",
+      "bio": "Contact me in Telegram: @fython",
+      "login": "fython",
+      "email": "fython@163.com",
+      "location": "Canton (廣州)",
+      "site": "https://feng.moe",
+      "followerCount": 807,
+      "followingCount": 63,
+      "repositoryCount": 53,
+      "starCount": 814,
+      "company": "",
+      "createdAt": "2013-01-02T05:02:36Z"
+    },
+    {
+      "name": "Nick Butcher",
+      "bio": "Android designer and developer.",
+      "login": "nickbutcher",
+      "email": "",
+      "location": "London",
+      "site": "http://twitter.com/crafty",
+      "followerCount": 2200,
+      "followingCount": 0,
+      "repositoryCount": 8,
+      "starCount": 6,
+      "company": "@google",
+      "createdAt": "2010-08-03T08:31:57Z"
+    },
+    {
+      "name": "Romain Guy",
+      "bio": "Android UI and graphics engineer at Google.",
+      "login": "romainguy",
+      "email": "romainguy@curious-creature.com",
+      "location": "California",
+      "site": "http://www.curious-creature.com/",
+      "followerCount": 6800,
+      "followingCount": 0,
+      "repositoryCount": 6,
+      "starCount": 25,
+      "company": "Google",
+      "createdAt": "2011-06-23T06:39:07Z"
+    },
+    {
+      "name": "Jake Wharton",
+      "bio": "",
+      "login": "JakeWharton",
+      "email": "jakewharton@gmail.com",
+      "location": "Pittsburgh, PA, USA",
+      "site": "http://jakewharton.com/",
+      "followerCount": 48800,
+      "followingCount": 12,
+      "repositoryCount": 100,
+      "starCount": 238,
+      "company": "Google, Inc.",
+      "createdAt": "2009-03-24T16:09:53Z"
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/list_item_spacing">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/event_user_avatar"
+        android:layout_width="@dimen/repository_list_avatar_width"
+        android:layout_height="@dimen/repository_list_avatar_height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/event_actor_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="@id/event_user_avatar"
+        app:layout_constraintEnd_toStartOf="@id/event_action"
+        app:layout_constraintStart_toEndOf="@id/event_user_avatar"
+        app:layout_constraintTop_toTopOf="@id/event_user_avatar"
+        tools:text="@sample/user.json/users/login" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/event_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_content_padding"
+        app:layout_constraintBottom_toBottomOf="@id/event_user_avatar"
+        app:layout_constraintEnd_toStartOf="@id/event_repository_name"
+        app:layout_constraintStart_toEndOf="@id/event_actor_username"
+        app:layout_constraintTop_toTopOf="@id/event_user_avatar"
+        tools:text="starred" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/event_repository_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_content_padding"
+        android:layout_marginEnd="@dimen/list_content_padding"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="@id/event_user_avatar"
+        app:layout_constraintEnd_toStartOf="@id/event_create_time"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/event_action"
+        app:layout_constraintTop_toTopOf="@id/event_user_avatar"
+        tools:text="@sample/repository.json/repositories/name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/event_create_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/event_user_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/event_user_avatar"
+        tools:text="@tools:sample/date/hhmmss" />
+
+    <FrameLayout
+        android:id="@+id/event_repository_card"
+        android:layout_width="0dp"
+        android:layout_height="72dp"
+        android:background="@drawable/bg_item_event_repository_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/event_actor_username"
+        app:layout_constraintTop_toBottomOf="@id/event_user_avatar" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/event_repository_loading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/event_repository_card"
+        app:layout_constraintEnd_toEndOf="@id/event_repository_card"
+        app:layout_constraintStart_toStartOf="@id/event_repository_card"
+        app:layout_constraintTop_toTopOf="@id/event_repository_card"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="loading_animation.json"
+        app:lottie_loop="true" />
+
+    <ImageView
+        android:id="@+id/event_repository_avatar"
+        android:layout_width="@dimen/repository_list_avatar_width"
+        android:layout_height="@dimen/repository_list_avatar_width"
+        android:layout_marginTop="@dimen/list_item_spacing"
+        android:layout_marginBottom="@dimen/list_item_spacing"
+        app:layout_constraintStart_toStartOf="@id/event_repository_card"
+        app:layout_constraintTop_toTopOf="@id/event_repository_card"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/event_repository_title"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:textColor="@color/list_item_text_title"
+        android:textSize="@dimen/list_item_title_text"
+        app:layout_constraintBottom_toTopOf="@id/item_repository_language_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/event_repository_avatar"
+        app:layout_constraintTop_toTopOf="@id/event_repository_avatar"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="@sample/repository.json/repositories/name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/event_repository_language_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        android:drawableStart="@drawable/language_dot"
+        android:drawablePadding="4dp"
+        android:textColor="@color/list_item_text_caption"
+        android:textSize="@dimen/list_item_caption_text"
+        app:layout_constraintBottom_toBottomOf="@id/event_repository_avatar"
+        app:layout_constraintStart_toEndOf="@id/event_repository_avatar"
+        app:layout_constraintTop_toBottomOf="@id/event_repository_title"
+        tools:text="@sample/language.json/languages/name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/event_repository_star_count_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        android:drawableStart="@drawable/ic_star_black_18dp"
+        android:drawablePadding="@dimen/list_content_padding"
+        android:textColor="@color/list_item_text_caption"
+        android:textSize="@dimen/list_item_caption_text"
+        app:layout_constraintBottom_toBottomOf="@id/event_repository_language_text"
+        app:layout_constraintStart_toEndOf="@id/event_repository_language_text"
+        app:layout_constraintTop_toTopOf="@id/event_repository_language_text"
+        tools:text="@sample/repository.json/repositories/stargazerCount" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/event_repository_fork_count_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        android:drawableStart="@drawable/ic_code_fork"
+        android:drawablePadding="@dimen/list_content_padding"
+        android:textColor="@color/list_item_text_caption"
+        android:textSize="@dimen/list_item_caption_text"
+        app:layout_constraintBottom_toBottomOf="@id/event_repository_language_text"
+        app:layout_constraintStart_toEndOf="@id/event_repository_star_count_text"
+        app:layout_constraintTop_toTopOf="@id/event_repository_language_text"
+        tools:text="@sample/repository.json/repositories/forkCount" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

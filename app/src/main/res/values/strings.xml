@@ -13,4 +13,6 @@
 
     <string name="main_menu_search" translation_description="The search menu item title of main page.">Search</string>
 
+    <string name="programming_language_unknown">Unknown</string>
+
 </resources>

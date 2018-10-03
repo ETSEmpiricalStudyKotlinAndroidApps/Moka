@@ -72,3 +72,87 @@ query pinnedRepositories($login: String!) {
   	}
   }
 }
+
+# Lookup a given repository by the owner(USER) and repository name.
+query userRepositoryCardInfo($login: String!, $repositoryName:String!) {
+  user(login: $login) {
+    avatarUrl
+    id
+   	repository(name: $repositoryName) {
+    	createdAt
+      databaseId
+      description
+      descriptionHTML
+      homepageUrl
+      id
+      name
+      nameWithOwner
+      pushedAt
+      resourcePath
+      shortDescriptionHTML
+      updatedAt
+      url
+      issues {
+        totalCount
+      }
+      pullRequests {
+        totalCount
+      }
+      watchers {
+        totalCount
+      }
+      forks {
+        totalCount
+      }
+      stargazers {
+        totalCount
+      }
+      primaryLanguage {
+        color
+        name
+      }
+  	}
+  }
+}
+
+# Lookup a given repository by the owner(ORGANIZATION) and repository name.
+query orgRepositoryCardInfo($login: String!, $repositoryName:String!) {
+  organization(login: $login) {
+    avatarUrl
+    id
+   	repository(name: $repositoryName) {
+    	createdAt
+      databaseId
+      description
+      descriptionHTML
+      homepageUrl
+      id
+      name
+      nameWithOwner
+      pushedAt
+      resourcePath
+      shortDescriptionHTML
+      updatedAt
+      url
+      issues {
+        totalCount
+      }
+      pullRequests {
+        totalCount
+      }
+      watchers {
+        totalCount
+      }
+      forks {
+        totalCount
+      }
+      stargazers {
+        totalCount
+      }
+      primaryLanguage {
+        color
+        name
+      }
+  	}
+  }
+}

@@ -24,10 +24,11 @@
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_width="wrap_content"
+                android:id="@+id/toolbar_title"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="sans-serif-medium"
-                android:text="@string/app_name"
+                android:text="@string/navigation_menu_timeline"
                 android:textColor="@color/colorControlNormal"
                 android:textSize="@dimen/title_text"
                 app:layout_scrollFlags="scroll|snap|exitUntilCollapsed" />

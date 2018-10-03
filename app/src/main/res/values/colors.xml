@@ -32,4 +32,6 @@
     <color name="repository_item_star">#99000000</color>
     <color name="repository_item_unstar">#FF6200EE</color>
 
+    <color name="event_item_repository_bg">#FFFFFF</color>
+
 </resources>

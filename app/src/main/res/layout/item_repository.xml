@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/list_item_spacing"
             android:drawableStart="@drawable/ic_star_black_18dp"
-            android:drawablePadding="@dimen/repository_list_content_padding"
+            android:drawablePadding="@dimen/list_content_padding"
             android:textColor="@color/list_item_text_caption"
             android:textSize="@dimen/list_item_caption_text"
             tools:text="@sample/repository.json/repositories/stargazerCount" />
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/list_item_spacing"
             android:drawableStart="@drawable/ic_code_fork"
-            android:drawablePadding="@dimen/repository_list_content_padding"
+            android:drawablePadding="@dimen/list_content_padding"
             android:textColor="@color/list_item_text_caption"
             android:textSize="@dimen/list_item_caption_text"
             tools:text="@sample/repository.json/repositories/forkCount" />

@@ -11,6 +11,7 @@
     <dimen name="list_item_spacing">16dp</dimen>
     <dimen name="list_item_title_text">16sp</dimen>
     <dimen name="list_item_caption_text">14sp</dimen>
+    <dimen name="list_content_padding">4dp</dimen>
 
     <dimen name="repository_list_avatar_width">40dp</dimen>
     <dimen name="repository_list_avatar_height">40dp</dimen>
@@ -20,6 +21,5 @@
     <dimen name="repository_list_language_color_height">16dp</dimen>
     <dimen name="repository_list_language_dot_width">12dp</dimen>
     <dimen name="repository_list_language_dot_height">12dp</dimen>
-    <dimen name="repository_list_content_padding">4dp</dimen>
 
 </resources>

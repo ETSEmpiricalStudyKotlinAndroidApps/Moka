@@ -51,6 +51,10 @@ android {
     }
 }
 
+androidExtensions {
+    experimental = true
+}
+
 apollo {
     customTypeMapping = [
             "DateTime": "java.util.Date",
@@ -72,6 +76,8 @@ dependencies {
     implementation "androidx.legacy:legacy-preference-v14:${versions.preference_v14}"
     implementation "com.google.android.material:material:${versions.material}"
 
+    implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+
     implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava2}"
     implementation "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"
 
@@ -89,6 +95,7 @@ dependencies {
     implementation "com.apollographql.apollo:apollo-runtime:${versions.apollo}"
     implementation "com.apollographql.apollo:apollo-http-cache:${versions.apollo}"
     implementation "com.apollographql.apollo:apollo-rx2-support:${versions.apollo}"
+    implementation "com.apollographql.apollo:apollo-android-support:${versions.apollo}"
 
     implementation "com.airbnb.android:lottie:${versions.lottie}"
 

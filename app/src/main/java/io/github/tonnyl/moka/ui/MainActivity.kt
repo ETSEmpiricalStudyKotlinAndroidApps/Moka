@@ -9,35 +9,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.android.material.navigation.NavigationView
-import io.github.tonnyl.moka.*
-import io.github.tonnyl.moka.util.dp2px
+import io.github.tonnyl.moka.GlideApp
+import io.github.tonnyl.moka.NetworkClient
+import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ViewerQuery
+import io.github.tonnyl.moka.ui.timeline.TimelineFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val getPinnedRepositoryCall = NetworkClient.apolloClient
-            .query(PinnedRepositoriesQuery.builder().login("tonnyl").build())
-            .httpCachePolicy(HttpCachePolicy.NETWORK_FIRST)
-            .watcher()
     private val getViewerInfoCall = NetworkClient.apolloClient
             .query(ViewerQuery.builder().build())
             .httpCachePolicy(HttpCachePolicy.NETWORK_FIRST)
             .watcher()
-
-    private val layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,37 +45,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-
-        pinnedRepositoryList.layoutManager = layoutManager
-        pinnedRepositoryList.setHasFixedSize(false)
-
-        pinnedRepositoryList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0 && layoutManager.findFirstCompletelyVisibleItemPosition() != 0 && appbar.elevation == 0f) {
-                    ViewCompat.setElevation(appbar, dp2px(4f, resources).toFloat())
-                } else if (dy < 0 && layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && appbar.elevation != 0f) {
-                    ViewCompat.setElevation(appbar, 0f)
-                }
-            }
-
-        })
-
-        val pinnedRepositoryDisposable = Rx2Apollo.from(getPinnedRepositoryCall)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ resp ->
-                    Log.d("onCreate", "get pinned repositories success, resp = $resp")
-                    if (resp.data() != null && pinnedRepositoryList.adapter == null) {
-                        pinnedRepositoryList.adapter = RepositoryAdapter(this@MainActivity, resp.data()
-                                ?: return@subscribe)
-                    }
-                }, {
-                    Log.e("onCreate", "get pinned repositories call error: ${it.message}")
-                }, {
-
-                })
 
         val viewerInfoDisposable = Rx2Apollo.from(getViewerInfoCall)
                 .subscribeOn(Schedulers.io())
@@ -108,7 +70,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }, {
 
                 })
-        compositeDisposable.addAll(pinnedRepositoryDisposable, viewerInfoDisposable)
+        compositeDisposable.add(viewerInfoDisposable)
     }
 
     override fun onDestroy() {
@@ -139,16 +101,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_timeline -> {
-
+                val timelineFragment = TimelineFragment.newInstance()
+                supportFragmentManager.beginTransaction()
+                        .replace(R.id.container, timelineFragment)
+                        .commit()
+                toolbar_title.setText(R.string.navigation_menu_timeline)
             }
             R.id.nav_notifications -> {
-
+                toolbar_title.setText(R.string.navigation_menu_notifications)
             }
             R.id.nav_explore -> {
-
+                toolbar_title.setText(R.string.navigation_menu_explore)
             }
             R.id.nav_gists -> {
-
+                toolbar_title.setText(R.string.navigation_menu_gists)
             }
             R.id.nav_settings -> {
 
@@ -156,6 +122,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_about -> {
 
             }
+
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)

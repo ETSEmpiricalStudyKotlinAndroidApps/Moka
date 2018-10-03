@@ -7,16 +7,4 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ui.MainActivity"
-    tools:showIn="@layout/app_bar_main">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/pinnedRepositoryList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fadeScrollbars="true"
-        android:scrollbarStyle="insideOverlay"
-        android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/item_repository" />
-
-</FrameLayout>
+    tools:showIn="@layout/app_bar_main" />

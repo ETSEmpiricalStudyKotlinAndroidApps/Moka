@@ -22,4 +22,15 @@
     <dimen name="repository_list_language_dot_width">12dp</dimen>
     <dimen name="repository_list_language_dot_height">12dp</dimen>
 
+    <dimen name="user_profile_avatar_width">80dp</dimen>
+    <dimen name="user_profile_avatar_height">80dp</dimen>
+    <dimen name="user_profile_content_padding">16dp</dimen>
+    <dimen name="user_profile_content_padding_half">8dp</dimen>
+    <dimen name="user_profile_icon_size">40dp</dimen>
+    <dimen name="user_profile_follow_unfollow_button_radius">44dp</dimen>
+    <dimen name="user_profile_follow_unfollow_button_width">120dp</dimen>
+    <dimen name="user_profile_follow_unfollow_button_height">44dp</dimen>
+
+    <dimen name="snack_bar_margin">16dp</dimen>
+
 </resources>

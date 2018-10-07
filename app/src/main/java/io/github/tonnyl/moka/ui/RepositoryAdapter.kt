@@ -36,6 +36,8 @@ class RepositoryAdapter(
             item_repository_star_count_text.text = formatNumberWithSuffix(repository.stargazers().totalCount())
             item_repository_fork_count_text.text = formatNumberWithSuffix(repository.forks().totalCount())
             (item_repository_language_text.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.parseColor(repository.primaryLanguage()?.color()))
+
+            item_repository_star.setImageResource(if (repository.viewerHasStarred()) R.drawable.ic_unstar_24dp else R.drawable.ic_star_border_24dp)
         }
     }
 

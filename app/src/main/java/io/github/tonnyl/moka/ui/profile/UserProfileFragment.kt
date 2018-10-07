@@ -1,0 +1,148 @@
+package io.github.tonnyl.moka.ui.profile
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
+import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.net.GlideLoader
+import io.github.tonnyl.moka.ui.RepositoryAdapter
+import io.github.tonnyl.moka.util.dp2px
+import io.github.tonnyl.moka.util.formatNumberWithSuffix
+import kotlinx.android.synthetic.main.fragment_user_profile.*
+import java.security.InvalidParameterException
+
+class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
+
+    private lateinit var viewModel: UserProfileViewModel
+
+    private var titleTextToTopHeight = 0
+    private var username: String? = ""
+
+    companion object {
+        private val TAG = UserProfileFragment::class.java.simpleName
+
+        const val KEY_USER_LOGIN = "USER_LOGIN"
+
+        fun newInstance(login: String): UserProfileFragment {
+            val fragment = UserProfileFragment()
+            val bundle = Bundle().apply {
+                putString(KEY_USER_LOGIN, login)
+            }
+            fragment.arguments = bundle
+
+            return fragment
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_user_profile, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val loginArg = arguments?.getString(KEY_USER_LOGIN) ?: {
+            throw InvalidParameterException("You must pass a $KEY_USER_LOGIN argument!")
+        }()
+        if (activity is UserProfileActivity) {
+            with(activity as UserProfileActivity) {
+                setSupportActionBar(toolbar)
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                supportActionBar?.title = ""
+            }
+        }
+
+        val factory = ViewModelFactory(loginArg)
+        viewModel = ViewModelProviders.of(this, factory).get(UserProfileViewModel::class.java)
+
+        viewModel.user.observe(viewLifecycleOwner, Observer { response ->
+            if (response != null && response.hasErrors().not()) {
+                val user = response.data()?.user() ?: return@Observer
+                GlideLoader.loadAvatar(user.avatarUrl().toString(), profile_avatar)
+                profile_username.text = user.name()
+                profile_login_name.text = user.login()
+                profile_bio.text = user.bio()
+                profile_company_image.setOnClickListener {
+                    snackbar.show(messageText = user.company(), actionId = R.string.user_profile_company_action, actionClick = {
+                        snackbar.dismiss()
+                    })
+                }
+                profile_location_image.setOnClickListener {
+                    snackbar.show(messageText = user.location(), actionId = R.string.user_profile_location_action, actionClick = {
+                        snackbar.dismiss()
+                    })
+                }
+                profile_email_image.setOnClickListener {
+                    snackbar.show(messageText = user.email(), actionId = R.string.user_profile_email_action, actionClick = {
+                        snackbar.dismiss()
+                    })
+                }
+                profile_link_image.setOnClickListener {
+                    snackbar.show(messageText = user.websiteUrl().toString(), actionId = R.string.user_profile_link_action, actionClick = {
+                        snackbar.dismiss()
+                    })
+                }
+                username = user.name()
+                profile_repositories_text.text = getString(R.string.user_profile_repositories, formatNumberWithSuffix(user.repositories().totalCount()), resources.getQuantityText(R.plurals.user_profile_repositories_plurals, user.repositories().totalCount()))
+                profile_stars_text.text = getString(R.string.user_profile_stars, formatNumberWithSuffix(user.starredRepositories().totalCount()), resources.getQuantityText(R.plurals.user_profile_stars_plurals, user.starredRepositories().totalCount()))
+                profile_followers_text.text = getString(R.string.user_profile_followers, formatNumberWithSuffix(user.followers().totalCount()), resources.getQuantityText(R.plurals.user_profile_followers_plurals, user.followers().totalCount()))
+                profile_following_text.text = resources.getString(R.string.user_profile_following, formatNumberWithSuffix(user.following().totalCount()))
+            }
+        })
+
+        viewModel.pinnedRepositories.observe(viewLifecycleOwner, Observer { response ->
+            if (response != null && response.hasErrors().not()) {
+                val data = response.data() ?: return@Observer
+                profile_pinned_repositories.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                profile_pinned_repositories.adapter = RepositoryAdapter(context
+                        ?: return@Observer, data)
+            }
+        })
+
+        profile_username.post {
+            titleTextToTopHeight = dp2px(32f + 80f, resources) + profile_username.height
+        }
+
+        appbar.addOnOffsetChangedListener(this)
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        appbar.removeOnOffsetChangedListener(this)
+    }
+
+    override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+        if (verticalOffset == 0) {
+            // Fully expanded
+            if (toolbar.elevation != 0f) {
+                ViewCompat.setElevation(toolbar, 0f)
+            }
+        } else {
+            // Not fully expanded or collapsed
+            val fourDpElevation = dp2px(4f, resources).toFloat()
+            if (toolbar.elevation != fourDpElevation) {
+                ViewCompat.setElevation(toolbar, fourDpElevation)
+            }
+
+            if (verticalOffset < -titleTextToTopHeight) {
+                if (profile_toolbar_title.text != username) {
+                    profile_toolbar_title.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom))
+                    profile_toolbar_title.text = username
+                }
+            } else {
+                if (profile_toolbar_title.text != "") {
+                    profile_toolbar_title.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_top))
+                    profile_toolbar_title.text = ""
+                }
+            }
+        }
+    }
+
+}

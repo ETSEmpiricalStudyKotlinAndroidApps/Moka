@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -12,10 +13,11 @@ import androidx.core.view.GravityCompat
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.android.material.navigation.NavigationView
-import io.github.tonnyl.moka.GlideApp
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ViewerQuery
+import io.github.tonnyl.moka.net.GlideLoader
+import io.github.tonnyl.moka.ui.profile.UserProfileActivity
 import io.github.tonnyl.moka.ui.timeline.TimelineFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -58,12 +60,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         val username = headerView.findViewById<AppCompatTextView>(R.id.username_text_view)
                         val loginName = headerView.findViewById<AppCompatTextView>(R.id.login_name_text_view)
 
-                        GlideApp.with(this)
-                                .load(data.viewer().avatarUrl())
-                                .circleCrop()
-                                .into(avatar)
+                        GlideLoader.loadAvatar(data.viewer().avatarUrl().toString(), avatar)
                         username.text = data.viewer().name()
                         loginName.text = data.viewer().login()
+
+                        avatar.setOnClickListener {
+                            val intent = Intent(this, UserProfileActivity::class.java)
+                            startActivity(intent)
+                        }
                     }
                 }, {
                     Log.e("onCreate", "get viewer info call error: ${it.message}")

@@ -34,4 +34,8 @@
 
     <color name="event_item_repository_bg">#FFFFFF</color>
 
+    <color name="user_profile_icon_color">#5F6368</color>
+    <color name="user_profile_follow_unfollow_text">#FFFFFF</color>
+    <color name="user_profile_follow_unfoloow_bg">#FF661FFF</color>
+
 </resources>

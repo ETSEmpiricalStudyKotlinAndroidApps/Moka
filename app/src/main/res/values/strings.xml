@@ -13,6 +13,37 @@
 
     <string name="main_menu_search" translation_description="The search menu item title of main page.">Search</string>
 
-    <string name="programming_language_unknown">Unknown</string>
+    <string name="programming_language_unknown" translation_description="If a repository does not have a programming language, then display this value.">Unknown</string>
+
+    <string name="user_profile_following" translation_description="The following count of user profile.">%1$s following</string>
+    <string name="user_profile_followers" translation_description="The follower(s) count of user profile.">%1$s %2$s</string>
+    <string name="user_profile_stars" translation_description="The starred repository(ies) count of user profile.">%1$s %2$s</string>
+    <string name="user_profile_repositories" translation_description="The repository(ies) count of user profile.">%1$s %2$s</string>
+    <plurals name="user_profile_followers_plurals">
+        <item quantity="zero">follower</item>
+        <item quantity="one">follower</item>
+        <item quantity="other">followers</item>
+    </plurals>
+    <plurals name="user_profile_stars_plurals">
+        <item quantity="zero">star</item>
+        <item quantity="one">star</item>
+        <item quantity="other">stars</item>
+    </plurals>
+    <plurals name="user_profile_repositories_plurals">
+        <item quantity="zero">repository</item>
+        <item quantity="one">repository</item>
+        <item quantity="other">repositories</item>
+    </plurals>
+    <string name="user_profile_pinned">Pinned</string>
+    <string name="user_profile_follow" translation_description="The button's content text to follow a user of user profile.">follow</string>
+    <string name="user_profile_unfollow" translation_description="The button's content text to unfollow a user of user profile.">unfollow</string>
+    <string name="user_profile_company_desc" translation_description="The content description of company image of user profile.">Company</string>
+    <string name="user_profile_company_action" translation_description="The copy action text of snackbar when click the company image of user profile.">Copy</string>
+    <string name="user_profile_location_desc" translation_description="The content description of location image of user profile.">Location</string>
+    <string name="user_profile_location_action" translation_description="The copy action text of snackbar when click the location image of user profile.">Copy</string>
+    <string name="user_profile_email_desc" translation_description="The content description of email image of user profile.">Email</string>
+    <string name="user_profile_email_action" translation_description="The sending a new email action of snackbar when click the email image of user profile.">Compose</string>
+    <string name="user_profile_link_desc" translation_description="The content description of link image of user profile.">Link</string>
+    <string name="user_profile_link_action" translation_description="The open action text of snackabar when click the link image of user profile.">Open</string>
 
 </resources>

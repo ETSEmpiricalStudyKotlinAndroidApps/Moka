@@ -28,6 +28,7 @@ open class OrgRepositoryCardLiveData(
                 value = data
                 Log.d(TAG, "data: ${data.data()}")
             }, {
+                value = null
                 Log.e(TAG, "disposable error: ${it.message}")
             })
 

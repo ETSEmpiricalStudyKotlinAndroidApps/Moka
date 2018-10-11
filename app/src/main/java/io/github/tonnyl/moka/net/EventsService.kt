@@ -13,7 +13,7 @@ interface EventsService {
      * If you are authenticated as the given user, you will see private events.
      * Otherwise, you'll only see public events.
      */
-    @GET("users/{username}/received_events")
-    fun listEventThatAUserHasReceived(@Path("username") username: String): Observable<Response<List<Event>>>
+    @GET("users/{username}/received_events/public")
+    fun listPublicEventThatAUserHasReceived(@Path("username") username: String): Observable<Response<List<Event>>>
 
 }

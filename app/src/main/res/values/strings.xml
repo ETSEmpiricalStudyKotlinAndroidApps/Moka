@@ -13,6 +13,7 @@
 
     <string name="main_menu_search" translation_description="The search menu item title of main page.">Search</string>
 
+    <string name="repository_name_unknown" translation_description="If it is unable to get a repository's name, then display this value.">Unknown</string>
     <string name="programming_language_unknown" translation_description="If a repository does not have a programming language, then display this value.">Unknown</string>
 
     <string name="user_profile_following" translation_description="The following count of user profile.">%1$s following</string>
@@ -45,5 +46,12 @@
     <string name="user_profile_email_action" translation_description="The sending a new email action of snackbar when click the email image of user profile.">Compose</string>
     <string name="user_profile_link_desc" translation_description="The content description of link image of user profile.">Link</string>
     <string name="user_profile_link_action" translation_description="The open action text of snackabar when click the link image of user profile.">Open</string>
+
+    <string name="event_starred" translation_description="The action text when someone starred others' repository of timeline event list.">starred</string>
+    <string name="event_forked" translation_description="The action text when someone forked others' repository of timeline event list.">forked</string>
+    <string name="event_created" translation_description="The action text when someone created a new repository of timeline event list.">created</string>
+    <string name="event_publicized" translation_description="The action text when someone make his/her repository public of timeline event list.">publicized</string>
+    <string name="event_action_an_issue_in" translation_description="The action text when someone created/closed/assigned/... an issue of timeline event list.">%1$s an issue in</string>
+    <string name="event_action_a_pr" translation_description="The action text when someone created/assigned/... a pull request of timeline event list.">%1$s a PR in</string>
 
 </resources>

@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.timeline
 
 import android.os.Bundle
 import android.util.ArrayMap
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,18 +64,22 @@ class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterfac
         })
     }
 
-    override fun fetchInfo(position: Int, login: String, repositoryName: String) {
-        viewModel.userRepositoryCard(login, repositoryName).observe(viewLifecycleOwner, Observer { userRepoResp ->
-            if (!userRepoResp.hasErrors() && recycler_view.adapter is TimelineAdapter) {
-                (recycler_view.adapter as TimelineAdapter).updateRepoCard(position, userRepoResp.data()!!)
-            } else {
-                viewModel.orgRepositoryCard(login, repositoryName).observe(viewLifecycleOwner, Observer { orgRepoResp ->
-                    if (!orgRepoResp.hasErrors() && recycler_view.adapter is TimelineAdapter) {
-                        (recycler_view.adapter as TimelineAdapter).updateRepoCard(position, orgRepoResp.data()!!)
-                    }
-                })
-            }
-        })
+    override fun fetchInfo(position: Int, login: String, repositoryName: String, repositoryCreatorIsOrg: Boolean) {
+        if (repositoryCreatorIsOrg) {
+            viewModel.orgRepositoryCard(login, repositoryName).observe(viewLifecycleOwner, Observer { orgRepoResp ->
+                if (orgRepoResp != null && orgRepoResp.hasErrors().not() && recycler_view.adapter is TimelineAdapter) {
+                    (recycler_view.adapter as TimelineAdapter).updateRepoCard(position, orgRepoResp.data()!!)
+                }
+                Log.d("xxx", "xxx, position: $position login: $login org resp: $orgRepoResp")
+            })
+        } else {
+            viewModel.userRepositoryCard(login, repositoryName).observe(viewLifecycleOwner, Observer { userRepoResp ->
+                if (userRepoResp != null && userRepoResp.hasErrors().not() && recycler_view.adapter is TimelineAdapter) {
+                    (recycler_view.adapter as TimelineAdapter).updateRepoCard(position, userRepoResp.data()!!)
+                }
+                Log.d("xxx", "xxx, position: $position login: $login org resp: $userRepoResp")
+            })
+        }
     }
 
 }

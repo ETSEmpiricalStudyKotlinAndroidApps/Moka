@@ -14,7 +14,7 @@ open class EventsLiveData(
 ) : LiveData<Response<List<Event>>>() {
 
     private val service = RetrofitClient.createService(EventsService::class.java, null)
-    private val disposable = service.listEventThatAUserHasReceived(login)
+    private val disposable = service.listPublicEventThatAUserHasReceived(login)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->

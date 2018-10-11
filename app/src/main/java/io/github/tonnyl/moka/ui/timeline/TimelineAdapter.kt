@@ -38,9 +38,12 @@ class TimelineAdapter(
 
             event_actor_username.text = item.actor.login
             event_action.text = when (item.type) {
-                Event.WATCH_EVENT -> "starred"
-                Event.CREATE_EVENT -> "created a repository"
-                Event.FORK_EVENT -> "forked"
+                Event.WATCH_EVENT -> context.getString(R.string.event_starred)
+                Event.CREATE_EVENT -> context.getString(R.string.event_created)
+                Event.FORK_EVENT -> context.getString(R.string.event_forked)
+                Event.PUBLIC_EVENT -> context.getString(R.string.event_publicized)
+                Event.ISSUES_EVENT -> context.getString(R.string.event_action_an_issue_in, item.payload.action)
+                Event.PULL_REQUEST_EVENT -> context.getString(R.string.event_action_a_pr, item.payload.action)
                 else -> ""
             }
             event_repository_name.text = item.repo.name
@@ -52,7 +55,7 @@ class TimelineAdapter(
 
             if (userRepo == null && orgRepo == null) {
                 val slices = item.repo.name.split("/")
-                fetchRepositoryInfoInterface?.fetchInfo(position, slices[0], slices[1])
+                fetchRepositoryInfoInterface?.fetchInfo(position, slices[0], slices[1], item.org != null)
                 event_repository_title.visibility = View.INVISIBLE
                 event_repository_star_count_text.visibility = View.INVISIBLE
                 event_repository_fork_count_text.visibility = View.INVISIBLE
@@ -74,7 +77,7 @@ class TimelineAdapter(
                         .circleCrop()
                         .into(event_repository_avatar)
 
-                event_repository_title.text = userRepo?.user()?.repository()?.name() ?: orgRepo?.organization()?.repository()?.name()
+                event_repository_title.text = userRepo?.user()?.repository()?.name() ?: orgRepo?.organization()?.repository()?.name() ?: context.getString(R.string.repository_name_unknown)
                 event_repository_star_count_text.visibility = View.VISIBLE
                 event_repository_star_count_text.text = formatNumberWithSuffix(userRepo?.user()?.repository()?.stargazers()?.totalCount()
                         ?: orgRepo?.organization()?.repository()?.stargazers()?.totalCount() ?: 0)
@@ -120,7 +123,7 @@ class TimelineAdapter(
 
     interface FetchRepositoryInfoInterface {
 
-        fun fetchInfo(position: Int, login: String, repositoryName: String)
+        fun fetchInfo(position: Int, login: String, repositoryName: String, repositoryCreatorIsOrg: Boolean)
 
     }
 

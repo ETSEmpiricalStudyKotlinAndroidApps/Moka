@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.apollographql.android'
+apply plugin: 'androidx.navigation.safeargs'
 
 android {
     compileSdkVersion versions.compile_sdk_version
@@ -77,6 +78,12 @@ dependencies {
     implementation "com.google.android.material:material:${versions.material}"
 
     implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+    implementation "android.arch.navigation:navigation-fragment-ktx:${versions.navigation}"
+    implementation "android.arch.navigation:navigation-ui-ktx:${versions.navigation}"
+    implementation "android.arch.work:work-runtime:${versions.work_manager}"
+    implementation "android.arch.work:work-runtime-ktx:${versions.work_manager}"
+    implementation "androidx.paging:paging-common:${versions.paging}"
+    implementation "androidx.paging:paging-rxjava2:${versions.paging}"
 
     implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava2}"
     implementation "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"
@@ -85,7 +92,6 @@ dependencies {
     implementation "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
 
-    // Retrofit series
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
@@ -99,7 +105,10 @@ dependencies {
 
     implementation "com.airbnb.android:lottie:${versions.lottie}"
 
+    implementation "com.zhihu.android:matisse:${versions.matisse}"
+
     testImplementation "junit:junit:${versions.junit}"
+    testImplementation "androidx.paging:paging-common:${versions.paging}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "org.hamcrest:hamcrest-all:${versions.hamcrest}"
 
@@ -109,4 +118,6 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-contrib:${versions.espresso}"
     androidTestImplementation "androidx.test.espresso:espresso-intents:${versions.espresso}"
     androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
+    androidTestImplementation "android.arch.work:work-testing:${versions.work_manager}"
+    androidTestImplementation "android.arch.navigation:navigation-testing:${versions.navigation}"
 }

@@ -54,4 +54,6 @@
     <string name="event_action_an_issue_in" translation_description="The action text when someone created/closed/assigned/... an issue of timeline event list.">%1$s an issue in</string>
     <string name="event_action_a_pr" translation_description="The action text when someone created/assigned/... a pull request of timeline event list.">%1$s a PR in</string>
 
+    <string name="navigate_up" translation-description="Arrow at the top left of the screen for navigation">Navigate up</string>
+
 </resources>

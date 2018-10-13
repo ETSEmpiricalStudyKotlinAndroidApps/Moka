@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
@@ -18,7 +19,6 @@ import io.github.tonnyl.moka.ui.RepositoryAdapter
 import io.github.tonnyl.moka.util.dp2px
 import io.github.tonnyl.moka.util.formatNumberWithSuffix
 import kotlinx.android.synthetic.main.fragment_user_profile.*
-import java.security.InvalidParameterException
 
 class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
 
@@ -27,35 +27,14 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
     private var titleTextToTopHeight = 0
     private var username: String? = ""
 
-    companion object {
-        private val TAG = UserProfileFragment::class.java.simpleName
-
-        const val KEY_USER_LOGIN = "USER_LOGIN"
-
-        fun newInstance(login: String): UserProfileFragment {
-            val fragment = UserProfileFragment()
-            val bundle = Bundle().apply {
-                putString(KEY_USER_LOGIN, login)
-            }
-            fragment.arguments = bundle
-
-            return fragment
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_user_profile, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = arguments?.getString(KEY_USER_LOGIN) ?: {
-            throw InvalidParameterException("You must pass a $KEY_USER_LOGIN argument!")
-        }()
-        if (activity is UserProfileActivity) {
-            with(activity as UserProfileActivity) {
-                setSupportActionBar(toolbar)
-                supportActionBar?.setDisplayHomeAsUpEnabled(true)
-                supportActionBar?.title = ""
-            }
+        val loginArg = UserProfileFragmentArgs.fromBundle(arguments).login
+
+        toolbar.setNavigationOnClickListener {
+            parentFragment?.findNavController()?.navigateUp()
         }
 
         val factory = ViewModelFactory(loginArg)

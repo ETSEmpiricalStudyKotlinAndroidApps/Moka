@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_fragment_main"
+    app:startDestination="@id/nav_timeline">
+
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="io.github.tonnyl.moka.ui.search.SearchFragment"
+        tools:label="Search"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@id/nav_timeline"
+        android:name="io.github.tonnyl.moka.ui.timeline.TimelineFragment"
+        tools:label="Timeline"
+        tools:layout="@layout/fragment_timeline" />
+
+    <fragment
+        android:id="@id/nav_notifications"
+        android:name="io.github.tonnyl.moka.ui.notifications.NotificationsFragment"
+        tools:label="Notifications"
+        tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@id/nav_explore"
+        android:name="io.github.tonnyl.moka.ui.explore.ExploreFragment"
+        tools:label="Explore"
+        tools:layout="@layout/fragment_explore" />
+
+    <fragment
+        android:id="@id/nav_gists"
+        android:name="io.github.tonnyl.moka.ui.gists.GistsFragment"
+        tools:lable="Gists"
+        tools:layout="@layout/fragment_gists" />
+
+    <fragment
+        android:id="@+id/user_profile_fragment"
+        android:name="io.github.tonnyl.moka.ui.profile.UserProfileFragment"
+        tools:label="User Profile"
+        tools:layout="@layout/fragment_user_profile">
+
+        <argument
+            android:name="login"
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/repository_fragment"
+        android:name="io.github.tonnyl.moka.ui.repository.RepositoryFragment"
+        tools:label="Repository"
+        tools:layout="@layout/fragment_repository" />
+
+    <fragment
+        android:id="@+id/about_fragment"
+        android:name="io.github.tonnyl.moka.ui.about.AboutFragment"
+        tools:label="About"
+        tools:layout="@layout/fragment_about" />
+
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="io.github.tonnyl.moka.ui.settings.SettingsFragment"
+        tools:label="Settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <action
+        android:id="@+id/action_timeline_to_user_profile"
+        app:destination="@id/user_profile_fragment" />
+
+    <action
+        android:id="@+id/action_timeline_to_repository"
+        app:destination="@id/repository_fragment" />
+
+    <action
+        android:id="@+id/action_to_about"
+        app:destination="@id/about_fragment" />
+
+    <action
+        android:id="@+id/action_to_settings"
+        app:destination="@id/settings_fragment" />
+
+</navigation>

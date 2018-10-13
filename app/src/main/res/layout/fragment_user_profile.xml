@@ -241,6 +241,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 android:elevation="0dp"
+                app:navigationIcon="@drawable/ic_arrow_back_24"
                 android:theme="@style/ToolbarTheme"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay"

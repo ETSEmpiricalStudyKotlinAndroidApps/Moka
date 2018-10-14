@@ -98,7 +98,21 @@
         android:id="@+id/repositories_fragment"
         android:name="io.github.tonnyl.moka.ui.repositories.RepositoriesFragment"
         tools:label="Repositories"
-        tools:layout="@layout/fragment_repositories" />
+        tools:layout="@layout/fragment_repositories">
+
+        <argument
+            android:name="login"
+            app:argType="string" />
+
+        <argument
+            android:name="repositories_type"
+            app:argType="string" />
+
+        <argument
+            android:name="username"
+            app:argType="string" />
+
+    </fragment>
 
     <action
         android:id="@+id/action_timeline_to_user_profile"
@@ -115,5 +129,9 @@
     <action
         android:id="@+id/action_to_settings"
         app:destination="@id/settings_fragment" />
+
+    <action
+        android:id="@+id/action_to_repositories"
+        app:destination="@id/repositories_fragment" />
 
 </navigation>

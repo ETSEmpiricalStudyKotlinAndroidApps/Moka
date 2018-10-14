@@ -33,13 +33,13 @@ class UsersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val loginArg = UsersFragmentArgs.fromBundle(arguments).login
         val userTypeArg = UsersFragmentArgs.fromBundle(arguments).usersType
-        val username = UsersFragmentArgs.fromBundle(arguments).username
+        val usernameArg = UsersFragmentArgs.fromBundle(arguments).username
 
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 
-        toolbar_title.text = context?.getString(if (userTypeArg == USER_TYPE_FOLLOWERS) R.string.users_followers_title else R.string.users_following_title, username)
+        toolbar_title.text = context?.getString(if (userTypeArg == USER_TYPE_FOLLOWERS) R.string.users_followers_title else R.string.users_following_title, usernameArg)
 
         swipe_refresh.setColorSchemeColors(
                 ResourcesCompat.getColor(resources, R.color.indigo, null),

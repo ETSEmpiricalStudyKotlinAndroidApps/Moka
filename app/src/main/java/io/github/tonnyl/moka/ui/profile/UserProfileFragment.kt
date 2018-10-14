@@ -16,6 +16,8 @@ import com.google.android.material.appbar.AppBarLayout
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.net.GlideLoader
 import io.github.tonnyl.moka.ui.RepositoryAdapter
+import io.github.tonnyl.moka.ui.repositories.RepositoriesFragment
+import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs
 import io.github.tonnyl.moka.ui.users.UsersFragment
 import io.github.tonnyl.moka.util.dp2px
 import io.github.tonnyl.moka.util.formatNumberWithSuffix
@@ -85,8 +87,7 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener, Vi
             if (response != null && response.hasErrors().not()) {
                 val data = response.data() ?: return@Observer
                 profile_pinned_repositories.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                profile_pinned_repositories.adapter = RepositoryAdapter(context
-                        ?: return@Observer, data)
+                profile_pinned_repositories.adapter = RepositoryAdapter(data)
             }
         })
 
@@ -98,6 +99,8 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener, Vi
 
         profile_followers_text.setOnClickListener(this)
         profile_following_text.setOnClickListener(this)
+        profile_repositories_text.setOnClickListener(this)
+        profile_stars_text.setOnClickListener(this)
     }
 
     override fun onDestroyView() {
@@ -150,6 +153,16 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener, Vi
                     putString("username", username)
                 }
                 parentFragment?.findNavController()?.navigate(R.id.action_user_profile_to_users, bundle)
+            }
+            R.id.profile_repositories_text -> {
+                val builder = RepositoriesFragmentArgs.Builder(login, RepositoriesFragment.REPOSITORY_TYPE_OWNED, username
+                        ?: return)
+                parentFragment?.findNavController()?.navigate(R.id.action_to_repositories, builder.build().toBundle())
+            }
+            R.id.profile_stars_text -> {
+                val builder = RepositoriesFragmentArgs.Builder(login, RepositoriesFragment.REPOSITORY_TYPE_STARS, username
+                        ?: return)
+                parentFragment?.findNavController()?.navigate(R.id.action_to_repositories, builder.build().toBundle())
             }
         }
     }

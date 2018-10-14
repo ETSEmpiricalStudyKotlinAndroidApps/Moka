@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
@@ -14,11 +13,10 @@ import io.github.tonnyl.moka.util.formatNumberWithSuffix
 import kotlinx.android.synthetic.main.item_repository.view.*
 
 class RepositoryAdapter(
-        private val context: Context,
         private val repositories: PinnedRepositoriesQuery.Data
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = RepositoryViewHolder(LayoutInflater.from(context).inflate(R.layout.item_repository, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = RepositoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_repository, parent, false))
 
     override fun getItemCount(): Int = repositories.user()?.pinnedRepositories()?.nodes()?.size ?: 0
 

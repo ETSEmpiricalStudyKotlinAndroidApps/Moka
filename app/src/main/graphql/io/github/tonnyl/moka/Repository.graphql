@@ -1,3 +1,47 @@
+# An abstract info of repository. Suggested using for a repository card.
+fragment abstractRepository on Repository {
+  createdAt
+  databaseId
+  description
+  descriptionHTML
+  homepageUrl
+  id
+  name
+  nameWithOwner
+  pushedAt
+  resourcePath
+  shortDescriptionHTML
+  updatedAt
+  url
+  viewerHasStarred
+  issues {
+    totalCount
+  }
+  pullRequests {
+    totalCount
+  }
+  watchers {
+    totalCount
+  }
+  forks {
+    totalCount
+  }
+  stargazers {
+    totalCount
+  }
+  primaryLanguage {
+    color
+    name
+  }
+  owner {
+    avatarUrl
+    id
+    login
+    resourcePath
+    url
+  }
+}
+
 # A list of repositories this user has pinned to their profile
 query pinnedRepositories($login: String!) {
   user(login: $login) {
@@ -154,5 +198,33 @@ query orgRepositoryCardInfo($login: String!, $repositoryName:String!) {
         name
       }
   	}
+  }
+}
+
+# Repositories the user has starred.
+query starredRepositories($login:String!) {
+  user(login: $login){
+    avatarUrl
+    id
+    starredRepositories(first: 20) {
+      nodes {
+        ...abstractRepository
+      }
+      totalCount
+    }
+  }
+}
+
+# A list of repositories that the user owns.
+query ownedRepositories($login: String!) {
+  user(login: $login) {
+    avatarUrl
+    id
+    repositories(first: 20) {
+      nodes {
+        ...abstractRepository
+      }
+      totalCount
+    }
   }
 }

@@ -82,3 +82,97 @@ query viewer {
     }
   }
 }
+
+# A list of users the given user is following.
+query following($login:String!) {
+  user(login: $login){
+    following(first: 20) {
+      nodes {
+        avatarUrl
+        bio
+        bioHTML
+        company
+        companyHTML
+        createdAt
+        databaseId
+        email
+        id
+        isBountyHunter
+        isCampusExpert
+        isDeveloperProgramMember
+        isHireable
+        isEmployee
+        isSiteAdmin
+        isViewer
+        location
+        login
+        name
+        resourcePath
+        updatedAt
+        url
+        viewerCanFollow
+        viewerIsFollowing
+        websiteUrl
+        repositories {
+          totalCount
+        }
+        followers {
+          totalCount
+        }
+        following {
+          totalCount
+        }
+        starredRepositories {
+          totalCount
+        }
+      }
+    }
+  }
+}
+
+# A list of users the given user is followed by.
+query followers($login:String!) {
+  user(login: $login){
+    followers(first: 20) {
+      nodes {
+        avatarUrl
+        bio
+        bioHTML
+        company
+        companyHTML
+        createdAt
+        databaseId
+        email
+        id
+        isBountyHunter
+        isCampusExpert
+        isDeveloperProgramMember
+        isHireable
+        isEmployee
+        isSiteAdmin
+        isViewer
+        location
+        login
+        name
+        resourcePath
+        updatedAt
+        url
+        viewerCanFollow
+        viewerIsFollowing
+        websiteUrl
+        repositories {
+          totalCount
+        }
+        followers {
+          totalCount
+        }
+        following {
+          totalCount
+        }
+        starredRepositories {
+          totalCount
+        }
+      }
+    }
+  }
+}

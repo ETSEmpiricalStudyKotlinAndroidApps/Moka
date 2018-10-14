@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/item_gist_user_avatar"
+        android:layout_width="@dimen/repository_list_avatar_width"
+        android:layout_height="@dimen/repository_list_avatar_height"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        android:layout_marginTop="@dimen/list_item_spacing"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/item_gist_star"
+        android:layout_width="@dimen/repository_list_star_button_width"
+        android:layout_height="@dimen/repository_list_star_button_height"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/list_item_spacing"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_star_24" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_gist_title"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        android:layout_marginTop="@dimen/list_item_spacing"
+        android:layout_toStartOf="@id/item_gist_star"
+        android:layout_toEndOf="@id/item_gist_user_avatar"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:textColor="@color/list_item_text_title"
+        android:textSize="@dimen/list_item_title_text"
+        tools:text="@sample/repository.json/repositories/name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_gist_caption"
+        style="@style/TextAppearance.MaterialComponents.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_gist_title"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        android:layout_toStartOf="@id/item_gist_star"
+        android:layout_toEndOf="@id/item_gist_user_avatar"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/list_item_text_caption"
+        android:textSize="@dimen/list_item_caption_text"
+        tools:text="@sample/repository.json/repositories/description" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_gist_create_at"
+        style="@style/TextAppearance.MaterialComponents.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_gist_caption"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        android:layout_toStartOf="@id/item_gist_star"
+        android:layout_toEndOf="@id/item_gist_user_avatar"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/list_item_text_caption"
+        android:textSize="@dimen/list_item_caption_text"
+        tools:text="@sample/repository.json/repositories/updateAt" />
+
+</RelativeLayout>

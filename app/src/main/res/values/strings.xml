@@ -36,8 +36,8 @@
         <item quantity="other">repositories</item>
     </plurals>
     <string name="user_profile_pinned">Pinned</string>
-    <string name="user_profile_follow" translation_description="The button's content text to follow a user of user profile.">follow</string>
-    <string name="user_profile_unfollow" translation_description="The button's content text to unfollow a user of user profile.">unfollow</string>
+    <string name="user_profile_follow" translation_description="The button's content text to follow a user of user profile.">Follow</string>
+    <string name="user_profile_unfollow" translation_description="The button's content text to unfollow a user of user profile.">Unfollow</string>
     <string name="user_profile_company_desc" translation_description="The content description of company image of user profile.">Company</string>
     <string name="user_profile_company_action" translation_description="The copy action text of snackbar when click the company image of user profile.">Copy</string>
     <string name="user_profile_location_desc" translation_description="The content description of location image of user profile.">Location</string>
@@ -55,5 +55,8 @@
     <string name="event_action_a_pr" translation_description="The action text when someone created/assigned/... a pull request of timeline event list.">%1$s a PR in</string>
 
     <string name="navigate_up" translation-description="Arrow at the top left of the screen for navigation">Navigate up</string>
+
+    <string name="users_following_title">%1$s\'s following</string>
+    <string name="users_followers_title">%1$s\'s followers</string>
 
 </resources>

@@ -13,9 +13,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.AppBarLayout
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.MainActivity
 import io.github.tonnyl.moka.util.dp2px
 import kotlinx.android.synthetic.main.fragment_timeline.*
 
@@ -35,10 +33,6 @@ class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterfac
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(activity as MainActivity? ?: return) {
-            setSupportActionBar(toolbar)
-        }
-
         swipe_refresh.setColorSchemeColors(
                 ResourcesCompat.getColor(resources, R.color.indigo, null),
                 ResourcesCompat.getColor(resources, R.color.teal, null),
@@ -56,7 +50,6 @@ class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterfac
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view.layoutManager = layoutManager
 
-        val appbar = activity?.findViewById<AppBarLayout>(R.id.appbar)
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

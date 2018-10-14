@@ -16,33 +16,39 @@ import com.google.android.material.appbar.AppBarLayout
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.net.GlideLoader
 import io.github.tonnyl.moka.ui.RepositoryAdapter
+import io.github.tonnyl.moka.ui.users.UsersFragment
 import io.github.tonnyl.moka.util.dp2px
 import io.github.tonnyl.moka.util.formatNumberWithSuffix
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 
-class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
+class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener, View.OnClickListener {
 
     private lateinit var viewModel: UserProfileViewModel
 
     private var titleTextToTopHeight = 0
     private var username: String? = ""
 
+    private lateinit var login: String
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_user_profile, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = UserProfileFragmentArgs.fromBundle(arguments).login
+        login = UserProfileFragmentArgs.fromBundle(arguments).login
 
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 
-        val factory = ViewModelFactory(loginArg)
+        val factory = ViewModelFactory(login)
         viewModel = ViewModelProviders.of(this, factory).get(UserProfileViewModel::class.java)
 
         viewModel.user.observe(viewLifecycleOwner, Observer { response ->
             if (response != null && response.hasErrors().not()) {
                 val user = response.data()?.user() ?: return@Observer
+
+                username = user.name()
+
                 GlideLoader.loadAvatar(user.avatarUrl().toString(), profile_avatar)
                 profile_username.text = user.name()
                 profile_login_name.text = user.login()
@@ -90,6 +96,8 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
 
         appbar.addOnOffsetChangedListener(this)
 
+        profile_followers_text.setOnClickListener(this)
+        profile_following_text.setOnClickListener(this)
     }
 
     override fun onDestroyView() {
@@ -120,6 +128,28 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener {
                     profile_toolbar_title.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_top))
                     profile_toolbar_title.text = ""
                 }
+            }
+        }
+    }
+
+    override fun onClick(v: View?) {
+        v ?: return
+        when (v.id) {
+            R.id.profile_followers_text -> {
+                val bundle = Bundle().apply {
+                    putString("login", login)
+                    putString("users_type", UsersFragment.USER_TYPE_FOLLOWERS)
+                    putString("username", username)
+                }
+                parentFragment?.findNavController()?.navigate(R.id.action_user_profile_to_users, bundle)
+            }
+            R.id.profile_following_text -> {
+                val bundle = Bundle().apply {
+                    putString("login", login)
+                    putString("users_type", UsersFragment.USER_TYPE_FOLLOWING)
+                    putString("username", username)
+                }
+                parentFragment?.findNavController()?.navigate(R.id.action_user_profile_to_users, bundle)
             }
         }
     }

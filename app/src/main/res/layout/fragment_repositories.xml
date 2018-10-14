@@ -62,7 +62,7 @@
             android:fadeScrollbars="true"
             android:scrollbarStyle="insideOverlay"
             android:scrollbars="vertical"
-            tools:listitem="@layout/item_event" />
+            tools:listitem="@layout/item_repository" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

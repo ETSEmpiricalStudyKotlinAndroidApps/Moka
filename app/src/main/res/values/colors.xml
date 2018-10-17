@@ -38,4 +38,6 @@
     <color name="user_profile_follow_unfollow_text">#FFFFFF</color>
     <color name="user_profile_follow_unfoloow_bg">#FF661FFF</color>
 
+    <color name="bottom_app_bar_shadow_start">#11000000</color>
+
 </resources>

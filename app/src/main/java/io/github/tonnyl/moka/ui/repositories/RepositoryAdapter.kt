@@ -14,7 +14,9 @@ import kotlinx.android.synthetic.main.item_repository.view.*
 
 class RepositoryAdapter(
         private val repositories: List<RepositoryAbstract>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), View.OnClickListener {
+
+    private var onItemClickListener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = RepositoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_repository, parent, false))
 
@@ -41,9 +43,27 @@ class RepositoryAdapter(
                 item_repository_language_text.text = context.getString(R.string.programming_language_unknown)
                 (item_repository_language_text.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.BLACK)
             }
+
+            this.setOnClickListener(this@RepositoryAdapter)
+            this.tag = repositoryAbstract.name
         }
     }
 
-    class RepositoryViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    override fun onClick(v: View?) {
+        v ?: return
+        onItemClickListener?.onItemClick(v, v.tag as String)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener?) {
+        onItemClickListener = listener
+    }
+
+    class RepositoryViewHolder(private val view: View) : RecyclerView.ViewHolder(view)
+
+    interface OnItemClickListener {
+
+        fun onItemClick(view: View, repositoryName: String)
+
+    }
 
 }

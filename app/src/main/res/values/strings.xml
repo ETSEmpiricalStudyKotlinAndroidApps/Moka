@@ -62,4 +62,43 @@
     <string name="repositories_owned" translation-description="The repositories list title when enter someone's owned repositories, for example: Tonny's repositories">%1$s\'s repositories</string>
     <string name="repositories_stars" translation-description="The repositories list title when enter someone's starred repositories, for example: Tonny's stars">%1$s\'s stars</string>
 
+    <string name="repository" translation-description="repository">Repository</string>
+    <string name="repository_watchers">%1$d %2$s</string>
+    <string name="repository_stargazers">%1$d %2$s</string>
+    <string name="repository_forks">%1$d %2$s</string>
+    <string name="repository_issues">%1$d %2$s</string>
+    <string name="repository_pull_requests">%1$d %2$s</string>
+    <string name="repository_projects">%1$d %2$s</string>
+    <plurals name="watchers_count_plurals">
+        <item quantity="zero">watcher</item>
+        <item quantity="one">watcher</item>
+        <item quantity="other">watchers</item>
+    </plurals>
+    <plurals name="stargazers_count_plurals">
+        <item quantity="zero">star</item>
+        <item quantity="one">star</item>
+        <item quantity="other">stars</item>
+    </plurals>
+    <plurals name="forks_count_plurals">
+        <item quantity="zero">fork</item>
+        <item quantity="one">fork</item>
+        <item quantity="other">forks</item>
+    </plurals>
+    <plurals name="issues_count_plurals">
+        <item quantity="zero">issue</item>
+        <item quantity="one">issue</item>
+        <item quantity="other">issues</item>
+    </plurals>
+    <plurals name="pull_requests_count_plurals">
+        <item quantity="zero">pull request</item>
+        <item quantity="one">pull request</item>
+        <item quantity="other">pull requests</item>
+    </plurals>
+    <plurals name="projects_count_plurals">
+        <item quantity="zero">project</item>
+        <item quantity="one">project</item>
+        <item quantity="other">projects</item>
+    </plurals>
+    <string name="repository_update_time">Updated %1$s</string>
+
 </resources>

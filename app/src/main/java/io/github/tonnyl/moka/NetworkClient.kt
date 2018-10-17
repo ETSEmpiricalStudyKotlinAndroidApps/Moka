@@ -83,6 +83,22 @@ object NetworkClient {
 
     }
 
+    private val gitObjectIDTypeAdapter = object : CustomTypeAdapter<String> {
+
+        override fun encode(value: String): CustomTypeValue<*> = CustomTypeValue.GraphQLString(value)
+
+        override fun decode(value: CustomTypeValue<*>): String = value.value.toString()
+
+    }
+
+    private val gitSSHRemoteTypeAdapter = object : CustomTypeAdapter<String> {
+
+        override fun encode(value: String): CustomTypeValue<*> = CustomTypeValue.GraphQLString(value)
+
+        override fun decode(value: CustomTypeValue<*>): String = value.value.toString()
+
+    }
+
     private val httpCacheStore = DiskLruHttpCacheStore(MokaApp.CACHE_FILE, MAX_SIZE_OF_HTTP_CACHE_FILE)
     // Create NormalizedCacheFactory
     private val sqlCacheFactory = SqlNormalizedCacheFactory(MokaApp.apolloSqlHelper)
@@ -111,6 +127,8 @@ object NetworkClient {
             .addCustomTypeAdapter(CustomType.URI, uriCustomTypeAdapter)
             .addCustomTypeAdapter(CustomType.HTML, htmlCustomTypeAdapter)
             .addCustomTypeAdapter(CustomType.ID, idCustomTypeAdapter)
+            .addCustomTypeAdapter(CustomType.GITOBJECTID, gitObjectIDTypeAdapter)
+            .addCustomTypeAdapter(CustomType.GITSSHREMOTE, gitSSHRemoteTypeAdapter)
             .serverUrl(SERVER_URL)
 //            .httpCache(ApolloHttpCache(httpCacheStore))
 //            .normalizedCache(memoryFirstThenSqlCacheFactory, resolver)

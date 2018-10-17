@@ -58,10 +58,14 @@ androidExtensions {
 
 apollo {
     customTypeMapping = [
-            "DateTime": "java.util.Date",
-            "HTML"    : "java.lang.String",
-            "URI"     : "android.net.Uri",
-            "ID"      : "java.lang.String"
+            "GitTimestamp"   : "java.util.Date",
+            "DateTime"       : "java.util.Date",
+            "HTML"           : "java.lang.String",
+            "URI"            : "android.net.Uri",
+            "ID"             : "java.lang.String",
+            "GitObjectID"    : "java.lang.String",
+            "GitSSHRemote"   : "java.lang.String",
+            "X509Certificate": "java.lang.String"
     ]
 }
 

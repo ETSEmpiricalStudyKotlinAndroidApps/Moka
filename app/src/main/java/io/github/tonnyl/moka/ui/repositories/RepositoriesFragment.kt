@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Status
+import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.util.dp2px
 import kotlinx.android.synthetic.main.fragment_repositories.*
 
@@ -70,13 +71,28 @@ class RepositoriesFragment : Fragment() {
         viewModel.repositoriesResults.observe(viewLifecycleOwner, Observer { resources ->
             when (resources.status) {
                 Status.SUCCESS -> {
-                    recycler_view.adapter = RepositoryAdapter(resources.data ?: return@Observer)
+                    recycler_view.adapter = RepositoryAdapter(resources.data
+                            ?: return@Observer).apply {
+                        setOnItemClickListener(object : RepositoryAdapter.OnItemClickListener {
+                            override fun onItemClick(view: View, repositoryName: String) {
+                                val builder = RepositoryFragmentArgs.Builder(loginArg, repositoryName)
+                                parentFragment?.findNavController()?.navigate(R.id.action_to_repository, builder.build().toBundle())
+                            }
+                        })
+                    }
+                    swipe_refresh.post {
+                        swipe_refresh.isRefreshing = false
+                    }
                 }
                 Status.ERROR -> {
-
+                    swipe_refresh.post {
+                        swipe_refresh.isRefreshing = false
+                    }
                 }
                 Status.LOADING -> {
-
+                    swipe_refresh.post {
+                        swipe_refresh.isRefreshing = true
+                    }
                 }
             }
         })

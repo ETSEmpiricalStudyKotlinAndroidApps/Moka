@@ -7,6 +7,7 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebSettings
 import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -122,7 +123,22 @@ class RepositoryFragment : Fragment() {
         viewModel.setExpression(expression).observe(viewLifecycleOwner, Observer { resources ->
             when (resources.status) {
                 Status.SUCCESS -> {
-                    repository_readme_content.text = resources.data
+                    repository_readme_content.apply {
+                        isScrollbarFadingEnabled = true
+                        settings.javaScriptEnabled = false
+                        settings.builtInZoomControls = false
+                        settings.cacheMode = WebSettings.LOAD_NO_CACHE
+                        settings.domStorageEnabled = true
+                        settings.setSupportZoom(false)
+                        settings.builtInZoomControls = false
+                        settings.displayZoomControls = false
+                        isVerticalScrollBarEnabled = false
+                        isHorizontalScrollBarEnabled = false
+                        settings.setAppCacheEnabled(false)
+                    }
+
+                    val html = resources.data ?: return@Observer
+                    repository_readme_content.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null)
                 }
                 Status.ERROR -> {
 

@@ -111,6 +111,16 @@ dependencies {
 
     implementation "com.zhihu.android:matisse:${versions.matisse}"
 
+    implementation "com.atlassian.commonmark:commonmark:${versions.common_mark}"
+    implementation "com.atlassian.commonmark:commonmark-ext-autolink:${versions.common_mark}"
+    implementation "com.atlassian.commonmark:commonmark-ext-gfm-strikethrough:${versions.common_mark}"
+    implementation "com.atlassian.commonmark:commonmark-ext-gfm-tables:${versions.common_mark}"
+    implementation "com.atlassian.commonmark:commonmark-ext-ins:${versions.common_mark}"
+    implementation "com.atlassian.commonmark:commonmark-ext-heading-anchor:${versions.common_mark}"
+    implementation "com.atlassian.commonmark:commonmark-ext-yaml-front-matter:${versions.common_mark}"
+
+    implementation "org.jsoup:jsoup:${versions.jsoup}"
+
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "androidx.paging:paging-common:${versions.paging}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"

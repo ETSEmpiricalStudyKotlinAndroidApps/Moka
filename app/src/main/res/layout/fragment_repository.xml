@@ -303,16 +303,15 @@
                 app:layout_constraintTop_toBottomOf="@id/repository_updated_at"
                 tools:text="README.md" />
 
-            <TextView
+            <WebView
                 android:id="@+id/repository_readme_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/repository_spacing"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/repository_readme_title"
-                tools:text="@sample/repository.json/repositories/description" />
+                tools:ignore="WebViewLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -8,8 +8,17 @@ import io.github.tonnyl.moka.FileContentQuery
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.data.Resource
 import io.github.tonnyl.moka.data.Status
+import io.github.tonnyl.moka.util.wrapWithHtmlTemplate
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.commonmark.ext.autolink.AutolinkExtension
+import org.commonmark.ext.front.matter.YamlFrontMatterExtension
+import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
+import org.commonmark.ext.gfm.tables.TablesExtension
+import org.commonmark.ext.ins.InsExtension
+import org.commonmark.parser.Parser
+import org.commonmark.renderer.html.HtmlRenderer
+import java.util.*
 
 class RepositoryReadmeFileLiveData(
         private val login: String,
@@ -31,9 +40,23 @@ class RepositoryReadmeFileLiveData(
                 if (response.hasErrors()) {
                     Resource(Status.ERROR, null, response.errors().joinToString())
                 } else {
-                    Resource(Status.SUCCESS,
-                            response.data()?.repository()?.`object`()?.fragments()?.fileTextAbstract()?.text(),
-                            null)
+                    val extensions = Arrays.asList(
+                            TablesExtension.create(),
+                            AutolinkExtension.create(),
+                            StrikethroughExtension.create(),
+                            InsExtension.create(),
+                            YamlFrontMatterExtension.create())
+                    val parser = Parser.builder()
+                            .extensions(extensions)
+                            .build()
+                    val document = parser.parse(response.data()?.repository()?.`object`()?.fragments()?.fileTextAbstract()?.text())
+                    val renderer = HtmlRenderer.builder()
+                            .extensions(extensions)
+                            .escapeHtml(false)
+                            .build()
+                    val html = wrapWithHtmlTemplate(renderer.render(document), login, name, expression)
+
+                    Resource(Status.SUCCESS, html, null)
                 }
             }
             .subscribe({

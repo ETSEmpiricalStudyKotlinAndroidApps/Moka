@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.profile
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.rx2.Rx2Apollo
@@ -8,6 +7,7 @@ import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.PinnedRepositoriesQuery
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 class PinnedRepositoriesLiveData(
         private val login: String
@@ -23,9 +23,9 @@ class PinnedRepositoriesLiveData(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
                 value = data
-                Log.d(TAG, "data: ${data.data()}")
+                Timber.d("data: ${data.data()}")
             }, {
-                Log.e(TAG, "disposable error: ${it.message}")
+                Timber.e(it, "disposable error: ${it.message}")
             })
 
     override fun onInactive() {

@@ -7,8 +7,8 @@ class ViewModelFactory : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(EventsViewModel::class.java)) {
-            return EventsViewModel() as T
+        if (modelClass.isAssignableFrom(TimelineViewModel::class.java)) {
+            return TimelineViewModel() as T
         }
         throw IllegalArgumentException("Unknown class name")
     }

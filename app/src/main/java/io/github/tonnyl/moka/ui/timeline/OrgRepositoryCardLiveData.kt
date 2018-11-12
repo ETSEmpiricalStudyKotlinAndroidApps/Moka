@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.timeline
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
@@ -9,6 +8,7 @@ import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.OrgRepositoryCardInfoQuery
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 open class OrgRepositoryCardLiveData(
         private val login: String,
@@ -26,10 +26,10 @@ open class OrgRepositoryCardLiveData(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
                 value = data
-                Log.d(TAG, "data: ${data.data()}")
+                Timber.d("data: ${data.data()}")
             }, {
                 value = null
-                Log.e(TAG, "disposable error: ${it.message}")
+                Timber.e(it, "disposable error: ${it.message}")
             })
 
     override fun onInactive() {

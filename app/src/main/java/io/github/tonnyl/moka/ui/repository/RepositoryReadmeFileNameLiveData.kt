@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.rx2.Rx2Apollo
@@ -10,6 +9,7 @@ import io.github.tonnyl.moka.data.Resource
 import io.github.tonnyl.moka.data.Status
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 class RepositoryReadmeFileNameLiveData(
         private val login: String,
@@ -62,9 +62,9 @@ class RepositoryReadmeFileNameLiveData(
             }
             .subscribe({ data ->
                 this.value = data
-                Log.d(TAG, "data: $data")
+                Timber.d("data: $data")
             }, {
-                Log.e(TAG, "disposable error: ${it.message}")
+                Timber.e(it, "disposable error: ${it.message}")
             })
 
     override fun onInactive() {

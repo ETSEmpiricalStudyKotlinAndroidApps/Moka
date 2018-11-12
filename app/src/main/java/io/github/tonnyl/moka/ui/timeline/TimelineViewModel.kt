@@ -13,9 +13,9 @@ import io.github.tonnyl.moka.net.RetrofitClient
 import com.apollographql.apollo.api.Response as ApolloResponse
 import retrofit2.Response as RetrofitResponse
 
-class EventsViewModel : ViewModel() {
+class TimelineViewModel : ViewModel() {
 
-    private val sourceFactory = RemoteDataSourceFactory(RetrofitClient.createService(EventsService::class.java, null), "tonnyl")
+    private val sourceFactory = TimelineDataSourceFactory(RetrofitClient.createService(EventsService::class.java, null), "tonnyl")
 
     val eventsList: LiveData<PagedList<Event>> by lazy {
         val config = PagedList.Config.Builder()

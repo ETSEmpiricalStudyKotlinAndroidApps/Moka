@@ -12,7 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
-class RemoteItemDataSource(
+class TimelineItemDataSource(
         private val eventsService: EventsService,
         private val login: String
 ) : PageKeyedDataSource<String, Event>() {

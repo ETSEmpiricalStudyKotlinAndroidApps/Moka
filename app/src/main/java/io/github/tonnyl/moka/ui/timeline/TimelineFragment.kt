@@ -17,8 +17,8 @@ import kotlinx.android.synthetic.main.fragment_timeline.*
 
 class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterface {
 
-    private val viewModel: EventsViewModel by lazy {
-        ViewModelProviders.of(this, ViewModelFactory()).get(EventsViewModel::class.java)
+    private val viewModel: TimelineViewModel by lazy {
+        ViewModelProviders.of(this, ViewModelFactory()).get(TimelineViewModel::class.java)
     }
 
     private lateinit var drawer: DrawerLayout

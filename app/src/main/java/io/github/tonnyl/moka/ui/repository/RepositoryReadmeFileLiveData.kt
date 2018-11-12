@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.rx2.Rx2Apollo
@@ -18,6 +17,7 @@ import org.commonmark.ext.gfm.tables.TablesExtension
 import org.commonmark.ext.ins.InsExtension
 import org.commonmark.parser.Parser
 import org.commonmark.renderer.html.HtmlRenderer
+import timber.log.Timber
 import java.util.*
 
 class RepositoryReadmeFileLiveData(
@@ -62,7 +62,7 @@ class RepositoryReadmeFileLiveData(
             .subscribe({
                 this.value = it
             }, {
-                Log.d(TAG, "fetchReadmeContent error: ${it.message}")
+                Timber.e(it, "fetchReadmeContent error: ${it.message}")
             })
 
     override fun onInactive() {

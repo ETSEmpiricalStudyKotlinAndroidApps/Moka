@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.util
 
 import android.net.Uri
-import android.util.Log
 import org.jsoup.Jsoup
 
 fun wrapWithHtmlTemplate(
@@ -63,7 +62,6 @@ private fun formatHtmlWithLink(
                     builder.append(path).append("/")
                 }
                 builder.removeRange(builder.length - 1, builder.length)
-                Log.d("xxx", builder.toString())
                 element.attr("src", "https://raw.githubusercontent.com/$builder")
             }
         }

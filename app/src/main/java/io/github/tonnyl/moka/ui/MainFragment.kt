@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -22,6 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
+import timber.log.Timber
 
 class MainFragment : Fragment() {
 
@@ -44,7 +44,7 @@ class MainFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ resp ->
-                    Log.d("onCreate", "get viewer info call success, resp = $resp")
+                    Timber.d("get viewer info call success, resp = $resp")
                     val data = resp.data()
                     if (data != null) {
                         val headerView = nav_view.getHeaderView(0)
@@ -66,7 +66,7 @@ class MainFragment : Fragment() {
                         }
                     }
                 }, {
-                    Log.e("onCreate", "get viewer info call error: ${it.message}")
+                    Timber.e(it, "get viewer info call error: ${it.message}")
                 }, {
 
                 })

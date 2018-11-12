@@ -84,10 +84,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
     implementation "android.arch.navigation:navigation-fragment-ktx:${versions.navigation}"
     implementation "android.arch.navigation:navigation-ui-ktx:${versions.navigation}"
-    implementation "android.arch.work:work-runtime:${versions.work_manager}"
     implementation "android.arch.work:work-runtime-ktx:${versions.work_manager}"
     implementation "androidx.paging:paging-common:${versions.paging}"
     implementation "androidx.paging:paging-rxjava2:${versions.paging}"
+    implementation "androidx.paging:paging-runtime-ktx:${versions.paging}"
 
     implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava2}"
     implementation "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"

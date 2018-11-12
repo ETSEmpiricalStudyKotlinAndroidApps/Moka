@@ -1,14 +1,16 @@
 package io.github.tonnyl.moka.ui.timeline
 
-import android.util.ArrayMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class ViewModelFactory constructor(
-        private val creators: ArrayMap<Class<out ViewModel>, ViewModel>
-) : ViewModelProvider.NewInstanceFactory() {
+class ViewModelFactory : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T = EventsViewModel() as T
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(EventsViewModel::class.java)) {
+            return EventsViewModel() as T
+        }
+        throw IllegalArgumentException("Unknown class name")
+    }
 
 }

@@ -6,6 +6,8 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.GlideApp
 import io.github.tonnyl.moka.OrgRepositoryCardInfoQuery
@@ -15,19 +17,29 @@ import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.util.formatNumberWithSuffix
 import kotlinx.android.synthetic.main.item_event.view.*
 
-class TimelineAdapter(
-        private val events: List<Event>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), View.OnClickListener {
+class TimelineAdapter : PagedListAdapter<Event, RecyclerView.ViewHolder>(DIFF_CALLBACK), View.OnClickListener {
 
     private val userRepoCardMap = mutableMapOf<Int, UserRepositoryCardInfoQuery.Data?>()
     private val orgRepoCardMap = mutableMapOf<Int, OrgRepositoryCardInfoQuery.Data?>()
 
     var fetchRepositoryInfoInterface: FetchRepositoryInfoInterface? = null
 
+    companion object {
+
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Event>() {
+
+            override fun areItemsTheSame(oldItem: Event, newItem: Event): Boolean = oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Event, newItem: Event): Boolean = oldItem == newItem
+
+        }
+
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = EventViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_event, parent, false))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = events[position]
+        val item = getItem(position) ?: return
         val userRepo = userRepoCardMap[position]
         val orgRepo = orgRepoCardMap[position]
         with(holder.itemView) {
@@ -96,8 +108,6 @@ class TimelineAdapter(
             }
         }
     }
-
-    override fun getItemCount(): Int = events.size
 
     override fun onClick(v: View?) {
         v ?: return

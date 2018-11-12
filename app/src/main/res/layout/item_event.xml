@@ -86,7 +86,7 @@
         app:lottie_fileName="loading_animation.json"
         app:lottie_loop="true" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/event_repository_avatar"
         android:layout_width="@dimen/repository_list_avatar_width"
         android:layout_height="@dimen/repository_list_avatar_width"
@@ -107,7 +107,7 @@
         android:maxLines="1"
         android:textColor="@color/list_item_text_title"
         android:textSize="@dimen/list_item_title_text"
-        app:layout_constraintBottom_toTopOf="@id/item_repository_language_text"
+        app:layout_constraintBottom_toTopOf="@id/event_repository_language_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/event_repository_avatar"
         app:layout_constraintTop_toTopOf="@id/event_repository_avatar"

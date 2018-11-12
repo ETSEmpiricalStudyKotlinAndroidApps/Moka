@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.timeline
 
 import android.os.Bundle
-import android.util.ArrayMap
 import android.view.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.res.ResourcesCompat
@@ -9,7 +8,6 @@ import androidx.core.view.ViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,10 +17,14 @@ import kotlinx.android.synthetic.main.fragment_timeline.*
 
 class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterface {
 
-    private lateinit var viewModel: EventsViewModel
+    private val viewModel: EventsViewModel by lazy {
+        ViewModelProviders.of(this, ViewModelFactory()).get(EventsViewModel::class.java)
+    }
 
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
+
+    private lateinit var timelineAdapter: TimelineAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -41,14 +43,10 @@ class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterfac
                 ResourcesCompat.getColor(resources, R.color.orange, null)
         )
 
-        val arrayMap = ArrayMap<Class<out ViewModel>, ViewModel>().apply {
-            put(EventsViewModel::class.java, EventsViewModel())
-        }
-        val factory = ViewModelFactory(arrayMap)
-        viewModel = ViewModelProviders.of(this, factory).get(EventsViewModel::class.java)
-
+        timelineAdapter = TimelineAdapter()
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view.layoutManager = layoutManager
+        recycler_view.adapter = timelineAdapter
 
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
@@ -63,13 +61,10 @@ class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterfac
 
         })
 
-        viewModel.results.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null && response.isSuccessful && response.body() != null) {
-                val timelineAdapter = TimelineAdapter(response.body()!!)
-                timelineAdapter.fetchRepositoryInfoInterface = this
-                recycler_view.adapter = timelineAdapter
-            }
+        viewModel.eventsList.observe(this, Observer {
+            timelineAdapter.submitList(it)
         })
+
     }
 
     override fun fetchInfo(position: Int, login: String, repositoryName: String, repositoryCreatorIsOrg: Boolean) {

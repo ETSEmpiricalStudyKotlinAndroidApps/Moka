@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.apollographql.android'
 apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion versions.compile_sdk_version
@@ -121,6 +122,11 @@ dependencies {
 
     implementation "org.jsoup:jsoup:${versions.jsoup}"
 
+    implementation "com.jakewharton.timber:timber:${versions.timber}"
+
+    implementation "com.google.firebase:firebase-core:${versions.firebase_core}"
+    implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
+
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "androidx.paging:paging-common:${versions.paging}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
@@ -135,3 +141,5 @@ dependencies {
     androidTestImplementation "android.arch.work:work-testing:${versions.work_manager}"
     androidTestImplementation "android.arch.navigation:navigation-testing:${versions.navigation}"
 }
+
+apply plugin: 'com.google.gms.google-services'

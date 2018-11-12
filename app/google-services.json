@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "945499625381",
+    "firebase_url": "https://moka-3de63.firebaseio.com",
+    "project_id": "moka-3de63",
+    "storage_bucket": "moka-3de63.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945499625381:android:c136520b8606d189",
+        "android_client_info": {
+          "package_name": "io.github.tonnyl.moka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945499625381-0npfquj5oss0qpu3slf99c8cufctfv2d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIvYUo3DoobDVftBw48lUahmnYCKpmDyw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

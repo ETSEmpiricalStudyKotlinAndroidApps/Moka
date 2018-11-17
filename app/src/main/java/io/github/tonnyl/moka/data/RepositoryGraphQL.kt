@@ -10,7 +10,7 @@ import java.util.*
  * A repository contains the content for a project.
  */
 @Parcelize
-data class Repository2(
+data class RepositoryGraphQL(
         val ownerId: String,
         val ownerAvatarUrl: Uri,
         val ownerName: String?,
@@ -109,7 +109,7 @@ data class Repository2(
         /**
          * The User owner of the repository.
          */
-        val owner: RepositoryOwner2,
+        val owner: RepositoryOwnerGraphQL?,
         /**
          * The primary language of the repository's code.
          */
@@ -196,14 +196,14 @@ data class Repository2(
 
     companion object {
 
-        fun createFromRaw(data: RepositoryQuery.Data?): Repository2? {
+        fun createFromRaw(data: RepositoryQuery.Data?): RepositoryGraphQL? {
             val user = data?.user()
             val repository = user?.repository()
 
             if (user == null || repository == null) {
                 return null
             }
-            return Repository2(
+            return RepositoryGraphQL(
                     user.id(),
                     user.avatarUrl(),
                     user.name(),
@@ -239,7 +239,7 @@ data class Repository2(
                     repository.mirrorUrl(),
                     repository.name(),
                     repository.nameWithOwner(),
-                    RepositoryOwner2.createFromRaw(repository.owner()),
+                    RepositoryOwnerGraphQL.createFromRaw(repository.owner()),
                     Language.createFromRaw(repository.primaryLanguage()),
                     repository.projectsResourcePath(),
                     repository.projectsUrl(),

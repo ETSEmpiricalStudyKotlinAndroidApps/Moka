@@ -13,12 +13,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.util.dp2px
 import kotlinx.android.synthetic.main.fragment_users.*
 
 class UsersFragment : Fragment() {
 
     private lateinit var viewModel: UsersViewModel
+
+    private val adapter by lazy {
+        UserAdapter()
+    }
 
     companion object {
         const val USER_TYPE_FOLLOWING = "following"
@@ -49,9 +52,14 @@ class UsersFragment : Fragment() {
                 ResourcesCompat.getColor(resources, R.color.orange, null)
         )
 
-        val factory = ViewModelFactory(loginArg)
+        val userType = when (userTypeArg) {
+            USER_TYPE_FOLLOWING -> UserType.FOLLOWING
+            else -> UserType.FOLLOWER
+        }
+        val factory = ViewModelFactory(loginArg, userType)
         viewModel = ViewModelProviders.of(this, factory).get(UsersViewModel::class.java)
 
+        recycler_view.adapter = adapter
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view.layoutManager = layoutManager
 
@@ -60,7 +68,7 @@ class UsersFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0 && layoutManager.findFirstCompletelyVisibleItemPosition() != 0 && appbar?.elevation == 0f) {
-                    ViewCompat.setElevation(appbar, dp2px(4f, resources).toFloat())
+                    ViewCompat.setElevation(appbar, resources.getDimension(R.dimen.toolbar_elevation))
                 } else if (dy < 0 && layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && appbar != null && appbar.elevation != 0f) {
                     ViewCompat.setElevation(appbar, 0f)
                 }
@@ -68,19 +76,9 @@ class UsersFragment : Fragment() {
 
         })
 
-        if (userTypeArg == USER_TYPE_FOLLOWERS) {
-            viewModel.followersResults.observe(viewLifecycleOwner, Observer { response ->
-                if (response != null && response.hasErrors().not()) {
-                    recycler_view.adapter = UserAdapter(response.data()?.user()?.followers()?.nodes(), null)
-                }
-            })
-        } else if (userTypeArg == USER_TYPE_FOLLOWING) {
-            viewModel.followingResults.observe(viewLifecycleOwner, Observer { response ->
-                if (response != null && response.hasErrors().not()) {
-                    recycler_view.adapter = UserAdapter(null, response.data()?.user()?.following()?.nodes())
-                }
-            })
-        }
+        viewModel.usersResults.observe(viewLifecycleOwner, Observer { list ->
+            adapter.submitList(list)
+        })
 
     }
 

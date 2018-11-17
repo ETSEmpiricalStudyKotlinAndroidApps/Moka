@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.net
+package io.github.tonnyl.moka.net.service
 
 import io.github.tonnyl.moka.data.Event
 import retrofit2.Call

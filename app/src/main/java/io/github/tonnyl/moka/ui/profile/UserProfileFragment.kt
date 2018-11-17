@@ -116,7 +116,7 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener, Vi
             }
         } else {
             // Not fully expanded or collapsed
-            val fourDpElevation = dp2px(4f, resources).toFloat()
+            val fourDpElevation = resources.getDimension(R.dimen.toolbar_elevation)
             if (toolbar.elevation != fourDpElevation) {
                 ViewCompat.setElevation(toolbar, fourDpElevation)
             }

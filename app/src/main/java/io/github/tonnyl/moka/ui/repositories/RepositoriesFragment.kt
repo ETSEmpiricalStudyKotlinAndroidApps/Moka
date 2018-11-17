@@ -13,14 +13,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.Status
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
-import io.github.tonnyl.moka.util.dp2px
 import kotlinx.android.synthetic.main.fragment_repositories.*
 
 class RepositoriesFragment : Fragment() {
 
     private lateinit var viewModel: RepositoriesViewModel
+
+    private val adapter by lazy {
+        RepositoryAdapter()
+    }
 
     companion object {
         const val REPOSITORY_TYPE_STARS = "stars"
@@ -49,18 +51,25 @@ class RepositoriesFragment : Fragment() {
                 ResourcesCompat.getColor(resources, R.color.orange, null)
         )
 
-        val factory = ViewModelFactory(loginArg, repositoriesTypeArg)
+        val factory = ViewModelFactory(loginArg, if (repositoriesTypeArg == REPOSITORY_TYPE_OWNED) RepositoryType.OWNED else RepositoryType.STARRED)
         viewModel = ViewModelProviders.of(this, factory).get(RepositoriesViewModel::class.java)
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view.layoutManager = layoutManager
+        recycler_view.adapter = adapter
+        adapter.setOnItemClickListener(object : RepositoryAdapter.OnItemClickListener {
+            override fun onItemClick(view: View, repositoryName: String) {
+                val builder = RepositoryFragmentArgs.Builder(loginArg, repositoryName)
+                parentFragment?.findNavController()?.navigate(R.id.action_to_repository, builder.build().toBundle())
+            }
+        })
 
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0 && layoutManager.findFirstCompletelyVisibleItemPosition() != 0 && appbar?.elevation == 0f) {
-                    ViewCompat.setElevation(appbar, dp2px(4f, resources).toFloat())
+                    ViewCompat.setElevation(appbar, resources.getDimension(R.dimen.toolbar_elevation))
                 } else if (dy < 0 && layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && appbar != null && appbar.elevation != 0f) {
                     ViewCompat.setElevation(appbar, 0f)
                 }
@@ -68,33 +77,8 @@ class RepositoriesFragment : Fragment() {
 
         })
 
-        viewModel.repositoriesResults.observe(viewLifecycleOwner, Observer { resources ->
-            when (resources.status) {
-                Status.SUCCESS -> {
-                    recycler_view.adapter = RepositoryAdapter(resources.data
-                            ?: return@Observer).apply {
-                        setOnItemClickListener(object : RepositoryAdapter.OnItemClickListener {
-                            override fun onItemClick(view: View, repositoryName: String) {
-                                val builder = RepositoryFragmentArgs.Builder(loginArg, repositoryName)
-                                parentFragment?.findNavController()?.navigate(R.id.action_to_repository, builder.build().toBundle())
-                            }
-                        })
-                    }
-                    swipe_refresh.post {
-                        swipe_refresh.isRefreshing = false
-                    }
-                }
-                Status.ERROR -> {
-                    swipe_refresh.post {
-                        swipe_refresh.isRefreshing = false
-                    }
-                }
-                Status.LOADING -> {
-                    swipe_refresh.post {
-                        swipe_refresh.isRefreshing = true
-                    }
-                }
-            }
+        viewModel.repositoriesResults.observe(viewLifecycleOwner, Observer { list ->
+            adapter.submitList(list)
         })
 
     }

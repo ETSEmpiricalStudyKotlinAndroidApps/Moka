@@ -84,9 +84,9 @@ query viewer {
 }
 
 # A list of users the given user is following.
-query following($login:String!) {
+query following($login:String!, $perPage: Int!, $before: String, $after: String) {
   user(login: $login){
-    following(first: 20) {
+    following(first: $perPage, before: $before, after: $after) {
       nodes {
         avatarUrl
         bio
@@ -126,14 +126,21 @@ query following($login:String!) {
           totalCount
         }
       }
+      pageInfo {
+        endCursor
+        startCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      totalCount
     }
   }
 }
 
 # A list of users the given user is followed by.
-query followers($login:String!) {
+query followers($login:String!, $perPage: Int!, $before: String, $after: String) {
   user(login: $login){
-    followers(first: 20) {
+    followers(first: $perPage, before: $before, after: $after) {
       nodes {
         avatarUrl
         bio
@@ -173,6 +180,13 @@ query followers($login:String!) {
           totalCount
         }
       }
+      pageInfo {
+        endCursor
+        startCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      totalCount
     }
   }
 }

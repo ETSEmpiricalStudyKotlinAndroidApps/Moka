@@ -1,16 +1,26 @@
 package io.github.tonnyl.moka.ui.users
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.apollographql.apollo.api.Response
-import io.github.tonnyl.moka.FollowersQuery
-import io.github.tonnyl.moka.FollowingQuery
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import io.github.tonnyl.moka.data.UserGraphQL
 
-class UsersViewModel(private val login: String) : ViewModel() {
+class UsersViewModel(
+        private val login: String,
+        private val userType: UserType
+) : ViewModel() {
 
-    val followingResults: LiveData<Response<FollowingQuery.Data>> = Transformations.map(FollowingLiveData(login)) { it }
+    private val sourceFactory = UsersDataSourceFactory(login, userType)
 
-    val followersResults: LiveData<Response<FollowersQuery.Data>> = Transformations.map(FollowersLiveData(login)) { it }
+    val usersResults: LiveData<PagedList<UserGraphQL>> by lazy {
+        val config = PagedList.Config.Builder()
+                .setPageSize(20)
+                .setInitialLoadSizeHint(20 * 1)
+                .setEnablePlaceholders(false)
+                .build()
+
+        LivePagedListBuilder(sourceFactory, config).build()
+    }
 
 }

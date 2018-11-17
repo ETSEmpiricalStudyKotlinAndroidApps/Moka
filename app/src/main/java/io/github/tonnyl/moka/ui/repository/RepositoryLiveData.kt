@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.rx2.Rx2Apollo
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.RepositoryQuery
-import io.github.tonnyl.moka.data.Repository2
+import io.github.tonnyl.moka.data.RepositoryGraphQL
 import io.github.tonnyl.moka.data.Resource
 import io.github.tonnyl.moka.data.Status
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,7 +15,7 @@ import timber.log.Timber
 class RepositoryLiveData(
         private val login: String,
         private val name: String
-) : LiveData<Resource<Repository2>>() {
+) : LiveData<Resource<RepositoryGraphQL>>() {
 
     private val TAG = RepositoryLiveData::class.java.simpleName
 
@@ -29,9 +29,9 @@ class RepositoryLiveData(
             .observeOn(AndroidSchedulers.mainThread())
             .map { response ->
                 if (response.hasErrors()) {
-                    Resource<Repository2>(Status.ERROR, null, response.errors().first().message())
+                    Resource<RepositoryGraphQL>(Status.ERROR, null, response.errors().first().message())
                 } else {
-                    Resource(Status.SUCCESS, Repository2.createFromRaw(response.data()), null)
+                    Resource(Status.SUCCESS, RepositoryGraphQL.createFromRaw(response.data()), null)
                 }
             }
             .subscribe({ data ->

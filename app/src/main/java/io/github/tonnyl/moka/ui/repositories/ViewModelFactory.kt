@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 
 class ViewModelFactory(
         private val login: String,
-        private val repositoryType: String
+        private val repositoryType: RepositoryType
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")

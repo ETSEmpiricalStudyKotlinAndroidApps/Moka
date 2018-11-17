@@ -11,17 +11,9 @@
             android:icon="@drawable/ic_menu_timeline_24"
             android:title="@string/navigation_menu_timeline" />
         <item
-            android:id="@+id/nav_notifications"
-            android:icon="@drawable/ic_menu_notifications_24"
-            android:title="@string/navigation_menu_notifications" />
-        <item
             android:id="@+id/nav_explore"
             android:icon="@drawable/ic_menu_explore_24"
             android:title="@string/navigation_menu_explore" />
-        <item
-            android:id="@+id/nav_gists"
-            android:icon="@drawable/ic_code_24"
-            android:title="@string/navigation_menu_gists" />
     </group>
 
     <group android:id="@+id/drawer_menu_group_1">

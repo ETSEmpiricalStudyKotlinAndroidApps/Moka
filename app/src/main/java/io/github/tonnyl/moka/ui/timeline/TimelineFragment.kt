@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.util.dp2px
 import kotlinx.android.synthetic.main.fragment_timeline.*
 
 class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterface {
@@ -53,7 +52,7 @@ class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterfac
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0 && layoutManager.findFirstCompletelyVisibleItemPosition() != 0 && appbar?.elevation == 0f) {
-                    ViewCompat.setElevation(appbar, dp2px(4f, resources).toFloat())
+                    ViewCompat.setElevation(appbar, resources.getDimension(R.dimen.toolbar_elevation))
                 } else if (dy < 0 && layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && appbar != null && appbar?.elevation != 0f) {
                     ViewCompat.setElevation(appbar, 0f)
                 }

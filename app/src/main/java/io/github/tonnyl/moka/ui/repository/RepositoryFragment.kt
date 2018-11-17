@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Status
 import io.github.tonnyl.moka.net.GlideLoader
-import io.github.tonnyl.moka.util.dp2px
 import kotlinx.android.synthetic.main.fragment_repository.*
 
 class RepositoryFragment : Fragment() {
@@ -92,9 +91,9 @@ class RepositoryFragment : Fragment() {
 
         repository_scroll_view.setOnScrollChangeListener { _: NestedScrollView?, _: Int, _: Int, _: Int, _: Int ->
             if (repository_scroll_view.canScrollVertically(-1).not()) {
-                ViewCompat.setElevation(appbar, dp2px(0f, resources).toFloat())
+                ViewCompat.setElevation(appbar, 0f)
             } else if (appbar.elevation == 0f) {
-                ViewCompat.setElevation(appbar, dp2px(4f, resources).toFloat())
+                ViewCompat.setElevation(appbar, resources.getDimension(R.dimen.toolbar_elevation))
             }
         }
 

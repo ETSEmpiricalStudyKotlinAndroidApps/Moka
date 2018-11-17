@@ -8,8 +8,8 @@ import androidx.paging.PagedList
 import io.github.tonnyl.moka.OrgRepositoryCardInfoQuery
 import io.github.tonnyl.moka.UserRepositoryCardInfoQuery
 import io.github.tonnyl.moka.data.Event
-import io.github.tonnyl.moka.net.EventsService
 import io.github.tonnyl.moka.net.RetrofitClient
+import io.github.tonnyl.moka.net.service.EventsService
 import com.apollographql.apollo.api.Response as ApolloResponse
 import retrofit2.Response as RetrofitResponse
 

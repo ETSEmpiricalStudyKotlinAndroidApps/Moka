@@ -18,22 +18,10 @@
         tools:layout="@layout/fragment_timeline" />
 
     <fragment
-        android:id="@id/nav_notifications"
-        android:name="io.github.tonnyl.moka.ui.notifications.NotificationsFragment"
-        tools:label="Notifications"
-        tools:layout="@layout/fragment_notifications" />
-
-    <fragment
         android:id="@id/nav_explore"
         android:name="io.github.tonnyl.moka.ui.explore.ExploreFragment"
         tools:label="Explore"
         tools:layout="@layout/fragment_explore" />
-
-    <fragment
-        android:id="@id/nav_gists"
-        android:name="io.github.tonnyl.moka.ui.gists.GistsFragment"
-        tools:lable="Gists"
-        tools:layout="@layout/fragment_gists" />
 
     <fragment
         android:id="@+id/user_profile_fragment"

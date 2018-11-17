@@ -201,28 +201,59 @@ query orgRepositoryCardInfo($login: String!, $repositoryName:String!) {
   }
 }
 
-# Repositories the user has starred.
-query starredRepositories($login:String!) {
-  user(login: $login){
+# Repositories that the user has starred.
+query starredRepositories(
+  $login: String!,
+  $perPage: Int!
+  $after: String,
+  $before: String
+) {
+  user(login: $login) {
     avatarUrl
     id
-    starredRepositories(first: 20) {
+    starredRepositories(
+      first: $perPage,
+      after: $after,
+      before: $before
+    ) {
       nodes {
         ...abstractRepository
+      }
+      pageInfo {
+        endCursor
+        startCursor
+        hasNextPage
+        hasPreviousPage
       }
       totalCount
     }
   }
 }
 
+
 # A list of repositories that the user owns.
-query ownedRepositories($login: String!) {
+query ownedRepositories(
+  $login: String!,
+  $perPage: Int!
+  $after: String,
+  $before: String
+) {
   user(login: $login) {
     avatarUrl
     id
-    repositories(first: 20) {
+    repositories(
+      first: $perPage,
+      after: $after,
+      before: $before
+    ) {
       nodes {
         ...abstractRepository
+      }
+      pageInfo {
+        endCursor
+        startCursor
+        hasNextPage
+        hasPreviousPage
       }
       totalCount
     }

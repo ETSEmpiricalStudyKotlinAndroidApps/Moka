@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.ui.timeline
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import io.github.tonnyl.moka.data.Event
-import io.github.tonnyl.moka.net.EventsService
+import io.github.tonnyl.moka.net.service.EventsService
 
 class TimelineDataSourceFactory(
         private val eventsService: EventsService,

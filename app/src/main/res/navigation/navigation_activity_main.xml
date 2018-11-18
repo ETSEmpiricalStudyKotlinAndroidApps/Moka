@@ -15,7 +15,14 @@
         android:id="@+id/auth_fragment"
         android:name="io.github.tonnyl.moka.ui.auth.AuthFragment"
         tools:label="Auth"
-        tools:layout="@layout/fragment_auth" />
+        tools:layout="@layout/fragment_auth">
+
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="true" />
+
+    </fragment>
 
     <action
         android:id="@+id/action_to_main"

@@ -12,6 +12,7 @@
 
     <color name="colorTextPrimary">#000000</color>
     <color name="colorTextSecondary">#808080</color>
+    <color name="colorTextAccent">#FF661FFF</color>
 
     <color name="indigo">#4768FD</color>
     <color name="teal">#31E7B6</color>
@@ -39,5 +40,7 @@
     <color name="user_profile_follow_unfoloow_bg">#FF661FFF</color>
 
     <color name="bottom_app_bar_shadow_start">#11000000</color>
+
+    <color name="auth_get_started_button_text">#FFFFFF</color>
 
 </resources>

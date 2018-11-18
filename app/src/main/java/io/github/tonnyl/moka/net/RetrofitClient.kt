@@ -21,12 +21,15 @@ object RetrofitClient {
 
     private var cache: Cache? = null
 
-    val GITHUB_V1_BASE_URL = "https://api.github.com"
-    val GITHUB_AUTHORIZE_URL = ""
-    val GITHUB_GET_ACCESS_TOKEN_URL = ""
-
+    private const val GITHUB_V1_BASE_URL = "https://api.github.com"
+    const val GITHUB_AUTHORIZE_URL = "https://github.com/login/oauth/authorize"
+    const val GITHUB_GET_ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token"
     // Callback urls
-    val GITHUB_AUTHORIZE_CALLBACK_URI = ""
+    const val GITHUB_AUTHORIZE_CALLBACK_URI = "moka-app://callback"
+    const val GITHUB_AUTHORIZE_CALLBACK_URI_SCHEMA = "moka-app"
+    const val GITHUB_AUTHORIZE_CALLBACK_URI_HOST = "callback"
+    // Scope
+    const val SCOPE = "repo+admin:org+admin:public_key+admin:repo_hook+admin:org_hook+gist+notifications+user+delete_repo+write:discussion+admin:gpg_key"
 
     fun init(context: Context) {
         cache?.let {

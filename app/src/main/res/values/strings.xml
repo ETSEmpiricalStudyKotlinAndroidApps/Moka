@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name" translatable="false">Moka</string>
 
+    <string name="auth_"></string>
+    <string name="auth_get_started">GET STARTED</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_header_avatar_desc" translation_description="Content description for the user's avatar image of navigation drawer header of main page.">Avatar of current viewer</string>

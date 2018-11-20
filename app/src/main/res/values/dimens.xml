@@ -54,4 +54,7 @@
     <dimen name="repository_bottom_app_bar_padding">8dp</dimen>
     <dimen name="repository_bottom_app_bar_icon_size">40dp</dimen>
 
+    <dimen name="issue_item_author_avatar_size">24dp</dimen>
+    <dimen name="issue_item_status_image_size">24dp</dimen>
+
 </resources>

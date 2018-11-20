@@ -1,5 +1,8 @@
 package io.github.tonnyl.moka.data
 
+/**
+ * The possible states of a subscription.
+ */
 enum class SubscriptionState {
 
     /**

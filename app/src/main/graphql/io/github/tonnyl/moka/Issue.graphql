@@ -1,0 +1,110 @@
+query issues($owner: String!, $name: String!, $after: String, $before: String, $perPage: Int!) {
+  repository(owner: $owner, name: $name) {
+    issues(last: $perPage, after: $after, before: $before) {
+      nodes {
+        author {
+          avatarUrl
+          login
+        }
+        id
+        number
+        createdAt
+        title
+        closed
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+}
+
+
+query issue($owner: String!, $name: String!, $after: String, $before: String, $perPage: Int!) {
+  repository(owner: $owner, name: $name) {
+    issues(first: $perPage, after: $after, before: $before) {
+      nodes {
+        activeLockReason
+        author {
+          avatarUrl
+          login
+          resourcePath
+          url
+        }
+        authorAssociation
+        body
+        bodyHTML
+        bodyText
+        closed
+        closedAt
+        createdAt
+        createdViaEmail
+        databaseId
+        editor {
+          avatarUrl
+          login
+          resourcePath
+          url
+        }
+        id
+        includesCreatedEdit
+        lastEditedAt
+        locked
+        milestone {
+          closed
+          closedAt
+          createdAt
+          creator {
+            avatarUrl
+            login
+            resourcePath
+            url
+          }
+          description
+          dueOn
+          id
+          number
+          resourcePath
+          state
+          title
+          updatedAt
+          url
+        }
+        number
+        publishedAt
+        reactionGroups {
+          content
+          createdAt
+          subject {
+            databaseId
+            id
+            viewerCanReact
+          }
+          viewerHasReacted
+        }
+        resourcePath
+        state
+        title
+        updatedAt
+        url
+        viewerCanReact
+        viewerCanSubscribe
+        viewerCanUpdate
+        viewerCannotUpdateReasons
+        viewerDidAuthor
+        viewerSubscription
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+}

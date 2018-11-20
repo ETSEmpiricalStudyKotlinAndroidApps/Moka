@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Status
 import io.github.tonnyl.moka.net.GlideLoader
+import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
 import kotlinx.android.synthetic.main.fragment_repository.*
 
 class RepositoryFragment : Fragment() {
@@ -71,6 +72,12 @@ class RepositoryFragment : Fragment() {
                     repository_forks.text = getString(R.string.repository_forks, forksCount, this.resources.getQuantityString(R.plurals.forks_count_plurals, forksCount))
                     val issuesCount = resources.data?.issuesCount ?: 0
                     repository_issues.text = getString(R.string.repository_issues, issuesCount, this.resources.getQuantityString(R.plurals.issues_count_plurals, issuesCount))
+
+                    repository_issues.setOnClickListener {
+                        val args = IssuesFragmentArgs.Builder(loginArg, nameArg)
+                        parentFragment?.findNavController()?.navigate(R.id.action_to_issues, args.build().toBundle())
+                    }
+
                     val pullRequestsCount = resources.data?.pullRequestsCount ?: 0
                     repository_pull_requests.text = getString(R.string.repository_pull_requests, pullRequestsCount, this.resources.getQuantityString(R.plurals.pull_requests_count_plurals, pullRequestsCount))
                     val projectsCount = resources.data?.projectsCount ?: 0

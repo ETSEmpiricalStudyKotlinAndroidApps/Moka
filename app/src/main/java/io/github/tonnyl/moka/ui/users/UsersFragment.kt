@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import kotlinx.android.synthetic.main.appbar_layout.*
 import kotlinx.android.synthetic.main.fragment_users.*
 
 class UsersFragment : Fragment() {
@@ -42,7 +43,7 @@ class UsersFragment : Fragment() {
             parentFragment?.findNavController()?.navigateUp()
         }
 
-        toolbar_title.text = context?.getString(if (userTypeArg == USER_TYPE_FOLLOWERS) R.string.users_followers_title else R.string.users_following_title, usernameArg)
+        toolbar.title = context?.getString(if (userTypeArg == USER_TYPE_FOLLOWERS) R.string.users_followers_title else R.string.users_following_title, usernameArg)
 
         swipe_refresh.setColorSchemeColors(
                 ResourcesCompat.getColor(resources, R.color.indigo, null),

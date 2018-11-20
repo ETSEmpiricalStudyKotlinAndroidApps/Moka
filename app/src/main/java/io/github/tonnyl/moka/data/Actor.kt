@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.data
 
 import android.net.Uri
 import android.os.Parcelable
+import io.github.tonnyl.moka.IssueQuery
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -16,7 +17,7 @@ data class Actor(
          * Type: Int
          * Description: The size of the resulting square image.
          */
-        val avatarUrl: String,
+        val avatarUrl: Uri,
         /**
          * The username of the actor.
          */
@@ -29,4 +30,31 @@ data class Actor(
          * The HTTP URL for this actor.
          */
         val url: Uri
-) : Parcelable
+) : Parcelable {
+
+    companion object {
+
+        fun createFromIssueAuthor(data: IssueQuery.Author?): Actor? = if (data == null) null else Actor(
+                data.avatarUrl(),
+                data.login(),
+                data.resourcePath(),
+                data.url()
+        )
+
+        fun createFromIssueEditor(data: IssueQuery.Editor?): Actor? = if (data == null) null else Actor(
+                data.avatarUrl(),
+                data.login(),
+                data.resourcePath(),
+                data.url()
+        )
+
+        fun createFromMilestoneCreator(data: IssueQuery.Creator?): Actor? = if (data == null) null else Actor(
+                data.avatarUrl(),
+                data.login(),
+                data.resourcePath(),
+                data.url()
+        )
+
+    }
+
+}

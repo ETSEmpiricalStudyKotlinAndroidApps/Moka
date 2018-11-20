@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.data
 
 import android.net.Uri
 import android.os.Parcelable
+import io.github.tonnyl.moka.IssueQuery
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -17,7 +18,7 @@ data class Milestone(
         /**
          * Identifies the date and time when the object was closed.
          */
-        val closedAt: Date,
+        val closedAt: Date?,
         /**
          * Identifies the date and time when the object was created.
          */
@@ -25,15 +26,15 @@ data class Milestone(
         /**
          * Identifies the actor who created the milestone.
          */
-        val creator: Actor,
+        val creator: Actor?,
         /**
          * Identifies the description of the milestone.
          */
-        val description: String,
+        val description: String?,
         /**
          * Identifies the due date of the milestone.
          */
-        val dueOn: Date,
+        val dueOn: Date?,
         val id: String,
         /**
          * Identifies the number of the milestone.
@@ -59,4 +60,30 @@ data class Milestone(
          * The HTTP URL for this milestone
          */
         val url: Uri
-) : Parcelable
+) : Parcelable {
+
+    companion object {
+
+        fun createFromIssueMilestone(data: IssueQuery.Milestone?): Milestone? = if (data == null) null else Milestone(
+                data.closed(),
+                data.closedAt(),
+                data.createdAt(),
+                Actor.createFromMilestoneCreator(data.creator()),
+                data.description(),
+                data.dueOn(),
+                data.id(),
+                data.number(),
+                data.resourcePath(),
+                when (data.state()) {
+                    io.github.tonnyl.moka.type.MilestoneState.OPEN -> MilestoneState.OPEN
+                    // including [io.github.tonnyl.moka.type.MilestoneState.`$UNKNOWN`], [io.github.tonnyl.moka.type.MilestoneState.CLOSED]
+                    else -> MilestoneState.CLOSED
+                },
+                data.title(),
+                data.updatedAt(),
+                data.url()
+        )
+
+    }
+
+}

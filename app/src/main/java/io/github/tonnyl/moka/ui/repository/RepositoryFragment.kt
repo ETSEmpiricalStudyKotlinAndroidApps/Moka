@@ -18,6 +18,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Status
 import io.github.tonnyl.moka.net.GlideLoader
 import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
+import io.github.tonnyl.moka.ui.prs.PullRequestsFragmentArgs
 import kotlinx.android.synthetic.main.fragment_repository.*
 
 class RepositoryFragment : Fragment() {
@@ -80,6 +81,12 @@ class RepositoryFragment : Fragment() {
 
                     val pullRequestsCount = resources.data?.pullRequestsCount ?: 0
                     repository_pull_requests.text = getString(R.string.repository_pull_requests, pullRequestsCount, this.resources.getQuantityString(R.plurals.pull_requests_count_plurals, pullRequestsCount))
+
+                    repository_pull_requests.setOnClickListener {
+                        val args = PullRequestsFragmentArgs.Builder(loginArg, nameArg)
+                        parentFragment?.findNavController()?.navigate(R.id.action_to_prs, args.build().toBundle())
+                    }
+
                     val projectsCount = resources.data?.projectsCount ?: 0
                     repository_projects.text = getString(R.string.repository_projects, projectsCount, this.resources.getQuantityString(R.plurals.projects_count_plurals, projectsCount))
 

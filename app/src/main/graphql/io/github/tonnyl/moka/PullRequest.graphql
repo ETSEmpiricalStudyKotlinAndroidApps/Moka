@@ -1,6 +1,6 @@
-query issues($owner: String!, $name: String!, $after: String, $before: String, $perPage: Int!) {
+query pullRequests($owner: String!, $name: String!, $after: String, $before: String, $perPage: Int!) {
   repository(owner: $owner, name: $name) {
-    issues(last: $perPage, after: $after, before: $before) {
+    pullRequests(last: $perPage, after: $after, before: $before) {
       nodes {
         author {
           avatarUrl
@@ -11,6 +11,7 @@ query issues($owner: String!, $name: String!, $after: String, $before: String, $
         createdAt
         title
         closed
+        merged
       }
       pageInfo {
         hasNextPage
@@ -23,36 +24,77 @@ query issues($owner: String!, $name: String!, $after: String, $before: String, $
   }
 }
 
-
-query issue($owner: String!, $name: String!, $number: Int!) {
+query pullRequest($owner: String!, $name: String!, $number: Int!) {
   repository(owner: $owner, name: $name) {
-    issue(number: $number) {
+    pullRequest(number: $number) {
       activeLockReason
-        author {
+      additions
+      author {
         avatarUrl
         login
         resourcePath
         url
       }
       authorAssociation
+      baseRef {
+        id
+        name
+        prefix
+        target {
+          abbreviatedOid
+          commitResourcePath
+          commitUrl
+          id
+          oid
+        }
+      }
+      baseRefName
+      baseRefOid
       body
       bodyHTML
       bodyText
+      changedFiles
       closed
       closedAt
       createdAt
       createdViaEmail
       databaseId
+      deletions
       editor {
         avatarUrl
         login
         resourcePath
         url
       }
+      headRef {
+        id
+        name
+        prefix
+        target {
+          abbreviatedOid
+          commitResourcePath
+          commitUrl
+          id
+          oid
+        }
+      }
+      headRefName
+      headRefOid
       id
       includesCreatedEdit
+      isCrossRepository
       lastEditedAt
       locked
+      maintainerCanModify
+      mergeable
+      merged
+      mergedAt
+      mergedBy {
+        avatarUrl
+        login
+        resourcePath
+        url
+      }
       milestone {
         closed
         closedAt
@@ -74,6 +116,7 @@ query issue($owner: String!, $name: String!, $number: Int!) {
         url
       }
       number
+      permalink
       publishedAt
       reactionGroups {
         content
@@ -86,10 +129,13 @@ query issue($owner: String!, $name: String!, $number: Int!) {
         viewerHasReacted
       }
       resourcePath
+      revertResourcePath
+      revertUrl
       state
       title
       updatedAt
       url
+      viewerCanApplySuggestion
       viewerCanReact
       viewerCanSubscribe
       viewerCanUpdate

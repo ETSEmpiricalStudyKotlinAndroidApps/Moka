@@ -120,11 +120,31 @@
 
         <argument
             android:name="owner"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="false" />
 
         <argument
             android:name="name"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="false" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/prs_fragment"
+        android:name="io.github.tonnyl.moka.ui.prs.PullRequestsFragment"
+        android:label="PullRequests"
+        tools:layout="@layout/fragment_prs">
+
+        <argument
+            android:name="owner"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="name"
+            app:argType="string"
+            app:nullable="false" />
 
     </fragment>
 
@@ -155,5 +175,9 @@
     <action
         android:id="@+id/action_to_issues"
         app:destination="@id/issues_fragment" />
+
+    <action
+        android:id="@+id/action_to_prs"
+        app:destination="@id/prs_fragment" />
 
 </navigation>

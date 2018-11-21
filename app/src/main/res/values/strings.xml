@@ -104,7 +104,8 @@
     <string name="repository_update_time">Updated %1$s</string>
 
     <string name="issues">Issues</string>
-    <string name="issue_number">#%1$d</string>
-    <string name="issue_created_by">by %1$s</string>
+    <string name="pull_requests">Pull requests</string>
+    <string name="issue_pr_number">#%1$d</string>
+    <string name="issue_pr_created_by">by %1$s</string>
 
 </resources>

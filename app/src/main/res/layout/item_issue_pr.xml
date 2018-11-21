@@ -18,7 +18,7 @@
         tools:src="@drawable/ic_issue_open_24" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/issue_item_number"
+        android:id="@+id/issue_pr_item_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorTextSecondary"
@@ -27,43 +27,43 @@
         tools:text="@sample/issue.json/issues/number" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/issue_item_title"
+        android:id="@+id/issue_pr_item_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/list_item_spacing"
         android:layout_marginEnd="@dimen/list_item_spacing"
         android:textColor="@color/colorTextPrimary"
-        app:layout_constraintEnd_toStartOf="@id/issue_item_number"
+        app:layout_constraintEnd_toStartOf="@id/issue_pr_item_number"
         app:layout_constraintStart_toEndOf="@id/issue_item_status_image"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@sample/issue.json/issues/title" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/issue_item_avatar"
+        android:id="@+id/issue_pr_item_avatar"
         android:layout_width="@dimen/issue_item_author_avatar_size"
         android:layout_height="@dimen/issue_item_author_avatar_size"
         android:layout_marginTop="@dimen/list_item_spacing"
-        app:layout_constraintStart_toStartOf="@id/issue_item_title"
-        app:layout_constraintTop_toBottomOf="@id/issue_item_title"
+        app:layout_constraintStart_toStartOf="@id/issue_pr_item_title"
+        app:layout_constraintTop_toBottomOf="@id/issue_pr_item_title"
         tools:src="@tools:sample/avatars" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/issue_item_author"
+        android:id="@+id/issue_pr_item_author"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/list_item_spacing"
-        app:layout_constraintBottom_toBottomOf="@id/issue_item_avatar"
-        app:layout_constraintStart_toEndOf="@id/issue_item_avatar"
-        app:layout_constraintTop_toTopOf="@id/issue_item_avatar"
+        app:layout_constraintBottom_toBottomOf="@id/issue_pr_item_avatar"
+        app:layout_constraintStart_toEndOf="@id/issue_pr_item_avatar"
+        app:layout_constraintTop_toTopOf="@id/issue_pr_item_avatar"
         tools:text="@sample/issue.json/issues/author" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/issue_item_created_at"
+        android:id="@+id/issue_pr_item_created_at"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/issue_item_avatar"
+        app:layout_constraintTop_toTopOf="@id/issue_pr_item_avatar"
         tools:text="@sample/issue.json/issues/createdAt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

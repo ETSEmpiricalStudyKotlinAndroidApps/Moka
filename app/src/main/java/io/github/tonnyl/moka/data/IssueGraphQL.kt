@@ -172,7 +172,7 @@ data class IssueGraphQL(
 
     companion object {
 
-        fun createFromRaw(data: IssueQuery.Node) = IssueGraphQL(
+        fun createFromRaw(data: IssueQuery.Issue) = IssueGraphQL(
                 when (data.activeLockReason()) {
                     OFF_TOPIC -> LockReason.OFF_TOPIC
                     TOO_HEATED -> LockReason.TOO_HEATED

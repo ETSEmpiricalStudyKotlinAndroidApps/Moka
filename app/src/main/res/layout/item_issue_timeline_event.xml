@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/issue_timeline_event_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/list_item_spacing"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/issue_timeline_event_icon"
+        android:layout_width="@dimen/issue_timeline_avatar_size"
+        android:layout_height="@dimen/issue_timeline_avatar_size"
+        android:background="@drawable/bg_issue_timeline_event_1"
+        android:padding="@dimen/issue_timeline_event_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white"
+        tools:src="@drawable/ic_edit_white_24" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/issue_timeline_event_author_avatar"
+        android:layout_width="@dimen/issue_timeline_event_author_size"
+        android:layout_height="@dimen/issue_timeline_event_author_size"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        app:layout_constraintBottom_toBottomOf="@id/issue_timeline_event_icon"
+        app:layout_constraintStart_toEndOf="@id/issue_timeline_event_icon"
+        app:layout_constraintTop_toTopOf="@id/issue_timeline_event_icon"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/issue_timeline_event_author_name"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_item_spacing"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@id/issue_timeline_event_author_avatar"
+        app:layout_constraintEnd_toStartOf="@id/issue_timeline_event_created_at"
+        app:layout_constraintStart_toEndOf="@id/issue_timeline_event_author_avatar"
+        app:layout_constraintTop_toTopOf="@id/issue_timeline_event_author_avatar"
+        tools:text="@sample/issue_timeline.json/event/author" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/issue_timeline_event_created_at"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/issue_timeline_event_author_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/issue_timeline_event_author_name"
+        app:layout_constraintTop_toTopOf="@id/issue_timeline_event_author_avatar"
+        tools:text="@sample/issue_timeline.json/event/created" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/issue_timeline_event_content"
+        style="@style/TextAppearance.MaterialComponents.Body2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_item_spacing"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/issue_timeline_event_author_avatar"
+        app:layout_constraintTop_toBottomOf="@id/issue_timeline_event_author_avatar"
+        tools:text="@sample/issue_timeline.json/event/body" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -57,4 +57,8 @@
     <dimen name="issue_item_author_avatar_size">24dp</dimen>
     <dimen name="issue_item_status_image_size">24dp</dimen>
 
+    <dimen name="issue_timeline_avatar_size">40dp</dimen>
+    <dimen name="issue_timeline_event_padding">8dp</dimen>
+    <dimen name="issue_timeline_event_author_size">24dp</dimen>
+
 </resources>

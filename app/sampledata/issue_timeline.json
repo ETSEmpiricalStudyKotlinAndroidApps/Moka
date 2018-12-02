@@ -1,0 +1,49 @@
+{
+  "timeline": [
+    {
+      "body": "Lately we have seen Kotlin/Native tech preview as well as Kotlin JavaScript compiler. As I understand it one of main advantages of developing in these techs would be to be able to have modules written in pure Kotlin (No Java standard library etc.) shared between projects for different platforms - iOS, Android, Web.\n\nSince this library is just a wrapper around RxJava it would be only possible to use it on Android or any JVM environment so any module using it wouldn't be shareable between platforms.\n\nThere are already corresponding Reactive Extensions projects for other two platform RxSwift and RxJs so there could be some abstraction built to just use according Rx library on each platform but I really doubt it would work since these libraries just share some common principles with RxJava and not all operators are semantically the same.\n\nCompletely rewriting RxJava in Kotlin wouldn't be the easiest task I guess but certainly the most sought after.\n\nAny thoughts on this?",
+      "author": "Sroka",
+      "createdAt": "on Apr 27, 2017",
+      "edited": true,
+      "commentAuthorAssociation": "COLLABORATOR"
+    },
+    {
+      "body": "Yes, this is a discussion we recently started having on the #rx channel in Kotlin Slack. While we initially thought it would be impractical to do a pure Kotlin implementation due to the amount of work, Roman from JB enlightened us about how coroutines could be used to make an Rx implementation trivial.\n\nhttps://github.com/Kotlin/kotlinx.coroutines/blob/master/reactive/coroutines-guide-reactive.md\n\nI haven't dived into this deeply yet but from what he told us it sounds promising. It is definitely something we want to explore and we welcome any involvement in early discussions as well as implementation if we decided to go forward.",
+      "author": "thomasnield",
+      "createdAt": "on Apr 27, 2017",
+      "edited": false,
+      "commentAuthorAssociation": "CONTRIBUTOR"
+    },
+    {
+      "body": "I prefer rxKonan\uD83D\uDE01 Pure kotlin reactive extensions implementation would be more lightweight and could definitely take advantage from coroutines.\n\nAs an option, we could use https://github.com/akarnokd/RxJava3-preview as a starting point, since it's already modular.",
+      "author": "stepango",
+      "createdAt": "on Apr 29, 2017",
+      "edited": false,
+      "commentAuthorAssociation": "CONTRIBUTOR"
+    },
+    {
+      "body": "More lightweight how?",
+      "author": "akeWharton",
+      "createdAt": "on Apr 29, 2017",
+      "edited": false,
+      "commentAuthorAssociation": "MEMBER"
+    }
+  ],
+  "event": [
+    {
+      "author": "nickbutcher",
+      "body": "referenced this issue: InstantRun support issue #250",
+      "created": "on Feb 15"
+    },
+    {
+      "author": "nickbutcher",
+      "body": "self-assigned this",
+      "created": "on Apr 24, 2017"
+    },
+    {
+      "author": "nickbutcher",
+      "body": "closed this",
+      "created": "on Jun 21"
+    }
+  ]
+}

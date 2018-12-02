@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.issue.IssueFragmentArgs
 import kotlinx.android.synthetic.main.appbar_layout.*
 import kotlinx.android.synthetic.main.fragment_issues.*
 
@@ -52,6 +53,10 @@ class IssuesFragment : Fragment() {
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view.layoutManager = layoutManager
+        adapter.onItemClick = { i, s, _ ->
+            val issueFragmentArgs = IssueFragmentArgs.Builder(owner, name, i, s)
+            parentFragment?.findNavController()?.navigate(R.id.action_to_issue, issueFragmentArgs.build().toBundle())
+        }
         recycler_view.adapter = adapter
 
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {

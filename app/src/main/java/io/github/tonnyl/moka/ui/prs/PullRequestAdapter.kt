@@ -32,7 +32,7 @@ class PullRequestAdapter : PagedListAdapter<PullRequestItem, RecyclerView.ViewHo
         val item = getItem(position) ?: return
         with(holder.itemView) {
             issue_pr_item_number.text = context.getString(R.string.issue_pr_number, item.number)
-            issue_pr_item_author.text = context.getString(R.string.issue_pr_created_by, item.login)
+            issue_pr_item_author.text = context.getString(R.string.issue_pr_by, item.login)
             issue_pr_item_title.text = item.title
             issue_pr_item_created_at.text = DateUtils.getRelativeTimeSpanString(item.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
             issue_item_status_image.setImageResource(if (item.merged) R.drawable.ic_pr_merged else if (item.closed) R.drawable.ic_pr_closed else R.drawable.ic_pr_open)

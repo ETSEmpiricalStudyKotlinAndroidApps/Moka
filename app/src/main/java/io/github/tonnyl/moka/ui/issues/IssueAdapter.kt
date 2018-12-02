@@ -14,6 +14,15 @@ import kotlinx.android.synthetic.main.item_issue_pr.view.*
 
 class IssueAdapter : PagedListAdapter<IssueItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
+    /**
+     * Int for issue number
+     * String for issue title
+     * View for view holder's item view
+     */
+    var onItemClick: (Int, String, View) -> Unit = { _, _, _ ->
+
+    }
+
     companion object {
 
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<IssueItem>() {
@@ -32,12 +41,16 @@ class IssueAdapter : PagedListAdapter<IssueItem, RecyclerView.ViewHolder>(DIFF_C
         val item = getItem(position) ?: return
         with(holder.itemView) {
             issue_pr_item_number.text = context.getString(R.string.issue_pr_number, item.number)
-            issue_pr_item_author.text = context.getString(R.string.issue_pr_created_by, item.login)
+            issue_pr_item_author.text = context.getString(R.string.issue_pr_by, item.login)
             issue_pr_item_title.text = item.title
             issue_pr_item_created_at.text = DateUtils.getRelativeTimeSpanString(item.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
             issue_item_status_image.setImageResource(if (item.closed) R.drawable.ic_issue_closed_24 else R.drawable.ic_issue_open_24)
 
             GlideLoader.loadAvatar(item.avatarUrl?.toString(), issue_pr_item_avatar)
+
+            setOnClickListener {
+                onItemClick.invoke(item.number, item.title, it)
+            }
         }
     }
 

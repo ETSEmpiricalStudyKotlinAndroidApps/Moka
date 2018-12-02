@@ -106,6 +106,37 @@
     <string name="issues">Issues</string>
     <string name="pull_requests">Pull requests</string>
     <string name="issue_pr_number">#%1$d</string>
-    <string name="issue_pr_created_by">by %1$s</string>
+    <string name="issue_pr_by">by %1$s</string>
+    <string name="issue_pr_info_format">%1$s · %2$s · %3$s</string><!-- #234 · by tonny · 3 days ago -->
+
+    <string name="issue_timeline_assigned_event_self_assigned">self-assigned this</string>
+    <string name="issue_timeline_assigned_event_assigned_someone">assigned <![CDATA[<b>%1$s</b>]]></string> <!--assigned username-->
+    <string name="issue_timeline_unassigned_event_self_unassigned">removed their assignment</string>
+    <string name="issue_timeline_unassigned_event_unassigned_someone">unassigned %1$s</string> <!--unassigned username-->
+    <string name="issue_timeline_closed_event_closed">closed this</string>
+    <string name="issue_timeline_reopened_event_reopened">reopened this</string>
+    <string name="issue_timeline_locked_event_locked_as">locked as <![CDATA[<b>%1$s</b>]]> and limited conversation to collaborators</string>
+    <string name="issue_timeline_unlocked_event_unlocked">unlocked this conversation</string>
+    <string name="issue_timeline_renamed_title_event_change_title">changed the title from <![CDATA[<b>%1$s</b>]]> to <![CDATA[<b>%2$s</b>]]></string>
+    <string name="issue_timeline_milestoned_event_milestoned">added this to the <![CDATA[<b>%1$s</b>]]> milestone</string>
+    <string name="issue_timeline_demilestoned_event_demilestoned">removed this from the <![CDATA[<b>%1$s</b>]]> milestone</string>
+    <string name="issue_timeline_transferred_event_transferred">transferred this issue from %1$s</string> <!-- transferred this issue from username/repository_name -->
+    <string name="issue_timeline_referenced_event_referenced">referenced this issue \n <![CDATA[<b>%1$s</b>]]> #%2$d</string> <!-- referenced this issue \n issue_or_pr_name #issue_or_pr_number -->
+    <string name="issue_timeline_cross_referenced_event_cross_referenced">cross referenced this issue \n <![CDATA[<b>%1$s</b>]]> #%2$d</string> <!-- referenced this issue \n issue_or_pr_name #issue_or_pr_number -->
+    <string name="issue_timeline_labeled_event_labeled">added the&#160;</string>
+    <string name="issue_timeline_unlabeled_event_unlabeled">removed the&#160;</string>
+    <string name="issue_timeline_label">&#160;label</string>
+
+    <string name="issue_lock_reason_off_topic">off-topic</string>
+    <string name="issue_lock_reason_resolved">resolved</string>
+    <string name="issue_lock_reason_spam">spam</string>
+    <string name="issue_lock_reason_too_heated">too heated</string>
+
+    <string name="author_association_collaborator">Collaborator</string>
+    <string name="author_association_contributor">Contributor</string>
+    <string name="author_association_first_timer">First-timer</string>
+    <string name="author_association_first_timer_contributor">First-timer contributor</string>
+    <string name="author_association_member">Member</string>
+    <string name="author_association_owner">Owner</string>
 
 </resources>

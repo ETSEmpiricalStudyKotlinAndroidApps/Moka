@@ -148,6 +148,34 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/issue_fragment"
+        android:name="io.github.tonnyl.moka.ui.issue.IssueFragment"
+        android:label="Issue"
+        tools:layout="@layout/fragment_issue">
+
+        <argument
+            android:name="owner"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="name"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="number"
+            app:argType="integer"
+            app:nullable="false" />
+
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="false" />
+
+    </fragment>
+
     <action
         android:id="@+id/action_timeline_to_user_profile"
         app:destination="@id/user_profile_fragment" />
@@ -179,5 +207,9 @@
     <action
         android:id="@+id/action_to_prs"
         app:destination="@id/prs_fragment" />
+
+    <action
+        android:id="@+id/action_to_issue"
+        app:destination="@id/issue_fragment" />
 
 </navigation>

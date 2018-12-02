@@ -3,6 +3,7 @@
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#FFFFFF</color>
     <color name="colorAccent">#FF661FFF</color>
+    <color name="colorError">#B00020</color>
 
     <color name="colorNavigationBarDivider">#1F000000</color>
 
@@ -42,5 +43,7 @@
     <color name="bottom_app_bar_shadow_start">#11000000</color>
 
     <color name="auth_get_started_button_text">#FFFFFF</color>
+
+    <color name="issue_pr_label_text">#FFFFFF</color>
 
 </resources>

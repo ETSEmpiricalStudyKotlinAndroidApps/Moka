@@ -46,7 +46,7 @@ class PullRequestsDataSource(
                 list.add(PullRequestItem.createFromRaw(node))
             }
 
-            callback.onResult(list, repository?.pullRequests()?.pageInfo()?.startCursor(), repository?.pullRequests()?.pageInfo()?.endCursor())
+            callback.onResult(list, if (repository?.pullRequests()?.pageInfo()?.hasPreviousPage() == true) repository.pullRequests().pageInfo().startCursor() else null, if (repository?.pullRequests()?.pageInfo()?.hasNextPage() == true) repository.pullRequests().pageInfo().endCursor() else null)
         } catch (e: Exception) {
             status.postValue(Status.ERROR)
         }
@@ -78,7 +78,7 @@ class PullRequestsDataSource(
                             list.add(PullRequestItem.createFromRaw(node))
                         }
 
-                        callback.onResult(list, repository?.pullRequests()?.pageInfo()?.endCursor())
+                        callback.onResult(list, if (repository?.pullRequests()?.pageInfo()?.hasNextPage() == true) repository.pullRequests().pageInfo().endCursor() else null)
                     }
 
                 })
@@ -110,7 +110,7 @@ class PullRequestsDataSource(
                             list.add(PullRequestItem.createFromRaw(node))
                         }
 
-                        callback.onResult(list, repository?.pullRequests()?.pageInfo()?.startCursor())
+                        callback.onResult(list, if (repository?.pullRequests()?.pageInfo()?.hasPreviousPage() == true) repository.pullRequests().pageInfo().startCursor() else null)
                     }
 
                 })

@@ -44,7 +44,7 @@ class FollowersDataSource(private val login: String) : PageKeyedDataSource<Strin
                 }
             }
 
-            callback.onResult(list, user?.followers()?.pageInfo()?.startCursor(), user?.followers()?.pageInfo()?.endCursor())
+            callback.onResult(list, if (user?.followers()?.pageInfo()?.hasNextPage() == true) user.followers().pageInfo().startCursor() else null, if (user?.followers()?.pageInfo()?.hasNextPage() == true) user.followers().pageInfo().endCursor() else null)
         } catch (e: Exception) {
             status.postValue(Status.ERROR)
         }
@@ -77,7 +77,7 @@ class FollowersDataSource(private val login: String) : PageKeyedDataSource<Strin
                             }
                         }
 
-                        callback.onResult(list, user?.followers()?.pageInfo()?.endCursor())
+                        callback.onResult(list, if (user?.followers()?.pageInfo()?.hasNextPage() == true) user.followers().pageInfo().endCursor() else null)
                     }
 
                 })
@@ -110,7 +110,7 @@ class FollowersDataSource(private val login: String) : PageKeyedDataSource<Strin
                             }
                         }
 
-                        callback.onResult(list, user?.followers()?.pageInfo()?.startCursor())
+                        callback.onResult(list, if (user?.followers()?.pageInfo()?.hasPreviousPage() == true) user.followers().pageInfo().startCursor() else null)
                     }
 
                 })

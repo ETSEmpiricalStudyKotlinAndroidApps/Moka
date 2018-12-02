@@ -42,7 +42,7 @@ class StarredRepositoriesDataSource(private val login: String) : PageKeyedDataSo
                 list.add(RepositoryAbstract.createFromStarredRepositoryDataNode(node))
             }
 
-            callback.onResult(list, user?.starredRepositories()?.pageInfo()?.startCursor(), user?.starredRepositories()?.pageInfo()?.endCursor())
+            callback.onResult(list, if (user?.starredRepositories()?.pageInfo()?.hasPreviousPage() == true) user.starredRepositories().pageInfo().startCursor() else null, if (user?.starredRepositories()?.pageInfo()?.hasNextPage() == true) user.starredRepositories().pageInfo().endCursor() else null)
         } catch (e: Exception) {
             status.postValue(Status.ERROR)
         }
@@ -73,7 +73,7 @@ class StarredRepositoriesDataSource(private val login: String) : PageKeyedDataSo
                             list.add(RepositoryAbstract.createFromStarredRepositoryDataNode(node))
                         }
 
-                        callback.onResult(list, user?.starredRepositories()?.pageInfo()?.endCursor())
+                        callback.onResult(list, if (user?.starredRepositories()?.pageInfo()?.hasNextPage() == true) user.starredRepositories().pageInfo().endCursor() else null)
                     }
 
                 })
@@ -104,7 +104,7 @@ class StarredRepositoriesDataSource(private val login: String) : PageKeyedDataSo
                             list.add(RepositoryAbstract.createFromStarredRepositoryDataNode(node))
                         }
 
-                        callback.onResult(list, user?.starredRepositories()?.pageInfo()?.startCursor())
+                        callback.onResult(list, if (user?.starredRepositories()?.pageInfo()?.hasPreviousPage() == true) user.starredRepositories().pageInfo().startCursor() else null)
                     }
 
                 })

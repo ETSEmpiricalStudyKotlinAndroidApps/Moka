@@ -47,7 +47,7 @@ query pinnedRepositories($login: String!) {
   user(login: $login) {
     avatarUrl
     id
-   	pinnedRepositories(first: 100) {
+   	pinnedRepositories(first: 6) {
     	nodes {
           createdAt
           databaseId

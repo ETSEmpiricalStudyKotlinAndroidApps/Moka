@@ -42,7 +42,7 @@ class OwnedRepositoriesDataSource(private val login: String) : PageKeyedDataSour
                 list.add(RepositoryAbstract.createFromOwnedRepositoryDataNode(node))
             }
 
-            callback.onResult(list, user?.repositories()?.pageInfo()?.startCursor(), user?.repositories()?.pageInfo()?.endCursor())
+            callback.onResult(list, if (user?.repositories()?.pageInfo()?.hasPreviousPage() == true) user.repositories().pageInfo().startCursor() else null, if (user?.repositories()?.pageInfo()?.hasNextPage() == true) user.repositories().pageInfo().endCursor() else null)
         } catch (e: Exception) {
             status.postValue(Status.ERROR)
         }
@@ -73,7 +73,7 @@ class OwnedRepositoriesDataSource(private val login: String) : PageKeyedDataSour
                             list.add(RepositoryAbstract.createFromOwnedRepositoryDataNode(node))
                         }
 
-                        callback.onResult(list, user?.repositories()?.pageInfo()?.endCursor())
+                        callback.onResult(list, if (user?.repositories()?.pageInfo()?.hasNextPage() == true) user.repositories().pageInfo().endCursor() else null)
                     }
 
                 })
@@ -104,7 +104,7 @@ class OwnedRepositoriesDataSource(private val login: String) : PageKeyedDataSour
                             list.add(RepositoryAbstract.createFromOwnedRepositoryDataNode(node))
                         }
 
-                        callback.onResult(list, user?.repositories()?.pageInfo()?.startCursor())
+                        callback.onResult(list, if (user?.repositories()?.pageInfo()?.hasPreviousPage() == true) user.repositories().pageInfo().startCursor() else null)
                     }
 
                 })

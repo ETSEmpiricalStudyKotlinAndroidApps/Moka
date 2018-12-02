@@ -46,7 +46,7 @@ class IssuesDataSource(
                 list.add(IssueItem.createFromRaw(node))
             }
 
-            callback.onResult(list, repository?.issues()?.pageInfo()?.startCursor(), repository?.issues()?.pageInfo()?.endCursor())
+            callback.onResult(list, if (repository?.issues()?.pageInfo()?.hasPreviousPage() == true) repository.issues().pageInfo().startCursor() else null, if (repository?.issues()?.pageInfo()?.hasNextPage() == true) repository.issues().pageInfo().endCursor() else null)
         } catch (e: Exception) {
             status.postValue(Status.ERROR)
         }
@@ -78,7 +78,7 @@ class IssuesDataSource(
                             list.add(IssueItem.createFromRaw(node))
                         }
 
-                        callback.onResult(list, repository?.issues()?.pageInfo()?.endCursor())
+                        callback.onResult(list, if (repository?.issues()?.pageInfo()?.hasNextPage() == true) repository.issues().pageInfo().endCursor() else null)
                     }
 
                 })
@@ -110,7 +110,7 @@ class IssuesDataSource(
                             list.add(IssueItem.createFromRaw(node))
                         }
 
-                        callback.onResult(list, repository?.issues()?.pageInfo()?.startCursor())
+                        callback.onResult(list, if (repository?.issues()?.pageInfo()?.hasPreviousPage() == true) repository.issues().pageInfo().startCursor() else null)
                     }
 
                 })

@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui
+package io.github.tonnyl.moka.ui.profile
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -12,7 +12,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.util.formatNumberWithSuffix
 import kotlinx.android.synthetic.main.item_repository.view.*
 
-class RepositoryAdapter(
+class PinnedRepositoryAdapter(
         private val repositories: PinnedRepositoriesQuery.Data
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

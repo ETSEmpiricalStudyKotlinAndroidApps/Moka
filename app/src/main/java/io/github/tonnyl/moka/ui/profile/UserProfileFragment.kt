@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.net.GlideLoader
-import io.github.tonnyl.moka.ui.RepositoryAdapter
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragment
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs
 import io.github.tonnyl.moka.ui.users.UsersFragment
@@ -87,7 +86,7 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener, Vi
             if (response != null && response.hasErrors().not()) {
                 val data = response.data() ?: return@Observer
                 profile_pinned_repositories.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                profile_pinned_repositories.adapter = RepositoryAdapter(data)
+                profile_pinned_repositories.adapter = PinnedRepositoryAdapter(data)
             }
         })
 

@@ -46,4 +46,6 @@
 
     <color name="issue_pr_label_text">#FFFFFF</color>
 
+    <color name="issue_pr_icon_tint">#5B6068</color>
+
 </resources>

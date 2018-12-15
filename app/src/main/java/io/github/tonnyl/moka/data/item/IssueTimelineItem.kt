@@ -128,7 +128,7 @@ data class CommitEvent(
         val committerAvatarUri: Uri?,
         val committerLogin: String?,
         val message: String,
-        val signature: String?
+        val oid: String
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
@@ -139,7 +139,7 @@ data class CommitEvent(
                 data.committer()?.avatarUrl(),
                 data.committer()?.user()?.login(),
                 data.message(),
-                data.signature()?.signature()
+                data.oid()
         )
 
     }

@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.data
 import android.net.Uri
 import android.os.Parcelable
 import io.github.tonnyl.moka.IssueQuery
+import io.github.tonnyl.moka.PullRequestQuery
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -69,6 +70,26 @@ data class Milestone(
                 data.closedAt(),
                 data.createdAt(),
                 Actor.createFromMilestoneCreator(data.creator()),
+                data.description(),
+                data.dueOn(),
+                data.id(),
+                data.number(),
+                data.resourcePath(),
+                when (data.state()) {
+                    io.github.tonnyl.moka.type.MilestoneState.OPEN -> MilestoneState.OPEN
+                    // including [io.github.tonnyl.moka.type.MilestoneState.`$UNKNOWN`], [io.github.tonnyl.moka.type.MilestoneState.CLOSED]
+                    else -> MilestoneState.CLOSED
+                },
+                data.title(),
+                data.updatedAt(),
+                data.url()
+        )
+
+        fun createFromPullRequestMilestone(data: PullRequestQuery.Milestone?): Milestone? = if (data == null) null else Milestone(
+                data.closed(),
+                data.closedAt(),
+                data.createdAt(),
+                Actor.createFromPullRequestMilestoneCreator(data.creator()),
                 data.description(),
                 data.dueOn(),
                 data.id(),

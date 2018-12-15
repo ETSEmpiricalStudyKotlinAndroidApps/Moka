@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.data
 
 import android.net.Uri
 import android.os.Parcelable
+import io.github.tonnyl.moka.PullRequestQuery
 import io.github.tonnyl.moka.RepositoryQuery
 import kotlinx.android.parcel.Parcelize
 
@@ -46,6 +47,14 @@ data class RepositoryOwnerGraphQL(
                 owner.login(),
                 owner.resourcePath(),
                 owner.url()
+        )
+
+        fun createFromHeadRepositoryOwner(data: PullRequestQuery.HeadRepositoryOwner?): RepositoryOwnerGraphQL? = if (data == null) null else RepositoryOwnerGraphQL(
+                data.avatarUrl(),
+                data.id(),
+                data.login(),
+                data.resourcePath(),
+                data.url()
         )
 
     }

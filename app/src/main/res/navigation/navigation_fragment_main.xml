@@ -152,7 +152,35 @@
         android:id="@+id/issue_fragment"
         android:name="io.github.tonnyl.moka.ui.issue.IssueFragment"
         android:label="Issue"
-        tools:layout="@layout/fragment_issue">
+        tools:layout="@layout/fragment_issue_pr">
+
+        <argument
+            android:name="owner"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="name"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="number"
+            app:argType="integer"
+            app:nullable="false" />
+
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="false" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/pr_fragment"
+        android:name="io.github.tonnyl.moka.ui.pr.PullRequestFragment"
+        android:label="PullRequest"
+        tools:layout="@layout/fragment_issue_pr">
 
         <argument
             android:name="owner"
@@ -211,5 +239,9 @@
     <action
         android:id="@+id/action_to_issue"
         app:destination="@id/issue_fragment" />
+
+    <action
+        android:id="@+id/action_to_pr"
+        app:destination="@id/pr_fragment" />
 
 </navigation>

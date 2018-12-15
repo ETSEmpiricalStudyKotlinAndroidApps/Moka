@@ -14,6 +14,10 @@ import kotlinx.android.synthetic.main.item_issue_pr.view.*
 
 class PullRequestAdapter : PagedListAdapter<PullRequestItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
+    var onItemClick: (Int, String, View) -> Unit = { _, _, _ ->
+
+    }
+
     companion object {
 
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<PullRequestItem>() {
@@ -38,6 +42,10 @@ class PullRequestAdapter : PagedListAdapter<PullRequestItem, RecyclerView.ViewHo
             issue_item_status_image.setImageResource(if (item.merged) R.drawable.ic_pr_merged else if (item.closed) R.drawable.ic_pr_closed else R.drawable.ic_pr_open)
 
             GlideLoader.loadAvatar(item.avatarUrl?.toString(), issue_pr_item_avatar)
+
+            setOnClickListener {
+                onItemClick.invoke(item.number, item.title, it)
+            }
         }
     }
 

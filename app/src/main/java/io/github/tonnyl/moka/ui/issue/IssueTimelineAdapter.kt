@@ -229,7 +229,7 @@ class IssueTimelineAdapter : PagedListAdapter<IssueTimelineItem, RecyclerView.Vi
                     }
                     is LabeledEvent -> {
                         GlideLoader.loadAvatar(data.avatarUrl?.toString(), issue_timeline_event_author_avatar)
-                        issue_timeline_event_icon.setImageResource(R.drawable.ic_tag_24)
+                        issue_timeline_event_icon.setImageResource(R.drawable.ic_label_24)
                         issue_timeline_event_icon.setBackgroundResource(R.drawable.bg_issue_timeline_event_1)
 
                         issue_timeline_event_author_name.setTextFuture(PrecomputedTextCompat.getTextFuture(
@@ -429,7 +429,7 @@ class IssueTimelineAdapter : PagedListAdapter<IssueTimelineItem, RecyclerView.Vi
                     }
                     is UnlabeledEvent -> {
                         GlideLoader.loadAvatar(data.avatarUrl?.toString(), issue_timeline_event_author_avatar)
-                        issue_timeline_event_icon.setImageResource(R.drawable.ic_tag_24)
+                        issue_timeline_event_icon.setImageResource(R.drawable.ic_label_24)
                         issue_timeline_event_icon.setBackgroundResource(R.drawable.bg_issue_timeline_event_1)
 
                         issue_timeline_event_author_name.setTextFuture(PrecomputedTextCompat.getTextFuture(

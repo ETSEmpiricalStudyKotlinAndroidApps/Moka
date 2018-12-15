@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Parcelable
 import io.github.tonnyl.moka.IssueQuery
 import io.github.tonnyl.moka.type.CommentAuthorAssociation.*
+import io.github.tonnyl.moka.type.CommentCannotUpdateReason
 import io.github.tonnyl.moka.type.CommentCannotUpdateReason.*
 import io.github.tonnyl.moka.type.IssueState.CLOSED
 import io.github.tonnyl.moka.type.IssueState.OPEN

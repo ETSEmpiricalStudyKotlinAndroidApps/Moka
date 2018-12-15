@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.data
 
 import android.net.Uri
 import android.os.Parcelable
+import io.github.tonnyl.moka.PullRequestQuery
 import io.github.tonnyl.moka.RepositoryQuery
 import kotlinx.android.parcel.Parcelize
 
@@ -32,6 +33,22 @@ data class GitObject(
     companion object {
 
         fun createFromRaw(data: RepositoryQuery.Target): GitObject = GitObject(
+                data.abbreviatedOid(),
+                data.commitResourcePath(),
+                data.commitUrl(),
+                data.id(),
+                data.oid()
+        )
+
+        fun createFromRaw(data: PullRequestQuery.Target?): GitObject? = if (data == null) null else GitObject(
+                data.abbreviatedOid(),
+                data.commitResourcePath(),
+                data.commitUrl(),
+                data.id(),
+                data.oid()
+        )
+
+        fun createFromRaw(data: PullRequestQuery.Target1?): GitObject? = if (data == null) null else GitObject(
                 data.abbreviatedOid(),
                 data.commitResourcePath(),
                 data.commitUrl(),

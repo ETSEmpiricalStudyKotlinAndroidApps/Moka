@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.data
 import android.net.Uri
 import android.os.Parcelable
 import io.github.tonnyl.moka.IssueQuery
+import io.github.tonnyl.moka.PullRequestQuery
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -49,6 +50,34 @@ data class Actor(
         )
 
         fun createFromMilestoneCreator(data: IssueQuery.Creator?): Actor? = if (data == null) null else Actor(
+                data.avatarUrl(),
+                data.login(),
+                data.resourcePath(),
+                data.url()
+        )
+
+        fun createFromPullRequestAuthor(data: PullRequestQuery.Author?): Actor? = if (data == null) null else Actor(
+                data.avatarUrl(),
+                data.login(),
+                data.resourcePath(),
+                data.url()
+        )
+
+        fun createFromPullRequestEditor(data: PullRequestQuery.Editor?): Actor? = if (data == null) null else Actor(
+                data.avatarUrl(),
+                data.login(),
+                data.resourcePath(),
+                data.url()
+        )
+
+        fun createFromPullRequestMergedBy(data: PullRequestQuery.MergedBy?): Actor? = if (data == null) null else Actor(
+                data.avatarUrl(),
+                data.login(),
+                data.resourcePath(),
+                data.url()
+        )
+
+        fun createFromPullRequestMilestoneCreator(data: PullRequestQuery.Creator?): Actor? = if (data == null) null else Actor(
                 data.avatarUrl(),
                 data.login(),
                 data.resourcePath(),

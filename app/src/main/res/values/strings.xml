@@ -112,7 +112,7 @@
     <string name="issue_timeline_assigned_event_self_assigned">self-assigned this</string>
     <string name="issue_timeline_assigned_event_assigned_someone">assigned <![CDATA[<b>%1$s</b>]]></string> <!--assigned username-->
     <string name="issue_timeline_unassigned_event_self_unassigned">removed their assignment</string>
-    <string name="issue_timeline_unassigned_event_unassigned_someone">unassigned %1$s</string> <!--unassigned username-->
+    <string name="issue_timeline_unassigned_event_unassigned_someone">unassigned <![CDATA[<b>%1$s</b>]]></string> <!--unassigned username-->
     <string name="issue_timeline_closed_event_closed">closed this</string>
     <string name="issue_timeline_reopened_event_reopened">reopened this</string>
     <string name="issue_timeline_locked_event_locked_as">locked as <![CDATA[<b>%1$s</b>]]> and limited conversation to collaborators</string>
@@ -138,5 +138,23 @@
     <string name="author_association_first_timer_contributor">First-timer contributor</string>
     <string name="author_association_member">Member</string>
     <string name="author_association_owner">Owner</string>
+
+    <string name="pull_request">Pull Request</string>
+    <string name="pull_request_force_pushed_branch">force-pushed the %1$s branch from %2$s to %3$s</string> <!-- force-pushed the tonny_dev  branch from 0aa5747 to 9ca837e -->
+    <string name="pull_request_merged_commit">merged commit %1$s into %2$s</string> <!-- merged commit 5288812 into TonnyL:master -->
+    <string name="pull_request_deleted_branch">deleted the %1$s branch</string>
+    <string name="pull_request_self_requested_a_review">self-requested a review</string>
+    <string name="pull_request_requested_review_from">requested review from <![CDATA[<b>%1$s</b>]]></string>
+    <string name="pull_request_dismiss_someones_review">dismissed <![CDATA[<b>%1$s</b>]]>’s stale review</string>
+    <string name="pull_request_dismiss_someones_review_and_left_a_comment">dismissed <![CDATA[<b>%1$s</b>]]>’s stale review and left a comment: <![CDATA[<br /><b>%2$s</b>]]></string>
+    <string name="pull_request_review_approved_changes">approved these changes</string>
+    <string name="pull_request_reviewed">reviewed</string>
+    <string name="pull_request_and_left_a_comment">&#160;and left a comment: <![CDATA[<br /><b>%1$s</b>]]></string>
+    <string name="pull_request_review_request_changes">request changes</string>
+    <string name="pull_request_removed_someones_review_request">removed <![CDATA[<b>%1$s</b>]]>’s review request</string>
+    <string name="pull_request_restore_branch">restored the %1$s branch</string>
+    <string name="pull_request_deployed_to_branch">deployed to %1$s</string>
+    <string name="pull_request_changed_deploy_environment">changed the deploy environment to %1$s</string>
+    <string name="pull_request_review_commit_message_oid">%1$s · %2$s</string>
 
 </resources>

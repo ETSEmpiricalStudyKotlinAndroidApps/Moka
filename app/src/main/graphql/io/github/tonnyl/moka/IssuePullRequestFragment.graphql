@@ -1,0 +1,416 @@
+fragment ReferencedEventIssueFragment on Issue {
+  title
+  number
+}
+
+fragment ReferencedEventPullRequestFragment on PullRequest {
+  title
+  number
+}
+
+fragment RequestedReviewerTeamFragment on Team {
+  combinedSlug
+}
+
+fragment RequestedReviewerUserFragment on User {
+  login
+}
+
+fragment AssignedEventFragment on AssignedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  user {
+    login
+    name
+  }
+}
+
+fragment ClosedEventFragment on ClosedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  url
+}
+
+fragment CommitEventFragment on Commit {
+  message
+  oid
+  author {
+    avatarUrl
+    user {
+      login
+    }
+  }
+  committer {
+    avatarUrl
+    user {
+      login
+    }
+  }
+  comments {
+    totalCount
+  }
+}
+
+fragment CrossReferencedEventFragment on CrossReferencedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  source {
+    ... ReferencedEventIssueFragment
+    ... ReferencedEventPullRequestFragment
+  }
+}
+
+fragment DemilestonedEventFragment on DemilestonedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  milestoneTitle
+}
+
+fragment IssueCommentFragment on IssueComment {
+  author {
+    avatarUrl
+    login
+  }
+  authorAssociation
+  body, createdAt
+  editor {
+    avatarUrl
+    login
+  }
+}
+
+fragment LabeledEventFragment on LabeledEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  label {
+    color
+    name
+  }
+}
+
+fragment LockedEventFragment on LockedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  lockReason
+}
+
+fragment MilestonedEventFragment on MilestonedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  milestoneTitle
+}
+
+fragment ReferencedEventFragment on ReferencedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  subject {
+    ... ReferencedEventIssueFragment
+    ... ReferencedEventPullRequestFragment
+  }
+}
+
+fragment RenamedTitleEventFragment on RenamedTitleEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  currentTitle
+  id
+  previousTitle
+}
+
+fragment ReopenedEventFragment on ReopenedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+}
+
+fragment SubscribedEventFragment on SubscribedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+}
+
+fragment TransferredEventFragment on TransferredEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  fromRepository {
+    nameWithOwner
+  }
+}
+
+fragment UnassignedEventFragment on UnassignedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  user {
+    login
+    name
+  }
+}
+
+fragment UnlabeledEventFragment on UnlabeledEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  label {
+    color
+    name
+  }
+}
+
+fragment UnlockedEventFragment on UnlockedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+}
+
+fragment UnsubscribedEventFragment on UnsubscribedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+}
+
+fragment BaseRefForcePushedEventFragment on BaseRefForcePushedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  beforeCommit {
+    oid
+  }
+  afterCommit {
+    oid
+  }
+  ref {
+    name
+  }
+}
+
+fragment CommitCommentThreadFragment on CommitCommentThread {
+  commit {
+    oid
+  }
+  position
+}
+
+fragment DeployedEventFragment on DeployedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  deployment {
+    environment
+  }
+}
+
+fragment DeploymentEnvironmentChangedEventFragment on DeploymentEnvironmentChangedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  deploymentStatus {
+    deployment {
+      environment
+    }
+    state
+    description
+    logUrl
+    environmentUrl
+  }
+}
+
+fragment HeadRefDeletedEventFragment on HeadRefDeletedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  headRefName
+}
+
+fragment HeadRefForcePushedEventFragment on HeadRefForcePushedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  id
+  createdAt
+  afterCommit {
+    oid
+  }
+  beforeCommit {
+    oid
+  }
+  ref {
+    name
+  }
+}
+
+fragment HeadRefRestoredEventFragment on HeadRefRestoredEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  pullRequest {
+    baseRefName
+    headRefName
+  }
+}
+
+fragment MergedEventFragment on MergedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  id
+  createdAt
+  mergeRefName
+  commit {
+    oid
+  }
+}
+
+fragment PullRequestReviewEventFragment on PullRequestReview {
+  author {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  authorAssociation
+  body
+  bodyHTML
+  state
+  viewerDidAuthor
+  viewerCannotUpdateReasons
+  viewerCanDelete
+  viewerCanUpdate
+  comments {
+    totalCount
+  }
+}
+
+fragment PullRequestReviewCommentFragment on PullRequestReviewComment {
+  author {
+    avatarUrl
+    login
+  }
+  id
+  body
+  authorAssociation
+  bodyHTML
+  createdAt
+  outdated
+}
+
+fragment PullRequestReviewThreadFragment on PullRequestReviewThread {
+  id
+}
+
+fragment ReviewDismissedEventFragment on ReviewDismissedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  createdAt
+  id
+  message
+  messageHtml
+  previousReviewState
+  review {
+    author {
+      login
+    }
+  }
+}
+
+fragment ReviewRequestRemovedEventFragment on ReviewRequestRemovedEvent {
+  actor {
+      avatarUrl
+      login
+    }
+    id
+    createdAt
+    requestedReviewer {
+      ... RequestedReviewerTeamFragment
+      ... RequestedReviewerUserFragment
+    }
+}
+
+fragment ReviewRequestedEventFragment on ReviewRequestedEvent {
+  actor {
+    avatarUrl
+    login
+  }
+  id
+  createdAt
+  requestedReviewer {
+    ... RequestedReviewerTeamFragment
+    ... RequestedReviewerUserFragment
+  }
+}

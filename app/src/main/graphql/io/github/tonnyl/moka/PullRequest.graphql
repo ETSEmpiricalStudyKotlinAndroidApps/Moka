@@ -80,6 +80,13 @@ query pullRequest($owner: String!, $name: String!, $number: Int!) {
       }
       headRefName
       headRefOid
+      headRepositoryOwner {
+        avatarUrl
+        id
+        login
+        resourcePath
+        url
+      }
       id
       includesCreatedEdit
       isCrossRepository
@@ -142,6 +149,51 @@ query pullRequest($owner: String!, $name: String!, $number: Int!) {
       viewerCannotUpdateReasons
       viewerDidAuthor
       viewerSubscription
+    }
+  }
+}
+
+query pullRequestTimeline($owner: String!, $name: String!, $number: Int!, $after: String, $before: String, $perPage: Int!) {
+  repository(owner: $owner, name: $name) {
+    pullRequest(number: $number) {
+      timeline(first: $perPage, after: $after, before: $before) {
+        nodes {
+          typename: __typename
+          ... AssignedEventFragment
+          ... BaseRefForcePushedEventFragment
+          ... ClosedEventFragment
+          ... CommitEventFragment
+          ... CrossReferencedEventFragment
+          ... DemilestonedEventFragment
+          ... DeployedEventFragment
+          ... DeploymentEnvironmentChangedEventFragment
+          ... HeadRefDeletedEventFragment
+          ... HeadRefForcePushedEventFragment
+          ... HeadRefRestoredEventFragment
+          ... IssueCommentFragment
+          ... LabeledEventFragment
+          ... LockedEventFragment
+          ... MergedEventFragment
+          ... MilestonedEventFragment
+          ... PullRequestReviewEventFragment
+          ... PullRequestReviewThreadFragment
+          ... ReferencedEventFragment
+          ... RenamedTitleEventFragment
+          ... ReopenedEventFragment
+          ... ReviewDismissedEventFragment
+          ... ReviewRequestRemovedEventFragment
+          ... ReviewRequestedEventFragment
+          ... UnassignedEventFragment
+          ... UnlabeledEventFragment
+          ... UnlockedEventFragment
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+      }
     }
   }
 }

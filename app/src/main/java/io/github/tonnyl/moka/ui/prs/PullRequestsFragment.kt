@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.pr.PullRequestFragmentArgs
 import kotlinx.android.synthetic.main.appbar_layout.*
 import kotlinx.android.synthetic.main.fragment_prs.*
 
@@ -53,6 +54,10 @@ class PullRequestsFragment : Fragment() {
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view.layoutManager = layoutManager
         recycler_view.adapter = adapter
+        adapter.onItemClick = { number, title, _ ->
+            val pullRequestFragmentArgs = PullRequestFragmentArgs.Builder(owner, name, number, title)
+            parentFragment?.findNavController()?.navigate(R.id.action_to_pr, pullRequestFragmentArgs.build().toBundle())
+        }
 
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 

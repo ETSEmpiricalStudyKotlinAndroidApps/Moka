@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.data
 
 import android.os.Parcelable
+import io.github.tonnyl.moka.PullRequestQuery
 import io.github.tonnyl.moka.RepositoryQuery
 import kotlinx.android.parcel.Parcelize
 
@@ -21,7 +22,7 @@ data class Ref(
         /**
          * The object the ref points to.
          */
-        val target: GitObject
+        val target: GitObject?
 ) : Parcelable {
 
     companion object {
@@ -37,6 +38,20 @@ data class Ref(
                     GitObject.createFromRaw(data.target())
             )
         }
+
+        fun createFromRepositoryQueryBaseRef(data: PullRequestQuery.BaseRef?): Ref? = if (data == null) null else Ref(
+                data.id(),
+                data.name(),
+                data.prefix(),
+                GitObject.createFromRaw(data.target())
+        )
+
+        fun createFromRepositoryQueryHeadRef(data: PullRequestQuery.HeadRef?): Ref? = if (data == null) null else Ref(
+                data.id(),
+                data.name(),
+                data.prefix(),
+                GitObject.createFromRaw(data.target())
+        )
 
     }
 

@@ -204,6 +204,49 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/edit_profile_fragment"
+        android:name="io.github.tonnyl.moka.ui.profile.edit.EditProfileFragment"
+        android:label="EditProfile"
+        tools:layout="@layout/fragment_edit_profile">
+
+        <argument
+            android:name="login"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="name"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="email"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="bio"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="url"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="company"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="location"
+            app:argType="string"
+            app:nullable="true" />
+
+    </fragment>
+
     <action
         android:id="@+id/action_timeline_to_user_profile"
         app:destination="@id/user_profile_fragment" />
@@ -243,5 +286,9 @@
     <action
         android:id="@+id/action_to_pr"
         app:destination="@id/pr_fragment" />
+
+    <action
+        android:id="@+id/action_to_edit_profile"
+        app:destination="@id/edit_profile_fragment" />
 
 </navigation>

@@ -48,6 +48,7 @@
     <string name="user_profile_email_action" translation_description="The sending a new email action of snackbar when click the email image of user profile.">Compose</string>
     <string name="user_profile_link_desc" translation_description="The content description of link image of user profile.">Link</string>
     <string name="user_profile_link_action" translation_description="The open action text of snackabar when click the link image of user profile.">Open</string>
+    <string name="user_profile_edit_profile">Edit profile</string>
 
     <string name="event_starred" translation_description="The action text when someone starred others' repository of timeline event list.">starred</string>
     <string name="event_forked" translation_description="The action text when someone forked others' repository of timeline event list.">forked</string>
@@ -156,5 +157,15 @@
     <string name="pull_request_deployed_to_branch">deployed to %1$s</string>
     <string name="pull_request_changed_deploy_environment">changed the deploy environment to %1$s</string>
     <string name="pull_request_review_commit_message_oid">%1$s · %2$s</string>
+
+    <string name="edit_profile_title">Edit profile</string>
+    <string name="edit_profile_name">Name</string>
+    <string name="edit_profile_email">Email</string>
+    <string name="edit_profile_bio">Bio</string>
+    <string name="edit_profile_url">Url</string>
+    <string name="edit_profile_company">Company</string>
+    <string name="edit_profile_location">Location</string>
+    <string name="edit_profile_bio_caption">You can @mention other users and organizations to link to them.</string>
+    <string name="edit_profile_company_caption">You can @mention your company’s GitHub organization to link it.</string>
 
 </resources>

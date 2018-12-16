@@ -36,7 +36,7 @@ class ExploreFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (::drawer.isInitialized.not()) {
+        if (!::drawer.isInitialized) {
             drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
                     ?: return
         }

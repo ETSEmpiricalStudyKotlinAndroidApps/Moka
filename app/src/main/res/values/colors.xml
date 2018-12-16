@@ -48,4 +48,6 @@
 
     <color name="issue_pr_icon_tint">#5B6068</color>
 
+    <color name="edit_profile_icon_text_hint_color">#747474</color>
+
 </resources>

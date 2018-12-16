@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.net.GlideLoader
+import io.github.tonnyl.moka.ui.profile.edit.EditProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragment
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs
 import io.github.tonnyl.moka.ui.users.UsersFragment
@@ -100,6 +101,7 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener, Vi
         profile_following_text.setOnClickListener(this)
         profile_repositories_text.setOnClickListener(this)
         profile_stars_text.setOnClickListener(this)
+        toolbar_edit.setOnClickListener(this)
     }
 
     override fun onDestroyView() {
@@ -162,6 +164,12 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener, Vi
                 val builder = RepositoriesFragmentArgs.Builder(login, RepositoriesFragment.REPOSITORY_TYPE_STARS, username
                         ?: return)
                 parentFragment?.findNavController()?.navigate(R.id.action_to_repositories, builder.build().toBundle())
+            }
+            R.id.toolbar_edit -> {
+                viewModel.user.value?.data()?.user()?.let {
+                    val bundle = EditProfileFragmentArgs.Builder(it.login(), it.name(), it.email(), it.bio(), it.websiteUrl()?.toString(), it.company(), it.location())
+                    parentFragment?.findNavController()?.navigate(R.id.action_to_edit_profile, bundle.build().toBundle())
+                }
             }
         }
     }

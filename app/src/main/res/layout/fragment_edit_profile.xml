@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_edit_profile_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ToolbarTheme"
+            app:navigationIcon="@drawable/ic_close_24"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="@string/edit_profile_title"
+            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:titleTextColor="@color/colorControlNormal">
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/toolbar_done"
+                android:layout_width="@dimen/repository_list_star_button_width"
+                android:layout_height="@dimen/repository_list_star_button_height"
+                android:layout_gravity="end|center_vertical"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/main_menu_search"
+                android:src="@drawable/ic_done_24"
+                android:tint="@color/colorControlNormal" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/fragment_edit_profile_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/fragment_content_padding">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fragment_edit_profile_name_icon"
+                android:layout_width="@dimen/regular_icon_size"
+                android:layout_height="@dimen/regular_icon_size"
+                android:layout_marginTop="@dimen/edit_profile_icon_top_margin"
+                android:padding="@dimen/regular_icon_padding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/fragment_edit_profile_name_input_layout"
+                app:srcCompat="@drawable/ic_person_24"
+                app:tint="@color/edit_profile_icon_text_hint_color" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_edit_profile_name_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:hint="@string/edit_profile_name"
+                app:boxCornerRadiusBottomEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusBottomStart="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopStart="@dimen/edit_profile_input_corner_radius"
+                app:hintEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/fragment_edit_profile_name_icon"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_edit_profile_name_input_edit"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    tools:text="@sample/user.json/users/name" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fragment_edit_profile_email_icon"
+                android:layout_width="@dimen/regular_icon_size"
+                android:layout_height="@dimen/regular_icon_size"
+                android:layout_marginTop="@dimen/edit_profile_icon_top_margin"
+                android:padding="@dimen/regular_icon_padding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/fragment_edit_profile_email_input_layout"
+                app:srcCompat="@drawable/ic_email_24"
+                app:tint="@color/edit_profile_icon_text_hint_color" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_edit_profile_email_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_marginTop="@dimen/fragment_content_padding"
+                android:hint="@string/edit_profile_email"
+                app:boxCornerRadiusBottomEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusBottomStart="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopStart="@dimen/edit_profile_input_corner_radius"
+                app:hintEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/fragment_edit_profile_email_icon"
+                app:layout_constraintTop_toBottomOf="@id/fragment_edit_profile_name_input_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_edit_profile_email_input_edit"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    tools:text="@sample/user.json/users/email" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fragment_edit_profile_bio_icon"
+                android:layout_width="@dimen/regular_icon_size"
+                android:layout_height="@dimen/regular_icon_size"
+                android:layout_marginTop="@dimen/edit_profile_icon_top_margin"
+                android:padding="@dimen/regular_icon_padding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/fragment_edit_profile_bio_input_layout"
+                app:srcCompat="@drawable/ic_info_24"
+                app:tint="@color/edit_profile_icon_text_hint_color" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_edit_profile_bio_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_marginTop="@dimen/fragment_content_padding"
+                android:hint="@string/edit_profile_bio"
+                app:boxCornerRadiusBottomEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusBottomStart="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopStart="@dimen/edit_profile_input_corner_radius"
+                app:helperText="@string/edit_profile_bio_caption"
+                app:helperTextEnabled="true"
+                app:helperTextTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                app:hintEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/fragment_edit_profile_email_icon"
+                app:layout_constraintTop_toBottomOf="@id/fragment_edit_profile_email_input_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_edit_profile_bio_input_edit"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    tools:text="@sample/user.json/users/bio" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fragment_edit_profile_link_icon"
+                android:layout_width="@dimen/regular_icon_size"
+                android:layout_height="@dimen/regular_icon_size"
+                android:layout_marginTop="@dimen/edit_profile_icon_top_margin"
+                android:padding="@dimen/regular_icon_padding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/fragment_edit_profile_link_input_layout"
+                app:srcCompat="@drawable/ic_link_24"
+                app:tint="@color/edit_profile_icon_text_hint_color" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_edit_profile_link_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_marginTop="@dimen/fragment_content_padding"
+                android:hint="@string/edit_profile_url"
+                app:boxCornerRadiusBottomEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusBottomStart="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopStart="@dimen/edit_profile_input_corner_radius"
+                app:hintEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/fragment_edit_profile_email_icon"
+                app:layout_constraintTop_toBottomOf="@id/fragment_edit_profile_bio_input_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_edit_profile_link_input_edit"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textUri"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    tools:text="@sample/user.json/users/site" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fragment_edit_profile_group_icon"
+                android:layout_width="@dimen/regular_icon_size"
+                android:layout_height="@dimen/regular_icon_size"
+                android:layout_marginTop="@dimen/edit_profile_icon_top_margin"
+                android:padding="@dimen/regular_icon_padding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/fragment_edit_profile_group_input_layout"
+                app:srcCompat="@drawable/ic_group_24"
+                app:tint="@color/edit_profile_icon_text_hint_color" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_edit_profile_group_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_marginTop="@dimen/fragment_content_padding"
+                android:hint="@string/edit_profile_company"
+                app:boxCornerRadiusBottomEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusBottomStart="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopStart="@dimen/edit_profile_input_corner_radius"
+                app:helperText="@string/edit_profile_company_caption"
+                app:helperTextEnabled="true"
+                app:helperTextTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                app:hintEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/fragment_edit_profile_group_icon"
+                app:layout_constraintTop_toBottomOf="@id/fragment_edit_profile_link_input_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_edit_profile_group_input_edit"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    tools:text="@sample/user.json/users/company" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fragment_edit_profile_location_icon"
+                android:layout_width="@dimen/regular_icon_size"
+                android:layout_height="@dimen/regular_icon_size"
+                android:layout_marginTop="@dimen/edit_profile_icon_top_margin"
+                android:padding="@dimen/regular_icon_padding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/fragment_edit_profile_location_input_layout"
+                app:srcCompat="@drawable/ic_location_on_24"
+                app:tint="@color/edit_profile_icon_text_hint_color" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_edit_profile_location_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_marginTop="@dimen/fragment_content_padding"
+                android:hint="@string/edit_profile_location"
+                app:boxCornerRadiusBottomEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusBottomStart="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopEnd="@dimen/edit_profile_input_corner_radius"
+                app:boxCornerRadiusTopStart="@dimen/edit_profile_input_corner_radius"
+                app:boxStrokeColor="@color/colorAccent"
+                app:hintEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/fragment_edit_profile_location_icon"
+                app:layout_constraintTop_toBottomOf="@id/fragment_edit_profile_group_input_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_edit_profile_location_input_edit"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    tools:text="@sample/user.json/users/location" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

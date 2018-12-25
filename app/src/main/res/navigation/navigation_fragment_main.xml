@@ -24,6 +24,18 @@
         tools:layout="@layout/fragment_explore" />
 
     <fragment
+        android:id="@+id/nav_notifications"
+        android:name="io.github.tonnyl.moka.ui.notifications.NotificationsFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/nav_drafts"
+        android:name="io.github.tonnyl.moka.ui.drafts.DraftsFragment"
+        android:label="Drafts"
+        tools:layout="@layout/fragment_drafts" />
+
+    <fragment
         android:id="@+id/user_profile_fragment"
         android:name="io.github.tonnyl.moka.ui.profile.UserProfileFragment"
         tools:label="User Profile"
@@ -290,5 +302,9 @@
     <action
         android:id="@+id/action_to_edit_profile"
         app:destination="@id/edit_profile_fragment" />
+
+    <action
+        android:id="@+id/action_to_search"
+        app:destination="@id/search_fragment" />
 
 </navigation>

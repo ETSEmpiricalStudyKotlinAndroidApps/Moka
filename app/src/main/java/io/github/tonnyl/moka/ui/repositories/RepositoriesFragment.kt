@@ -34,9 +34,12 @@ class RepositoriesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = RepositoriesFragmentArgs.fromBundle(arguments).login
-        val repositoriesTypeArg = RepositoriesFragmentArgs.fromBundle(arguments).repositoriesType
-        val usernameArg = RepositoriesFragmentArgs.fromBundle(arguments).username
+        val loginArg = RepositoriesFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).login
+        val repositoriesTypeArg = RepositoriesFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).repositoriesType
+        val usernameArg = RepositoriesFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).username
 
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()

@@ -26,20 +26,23 @@ class PullRequestFragment : Fragment() {
     private lateinit var viewModel: PullRequestViewModel
 
     private val repositoryOwner: String by lazy {
-        requireNotNull(arguments)
-        PullRequestFragmentArgs.fromBundle(arguments).owner
+        PullRequestFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).owner
     }
     private val repositoryName: String by lazy {
         requireNotNull(arguments)
-        PullRequestFragmentArgs.fromBundle(arguments).name
+        PullRequestFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).name
     }
     private val prNumber: Int by lazy {
         requireNotNull(arguments)
-        PullRequestFragmentArgs.fromBundle(arguments).number
+        PullRequestFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).number
     }
     private val prTitle: String by lazy {
         requireNotNull(arguments)
-        PullRequestFragmentArgs.fromBundle(arguments).title
+        PullRequestFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).title
     }
 
     private val adapter: PullRequestTimelineAdapter by lazy {

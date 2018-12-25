@@ -5,8 +5,8 @@ import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.rx2.Rx2Apollo
 import io.github.tonnyl.moka.CurrentLevelTreeViewQuery
 import io.github.tonnyl.moka.NetworkClient
-import io.github.tonnyl.moka.data.Resource
-import io.github.tonnyl.moka.data.Status
+import io.github.tonnyl.moka.net.Resource
+import io.github.tonnyl.moka.net.Status
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber

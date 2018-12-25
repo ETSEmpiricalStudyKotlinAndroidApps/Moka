@@ -170,4 +170,25 @@
     <string name="edit_profile_bio_caption">You can @mention other users and organizations to link to them.</string>
     <string name="edit_profile_company_caption">You can @mention your company’s GitHub organization to link it.</string>
 
+    <string name="notification_filters">Filters</string>
+    <string name="notification_unread">Unread</string>
+    <string name="notification_participating">Participating</string>
+    <string name="notification_all">All</string>
+    <string name="notification_reason_assign">Assign</string>
+    <string name="notification_reason_author">Author</string>
+    <string name="notification_reason_comment">Comment</string>
+    <string name="notification_reason_invitation">Invitation</string>
+    <string name="notification_reason_manual">Manual</string>
+    <string name="notification_reason_mention">Mention</string>
+    <string name="notification_reason_state_change">State Change</string>
+    <string name="notification_reason_subscribed">Subscribed</string>
+    <string name="notification_reason_team_mention">Team Mention</string>
+    <string name="notification_caption_notification_type">%1$s - &#160;</string>
+    <string name="notification_mark_as_read">Mark as read</string>
+    <string name="notification_unsubscribe">Unsubscribe</string>
+
+    <string name="search_input_hint">Search Repository &amp; User</string>
+
+    <string name="retry">Retry</string>
+
 </resources>

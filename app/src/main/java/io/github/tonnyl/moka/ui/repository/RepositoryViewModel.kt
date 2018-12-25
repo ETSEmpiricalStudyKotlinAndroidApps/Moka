@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import io.github.tonnyl.moka.data.RepositoryGraphQL
-import io.github.tonnyl.moka.data.Resource
+import io.github.tonnyl.moka.net.Resource
 
 class RepositoryViewModel(
         private val login: String,

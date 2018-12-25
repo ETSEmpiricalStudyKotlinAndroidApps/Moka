@@ -9,7 +9,7 @@ import com.apollographql.apollo.rx2.Rx2Apollo
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.StarredRepositoriesQuery
 import io.github.tonnyl.moka.data.RepositoryAbstract
-import io.github.tonnyl.moka.data.Status
+import io.github.tonnyl.moka.net.Status
 import timber.log.Timber
 
 class StarredRepositoriesDataSource(private val login: String) : PageKeyedDataSource<String, RepositoryAbstract>() {

@@ -66,7 +66,8 @@ class AuthFragment : Fragment() {
             parentFragment?.findNavController()?.navigateUp()
         }
 
-        val args = AuthFragmentArgs.fromBundle(arguments)
+        val args = AuthFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments"))
         val codeArg = args.code
         if (codeArg != null) {
             viewModel.getAccessToken(codeArg)

@@ -8,8 +8,8 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.rx2.Rx2Apollo
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.PullRequestTimelineQuery
-import io.github.tonnyl.moka.data.Status
 import io.github.tonnyl.moka.data.item.*
+import io.github.tonnyl.moka.net.Status
 import timber.log.Timber
 
 class PullRequestTimelineDataSource(

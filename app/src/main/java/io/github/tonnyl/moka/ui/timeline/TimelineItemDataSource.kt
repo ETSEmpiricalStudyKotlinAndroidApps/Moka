@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.ui.timeline
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.Event
-import io.github.tonnyl.moka.data.Status
+import io.github.tonnyl.moka.net.Status
 import io.github.tonnyl.moka.net.service.EventsService
 import io.github.tonnyl.moka.util.PageLinks
 import retrofit2.Call

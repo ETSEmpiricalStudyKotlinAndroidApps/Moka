@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_notification_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="@dimen/list_item_spacing">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/item_notification_repository_avatar"
+        android:layout_width="@dimen/regular_icon_size"
+        android:layout_height="@dimen/regular_icon_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_notification_repository_name"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/fragment_content_padding"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@id/item_notification_time"
+        app:layout_constraintStart_toEndOf="@id/item_notification_repository_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@sample/notification.json/notification/repo_full_name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_notification_time"
+        style="@style/TextAppearance.MaterialComponents.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="@id/item_notification_repository_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_notification_repository_name"
+        app:layout_constraintTop_toTopOf="@id/item_notification_repository_name"
+        tools:text="@sample/notification.json/notification/updated_at" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_notification_caption"
+        style="@style/TextAppearance.MaterialComponents.Caption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/fragment_content_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_notification_repository_avatar"
+        app:layout_constraintTop_toBottomOf="@id/item_notification_repository_name"
+        tools:text="@sample/notification.json/notification/subject/title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,8 +15,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.Status
 import io.github.tonnyl.moka.net.GlideLoader
+import io.github.tonnyl.moka.net.Status
 import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
 import io.github.tonnyl.moka.ui.prs.PullRequestsFragmentArgs
 import kotlinx.android.synthetic.main.fragment_repository.*
@@ -33,8 +33,10 @@ class RepositoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = RepositoryFragmentArgs.fromBundle(arguments).login
-        val nameArg = RepositoryFragmentArgs.fromBundle(arguments).name
+        val loginArg = RepositoryFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).login
+        val nameArg = RepositoryFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).name
 
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()

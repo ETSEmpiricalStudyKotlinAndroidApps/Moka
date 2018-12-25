@@ -19,40 +19,28 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     private lateinit var viewModel: EditProfileViewModel
 
     private val name: String? by lazy {
-        requireNotNull(arguments) {
-            "Missing argument!"
-        }
-        EditProfileFragmentArgs.fromBundle(arguments).name
+        EditProfileFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).name
     }
     private val bio: String? by lazy {
-        requireNotNull(arguments) {
-            "Missing argument!"
-        }
-        EditProfileFragmentArgs.fromBundle(arguments).bio
+        EditProfileFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).bio
     }
     private val email: String by lazy {
-        requireNotNull(arguments) {
-            "Missing argument!"
-        }
-        EditProfileFragmentArgs.fromBundle(arguments).email
+        EditProfileFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).email
     }
     private val url: String? by lazy {
-        requireNotNull(arguments) {
-            "Missing argument!"
-        }
-        EditProfileFragmentArgs.fromBundle(arguments).url
+        EditProfileFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).url
     }
     private val company: String? by lazy {
-        requireNotNull(arguments) {
-            "Missing argument!"
-        }
-        EditProfileFragmentArgs.fromBundle(arguments).company
+        EditProfileFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).company
     }
     private val location: String? by lazy {
-        requireNotNull(arguments) {
-            "Missing argument!"
-        }
-        EditProfileFragmentArgs.fromBundle(arguments).location
+        EditProfileFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).location
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

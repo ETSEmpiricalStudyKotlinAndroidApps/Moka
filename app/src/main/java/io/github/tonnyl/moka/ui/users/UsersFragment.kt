@@ -35,9 +35,12 @@ class UsersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = UsersFragmentArgs.fromBundle(arguments).login
-        val userTypeArg = UsersFragmentArgs.fromBundle(arguments).usersType
-        val usernameArg = UsersFragmentArgs.fromBundle(arguments).username
+        val loginArg = UsersFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).login
+        val userTypeArg = UsersFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).usersType
+        val usernameArg = UsersFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).username
 
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()

@@ -36,7 +36,8 @@ class UserProfileFragment : Fragment(), AppBarLayout.OnOffsetChangedListener, Vi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        login = UserProfileFragmentArgs.fromBundle(arguments).login
+        login = UserProfileFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments")).login
 
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()

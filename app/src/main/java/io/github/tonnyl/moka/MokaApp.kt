@@ -2,9 +2,12 @@ package io.github.tonnyl.moka
 
 import android.app.Application
 import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper
+import io.github.tonnyl.moka.net.AppExecutors
 import java.io.File
 
 class MokaApp : Application() {
+
+    lateinit var appExecutors: AppExecutors
 
     companion object {
         // Directory where apollo cached responses will be stored
@@ -21,6 +24,8 @@ class MokaApp : Application() {
         CACHE_FILE = File(cacheDir.toURI())
 
         apolloSqlHelper = ApolloSqlHelper.create(this, APOLLO_CACHE_DB_NAME)
+
+        appExecutors = AppExecutors()
     }
 
 }

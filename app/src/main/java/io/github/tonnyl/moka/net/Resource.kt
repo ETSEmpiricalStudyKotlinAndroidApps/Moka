@@ -1,6 +1,6 @@
 package io.github.tonnyl.moka.net
 
-data class Resource<T>(
+data class Resource<out T>(
         val status: Status,
         val data: T?,
         val message: String?

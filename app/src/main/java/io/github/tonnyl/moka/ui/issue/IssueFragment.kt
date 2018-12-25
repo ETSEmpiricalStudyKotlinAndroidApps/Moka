@@ -42,7 +42,10 @@ class IssueFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val args = IssueFragmentArgs.fromBundle(arguments)
+
+        val args = IssueFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments"))
+
         repositoryOwner = args.owner
         repositoryName = args.name
         issueNumber = args.number

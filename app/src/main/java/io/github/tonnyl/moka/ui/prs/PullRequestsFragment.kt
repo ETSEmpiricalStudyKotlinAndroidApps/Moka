@@ -32,7 +32,8 @@ class PullRequestsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val args = PullRequestsFragmentArgs.fromBundle(arguments)
+        val args = PullRequestsFragmentArgs.fromBundle(arguments
+                ?: throw IllegalArgumentException("Missing arguments"))
         owner = args.owner
         name = args.name
 

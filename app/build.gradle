@@ -53,6 +53,12 @@ android {
     }
 }
 
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
 androidExtensions {
     experimental = true
 }
@@ -139,7 +145,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-intents:${versions.espresso}"
     androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
     androidTestImplementation "android.arch.work:work-testing:${versions.work_manager}"
-    androidTestImplementation "android.arch.navigation:navigation-testing:${versions.navigation}"
+    androidTestImplementation "android.arch.navigation:navigation-testing:1.0.0-alpha08"
 }
 
 apply plugin: 'com.google.gms.google-services'

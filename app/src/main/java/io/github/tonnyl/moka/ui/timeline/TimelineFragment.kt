@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import kotlinx.android.synthetic.main.fragment_timeline.*
 
-class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterface {
+class TimelineFragment : Fragment() {
 
     private val viewModel: TimelineViewModel by lazy {
         ViewModelProviders.of(this, ViewModelFactory()).get(TimelineViewModel::class.java)
@@ -41,7 +41,7 @@ class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterfac
                 ResourcesCompat.getColor(resources, R.color.orange, null)
         )
 
-        timelineAdapter = TimelineAdapter()
+        timelineAdapter = TimelineAdapter(requireContext())
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view.layoutManager = layoutManager
         recycler_view.adapter = timelineAdapter
@@ -67,22 +67,6 @@ class TimelineFragment : Fragment(), TimelineAdapter.FetchRepositoryInfoInterfac
             timelineAdapter.submitList(it)
         })
 
-    }
-
-    override fun fetchInfo(position: Int, login: String, repositoryName: String, repositoryCreatorIsOrg: Boolean) {
-        if (repositoryCreatorIsOrg) {
-            viewModel.orgRepositoryCard(login, repositoryName).observe(viewLifecycleOwner, Observer { orgRepoResp ->
-                if (orgRepoResp != null && orgRepoResp.hasErrors().not() && recycler_view.adapter is TimelineAdapter) {
-                    (recycler_view.adapter as TimelineAdapter).updateRepoCard(position, orgRepoResp.data()!!)
-                }
-            })
-        } else {
-            viewModel.userRepositoryCard(login, repositoryName).observe(viewLifecycleOwner, Observer { userRepoResp ->
-                if (userRepoResp != null && userRepoResp.hasErrors().not() && recycler_view.adapter is TimelineAdapter) {
-                    (recycler_view.adapter as TimelineAdapter).updateRepoCard(position, userRepoResp.data()!!)
-                }
-            })
-        }
     }
 
     override fun onResume() {

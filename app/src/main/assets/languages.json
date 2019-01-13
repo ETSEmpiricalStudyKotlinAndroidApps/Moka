@@ -1,0 +1,2462 @@
+[
+  {
+    "urlParam": "1c-enterprise",
+    "name": "1C Enterprise",
+    "color": "#814CCC"
+  },
+  {
+    "urlParam": "all",
+    "name": "All Language",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "abap",
+    "name": "ABAP",
+    "color": "#E8274B"
+  },
+  {
+    "urlParam": "abnf",
+    "name": "ABNF",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "actionscript",
+    "name": "ActionScript",
+    "color": "#882B0F"
+  },
+  {
+    "urlParam": "ada",
+    "name": "Ada",
+    "color": "#02F88C"
+  },
+  {
+    "urlParam": "adobe-font-metrics",
+    "name": "Adobe Font Metrics",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "agda",
+    "name": "Agda",
+    "color": "#315665"
+  },
+  {
+    "urlParam": "ags-script",
+    "name": "AGS Script",
+    "color": "#B9D9FF"
+  },
+  {
+    "urlParam": "alloy",
+    "name": "Alloy",
+    "color": "#64C800"
+  },
+  {
+    "urlParam": "alpine-abuild",
+    "name": "Alpine Abuild",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ampl",
+    "name": "AMPL",
+    "color": "#E6EFBB"
+  },
+  {
+    "urlParam": "angelscript",
+    "name": "AngelScript",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ant-build-system",
+    "name": "Ant Build System",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "antlr",
+    "name": "ANTLR",
+    "color": "#9DC3FF"
+  },
+  {
+    "urlParam": "apacheconf",
+    "name": "ApacheConf",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "apex",
+    "name": "Apex",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "api-blueprint",
+    "name": "API Blueprint",
+    "color": "#2ACCA8"
+  },
+  {
+    "urlParam": "apl",
+    "name": "APL",
+    "color": "#5A8164"
+  },
+  {
+    "urlParam": "apollo-guidance-computer",
+    "name": "Apollo Guidance Computer",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "applescript",
+    "name": "AppleScript",
+    "color": "#101F1F"
+  },
+  {
+    "urlParam": "arc",
+    "name": "Arc",
+    "color": "#AA2AFE"
+  },
+  {
+    "urlParam": "asciidoc",
+    "name": "AsciiDoc",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "asn.1",
+    "name": "ASN.1",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "asp",
+    "name": "ASP",
+    "color": "#6A40FD"
+  },
+  {
+    "urlParam": "aspectj",
+    "name": "AspectJ",
+    "color": "#A957B0"
+  },
+  {
+    "urlParam": "assembly",
+    "name": "Assembly",
+    "color": "#6E4C13"
+  },
+  {
+    "urlParam": "ats",
+    "name": "ATS",
+    "color": "#1AC620"
+  },
+  {
+    "urlParam": "augeas",
+    "name": "Augeas",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "autohotkey",
+    "name": "AutoHotkey",
+    "color": "#6594b9"
+  },
+  {
+    "urlParam": "autoit",
+    "name": "AutoIt",
+    "color": "#1C3552"
+  },
+  {
+    "urlParam": "awk",
+    "name": "Awk",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ballerina",
+    "name": "Ballerina",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "batchfile",
+    "name": "Batchfile",
+    "color": "#C1F12E"
+  },
+  {
+    "urlParam": "befunge",
+    "name": "Befunge",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "bison",
+    "name": "Bison",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "bitbake",
+    "name": "BitBake",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "blade",
+    "name": "Blade",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "blitzbasic",
+    "name": "BlitzBasic",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "blitzmax",
+    "name": "BlitzMax",
+    "color": "#CD6400"
+  },
+  {
+    "urlParam": "bluespec",
+    "name": "Bluespec",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "boo",
+    "name": "Boo",
+    "color": "#D4BEC1"
+  },
+  {
+    "urlParam": "brainfuck",
+    "name": "Brainfuck",
+    "color": "#2F2530"
+  },
+  {
+    "urlParam": "brightscript",
+    "name": "Brightscript",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "bro",
+    "name": "Bro",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "c",
+    "name": "C",
+    "color": "#555555"
+  },
+  {
+    "urlParam": "c%23",
+    "name": "C#",
+    "color": "#178600"
+  },
+  {
+    "urlParam": "c++",
+    "name": "C++",
+    "color": "#F34B7D"
+  },
+  {
+    "urlParam": "c-objdump",
+    "name": "C-ObjDump",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "c2hs-haskell",
+    "name": "C2hs Haskell",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cap'n-proto",
+    "name": "Cap'n Proto",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cartocss",
+    "name": "CartoCSS",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ceylon",
+    "name": "Ceylon",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "chapel",
+    "name": "Chapel",
+    "color": "#8DC63F"
+  },
+  {
+    "urlParam": "charity",
+    "name": "Charity",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "chuck",
+    "name": "ChucK",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cirru",
+    "name": "Cirru",
+    "color": "#CCCCFF"
+  },
+  {
+    "urlParam": "clarion",
+    "name": "Clarion",
+    "color": "#DB901E"
+  },
+  {
+    "urlParam": "clean",
+    "name": "Clean",
+    "color": "#3F85AF"
+  },
+  {
+    "urlParam": "click",
+    "name": "Click",
+    "color": "#E4E6F3"
+  },
+  {
+    "urlParam": "clips",
+    "name": "CLIPS",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "clojure",
+    "name": "Clojure",
+    "color": "#DB5855"
+  },
+  {
+    "urlParam": "closure-templates",
+    "name": "Closure Templates",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cloud-firestore-security-rules",
+    "name": "Cloud Firestore Security Rules",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cmake",
+    "name": "CMake",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cobol",
+    "name": "COBOL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "coffeescript",
+    "name": "CoffeeScript",
+    "color": "#244776"
+  },
+  {
+    "urlParam": "coldfusion",
+    "name": "ColdFusion",
+    "color": "#ED2CD6"
+  },
+  {
+    "urlParam": "coldfusion-cfc",
+    "name": "ColdFusion CFC",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "collada",
+    "name": "COLLADA",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "common-lisp",
+    "name": "Common Lisp",
+    "color": "#3FB68B"
+  },
+  {
+    "urlParam": "common-workflow-language",
+    "name": "Common Workflow Language",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "component-pascal",
+    "name": "Component Pascal",
+    "color": "#B0CE4E"
+  },
+  {
+    "urlParam": "conll-u",
+    "name": "CoNLL-U",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cool",
+    "name": "Cool",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "coq",
+    "name": "Coq",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cpp-objdump",
+    "name": "Cpp-ObjDump",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "creole",
+    "name": "Creole",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "crystal",
+    "name": "Crystal",
+    "color": "#776791"
+  },
+  {
+    "urlParam": "cson",
+    "name": "CSON",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "csound",
+    "name": "Csound",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "csound-document",
+    "name": "Csound Document",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "csound-score",
+    "name": "Csound Score",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "css",
+    "name": "CSS",
+    "color": "#563D7C"
+  },
+  {
+    "urlParam": "csv",
+    "name": "CSV",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cuda",
+    "name": "Cuda",
+    "color": "#3A4E3A"
+  },
+  {
+    "urlParam": "cweb",
+    "name": "CWeb",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cycript",
+    "name": "Cycript",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "cython",
+    "name": "Cython",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "d",
+    "name": "D",
+    "color": "#BA595E"
+  },
+  {
+    "urlParam": "d-objdump",
+    "name": "D-ObjDump",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "darcs-patch",
+    "name": "Darcs Patch",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "dart",
+    "name": "Dart",
+    "color": "#00B4AB"
+  },
+  {
+    "urlParam": "dataweave",
+    "name": "DataWeave",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "desktop",
+    "name": "desktop",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "diff",
+    "name": "Diff",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "digital-command-language",
+    "name": "DIGITAL Command Language",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "dm",
+    "name": "DM",
+    "color": "#447265"
+  },
+  {
+    "urlParam": "dns-zone",
+    "name": "DNS Zone",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "dockerfile",
+    "name": "Dockerfile",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "dogescript",
+    "name": "Dogescript",
+    "color": "#CCA760"
+  },
+  {
+    "urlParam": "dtrace",
+    "name": "DTrace",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "dylan",
+    "name": "Dylan",
+    "color": "#6C616E"
+  },
+  {
+    "urlParam": "e",
+    "name": "E",
+    "color": "#CCCE35"
+  },
+  {
+    "urlParam": "eagle",
+    "name": "Eagle",
+    "color": "#814C05"
+  },
+  {
+    "urlParam": "easybuild",
+    "name": "Easybuild",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ebnf",
+    "name": "EBNF",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ec",
+    "name": "eC",
+    "color": "#913960"
+  },
+  {
+    "urlParam": "ecere-projects",
+    "name": "Ecere Projects",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ecl",
+    "name": "ECL",
+    "color": "#8A1267"
+  },
+  {
+    "urlParam": "eclipse",
+    "name": "ECLiPSe",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "edje-data-collection",
+    "name": "Edje Data Collection",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "edn",
+    "name": "edn",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "eiffel",
+    "name": "Eiffel",
+    "color": "#946D57"
+  },
+  {
+    "urlParam": "ejs",
+    "name": "EJS",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "elixir",
+    "name": "Elixir",
+    "color": "#6E4A7E"
+  },
+  {
+    "urlParam": "elm",
+    "name": "Elm",
+    "color": "#60B5CC"
+  },
+  {
+    "urlParam": "emacs-lisp",
+    "name": "Emacs Lisp",
+    "color": "#C065DB"
+  },
+  {
+    "urlParam": "emberscript",
+    "name": "EmberScript",
+    "color": "#FFF4F3"
+  },
+  {
+    "urlParam": "eml",
+    "name": "EML",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "eq",
+    "name": "EQ",
+    "color": "#A78649"
+  },
+  {
+    "urlParam": "erlang",
+    "name": "Erlang",
+    "color": "#B83998"
+  },
+  {
+    "urlParam": "f%23",
+    "name": "F#",
+    "color": "#B845FC"
+  },
+  {
+    "urlParam": "f*",
+    "name": "F*",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "factor",
+    "name": "Factor",
+    "color": "#636746"
+  },
+  {
+    "urlParam": "fancy",
+    "name": "Fancy",
+    "color": "#7B9DB4"
+  },
+  {
+    "urlParam": "fantom",
+    "name": "Fantom",
+    "color": "#14253C"
+  },
+  {
+    "urlParam": "figlet-font",
+    "name": "FIGlet Font",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "filebench-wml",
+    "name": "Filebench WML",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "filterscript",
+    "name": "Filterscript",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "fish",
+    "name": "fish",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "flux",
+    "name": "FLUX",
+    "color": "#88CCFF"
+  },
+  {
+    "urlParam": "formatted",
+    "name": "Formatted",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "forth",
+    "name": "Forth",
+    "color": "#341708"
+  },
+  {
+    "urlParam": "fortran",
+    "name": "Fortran",
+    "color": "#4D41B1"
+  },
+  {
+    "urlParam": "freemarker",
+    "name": "FreeMarker",
+    "color": "#0050B2"
+  },
+  {
+    "urlParam": "frege",
+    "name": "Frege",
+    "color": "#00CAFE"
+  },
+  {
+    "urlParam": "g-code",
+    "name": "G-code",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "game-maker-language",
+    "name": "Game Maker Language",
+    "color": "#8FB200"
+  },
+  {
+    "urlParam": "gams",
+    "name": "GAMS",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gap",
+    "name": "GAP",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gcc-machine-description",
+    "name": "GCC Machine Description",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gdb",
+    "name": "GDB",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gdscript",
+    "name": "GDScript",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "genie",
+    "name": "Genie",
+    "color": "#FB855D"
+  },
+  {
+    "urlParam": "genshi",
+    "name": "Genshi",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gentoo-ebuild",
+    "name": "Gentoo Ebuild",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gentoo-eclass",
+    "name": "Gentoo Eclass",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gerber-image",
+    "name": "Gerber Image",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gettext-catalog",
+    "name": "Gettext Catalog",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gherkin",
+    "name": "Gherkin",
+    "color": "#5B2063"
+  },
+  {
+    "urlParam": "glsl",
+    "name": "GLSL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "glyph",
+    "name": "Glyph",
+    "color": "#E4CC98"
+  },
+  {
+    "urlParam": "glyph-bitmap-distribution-format",
+    "name": "Glyph Bitmap Distribution Format",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gn",
+    "name": "GN",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gnuplot",
+    "name": "Gnuplot",
+    "color": "#F0A9F0"
+  },
+  {
+    "urlParam": "go",
+    "name": "Go",
+    "color": "#375EAB"
+  },
+  {
+    "urlParam": "golo",
+    "name": "Golo",
+    "color": "#88562A"
+  },
+  {
+    "urlParam": "gosu",
+    "name": "Gosu",
+    "color": "#82937F"
+  },
+  {
+    "urlParam": "grace",
+    "name": "Grace",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "gradle",
+    "name": "Gradle",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "grammatical-framework",
+    "name": "Grammatical Framework",
+    "color": "#79AA7A"
+  },
+  {
+    "urlParam": "graph-modeling-language",
+    "name": "Graph Modeling Language",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "graphql",
+    "name": "GraphQL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "graphviz-(dot)",
+    "name": "Graphviz (DOT)",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "groovy",
+    "name": "Groovy",
+    "color": "#E69f56"
+  },
+  {
+    "urlParam": "groovy-server-pages",
+    "name": "Groovy Server Pages",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "hack",
+    "name": "Hack",
+    "color": "#878787"
+  },
+  {
+    "urlParam": "haml",
+    "name": "Haml",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "handlebars",
+    "name": "Handlebars",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "haproxy",
+    "name": "HAProxy",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "harbour",
+    "name": "Harbour",
+    "color": "#0E60E3"
+  },
+  {
+    "urlParam": "haskell",
+    "name": "Haskell",
+    "color": "#5E5086"
+  },
+  {
+    "urlParam": "haxe",
+    "name": "Haxe",
+    "color": "#DF7900"
+  },
+  {
+    "urlParam": "hcl",
+    "name": "HCL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "hiveql",
+    "name": "HiveQL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "hlsl",
+    "name": "HLSL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "html",
+    "name": "HTML",
+    "color": "#E34C26"
+  },
+  {
+    "urlParam": "html+django",
+    "name": "HTML+Django",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "html+ecr",
+    "name": "HTML+ECR",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "html+eex",
+    "name": "HTML+EEX",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "html+erb",
+    "name": "HTML+ERB",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "html+php",
+    "name": "HTML+PHP",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "html+razor",
+    "name": "HTML+Razor",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "http",
+    "name": "HTTP",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "hxml",
+    "name": "HXML",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "hy",
+    "name": "Hy",
+    "color": "#7790B2"
+  },
+  {
+    "urlParam": "hyphy",
+    "name": "HyPhy",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "idl",
+    "name": "IDL",
+    "color": "#A3522F"
+  },
+  {
+    "urlParam": "idris",
+    "name": "Idris",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "igor-pro",
+    "name": "IGOR Pro",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "inform-7",
+    "name": "Inform 7",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ini",
+    "name": "INI",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "inno-setup",
+    "name": "Inno Setup",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "io",
+    "name": "Io",
+    "color": "#A9188D"
+  },
+  {
+    "urlParam": "ioke",
+    "name": "Ioke",
+    "color": "#078193"
+  },
+  {
+    "urlParam": "irc-log",
+    "name": "IRC log",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "isabelle",
+    "name": "Isabelle",
+    "color": "#FEFE00"
+  },
+  {
+    "urlParam": "isabelle-root",
+    "name": "Isabelle ROOT",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "j",
+    "name": "J",
+    "color": "#9EEDFF"
+  },
+  {
+    "urlParam": "jasmin",
+    "name": "Jasmin",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "java",
+    "name": "Java",
+    "color": "#B07219"
+  },
+  {
+    "urlParam": "java-properties",
+    "name": "Java Properties",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "java-server-pages",
+    "name": "Java Server Pages",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "javascript",
+    "name": "JavaScript",
+    "color": "#F1E05A"
+  },
+  {
+    "urlParam": "jflex",
+    "name": "JFlex",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "jison",
+    "name": "Jison",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "jison-lex",
+    "name": "Jison Lex",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "jolie",
+    "name": "Jolie",
+    "color": "#843179"
+  },
+  {
+    "urlParam": "json",
+    "name": "JSON",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "json-with-comments",
+    "name": "JSON with Comments",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "json5",
+    "name": "JSON5",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "jsoniq",
+    "name": "JSONiq",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "jsonld",
+    "name": "JSONLD",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "jsx",
+    "name": "JSX",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "julia",
+    "name": "Julia",
+    "color": "#A270BA"
+  },
+  {
+    "urlParam": "jupyter-notebook",
+    "name": "Jupyter Notebook",
+    "color": "#DA5B0B"
+  },
+  {
+    "urlParam": "kicad-layout",
+    "name": "KiCad Layout",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "kicad-legacy-layout",
+    "name": "KiCad Legacy Layout",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "kicad-schematic",
+    "name": "KiCad Schematic",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "kit",
+    "name": "Kit",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "kotlin",
+    "name": "Kotlin",
+    "color": "#F18E33"
+  },
+  {
+    "urlParam": "krl",
+    "name": "KRL",
+    "color": "#28431F"
+  },
+  {
+    "urlParam": "labview",
+    "name": "LabVIEW",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "lasso",
+    "name": "Lasso",
+    "color": "#999999"
+  },
+  {
+    "urlParam": "latte",
+    "name": "Latte",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "lean",
+    "name": "Lean",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "less",
+    "name": "Less",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "lex",
+    "name": "Lex",
+    "color": "#DBCA00"
+  },
+  {
+    "urlParam": "lfe",
+    "name": "LFE",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "lilypond",
+    "name": "LilyPond",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "limbo",
+    "name": "Limbo",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "linker-script",
+    "name": "Linker Script",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "linux-kernel-module",
+    "name": "Linux Kernel Module",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "liquid",
+    "name": "Liquid",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "literate-agda",
+    "name": "Literate Agda",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "literate-coffeescript",
+    "name": "Literate CoffeeScript",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "literate-haskell",
+    "name": "Literate Haskell",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "livescript",
+    "name": "LiveScript",
+    "color": "#499886"
+  },
+  {
+    "urlParam": "llvm",
+    "name": "LLVM",
+    "color": "#185619"
+  },
+  {
+    "urlParam": "logos",
+    "name": "Logos",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "logtalk",
+    "name": "Logtalk",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "lolcode",
+    "name": "LOLCODE",
+    "color": "#CC9900"
+  },
+  {
+    "urlParam": "lookml",
+    "name": "LookML",
+    "color": "#652B81"
+  },
+  {
+    "urlParam": "loomscript",
+    "name": "LoomScript",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "lsl",
+    "name": "LSL",
+    "color": "#3D9970"
+  },
+  {
+    "urlParam": "lua",
+    "name": "Lua",
+    "color": "#000080"
+  },
+  {
+    "urlParam": "m",
+    "name": "M",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "m4",
+    "name": "M4",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "m4sugar",
+    "name": "M4Sugar",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "makefile",
+    "name": "Makefile",
+    "color": "#427819"
+  },
+  {
+    "urlParam": "mako",
+    "name": "Mako",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "markdown",
+    "name": "Markdown",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "marko",
+    "name": "Marko",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "mask",
+    "name": "Mask",
+    "color": "#F97732"
+  },
+  {
+    "urlParam": "mathematica",
+    "name": "Mathematica",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "matlab",
+    "name": "MATLAB",
+    "color": "#BB92AC"
+  },
+  {
+    "urlParam": "maven-pom",
+    "name": "Maven POM",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "max",
+    "name": "Max",
+    "color": "#C4A79C"
+  },
+  {
+    "urlParam": "maxscript",
+    "name": "MAXScript",
+    "color": "#00A6A6"
+  },
+  {
+    "urlParam": "mediawiki",
+    "name": "MediaWiki",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "mercury",
+    "name": "Mercury",
+    "color": "#FF2B2B"
+  },
+  {
+    "urlParam": "meson",
+    "name": "Meson",
+    "color": "#007800"
+  },
+  {
+    "urlParam": "metal",
+    "name": "Metal",
+    "color": "#8F14E9"
+  },
+  {
+    "urlParam": "minid",
+    "name": "MiniD",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "mirah",
+    "name": "Mirah",
+    "color": "#C7A938"
+  },
+  {
+    "urlParam": "modelica",
+    "name": "Modelica",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "modula-2",
+    "name": "Modula-2",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "modula-3",
+    "name": "Modula-3",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "module-management-system",
+    "name": "Module Management System",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "monkey",
+    "name": "Monkey",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "moocode",
+    "name": "Moocode",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "moonscript",
+    "name": "MoonScript",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "mql4",
+    "name": "MQL4",
+    "color": "#62A8D6"
+  },
+  {
+    "urlParam": "mql5",
+    "name": "MQL5",
+    "color": "#4A76B8"
+  },
+  {
+    "urlParam": "mtml",
+    "name": "MTML",
+    "color": "#B7E1F4"
+  },
+  {
+    "urlParam": "muf",
+    "name": "MUF",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "mupad",
+    "name": "mupad",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "myghty",
+    "name": "Myghty",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ncl",
+    "name": "NCL",
+    "color": "#28431F"
+  },
+  {
+    "urlParam": "nearley",
+    "name": "Nearley",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "nemerle",
+    "name": "Nemerle",
+    "color": "#3D3C6E"
+  },
+  {
+    "urlParam": "nesc",
+    "name": "nesC",
+    "color": "#94B0C7"
+  },
+  {
+    "urlParam": "netlinx",
+    "name": "NetLinx",
+    "color": "#0AA0FF"
+  },
+  {
+    "urlParam": "netlinx+erb",
+    "name": "NetLinx+ERB",
+    "color": "#747FAA"
+  },
+  {
+    "urlParam": "netlogo",
+    "name": "NetLogo",
+    "color": "#FF6375"
+  },
+  {
+    "urlParam": "newlisp",
+    "name": "NewLisp",
+    "color": "#87AED7"
+  },
+  {
+    "urlParam": "nextflow",
+    "name": "Nextflow",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "nginx",
+    "name": "Nginx",
+    "color": "#9469E9"
+  },
+  {
+    "urlParam": "nim",
+    "name": "Nim",
+    "color": "#37775B"
+  },
+  {
+    "urlParam": "ninja",
+    "name": "Ninja",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "nit",
+    "name": "Nit",
+    "color": "#009917"
+  },
+  {
+    "urlParam": "nix",
+    "name": "Nix",
+    "color": "#7E7EFF"
+  },
+  {
+    "urlParam": "nl",
+    "name": "NL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "nsis",
+    "name": "NSIS",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "nu",
+    "name": "Nu",
+    "color": "#C9DF40"
+  },
+  {
+    "urlParam": "numpy",
+    "name": "NumPy",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "objdump",
+    "name": "ObjDump",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "objective-c",
+    "name": "Objective-C",
+    "color": "#438EFF"
+  },
+  {
+    "urlParam": "objective-c++",
+    "name": "Objective-C++",
+    "color": "#6866FB"
+  },
+  {
+    "urlParam": "objective-j",
+    "name": "Objective-J",
+    "color": "#FF0C5A"
+  },
+  {
+    "urlParam": "ocaml",
+    "name": "OCaml",
+    "color": "#3BE133"
+  },
+  {
+    "urlParam": "omgrofl",
+    "name": "Omgrofl",
+    "color": "#CABBFF"
+  },
+  {
+    "urlParam": "ooc",
+    "name": "ooc",
+    "color": "#B0B77E"
+  },
+  {
+    "urlParam": "opa",
+    "name": "Opa",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "opal",
+    "name": "Opal",
+    "color": "#f7EDE0"
+  },
+  {
+    "urlParam": "opencl",
+    "name": "OpenCL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "openedge-abl",
+    "name": "OpenEdge ABL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "openrc-runscript",
+    "name": "OpenRC runscript",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "openscad",
+    "name": "OpenSCAD",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "opentype-feature-file",
+    "name": "OpenType Feature File",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "org",
+    "name": "Org",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ox",
+    "name": "Ox",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "oxygene",
+    "name": "Oxygene",
+    "color": "#CDD0E3"
+  },
+  {
+    "urlParam": "oz",
+    "name": "Oz",
+    "color": "#FAB738"
+  },
+  {
+    "urlParam": "p4",
+    "name": "P4",
+    "color": "#7055B5"
+  },
+  {
+    "urlParam": "pan",
+    "name": "Pan",
+    "color": "#CC0000"
+  },
+  {
+    "urlParam": "papyrus",
+    "name": "Papyrus",
+    "color": "#6600CC"
+  },
+  {
+    "urlParam": "parrot",
+    "name": "Parrot",
+    "color": "#F3CA0A"
+  },
+  {
+    "urlParam": "parrot-assembly",
+    "name": "Parrot Assembly",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "parrot-internal-representation",
+    "name": "Parrot Internal Representation",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "pascal",
+    "name": "Pascal",
+    "color": "#E3F171"
+  },
+  {
+    "urlParam": "pawn",
+    "name": "Pawn",
+    "color": "#DBB284"
+  },
+  {
+    "urlParam": "pep8",
+    "name": "Pep8",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "perl",
+    "name": "Perl",
+    "color": "#0298C3"
+  },
+  {
+    "urlParam": "perl-6",
+    "name": "Perl 6",
+    "color": "#0000FB"
+  },
+  {
+    "urlParam": "php",
+    "name": "PHP",
+    "color": "#4F5D95"
+  },
+  {
+    "urlParam": "pic",
+    "name": "Pic",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "pickle",
+    "name": "Pickle",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "picolisp",
+    "name": "PicoLisp",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "piglatin",
+    "name": "PigLatin",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "pike",
+    "name": "Pike",
+    "color": "#005390"
+  },
+  {
+    "urlParam": "plpgsql",
+    "name": "PLpgSQL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "plsql",
+    "name": "PLSQL",
+    "color": "#DAD8d8"
+  },
+  {
+    "urlParam": "pod",
+    "name": "Pod",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "pod-6",
+    "name": "Pod 6",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "pogoscript",
+    "name": "PogoScript",
+    "color": "#D80074"
+  },
+  {
+    "urlParam": "pony",
+    "name": "Pony",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "postcss",
+    "name": "PostCSS",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "postscript",
+    "name": "PostScript",
+    "color": "#DA291C"
+  },
+  {
+    "urlParam": "pov-ray-sdl",
+    "name": "POV-Ray SDL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "powerbuilder",
+    "name": "PowerBuilder",
+    "color": "#8F0F8D"
+  },
+  {
+    "urlParam": "powershell",
+    "name": "PowerShell",
+    "color": "#012456"
+  },
+  {
+    "urlParam": "processing",
+    "name": "Processing",
+    "color": "#0096D8"
+  },
+  {
+    "urlParam": "prolog",
+    "name": "Prolog",
+    "color": "#74283C"
+  },
+  {
+    "urlParam": "propeller-spin",
+    "name": "Propeller Spin",
+    "color": "#7FA2A7"
+  },
+  {
+    "urlParam": "protocol-buffer",
+    "name": "Protocol Buffer",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "public-key",
+    "name": "Public Key",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "pug",
+    "name": "Pug",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "puppet",
+    "name": "Puppet",
+    "color": "#302B6D"
+  },
+  {
+    "urlParam": "pure-data",
+    "name": "Pure Data",
+    "color": "#91DE79"
+  },
+  {
+    "urlParam": "purebasic",
+    "name": "PureBasic",
+    "color": "#5A6986"
+  },
+  {
+    "urlParam": "purescript",
+    "name": "PureScript",
+    "color": "#1D222D"
+  },
+  {
+    "urlParam": "python",
+    "name": "Python",
+    "color": "#3572A5"
+  },
+  {
+    "urlParam": "python-console",
+    "name": "Python console",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "python-traceback",
+    "name": "Python traceback",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "q",
+    "name": "q",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "qmake",
+    "name": "QMake",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "qml",
+    "name": "QML",
+    "color": "#44A51C"
+  },
+  {
+    "urlParam": "quake",
+    "name": "Quake",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "r",
+    "name": "R",
+    "color": "#198CE7"
+  },
+  {
+    "urlParam": "racket",
+    "name": "Racket",
+    "color": "#22228F"
+  },
+  {
+    "urlParam": "ragel",
+    "name": "Ragel",
+    "color": "#9D5200"
+  },
+  {
+    "urlParam": "raml",
+    "name": "RAML",
+    "color": "#77D9FB"
+  },
+  {
+    "urlParam": "rascal",
+    "name": "Rascal",
+    "color": "#FFFAA0"
+  },
+  {
+    "urlParam": "raw-token-data",
+    "name": "Raw token data",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "rdoc",
+    "name": "RDoc",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "realbasic",
+    "name": "REALbasic",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "reason",
+    "name": "Reason",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "rebol",
+    "name": "Rebol",
+    "color": "#358A5B"
+  },
+  {
+    "urlParam": "red",
+    "name": "Red",
+    "color": "#F50000"
+  },
+  {
+    "urlParam": "redcode",
+    "name": "Redcode",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "regular-expression",
+    "name": "Regular Expression",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ren'py",
+    "name": "Ren'Py",
+    "color": "#FF7F7F"
+  },
+  {
+    "urlParam": "renderscript",
+    "name": "RenderScript",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "restructuredtext",
+    "name": "reStructuredText",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "rexx",
+    "name": "REXX",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "rhtml",
+    "name": "RHTML",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ring",
+    "name": "Ring",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "rmarkdown",
+    "name": "RMarkdown",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "robotframework",
+    "name": "RobotFramework",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "roff",
+    "name": "Roff",
+    "color": "#ECDEBE"
+  },
+  {
+    "urlParam": "rouge",
+    "name": "Rouge",
+    "color": "#CC0088"
+  },
+  {
+    "urlParam": "rpc",
+    "name": "RPC",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "rpm-spec",
+    "name": "RPM Spec",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ruby",
+    "name": "Ruby",
+    "color": "#701516"
+  },
+  {
+    "urlParam": "runoff",
+    "name": "RUNOFF",
+    "color": "#665A4E"
+  },
+  {
+    "urlParam": "rust",
+    "name": "Rust",
+    "color": "#DEA584"
+  },
+  {
+    "urlParam": "sage",
+    "name": "Sage",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "saltstack",
+    "name": "SaltStack",
+    "color": "#646464"
+  },
+  {
+    "urlParam": "sas",
+    "name": "SAS",
+    "color": "#B34936"
+  },
+  {
+    "urlParam": "sass",
+    "name": "Sass",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "scala",
+    "name": "Scala",
+    "color": "#C22D40"
+  },
+  {
+    "urlParam": "scaml",
+    "name": "Scaml",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "scheme",
+    "name": "Scheme",
+    "color": "#1E4AEC"
+  },
+  {
+    "urlParam": "scilab",
+    "name": "Scilab",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "scss",
+    "name": "SCSS",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "sed",
+    "name": "sed",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "self",
+    "name": "Self",
+    "color": "#0579AA"
+  },
+  {
+    "urlParam": "shaderlab",
+    "name": "ShaderLab",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "shell",
+    "name": "Shell",
+    "color": "#89E051"
+  },
+  {
+    "urlParam": "shellsession",
+    "name": "ShellSession",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "shen",
+    "name": "Shen",
+    "color": "#120F14"
+  },
+  {
+    "urlParam": "slash",
+    "name": "Slash",
+    "color": "#007EFF"
+  },
+  {
+    "urlParam": "slice",
+    "name": "Slice",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "slim",
+    "name": "Slim",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "smali",
+    "name": "Smali",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "smalltalk",
+    "name": "Smalltalk",
+    "color": "#596706"
+  },
+  {
+    "urlParam": "smarty",
+    "name": "Smarty",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "smt",
+    "name": "SMT",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "solidity",
+    "name": "Solidity",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "sourcepawn",
+    "name": "SourcePawn",
+    "color": "#5C7611"
+  },
+  {
+    "urlParam": "sparql",
+    "name": "SPARQL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "spline-font-database",
+    "name": "Spline Font Database",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "sqf",
+    "name": "SQF",
+    "color": "#3F3F3F"
+  },
+  {
+    "urlParam": "sql",
+    "name": "SQL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "sqlpl",
+    "name": "SQLPL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "squirrel",
+    "name": "Squirrel",
+    "color": "#800000"
+  },
+  {
+    "urlParam": "srecode-template",
+    "name": "SRecode Template",
+    "color": "#348A34"
+  },
+  {
+    "urlParam": "stan",
+    "name": "Stan",
+    "color": "#B2011D"
+  },
+  {
+    "urlParam": "standard-ml",
+    "name": "Standard ML",
+    "color": "#DC566D"
+  },
+  {
+    "urlParam": "stata",
+    "name": "Stata",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ston",
+    "name": "STON",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "stylus",
+    "name": "Stylus",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "subrip-text",
+    "name": "SubRip Text",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "sugarss",
+    "name": "SugarSS",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "supercollider",
+    "name": "SuperCollider",
+    "color": "#46390B"
+  },
+  {
+    "urlParam": "svg",
+    "name": "SVG",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "swift",
+    "name": "Swift",
+    "color": "#FFAC45"
+  },
+  {
+    "urlParam": "systemverilog",
+    "name": "SystemVerilog",
+    "color": "#DAE1C2"
+  },
+  {
+    "urlParam": "tcl",
+    "name": "Tcl",
+    "color": "#E4CC98"
+  },
+  {
+    "urlParam": "tcsh",
+    "name": "Tcsh",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "tea",
+    "name": "Tea",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "terra",
+    "name": "Terra",
+    "color": "#00004C"
+  },
+  {
+    "urlParam": "tex",
+    "name": "TeX",
+    "color": "#3D6117"
+  },
+  {
+    "urlParam": "text",
+    "name": "Text",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "textile",
+    "name": "Textile",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "thrift",
+    "name": "Thrift",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "ti-program",
+    "name": "TI Program",
+    "color": "#A0AA87"
+  },
+  {
+    "urlParam": "tla",
+    "name": "TLA",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "toml",
+    "name": "TOML",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "turing",
+    "name": "Turing",
+    "color": "#CF142B"
+  },
+  {
+    "urlParam": "turtle",
+    "name": "Turtle",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "twig",
+    "name": "Twig",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "txl",
+    "name": "TXL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "type-language",
+    "name": "Type Language",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "typescript",
+    "name": "TypeScript",
+    "color": "#2B7489"
+  },
+  {
+    "urlParam": "unified-parallel-c",
+    "name": "Unified Parallel C",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "unity3d-asset",
+    "name": "Unity3D Asset",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "unix-assembly",
+    "name": "Unix Assembly",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "uno",
+    "name": "Uno",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "unrealscript",
+    "name": "UnrealScript",
+    "color": "#A54C4D"
+  },
+  {
+    "urlParam": "urweb",
+    "name": "UrWeb",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "vala",
+    "name": "Vala",
+    "color": "#FBE5CD"
+  },
+  {
+    "urlParam": "vcl",
+    "name": "VCL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "verilog",
+    "name": "Verilog",
+    "color": "#B2B7F8"
+  },
+  {
+    "urlParam": "vhdl",
+    "name": "VHDL",
+    "color": "#ADB2CB"
+  },
+  {
+    "urlParam": "vim-script",
+    "name": "Vim script",
+    "color": "#199F4B"
+  },
+  {
+    "urlParam": "visual-basic",
+    "name": "Visual Basic",
+    "color": "#945DB7"
+  },
+  {
+    "urlParam": "volt",
+    "name": "Volt",
+    "color": "#1F1F1F"
+  },
+  {
+    "urlParam": "vue",
+    "name": "Vue",
+    "color": "#2C3E50"
+  },
+  {
+    "urlParam": "wavefront-material",
+    "name": "Wavefront Material",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "wavefront-object",
+    "name": "Wavefront Object",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "wdl",
+    "name": "wdl",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "web-ontology-language",
+    "name": "Web Ontology Language",
+    "color": "#9CC9DD"
+  },
+  {
+    "urlParam": "webassembly",
+    "name": "WebAssembly",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "webidl",
+    "name": "WebIDL",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "windows-registry-entries",
+    "name": "Windows Registry Entries",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "wisp",
+    "name": "wisp",
+    "color": "#7582D1"
+  },
+  {
+    "urlParam": "world-of-warcraft-addon-data",
+    "name": "World of Warcraft Addon Data",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "x-bitmap",
+    "name": "X BitMap",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "x-font-directory-index",
+    "name": "X Font Directory Index",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "x-pixmap",
+    "name": "X PixMap",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "x10",
+    "name": "X10",
+    "color": "#4B6BEF"
+  },
+  {
+    "urlParam": "xbase",
+    "name": "xBase",
+    "color": "#403A40"
+  },
+  {
+    "urlParam": "xc",
+    "name": "XC",
+    "color": "#99DA07"
+  },
+  {
+    "urlParam": "xcompose",
+    "name": "XCompose",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "xml",
+    "name": "XML",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "xojo",
+    "name": "Xojo",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "xpages",
+    "name": "XPages",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "xproc",
+    "name": "XProc",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "xquery",
+    "name": "XQuery",
+    "color": "#5232E7"
+  },
+  {
+    "urlParam": "xs",
+    "name": "XS",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "xslt",
+    "name": "XSLT",
+    "color": "#EB8CEB"
+  },
+  {
+    "urlParam": "xtend",
+    "name": "Xtend",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "yacc",
+    "name": "Yacc",
+    "color": "#4B6C4B"
+  },
+  {
+    "urlParam": "yaml",
+    "name": "YAML",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "yang",
+    "name": "YANG",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "yara",
+    "name": "YARA",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "yasnippet",
+    "name": "YASnippet",
+    "color": "#ECECEC"
+  },
+  {
+    "urlParam": "zephir",
+    "name": "Zephir",
+    "color": "#118F9E"
+  },
+  {
+    "urlParam": "zimpl",
+    "name": "Zimpl",
+    "color": "#ECECEC"
+  }
+]

@@ -1,0 +1,128 @@
+package io.github.tonnyl.moka.ui.explore.filters
+
+import android.app.Dialog
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.explore.ExploreViewModel
+import io.github.tonnyl.moka.ui.explore.TrendingTimeSpanType
+import io.github.tonnyl.moka.ui.explore.ViewModelFactory
+import kotlinx.android.synthetic.main.fragment_explore_filter.*
+
+class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener {
+
+    private val filterAdapter: FilterAdapter by lazy {
+        FilterAdapter()
+    }
+
+    private val viewModel: ExploreViewModel by lazy {
+        ViewModelProviders.of(this, ViewModelFactory()).get(ExploreViewModel::class.java)
+    }
+
+    private var queryData: Triple<TrendingTimeSpanType, String, String>? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_explore_filter, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        queryData = viewModel.queryData.value?.copy()
+
+        toolbar.setNavigationOnClickListener {
+            dismiss()
+        }
+
+        updateToolbarTitle()
+
+        filterAdapter.onRadioButtonClickListener = { v: View, type: TrendingTimeSpanType ->
+            when (v.id) {
+                R.id.item_trending_filter_time_span_weekly,
+                R.id.item_trending_filter_time_span_monthly,
+                R.id.item_trending_filter_time_span_daily -> {
+                    queryData = queryData?.copy(first = type)
+
+                    updateToolbarTitle()
+                }
+            }
+        }
+
+        filterAdapter.onLanguageItemClickListener = { _: View, languageParam: String, languageName: String ->
+            queryData = queryData?.copy(second = languageParam, third = languageName)
+
+            updateToolbarTitle()
+        }
+
+        val layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        with(recycler_view) {
+            recycler_view.layoutManager = layoutManager
+            recycler_view.adapter = filterAdapter
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (dy > 0 && layoutManager.findFirstCompletelyVisibleItemPosition() != 0 && appbar?.elevation == 0f) {
+                        ViewCompat.setElevation(appbar, resources.getDimension(R.dimen.toolbar_elevation))
+                    } else if (dy < 0 && layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && appbar != null && appbar.elevation != 0f) {
+                        ViewCompat.setElevation(appbar, 0f)
+                    }
+                }
+
+            })
+        }
+
+        viewModel.languages(requireContext().assets.open("languages.json")).observe(this, Observer {
+            filterAdapter.submitList(it)
+        })
+
+        toolbar_done.setOnClickListener(this)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        bottomSheetDialog.setOnShowListener { dialogInterface ->
+            val d = dialogInterface as BottomSheetDialog
+            val bottomSheet = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+            BottomSheetBehavior.from(bottomSheet).skipCollapsed = true
+            BottomSheetBehavior.from(bottomSheet).isHideable = true
+        }
+
+        return bottomSheetDialog
+    }
+
+    override fun onClick(v: View?) {
+        v ?: return
+        when (v.id) {
+            R.id.toolbar_done -> {
+                viewModel.queryData.value = queryData
+
+                dismiss()
+            }
+        }
+    }
+
+    private fun updateToolbarTitle() {
+        toolbar.title = getString(
+                R.string.explore_filter_info,
+                getString(when (queryData?.first) {
+                    TrendingTimeSpanType.WEEKLY -> R.string.explore_trending_filter_time_span_weekly
+                    TrendingTimeSpanType.MONTHLY -> R.string.explore_trending_filter_time_span_monthly
+                    // including TrendingTimeSpanType.DAILY
+                    else -> R.string.explore_trending_filter_time_span_daily
+                }),
+                queryData?.third)
+    }
+
+}

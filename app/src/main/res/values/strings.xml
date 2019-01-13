@@ -3,6 +3,8 @@
 
     <string name="auth_get_started">GET STARTED</string>
 
+    <string name="repository_name_with_username">%1$s/%2$s</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_header_avatar_desc" translation_description="Content description for the user's avatar image of navigation drawer header of main page.">Avatar of current viewer</string>
@@ -188,6 +190,19 @@
     <string name="notification_unsubscribe">Unsubscribe</string>
 
     <string name="search_input_hint">Search Repository &amp; User</string>
+
+    <string name="explore_filter_info">%1$s | %2$s</string> <!--All Languages | Daily-->
+    <string name="explore_period_stars">%1$d stars %2$s</string> <!--123 stars today-->
+    <string name="explore_filter_done">done</string>
+    <string name="explore_trending_repositories">Repositories</string>
+    <string name="explore_trending_developers">Developers</string>
+    <string name="explore_trending_developer_name">%1$s(%2$s)</string>
+    <string name="explore_trending_developer_repository_name_description">%1$s - %2$s</string>
+    <string name="explore_trending_filter_time_span">Time span</string>
+    <string name="explore_trending_filter_time_span_daily">Daily</string>
+    <string name="explore_trending_filter_time_span_weekly">Weekly</string>
+    <string name="explore_trending_filter_time_span_monthly">Monthly</string>
+    <string name="explore_trending_filter_languages">Languages</string>
 
     <string name="retry">Retry</string>
 

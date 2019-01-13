@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.content.res.ResourcesCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.explore.filters.TrendingFilterFragment
 import kotlinx.android.synthetic.main.fragment_explore.*
 
 class ExploreFragment : Fragment() {
@@ -17,25 +17,25 @@ class ExploreFragment : Fragment() {
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
-
-        return inflater.inflate(R.layout.fragment_explore, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_explore, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        swipe_refresh.setColorSchemeColors(
-                ResourcesCompat.getColor(resources, R.color.indigo, null),
-                ResourcesCompat.getColor(resources, R.color.teal, null),
-                ResourcesCompat.getColor(resources, R.color.lightBlue, null),
-                ResourcesCompat.getColor(resources, R.color.yellow, null),
-                ResourcesCompat.getColor(resources, R.color.orange, null)
-        )
-
         toolbar_search.setOnClickListener {
             parentFragment?.findNavController()?.navigate(R.id.action_to_search)
+        }
+
+        view_pager.adapter = ExplorePagerAdapter(requireContext(), childFragmentManager)
+        tab_layout.setupWithViewPager(view_pager)
+        tab_layout.getTabAt(0)?.setIcon(R.drawable.ic_book_24)
+        tab_layout.getTabAt(1)?.setIcon(R.drawable.ic_person_24)
+
+        view_pager.offscreenPageLimit = 2
+
+        val sheet = TrendingFilterFragment()
+        fab.setOnClickListener {
+            sheet.show(childFragmentManager, TrendingFilterFragment::class.java.simpleName)
         }
     }
 

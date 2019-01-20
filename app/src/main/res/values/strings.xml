@@ -3,6 +3,8 @@
 
     <string name="auth_get_started">GET STARTED</string>
 
+    <string name="common_retry">Retry</string>
+
     <string name="repository_name_with_username">%1$s/%2$s</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -204,6 +206,7 @@
     <string name="explore_trending_filter_time_span_monthly">Monthly</string>
     <string name="explore_trending_filter_languages">Languages</string>
 
-    <string name="retry">Retry</string>
+    <string name="timeline_content_empty_title">You haven\'t received any events yet</string>
+    <string name="timeline_content_empty_action">Explore More</string>
 
 </resources>

@@ -8,14 +8,17 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavArgument
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.airbnb.mvrx.MvRx
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.rx2.Rx2Apollo
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ViewerQuery
 import io.github.tonnyl.moka.net.GlideLoader
+import io.github.tonnyl.moka.ui.timeline.TimelineArgs
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -36,7 +39,12 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // add a default argument to nav controller.
         val host: NavHostFragment = childFragmentManager.findFragmentById(R.id.main_fragment_nav_host) as NavHostFragment
+        val graph = host.navController.navInflater.inflate(R.navigation.navigation_fragment_main)
+        val defaultArgs = NavArgument.Builder().setDefaultValue(TimelineArgs("tonnyl")).build()
+        graph.addArgument(MvRx.KEY_ARG, defaultArgs)
+        host.navController.graph = graph
         nav_view.setupWithNavController(host.navController)
 
         val viewerInfoDisposable = Rx2Apollo.from(getViewerInfoCall)

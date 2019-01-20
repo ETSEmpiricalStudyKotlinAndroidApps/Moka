@@ -16,4 +16,8 @@ class TimelineDataSourceFactory(
         eventsLiveData.postValue(this)
     }
 
+    fun invalidate() {
+        eventsLiveData.value?.invalidate()
+    }
+
 }

@@ -91,6 +91,9 @@ dependencies {
     implementation "androidx.paging:paging-common:${versions.paging}"
     implementation "androidx.paging:paging-rxjava2:${versions.paging}"
     implementation "androidx.paging:paging-runtime-ktx:${versions.paging}"
+    implementation "androidx.room:room-common:${versions.room}"
+    implementation "androidx.room:room-rxjava2:${versions.room}"
+    kapt "androidx.room:room-compiler:${versions.room}"
 
     implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava2}"
     implementation "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"
@@ -111,6 +114,7 @@ dependencies {
     implementation "com.apollographql.apollo:apollo-android-support:${versions.apollo}"
 
     implementation "com.airbnb.android:lottie:${versions.lottie}"
+    implementation "com.airbnb.android:mvrx:${versions.mvrx}"
 
     implementation "com.zhihu.android:matisse:${versions.matisse}"
 
@@ -142,6 +146,7 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
     androidTestImplementation "android.arch.work:work-testing:${versions.work_manager}"
     androidTestImplementation "android.arch.navigation:navigation-testing:1.0.0-alpha08"
+    androidTestImplementation "androidx.room:room-testing:${versions.room}"
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -3,6 +3,7 @@ package io.github.tonnyl.moka
 import android.app.Application
 import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper
 import io.github.tonnyl.moka.net.AppExecutors
+import timber.log.Timber
 import java.io.File
 
 class MokaApp : Application() {
@@ -16,6 +17,9 @@ class MokaApp : Application() {
         // will not persist across restarts of the app.
         lateinit var apolloSqlHelper: ApolloSqlHelper
         private const val APOLLO_CACHE_DB_NAME = "apollo_db_cache"
+
+        const val PER_PAGE = 16
+        const val MAX_SIZE_OF_PAGED_LIST = 1024
     }
 
     override fun onCreate() {
@@ -26,6 +30,10 @@ class MokaApp : Application() {
         apolloSqlHelper = ApolloSqlHelper.create(this, APOLLO_CACHE_DB_NAME)
 
         appExecutors = AppExecutors()
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
     }
 
 }

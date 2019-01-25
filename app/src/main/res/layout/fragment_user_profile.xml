@@ -11,256 +11,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:elevation="0dp">
+        app:liftOnScroll="true">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
             android:elevation="0dp"
-            app:collapsedTitleGravity="start"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleGravity="center_horizontal|top"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlwaysCollapsed"
-            app:titleEnabled="false">
+            android:theme="@style/ToolbarTheme"
+            app:layout_collapseMode="pin"
+            app:navigationIcon="@drawable/ic_arrow_back_24"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:titleTextColor="@color/colorControlNormal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="?actionBarSize"
-                android:paddingBottom="@dimen/user_profile_content_padding">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/profile_avatar"
-                    android:layout_width="@dimen/user_profile_avatar_width"
-                    android:layout_height="@dimen/user_profile_avatar_height"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    app:layout_constraintBottom_toTopOf="@id/profile_username"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@tools:sample/avatars" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/profile_username"
-                    style="@style/TextAppearance.MaterialComponents.Headline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/user_profile_content_padding"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:layout_marginEnd="@dimen/user_profile_content_padding"
-                    android:gravity="center"
-                    android:textColor="@color/colorTextPrimary"
-                    app:layout_constraintBottom_toTopOf="@id/profile_login_name"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_avatar"
-                    tools:text="@sample/user.json/users/name" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/profile_login_name"
-                    style="@style/TextAppearance.MaterialComponents.Body1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/user_profile_content_padding"
-                    android:layout_marginTop="@dimen/user_profile_content_padding_half"
-                    android:layout_marginEnd="@dimen/user_profile_content_padding"
-                    android:textColor="@color/colorTextSecondary"
-                    app:layout_constraintBottom_toBottomOf="@id/profile_avatar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_username"
-                    tools:text="@sample/user.json/users/login" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/profile_bio"
-                    style="@style/TextAppearance.MaterialComponents.Body2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/user_profile_content_padding"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:layout_marginEnd="@dimen/user_profile_content_padding"
-                    android:gravity="center"
-                    android:textColor="@color/colorTextSecondary"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_login_name"
-                    tools:text="@sample/user.json/users/bio" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/profile_follow_unfollow"
-                    style="@style/TextAppearance.MaterialComponents.Button"
-                    android:layout_width="@dimen/user_profile_follow_unfollow_button_width"
-                    android:layout_height="@dimen/user_profile_follow_unfollow_button_height"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:background="@drawable/bg_profile_follow"
-                    android:gravity="center"
-                    android:padding="0dp"
-                    android:text="@string/user_profile_follow"
-                    android:textAllCaps="false"
-                    android:textColor="@color/user_profile_follow_unfollow_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_bio" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/profile_company_image"
-                    android:layout_width="@dimen/user_profile_icon_size"
-                    android:layout_height="@dimen/user_profile_icon_size"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:contentDescription="@string/user_profile_company_desc"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_group_24"
-                    app:layout_constraintEnd_toStartOf="@id/profile_location_image"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_follow_unfollow"
-                    app:tint="@color/user_profile_icon_color" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/profile_location_image"
-                    android:layout_width="@dimen/user_profile_icon_size"
-                    android:layout_height="@dimen/user_profile_icon_size"
-                    android:layout_marginStart="@dimen/user_profile_content_padding_half"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:layout_marginEnd="@dimen/user_profile_content_padding_half"
-                    android:contentDescription="@string/user_profile_location_desc"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_location_on_24"
-                    app:layout_constraintEnd_toStartOf="@id/profile_email_image"
-                    app:layout_constraintStart_toEndOf="@id/profile_company_image"
-                    app:layout_constraintTop_toBottomOf="@id/profile_follow_unfollow"
-                    app:tint="@color/user_profile_icon_color" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/profile_email_image"
-                    android:layout_width="@dimen/user_profile_icon_size"
-                    android:layout_height="@dimen/user_profile_icon_size"
-                    android:layout_marginStart="@dimen/user_profile_content_padding_half"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:layout_marginEnd="@dimen/user_profile_content_padding_half"
-                    android:contentDescription="@string/user_profile_email_desc"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_email_24"
-                    app:layout_constraintEnd_toStartOf="@id/profile_link_image"
-                    app:layout_constraintStart_toEndOf="@id/profile_location_image"
-                    app:layout_constraintTop_toBottomOf="@id/profile_follow_unfollow"
-                    app:tint="@color/user_profile_icon_color" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/profile_link_image"
-                    android:layout_width="@dimen/user_profile_icon_size"
-                    android:layout_height="@dimen/user_profile_icon_size"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:contentDescription="@string/user_profile_link_desc"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_link_24"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/profile_email_image"
-                    app:layout_constraintTop_toBottomOf="@id/profile_follow_unfollow"
-                    app:tint="@color/user_profile_icon_color" />
-
-                <View
-                    android:id="@+id/profile_divider"
-                    android:layout_width="1dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:alpha=".5"
-                    android:background="@color/user_profile_icon_color"
-                    app:layout_constraintBottom_toBottomOf="@id/profile_following_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_company_image" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/profile_repositories_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/user_profile_content_padding"
-                    android:layout_marginTop="@dimen/list_item_spacing"
-                    android:drawableStart="@drawable/ic_book_24"
-                    android:drawablePadding="@dimen/user_profile_content_padding"
-                    android:drawableTint="@color/user_profile_icon_color"
-                    android:gravity="center_vertical"
-                    android:text="@string/user_profile_repositories"
-                    android:textColor="@color/colorTextSecondary"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_company_image" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/profile_stars_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/user_profile_content_padding"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:layout_marginEnd="@dimen/user_profile_content_padding"
-                    android:drawableStart="@drawable/ic_star_24"
-                    android:drawablePadding="@dimen/user_profile_content_padding"
-                    android:drawableTint="@color/user_profile_icon_color"
-                    android:gravity="center_vertical"
-                    android:text="@string/user_profile_stars"
-                    android:textColor="@color/colorTextSecondary"
-                    app:layout_constraintStart_toEndOf="@id/profile_divider"
-                    app:layout_constraintTop_toBottomOf="@id/profile_company_image" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/profile_followers_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/user_profile_content_padding"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:drawableStart="@drawable/ic_person_24"
-                    android:drawablePadding="@dimen/user_profile_content_padding"
-                    android:drawableTint="@color/user_profile_icon_color"
-                    android:gravity="center_vertical"
-                    android:text="@string/user_profile_followers"
-                    android:textColor="@color/colorTextSecondary"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_repositories_text" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/profile_following_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/user_profile_content_padding"
-                    android:layout_marginTop="@dimen/user_profile_content_padding"
-                    android:layout_marginEnd="@dimen/user_profile_content_padding"
-                    android:drawableStart="@drawable/ic_person_outline_24"
-                    android:drawablePadding="@dimen/user_profile_content_padding"
-                    android:drawableTint="@color/user_profile_icon_color"
-                    android:gravity="center_vertical"
-                    android:text="@string/user_profile_following"
-                    android:textColor="@color/colorTextSecondary"
-                    app:layout_constraintStart_toEndOf="@id/profile_divider"
-                    app:layout_constraintTop_toBottomOf="@id/profile_stars_text" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:elevation="0dp"
-                android:theme="@style/ToolbarTheme"
-                app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/ic_arrow_back_24"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                app:titleTextColor="@color/colorControlNormal">
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/profile_toolbar_title"
                     style="@style/TextAppearance.MaterialComponents.Headline6"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="start"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
                     android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
+                    android:gravity="start|center_vertical"
+                    android:maxLines="1"
+                    android:text="@string/profile_title"
                     android:textColor="@color/colorControlNormal"
                     android:textSize="@dimen/title_text"
-                    app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
-                    tools:text="@sample/user.json/users/name" />
+                    app:layout_scrollFlags="scroll|snap|exitUntilCollapsed" />
+
+                <Space
+                    android:layout_width="@dimen/fragment_content_padding"
+                    android:layout_height="match_parent" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/toolbar_edit"
@@ -272,39 +61,563 @@
                     android:src="@drawable/ic_edit_white_24"
                     android:tint="@color/colorControlNormal" />
 
-            </androidx.appcompat.widget.Toolbar>
+            </LinearLayout>
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/fragment_content_padding"
+            android:paddingBottom="@dimen/fragment_content_padding">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/profile_avatar"
+                android:layout_width="@dimen/profile_avatar_width"
+                android:layout_height="@dimen/profile_avatar_height"
+                android:layout_marginStart="@dimen/fragment_content_padding"
+                android:layout_marginTop="@dimen/fragment_content_padding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/profile_pinned_text"
-                android:layout_width="match_parent"
+                android:id="@+id/profile_username"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/fragment_content_padding"
+                android:layout_marginEnd="@dimen/fragment_content_padding"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorTextPrimary"
+                app:layout_constraintBottom_toTopOf="@id/profile_login_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/profile_avatar"
+                app:layout_constraintTop_toTopOf="@id/profile_avatar"
+                app:layout_constraintVertical_chainStyle="spread"
+                tools:text="@sample/user.json/users/name" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/profile_login_name"
+                style="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/user_profile_content_padding"
-                android:layout_marginEnd="@dimen/user_profile_content_padding"
-                android:text="@string/user_profile_pinned" />
+                android:layout_marginEnd="@dimen/fragment_content_padding"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorTextSecondary"
+                app:layout_constraintBottom_toTopOf="@id/profile_follow_unfollow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/profile_avatar"
+                app:layout_constraintTop_toBottomOf="@id/profile_username"
+                tools:text="@sample/user.json/users/login" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/profile_follow_unfollow"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/user_profile_content_padding"
+                android:text="@string/user_profile_follow"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="@id/profile_avatar"
+                app:layout_constraintStart_toEndOf="@id/profile_avatar"
+                app:layout_constraintTop_toBottomOf="@id/profile_login_name" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/profile_bio"
+                style="@style/TextAppearance.MaterialComponents.Body2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/fragment_content_padding"
+                android:textColor="@color/colorTextSecondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_avatar"
+                tools:text="@sample/user.json/users/bio" />
+
+            <View
+                android:id="@+id/profile_divider_between_bio_and_tabs"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/divider_size"
+                android:background="@color/colorDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_bio" />
+
+            <LinearLayout
+                android:id="@+id/profile_repositories_text_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/fragment_content_padding"
+                android:paddingTop="@dimen/fragment_content_padding"
+                android:paddingEnd="0dp"
+                android:paddingBottom="@dimen/fragment_content_padding"
+                app:layout_constraintEnd_toStartOf="@id/profile_stars_text_layout"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_bio">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_repositories_count_text"
+                    style="@style/TextAppearance.Moka.Count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@sample/user.json/users/repositoryCount" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/fragment_content_padding_half" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/TextAppearance.Moka.ContentCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_repositories" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profile_stars_text_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/fragment_content_padding"
+                android:paddingBottom="@dimen/fragment_content_padding"
+                app:layout_constraintEnd_toStartOf="@id/profile_followers_text_layout"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/profile_repositories_text_layout"
+                app:layout_constraintTop_toBottomOf="@id/profile_bio">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_stars_count_text"
+                    style="@style/TextAppearance.Moka.Count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@sample/user.json/users/starCount" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/fragment_content_padding_half" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/TextAppearance.Moka.ContentCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_stars" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profile_followers_text_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/fragment_content_padding"
+                android:paddingBottom="@dimen/fragment_content_padding"
+                app:layout_constraintEnd_toStartOf="@id/profile_following_text_layout"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/profile_stars_text_layout"
+                app:layout_constraintTop_toBottomOf="@id/profile_bio">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_followers_count_text"
+                    style="@style/TextAppearance.Moka.Count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@sample/user.json/users/followerCount" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/fragment_content_padding_half" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/TextAppearance.Moka.ContentCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_followers" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profile_following_text_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingStart="0dp"
+                android:paddingTop="@dimen/fragment_content_padding"
+                android:paddingEnd="@dimen/fragment_content_padding"
+                android:paddingBottom="@dimen/fragment_content_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/profile_followers_text_layout"
+                app:layout_constraintTop_toBottomOf="@id/profile_bio">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_following_count_text"
+                    style="@style/TextAppearance.Moka.Count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    tools:text="@sample/user.json/users/followingCount" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/fragment_content_padding_half" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/TextAppearance.Moka.ContentCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_following" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/profile_divider_between_tabs_and_contact"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/divider_size"
+                android:background="@color/colorDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_repositories_text_layout" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/profile_contact_category_title"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/fragment_content_padding"
+                android:text="@string/profile_contact"
+                app:fontFamily="sans-serif-medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_divider_between_tabs_and_contact" />
+
+            <LinearLayout
+                android:id="@+id/profile_company_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/fragment_content_padding"
+                android:paddingTop="@dimen/fragment_content_padding_half"
+                android:paddingEnd="@dimen/fragment_content_padding"
+                android:paddingBottom="@dimen/fragment_content_padding_half"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_contact_category_title">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_company_title"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_group_24"
+                    android:drawablePadding="@dimen/fragment_content_padding"
+                    android:drawableTint="@color/colorTextSecondary"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_company" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_company_content"
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="0dp"
+                    android:textColor="@color/colorTextSecondary"
+                    tools:text="@sample/user.json/users/company" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profile_email_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/fragment_content_padding"
+                android:paddingTop="@dimen/fragment_content_padding_half"
+                android:paddingEnd="@dimen/fragment_content_padding"
+                android:paddingBottom="@dimen/fragment_content_padding_half"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_company_layout">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_email_title"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_email_24"
+                    android:drawablePadding="@dimen/fragment_content_padding"
+                    android:drawableTint="@color/colorTextSecondary"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_email" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_email_content"
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="0dp"
+                    android:textColor="@color/colorTextSecondary"
+                    tools:text="@sample/user.json/users/email" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profile_location_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/fragment_content_padding"
+                android:paddingTop="@dimen/fragment_content_padding_half"
+                android:paddingEnd="@dimen/fragment_content_padding"
+                android:paddingBottom="@dimen/fragment_content_padding_half"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_email_layout">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_location_title"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_location_on_24"
+                    android:drawablePadding="@dimen/fragment_content_padding"
+                    android:drawableTint="@color/colorTextSecondary"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_location" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_location_content"
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="0dp"
+                    android:textColor="@color/colorTextSecondary"
+                    tools:text="@sample/user.json/users/location" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profile_website_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/fragment_content_padding"
+                android:paddingTop="@dimen/fragment_content_padding_half"
+                android:paddingEnd="@dimen/fragment_content_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_location_layout">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_website_title"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_link_24"
+                    android:drawablePadding="@dimen/fragment_content_padding"
+                    android:drawableTint="@color/colorTextSecondary"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_website" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_website_content"
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="0dp"
+                    android:paddingBottom="@dimen/fragment_content_padding_half"
+                    android:textColor="@color/colorTextSecondary"
+                    tools:text="@sample/user.json/users/site" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/fragment_content_padding_half" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/profile_divider_between_contact_info_and_organizations"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/divider_size"
+                android:background="@color/colorDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_website_layout" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/profile_organizations_category_title"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/fragment_content_padding"
+                android:text="@string/profile_organizations"
+                app:fontFamily="sans-serif-medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_divider_between_contact_info_and_organizations" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/profile_organizations_category_see_all"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_organizations_see_all"
+                android:textColor="@color/colorTextAccent"
+                app:layout_constraintBottom_toBottomOf="@id/profile_organizations_category_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/profile_organizations_category_title" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/profile_pinned_repositories"
-                android:layout_width="match_parent"
+                android:id="@+id/profile_organizations"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                tools:itemCount="6"
-                tools:listitem="@layout/item_repository" />
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/fragment_content_padding_half"
+                android:paddingEnd="@dimen/fragment_content_padding_half"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_organizations_category_title"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_profile_organization_simple" />
 
-        </LinearLayout>
+            <Space
+                android:id="@+id/profile_organizations_space"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/fragment_content_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_organizations" />
+
+            <View
+                android:id="@+id/profile_divider_between_organizations_and_info"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/divider_size"
+                android:background="@color/colorDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_organizations_space" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/profile_info_category_title"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/fragment_content_padding"
+                android:text="@string/profile_info"
+                app:fontFamily="sans-serif-medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_divider_between_organizations_and_info" />
+
+            <LinearLayout
+                android:id="@+id/profile_joined_on_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/fragment_content_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_info_category_title">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_joined_on"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_joined_on" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_joined_on_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="@dimen/fragment_content_padding"
+                    android:paddingEnd="0dp"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/colorTextPrimary"
+                    tools:text="@sample/user.json/users/createdAt" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profile_updated_on_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/fragment_content_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_joined_on_layout">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_updated_on"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_updated_on" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_updated_on_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="@dimen/fragment_content_padding"
+                    android:paddingEnd="0dp"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/colorTextPrimary"
+                    tools:text="@sample/user.json/users/createdAt" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 
@@ -314,6 +627,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

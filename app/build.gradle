@@ -81,7 +81,7 @@ dependencies {
     implementation "androidx.browser:browser:${versions.browser}"
     implementation "androidx.fragment:fragment:${versions.fragment}"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:${versions.swipe_refresh_layout}"
-    implementation "androidx.legacy:legacy-preference-v14:${versions.preference_v14}"
+    implementation "androidx.preference:preference:${versions.preference}"
     implementation "com.google.android.material:material:${versions.material}"
 
     implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"

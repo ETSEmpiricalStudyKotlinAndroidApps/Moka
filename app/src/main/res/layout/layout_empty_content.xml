@@ -5,6 +5,7 @@
     android:id="@+id/empty_content_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="?actionBarSize"
     android:padding="@dimen/fragment_content_padding"
     android:visibility="gone"
     tools:visibility="visible">

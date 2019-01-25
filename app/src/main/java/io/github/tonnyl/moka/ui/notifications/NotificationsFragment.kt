@@ -111,9 +111,7 @@ class NotificationsFragment : Fragment() {
         drawer.removeDrawerListener(toggle)
     }
 
-    override fun onContextItemSelected(item: MenuItem?): Boolean {
-        item ?: return false
-
+    override fun onContextItemSelected(item: MenuItem): Boolean {
         // trick: use the position as item view's order.
         val notification = viewModel.posts.value?.get(item.order)
 

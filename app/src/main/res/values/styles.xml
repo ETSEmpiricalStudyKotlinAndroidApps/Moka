@@ -1,14 +1,41 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="android:windowBackground">@color/colorPrimary</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item>
+    <style name="AppTheme" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">#6200EE</item>
+        <item name="colorSecondary">#03DAC6</item>
+        <item name="android:colorBackground">#FFFFFF</item>
+        <item name="colorError">#C51162</item>
+
+        <item name="colorPrimaryVariant">#3700B3</item>
+        <item name="colorSecondaryVariant">#018786</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorOnSecondary">#000000</item>
+        <item name="colorOnBackground">#000000</item>
+        <item name="colorOnError">#FFFFFF</item>
+        <item name="colorOnSurface">#000000</item>
+        <item name="scrimBackground">@color/mtrl_scrim_color</item>
+        <item name="textAppearanceHeadline1">@style/TextAppearance.MaterialComponents.Headline1
+        </item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.MaterialComponents.Headline2
+        </item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.MaterialComponents.Headline3
+        </item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.MaterialComponents.Headline4
+        </item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.MaterialComponents.Headline5
+        </item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.MaterialComponents.Headline6
+        </item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.MaterialComponents.Subtitle1
+        </item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.MaterialComponents.Subtitle2
+        </item>
+        <item name="textAppearanceBody1">@style/TextAppearance.MaterialComponents.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.MaterialComponents.Caption</item>
+        <item name="textAppearanceButton">@style/TextAppearance.MaterialComponents.Button</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.MaterialComponents.Overline</item>
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.MaterialComponents.ActionBar">
@@ -30,6 +57,17 @@
     <style name="TextAppearance.Moka.FadingSnackbarAction" parent="@style/TextAppearance.AppCompat.Button">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="TextAppearance.Moka.Count" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="TextAppearance.Moka.ContentCategory" parent="Base.TextAppearance.AppCompat.Caption">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
     </style>
 
 </resources>

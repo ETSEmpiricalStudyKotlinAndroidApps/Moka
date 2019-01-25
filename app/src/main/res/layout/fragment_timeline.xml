@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:elevation="0dp">
+        app:liftOnScroll="true"
+        app:liftOnScrollTargetViewId="@id/recycler_view">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -53,7 +54,7 @@
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_marginTop="?actionBarSize">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -66,6 +67,7 @@
                 android:fadeScrollbars="true"
                 android:scrollbarStyle="insideOverlay"
                 android:scrollbars="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:listitem="@layout/item_event" />
 
             <include layout="@layout/layout_empty_content" />

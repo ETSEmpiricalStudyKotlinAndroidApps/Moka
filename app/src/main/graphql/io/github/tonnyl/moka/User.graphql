@@ -37,6 +37,11 @@ query User($login: String!) {
      starredRepositories {
        totalCount
      }
+     organizations(first: 20) {
+        nodes {
+            avatarUrl
+        }
+     }
   }
 }
 
@@ -79,6 +84,11 @@ query viewer {
     }
     starredRepositories {
       totalCount
+    }
+    organizations(first: 20) {
+        nodes {
+            avatarUrl
+        }
     }
   }
 }

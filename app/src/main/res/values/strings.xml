@@ -24,25 +24,21 @@
     <string name="repository_name_unknown" translation_description="If it is unable to get a repository's name, then display this value.">Unknown</string>
     <string name="programming_language_unknown" translation_description="If a repository does not have a programming language, then display this value.">Unknown</string>
 
-    <string name="user_profile_following" translation_description="The following count of user profile.">%1$s following</string>
-    <string name="user_profile_followers" translation_description="The follower(s) count of user profile.">%1$s %2$s</string>
-    <string name="user_profile_stars" translation_description="The starred repository(ies) count of user profile.">%1$s %2$s</string>
-    <string name="user_profile_repositories" translation_description="The repository(ies) count of user profile.">%1$s %2$s</string>
-    <plurals name="user_profile_followers_plurals">
-        <item quantity="zero">follower</item>
-        <item quantity="one">follower</item>
-        <item quantity="other">followers</item>
-    </plurals>
-    <plurals name="user_profile_stars_plurals">
-        <item quantity="zero">star</item>
-        <item quantity="one">star</item>
-        <item quantity="other">stars</item>
-    </plurals>
-    <plurals name="user_profile_repositories_plurals">
-        <item quantity="zero">repository</item>
-        <item quantity="one">repository</item>
-        <item quantity="other">repositories</item>
-    </plurals>
+    <string name="profile_title">Profile</string>
+    <string name="profile_following" translation_description="The following count of user profile.">Following</string>
+    <string name="profile_followers" translation_description="The follower(s) count of user profile.">Followers</string>
+    <string name="profile_stars" translation_description="The starred repository(ies) count of user profile.">Stars</string>
+    <string name="profile_repositories" translation_description="The repository(ies) count of user profile.">Repositories</string>
+    <string name="profile_company">Company</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_location">Location</string>
+    <string name="profile_website">Website</string>
+    <string name="profile_organizations">Organizations</string>
+    <string name="profile_organizations_see_all">See all</string>
+    <string name="profile_info">Info</string>
+    <string name="profile_contact">Contact</string>
+    <string name="profile_joined_on">Joined on</string>
+    <string name="profile_updated_on">Updated on</string>
     <string name="user_profile_pinned">Pinned</string>
     <string name="user_profile_follow" translation_description="The button's content text to follow a user of user profile.">Follow</string>
     <string name="user_profile_unfollow" translation_description="The button's content text to unfollow a user of user profile.">Unfollow</string>

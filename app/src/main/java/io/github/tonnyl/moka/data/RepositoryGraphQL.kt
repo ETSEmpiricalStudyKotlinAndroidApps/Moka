@@ -191,7 +191,10 @@ data class RepositoryGraphQL(
         val issuesCount: Int,
         val pullRequestsCount: Int,
         val watchersCount: Int,
-        val projectsCount: Int
+        val projectsCount: Int,
+        val releasesCount: Int,
+        val branchCount: Int,
+        val topics: List<Topic>?
 ) : Parcelable {
 
     companion object {
@@ -273,7 +276,12 @@ data class RepositoryGraphQL(
                     repository.issues().totalCount(),
                     repository.pullRequests().totalCount(),
                     repository.watchers().totalCount(),
-                    repository.projects().totalCount()
+                    repository.projects().totalCount(),
+                    repository.releases().totalCount(),
+                    repository.refs()?.totalCount() ?: 0,
+                    repository.repositoryTopics().nodes()?.map {
+                        Topic.createFromRaw(it.topic())
+                    }
             )
         }
 

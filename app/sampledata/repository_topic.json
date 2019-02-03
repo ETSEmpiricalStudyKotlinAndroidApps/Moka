@@ -1,0 +1,25 @@
+{
+  "topics": [
+    {
+      "name": "kotlin"
+    },
+    {
+      "name": "programming-language"
+    },
+    {
+      "name": "compiler"
+    },
+    {
+      "name": "gradle-plugin"
+    },
+    {
+      "name": "maven-plugin"
+    },
+    {
+      "name": "kotlin-library"
+    },
+    {
+      "name": "intellij-plugin"
+    }
+  ]
+}

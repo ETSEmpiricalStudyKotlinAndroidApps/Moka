@@ -9,6 +9,8 @@
       "watcherCount": 54,
       "stargazerCount": 1065,
       "projectCount": 2,
+      "branch": 1,
+      "releases": 2,
       "primaryLanguage": {
         "color": "#F18E33",
         "name": "Kotlin"
@@ -25,6 +27,8 @@
       "watcherCount": 40,
       "stargazerCount": 1009,
       "projectCount": 1,
+      "branch": 2,
+      "releases": 0,
       "primaryLanguage": {
         "color": "#b07219",
         "name": "Java"
@@ -41,6 +45,8 @@
       "watcherCount": 21,
       "stargazerCount": 607,
       "projectCount": 3,
+      "branch": 1,
+      "releases": 0,
       "primaryLanguage": {
         "color": "#F18E33",
         "name": "Kotlin"
@@ -57,6 +63,8 @@
       "watcherCount": 12,
       "stargazerCount": 527,
       "projectCount": 4,
+      "branch": 1,
+      "releases": 1,
       "primaryLanguage": {
         "color": "#F18E33",
         "name": "Kotlin"
@@ -73,6 +81,8 @@
       "watcherCount": 9,
       "stargazerCount": 477,
       "projectCount": 1,
+      "branch": 1,
+      "releases": 1,
       "primaryLanguage": {
         "color": "#F18E33",
         "name": "Kotlin"
@@ -89,6 +99,8 @@
       "watcherCount": 1616,
       "stargazerCount": 29753,
       "projectCount": 4,
+      "branch": 11,
+      "releases": 42,
       "primaryLanguage": {
         "color": "#b07219",
         "name": "Java"
@@ -105,6 +117,8 @@
       "watcherCount": 1097,
       "stargazerCount": 16851,
       "projectCount": 3,
+      "branch": 3,
+      "releases": 17,
       "primaryLanguage": {
         "color": "#b07219",
         "name": "Java"

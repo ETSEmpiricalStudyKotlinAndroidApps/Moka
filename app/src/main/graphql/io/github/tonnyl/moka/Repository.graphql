@@ -42,165 +42,6 @@ fragment abstractRepository on Repository {
   }
 }
 
-# A list of repositories this user has pinned to their profile
-query pinnedRepositories($login: String!) {
-  user(login: $login) {
-    avatarUrl
-    id
-   	pinnedRepositories(first: 6) {
-    	nodes {
-          createdAt
-          databaseId
-          description
-          descriptionHTML
-          diskUsage
-          forkCount
-          hasIssuesEnabled
-          hasWikiEnabled
-          homepageUrl
-          id
-          isArchived
-          isFork
-          isLocked
-          isMirror
-          isPrivate
-          licenseInfo {
-            featured
-            hidden
-            id
-            name
-            nickname
-            spdxId
-            url
-          }
-          mergeCommitAllowed
-          mirrorUrl
-          name
-          nameWithOwner
-          projectsResourcePath
-          projectsUrl
-          pushedAt
-          rebaseMergeAllowed
-          resourcePath
-          shortDescriptionHTML
-          squashMergeAllowed
-          updatedAt
-          url
-          viewerCanAdminister
-          viewerCanCreateProjects
-          viewerCanSubscribe
-          viewerCanUpdateTopics
-          viewerHasStarred
-        	issues {
-            totalCount
-          }
-        	pullRequests {
-            totalCount
-          }
-        	watchers {
-            totalCount
-          }
-        	forks {
-            totalCount
-          }
-          stargazers {
-            totalCount
-          }
-          primaryLanguage {
-            color
-            name
-          }
-        }
-      totalCount
-      totalDiskUsage
-  	}
-  }
-}
-
-# Lookup a given repository by the owner(USER) and repository name.
-query userRepositoryCardInfo($login: String!, $repositoryName:String!) {
-  user(login: $login) {
-    avatarUrl
-    id
-   	repository(name: $repositoryName) {
-    	createdAt
-      databaseId
-      description
-      descriptionHTML
-      homepageUrl
-      id
-      name
-      nameWithOwner
-      pushedAt
-      resourcePath
-      shortDescriptionHTML
-      updatedAt
-      url
-      issues {
-        totalCount
-      }
-      pullRequests {
-        totalCount
-      }
-      watchers {
-        totalCount
-      }
-      forks {
-        totalCount
-      }
-      stargazers {
-        totalCount
-      }
-      primaryLanguage {
-        color
-        name
-      }
-  	}
-  }
-}
-
-# Lookup a given repository by the owner(ORGANIZATION) and repository name.
-query orgRepositoryCardInfo($login: String!, $repositoryName:String!) {
-  organization(login: $login) {
-    avatarUrl
-    id
-   	repository(name: $repositoryName) {
-    	createdAt
-      databaseId
-      description
-      descriptionHTML
-      homepageUrl
-      id
-      name
-      nameWithOwner
-      pushedAt
-      resourcePath
-      shortDescriptionHTML
-      updatedAt
-      url
-      issues {
-        totalCount
-      }
-      pullRequests {
-        totalCount
-      }
-      watchers {
-        totalCount
-      }
-      forks {
-        totalCount
-      }
-      stargazers {
-        totalCount
-      }
-      primaryLanguage {
-        color
-        name
-      }
-  	}
-  }
-}
-
 # Repositories that the user has starred.
 query starredRepositories(
   $login: String!,
@@ -387,6 +228,21 @@ query repository($login: String!, $repoName:String!) {
         totalCount
       }
       projects {
+        totalCount
+      }
+      releases {
+        totalCount
+      }
+      refs(first: 20, refPrefix: "refs/heads/") {
+        totalCount
+      }
+      repositoryTopics(first: 20) {
+        nodes {
+          topic {
+            id
+            name
+          }
+        }
         totalCount
       }
     }

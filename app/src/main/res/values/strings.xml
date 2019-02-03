@@ -68,12 +68,22 @@
     <string name="repositories_stars" translation-description="The repositories list title when enter someone's starred repositories, for example: Tonny's stars">%1$s\'s stars</string>
 
     <string name="repository" translation-description="repository">Repository</string>
-    <string name="repository_watchers">%1$d %2$s</string>
-    <string name="repository_stargazers">%1$d %2$s</string>
-    <string name="repository_forks">%1$d %2$s</string>
-    <string name="repository_issues">%1$d %2$s</string>
-    <string name="repository_pull_requests">%1$d %2$s</string>
-    <string name="repository_projects">%1$d %2$s</string>
+    <string name="repository_watchers">Watchers</string>
+    <string name="repository_stargazers">Stargazers</string>
+    <string name="repository_forks">Forks</string>
+    <string name="repository_basic_info">Basic info</string>
+    <string name="repository_issues">Issues</string>
+    <string name="repository_pull_requests">Pull requests</string>
+    <string name="repository_projects">Projects</string>
+    <string name="repository_branches">Branch</string>
+    <string name="repository_releases">Releases</string>
+    <string name="repository_language">Language</string>
+    <string name="repository_license">License</string>
+    <string name="repository_topics">Topics</string>
+    <string name="repository_readme">Readme</string>
+    <string name="repository_more_info">More info</string>
+    <string name="repository_created_on">Created on</string>
+    <string name="repository_updated_on">Updated on</string>
     <plurals name="watchers_count_plurals">
         <item quantity="zero">watcher</item>
         <item quantity="one">watcher</item>

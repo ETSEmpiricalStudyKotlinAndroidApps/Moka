@@ -8,17 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
-import androidx.core.view.ViewCompat
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.net.GlideLoader
 import io.github.tonnyl.moka.net.Status
 import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
 import io.github.tonnyl.moka.ui.prs.PullRequestsFragmentArgs
+import io.github.tonnyl.moka.util.formatNumberWithSuffix
 import kotlinx.android.synthetic.main.fragment_repository.*
 
 class RepositoryFragment : Fragment() {
@@ -42,6 +42,8 @@ class RepositoryFragment : Fragment() {
             parentFragment?.findNavController()?.navigateUp()
         }
 
+        repository_bottom_app_bar.replaceMenu(R.menu.fragment_repository_menu)
+
         val factory = ViewModelFactory(loginArg, nameArg)
         viewModel = ViewModelProviders.of(this, factory).get(RepositoryViewModel::class.java)
 
@@ -55,45 +57,61 @@ class RepositoryFragment : Fragment() {
                     repository_description.text = resources.data?.description
 
                     if (resources.data?.primaryLanguage != null) {
-                        repository_language_text.text = resources.data.primaryLanguage.name
-                        (repository_language_text.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.parseColor(resources.data.primaryLanguage.color))
+                        repository_language_content.text = resources.data.primaryLanguage.name
+                        (repository_language_content.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.parseColor(resources.data.primaryLanguage.color))
                     } else {
-                        repository_language_text.text = context?.getString(R.string.programming_language_unknown)
-                        (repository_language_text.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.BLACK)
+                        repository_language_content.text = context?.getString(R.string.programming_language_unknown)
+                        (repository_language_content.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.BLACK)
                     }
-                    repository_license.text = resources.data?.licenseInfo?.name
-                    if (resources.data?.updatedAt != null) {
-                        repository_updated_at.text = getString(R.string.repository_update_time, DateUtils.getRelativeTimeSpanString(context
-                                ?: return@Observer, resources.data.updatedAt.time, true))
+                    repository_license_content.text = resources.data?.licenseInfo?.name
+
+                    val flags = DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
+                    resources.data?.updatedAt?.let {
+                        repository_updated_on_content.text = DateUtils.formatDateTime(requireContext(), it.time, flags)
                     }
+                    resources.data?.createdAt?.let {
+                        repository_created_on_content.text = DateUtils.formatDateTime(requireContext(), it.time, flags)
+                    }
+
+                    repository_branch_content.text = resources.data?.branchCount.toString()
+                    repository_releases_content.text = resources.data?.releasesCount.toString()
 
                     val watchersCount = resources.data?.watchersCount ?: 0
-                    repository_watchers.text = getString(R.string.repository_watchers, watchersCount, this.resources.getQuantityString(R.plurals.watchers_count_plurals, watchersCount))
+                    repository_watchers_count_text.text = formatNumberWithSuffix(watchersCount)
                     val stargazersCount = resources.data?.stargazersCount ?: 0
-                    repository_stars.text = getString(R.string.repository_stargazers, stargazersCount, this.resources.getQuantityString(R.plurals.stargazers_count_plurals, stargazersCount))
+                    repository_stargazers_count_text.text = formatNumberWithSuffix(stargazersCount)
                     val forksCount = resources.data?.forksCount ?: 0
-                    repository_forks.text = getString(R.string.repository_forks, forksCount, this.resources.getQuantityString(R.plurals.forks_count_plurals, forksCount))
+                    repository_forks_count_text.text = formatNumberWithSuffix(forksCount)
                     val issuesCount = resources.data?.issuesCount ?: 0
-                    repository_issues.text = getString(R.string.repository_issues, issuesCount, this.resources.getQuantityString(R.plurals.issues_count_plurals, issuesCount))
+                    repository_issues_count_text.text = formatNumberWithSuffix(issuesCount)
 
-                    repository_issues.setOnClickListener {
+                    repository_issues_text_layout.setOnClickListener {
                         val args = IssuesFragmentArgs.Builder(loginArg, nameArg)
                         parentFragment?.findNavController()?.navigate(R.id.action_to_issues, args.build().toBundle())
                     }
 
                     val pullRequestsCount = resources.data?.pullRequestsCount ?: 0
-                    repository_pull_requests.text = getString(R.string.repository_pull_requests, pullRequestsCount, this.resources.getQuantityString(R.plurals.pull_requests_count_plurals, pullRequestsCount))
+                    repository_pull_requests_count_text.text = formatNumberWithSuffix(pullRequestsCount)
 
-                    repository_pull_requests.setOnClickListener {
+                    repository_pull_requests_text_layout.setOnClickListener {
                         val args = PullRequestsFragmentArgs.Builder(loginArg, nameArg)
                         parentFragment?.findNavController()?.navigate(R.id.action_to_prs, args.build().toBundle())
                     }
 
                     val projectsCount = resources.data?.projectsCount ?: 0
-                    repository_projects.text = getString(R.string.repository_projects, projectsCount, this.resources.getQuantityString(R.plurals.projects_count_plurals, projectsCount))
+                    repository_projects_count_text.text = formatNumberWithSuffix(projectsCount)
 
-                    if (resources.data?.defaultBranchRef != null) {
+                    resources.data?.defaultBranchRef?.let {
                         observeReadmeFileNameData(resources.data.defaultBranchRef.name)
+                    }
+
+                    resources.data?.topics?.let { topicList ->
+                        repository_topics.apply {
+                            setHasFixedSize(true)
+                            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                            val adapter = RepositoryTopicAdapter(topicList)
+                            repository_topics.adapter = adapter
+                        }
                     }
                 }
                 Status.ERROR -> {
@@ -105,14 +123,6 @@ class RepositoryFragment : Fragment() {
             }
         })
 
-        repository_scroll_view.setOnScrollChangeListener { _: NestedScrollView?, _: Int, _: Int, _: Int, _: Int ->
-            if (repository_scroll_view.canScrollVertically(-1).not()) {
-                ViewCompat.setElevation(appbar, 0f)
-            } else if (appbar.elevation == 0f) {
-                ViewCompat.setElevation(appbar, resources.getDimension(R.dimen.toolbar_elevation))
-            }
-        }
-
     }
 
     private fun observeReadmeFileNameData(branchName: String) {
@@ -121,7 +131,6 @@ class RepositoryFragment : Fragment() {
                 Status.SUCCESS -> {
                     if (resources.data != null) {
                         observeReadmeFileContent("$branchName:${resources.data.second}")
-                        repository_readme_title.text = resources.data.second
                     }
                 }
                 Status.ERROR -> {

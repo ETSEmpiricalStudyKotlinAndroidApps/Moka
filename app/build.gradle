@@ -14,7 +14,7 @@ android {
         targetSdkVersion versions.target_sdk_version
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         Properties properties = new Properties()
         boolean hasPropertiesFile = false
@@ -44,6 +44,7 @@ android {
             minifyEnabled false
             shrinkResources false
             versionNameSuffix "-debug"
+            testCoverageEnabled true
         }
     }
 
@@ -113,6 +114,7 @@ dependencies {
     implementation "com.apollographql.apollo:apollo-http-cache:${versions.apollo}"
     implementation "com.apollographql.apollo:apollo-rx2-support:${versions.apollo}"
     implementation "com.apollographql.apollo:apollo-android-support:${versions.apollo}"
+    compileOnly "javax.annotation:jsr250-api:${versions.jsr250}"
 
     implementation "com.airbnb.android:lottie:${versions.lottie}"
     implementation "com.airbnb.android:mvrx:${versions.mvrx}"
@@ -138,16 +140,20 @@ dependencies {
     testImplementation "androidx.paging:paging-common:${versions.paging}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "org.hamcrest:hamcrest-all:${versions.hamcrest}"
+    testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
 
-    androidTestImplementation "androidx.test:rules:${versions.android_test_runner_rules}"
-    androidTestImplementation "androidx.test:runner:${versions.android_test_runner_rules}"
+    androidTestImplementation "androidx.test:core:${versions.android_test_core}"
+    androidTestImplementation "androidx.test:runner:${versions.android_test_runner}"
+    androidTestImplementation "androidx.test:rules:${versions.android_test_rules}"
+    androidTestImplementation "androidx.test.ext:junit:${versions.android_junit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:${versions.espresso}"
     androidTestImplementation "androidx.test.espresso:espresso-intents:${versions.espresso}"
     androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
     androidTestImplementation "android.arch.work:work-testing:${versions.work_manager}"
-    androidTestImplementation "android.arch.navigation:navigation-testing:1.0.0-alpha08"
+    androidTestImplementation "android.arch.navigation:navigation-testing:${versions.navigation_testing}"
     androidTestImplementation "androidx.room:room-testing:${versions.room}"
+    androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
 }
 
 apply plugin: 'com.google.gms.google-services'

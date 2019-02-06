@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka
 
 import org.junit.Test
-
 import org.junit.Assert.*
 
 /**

@@ -43,6 +43,8 @@ data class ReactionGroupGraphQL(
                     HOORAY -> ReactionContent.HOORAY
                     CONFUSED -> ReactionContent.CONFUSED
                     HEART -> ReactionContent.HEART
+                    ROCKET -> ReactionContent.ROCKET
+                    EYES -> ReactionContent.EYES
                     `$UNKNOWN` -> ReactionContent.THUMBS_UP
                 },
                 data.createdAt(),
@@ -58,6 +60,8 @@ data class ReactionGroupGraphQL(
                     HOORAY -> ReactionContent.HOORAY
                     CONFUSED -> ReactionContent.CONFUSED
                     HEART -> ReactionContent.HEART
+                    ROCKET -> ReactionContent.ROCKET
+                    EYES -> ReactionContent.EYES
                     `$UNKNOWN` -> ReactionContent.THUMBS_UP
                 },
                 data.createdAt(),

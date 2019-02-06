@@ -35,4 +35,11 @@ enum class ReactionContent {
      */
     THUMBS_UP,
 
+    /**
+     *
+     */
+    ROCKET,
+
+    EYES
+
 }

@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -71,12 +69,6 @@ class IssueFragment : Fragment() {
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         issue_timeline_recycler_view.layoutManager = layoutManager
         issue_timeline_recycler_view.adapter = adapter
-
-        nested_scroll_view.setOnScrollChangeListener { v: NestedScrollView?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
-            if (scrollY == 0 || oldScrollY == 0) {
-                ViewCompat.setElevation(appbar, if (appbar.elevation == 0f) resources.getDimension(R.dimen.toolbar_elevation) else 0f)
-            }
-        }
 
         viewModel.issueTimelineResults.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)

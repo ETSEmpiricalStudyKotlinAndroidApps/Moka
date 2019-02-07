@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -89,14 +87,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 }
             }
         })
-
-        ViewCompat.setElevation(appbar, if (fragment_edit_profile_scroll_view.canScrollVertically(-1)) resources.getDimension(R.dimen.toolbar_elevation) else 0f)
-
-        fragment_edit_profile_scroll_view.setOnScrollChangeListener { _: NestedScrollView?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
-            if (scrollY == 0 || oldScrollY == 0) {
-                ViewCompat.setElevation(appbar, if (appbar.elevation == 0f) resources.getDimension(R.dimen.toolbar_elevation) else 0f)
-            }
-        }
 
         toolbar_done.setOnClickListener(this)
     }

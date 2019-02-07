@@ -63,23 +63,9 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
             updateToolbarTitle()
         }
 
-        val layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        with(recycler_view) {
-            recycler_view.layoutManager = layoutManager
-            recycler_view.adapter = filterAdapter
-
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (dy > 0 && layoutManager.findFirstCompletelyVisibleItemPosition() != 0 && appbar?.elevation == 0f) {
-                        ViewCompat.setElevation(appbar, resources.getDimension(R.dimen.toolbar_elevation))
-                    } else if (dy < 0 && layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && appbar != null && appbar.elevation != 0f) {
-                        ViewCompat.setElevation(appbar, 0f)
-                    }
-                }
-
-            })
+        recycler_view.apply {
+            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            adapter = filterAdapter
         }
 
         viewModel.languages(requireContext().assets.open("languages.json")).observe(this, Observer {

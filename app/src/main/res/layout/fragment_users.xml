@@ -11,7 +11,7 @@
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_marginTop="?actionBarSize">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -20,6 +20,7 @@
             android:fadeScrollbars="true"
             android:scrollbarStyle="insideOverlay"
             android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/item_user" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

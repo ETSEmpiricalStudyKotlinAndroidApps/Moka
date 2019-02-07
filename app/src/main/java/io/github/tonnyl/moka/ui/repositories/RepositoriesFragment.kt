@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -66,19 +65,6 @@ class RepositoriesFragment : Fragment() {
                 val builder = RepositoryFragmentArgs.Builder(loginArg, repositoryName)
                 parentFragment?.findNavController()?.navigate(R.id.action_to_repository, builder.build().toBundle())
             }
-        })
-
-        recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0 && layoutManager.findFirstCompletelyVisibleItemPosition() != 0 && appbar?.elevation == 0f) {
-                    ViewCompat.setElevation(appbar, resources.getDimension(R.dimen.toolbar_elevation))
-                } else if (dy < 0 && layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && appbar != null && appbar.elevation != 0f) {
-                    ViewCompat.setElevation(appbar, 0f)
-                }
-            }
-
         })
 
         viewModel.repositoriesResults.observe(viewLifecycleOwner, Observer { list ->

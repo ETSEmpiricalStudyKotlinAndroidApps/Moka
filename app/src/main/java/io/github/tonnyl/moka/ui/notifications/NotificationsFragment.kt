@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -77,19 +76,6 @@ class NotificationsFragment : Fragment() {
         toolbar_search.setOnClickListener {
             parentFragment?.findNavController()?.navigate(R.id.action_to_search)
         }
-
-        recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0 && layoutManager.findFirstCompletelyVisibleItemPosition() != 0 && appbar?.elevation == 0f) {
-                    ViewCompat.setElevation(appbar, resources.getDimension(R.dimen.toolbar_elevation))
-                } else if (dy < 0 && layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && appbar != null && appbar?.elevation != 0f) {
-                    ViewCompat.setElevation(appbar, 0f)
-                }
-            }
-
-        })
 
     }
 

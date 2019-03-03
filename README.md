@@ -29,4 +29,4 @@ CLIENT_SECRET=YOUR CLIENT SECRET
 For the callback URL, you can define your owns or use `moka-app://callback` for working out of the box.
 
 ## LICENSE
-Carol is under an MIT license. See the [LICENSE](LICENSE) file for more information.
+Moka is under an MIT license. See the [LICENSE](LICENSE) file for more information.

@@ -52,12 +52,129 @@
     <string name="user_profile_link_action" translation_description="The open action text of snackabar when click the link image of user profile.">Open</string>
     <string name="user_profile_edit_profile">Edit profile</string>
 
-    <string name="event_starred" translation_description="The action text when someone starred others' repository of timeline event list.">starred</string>
-    <string name="event_forked" translation_description="The action text when someone forked others' repository of timeline event list.">forked</string>
-    <string name="event_created" translation_description="The action text when someone created a new repository of timeline event list.">created</string>
-    <string name="event_publicized" translation_description="The action text when someone make his/her repository public of timeline event list.">publicized</string>
-    <string name="event_action_an_issue_in" translation_description="The action text when someone created/closed/assigned/... an issue of timeline event list.">%1$s an issue in</string>
-    <string name="event_action_a_pr" translation_description="The action text when someone created/assigned/... a pull request of timeline event list.">%1$s a PR in</string>
+    <string name="event_at">&#160;at&#160;</string>
+    <string name="event_to">&#160;to&#160;</string>
+    <string name="event_from">&#160;from&#160;</string>
+
+    <string name="event_added">&#160;added&#160;</string>
+    <string name="event_deleted">&#160;deleted&#160;</string>
+    <string name="event_edited">&#160;edited&#160;</string>
+
+    <string name="event_star">&#160;starred&#160;</string>
+
+    <string name="event_create">&#160;created %1$s&#160;</string>
+    <string name="event_create_type_repository">repository</string>
+    <string name="event_create_type_branch">branch</string>
+    <string name="event_create_type_tag">tag</string>
+
+    <string name="event_comment_on_commit">&#160;commented on commit&#160;</string>
+
+    <string name="event_download">&#160;downloaded&#160;</string>
+
+    <string name="event_follow">&#160;followed&#160;</string>
+
+    <string name="event_fork" translation_description="The action text when someone forked others' repository of timeline event list.">&#160;forked&#160;</string>
+
+    <string name="event_gist">&#160;%1$s Gist&#160;</string>
+    <string name="event_gist_action_created">created</string>
+    <string name="event_gist_action_updated">updated</string>
+
+    <string name="event_gollum_event">&#160;%1$s a wiki page in&#160;</string>
+    <string name="event_gollum_event_action_edited">edited</string>
+    <string name="event_gollum_event_action_created">created</string>
+
+    <string name="event_issue_comment">&#160;%1$s a comment on issue&#160;</string>
+    <string name="event_issue_comment_action_created">created</string>
+    <string name="event_issue_comment_action_edited">edited</string>
+    <string name="event_issue_comment_action_deleted">deleted</string>
+
+    <string name="event_issue">&#160;%1$s issue&#160;</string>
+    <string name="event_issue_action_opened">opened</string>
+    <string name="event_issue_action_edited">edited</string>
+    <string name="event_issue_action_deleted">deleted</string>
+    <string name="event_issue_action_transferred">transferred</string>
+    <string name="event_issue_action_pinned">pinned</string>
+    <string name="event_issue_action_unpinned">unpinned</string>
+    <string name="event_issue_action_closed">closed</string>
+    <string name="event_issue_action_reopened">reopened</string>
+    <string name="event_issue_action_assigned">assigned</string>
+    <string name="event_issue_action_unassigned">unassigned</string>
+    <string name="event_issue_action_labeled">labeled</string>
+    <string name="event_issue_action_unlabeled">unlabeled</string>
+    <string name="event_issue_action_milestoned">milestoned</string>
+    <string name="event_issue_action_demilestoned">demilestoned</string>
+
+    <string name="event_publicized" translation_description="The action text when someone make his/her repository public of timeline event list.">&#160;open-sourced&#160;</string>
+
+    <string name="event_pull_request" translation_description="The action text when someone created/assigned/... a pull request of timeline event list.">&#160;%1$s pull request&#160;</string>
+    <string name="event_pull_request_action_assigned">assigned</string>
+    <string name="event_pull_request_action_unassigned">unassigned</string>
+    <string name="event_pull_request_action_review_requested">requested review on</string>
+    <string name="event_pull_request_action_review_request_removed">removed review-request on</string>
+    <string name="event_pull_request_action_labeled">labeled</string>
+    <string name="event_pull_request_action_unlabeled">unlabeled</string>
+    <string name="event_pull_request_action_opened">opened</string>
+    <string name="event_pull_request_action_edited">edited</string>
+    <string name="event_pull_request_action_closed">closed</string>
+    <string name="event_pull_request_action_reopened">reopened</string>
+    <string name="event_pull_request_action_synchronized">synchronized</string>
+
+    <string name="event_pull_request_review_comment">&#160;%1$s a review comment on pull request&#160;</string>
+    <string name="event_pull_request_review_comment_action_created">created</string>
+    <string name="event_pull_request_review_comment_action_edited">edited</string>
+    <string name="event_pull_request_review_comment_action_deleted">deleted</string>
+
+    <string name="event_pull_request_review">&#160;%1$s a review on pull request&#160;</string>
+    <string name="event_pull_request_review_action_submitted">submitted</string>
+    <string name="event_pull_request_review_action_edited">edited</string>
+    <string name="event_pull_request_review_action_dismissed">dismissed</string>
+
+    <string name="event_repository">&#160;%1$s repository&#160;</string>
+    <string name="event_repository_action_created">created</string>
+    <string name="event_repository_action_deleted">deleted</string>
+    <string name="event_repository_action_archived">archived</string>
+    <string name="event_repository_action_unarchived">unarchived</string>
+    <string name="event_repository_action_publicized">publicized</string>
+    <string name="event_repository_action_privatized">privatized</string>
+
+    <string name="event_push">&#160;pushed to&#160;</string>
+
+    <string name="event_team_add">&#160;added repository&#160;</string>
+
+    <string name="event_delete">&#160;deleted %1$s&#160;</string>
+    <string name="event_delete_type_branch">branch</string>
+    <string name="event_delete_type_tag">tag</string>
+
+    <string name="event_release">&#160;released&#160;</string>
+
+    <string name="event_fork_apply">&#160;applied a patch&#160;</string>
+
+    <string name="event_org_block_type_block">&#160;blocked&#160;</string>
+    <string name="event_org_block_type_unblock">&#160;unblocked&#160;</string>
+
+    <string name="event_project_card">&#160;%1$s a project card&#160;</string>
+    <string name="event_project_card_action_created">created</string>
+    <string name="event_project_card_action_updated">updated</string>
+    <string name="event_project_card_action_moved">moved</string>
+    <string name="event_project_card_action_converted">converted</string>
+    <string name="event_project_card_action_deleted">deleted</string>
+
+    <string name="event_project_column">&#160;%1$s a project column&#160;</string>
+    <string name="event_project_column_created">created</string>
+    <string name="event_project_column_updated">updated</string>
+    <string name="event_project_column_moved">moved</string>
+    <string name="event_project_column_deleted">deleted</string>
+
+    <string name="event_organization_member_added">added</string>
+    <string name="event_organization_member_removed">removed</string>
+    <string name="event_organization_member_invited">invited</string>
+
+    <string name="event_project">&#160;%1$s a project&#160;</string>
+    <string name="event_project_created">created</string>
+    <string name="event_project_edited">edited</string>
+    <string name="event_project_closed">closed</string>
+    <string name="event_project_reopened">reopened</string>
+    <string name="event_project_deleted">deleted</string>
 
     <string name="navigate_up" translation-description="Arrow at the top left of the screen for navigation">Navigate up</string>
 

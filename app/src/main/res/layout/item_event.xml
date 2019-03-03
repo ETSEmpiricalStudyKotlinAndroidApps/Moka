@@ -29,12 +29,12 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/event_action"
-        style="@style/TextAppearance.AppCompat.Body1"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:hyphenationFrequency="none"
         android:textColor="@color/colorAccent"
-        app:layout_constraintBottom_toTopOf="@id/event_create_time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/event_space"
         app:layout_constraintTop_toTopOf="parent"
@@ -42,15 +42,28 @@
         tools:text="TonnyL starred PaperPlane" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/event_content"
+        style="@style/TextAppearance.MaterialComponents.Caption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:hyphenationFrequency="none"
+        android:maxLines="8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/event_space"
+        app:layout_constraintTop_toBottomOf="@id/event_action"
+        tools:text="@tools:sample/lorem[49]" />
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/event_create_time"
-        style="@style/TextAppearance.AppCompat.Caption"
+        style="@style/TextAppearance.MaterialComponents.Caption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hyphenationFrequency="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/event_space"
-        app:layout_constraintTop_toBottomOf="@id/event_action"
+        app:layout_constraintTop_toBottomOf="@id/event_content"
         tools:text="@tools:sample/date/hhmmss" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

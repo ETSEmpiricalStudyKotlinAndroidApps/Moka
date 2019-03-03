@@ -8,11 +8,14 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @SuppressLint("ParcelCreator")
 data class EventActor(
-        val id: Int,
+        @SerializedName("id")
+        val id: Long,
+        @SerializedName("login")
         val login: String,
-        @SerializedName("gravatar_id")
-        val grAvatarId: String,
         @SerializedName("avatar_url")
         val avatarUrl: String,
-        val url: String
+        @SerializedName("html_url")
+        val htmlUrl: String,
+        @SerializedName("type")
+        val type: String
 ) : Parcelable

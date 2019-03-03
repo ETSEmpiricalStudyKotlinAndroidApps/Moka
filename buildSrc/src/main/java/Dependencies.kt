@@ -5,7 +5,7 @@ object Versions {
     val minSdk = 23
     val buildTools = "28.0.3"
 
-    val androidGradle = "3.5.0-alpha04"
+    val androidGradle = "3.5.0-alpha06"
     val gmsGoogleServiceGradle = "4.2.0"
     val fabricToolsGradle = "1.26.1"
     val kotlin = "1.3.20"
@@ -14,7 +14,7 @@ object Versions {
     val constraintLayout = "2.0.0-alpha3"
     val coordinatorLayout = "1.1.0-alpha01"
     val appcompat = "1.1.0-alpha02"
-    val material = "1.1.0-alpha03"
+    val material = "1.1.0-alpha04"
     val browser = "1.0.0"
     val lifecycle = "2.1.0-alpha02"
     val navigation = "1.0.0-beta02"

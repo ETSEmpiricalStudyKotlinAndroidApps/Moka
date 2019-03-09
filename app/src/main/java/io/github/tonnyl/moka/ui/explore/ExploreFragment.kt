@@ -7,31 +7,55 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.explore.filters.TrendingFilterFragment
 import kotlinx.android.synthetic.main.fragment_explore.*
+import kotlinx.android.synthetic.main.layout_main_search_bar.*
 
 class ExploreFragment : Fragment() {
 
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
 
+    private lateinit var repositoryAdapter: ExploreAdapter
+
+    private val viewModel: ExploreViewModel by lazy {
+        ViewModelProviders.of(this, ViewModelFactory()).get(ExploreViewModel::class.java)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_explore, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolbar_search.setOnClickListener {
-            parentFragment?.findNavController()?.navigate(R.id.action_to_search)
+        recycler_view.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+
+        fun initAdapterIfNeeded() {
+            val repositories = viewModel.trendingRepositories.value?.body()
+            val developers = viewModel.trendingDevelopers.value?.body()
+
+            if (repositories != null && developers != null && !this::repositoryAdapter.isInitialized) {
+                repositoryAdapter = ExploreAdapter("All Languages", "Daily", repositories, developers)
+                repositoryAdapter.onItemClick = {
+                    findNavController().navigate(R.id.action_to_trending_developers)
+                }
+
+                recycler_view.adapter = repositoryAdapter
+            }
         }
 
-        view_pager.adapter = ExplorePagerAdapter(requireContext(), childFragmentManager)
-        tab_layout.setupWithViewPager(view_pager)
-        tab_layout.getTabAt(0)?.setIcon(R.drawable.ic_book_24)
-        tab_layout.getTabAt(1)?.setIcon(R.drawable.ic_person_24)
+        viewModel.trendingRepositories.observe(this, Observer { response ->
+            initAdapterIfNeeded()
+        })
 
-        view_pager.offscreenPageLimit = 2
+        viewModel.trendingDevelopers.observe(this, Observer {
+            initAdapterIfNeeded()
+        })
 
         val sheet = TrendingFilterFragment()
         fab.setOnClickListener {
@@ -45,7 +69,7 @@ class ExploreFragment : Fragment() {
             drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
                     ?: return
         }
-        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, main_search_bar_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 
         drawer.addDrawerListener(toggle)
         toggle.syncState()

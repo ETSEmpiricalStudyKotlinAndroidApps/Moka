@@ -70,4 +70,12 @@
         <item name="android:maxLines">1</item>
     </style>
 
+    <style name="SearchBarIcon">
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:scaleType">center</item>
+        <!--<item name="android:tint">?colorIcon</item>-->
+    </style>
+
 </resources>

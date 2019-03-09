@@ -11,7 +11,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +22,7 @@ import io.github.tonnyl.moka.net.RetrofitClient
 import io.github.tonnyl.moka.net.service.NotificationsService
 import io.github.tonnyl.moka.util.formatISO8601String
 import kotlinx.android.synthetic.main.fragment_notifications.*
+import kotlinx.android.synthetic.main.layout_main_search_bar.*
 
 class NotificationsFragment : Fragment() {
 
@@ -61,7 +61,6 @@ class NotificationsFragment : Fragment() {
         recycler_view.layoutManager = layoutManager
         recycler_view.adapter = notificationAdapter
 
-
         viewModel.posts.observe(this, Observer<PagedList<Notification>> {
             notificationAdapter.submitList(it)
         })
@@ -73,10 +72,6 @@ class NotificationsFragment : Fragment() {
             viewModel.refreshNotificationList(formatISO8601String())
         }
 
-        toolbar_search.setOnClickListener {
-            parentFragment?.findNavController()?.navigate(R.id.action_to_search)
-        }
-
     }
 
     override fun onResume() {
@@ -85,7 +80,7 @@ class NotificationsFragment : Fragment() {
             drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
                     ?: return
         }
-        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, main_search_bar_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 
         drawer.addDrawerListener(toggle)
         toggle.syncState()

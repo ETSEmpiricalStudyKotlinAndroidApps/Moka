@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
-import kotlinx.android.synthetic.main.fragment_drafts.*
+import kotlinx.android.synthetic.main.layout_main_search_bar.*
 
 class DraftsFragment : Fragment() {
 
@@ -20,10 +19,6 @@ class DraftsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        toolbar_search.setOnClickListener {
-            parentFragment?.findNavController()?.navigate(R.id.action_to_search)
-        }
     }
 
     override fun onResume() {
@@ -32,7 +27,7 @@ class DraftsFragment : Fragment() {
             drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
                     ?: return
         }
-        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, main_search_bar_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 
         drawer.addDrawerListener(toggle)
         toggle.syncState()

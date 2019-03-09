@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +14,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
-import io.github.tonnyl.moka.ui.explore.TrendingTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_explore_filter.*
 
@@ -30,7 +29,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
         ViewModelProviders.of(this, ViewModelFactory()).get(ExploreViewModel::class.java)
     }
 
-    private var queryData: Triple<TrendingTimeSpanType, String, String>? = null
+    private var queryData: Triple<ExploreTimeSpanType, String, String>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_explore_filter, container, false)
 
@@ -45,7 +44,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
 
         updateToolbarTitle()
 
-        filterAdapter.onRadioButtonClickListener = { v: View, type: TrendingTimeSpanType ->
+        filterAdapter.onRadioButtonClickListener = { v: View, type: ExploreTimeSpanType ->
             when (v.id) {
                 R.id.item_trending_filter_time_span_weekly,
                 R.id.item_trending_filter_time_span_monthly,
@@ -103,9 +102,9 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
         toolbar.title = getString(
                 R.string.explore_filter_info,
                 getString(when (queryData?.first) {
-                    TrendingTimeSpanType.WEEKLY -> R.string.explore_trending_filter_time_span_weekly
-                    TrendingTimeSpanType.MONTHLY -> R.string.explore_trending_filter_time_span_monthly
-                    // including TrendingTimeSpanType.DAILY
+                    ExploreTimeSpanType.WEEKLY -> R.string.explore_trending_filter_time_span_weekly
+                    ExploreTimeSpanType.MONTHLY -> R.string.explore_trending_filter_time_span_monthly
+                    // including ExploreTimeSpanType.DAILY
                     else -> R.string.explore_trending_filter_time_span_daily
                 }),
                 queryData?.third)

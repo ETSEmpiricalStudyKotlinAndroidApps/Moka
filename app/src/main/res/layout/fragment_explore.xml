@@ -1,85 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
+    <include layout="@layout/layout_main_search_bar" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:liftOnScroll="true">
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/main_search_bar_height">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ToolbarTheme"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:listitem="@layout/item_trending_repository" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/toolbar_title"
-                style="@style/TextAppearance.MaterialComponents.Headline6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/navigation_menu_explore"
-                android:textColor="@color/colorControlNormal"
-                android:textSize="@dimen/title_text" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/toolbar_search"
-                android:layout_width="@dimen/repository_list_star_button_width"
-                android:layout_height="@dimen/repository_list_star_button_height"
-                android:layout_gravity="end|center_vertical"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/main_menu_search"
-                android:src="@drawable/ic_menu_search_24"
-                android:tint="@color/colorControlNormal" />
+            <include layout="@layout/layout_empty_content" />
 
         </FrameLayout>
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            style="@style/Widget.MaterialComponents.TabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabIndicatorFullWidth="false"
-            app:tabInlineLabel="true"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/colorTextAccent"
-            app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            app:tabTextColor="@color/colorTextSecondary">
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/ic_book_24"
-                android:text="@string/explore_trending_repositories" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/ic_person_24"
-                android:text="@string/explore_trending_developers" />
-
-        </com.google.android.material.tabs.TabLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

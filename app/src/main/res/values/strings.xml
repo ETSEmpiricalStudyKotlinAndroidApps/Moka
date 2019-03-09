@@ -314,7 +314,7 @@
     <string name="notification_mark_as_read">Mark as read</string>
     <string name="notification_unsubscribe">Unsubscribe</string>
 
-    <string name="search_input_hint">Search Repository &amp; User</string>
+    <string name="search_input_hint">Search repositories &amp; users</string>
 
     <string name="explore_filter_info">%1$s | %2$s</string> <!--All Languages | Daily-->
     <string name="explore_period_stars">%1$d stars %2$s</string> <!--123 stars today-->

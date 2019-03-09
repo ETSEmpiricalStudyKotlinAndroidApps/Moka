@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.explore
+package io.github.tonnyl.moka.ui.explore.developers
 
 import androidx.lifecycle.LiveData
 import io.github.tonnyl.moka.data.TrendingDeveloper

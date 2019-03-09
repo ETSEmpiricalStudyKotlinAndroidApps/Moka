@@ -12,6 +12,8 @@
     <dimen name="regular_icon_size">40dp</dimen>
     <dimen name="regular_icon_padding">8dp</dimen>
 
+    <dimen name="main_search_bar_height">64dp</dimen>
+
     <dimen name="auth_get_started_button_padding">16dp</dimen>
     <dimen name="auth_get_started_button_width">160dp</dimen>
     <dimen name="auth_logo_size">120dp</dimen>

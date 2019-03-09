@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.explore.TrendingTimeSpanType
+import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import kotlinx.android.synthetic.main.item_trending_filter_time_span.view.*
 import kotlinx.android.synthetic.main.item_trending_language.view.*
 
@@ -26,7 +26,7 @@ class FilterAdapter : ListAdapter<LocalLanguage?, RecyclerView.ViewHolder>(DIFF_
 
     }
 
-    var onRadioButtonClickListener: (View, TrendingTimeSpanType) -> Unit = { _, _ ->
+    var onRadioButtonClickListener: (View, ExploreTimeSpanType) -> Unit = { _, _ ->
 
     }
 
@@ -96,14 +96,14 @@ class FilterAdapter : ListAdapter<LocalLanguage?, RecyclerView.ViewHolder>(DIFF_
 
         val timeSpan = when (checkedId) {
             R.id.item_trending_filter_time_span_weekly -> {
-                TrendingTimeSpanType.WEEKLY
+                ExploreTimeSpanType.WEEKLY
             }
             R.id.item_trending_filter_time_span_monthly -> {
-                TrendingTimeSpanType.MONTHLY
+                ExploreTimeSpanType.MONTHLY
             }
             // including R.id.item_trending_filter_time_span_daily
             else -> {
-                TrendingTimeSpanType.DAILY
+                ExploreTimeSpanType.DAILY
             }
         }
 

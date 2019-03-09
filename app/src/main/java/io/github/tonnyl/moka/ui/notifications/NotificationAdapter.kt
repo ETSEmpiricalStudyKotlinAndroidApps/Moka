@@ -59,7 +59,7 @@ class NotificationAdapter(
             R.layout.item_notification -> {
                 val item = getItem(position) ?: return
                 with(holder as NotificationViewHolder) {
-                    bind(item)
+                    bind(item, position)
                     this.itemView.tag = item
                 }
             }
@@ -102,8 +102,16 @@ class NotificationAdapter(
             }
         }
 
-        fun bind(notification: Notification) {
+        fun bind(notification: Notification, position: Int) {
             with(itemView) {
+                if (position == 0) {
+                    item_notification_overline.visibility = View.VISIBLE
+                    item_notification_space_between_overline_and_avatar.visibility = View.VISIBLE
+                } else {
+                    item_notification_overline.visibility = View.GONE
+                    item_notification_space_between_overline_and_avatar.visibility = View.GONE
+                }
+
                 item_notification_repository_name.setTextFuture(PrecomputedTextCompat.getTextFuture(
                         notification.repository.fullName,
                         TextViewCompat.getTextMetricsParams(item_notification_repository_name),

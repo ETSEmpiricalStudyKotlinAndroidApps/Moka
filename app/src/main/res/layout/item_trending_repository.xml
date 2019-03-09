@@ -10,12 +10,29 @@
     android:focusable="true"
     android:padding="@dimen/fragment_content_padding">
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_trending_repository_overline"
+        style="@style/TextAppearance.MaterialComponents.Overline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/explore_trending_repositories"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Space
+        android:id="@+id/item_trending_repository_space_between_overline_and_avatar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/list_item_spacing"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_overline" />
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/item_trending_repository_user_avatar"
         android:layout_width="@dimen/repository_list_avatar_width"
         android:layout_height="@dimen/repository_list_avatar_height"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar"
         tools:src="@tools:sample/avatars" />
 
     <Space
@@ -24,7 +41,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/item_trending_repository_user_avatar"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/item_trending_repository_title"
@@ -39,6 +56,7 @@
         android:textSize="@dimen/list_item_title_text"
         app:layout_constraintEnd_toStartOf="@id/item_trending_repository_rank"
         app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
+        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar"
         tools:text="@sample/repository.json/repositories/name" />
 
     <androidx.appcompat.widget.AppCompatTextView

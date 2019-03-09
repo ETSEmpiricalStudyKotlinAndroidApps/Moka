@@ -10,30 +10,24 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import kotlinx.android.synthetic.main.fragment_explore_page.*
+import io.github.tonnyl.moka.ui.explore.developers.TrendingDeveloperAdapter
+import kotlinx.android.synthetic.main.fragment_explore_developers.*
 
 class TrendingDevelopersFragment : Fragment() {
 
     private lateinit var developerAdapter: TrendingDeveloperAdapter
 
     private val viewModel: ExploreViewModel by lazy {
-        ViewModelProviders.of(this, ViewModelFactory()).get(ExploreViewModel::class.java)
+        ViewModelProviders.of(requireParentFragment(), ViewModelFactory()).get(ExploreViewModel::class.java)
     }
 
-    companion object {
-
-        fun newInstance(): TrendingDevelopersFragment = TrendingDevelopersFragment()
-
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_explore_page, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_explore_developers, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         developerAdapter = TrendingDeveloperAdapter("All Languages", "Daily")
-        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        recycler_view.layoutManager = layoutManager
+        recycler_view.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recycler_view.adapter = developerAdapter
 
         viewModel.trendingDevelopers.observe(this, Observer { response ->

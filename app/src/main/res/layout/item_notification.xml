@@ -10,12 +10,29 @@
     android:focusable="true"
     android:padding="@dimen/list_item_spacing">
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_notification_overline"
+        style="@style/TextAppearance.MaterialComponents.Overline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/navigation_menu_notifications"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Space
+        android:id="@+id/item_notification_space_between_overline_and_avatar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/list_item_spacing"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_notification_overline" />
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/item_notification_repository_avatar"
         android:layout_width="@dimen/regular_icon_size"
         android:layout_height="@dimen/regular_icon_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_notification_space_between_overline_and_avatar"
         tools:src="@tools:sample/avatars" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -28,7 +45,7 @@
         android:maxLines="1"
         app:layout_constraintEnd_toStartOf="@id/item_notification_time"
         app:layout_constraintStart_toEndOf="@id/item_notification_repository_avatar"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_notification_space_between_overline_and_avatar"
         tools:text="@sample/notification.json/notification/repo_full_name" />
 
     <androidx.appcompat.widget.AppCompatTextView

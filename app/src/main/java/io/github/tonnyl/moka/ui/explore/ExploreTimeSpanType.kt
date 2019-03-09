@@ -1,6 +1,6 @@
 package io.github.tonnyl.moka.ui.explore
 
-enum class TrendingTimeSpanType(val value: String) {
+enum class ExploreTimeSpanType(val value: String) {
 
     DAILY("daily"),
 

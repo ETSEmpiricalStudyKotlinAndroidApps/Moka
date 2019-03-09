@@ -17,18 +17,18 @@ object Versions {
     val material = "1.1.0-alpha04"
     val browser = "1.0.0"
     val lifecycle = "2.1.0-alpha02"
-    val navigation = "1.0.0-beta02"
+    val navigation = "2.0.0-rc02"
     val navigationTesting = "1.0.0-alpha08"
     val paging = "2.1.0"
-    val workManager = "1.0.0-rc01"
+    val workManager = "2.0.0-rc01"
     val room = "2.1.0-alpha04"
     val matisse = "0.5.2-beta4"
     val preference = "1.1.0-alpha03"
     val swipeRefreshLayout = "1.1.0-alpha01"
-    val glide = "4.8.0"
+    val glide = "4.9.0"
     val rxjava2 = "2.2.6"
     val rxandroid = "2.1.0"
-    val lottie = "3.0.0-beta1"
+    val lottie = "3.0.0-beta2"
     val retrofit = "2.5.0"
     val okhttpLoggingInterceptor = "3.10.0"
     val apollo = "1.0.1-SNAPSHOT"
@@ -62,7 +62,7 @@ object Deps {
         val android = "com.android.tools.build:gradle:${Versions.androidGradle}"
         val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
         val apollo = "com.apollographql.apollo:apollo-gradle-plugin:${Versions.apollo}"
-        val navigationSafeArgs = "android.arch.navigation:navigation-safe-args-gradle-plugin:${Versions.navigation}"
+        val navigationSafeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.navigation}"
         val googleServices = "com.google.gms:google-services:${Versions.gmsGoogleServiceGradle}"
         val fabric = "io.fabric.tools:gradle:${Versions.fabricToolsGradle}"
 
@@ -94,8 +94,8 @@ object Deps {
 
         object Navigation {
 
-            val navigationFragmentKtx = "android.arch.navigation:navigation-fragment-ktx:${Versions.navigation}"
-            val navigationUIKtx = "android.arch.navigation:navigation-ui-ktx:${Versions.navigation}"
+            val navigationFragmentKtx = "androidx.navigation:navigation-fragment-ktx:${Versions.navigation}"
+            val navigationUIKtx = "androidx.navigation:navigation-ui-ktx:${Versions.navigation}"
 
         }
 
@@ -117,7 +117,7 @@ object Deps {
 
         object WorkManager {
 
-            val runtime = "android.arch.work:work-runtime-ktx:${Versions.workManager}"
+            val runtime = "androidx.work:work-runtime-ktx:${Versions.workManager}"
 
         }
 
@@ -208,7 +208,7 @@ object Deps {
         val espressoContrib = "androidx.test.espresso:espresso-contrib:${Versions.espresso}"
         val espressoIntents = "androidx.test.espresso:espresso-intents:${Versions.espresso}"
         val mockito = "org.mockito:mockito-android:${Versions.mockito}"
-        val work = "android.arch.work:work-testing:${Versions.workManager}"
+        val work = "androidx.work:work-testing:${Versions.workManager}"
         val navigation = "android.arch.navigation:navigation-testing:${Versions.navigationTesting}"
         val room = "androidx.room:room-testing:${Versions.room}"
         val retrofitMock = "com.squareup.retrofit2:retrofit-mock:${Versions.retrofit}"

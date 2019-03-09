@@ -39,14 +39,22 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
         val item = getItem(position) ?: return
 
         if (holder is EventViewHolder) {
-            holder.bind(item)
+            holder.bind(item, position)
         }
     }
 
     class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(data: Event) {
+        fun bind(data: Event, position: Int) {
             with(itemView) {
+                if (position == 0) {
+                    event_overline.visibility = View.VISIBLE
+                    event_space_between_overline_and_avatar.visibility = View.VISIBLE
+                } else {
+                    event_overline.visibility = View.GONE
+                    event_space_between_overline_and_avatar.visibility = View.GONE
+                }
+
                 GlideApp.with(context)
                         .load(data.actor.avatarUrl)
                         .circleCrop()

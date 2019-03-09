@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.explore
+package io.github.tonnyl.moka.ui.explore.developers
 
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -20,11 +20,11 @@ import kotlinx.android.synthetic.main.item_trending_developer.view.*
 class TrendingDeveloperAdapter(
         var language: String,
         var since: String
-) : ListAdapter<TrendingDeveloper?, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+) : ListAdapter<TrendingDeveloper, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TrendingDeveloper?>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TrendingDeveloper>() {
 
             override fun areItemsTheSame(oldItem: TrendingDeveloper, newItem: TrendingDeveloper): Boolean = oldItem.url == newItem.url
 
@@ -34,51 +34,26 @@ class TrendingDeveloperAdapter(
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = when (viewType) {
-        R.layout.item_trending_info -> TrendingInfoViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_info, parent, false))
-        else -> TrendingDeveloperViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_developer, parent, false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = TrendingDeveloperViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_developer, parent, false))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val viewType = getItemViewType(position)
-        when (viewType) {
-            R.layout.item_trending_info -> {
-                if (holder is TrendingInfoViewHolder) {
-                    holder.bindTo(language, since)
-                }
-            }
-            R.layout.item_trending_developer -> {
-                if (holder is TrendingDeveloperViewHolder) {
-                    getItem(position)?.let {
-                        holder.bindTo(it)
-                    }
-                }
-            }
+        val data = getItem(position) ?: return
+
+        if (holder is TrendingDeveloperViewHolder) {
+            holder.bindTo(data, position)
         }
     }
-
-    override fun getItem(position: Int): TrendingDeveloper? = when (position) {
-        0 -> null
-        else -> super.getItem(position - 1)
-    }
-
-    override fun getItemViewType(position: Int): Int = when (position) {
-        0 -> R.layout.item_trending_info
-        else -> R.layout.item_trending_developer
-    }
-
-    override fun getItemCount(): Int = super.getItemCount() + 1
 
     class TrendingDeveloperViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val foregroundColorSpan = ForegroundColorSpan(ResourcesCompat.getColor(view.resources, R.color.colorTextPrimary, null))
 
-        fun bindTo(data: TrendingDeveloper) {
+        fun bindTo(data: TrendingDeveloper, position: Int) {
             with(itemView) {
                 GlideLoader.loadAvatar(data.avatar, item_trending_developer_avatar)
 
                 item_trending_developer_rank.setTextFuture(PrecomputedTextCompat.getTextFuture(
-                        layoutPosition.toString(),
+                        (position + 1).toString(),
                         TextViewCompat.getTextMetricsParams(item_trending_developer_rank),
                         null
                 ))

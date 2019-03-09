@@ -17,8 +17,9 @@ class TimelineViewModel(
         initialState: TimelineState
 ) : BaseMvRxViewModel<TimelineState>(initialState) {
 
+    private lateinit var userLogin: String
     private val sourceFactory: TimelineDataSourceFactory by lazy {
-        TimelineDataSourceFactory(RetrofitClient.createService(EventsService::class.java, null), initialState.login)
+        TimelineDataSourceFactory(RetrofitClient.createService(EventsService::class.java, null), userLogin)
     }
 
     private val pagingConfig: PagedList.Config by lazy {
@@ -36,16 +37,16 @@ class TimelineViewModel(
 
     }
 
-    init {
-        refreshEventsData()
-    }
-
-    fun refreshEventsData() = withState { state ->
+    fun refreshEventsData(login: String) = withState { state ->
         if (state.eventRequest is Loading) {
             return@withState
         }
 
-        sourceFactory.invalidate()
+        if (this::userLogin.isInitialized) {
+            sourceFactory.invalidate()
+        } else {
+            userLogin = login
+        }
 
         RxPagedListBuilder(sourceFactory, pagingConfig)
                 .setFetchScheduler(Schedulers.io())

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_trending_repository_developers_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_trending_repository_developers_overline"
+        style="@style/TextAppearance.MaterialComponents.Overline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/fragment_content_padding"
+        android:paddingEnd="@dimen/fragment_content_padding"
+        android:text="@string/explore_trending_developers"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Space
+        android:id="@+id/item_trending_repository_developers_space"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/list_item_spacing"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_developers_overline" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/item_trending_repository_developers_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/fragment_content_padding_half"
+        android:paddingEnd="@dimen/fragment_content_padding_half"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_trending_repository_developers_all"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_developers_space"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_trending_repository_developer_item"
+        tools:orientation="horizontal" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/item_trending_repository_developers_all"
+        style="@style/TextAppearance.MaterialComponents.Button"
+        android:layout_width="64dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="All"
+        android:textColor="@color/colorTextAccent"
+        app:layout_constraintBottom_toBottomOf="@id/item_trending_repository_developers_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_trending_repository_developers_list"
+        app:layout_constraintTop_toTopOf="@id/item_trending_repository_developers_list" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

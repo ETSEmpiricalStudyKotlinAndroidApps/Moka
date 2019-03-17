@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.content.res.ResourcesCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Notification
+import io.github.tonnyl.moka.databinding.FragmentNotificationsBinding
 import io.github.tonnyl.moka.net.NetworkState
 import io.github.tonnyl.moka.net.RetrofitClient
 import io.github.tonnyl.moka.net.service.NotificationsService
@@ -32,7 +32,13 @@ class NotificationsFragment : Fragment() {
     private lateinit var viewModel: NotificationsViewModel
     private lateinit var notificationAdapter: NotificationAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_notifications, container, false)
+    private lateinit var binding: FragmentNotificationsBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,14 +46,6 @@ class NotificationsFragment : Fragment() {
         viewModel = ViewModelProviders.of(this, ViewModelFactory(NotificationsRepository(RetrofitClient.createService(NotificationsService::class.java, null), (requireContext().applicationContext as MokaApp).appExecutors.networkIO))).get(NotificationsViewModel::class.java)
 
         viewModel.refreshNotificationList(formatISO8601String())
-
-        swipe_refresh.setColorSchemeColors(
-                ResourcesCompat.getColor(resources, R.color.indigo, null),
-                ResourcesCompat.getColor(resources, R.color.teal, null),
-                ResourcesCompat.getColor(resources, R.color.lightBlue, null),
-                ResourcesCompat.getColor(resources, R.color.yellow, null),
-                ResourcesCompat.getColor(resources, R.color.orange, null)
-        )
 
         viewModel.refreshState.observe(this, Observer {
             swipe_refresh.isRefreshing = it == NetworkState.LOADING

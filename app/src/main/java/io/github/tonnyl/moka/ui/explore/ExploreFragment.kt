@@ -13,11 +13,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.databinding.FragmentExploreBinding
 import io.github.tonnyl.moka.ui.explore.filters.TrendingFilterFragment
+import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
+import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import kotlinx.android.synthetic.main.fragment_explore.*
 import kotlinx.android.synthetic.main.layout_main_search_bar.*
 
-class ExploreFragment : Fragment() {
+class ExploreFragment : Fragment(), ExploreRepositoryActions {
 
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
@@ -28,7 +31,13 @@ class ExploreFragment : Fragment() {
         ViewModelProviders.of(this, ViewModelFactory()).get(ExploreViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_explore, container, false)
+    private lateinit var binding: FragmentExploreBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentExploreBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,15 +50,12 @@ class ExploreFragment : Fragment() {
 
             if (repositories != null && developers != null && !this::repositoryAdapter.isInitialized) {
                 repositoryAdapter = ExploreAdapter("All Languages", "Daily", repositories, developers)
-                repositoryAdapter.onItemClick = {
-                    findNavController().navigate(R.id.action_to_trending_developers)
-                }
-
+                repositoryAdapter.actions = this@ExploreFragment
                 recycler_view.adapter = repositoryAdapter
             }
         }
 
-        viewModel.trendingRepositories.observe(this, Observer { response ->
+        viewModel.trendingRepositories.observe(this, Observer {
             initAdapterIfNeeded()
         })
 
@@ -79,6 +85,16 @@ class ExploreFragment : Fragment() {
         super.onPause()
 
         drawer.removeDrawerListener(toggle)
+    }
+
+    override fun openProfile(login: String) {
+        val builder = UserProfileFragmentArgs.Builder(login)
+        findNavController().navigate(R.id.action_to_profile, builder.build().toBundle())
+    }
+
+    override fun openRepository(login: String, repositoryName: String) {
+        val builder = RepositoryFragmentArgs.Builder(login, repositoryName)
+        findNavController().navigate(R.id.action_to_repository, builder.build().toBundle())
     }
 
 }

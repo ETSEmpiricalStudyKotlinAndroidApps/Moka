@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.databinding.FragmentUserProfileBinding
 import io.github.tonnyl.moka.net.GlideLoader
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragment
@@ -28,7 +29,13 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
 
     private lateinit var login: String
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_user_profile, container, false)
+    private lateinit var binding: FragmentUserProfileBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentUserProfileBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -63,7 +70,10 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
                 user.organizations().nodes()?.let {
                     profile_organizations.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
                     profile_organizations.setHasFixedSize(true)
-                    profile_organizations.adapter = ProfileOrganizationAdapter(it)
+
+                    val adapter = ProfileOrganizationAdapter()
+                    profile_organizations.adapter = adapter
+                    adapter.submitList(it)
                 }
 
                 val flags = DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH

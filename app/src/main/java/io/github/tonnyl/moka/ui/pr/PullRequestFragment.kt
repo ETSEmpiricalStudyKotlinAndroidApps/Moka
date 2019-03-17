@@ -5,7 +5,6 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.databinding.FragmentIssuePrBinding
 import io.github.tonnyl.moka.net.GlideLoader
 import io.github.tonnyl.moka.type.CommentAuthorAssociation
 import kotlinx.android.synthetic.main.appbar_layout.*
@@ -22,6 +22,8 @@ import kotlinx.android.synthetic.main.item_issue_timeline_comment.*
 class PullRequestFragment : Fragment() {
 
     private lateinit var viewModel: PullRequestViewModel
+
+    private lateinit var binding: FragmentIssuePrBinding
 
     private val repositoryOwner: String by lazy {
         PullRequestFragmentArgs.fromBundle(arguments
@@ -48,9 +50,9 @@ class PullRequestFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
+        binding = FragmentIssuePrBinding.inflate(inflater, container, false)
 
-        return inflater.inflate(R.layout.fragment_issue_pr, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,14 +64,6 @@ class PullRequestFragment : Fragment() {
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
-
-        swipe_refresh.setColorSchemeColors(
-                ResourcesCompat.getColor(resources, R.color.indigo, null),
-                ResourcesCompat.getColor(resources, R.color.teal, null),
-                ResourcesCompat.getColor(resources, R.color.lightBlue, null),
-                ResourcesCompat.getColor(resources, R.color.yellow, null),
-                ResourcesCompat.getColor(resources, R.color.orange, null)
-        )
 
         viewModel = ViewModelProviders.of(this, ViewModelFactory(repositoryOwner, repositoryName, prNumber)).get(PullRequestViewModel::class.java)
 

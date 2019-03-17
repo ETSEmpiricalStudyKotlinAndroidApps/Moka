@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.databinding.FragmentExploreFilterBinding
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
@@ -29,9 +30,15 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
         ViewModelProviders.of(this, ViewModelFactory()).get(ExploreViewModel::class.java)
     }
 
+    private lateinit var binding: FragmentExploreFilterBinding
+
     private var queryData: Triple<ExploreTimeSpanType, String, String>? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_explore_filter, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentExploreFilterBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

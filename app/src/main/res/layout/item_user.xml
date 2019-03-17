@@ -1,77 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_use_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
-    android:orientation="vertical"
-    android:padding="@dimen/list_item_spacing">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/item_user_avatar"
-        android:layout_width="@dimen/repository_list_avatar_width"
-        android:layout_height="@dimen/repository_list_avatar_height"
-        tools:src="@tools:sample/avatars" />
+    <data>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/item_user_follow_unfollow"
-        style="@style/TextAppearance.MaterialComponents.Button"
-        android:layout_width="@dimen/users_follow_unfollow_button_width"
-        android:layout_height="@dimen/users_follow_unfollow_button_height"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/bg_profile_follow"
-        android:text="@string/user_profile_follow"
-        android:textAllCaps="false"
-        android:textColor="@color/user_profile_follow_unfollow_text"
-        android:textSize="@dimen/users_follow_unfollow_button_text" />
+        <import type="android.text.TextUtils" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_user_name"
-        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+        <variable
+            name="avatar"
+            type="java.lang.String" />
+
+        <variable
+            name="username"
+            type="java.lang.String" />
+
+        <variable
+            name="login"
+            type="java.lang.String" />
+
+        <variable
+            name="bio"
+            type="java.lang.String" />
+
+        <variable
+            name="following"
+            type="java.lang.Boolean" />
+
+        <variable
+            name="actions"
+            type="io.github.tonnyl.moka.ui.users.ItemUserActions" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_use_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_item_spacing"
-        android:layout_toStartOf="@id/item_user_follow_unfollow"
-        android:layout_toEndOf="@id/item_user_avatar"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
-        android:maxLines="1"
-        android:textColor="@color/list_item_text_title"
-        android:textSize="@dimen/list_item_title_text"
-        tools:text="@sample/user.json/users/name" />
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="@{() -> actions.openProfile(login)}"
+        android:padding="@dimen/fragment_content_padding">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_user_login"
-        style="@style/TextAppearance.MaterialComponents.Caption"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/item_user_name"
-        android:layout_marginStart="@dimen/list_item_spacing"
-        android:layout_toStartOf="@id/item_user_follow_unfollow"
-        android:layout_toEndOf="@id/item_user_avatar"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif"
-        android:maxLines="1"
-        android:textColor="@color/list_item_text_caption"
-        android:textSize="@dimen/list_item_caption_text"
-        tools:text="@sample/user.json/users/login" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/item_user_avatar"
+            android:layout_width="@dimen/repository_list_avatar_width"
+            android:layout_height="@dimen/repository_list_avatar_height"
+            app:avatarUrl="@{avatar}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_user_description"
-        style="@style/TextAppearance.MaterialComponents.Caption"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/item_user_login"
-        android:layout_marginStart="@dimen/list_item_spacing"
-        android:layout_marginEnd="@dimen/list_item_spacing"
-        android:layout_toEndOf="@id/item_user_avatar"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/list_item_text_caption"
-        android:textSize="@dimen/list_item_caption_text"
-        tools:text="@sample/user.json/users/bio" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/item_user_follow_unfollow"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> actions.followUserClicked(login, false)}"
+            android:text="@string/user_profile_follow"
+            android:textAllCaps="false"
+            android:textColor="@color/colorTextAccent"
+            app:layout_constraintBottom_toBottomOf="@id/item_user_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/item_user_avatar" />
 
-</RelativeLayout>
+        <Space
+            android:id="@+id/item_user_space_1"
+            android:layout_width="@dimen/fragment_content_padding"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_user_avatar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_user_name"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:textColor="@color/list_item_text_title"
+            android:textSize="@dimen/list_item_title_text"
+            app:goneUnless="@{!TextUtils.isEmpty(username)}"
+            app:layout_constraintEnd_toStartOf="@id/item_user_space_2"
+            app:layout_constraintStart_toEndOf="@id/item_user_space_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textFuture="@{username}"
+            tools:text="@sample/user.json/users/name" />
+
+        <Space
+            android:id="@+id/item_user_space_2"
+            android:layout_width="@dimen/fragment_content_padding"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/item_user_login"
+            app:layout_constraintEnd_toStartOf="@id/item_user_follow_unfollow"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_user_login"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:textColor="@color/list_item_text_caption"
+            android:textSize="@dimen/list_item_caption_text"
+            app:layout_constraintEnd_toStartOf="@id/item_user_space_2"
+            app:layout_constraintStart_toEndOf="@id/item_user_space_1"
+            app:layout_constraintTop_toBottomOf="@id/item_user_name"
+            app:textFuture="@{login}"
+            tools:text="@sample/user.json/users/login" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/item_user_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="item_user_login,item_user_follow_unfollow" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_user_description"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/list_item_text_caption"
+            android:textSize="@dimen/list_item_caption_text"
+            app:goneUnless="@{@{!TextUtils.isEmpty(bio)}}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_user_space_1"
+            app:layout_constraintTop_toBottomOf="@id/item_user_barrier"
+            app:textFuture="@{bio}"
+            tools:text="@sample/user.json/users/bio" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

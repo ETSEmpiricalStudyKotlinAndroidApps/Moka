@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.databinding.FragmentRepositoryBinding
 import io.github.tonnyl.moka.net.GlideLoader
 import io.github.tonnyl.moka.net.Status
 import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
@@ -25,10 +26,12 @@ class RepositoryFragment : Fragment() {
 
     private lateinit var viewModel: RepositoryViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
+    private lateinit var binding: FragmentRepositoryBinding
 
-        return inflater.inflate(R.layout.fragment_repository, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentRepositoryBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,8 +112,9 @@ class RepositoryFragment : Fragment() {
                         repository_topics.apply {
                             setHasFixedSize(true)
                             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                            val adapter = RepositoryTopicAdapter(topicList)
+                            val adapter = RepositoryTopicAdapter()
                             repository_topics.adapter = adapter
+                            adapter.submitList(topicList)
                         }
                     }
                 }

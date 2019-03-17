@@ -1,57 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_explore_filter_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_trending_filter"
-    android:orientation="vertical"
-    android:theme="@style/AppTheme">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
+    <LinearLayout
+        android:id="@+id/fragment_explore_filter_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:liftOnScroll="true"
-        app:liftOnScrollTargetViewId="@id/recycler_view">
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_trending_filter"
+        android:orientation="vertical"
+        android:theme="@style/AppTheme">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:theme="@style/ToolbarTheme"
-            app:navigationIcon="@drawable/ic_close_24"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:titleTextColor="@color/colorTextPrimary"
-            tools:title="Filters">
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:liftOnScroll="true"
+            app:liftOnScrollTargetViewId="@id/recycler_view">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/toolbar_done"
-                style="@style/TextAppearance.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/regular_icon_size"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="@dimen/fragment_content_padding_half"
-                android:gravity="center"
-                android:paddingStart="@dimen/regular_icon_padding"
-                android:paddingEnd="@dimen/regular_icon_padding"
-                android:text="@string/explore_filter_done"
-                android:textColor="@color/colorTextPrimary" />
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:theme="@style/ToolbarTheme"
+                app:navigationIcon="@drawable/ic_close_24"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                app:titleTextColor="@color/colorTextPrimary"
+                tools:title="Filters">
 
-        </androidx.appcompat.widget.Toolbar>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/toolbar_done"
+                    style="@style/TextAppearance.MaterialComponents.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/regular_icon_size"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="@dimen/fragment_content_padding_half"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/regular_icon_padding"
+                    android:paddingEnd="@dimen/regular_icon_padding"
+                    android:text="@string/explore_filter_done"
+                    android:textColor="@color/colorTextPrimary" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+            </androidx.appcompat.widget.Toolbar>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/item_trending_language" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-</LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/item_trending_language" />
+
+    </LinearLayout>
+
+</layout>

@@ -1,37 +1,23 @@
 package io.github.tonnyl.moka.ui.notifications
 
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.format.DateUtils
 import android.text.style.ForegroundColorSpan
 import android.view.*
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.text.PrecomputedTextCompat
-import androidx.core.widget.TextViewCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Notification
-import io.github.tonnyl.moka.data.NotificationReasons
-import io.github.tonnyl.moka.net.GlideLoader
+import io.github.tonnyl.moka.databinding.ItemNotificationBinding
 import io.github.tonnyl.moka.net.NetworkState
 import io.github.tonnyl.moka.net.Status
 import kotlinx.android.synthetic.main.item_network_state.view.*
-import kotlinx.android.synthetic.main.item_notification.view.*
 
 class NotificationAdapter(
         private val retryCallback: () -> Unit
 ) : PagedListAdapter<Notification, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     private var networkState: NetworkState? = null
-
-    var onItemClick: (Int, View) -> Unit = { _, _ ->
-
-    }
-    var onItemMenuSelected: (Int, View) -> Unit = { _, _ ->
-
-    }
 
     companion object {
 
@@ -47,7 +33,7 @@ class NotificationAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = when (viewType) {
         R.layout.item_network_state -> NetworkStateViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_network_state, parent, false), retryCallback)
-        R.layout.item_notification -> NotificationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_notification, parent, false))
+        R.layout.item_notification -> NotificationViewHolder(ItemNotificationBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         else -> throw IllegalArgumentException("unknown view type $viewType")
     }
 
@@ -59,7 +45,7 @@ class NotificationAdapter(
             R.layout.item_notification -> {
                 val item = getItem(position) ?: return
                 with(holder as NotificationViewHolder) {
-                    bind(item, position)
+                    bindTo(item, position)
                     this.itemView.tag = item
                 }
             }
@@ -88,7 +74,11 @@ class NotificationAdapter(
         }
     }
 
-    class NotificationViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnCreateContextMenuListener {
+    class NotificationViewHolder(
+            private val binding: ItemNotificationBinding
+    ) : RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
+
+        private val reasonSpan = ForegroundColorSpan(ResourcesCompat.getColor(binding.root.resources, R.color.colorTextPrimary, null))
 
         override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
             if (itemView.tag != null && itemView.tag is Notification) {
@@ -102,53 +92,18 @@ class NotificationAdapter(
             }
         }
 
-        fun bind(notification: Notification, position: Int) {
-            with(itemView) {
-                if (position == 0) {
-                    item_notification_overline.visibility = View.VISIBLE
-                    item_notification_space_between_overline_and_avatar.visibility = View.VISIBLE
-                } else {
-                    item_notification_overline.visibility = View.GONE
-                    item_notification_space_between_overline_and_avatar.visibility = View.GONE
-                }
-
-                item_notification_repository_name.setTextFuture(PrecomputedTextCompat.getTextFuture(
-                        notification.repository.fullName,
-                        TextViewCompat.getTextMetricsParams(item_notification_repository_name),
-                        null
-                ))
-
-                item_notification_time.setTextFuture(PrecomputedTextCompat.getTextFuture(
-                        DateUtils.getRelativeTimeSpanString(notification.updatedAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS),
-                        TextViewCompat.getTextMetricsParams(item_notification_time),
-                        null
-                ))
-
-                GlideLoader.loadAvatar(notification.repository.owner.avatarUrl, item_notification_repository_avatar)
-
-                val notificationTypeResId: Int = when (notification.reason) {
-                    NotificationReasons.ASSIGN.value -> R.string.notification_reason_assign
-                    NotificationReasons.AUTHOR.value -> R.string.notification_reason_author
-                    NotificationReasons.COMMENT.value -> R.string.notification_reason_comment
-                    NotificationReasons.INVITATION.value -> R.string.notification_reason_invitation
-                    NotificationReasons.MANUAL.value -> R.string.notification_reason_manual
-                    NotificationReasons.MENTION.value -> R.string.notification_reason_mention
-                    NotificationReasons.STATE_CHANGE.value -> R.string.notification_reason_state_change
-                    NotificationReasons.SUBSCRIBED.value -> R.string.notification_reason_subscribed
-                    // including NotificationReasons.TEAM_MENTION.value
-                    else -> R.string.notification_reason_team_mention
-                }
-                val notificationReason = context.getString(notificationTypeResId)
-                val notificationReasonPlusHyphen = context.getString(R.string.notification_caption_notification_type, notificationReason)
-                val spannable = SpannableString(notificationReasonPlusHyphen + notification.subject.title)
-                spannable.setSpan(ForegroundColorSpan(ResourcesCompat.getColor(resources, R.color.colorTextPrimary, null)), 0, notificationReasonPlusHyphen.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                item_notification_caption.setTextFuture(PrecomputedTextCompat.getTextFuture(
-                        spannable,
-                        TextViewCompat.getTextMetricsParams(item_notification_caption),
-                        null
-                ))
+        fun bindTo(data: Notification, position: Int) {
+            binding.apply {
+                this.position = position
+                span = reasonSpan
+                timeInMillis = data.updatedAt.time
+                title = data.subject.title
+                reason = data.reason
+                repositoryName = data.repository.fullName
+                avatar = data.repository.owner.avatarUrl
             }
+
+            binding.executePendingBindings()
 
             itemView.setOnCreateContextMenuListener(this)
         }

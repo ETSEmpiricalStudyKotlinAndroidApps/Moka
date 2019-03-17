@@ -1,21 +1,15 @@
 package io.github.tonnyl.moka.ui.explore.developers
 
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.text.PrecomputedTextCompat
-import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
-import io.github.tonnyl.moka.net.GlideLoader
-import kotlinx.android.synthetic.main.item_trending_developer.view.*
+import io.github.tonnyl.moka.databinding.ItemTrendingDeveloperBinding
 
 class TrendingDeveloperAdapter(
         var language: String,
@@ -34,7 +28,7 @@ class TrendingDeveloperAdapter(
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = TrendingDeveloperViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_developer, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = TrendingDeveloperViewHolder(ItemTrendingDeveloperBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val data = getItem(position) ?: return
@@ -44,42 +38,24 @@ class TrendingDeveloperAdapter(
         }
     }
 
-    class TrendingDeveloperViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class TrendingDeveloperViewHolder(
+            private val binding: ItemTrendingDeveloperBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val foregroundColorSpan = ForegroundColorSpan(ResourcesCompat.getColor(view.resources, R.color.colorTextPrimary, null))
+        private val foregroundColorSpan = ForegroundColorSpan(ResourcesCompat.getColor(binding.root.resources, R.color.colorTextPrimary, null))
 
         fun bindTo(data: TrendingDeveloper, position: Int) {
-            with(itemView) {
-                GlideLoader.loadAvatar(data.avatar, item_trending_developer_avatar)
-
-                item_trending_developer_rank.setTextFuture(PrecomputedTextCompat.getTextFuture(
-                        (position + 1).toString(),
-                        TextViewCompat.getTextMetricsParams(item_trending_developer_rank),
-                        null
-                ))
-
-                item_trending_developer_name.setTextFuture(PrecomputedTextCompat.getTextFuture(
-                        data.name?.let {
-                            val nameSpannable = SpannableStringBuilder(context.getString(R.string.explore_trending_developer_name, data.username, data.name))
-                            nameSpannable.setSpan(foregroundColorSpan, nameSpannable.length - data.name.length - 2, nameSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                            nameSpannable
-                        } ?: data.username,
-                        TextViewCompat.getTextMetricsParams(item_trending_developer_name),
-                        null
-                ))
-
-                item_trending_developer_name_description.setTextFuture(PrecomputedTextCompat.getTextFuture(
-                        data.repository.description?.let {
-                            val descriptionSpannable = SpannableStringBuilder(context.getString(R.string.explore_trending_developer_repository_name_description, data.repository.name, data.repository.description))
-                            descriptionSpannable.setSpan(foregroundColorSpan, 0, data.repository.name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                            descriptionSpannable
-                        } ?: data.repository.name,
-                        TextViewCompat.getTextMetricsParams(item_trending_developer_name_description),
-                        null
-                ))
+            binding.apply {
+                rank = position
+                span = foregroundColorSpan
+                avatar = data.avatar
+                login = data.username
+                username = data.name
+                repositoryName = data.repository.name
+                repositoryDescription = data.repository.description
             }
+
+            binding.executePendingBindings()
         }
 
     }

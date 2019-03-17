@@ -1,22 +1,18 @@
 package io.github.tonnyl.moka.ui.prs
 
-import android.text.format.DateUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.PullRequestItem
-import io.github.tonnyl.moka.net.GlideLoader
-import kotlinx.android.synthetic.main.item_issue_pr.view.*
+import io.github.tonnyl.moka.databinding.ItemIssuePrBinding
+import io.github.tonnyl.moka.ui.common.IssuePRActions
 
 class PullRequestAdapter : PagedListAdapter<PullRequestItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
-    var onItemClick: (Int, String, View) -> Unit = { _, _, _ ->
-
-    }
+    var actions: IssuePRActions? = null
 
     companion object {
 
@@ -30,25 +26,35 @@ class PullRequestAdapter : PagedListAdapter<PullRequestItem, RecyclerView.ViewHo
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = PullRequestViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_issue_pr, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = PullRequestViewHolder(ItemIssuePrBinding.inflate(LayoutInflater.from(parent.context), parent, false), actions)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position) ?: return
-        with(holder.itemView) {
-            issue_pr_item_number.text = context.getString(R.string.issue_pr_number, item.number)
-            issue_pr_item_author.text = context.getString(R.string.issue_pr_by, item.login)
-            issue_pr_item_title.text = item.title
-            issue_pr_item_created_at.text = DateUtils.getRelativeTimeSpanString(item.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
-            issue_item_status_image.setImageResource(if (item.merged) R.drawable.ic_pr_merged else if (item.closed) R.drawable.ic_pr_closed else R.drawable.ic_pr_open)
 
-            GlideLoader.loadAvatar(item.avatarUrl?.toString(), issue_pr_item_avatar)
-
-            setOnClickListener {
-                onItemClick.invoke(item.number, item.title, it)
-            }
+        if (holder is PullRequestViewHolder) {
+            holder.bindTo(item)
         }
     }
 
-    class PullRequestViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class PullRequestViewHolder(
+            private val binding: ItemIssuePrBinding,
+            private val issuePRActions: IssuePRActions?
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bindTo(data: PullRequestItem) {
+            binding.apply {
+                avatar = data.avatarUrl?.toString()
+                number = data.number
+                login = data.login
+                title = data.title
+                updateTimeInMillis = data.createdAt.time
+                statusDrawableResId = if (data.merged) R.drawable.ic_pr_merged else if (data.closed) R.drawable.ic_pr_closed else R.drawable.ic_pr_open
+                actions = issuePRActions
+            }
+
+            binding.executePendingBindings()
+        }
+
+    }
 
 }

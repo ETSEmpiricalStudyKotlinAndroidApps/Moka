@@ -2,11 +2,11 @@ package io.github.tonnyl.moka.data.item
 
 import android.net.Uri
 import android.os.Parcelable
+import io.github.tonnyl.moka.data.CommentAuthorAssociation
 import io.github.tonnyl.moka.data.LockReason
 import io.github.tonnyl.moka.fragment.*
 import kotlinx.android.parcel.Parcelize
 import java.util.*
-import io.github.tonnyl.moka.data.CommentAuthorAssociation as LocalAuthorAssociation
 import io.github.tonnyl.moka.type.CommentAuthorAssociation as RawAuthorAssociation
 
 open class IssueTimelineItem {
@@ -248,7 +248,7 @@ data class IssueCommentEvent(
          * The username of the actor.
          */
         val authorLogin: String?,
-        val authorAssociation: LocalAuthorAssociation,
+        val authorAssociation: CommentAuthorAssociation,
         /**
          * Identifies the date and time when the object was created.
          */
@@ -273,14 +273,14 @@ data class IssueCommentEvent(
                 data.author()?.avatarUrl(),
                 data.author()?.login(),
                 when (data.authorAssociation()) {
-                    RawAuthorAssociation.MEMBER -> LocalAuthorAssociation.MEMBER
-                    RawAuthorAssociation.OWNER -> LocalAuthorAssociation.OWNER
-                    RawAuthorAssociation.COLLABORATOR -> LocalAuthorAssociation.COLLABORATOR
-                    RawAuthorAssociation.CONTRIBUTOR -> LocalAuthorAssociation.CONTRIBUTOR
-                    RawAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> LocalAuthorAssociation.FIRST_TIME_CONTRIBUTOR
-                    RawAuthorAssociation.FIRST_TIMER -> LocalAuthorAssociation.FIRST_TIMER
-                    RawAuthorAssociation.NONE -> LocalAuthorAssociation.NONE
-                    RawAuthorAssociation.`$UNKNOWN` -> LocalAuthorAssociation.NONE
+                    RawAuthorAssociation.MEMBER -> CommentAuthorAssociation.MEMBER
+                    RawAuthorAssociation.OWNER -> CommentAuthorAssociation.OWNER
+                    RawAuthorAssociation.COLLABORATOR -> CommentAuthorAssociation.COLLABORATOR
+                    RawAuthorAssociation.CONTRIBUTOR -> CommentAuthorAssociation.CONTRIBUTOR
+                    RawAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR
+                    RawAuthorAssociation.FIRST_TIMER -> CommentAuthorAssociation.FIRST_TIMER
+                    RawAuthorAssociation.NONE -> CommentAuthorAssociation.NONE
+                    RawAuthorAssociation.`$UNKNOWN` -> CommentAuthorAssociation.NONE
                 },
                 data.createdAt(),
                 data.body(),

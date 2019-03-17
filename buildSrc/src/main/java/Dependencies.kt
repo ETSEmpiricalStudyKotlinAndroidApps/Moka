@@ -1,29 +1,30 @@
 object Versions {
 
-    val compileSdk = 28
-    val targetSdk = 28
+    val compileSdk = "android-Q"
+    val targetSdk = "Q"
     val minSdk = 23
-    val buildTools = "28.0.3"
+    val buildTools = "29.0.0-rc1"
 
-    val androidGradle = "3.5.0-alpha06"
+    val androidGradle = "3.5.0-alpha07"
     val gmsGoogleServiceGradle = "4.2.0"
     val fabricToolsGradle = "1.26.1"
     val kotlin = "1.3.20"
     val coroutines = "1.1.0"
-    val fragment = "1.1.0-alpha04"
+    val fragment = "1.1.0-alpha05"
     val constraintLayout = "2.0.0-alpha3"
     val coordinatorLayout = "1.1.0-alpha01"
-    val appcompat = "1.1.0-alpha02"
+    val appcompat = "1.1.0-alpha03"
+    val databinding = "3.2.0-alpha11"
     val material = "1.1.0-alpha04"
     val browser = "1.0.0"
     val lifecycle = "2.1.0-alpha02"
-    val navigation = "2.0.0-rc02"
+    val navigation = "2.0.0"
     val navigationTesting = "1.0.0-alpha08"
     val paging = "2.1.0"
     val workManager = "2.0.0-rc01"
     val room = "2.1.0-alpha04"
     val matisse = "0.5.2-beta4"
-    val preference = "1.1.0-alpha03"
+    val preference = "1.1.0-alpha04"
     val swipeRefreshLayout = "1.1.0-alpha01"
     val glide = "4.9.0"
     val rxjava2 = "2.2.6"
@@ -118,6 +119,12 @@ object Deps {
         object WorkManager {
 
             val runtime = "androidx.work:work-runtime-ktx:${Versions.workManager}"
+
+        }
+
+        object DataBinding {
+
+            val compiler = "androidx.databinding:compiler:${Versions.databinding}"
 
         }
 

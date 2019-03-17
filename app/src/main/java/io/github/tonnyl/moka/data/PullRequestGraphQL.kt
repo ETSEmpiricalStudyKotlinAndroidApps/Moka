@@ -4,11 +4,12 @@ import android.net.Uri
 import android.os.Parcelable
 import io.github.tonnyl.moka.PullRequestQuery
 import io.github.tonnyl.moka.type.*
-import io.github.tonnyl.moka.type.CommentAuthorAssociation
-import io.github.tonnyl.moka.type.LockReason
-import io.github.tonnyl.moka.type.SubscriptionState
 import kotlinx.android.parcel.Parcelize
 import java.util.*
+import io.github.tonnyl.moka.type.CommentAuthorAssociation as RawCommentAuthorAssociation
+import io.github.tonnyl.moka.type.CommentCannotUpdateReason as RawCommentCannotUpdateReason
+import io.github.tonnyl.moka.type.LockReason as RawLockReason
+import io.github.tonnyl.moka.type.SubscriptionState as RawSubscriptionState
 
 @Parcelize
 data class PullRequestGraphQL(
@@ -200,7 +201,7 @@ data class PullRequestGraphQL(
         /**
          * Reasons why the current viewer can not update this comment.
          */
-        val viewerCannotUpdateReasons: List<CommentCannotUpdateReason>,
+        val viewerCannotUpdateReasons: List<CommentCannotUpdateReason?>,
         /**
          * Did the viewer author this comment.
          */
@@ -214,10 +215,26 @@ data class PullRequestGraphQL(
     companion object {
 
         fun createFromRaw(data: PullRequestQuery.PullRequest?): PullRequestGraphQL? = if (data == null) null else PullRequestGraphQL(
-                data.activeLockReason(),
+                when (data.activeLockReason()) {
+                    RawLockReason.OFF_TOPIC -> LockReason.OFF_TOPIC
+                    RawLockReason.TOO_HEATED -> LockReason.TOO_HEATED
+                    RawLockReason.RESOLVED -> LockReason.RESOLVED
+                    RawLockReason.SPAM -> LockReason.SPAM
+                    // including RawLockReason.`$UNKNOWN` and null
+                    else -> null
+                },
                 data.additions(),
                 Actor.createFromPullRequestAuthor(data.author()),
-                data.authorAssociation(),
+                when (data.authorAssociation()) {
+                    RawCommentAuthorAssociation.MEMBER -> CommentAuthorAssociation.MEMBER
+                    RawCommentAuthorAssociation.OWNER -> CommentAuthorAssociation.OWNER
+                    RawCommentAuthorAssociation.COLLABORATOR -> CommentAuthorAssociation.COLLABORATOR
+                    RawCommentAuthorAssociation.CONTRIBUTOR -> CommentAuthorAssociation.CONTRIBUTOR
+                    RawCommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR
+                    RawCommentAuthorAssociation.FIRST_TIMER -> CommentAuthorAssociation.FIRST_TIMER
+                    // including RawCommentAuthorAssociation.NONE and RawCommentAuthorAssociation.`$UNKNOWN`
+                    else -> CommentAuthorAssociation.NONE
+                },
                 Ref.createFromRepositoryQueryBaseRef(data.baseRef()),
                 data.baseRefName(),
                 data.baseRefOid(),
@@ -261,9 +278,26 @@ data class PullRequestGraphQL(
                 data.viewerCanReact(),
                 data.viewerCanSubscribe(),
                 data.viewerCanUpdate(),
-                data.viewerCannotUpdateReasons(),
+                data.viewerCannotUpdateReasons().map {
+                    when (it) {
+                        RawCommentCannotUpdateReason.INSUFFICIENT_ACCESS -> CommentCannotUpdateReason.INSUFFICIENT_ACCESS
+                        RawCommentCannotUpdateReason.LOCKED -> CommentCannotUpdateReason.LOCKED
+                        RawCommentCannotUpdateReason.LOGIN_REQUIRED -> CommentCannotUpdateReason.LOGIN_REQUIRED
+                        RawCommentCannotUpdateReason.MAINTENANCE -> CommentCannotUpdateReason.MAINTENANCE
+                        RawCommentCannotUpdateReason.VERIFIED_EMAIL_REQUIRED -> CommentCannotUpdateReason.VERIFIED_EMAIL_REQUIRED
+                        RawCommentCannotUpdateReason.DENIED -> CommentCannotUpdateReason.DENIED
+                        // including RawCommentCannotUpdateReason.`$UNKNOWN` and null
+                        else -> null
+                    }
+                },
                 data.viewerDidAuthor(),
-                data.viewerSubscription()
+                when (data.viewerSubscription()) {
+                    RawSubscriptionState.UNSUBSCRIBED -> SubscriptionState.UNSUBSCRIBED
+                    RawSubscriptionState.SUBSCRIBED -> SubscriptionState.SUBSCRIBED
+                    RawSubscriptionState.IGNORED -> SubscriptionState.IGNORED
+                    // including RawSubscriptionState.`$UNKNOWN` and null
+                    else -> null
+                }
         )
 
     }

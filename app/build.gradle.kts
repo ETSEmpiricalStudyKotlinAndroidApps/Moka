@@ -57,6 +57,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    dataBinding {
+        isEnabled = true
+    }
 }
 
 androidExtensions {
@@ -103,6 +107,7 @@ dependencies {
     implementation(Deps.AndroidX.Room.common)
     implementation(Deps.AndroidX.Room.rxJava2)
     kapt(Deps.AndroidX.Room.compiler)
+    kapt(Deps.AndroidX.DataBinding.compiler)
 
     // Google
     implementation(Deps.Google.material)

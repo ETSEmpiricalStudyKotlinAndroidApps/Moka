@@ -2,10 +2,15 @@ package io.github.tonnyl.moka.data.item
 
 import android.net.Uri
 import android.os.Parcelable
+import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.fragment.*
-import io.github.tonnyl.moka.type.*
 import kotlinx.android.parcel.Parcelize
 import java.util.*
+import io.github.tonnyl.moka.type.CommentAuthorAssociation as RawCommentAuthorAssociation
+import io.github.tonnyl.moka.type.CommentCannotUpdateReason as RawCommentCannotUpdateReason
+import io.github.tonnyl.moka.type.DeploymentStatusState as RawDeploymentStatusState
+import io.github.tonnyl.moka.type.LockReason as RawLockReason
+import io.github.tonnyl.moka.type.PullRequestReviewState as RawPullRequestReviewState
 
 open class PullRequestTimelineItem {
 
@@ -368,7 +373,14 @@ data class PullRequestDeploymentEnvironmentChangedEvent(
                 data.id(),
                 data.deploymentStatus().deployment().environment(),
                 data.deploymentStatus().environmentUrl(),
-                data.deploymentStatus().state(),
+                when (data.deploymentStatus().state()) {
+                    RawDeploymentStatusState.PENDING -> DeploymentStatusState.PENDING
+                    RawDeploymentStatusState.SUCCESS -> DeploymentStatusState.SUCCESS
+                    RawDeploymentStatusState.FAILURE -> DeploymentStatusState.FAILURE
+                    RawDeploymentStatusState.INACTIVE -> DeploymentStatusState.INACTIVE
+                    // including RawDeploymentStatusState.ERROR and RawDeploymentStatusState.`$UNKNOWN`
+                    else -> DeploymentStatusState.ERROR
+                },
                 data.deploymentStatus().logUrl()
         )
 
@@ -539,7 +551,16 @@ data class PullRequestIssueComment(
         fun createFromRaw(data: IssueCommentFragment?): PullRequestIssueComment? = if (data == null) null else PullRequestIssueComment(
                 data.author()?.avatarUrl(),
                 data.author()?.login(),
-                data.authorAssociation(),
+                when (data.authorAssociation()) {
+                    RawCommentAuthorAssociation.MEMBER -> CommentAuthorAssociation.MEMBER
+                    RawCommentAuthorAssociation.OWNER -> CommentAuthorAssociation.OWNER
+                    RawCommentAuthorAssociation.COLLABORATOR -> CommentAuthorAssociation.COLLABORATOR
+                    RawCommentAuthorAssociation.CONTRIBUTOR -> CommentAuthorAssociation.CONTRIBUTOR
+                    RawCommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR
+                    RawCommentAuthorAssociation.FIRST_TIMER -> CommentAuthorAssociation.FIRST_TIMER
+                    // including RawCommentAuthorAssociation.`$UNKNOWN`, RawCommentAuthorAssociation.NONE
+                    else -> CommentAuthorAssociation.NONE
+                },
                 data.createdAt(),
                 data.body(),
                 data.editor()?.avatarUrl(),
@@ -618,7 +639,14 @@ data class PullRequestLockedEvent(
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id(),
-                data.lockReason()
+                when (data.lockReason()) {
+                    RawLockReason.OFF_TOPIC -> LockReason.OFF_TOPIC
+                    RawLockReason.TOO_HEATED -> LockReason.TOO_HEATED
+                    RawLockReason.RESOLVED -> LockReason.RESOLVED
+                    RawLockReason.SPAM -> LockReason.SPAM
+                    // including RawLockReason.`$UNKNOWN` and null
+                    else -> null
+                }
         )
 
     }
@@ -756,11 +784,37 @@ data class PullRequestReview(
                 data.author()?.login(),
                 data.createdAt(),
                 data.id(),
-                data.authorAssociation(),
+                when (data.authorAssociation()) {
+                    RawCommentAuthorAssociation.MEMBER -> CommentAuthorAssociation.MEMBER
+                    RawCommentAuthorAssociation.OWNER -> CommentAuthorAssociation.OWNER
+                    RawCommentAuthorAssociation.COLLABORATOR -> CommentAuthorAssociation.COLLABORATOR
+                    RawCommentAuthorAssociation.CONTRIBUTOR -> CommentAuthorAssociation.CONTRIBUTOR
+                    RawCommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR
+                    RawCommentAuthorAssociation.FIRST_TIMER -> CommentAuthorAssociation.FIRST_TIMER
+                    // including RawCommentAuthorAssociation.NONE and RawCommentAuthorAssociation.`$UNKNOWN`
+                    else -> CommentAuthorAssociation.NONE
+                },
                 data.body(),
-                data.state(),
+                when (data.state()) {
+                    RawPullRequestReviewState.PENDING -> PullRequestReviewState.PENDING
+                    RawPullRequestReviewState.COMMENTED -> PullRequestReviewState.COMMENTED
+                    RawPullRequestReviewState.APPROVED -> PullRequestReviewState.APPROVED
+                    RawPullRequestReviewState.CHANGES_REQUESTED -> PullRequestReviewState.CHANGES_REQUESTED
+                    // including RawPullRequestReviewState.DISMISSED and RawPullRequestReviewState.`$UNKNOWN`
+                    else -> PullRequestReviewState.DISMISSED
+                },
                 data.viewerDidAuthor(),
-                data.viewerCannotUpdateReasons(),
+                data.viewerCannotUpdateReasons().map {
+                    when (it) {
+                        RawCommentCannotUpdateReason.INSUFFICIENT_ACCESS -> CommentCannotUpdateReason.INSUFFICIENT_ACCESS
+                        RawCommentCannotUpdateReason.LOCKED -> CommentCannotUpdateReason.LOCKED
+                        RawCommentCannotUpdateReason.LOGIN_REQUIRED -> CommentCannotUpdateReason.LOGIN_REQUIRED
+                        RawCommentCannotUpdateReason.MAINTENANCE -> CommentCannotUpdateReason.MAINTENANCE
+                        RawCommentCannotUpdateReason.VERIFIED_EMAIL_REQUIRED -> CommentCannotUpdateReason.VERIFIED_EMAIL_REQUIRED
+                        // including RawCommentCannotUpdateReason.DENIED and RawCommentCannotUpdateReason.`$UNKNOWN`
+                        else -> CommentCannotUpdateReason.DENIED
+                    }
+                },
                 data.viewerCanDelete(),
                 data.viewerCanUpdate(),
                 data.comments().totalCount()
@@ -800,7 +854,16 @@ data class PullRequestReviewComment(
                 data.author()?.login(),
                 data.createdAt(),
                 data.id(),
-                data.authorAssociation(),
+                when (data.authorAssociation()) {
+                    RawCommentAuthorAssociation.MEMBER -> CommentAuthorAssociation.MEMBER
+                    RawCommentAuthorAssociation.OWNER -> CommentAuthorAssociation.OWNER
+                    RawCommentAuthorAssociation.COLLABORATOR -> CommentAuthorAssociation.COLLABORATOR
+                    RawCommentAuthorAssociation.CONTRIBUTOR -> CommentAuthorAssociation.CONTRIBUTOR
+                    RawCommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR
+                    RawCommentAuthorAssociation.FIRST_TIMER -> CommentAuthorAssociation.FIRST_TIMER
+                    // including RawCommentAuthorAssociation.NONE and RawCommentAuthorAssociation.`$UNKNOWN`
+                    else -> CommentAuthorAssociation.NONE
+                },
                 data.body(),
                 data.outdated()
         )
@@ -987,7 +1050,14 @@ data class PullRequestReviewDismissedEvent(
                 data.createdAt(),
                 data.id(),
                 data.message(),
-                data.previousReviewState(),
+                when (data.previousReviewState()) {
+                    RawPullRequestReviewState.PENDING -> PullRequestReviewState.PENDING
+                    RawPullRequestReviewState.COMMENTED -> PullRequestReviewState.COMMENTED
+                    RawPullRequestReviewState.APPROVED -> PullRequestReviewState.APPROVED
+                    RawPullRequestReviewState.CHANGES_REQUESTED -> PullRequestReviewState.CHANGES_REQUESTED
+                    // including RawPullRequestReviewState.DISMISSED and RawPullRequestReviewState.`$UNKNOWN`
+                    else -> PullRequestReviewState.DISMISSED
+                },
                 data.review()?.author()?.login()
         )
 

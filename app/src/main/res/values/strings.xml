@@ -328,6 +328,7 @@
     <string name="explore_trending_filter_time_span_weekly">Weekly</string>
     <string name="explore_trending_filter_time_span_monthly">Monthly</string>
     <string name="explore_trending_filter_languages">Languages</string>
+    <string name="explore_trending_repository_developers_list_all">All</string>
 
     <string name="timeline_content_empty_title">You haven\'t received any events yet</string>
     <string name="timeline_content_empty_action">Explore More</string>

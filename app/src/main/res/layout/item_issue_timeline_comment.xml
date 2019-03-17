@@ -1,67 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/issue_timeline_comment_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/list_item_spacing">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/issue_timeline_comment_avatar"
-        android:layout_width="@dimen/issue_timeline_avatar_size"
-        android:layout_height="@dimen/issue_timeline_avatar_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+    <data>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/issue_timeline_comment_username"
-        style="@style/TextAppearance.MaterialComponents.Body1"
-        android:layout_width="0dp"
+        <import type="java.util.Date" />
+
+        <import type="android.text.format.DateUtils" />
+
+        <import type="io.github.tonnyl.moka.data.CommentAuthorAssociation" />
+
+        <variable
+            name="avatar"
+            type="java.lang.String" />
+
+        <variable
+            name="login"
+            type="java.lang.String" />
+
+        <variable
+            name="createdAt"
+            type="Date" />
+
+        <variable
+            name="authorAssociation"
+            type="CommentAuthorAssociation" />
+
+        <variable
+            name="content"
+            type="java.lang.String" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/issue_timeline_comment_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_item_spacing"
-        android:ellipsize="end"
-        android:maxLines="1"
-        app:layout_constraintBottom_toTopOf="@id/issue_timeline_comment_created_at"
-        app:layout_constraintEnd_toStartOf="@id/issue_timeline_comment_author_association"
-        app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_avatar"
-        app:layout_constraintTop_toTopOf="@id/issue_timeline_comment_avatar"
-        app:layout_constraintVertical_chainStyle="spread"
-        tools:text="@sample/issue_timeline.json/timeline/author" />
+        android:padding="@dimen/list_item_spacing">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/issue_timeline_comment_author_association"
-        style="@style/TextAppearance.MaterialComponents.Caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_username"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@sample/issue_timeline.json/timeline/commentAuthorAssociation" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/issue_timeline_comment_avatar"
+            android:layout_width="@dimen/issue_timeline_avatar_size"
+            android:layout_height="@dimen/issue_timeline_avatar_size"
+            app:avatarUrl="@{avatar}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/issue_timeline_comment_created_at"
-        style="@style/TextAppearance.MaterialComponents.Caption"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_item_spacing"
-        app:layout_constraintBottom_toBottomOf="@id/issue_timeline_comment_avatar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_avatar"
-        app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_username"
-        tools:text="@sample/issue_timeline.json/timeline/createdAt" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/issue_timeline_comment_username"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_item_spacing"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toTopOf="@id/issue_timeline_comment_created_at"
+            app:layout_constraintEnd_toStartOf="@id/issue_timeline_comment_author_association"
+            app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_avatar"
+            app:layout_constraintTop_toTopOf="@id/issue_timeline_comment_avatar"
+            app:layout_constraintVertical_chainStyle="spread"
+            app:textFuture="@{login}"
+            tools:text="@sample/issue_timeline.json/timeline/author" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/issue_timeline_comment_content"
-        style="@style/TextAppearance.MaterialComponents.Body1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_item_spacing"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_created_at"
-        tools:text="@sample/issue_timeline.json/timeline/body" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/issue_timeline_comment_author_association"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:authorAssociation="@{authorAssociation}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_username"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@sample/issue_timeline.json/timeline/commentAuthorAssociation" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/issue_timeline_comment_created_at"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_item_spacing"
+            app:layout_constraintBottom_toBottomOf="@id/issue_timeline_comment_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_avatar"
+            app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_username"
+            app:textFuture="@{DateUtils.getRelativeTimeSpanString(createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
+            tools:text="@sample/issue_timeline.json/timeline/createdAt" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/issue_timeline_comment_content"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_item_spacing"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_created_at"
+            app:textFuture="@{content}"
+            tools:text="@sample/issue_timeline.json/timeline/body" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

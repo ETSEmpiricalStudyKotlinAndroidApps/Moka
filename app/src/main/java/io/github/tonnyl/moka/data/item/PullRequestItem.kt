@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
-class PullRequestItem(
+data class PullRequestItem(
         val avatarUrl: Uri?,
         val login: String?,
         val id: String,

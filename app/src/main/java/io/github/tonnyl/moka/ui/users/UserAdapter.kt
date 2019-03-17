@@ -1,17 +1,16 @@
 package io.github.tonnyl.moka.ui.users
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserGraphQL
-import io.github.tonnyl.moka.net.GlideLoader
-import kotlinx.android.synthetic.main.item_user.view.*
+import io.github.tonnyl.moka.databinding.ItemUserBinding
 
-class UserAdapter : PagedListAdapter<UserGraphQL, RecyclerView.ViewHolder>(DIFF_CALLBACK), View.OnClickListener {
+class UserAdapter : PagedListAdapter<UserGraphQL, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+
+    var actions: ItemUserActions? = null
 
     companion object {
 
@@ -25,25 +24,33 @@ class UserAdapter : PagedListAdapter<UserGraphQL, RecyclerView.ViewHolder>(DIFF_
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = UserViewHolder(ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        with(holder.itemView) {
-            GlideLoader.loadAvatar(item.avatarUrl.toString(), item_user_avatar)
-
-            item_user_name.text = item.name
-            item_user_login.text = item.login
-            item_user_description.text = item.bio
-            item_user_follow_unfollow.setText(if (item.viewerIsFollowing) R.string.user_profile_unfollow else R.string.user_profile_follow)
+        if (holder is UserViewHolder) {
+            holder.bindTo(item, actions)
         }
     }
 
-    override fun onClick(v: View?) {
+    class UserViewHolder(
+            private val binding: ItemUserBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bindTo(data: UserGraphQL, userActions: ItemUserActions?) {
+            binding.apply {
+                avatar = data.avatarUrl.toString()
+                username = data.name
+                login = data.login
+                bio = data.bio
+                following = data.viewerIsFollowing
+                actions = userActions
+            }
+
+            binding.executePendingBindings()
+        }
 
     }
-
-    class UserViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
 }

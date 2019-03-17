@@ -1,71 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
-    android:orientation="vertical"
-    android:padding="@dimen/fragment_content_padding">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/item_trending_developer_avatar"
-        android:layout_width="@dimen/repository_list_avatar_width"
-        android:layout_height="@dimen/repository_list_avatar_height"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+    <data>
 
-    <Space
-        android:id="@+id/item_trending_developer_space"
-        android:layout_width="@dimen/fragment_content_padding"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/item_trending_developer_avatar"
-        app:layout_constraintTop_toTopOf="parent" />
+        <import type="io.github.tonnyl.moka.data.TrendingDeveloperRepository" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_developer_name"
-        style="@style/TextAppearance.MaterialComponents.Subtitle1"
-        android:layout_width="0dp"
+        <variable
+            name="rank"
+            type="java.lang.Integer" />
+
+        <variable
+            name="span"
+            type="android.text.style.ForegroundColorSpan" />
+
+        <variable
+            name="login"
+            type="java.lang.String" />
+
+        <variable
+            name="username"
+            type="java.lang.String" />
+
+        <variable
+            name="repositoryName"
+            type="java.lang.String" />
+
+        <variable
+            name="repositoryDescription"
+            type="java.lang.String" />
+
+        <variable
+            name="avatar"
+            type="java.lang.String" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/fragment_content_padding"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
-        android:maxLines="1"
-        android:text="@string/explore_trending_developer_name"
-        android:textColor="@color/colorTextAccent"
-        android:textSize="@dimen/list_item_title_text"
-        app:layout_constraintEnd_toStartOf="@id/item_trending_developer_rank"
-        app:layout_constraintStart_toEndOf="@id/item_trending_developer_space"
-        tools:text="@sample/user.json/users/name" />
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:padding="@dimen/fragment_content_padding">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_developer_rank"
-        style="@style/TextAppearance.AppCompat.Caption"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:background="@drawable/bg_trending_rank"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/item_trending_developer_avatar"
-        tools:text="1" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/item_trending_developer_avatar"
+            android:layout_width="@dimen/repository_list_avatar_width"
+            android:layout_height="@dimen/repository_list_avatar_height"
+            app:avatarUrl="@{avatar}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_developer_name_description"
-        style="@style/TextAppearance.AppCompat.Body1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:drawablePadding="@dimen/fragment_content_padding_half"
-        android:gravity="center_vertical"
-        android:textColor="@color/colorTextSecondary"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/item_trending_developer_space"
-        app:layout_constraintTop_toBottomOf="@id/item_trending_developer_name"
-        tools:text="@sample/repository.json/repositories/description" />
+        <Space
+            android:id="@+id/item_trending_developer_space"
+            android:layout_width="@dimen/fragment_content_padding"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_trending_developer_avatar"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_developer_name"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/fragment_content_padding"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:text="@string/explore_trending_developer_name"
+            android:textColor="@color/colorTextAccent"
+            android:textSize="@dimen/list_item_title_text"
+            app:foregroundColorSpan="@{span}"
+            app:layout_constraintEnd_toStartOf="@id/item_trending_developer_rank"
+            app:layout_constraintStart_toEndOf="@id/item_trending_developer_space"
+            app:layout_constraintTop_toTopOf="parent"
+            app:trendingDeveloperLogin="@{login}"
+            app:trendingDeveloperName="@{username}"
+            tools:text="@sample/user.json/users/name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_developer_rank"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/bg_trending_rank"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/item_trending_developer_avatar"
+            app:trendingRank="@{rank}"
+            tools:text="1" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_developer_name_description"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/fragment_content_padding_half"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="14sp"
+            app:foregroundColorSpan="@{span}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_trending_developer_space"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_developer_name"
+            app:trendingDeveloperRepositoryDescription="@{repositoryDescription}"
+            app:trendingDeveloperRepositoryName="@{repositoryName}"
+            tools:text="@sample/repository.json/repositories/description" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

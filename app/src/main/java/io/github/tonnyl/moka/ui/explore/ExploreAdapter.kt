@@ -1,36 +1,33 @@
 package io.github.tonnyl.moka.ui.explore
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingRepository
-import io.github.tonnyl.moka.net.GlideLoader
-import io.github.tonnyl.moka.util.formatNumberWithSuffix
-import kotlinx.android.synthetic.main.item_trending_info.view.*
-import kotlinx.android.synthetic.main.item_trending_repository.view.*
-import kotlinx.android.synthetic.main.item_trending_repository_developers_list.view.*
+import io.github.tonnyl.moka.databinding.ItemTrendingInfoBinding
+import io.github.tonnyl.moka.databinding.ItemTrendingRepositoryBinding
+import io.github.tonnyl.moka.databinding.ItemTrendingRepositoryDevelopersListBinding
 
 class ExploreAdapter(
         var language: String,
         var since: String,
         var repositories: List<TrendingRepository>,
         var developers: List<TrendingDeveloper>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), View.OnClickListener {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var onItemClick: () -> Unit = {
+    var actions: ExploreRepositoryActions? = null
 
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = when (viewType) {
-        R.layout.item_trending_info -> TrendingInfoViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_info, parent, false))
-        R.layout.item_trending_repository_developers_list -> TrendingRepositoryDeveloperListViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_repository_developers_list, parent, false))
-        else -> TrendingRepositoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_repository, parent, false))
+        return when (viewType) {
+            R.layout.item_trending_info -> TrendingInfoViewHolder(ItemTrendingInfoBinding.inflate(inflater, parent, false))
+            R.layout.item_trending_repository_developers_list -> TrendingRepositoryDeveloperListViewHolder(ItemTrendingRepositoryDevelopersListBinding.inflate(inflater, parent, false))
+            else -> TrendingRepositoryViewHolder(ItemTrendingRepositoryBinding.inflate(inflater, parent, false))
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -44,13 +41,11 @@ class ExploreAdapter(
             R.layout.item_trending_repository_developers_list -> {
                 if (holder is TrendingRepositoryDeveloperListViewHolder) {
                     holder.bindTo(developers)
-
-                    holder.itemView.item_trending_repository_developers_all.setOnClickListener(this)
                 }
             }
             R.layout.item_trending_repository -> {
                 if (holder is TrendingRepositoryViewHolder) {
-                    holder.bindTo(repositories[position - 2], position - 2)
+                    holder.bindTo(repositories[position - 2], position - 2, actions)
                 }
             }
         }
@@ -64,65 +59,56 @@ class ExploreAdapter(
 
     override fun getItemCount(): Int = repositories.size + 2
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.item_trending_repository_developers_all -> {
-                onItemClick.invoke()
-            }
-        }
-    }
-
-    class TrendingRepositoryDeveloperListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class TrendingRepositoryDeveloperListViewHolder(
+            private val binding: ItemTrendingRepositoryDevelopersListBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(data: List<TrendingDeveloper>) {
-            with(itemView) {
-                val adapter = ExploreRepositoryDeveloperListAdapter()
+            val adapter = ExploreRepositoryDeveloperListAdapter()
 
-                item_trending_repository_developers_list.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-                item_trending_repository_developers_list.setHasFixedSize(true)
-                item_trending_repository_developers_list.adapter = adapter
+            with(binding.itemTrendingRepositoryDevelopersList) {
+                layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                setHasFixedSize(true)
+                this.adapter = adapter
+            }
 
-                adapter.submitList(data)
+            adapter.submitList(data)
+
+            binding.executePendingBindings()
+        }
+
+    }
+
+    class TrendingRepositoryViewHolder(
+            private val binding: ItemTrendingRepositoryBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bindTo(
+                data: TrendingRepository,
+                position: Int,
+                repositoryActions: ExploreRepositoryActions?
+        ) {
+            binding.apply {
+                repository = data
+                this.position = position + 1
+                this.period = "today"
+                actions = repositoryActions
             }
         }
 
     }
 
-    class TrendingRepositoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-        fun bindTo(data: TrendingRepository, position: Int) {
-            with(itemView) {
-                if (position == 0) {
-                    item_trending_repository_overline.visibility = View.VISIBLE
-                    item_trending_repository_space_between_overline_and_avatar.visibility = View.VISIBLE
-                } else {
-                    item_trending_repository_overline.visibility = View.GONE
-                    item_trending_repository_space_between_overline_and_avatar.visibility = View.GONE
-                }
-
-                if (data.builtBy.isNotEmpty()) {
-                    GlideLoader.loadAvatar(data.builtBy.firstOrNull()?.avatar, item_trending_repository_user_avatar)
-                }
-
-                item_trending_repository_title.text = context.getString(R.string.repository_name_with_username, data.author, data.name)
-                item_trending_repository_rank.text = (position + 1).toString()
-                item_trending_repository_caption.text = data.description ?: ""
-                item_trending_repository_period_stars.text = context.getString(R.string.explore_period_stars, data.currentPeriodStars, "today")
-                item_trending_repository_language_text.text = if (!data.language.isNullOrEmpty()) data.language else context.getString(R.string.programming_language_unknown)
-                item_trending_repository_star_count_text.text = formatNumberWithSuffix(data.stars)
-                item_trending_repository_fork_count_text.text = formatNumberWithSuffix(data.forks)
-                (item_trending_repository_language_text.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(if (!data.languageColor.isNullOrEmpty()) Color.parseColor(data.languageColor) else Color.BLACK)
-            }
-        }
-
-    }
-
-    class TrendingInfoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class TrendingInfoViewHolder(
+            private val binding: ItemTrendingInfoBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(language: String, since: String) {
-            with(itemView) {
-                item_trending_info_text.text = context.getString(R.string.explore_filter_info, language, since)
+            binding.apply {
+                this.language = language
+                this.since = since
             }
+
+            binding.executePendingBindings()
         }
 
     }

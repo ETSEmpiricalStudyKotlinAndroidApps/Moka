@@ -1,7 +1,5 @@
 package io.github.tonnyl.moka.ui.explore.filters
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.databinding.ItemTrendingFilterTimeSpanBinding
+import io.github.tonnyl.moka.databinding.ItemTrendingLanguageBinding
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
-import kotlinx.android.synthetic.main.item_trending_filter_time_span.view.*
-import kotlinx.android.synthetic.main.item_trending_language.view.*
 
 class FilterAdapter : ListAdapter<LocalLanguage?, RecyclerView.ViewHolder>(DIFF_CALLBACK),
         View.OnClickListener, RadioGroup.OnCheckedChangeListener {
@@ -42,30 +40,28 @@ class FilterAdapter : ListAdapter<LocalLanguage?, RecyclerView.ViewHolder>(DIFF_
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = when (viewType) {
-        R.layout.item_trending_filter_time_span -> TimeSpanViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_filter_time_span, parent, false))
-        R.layout.item_trending_filter_language_label -> LanguageLabelViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_filter_language_label, parent, false))
-        else -> LanguageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_language, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+
+        return when (viewType) {
+            R.layout.item_trending_filter_time_span -> TimeSpanViewHolder(ItemTrendingFilterTimeSpanBinding.inflate(inflater, parent, false))
+            R.layout.item_trending_filter_language_label -> LanguageLabelViewHolder(inflater.inflate(R.layout.item_trending_filter_language_label, parent, false))
+            else -> LanguageViewHolder(ItemTrendingLanguageBinding.inflate(inflater, parent, false))
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is TimeSpanViewHolder -> {
-                with(holder.itemView) {
-                    item_trending_filter_time_span_radio_group.setOnCheckedChangeListener(this@FilterAdapter)
-                }
+                holder.bindTo(ExploreTimeSpanType.DAILY)
             }
             is LanguageLabelViewHolder -> {
 
             }
             is LanguageViewHolder -> {
-                getItem(position)?.let { localLanguage ->
-                    holder.bindTo(localLanguage)
-                    with(holder.itemView) {
-                        tag = Pair(localLanguage.urlParam, localLanguage.name)
-                        setOnClickListener(this@FilterAdapter)
-                    }
-                }
+                val item = getItem(position) ?: return
+
+                holder.bindTo(item)
             }
         }
     }
@@ -110,18 +106,33 @@ class FilterAdapter : ListAdapter<LocalLanguage?, RecyclerView.ViewHolder>(DIFF_
         onRadioButtonClickListener.invoke(group.findViewById(checkedId), timeSpan)
     }
 
-    class LanguageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class LanguageViewHolder(
+            private val binding: ItemTrendingLanguageBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(language: LocalLanguage) {
-            with(itemView) {
-                item_language_text.text = language.name
-                (item_language_text.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.parseColor(language.color))
+            binding.apply {
+                this.language = language
             }
+
+            binding.executePendingBindings()
         }
 
     }
 
-    class TimeSpanViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class TimeSpanViewHolder(
+            private val binding: ItemTrendingFilterTimeSpanBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bindTo(selected: ExploreTimeSpanType) {
+            binding.apply {
+                selectedType = selected
+            }
+
+            binding.executePendingBindings()
+        }
+
+    }
 
     class LanguageLabelViewHolder(view: View) : RecyclerView.ViewHolder(view)
 

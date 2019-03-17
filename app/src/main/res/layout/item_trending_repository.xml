@@ -1,137 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_trending_repository_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
-    android:padding="@dimen/fragment_content_padding">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_repository_overline"
-        style="@style/TextAppearance.MaterialComponents.Overline"
-        android:layout_width="wrap_content"
+    <data>
+
+        <import type="io.github.tonnyl.moka.data.TrendingRepository" />
+
+        <variable
+            name="repository"
+            type="TrendingRepository" />
+
+        <variable
+            name="position"
+            type="java.lang.Integer" />
+
+        <variable
+            name="period"
+            type="java.lang.String" />
+
+        <variable
+            name="actions"
+            type="io.github.tonnyl.moka.ui.explore.ExploreRepositoryActions" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_trending_repository_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/explore_trending_repositories"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="@{() -> actions.openRepository(repository.author, repository.name)}"
+        android:padding="@dimen/fragment_content_padding">
 
-    <Space
-        android:id="@+id/item_trending_repository_space_between_overline_and_avatar"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/list_item_spacing"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_overline" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_repository_overline"
+            style="@style/TextAppearance.MaterialComponents.Overline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:goneUnless="@{position == 1}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textFuture="@{@string/explore_trending_repositories}"
+            tools:text="@string/explore_trending_repositories" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/item_trending_repository_user_avatar"
-        android:layout_width="@dimen/repository_list_avatar_width"
-        android:layout_height="@dimen/repository_list_avatar_height"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar"
-        tools:src="@tools:sample/avatars" />
+        <Space
+            android:id="@+id/item_trending_repository_space_between_overline_and_avatar"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/list_item_spacing"
+            app:goneUnless="@{position == 1}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_overline" />
 
-    <Space
-        android:id="@+id/item_trending_repository_space"
-        android:layout_width="@dimen/fragment_content_padding"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/item_trending_repository_user_avatar"
-        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/item_trending_repository_user_avatar"
+            android:layout_width="@dimen/repository_list_avatar_width"
+            android:layout_height="@dimen/repository_list_avatar_height"
+            android:onClick="@{() -> actions.openProfile(repository.author)}"
+            app:avatarUrl='@{repository.builtBy.isEmpty() ? "" : repository.builtBy.get(0).avatar }'
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar"
+            tools:src="@tools:sample/avatars" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_repository_title"
-        style="@style/TextAppearance.MaterialComponents.Subtitle1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/fragment_content_padding"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
-        android:maxLines="1"
-        android:textColor="@color/colorTextAccent"
-        android:textSize="@dimen/list_item_title_text"
-        app:layout_constraintEnd_toStartOf="@id/item_trending_repository_rank"
-        app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
-        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar"
-        tools:text="@sample/repository.json/repositories/name" />
+        <Space
+            android:id="@+id/item_trending_repository_space"
+            android:layout_width="@dimen/fragment_content_padding"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_trending_repository_user_avatar"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_repository_rank"
-        style="@style/TextAppearance.AppCompat.Caption"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:background="@drawable/bg_trending_rank"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/item_trending_repository_user_avatar"
-        tools:text="1" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_repository_title"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/fragment_content_padding"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:textColor="@color/colorTextAccent"
+            android:textSize="@dimen/list_item_title_text"
+            app:layout_constraintEnd_toStartOf="@id/item_trending_repository_rank"
+            app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar"
+            app:textFuture="@{@string/repository_name_with_username(repository.author, repository.name)}"
+            tools:text="@sample/repository.json/repositories/name" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_repository_caption"
-        style="@style/TextAppearance.MaterialComponents.Caption"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/list_item_text_caption"
-        android:textSize="@dimen/list_item_caption_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
-        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_title"
-        tools:text="@sample/repository.json/repositories/description" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_repository_rank"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/bg_trending_rank"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/item_trending_repository_user_avatar"
+            app:textFuture="@{String.valueOf(position)}"
+            tools:text="1" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_repository_period_stars"
-        style="@style/TextAppearance.AppCompat.Body1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/explore_period_stars"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
-        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_caption" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_repository_caption"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/list_item_text_caption"
+            android:textSize="@dimen/list_item_caption_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_title"
+            app:textFuture='@{repository.description != null ? repository.description : ""}'
+            tools:text="@sample/repository.json/repositories/description" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_repository_language_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableStart="@drawable/language_dot"
-        android:drawablePadding="4dp"
-        android:textColor="@color/list_item_text_caption"
-        android:textSize="@dimen/list_item_caption_text"
-        app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
-        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_period_stars"
-        tools:text="@sample/language.json/languages/name" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_repository_period_stars"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_caption"
+            app:textFuture='@{@string/explore_period_stars(repository.currentPeriodStars, "today")}'
+            tools:text="@string/explore_period_stars" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_repository_star_count_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_item_spacing"
-        android:drawableStart="@drawable/ic_star_black_18"
-        android:drawablePadding="@dimen/list_content_padding"
-        android:textColor="@color/list_item_text_caption"
-        android:textSize="@dimen/list_item_caption_text"
-        app:layout_constraintStart_toEndOf="@id/item_trending_repository_language_text"
-        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_period_stars"
-        tools:text="@sample/repository.json/repositories/stargazerCount" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_repository_language_text"
+            style="@style/TextAppearance.MaterialComponents.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/language_dot"
+            android:drawablePadding="4dp"
+            app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_period_stars"
+            app:repositoryLanguageDrawableColor="@{repository.languageColor}"
+            app:textFuture="@{repository.language == null ? @string/programming_language_unknown : repository.language}"
+            tools:text="@sample/language.json/languages/name" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/item_trending_repository_fork_count_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_item_spacing"
-        android:drawableStart="@drawable/ic_code_fork_18"
-        android:drawablePadding="@dimen/list_content_padding"
-        android:textColor="@color/list_item_text_caption"
-        android:textSize="@dimen/list_item_caption_text"
-        app:layout_constraintStart_toEndOf="@id/item_trending_repository_star_count_text"
-        app:layout_constraintTop_toBottomOf="@id/item_trending_repository_period_stars"
-        tools:text="@sample/repository.json/repositories/forkCount" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_repository_star_count_text"
+            style="@style/TextAppearance.MaterialComponents.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_item_spacing"
+            android:drawableStart="@drawable/ic_star_black_18"
+            android:drawablePadding="@dimen/list_content_padding"
+            app:layout_constraintStart_toEndOf="@id/item_trending_repository_language_text"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_period_stars"
+            app:textFuture="@{String.valueOf(repository.stars)}"
+            tools:text="@sample/repository.json/repositories/stargazerCount" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_trending_repository_fork_count_text"
+            style="@style/TextAppearance.MaterialComponents.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_item_spacing"
+            android:drawableStart="@drawable/ic_code_fork_18"
+            android:drawablePadding="@dimen/list_content_padding"
+            app:layout_constraintStart_toEndOf="@id/item_trending_repository_star_count_text"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_period_stars"
+            app:textFuture="@{String.valueOf(repository.forks)}"
+            tools:text="@sample/repository.json/repositories/forkCount" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

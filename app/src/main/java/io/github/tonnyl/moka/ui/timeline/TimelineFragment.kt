@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.content.res.ResourcesCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -15,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.mvrx.BaseMvRxFragment
 import com.airbnb.mvrx.fragmentViewModel
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.databinding.FragmentTimelineBinding
 import io.github.tonnyl.moka.net.GlideLoader
 import io.github.tonnyl.moka.ui.main.MainViewModel
 import io.github.tonnyl.moka.ui.main.ViewModelFactory
@@ -32,18 +32,16 @@ class TimelineFragment : BaseMvRxFragment(), View.OnClickListener {
 
     private lateinit var timelineAdapter: TimelineAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_timeline, container, false)
+    private lateinit var binding: FragmentTimelineBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentTimelineBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        swipe_refresh.setColorSchemeColors(
-                ResourcesCompat.getColor(resources, R.color.indigo, null),
-                ResourcesCompat.getColor(resources, R.color.teal, null),
-                ResourcesCompat.getColor(resources, R.color.lightBlue, null),
-                ResourcesCompat.getColor(resources, R.color.yellow, null),
-                ResourcesCompat.getColor(resources, R.color.orange, null)
-        )
 
         mainViewModel = ViewModelProviders.of(requireActivity(), ViewModelFactory()).get(MainViewModel::class.java)
 

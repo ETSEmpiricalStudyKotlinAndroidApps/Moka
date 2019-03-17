@@ -1,17 +1,12 @@
 package io.github.tonnyl.moka.ui.explore
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.PrecomputedTextCompat
-import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
-import io.github.tonnyl.moka.net.GlideLoader
-import kotlinx.android.synthetic.main.item_trending_repository_developer_item.view.*
+import io.github.tonnyl.moka.databinding.ItemTrendingRepositoryDeveloperItemBinding
 
 class ExploreRepositoryDeveloperListAdapter : ListAdapter<TrendingDeveloper, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
@@ -27,7 +22,7 @@ class ExploreRepositoryDeveloperListAdapter : ListAdapter<TrendingDeveloper, Rec
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = TrendingRepositoryDeveloperViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_trending_repository_developer_item, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = TrendingRepositoryDeveloperViewHolder(ItemTrendingRepositoryDeveloperItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val data = getItem(position) ?: return
@@ -36,18 +31,17 @@ class ExploreRepositoryDeveloperListAdapter : ListAdapter<TrendingDeveloper, Rec
         }
     }
 
-    class TrendingRepositoryDeveloperViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class TrendingRepositoryDeveloperViewHolder(
+            private val binding: ItemTrendingRepositoryDeveloperItemBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(data: TrendingDeveloper) {
-            with(itemView) {
-                GlideLoader.loadAvatar(data.avatar, item_trending_repository_developer_avatar)
-
-                item_trending_repository_developer_name.setTextFuture(PrecomputedTextCompat.getTextFuture(
-                        data.username,
-                        TextViewCompat.getTextMetricsParams(item_trending_repository_developer_name),
-                        null
-                ))
+            binding.apply {
+                avatar = data.avatar
+                username = data.username
             }
+
+            binding.executePendingBindings()
         }
 
     }

@@ -5,7 +5,6 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.CommentAuthorAssociation
+import io.github.tonnyl.moka.databinding.FragmentIssuePrBinding
 import io.github.tonnyl.moka.net.GlideLoader
 import kotlinx.android.synthetic.main.appbar_layout.*
 import kotlinx.android.synthetic.main.fragment_issue_pr.*
@@ -32,10 +32,12 @@ class IssueFragment : Fragment() {
 
     private lateinit var viewModel: IssueViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
+    private lateinit var binding: FragmentIssuePrBinding
 
-        return inflater.inflate(R.layout.fragment_issue_pr, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentIssuePrBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,14 +57,6 @@ class IssueFragment : Fragment() {
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
-
-        swipe_refresh.setColorSchemeColors(
-                ResourcesCompat.getColor(resources, R.color.indigo, null),
-                ResourcesCompat.getColor(resources, R.color.teal, null),
-                ResourcesCompat.getColor(resources, R.color.lightBlue, null),
-                ResourcesCompat.getColor(resources, R.color.yellow, null),
-                ResourcesCompat.getColor(resources, R.color.orange, null)
-        )
 
         viewModel = ViewModelProviders.of(this, ViewModelFactory(repositoryOwner, repositoryName, issueNumber)).get(IssueViewModel::class.java)
 

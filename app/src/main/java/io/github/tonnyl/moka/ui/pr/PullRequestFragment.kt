@@ -9,12 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.CommentAuthorAssociation
 import io.github.tonnyl.moka.databinding.FragmentIssuePrBinding
 import io.github.tonnyl.moka.net.GlideLoader
-import io.github.tonnyl.moka.type.CommentAuthorAssociation
 import kotlinx.android.synthetic.main.appbar_layout.*
 import kotlinx.android.synthetic.main.fragment_issue_pr.*
 import kotlinx.android.synthetic.main.item_issue_timeline_comment.*
@@ -25,25 +26,12 @@ class PullRequestFragment : Fragment() {
 
     private lateinit var binding: FragmentIssuePrBinding
 
-    private val repositoryOwner: String by lazy {
-        PullRequestFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).owner
-    }
-    private val repositoryName: String by lazy {
-        requireNotNull(arguments)
-        PullRequestFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).name
-    }
-    private val prNumber: Int by lazy {
-        requireNotNull(arguments)
-        PullRequestFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).number
-    }
-    private val prTitle: String by lazy {
-        requireNotNull(arguments)
-        PullRequestFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).title
-    }
+    private val args: PullRequestFragmentArgs by navArgs()
+
+    private lateinit var repositoryOwner: String
+    private lateinit var repositoryName: String
+    private var prNumber: Int = 0
+    private lateinit var prTitle: String
 
     private val adapter: PullRequestTimelineAdapter by lazy {
         PullRequestTimelineAdapter()
@@ -57,6 +45,11 @@ class PullRequestFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        repositoryOwner = args.owner
+        repositoryName = args.name
+        prNumber = args.number
+        prTitle = args.title
 
         issue_title.text = prTitle
 

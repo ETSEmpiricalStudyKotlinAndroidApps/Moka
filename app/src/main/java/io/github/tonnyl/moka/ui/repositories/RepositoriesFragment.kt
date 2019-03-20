@@ -68,13 +68,13 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions {
     }
 
     override fun openRepository(login: String, repositoryName: String) {
-        val builder = RepositoryFragmentArgs.Builder(login, repositoryName)
-        findNavController().navigate(R.id.action_to_repository, builder.build().toBundle())
+        val builder = RepositoryFragmentArgs(login, repositoryName)
+        findNavController().navigate(R.id.action_to_repository, builder.toBundle())
     }
 
     override fun openProfile(login: String) {
-        val builder = UserProfileFragmentArgs.Builder(login)
-        findNavController().navigate(R.id.action_to_profile, builder.build().toBundle())
+        val builder = UserProfileFragmentArgs(login)
+        findNavController().navigate(R.id.action_to_profile, builder.toBundle())
     }
 
     override fun starRepositoryClicked(repositoryNameWithOwner: String, star: Boolean) {

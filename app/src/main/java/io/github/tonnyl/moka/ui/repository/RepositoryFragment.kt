@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentRepositoryBinding
@@ -26,6 +27,8 @@ class RepositoryFragment : Fragment() {
 
     private lateinit var viewModel: RepositoryViewModel
 
+    private val args: RepositoryFragmentArgs by navArgs()
+
     private lateinit var binding: FragmentRepositoryBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,10 +39,8 @@ class RepositoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = RepositoryFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).login
-        val nameArg = RepositoryFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).name
+        val loginArg = args.login
+        val nameArg = args.name
 
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
@@ -89,16 +90,16 @@ class RepositoryFragment : Fragment() {
                     repository_issues_count_text.text = formatNumberWithSuffix(issuesCount)
 
                     repository_issues_text_layout.setOnClickListener {
-                        val args = IssuesFragmentArgs.Builder(loginArg, nameArg)
-                        parentFragment?.findNavController()?.navigate(R.id.action_to_issues, args.build().toBundle())
+                        val args = IssuesFragmentArgs(loginArg, nameArg)
+                        parentFragment?.findNavController()?.navigate(R.id.action_to_issues, args.toBundle())
                     }
 
                     val pullRequestsCount = resources.data?.pullRequestsCount ?: 0
                     repository_pull_requests_count_text.text = formatNumberWithSuffix(pullRequestsCount)
 
                     repository_pull_requests_text_layout.setOnClickListener {
-                        val args = PullRequestsFragmentArgs.Builder(loginArg, nameArg)
-                        parentFragment?.findNavController()?.navigate(R.id.action_to_prs, args.build().toBundle())
+                        val args = PullRequestsFragmentArgs(loginArg, nameArg)
+                        parentFragment?.findNavController()?.navigate(R.id.action_to_prs, args.toBundle())
                     }
 
                     val projectsCount = resources.data?.projectsCount ?: 0

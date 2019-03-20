@@ -3,7 +3,6 @@ package io.github.tonnyl.moka.net
 import android.content.Context
 import com.google.gson.GsonBuilder
 import io.github.tonnyl.moka.BuildConfig
-import io.github.tonnyl.moka.data.AccessToken
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,7 +14,7 @@ import java.text.DateFormat
 object RetrofitClient {
 
     // The latest token
-    private var lastToken: String = BuildConfig.TEST_TOKEN
+    var lastToken: String? = BuildConfig.TEST_TOKEN
     // The [retrofit2.Retrofit] instance for whole app.
     private lateinit var retrofit: Retrofit
 
@@ -25,7 +24,7 @@ object RetrofitClient {
     const val GITHUB_AUTHORIZE_URL = "https://github.com/login/oauth/authorize"
     const val GITHUB_GET_ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token"
     // Callback urls
-    const val GITHUB_AUTHORIZE_CALLBACK_URI = "moka-app://callback"
+    const val GITHUB_AUTHORIZE_CALLBACK_URI = "https://tonnyl.io/moka/callback"
     const val GITHUB_AUTHORIZE_CALLBACK_URI_SCHEMA = "moka-app"
     const val GITHUB_AUTHORIZE_CALLBACK_URI_HOST = "callback"
     // Scope
@@ -38,12 +37,8 @@ object RetrofitClient {
         cache = Cache(context.cacheDir, 20 * 1024 * 1024)
     }
 
-    fun <T> createService(serviceClass: Class<T>, accessToken: AccessToken?): T {
-        val currentToken: String = accessToken?.accessToken ?: BuildConfig.TEST_TOKEN
-
-        if (!::retrofit.isInitialized || currentToken != lastToken) {
-            lastToken = currentToken
-
+    fun <T> createService(serviceClass: Class<T>): T {
+        if (!::retrofit.isInitialized) {
             // Custom the http client.
             val httpClientBuilder = OkHttpClient.Builder()
             httpClientBuilder.addInterceptor { chain ->

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -29,6 +30,8 @@ class PullRequestsFragment : Fragment(), IssuePRActions {
 
     private lateinit var viewModel: PullRequestsViewModel
 
+    private val args: PullRequestsFragmentArgs by navArgs()
+
     private lateinit var binding: FragmentPrsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,8 +42,6 @@ class PullRequestsFragment : Fragment(), IssuePRActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val args = PullRequestsFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments"))
         owner = args.owner
         name = args.name
 
@@ -62,13 +63,13 @@ class PullRequestsFragment : Fragment(), IssuePRActions {
     }
 
     override fun openIssueOrPR(number: Int, title: String) {
-        val pullRequestFragmentArgs = PullRequestFragmentArgs.Builder(owner, name, number, title)
-        parentFragment?.findNavController()?.navigate(R.id.action_to_pr, pullRequestFragmentArgs.build().toBundle())
+        val pullRequestFragmentArgs = PullRequestFragmentArgs(owner, name, number, title)
+        parentFragment?.findNavController()?.navigate(R.id.action_to_pr, pullRequestFragmentArgs.toBundle())
     }
 
     override fun openProfile(login: String) {
-        val profileFragmentArgs = UserProfileFragmentArgs.Builder(login)
-        findNavController()?.navigate(R.id.action_to_profile, profileFragmentArgs.build().toBundle())
+        val profileFragmentArgs = UserProfileFragmentArgs(login)
+        findNavController().navigate(R.id.action_to_profile, profileFragmentArgs.toBundle())
     }
 
 }

@@ -7,7 +7,7 @@ plugins {
     id("kotlin-android-extensions")
     id("kotlin-kapt")
     id("com.apollographql.android")
-    id("androidx.navigation.safeargs")
+    id("androidx.navigation.safeargs.kotlin")
     id("io.fabric")
 }
 

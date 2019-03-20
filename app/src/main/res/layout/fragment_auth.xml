@@ -57,15 +57,18 @@
         app:lottie_loop="true"
         tools:visibility="visible" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/auth_get_started"
-        android:layout_width="@dimen/auth_get_started_button_width"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_auth_get_started"
-        android:paddingStart="@dimen/auth_get_started_button_padding"
-        android:paddingEnd="@dimen/auth_get_started_button_padding"
+        android:insetLeft="0dp"
+        android:insetTop="4dp"
+        android:insetRight="0dp"
+        android:insetBottom="4dp"
         android:text="@string/auth_get_started"
-        android:textColor="@color/auth_get_started_button_text"
+        android:textColor="@color/colorPrimary"
+        app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

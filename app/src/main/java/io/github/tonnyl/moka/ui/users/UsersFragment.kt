@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -19,6 +20,8 @@ import kotlinx.android.synthetic.main.fragment_users.*
 class UsersFragment : Fragment(), ItemUserActions {
 
     private lateinit var viewModel: UsersViewModel
+
+    private val args: UsersFragmentArgs by navArgs()
 
     private val adapter by lazy {
         UserAdapter().apply {
@@ -41,12 +44,9 @@ class UsersFragment : Fragment(), ItemUserActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = UsersFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).login
-        val userTypeArg = UsersFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).usersType
-        val usernameArg = UsersFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).username
+        val loginArg = args.login
+        val userTypeArg = args.usersType
+        val usernameArg = args.username
 
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
@@ -72,8 +72,8 @@ class UsersFragment : Fragment(), ItemUserActions {
     }
 
     override fun openProfile(login: String) {
-        val builder = UserProfileFragmentArgs.Builder(login)
-        findNavController().navigate(R.id.action_to_profile, builder.build().toBundle())
+        val builder = UserProfileFragmentArgs(login)
+        findNavController().navigate(R.id.action_to_profile, builder.toBundle())
     }
 
     override fun followUserClicked(login: String, follow: Boolean) {

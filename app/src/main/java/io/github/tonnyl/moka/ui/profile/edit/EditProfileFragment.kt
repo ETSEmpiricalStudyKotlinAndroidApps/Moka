@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.net.Status
 import kotlinx.android.synthetic.main.fragment_edit_profile.*
@@ -16,30 +17,14 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
     private lateinit var viewModel: EditProfileViewModel
 
-    private val name: String? by lazy {
-        EditProfileFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).name
-    }
-    private val bio: String? by lazy {
-        EditProfileFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).bio
-    }
-    private val email: String by lazy {
-        EditProfileFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).email
-    }
-    private val url: String? by lazy {
-        EditProfileFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).url
-    }
-    private val company: String? by lazy {
-        EditProfileFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).company
-    }
-    private val location: String? by lazy {
-        EditProfileFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).location
-    }
+    private val args: EditProfileFragmentArgs by navArgs()
+
+    private var name: String? = null
+    private var bio: String? = null
+    private var email: String? = null
+    private var url: String? = null
+    private var company: String? = null
+    private var location: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -49,6 +34,13 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        name = args.name
+        bio = args.bio
+        email = args.email
+        url = args.url
+        company = args.company
+        location = args.location
 
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()

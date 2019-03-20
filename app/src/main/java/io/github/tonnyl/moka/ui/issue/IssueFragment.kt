@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -32,6 +33,8 @@ class IssueFragment : Fragment() {
 
     private lateinit var viewModel: IssueViewModel
 
+    private val args: IssueFragmentArgs by navArgs()
+
     private lateinit var binding: FragmentIssuePrBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -42,9 +45,6 @@ class IssueFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val args = IssueFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments"))
 
         repositoryOwner = args.owner
         repositoryName = args.name

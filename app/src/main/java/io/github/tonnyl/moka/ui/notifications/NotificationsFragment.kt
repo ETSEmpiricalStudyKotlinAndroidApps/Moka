@@ -43,7 +43,7 @@ class NotificationsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(NotificationsRepository(RetrofitClient.createService(NotificationsService::class.java, null), (requireContext().applicationContext as MokaApp).appExecutors.networkIO))).get(NotificationsViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, ViewModelFactory(NotificationsRepository(RetrofitClient.createService(NotificationsService::class.java), (requireContext().applicationContext as MokaApp).appExecutors.networkIO))).get(NotificationsViewModel::class.java)
 
         viewModel.refreshNotificationList(formatISO8601String())
 

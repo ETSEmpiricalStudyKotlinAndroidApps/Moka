@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -24,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_user_profile.*
 class UserProfileFragment : Fragment(), View.OnClickListener {
 
     private lateinit var viewModel: UserProfileViewModel
+    private val args: UserProfileFragmentArgs by navArgs()
 
     private var username: String? = ""
 
@@ -39,8 +41,7 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        login = UserProfileFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).login
+        login = args.login
 
         toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
@@ -114,19 +115,19 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
                 parentFragment?.findNavController()?.navigate(R.id.action_user_profile_to_users, bundle)
             }
             R.id.profile_repositories_text_layout -> {
-                val builder = RepositoriesFragmentArgs.Builder(login, RepositoriesFragment.REPOSITORY_TYPE_OWNED, username
+                val builder = RepositoriesFragmentArgs(login, RepositoriesFragment.REPOSITORY_TYPE_OWNED, username
                         ?: return)
-                parentFragment?.findNavController()?.navigate(R.id.action_to_repositories, builder.build().toBundle())
+                parentFragment?.findNavController()?.navigate(R.id.action_to_repositories, builder.toBundle())
             }
             R.id.profile_stars_text_layout -> {
-                val builder = RepositoriesFragmentArgs.Builder(login, RepositoriesFragment.REPOSITORY_TYPE_STARS, username
+                val builder = RepositoriesFragmentArgs(login, RepositoriesFragment.REPOSITORY_TYPE_STARS, username
                         ?: return)
-                parentFragment?.findNavController()?.navigate(R.id.action_to_repositories, builder.build().toBundle())
+                parentFragment?.findNavController()?.navigate(R.id.action_to_repositories, builder.toBundle())
             }
             R.id.toolbar_edit -> {
                 viewModel.user.value?.data()?.user()?.let {
-                    val bundle = EditProfileFragmentArgs.Builder(it.login(), it.name(), it.email(), it.bio(), it.websiteUrl()?.toString(), it.company(), it.location())
-                    parentFragment?.findNavController()?.navigate(R.id.action_to_edit_profile, bundle.build().toBundle())
+                    val bundle = EditProfileFragmentArgs(it.login(), it.name(), it.email(), it.bio(), it.websiteUrl()?.toString(), it.company(), it.location())
+                    parentFragment?.findNavController()?.navigate(R.id.action_to_edit_profile, bundle.toBundle())
                 }
             }
         }

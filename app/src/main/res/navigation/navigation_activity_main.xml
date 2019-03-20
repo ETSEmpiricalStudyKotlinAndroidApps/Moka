@@ -3,13 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_activity_main"
-    app:startDestination="@id/main_fragment">
+    app:startDestination="@id/auth_fragment">
 
     <fragment
         android:id="@+id/main_fragment"
         android:name="io.github.tonnyl.moka.ui.main.MainFragment"
         android:label="Main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main">
+
+        <action
+            android:id="@+id/action_to_auth_no_history"
+            app:destination="@id/auth_fragment"
+            app:popUpTo="@+id/navigation_activity_main"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_to_auth_with_history"
+            app:destination="@id/auth_fragment" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/auth_fragment"
@@ -19,17 +31,24 @@
 
         <argument
             android:name="code"
+            android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />
 
+        <argument
+            android:name="state"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+
+        <deepLink app:uri="tonnyl.io/moka/callback?code={code}&amp;state={state}" />
+
+        <action
+            android:id="@+id/action_to_main"
+            app:destination="@id/main_fragment"
+            app:popUpTo="@+id/navigation_activity_main"
+            app:popUpToInclusive="true" />
+
     </fragment>
-
-    <action
-        android:id="@+id/action_to_main"
-        app:destination="@id/main_fragment" />
-
-    <action
-        android:id="@+id/action_to_auth"
-        app:destination="@id/auth_fragment" />
 
 </navigation>

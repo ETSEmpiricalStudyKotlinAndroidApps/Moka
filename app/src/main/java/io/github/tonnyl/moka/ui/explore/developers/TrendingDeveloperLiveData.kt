@@ -11,7 +11,7 @@ import timber.log.Timber
 
 class TrendingDeveloperLiveData : LiveData<Response<List<TrendingDeveloper>>>() {
 
-    private val call = RetrofitClient.createService(TrendingService::class.java, null)
+    private val call = RetrofitClient.createService(TrendingService::class.java)
             .listTrendingDevelopers(language = "all", since = "daily")
 
     init {

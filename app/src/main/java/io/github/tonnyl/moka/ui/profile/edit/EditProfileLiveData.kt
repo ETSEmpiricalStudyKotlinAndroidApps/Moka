@@ -12,7 +12,7 @@ import timber.log.Timber
 
 class EditProfileLiveData : LiveData<Resource<Unit>>() {
 
-    private val service = RetrofitClient.createService(UserService::class.java, null)
+    private val service = RetrofitClient.createService(UserService::class.java)
 
     private lateinit var disposable: Disposable
 

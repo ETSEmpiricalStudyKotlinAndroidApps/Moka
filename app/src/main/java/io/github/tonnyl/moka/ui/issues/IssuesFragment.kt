@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -29,6 +30,8 @@ class IssuesFragment : Fragment(), IssuePRActions {
 
     private lateinit var viewModel: IssuesViewModel
 
+    private val args: IssuesFragmentArgs by navArgs()
+
     private lateinit var binding: FragmentIssuesBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,8 +42,6 @@ class IssuesFragment : Fragment(), IssuePRActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val args = IssuesFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments"))
         owner = args.owner
         name = args.name
 
@@ -62,13 +63,13 @@ class IssuesFragment : Fragment(), IssuePRActions {
     }
 
     override fun openIssueOrPR(number: Int, title: String) {
-        val issueFragmentArgs = IssueFragmentArgs.Builder(owner, name, number, title)
-        parentFragment?.findNavController()?.navigate(R.id.action_to_issue, issueFragmentArgs.build().toBundle())
+        val issueFragmentArgs = IssueFragmentArgs(owner, name, number, title)
+        parentFragment?.findNavController()?.navigate(R.id.action_to_issue, issueFragmentArgs.toBundle())
     }
 
     override fun openProfile(login: String) {
-        val profileFragmentArgs = UserProfileFragmentArgs.Builder(login)
-        findNavController()?.navigate(R.id.action_to_profile, profileFragmentArgs.build().toBundle())
+        val profileFragmentArgs = UserProfileFragmentArgs(login)
+        findNavController().navigate(R.id.action_to_profile, profileFragmentArgs.toBundle())
     }
 
 }

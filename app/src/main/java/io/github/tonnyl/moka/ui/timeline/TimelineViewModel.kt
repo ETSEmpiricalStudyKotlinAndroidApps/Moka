@@ -19,7 +19,7 @@ class TimelineViewModel(
 
     private lateinit var userLogin: String
     private val sourceFactory: TimelineDataSourceFactory by lazy {
-        TimelineDataSourceFactory(RetrofitClient.createService(EventsService::class.java, null), userLogin)
+        TimelineDataSourceFactory(RetrofitClient.createService(EventsService::class.java), userLogin)
     }
 
     private val pagingConfig: PagedList.Config by lazy {

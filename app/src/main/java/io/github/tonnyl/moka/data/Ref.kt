@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.data
 import android.os.Parcelable
 import io.github.tonnyl.moka.PullRequestQuery
 import io.github.tonnyl.moka.RepositoryQuery
+import io.github.tonnyl.moka.fragment.RepositoryFragment
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -27,17 +28,12 @@ data class Ref(
 
     companion object {
 
-        fun createFromRaw(data: RepositoryQuery.DefaultBranchRef?): Ref? {
-            if (data == null) {
-                return null
-            }
-            return Ref(
-                    data.id(),
-                    data.name(),
-                    data.prefix(),
-                    GitObject.createFromRaw(data.target())
-            )
-        }
+        fun createFromRaw(data: RepositoryQuery.DefaultBranchRef?): Ref? = if (data == null) null else Ref(
+                data.id(),
+                data.name(),
+                data.prefix(),
+                GitObject.createFromRaw(data.target())
+        )
 
         fun createFromRepositoryQueryBaseRef(data: PullRequestQuery.BaseRef?): Ref? = if (data == null) null else Ref(
                 data.id(),
@@ -47,6 +43,13 @@ data class Ref(
         )
 
         fun createFromRepositoryQueryHeadRef(data: PullRequestQuery.HeadRef?): Ref? = if (data == null) null else Ref(
+                data.id(),
+                data.name(),
+                data.prefix(),
+                GitObject.createFromRaw(data.target())
+        )
+
+        fun createFromRaw(data: RepositoryFragment.DefaultBranchRef?): Ref? = if (data == null) null else Ref(
                 data.id(),
                 data.name(),
                 data.prefix(),

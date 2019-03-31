@@ -333,4 +333,7 @@
     <string name="timeline_content_empty_title">You haven\'t received any events yet</string>
     <string name="timeline_content_empty_action">Explore More</string>
 
+    <string name="search_tab_repositories">Repositories</string>
+    <string name="search_tab_users">Users</string>
+
 </resources>

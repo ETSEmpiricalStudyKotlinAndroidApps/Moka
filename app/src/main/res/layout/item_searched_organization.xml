@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.text.TextUtils" />
+
+        <import type="io.github.tonnyl.moka.data.item.SearchedOrganizationItem" />
+
+        <variable
+            name="data"
+            type="SearchedOrganizationItem" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_searched_organization_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/fragment_content_padding">
+
+        <Space
+            android:id="@+id/item_searched_organization_space_1"
+            android:layout_width="@dimen/fragment_content_padding"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_searched_organization_avatar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/item_searched_organization_avatar"
+            android:layout_width="@dimen/repository_list_avatar_width"
+            android:layout_height="@dimen/repository_list_avatar_height"
+            app:avatarUrl="@{data.avatarUrl.toString()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_searched_organization_name"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:textColor="@color/list_item_text_title"
+            android:textSize="@dimen/list_item_title_text"
+            app:goneUnless="@{!TextUtils.isEmpty(data.name)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_searched_organization_space_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textFuture="@{data.name}"
+            tools:text="@sample/user.json/users/name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_searched_organization_login"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:textColor="@color/list_item_text_caption"
+            android:textSize="@dimen/list_item_caption_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_searched_organization_space_1"
+            app:layout_constraintTop_toBottomOf="@id/item_searched_organization_name"
+            app:textFuture="@{data.login}"
+            tools:text="@sample/user.json/users/login" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_searched_organization_description"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/list_item_text_caption"
+            android:textSize="@dimen/list_item_caption_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_searched_organization_space_1"
+            app:layout_constraintTop_toBottomOf="@id/item_searched_organization_login"
+            app:textFuture="@{data.description}"
+            tools:text="@sample/user.json/users/bio" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

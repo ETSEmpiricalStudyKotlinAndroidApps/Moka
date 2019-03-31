@@ -8,8 +8,10 @@ import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.ViewModelContext
 import io.github.tonnyl.moka.MokaApp.Companion.MAX_SIZE_OF_PAGED_LIST
 import io.github.tonnyl.moka.MokaApp.Companion.PER_PAGE
+import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.net.RetrofitClient
 import io.github.tonnyl.moka.net.service.EventsService
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -31,6 +33,8 @@ class TimelineViewModel(
                 .build()
     }
 
+    private lateinit var observablePagedList: Observable<PagedList<Event>>
+
     companion object : MvRxViewModelFactory<TimelineViewModel, TimelineState> {
 
         override fun create(viewModelContext: ViewModelContext, state: TimelineState): TimelineViewModel? = TimelineViewModel(state)
@@ -42,22 +46,22 @@ class TimelineViewModel(
             return@withState
         }
 
-        if (this::userLogin.isInitialized) {
-            sourceFactory.invalidate()
-        } else {
+        if (!this::userLogin.isInitialized || userLogin != login) {
             userLogin = login
+
+            observablePagedList = RxPagedListBuilder(sourceFactory, pagingConfig)
+                    .setFetchScheduler(Schedulers.io())
+                    .setNotifyScheduler(AndroidSchedulers.mainThread())
+                    .buildObservable()
+                    .doOnSubscribe {
+                        setState { copy(isInitialLoading = true) }
+                    }
+                    .doOnEach {
+                        setState { copy(isInitialLoading = false) }
+                    }
         }
 
-        RxPagedListBuilder(sourceFactory, pagingConfig)
-                .setFetchScheduler(Schedulers.io())
-                .setNotifyScheduler(AndroidSchedulers.mainThread())
-                .buildObservable()
-                .doOnSubscribe {
-                    setState { copy(isInitialLoading = true) }
-                }
-                .doOnEach {
-                    setState { copy(isInitialLoading = false) }
-                }
+        observablePagedList
                 .execute {
                     copy(eventRequest = it)
                 }

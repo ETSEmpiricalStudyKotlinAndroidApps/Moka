@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.data
 import android.net.Uri
 import android.os.Parcelable
 import io.github.tonnyl.moka.RepositoryQuery
+import io.github.tonnyl.moka.fragment.RepositoryFragment
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -71,25 +72,42 @@ data class License(
 
     companion object {
 
-        fun createFromRaw(license: RepositoryQuery.LicenseInfo?): License? {
-            return if (license == null) null else License(
-                    license.body(),
-                    license.conditions().map { LicenseRule.createFromRawCondition(it) },
-                    license.description(),
-                    license.featured(),
-                    license.hidden(),
-                    license.id(),
-                    license.implementation(),
-                    license.key(),
-                    license.limitations().map { LicenseRule.createFromRawLimitation(it) },
-                    license.name(),
-                    license.nickname(),
-                    license.permissions().map { LicenseRule.createFromRawPermission(it) },
-                    license.pseudoLicense(),
-                    license.spdxId(),
-                    license.url()
-            )
-        }
+        fun createFromRaw(license: RepositoryQuery.LicenseInfo?): License? = if (license == null) null else License(
+                license.body(),
+                license.conditions().map { LicenseRule.createFromRawCondition(it) },
+                license.description(),
+                license.featured(),
+                license.hidden(),
+                license.id(),
+                license.implementation(),
+                license.key(),
+                license.limitations().map { LicenseRule.createFromRawLimitation(it) },
+                license.name(),
+                license.nickname(),
+                license.permissions().map { LicenseRule.createFromRawPermission(it) },
+                license.pseudoLicense(),
+                license.spdxId(),
+                license.url()
+        )
+
+        // todo fix query error of Search.graphql
+        fun createFromRaw(data: RepositoryFragment.LicenseInfo?): License? = if (data == null) null else License(
+                "",
+                emptyList(),
+                data.description(),
+                data.featured(),
+                data.hidden(),
+                data.id(),
+                data.implementation(),
+                "",
+                emptyList(),
+                data.name(),
+                data.nickname(),
+                emptyList(),
+                data.pseudoLicense(),
+                data.spdxId(),
+                data.url()
+        )
 
     }
 

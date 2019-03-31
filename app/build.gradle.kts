@@ -97,6 +97,7 @@ dependencies {
     implementation(Deps.AndroidX.appcompat)
     implementation(Deps.AndroidX.fragment)
     implementation(Deps.AndroidX.preference)
+    implementation(Deps.AndroidX.viewpager2)
     implementation(Deps.AndroidX.Lifecycle.lifecycleExtensions)
     implementation(Deps.AndroidX.Navigation.navigationFragmentKtx)
     implementation(Deps.AndroidX.Navigation.navigationUIKtx)

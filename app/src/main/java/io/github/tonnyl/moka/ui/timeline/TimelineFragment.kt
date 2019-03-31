@@ -83,9 +83,9 @@ class TimelineFragment : BaseMvRxFragment(), View.OnClickListener {
 
         mainViewModel.loginUserProfile.observe(this, Observer { data ->
             if (data != null) {
-                GlideLoader.loadAvatar(data.viewer().avatarUrl().toString(), main_search_bar_avatgar)
+                GlideLoader.loadAvatar(data.viewer().avatarUrl().toString(), main_search_bar_avatar)
 
-                main_search_bar_avatgar.setOnClickListener(this@TimelineFragment)
+                main_search_bar_avatar.setOnClickListener(this@TimelineFragment)
             } else {
 
             }
@@ -94,6 +94,8 @@ class TimelineFragment : BaseMvRxFragment(), View.OnClickListener {
         swipe_refresh.setOnRefreshListener {
             viewModel.refreshEventsData(mainViewModel.login.value ?: return@setOnRefreshListener)
         }
+
+        main_search_bar_input_text.setOnClickListener(this@TimelineFragment)
     }
 
     override fun onResume() {
@@ -130,11 +132,14 @@ class TimelineFragment : BaseMvRxFragment(), View.OnClickListener {
                 }
                 viewModel.refreshEventsData(mainViewModel.login.value ?: return)
             }
-            R.id.main_search_bar_avatgar -> {
+            R.id.main_search_bar_avatar -> {
                 val bundle = Bundle().apply {
                     putString("login", mainViewModel.login.value)
                 }
                 findNavController().navigate(R.id.action_timeline_to_user_profile, bundle)
+            }
+            R.id.main_search_bar_input_text -> {
+                findNavController().navigate(R.id.action_to_search)
             }
         }
     }

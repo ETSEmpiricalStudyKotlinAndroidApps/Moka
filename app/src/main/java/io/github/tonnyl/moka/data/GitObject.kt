@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Parcelable
 import io.github.tonnyl.moka.PullRequestQuery
 import io.github.tonnyl.moka.RepositoryQuery
+import io.github.tonnyl.moka.fragment.RepositoryFragment
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -49,6 +50,22 @@ data class GitObject(
         )
 
         fun createFromRaw(data: PullRequestQuery.Target1?): GitObject? = if (data == null) null else GitObject(
+                data.abbreviatedOid(),
+                data.commitResourcePath(),
+                data.commitUrl(),
+                data.id(),
+                data.oid()
+        )
+
+        fun createFromRaw(data: RepositoryFragment.Target?): GitObject? = if (data == null) null else GitObject(
+                data.abbreviatedOid(),
+                data.commitResourcePath(),
+                data.commitUrl(),
+                data.id(),
+                data.oid()
+        )
+
+        fun createFromRaw(data: RepositoryFragment.Object?): GitObject? = if (data == null) null else GitObject(
                 data.abbreviatedOid(),
                 data.commitResourcePath(),
                 data.commitUrl(),

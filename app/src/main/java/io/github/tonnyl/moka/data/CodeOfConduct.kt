@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.data
 import android.net.Uri
 import android.os.Parcelable
 import io.github.tonnyl.moka.RepositoryQuery
+import io.github.tonnyl.moka.fragment.RepositoryFragment
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -30,14 +31,19 @@ data class CodeOfConduct(
 
     companion object {
 
-        fun createFromRaw(conduct: RepositoryQuery.CodeOfConduct?): CodeOfConduct? {
-            return if (conduct == null) null else CodeOfConduct(
-                    conduct.body(),
-                    conduct.key(),
-                    conduct.name(),
-                    conduct.url()
-            )
-        }
+        fun createFromRaw(data: RepositoryQuery.CodeOfConduct?): CodeOfConduct? = if (data == null) null else CodeOfConduct(
+                data.body(),
+                data.key(),
+                data.name(),
+                data.url()
+        )
+
+        fun createFromRaw(data: RepositoryFragment.CodeOfConduct?): CodeOfConduct? = if (data == null) null else CodeOfConduct(
+                data.body(),
+                data.key(),
+                data.name(),
+                data.url()
+        )
 
     }
 

@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.data
 
 import android.os.Parcelable
 import io.github.tonnyl.moka.RepositoryQuery
+import io.github.tonnyl.moka.fragment.RepositoryFragment
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -26,6 +27,12 @@ data class Language(
                 language.color(),
                 language.id(),
                 language.name()
+        )
+
+        fun createFromRaw(data: RepositoryFragment.PrimaryLanguage?): Language? = if (data == null) null else Language(
+                data.color(),
+                data.id(),
+                data.name()
         )
 
     }

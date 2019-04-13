@@ -4,6 +4,7 @@
     <string name="auth_get_started">GET STARTED</string>
 
     <string name="common_retry">Retry</string>
+    <string name="common_error_requesting_data">Error requesting data.</string>
 
     <string name="repository_name_with_username">%1$s/%2$s</string>
 

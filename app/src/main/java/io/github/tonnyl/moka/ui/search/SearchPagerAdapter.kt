@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.search.page.SearchedRepositoriesFragment
+import io.github.tonnyl.moka.ui.search.repositories.SearchedRepositoriesFragment
 import io.github.tonnyl.moka.ui.search.users.SearchedUsersFragment
 
 class SearchPagerAdapter(

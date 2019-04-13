@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.search.users
+package io.github.tonnyl.moka.ui.search.repositories
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
@@ -7,26 +7,24 @@ import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import io.github.tonnyl.moka.NetworkClient
-import io.github.tonnyl.moka.SearchUserQuery
+import io.github.tonnyl.moka.SearchRepositoriesQuery
 import io.github.tonnyl.moka.data.PagedResource
-import io.github.tonnyl.moka.data.item.SearchedOrganizationItem
-import io.github.tonnyl.moka.data.item.SearchedUserItem
-import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
+import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
 import io.github.tonnyl.moka.net.Resource
 import timber.log.Timber
 
-class SearchedUsersItemDataSource(
+class SearchedRepositoriesItemDataSource(
         var keywords: String,
-        val loadStatusLiveData: MutableLiveData<PagedResource<List<SearchedUserOrOrgItem>>>
-) : PageKeyedDataSource<String, SearchedUserOrOrgItem>() {
+        val loadStatusLiveData: MutableLiveData<PagedResource<List<SearchedRepositoryItem>>>
+) : PageKeyedDataSource<String, SearchedRepositoryItem>() {
 
     var retry: (() -> Any)? = null
 
-    private var initialCall: ApolloQueryCall<SearchUserQuery.Data>? = null
-    private var afterCall: ApolloQueryCall<SearchUserQuery.Data>? = null
-    private var beforeCall: ApolloQueryCall<SearchUserQuery.Data>? = null
+    private var initialCall: ApolloQueryCall<SearchRepositoriesQuery.Data>? = null
+    private var afterCall: ApolloQueryCall<SearchRepositoriesQuery.Data>? = null
+    private var beforeCall: ApolloQueryCall<SearchRepositoriesQuery.Data>? = null
 
-    override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, SearchedUserOrOrgItem>) {
+    override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, SearchedRepositoryItem>) {
         Timber.d("loadInitial keywords: $keywords")
 
         if (keywords.isEmpty()) {
@@ -37,7 +35,7 @@ class SearchedUsersItemDataSource(
 
         loadStatusLiveData.postValue(PagedResource(initial = Resource.loading(null)))
 
-        val userQuery = SearchUserQuery.builder()
+        val userQuery = SearchRepositoriesQuery.builder()
                 .queryWords(keywords)
                 .first(params.requestedLoadSize)
                 .build()
@@ -45,24 +43,14 @@ class SearchedUsersItemDataSource(
         initialCall = NetworkClient.apolloClient
                 .query(userQuery)
 
-        initialCall?.enqueue(object : ApolloCall.Callback<SearchUserQuery.Data>() {
+        initialCall?.enqueue(object : ApolloCall.Callback<SearchRepositoriesQuery.Data>() {
 
-            override fun onFailure(e: ApolloException) {
-                Timber.e(e)
-
-                retry = {
-                    loadInitial(params, callback)
-                }
-
-                loadStatusLiveData.postValue(PagedResource(initial = Resource.error(e.message, null)))
-            }
-
-            override fun onResponse(response: Response<SearchUserQuery.Data>) {
-                val list = mutableListOf<SearchedUserOrOrgItem>()
+            override fun onResponse(response: Response<SearchRepositoriesQuery.Data>) {
+                val list = mutableListOf<SearchedRepositoryItem>()
                 val search = response.data()?.search()
 
                 search?.nodes()?.forEach { node ->
-                    list.add(initSearchedUserOrOrgItemWithRawData(node))
+                    list.add(convertRawDataToSearchedRepositoryItem(node))
                 }
 
                 val pageInfo = search?.pageInfo()
@@ -77,15 +65,25 @@ class SearchedUsersItemDataSource(
                 loadStatusLiveData.postValue(PagedResource(initial = Resource.success(list)))
             }
 
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
+
+                retry = {
+                    loadInitial(params, callback)
+                }
+
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.error(e.message, null)))
+            }
+
         })
     }
 
-    override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, SearchedUserOrOrgItem>) {
+    override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, SearchedRepositoryItem>) {
         Timber.d("loadAfter keywords: $keywords")
 
         loadStatusLiveData.postValue(PagedResource(after = Resource.loading(null)))
 
-        val searchUserQuery = SearchUserQuery.builder()
+        val searchUserQuery = SearchRepositoriesQuery.builder()
                 .queryWords(keywords)
                 .first(params.requestedLoadSize)
                 .after(params.key)
@@ -94,7 +92,7 @@ class SearchedUsersItemDataSource(
         afterCall = NetworkClient.apolloClient
                 .query(searchUserQuery)
 
-        afterCall?.enqueue(object : ApolloCall.Callback<SearchUserQuery.Data>() {
+        afterCall?.enqueue(object : ApolloCall.Callback<SearchRepositoriesQuery.Data>() {
 
             override fun onFailure(e: ApolloException) {
                 Timber.e(e)
@@ -106,17 +104,17 @@ class SearchedUsersItemDataSource(
                 loadStatusLiveData.postValue(PagedResource(after = Resource.error(e.message, null)))
             }
 
-            override fun onResponse(response: Response<SearchUserQuery.Data>) {
-                val list = mutableListOf<SearchedUserOrOrgItem>()
+            override fun onResponse(response: Response<SearchRepositoriesQuery.Data>) {
+                val list = mutableListOf<SearchedRepositoryItem>()
                 val search = response.data()?.search()
 
                 search?.nodes()?.forEach { node ->
-                    list.add(initSearchedUserOrOrgItemWithRawData(node))
+                    list.add(convertRawDataToSearchedRepositoryItem(node))
                 }
 
-                callback.onResult(list, if (search?.pageInfo()?.hasNextPage() == true) search.pageInfo().endCursor() else null)
-
                 retry = null
+
+                callback.onResult(list, if (search?.pageInfo()?.hasNextPage() == true) search.pageInfo().endCursor() else null)
 
                 loadStatusLiveData.postValue(PagedResource(after = Resource.success(list)))
             }
@@ -124,12 +122,12 @@ class SearchedUsersItemDataSource(
         })
     }
 
-    override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, SearchedUserOrOrgItem>) {
+    override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, SearchedRepositoryItem>) {
         Timber.d("loadBefore keywords: $keywords")
 
         loadStatusLiveData.postValue(PagedResource(before = Resource.loading(null)))
 
-        val searchUserQuery = SearchUserQuery.builder()
+        val searchUserQuery = SearchRepositoriesQuery.builder()
                 .queryWords(keywords)
                 .first(params.requestedLoadSize)
                 .before(params.key)
@@ -138,8 +136,7 @@ class SearchedUsersItemDataSource(
         beforeCall = NetworkClient.apolloClient
                 .query(searchUserQuery)
 
-
-        beforeCall?.enqueue(object : ApolloCall.Callback<SearchUserQuery.Data>() {
+        beforeCall?.enqueue(object : ApolloCall.Callback<SearchRepositoriesQuery.Data>() {
 
             override fun onFailure(e: ApolloException) {
                 Timber.e(e)
@@ -151,17 +148,17 @@ class SearchedUsersItemDataSource(
                 loadStatusLiveData.postValue(PagedResource(before = Resource.error(e.message, null)))
             }
 
-            override fun onResponse(response: Response<SearchUserQuery.Data>) {
-                val list = mutableListOf<SearchedUserOrOrgItem>()
+            override fun onResponse(response: Response<SearchRepositoriesQuery.Data>) {
+                val list = mutableListOf<SearchedRepositoryItem>()
                 val search = response.data()?.search()
 
                 search?.nodes()?.forEach { node ->
-                    list.add(initSearchedUserOrOrgItemWithRawData(node))
+                    list.add(convertRawDataToSearchedRepositoryItem(node))
                 }
 
-                callback.onResult(list, if (search?.pageInfo()?.hasPreviousPage() == true) search.pageInfo().startCursor() else null)
-
                 retry = null
+
+                callback.onResult(list, if (search?.pageInfo()?.hasPreviousPage() == true) search.pageInfo().startCursor() else null)
 
                 loadStatusLiveData.postValue(PagedResource(before = Resource.success(list)))
             }
@@ -172,7 +169,7 @@ class SearchedUsersItemDataSource(
     override fun invalidate() {
         super.invalidate()
 
-        fun cancelCallIfNeeded(call: ApolloCall<SearchUserQuery.Data>) {
+        fun cancelCallIfNeeded(call: ApolloCall<SearchRepositoriesQuery.Data>) {
             if (!call.isCanceled) {
                 call.cancel()
             }
@@ -191,16 +188,6 @@ class SearchedUsersItemDataSource(
         }
     }
 
-    private fun initSearchedUserOrOrgItemWithRawData(node: SearchUserQuery.Node): SearchedUserOrOrgItem = when {
-        node.fragments().userFragment() != null -> {
-            SearchedUserItem.createFromRaw(node.fragments().userFragment())!!
-        }
-        node.fragments().orgFragment() != null -> {
-            SearchedOrganizationItem.createFromRaw(node.fragments().orgFragment())!!
-        }
-        else -> {
-            SearchedOrganizationItem.createFromRaw(node.fragments().orgFragment())!!
-        }
-    }
+    private fun convertRawDataToSearchedRepositoryItem(node: SearchRepositoriesQuery.Node): SearchedRepositoryItem = SearchedRepositoryItem.createFromRaw(node.fragments().repositoryFragment())!!
 
 }

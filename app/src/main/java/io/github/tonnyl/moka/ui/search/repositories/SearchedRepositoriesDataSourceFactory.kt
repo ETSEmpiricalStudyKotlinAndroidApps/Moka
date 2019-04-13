@@ -1,16 +1,18 @@
-package io.github.tonnyl.moka.ui.search.page
+package io.github.tonnyl.moka.ui.search.repositories
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
+import io.github.tonnyl.moka.data.PagedResource
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
 
 class SearchedRepositoriesDataSourceFactory(
-        var keywords: String
+        var keywords: String,
+        private val loadStatusLiveData: MutableLiveData<PagedResource<List<SearchedRepositoryItem>>>
 ) : DataSource.Factory<String, SearchedRepositoryItem>() {
 
     private val searchedRepositoriesLiveData = MutableLiveData<SearchedRepositoriesItemDataSource>()
 
-    override fun create(): DataSource<String, SearchedRepositoryItem> = SearchedRepositoriesItemDataSource(keywords).apply {
+    override fun create(): DataSource<String, SearchedRepositoryItem> = SearchedRepositoriesItemDataSource(keywords, loadStatusLiveData).apply {
         searchedRepositoriesLiveData.postValue(this)
     }
 

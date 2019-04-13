@@ -38,7 +38,7 @@ class TrendingDevelopersFragment : Fragment() {
         recycler_view.adapter = developerAdapter
 
         viewModel.trendingDevelopers.observe(this, Observer { response ->
-            response.body()?.let {
+            response.data?.let {
                 developerAdapter.submitList(it)
             }
         })

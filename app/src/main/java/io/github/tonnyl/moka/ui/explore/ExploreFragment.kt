@@ -45,8 +45,8 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions {
         recycler_view.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
         fun initAdapterIfNeeded() {
-            val repositories = viewModel.trendingRepositories.value?.body()
-            val developers = viewModel.trendingDevelopers.value?.body()
+            val repositories = viewModel.trendingRepositories.value?.data
+            val developers = viewModel.trendingDevelopers.value?.data
 
             if (repositories != null && developers != null && !this::repositoryAdapter.isInitialized) {
                 repositoryAdapter = ExploreAdapter("All Languages", "Daily", repositories, developers)

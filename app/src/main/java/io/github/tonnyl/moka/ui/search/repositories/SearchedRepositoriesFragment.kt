@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.search.users
+package io.github.tonnyl.moka.ui.search.repositories
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,21 +18,20 @@ import kotlinx.android.synthetic.main.fragment_search_page.*
 import kotlinx.android.synthetic.main.layout_empty_content.*
 import io.github.tonnyl.moka.ui.search.ViewModelFactory as ParentViewModelFactory
 
-class SearchedUsersFragment : Fragment(), View.OnClickListener {
+class SearchedRepositoriesFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentSearchPageBinding
 
     private lateinit var parentViewModel: SearchViewModel
+    private lateinit var searchedRepositoriesViewModel: SearchedRepositoriesViewModel
 
-    private lateinit var searchedUsersViewModel: SearchedUsersViewModel
-
-    private val adapter: SearchedUserAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        SearchedUserAdapter()
+    private val adapter: SearchedRepositoryAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        SearchedRepositoryAdapter()
     }
 
     companion object {
 
-        fun newInstance(): SearchedUsersFragment = SearchedUsersFragment()
+        fun newInstance(): SearchedRepositoriesFragment = SearchedRepositoriesFragment()
 
     }
 
@@ -46,13 +45,13 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         parentViewModel = ViewModelProviders.of(requireParentFragment(), ParentViewModelFactory()).get(SearchViewModel::class.java)
-        searchedUsersViewModel = ViewModelProviders.of(this, ViewModelFactory()).get(SearchedUsersViewModel::class.java)
+        searchedRepositoriesViewModel = ViewModelProviders.of(this, ViewModelFactory()).get(SearchedRepositoriesViewModel::class.java)
 
         parentViewModel.input.observe(requireParentFragment(), Observer {
-            searchedUsersViewModel.refresh(it)
+            searchedRepositoriesViewModel.refresh(it)
         })
 
-        searchedUsersViewModel.loadStatusLiveData.observe(this, Observer {
+        searchedRepositoriesViewModel.loadStatusLiveData.observe(this, Observer {
             if (it.initial == null
                     && it.before == null
                     && it.after == null) {
@@ -104,9 +103,9 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
             }
         })
 
-        searchedUsersViewModel.searchedUsersResult.observe(this, Observer {
+        searchedRepositoriesViewModel.searchedUsersResult.observe(this, Observer {
             showHideEmptyView(it.isEmpty()
-                    && searchedUsersViewModel.loadStatusLiveData.value?.initial?.status == Status.SUCCESS)
+                    && searchedRepositoriesViewModel.loadStatusLiveData.value?.initial?.status == Status.SUCCESS)
 
             if (recycler_view.adapter == null) {
                 recycler_view.setHasFixedSize(false)
@@ -136,14 +135,20 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
         if (show) {
             empty_content_layout.visibility = View.VISIBLE
             recycler_view.visibility = View.GONE
+
+            empty_content_retry_button.setOnClickListener(this@SearchedRepositoriesFragment)
+            empty_content_action_text.setOnClickListener(this@SearchedRepositoriesFragment)
         } else {
             empty_content_layout.visibility = View.GONE
             recycler_view.visibility = View.VISIBLE
+
+            empty_content_retry_button.setOnClickListener(null)
+            empty_content_action_text.setOnClickListener(null)
         }
     }
 
     private fun triggerRefresh() {
-        searchedUsersViewModel.refresh(parentViewModel.input.value ?: "")
+        searchedRepositoriesViewModel.refresh(parentViewModel.input.value ?: "")
     }
 
 }

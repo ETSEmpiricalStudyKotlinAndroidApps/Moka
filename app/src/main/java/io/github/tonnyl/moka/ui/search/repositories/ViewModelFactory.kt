@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.search.page
+package io.github.tonnyl.moka.ui.search.repositories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

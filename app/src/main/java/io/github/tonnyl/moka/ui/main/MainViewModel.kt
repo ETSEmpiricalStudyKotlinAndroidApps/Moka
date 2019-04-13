@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.main
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import io.github.tonnyl.moka.NetworkClient
@@ -14,11 +15,14 @@ class MainViewModel : ViewModel() {
     val login = MutableLiveData<String?>()
     val loginUserProfile = MutableLiveData<ViewerQuery.Data?>()
 
-    private val getViewerInfoCall = NetworkClient.apolloClient
-            .query(ViewerQuery.builder().build())
+    private var getViewerInfoCall: ApolloQueryCall<ViewerQuery.Data>? = null
 
     fun getUserProfile() {
-        getViewerInfoCall.enqueue(object : ApolloCall.Callback<ViewerQuery.Data>() {
+        getViewerInfoCall = NetworkClient.apolloClient
+                .query(ViewerQuery.builder()
+                        .build())
+
+        getViewerInfoCall?.enqueue(object : ApolloCall.Callback<ViewerQuery.Data>() {
 
             override fun onFailure(e: ApolloException) {
                 Timber.e(e, "get viewer info call error: ${e.message}")
@@ -36,8 +40,8 @@ class MainViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
 
-        if (!getViewerInfoCall.isCanceled) {
-            getViewerInfoCall.cancel()
+        if (getViewerInfoCall?.isCanceled == false) {
+            getViewerInfoCall?.cancel()
         }
     }
 

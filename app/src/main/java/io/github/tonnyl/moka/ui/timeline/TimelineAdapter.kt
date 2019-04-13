@@ -13,8 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.databinding.ItemEventBinding
+import io.github.tonnyl.moka.net.NetworkState
 
 class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+
+    private var beforeNetworkState: NetworkState? = null
+    private var afterNetworkState: NetworkState? = null
 
     companion object {
 
@@ -26,6 +30,10 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
         }
 
+        const val VIEW_TYPE_BEFORE_NETWORK_STATE = 0x00
+        const val VIEW_TYPE_AFTER_NETWORK_STATE = 0x01
+        const val VIEW_TYPE_TIMELINE_EVENT = 0x02
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = EventViewHolder(ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -35,6 +43,50 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
         if (holder is EventViewHolder) {
             holder.bind(item, position)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int = when {
+        hasBeforeExtraRow() && position == 0 -> VIEW_TYPE_BEFORE_NETWORK_STATE
+        hasAfterExtraRow() && position == itemCount - 1 -> VIEW_TYPE_AFTER_NETWORK_STATE
+        else -> VIEW_TYPE_TIMELINE_EVENT
+    }
+
+    override fun getItemCount(): Int = super.getItemCount() + if (hasBeforeExtraRow()) 1 else 0 + if (hasAfterExtraRow()) 1 else 0
+
+    private fun hasBeforeExtraRow() = beforeNetworkState != null && beforeNetworkState != NetworkState.LOADED
+
+    private fun hasAfterExtraRow() = afterNetworkState != null && afterNetworkState != NetworkState.LOADED
+
+    fun setBeforeNetworkState(newNetworkState: NetworkState?) {
+        val previousState = this.beforeNetworkState
+        val hadExtraRow = hasBeforeExtraRow()
+        this.beforeNetworkState = newNetworkState
+        val hasExtraRow = hasBeforeExtraRow()
+        if (hadExtraRow != hasExtraRow) {
+            if (hadExtraRow) {
+                notifyItemRemoved(super.getItemCount())
+            } else {
+                notifyItemInserted(super.getItemCount())
+            }
+        } else if (hasExtraRow && previousState != newNetworkState) {
+            notifyItemChanged(0)
+        }
+    }
+
+    fun setAfterNetworkState(newNetworkState: NetworkState?) {
+        val previousState = this.afterNetworkState
+        val hadExtraRow = hasAfterExtraRow()
+        this.afterNetworkState = newNetworkState
+        val hasExtraRow = hasAfterExtraRow()
+        if (hadExtraRow != hasExtraRow) {
+            if (hadExtraRow) {
+                notifyItemRemoved(super.getItemCount())
+            } else {
+                notifyItemInserted(super.getItemCount())
+            }
+        } else if (hasExtraRow && previousState != newNetworkState) {
+            notifyItemChanged(itemCount - 1)
         }
     }
 

@@ -138,7 +138,6 @@ dependencies {
 
     // Airbnb
     implementation(Deps.Airbnb.lottie)
-    implementation(Deps.Airbnb.mvrx)
 
     // CommonMark
     implementation(Deps.CommonMark.commonMark)

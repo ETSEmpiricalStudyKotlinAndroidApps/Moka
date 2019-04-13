@@ -8,7 +8,7 @@ object Versions {
     val androidGradle = "3.5.0-alpha10"
     val gmsGoogleServiceGradle = "4.2.0"
     val fabricToolsGradle = "1.26.1"
-    val kotlin = "1.3.21"
+    val kotlin = "1.3.30"
     val coroutines = "1.1.0"
     val fragment = "1.1.0-alpha06"
     val constraintLayout = "2.0.0-alpha4"
@@ -37,7 +37,6 @@ object Versions {
     val commonMark = "0.12.1"
     val jsoup = "1.11.3"
     val timber = "4.7.1"
-    val mvrx = "0.7.2"
     val firebaseCore = "16.0.8"
     val crashlytics = "2.9.9"
     val jsr250 = "1.0"
@@ -179,7 +178,6 @@ object Deps {
     object Airbnb {
 
         val lottie = "com.airbnb.android:lottie:${Versions.lottie}"
-        val mvrx = "com.airbnb.android:mvrx:${Versions.mvrx}"
 
     }
 

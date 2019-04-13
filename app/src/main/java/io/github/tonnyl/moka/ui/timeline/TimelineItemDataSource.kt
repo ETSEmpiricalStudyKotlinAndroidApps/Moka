@@ -1,67 +1,128 @@
 package io.github.tonnyl.moka.ui.timeline
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.Event
+import io.github.tonnyl.moka.data.PagedResource
+import io.github.tonnyl.moka.net.Resource
 import io.github.tonnyl.moka.net.service.EventsService
 import io.github.tonnyl.moka.util.PageLinks
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
-import java.io.IOException
 
 class TimelineItemDataSource(
         private val eventsService: EventsService,
-        private val login: String
+        var login: String,
+        private val loadStatusLiveData: MutableLiveData<PagedResource<List<Event>>>
 ) : PageKeyedDataSource<String, Event>() {
 
-    override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, Event>) {
-        try {
-            // triggered by a refresh, we better execute sync
-            val response = eventsService.listPublicEventThatAUserHasReceived(login, page = 1, perPage = params.requestedLoadSize)
-                    .execute()
+    var retry: (() -> Any)? = null
 
-            val pl = PageLinks(response)
-            callback.onResult(response.body() ?: emptyList(), pl.prev, pl.next)
-        } catch (ioe: IOException) {
-            Timber.e(ioe, "loadInitial params: $params error: ${ioe.message}")
-        }
+    private var call: Call<List<Event>>? = null
+
+    override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, Event>) {
+        Timber.d("loadInitial")
+
+        loadStatusLiveData.postValue(PagedResource(initial = Resource.loading(null)))
+
+        call = eventsService.listPublicEventThatAUserHasReceived(login, page = 1, perPage = params.requestedLoadSize)
+
+        call?.enqueue(object : Callback<List<Event>> {
+
+            override fun onFailure(call: Call<List<Event>>, t: Throwable) {
+                Timber.e(t)
+
+                retry = {
+                    loadInitial(params, callback)
+                }
+
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.error(t.message, null)))
+            }
+
+            override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
+                val list = response.body() ?: emptyList()
+
+                val pl = PageLinks(response)
+                callback.onResult(list, pl.prev, pl.next)
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.success(list)))
+            }
+
+        })
     }
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Event>) {
-        eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
-                .enqueue(object : Callback<List<Event>> {
+        Timber.d("loadAfter")
 
-                    override fun onFailure(call: Call<List<Event>>, t: Throwable) {
-                        Timber.e(t, "loadAfter params: ${params.key} error: ${t.message}")
-                    }
+        loadStatusLiveData.postValue(PagedResource(after = Resource.loading(null)))
 
-                    override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
-                        val pl = PageLinks(response)
-                        callback.onResult((response.body()
-                                ?: emptyList()).toMutableList(), pl.next)
-                    }
+        call = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
 
-                })
+        call?.enqueue(object : Callback<List<Event>> {
+
+            override fun onFailure(call: Call<List<Event>>, t: Throwable) {
+                Timber.e(t)
+
+                retry = {
+                    loadAfter(params, callback)
+                }
+
+                loadStatusLiveData.postValue(PagedResource(after = Resource.error(t.message, null)))
+            }
+
+            override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
+                val list = response.body() ?: emptyList()
+
+                val pl = PageLinks(response)
+                callback.onResult(list, pl.next)
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(after = Resource.success(list)))
+            }
+
+        })
     }
 
     override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, Event>) {
-        eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
-                .enqueue(object : Callback<List<Event>> {
+        call = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
 
-                    override fun onFailure(call: Call<List<Event>>, t: Throwable) {
-                        Timber.e(t, "loadBefore params: ${params.key} error: ${t.message}")
-                    }
+        call?.enqueue(object : Callback<List<Event>> {
 
-                    override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
-                        val pl = PageLinks(response)
-                        Timber.d("PRE: ${pl.prev} next: ${pl.next}")
+            override fun onFailure(call: Call<List<Event>>, t: Throwable) {
+                Timber.e(t)
 
-                        callback.onResult((response.body()
-                                ?: emptyList()).toMutableList(), pl.prev)
-                    }
+                retry = {
+                    loadBefore(params, callback)
+                }
 
-                })
+                loadStatusLiveData.postValue(PagedResource(before = Resource.error(t.message, null)))
+            }
+
+            override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
+                val list = response.body() ?: emptyList()
+
+                val pl = PageLinks(response)
+                callback.onResult(list, pl.prev)
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(before = Resource.success(list)))
+            }
+
+        })
+    }
+
+    override fun invalidate() {
+        super.invalidate()
+
+        if (call?.isCanceled == false) {
+            call?.cancel()
+        }
     }
 
 }

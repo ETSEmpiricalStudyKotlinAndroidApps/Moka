@@ -16,6 +16,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.CommentAuthorAssociation
 import io.github.tonnyl.moka.databinding.FragmentIssuePrBinding
 import io.github.tonnyl.moka.net.GlideLoader
+import io.github.tonnyl.moka.net.Status
 import kotlinx.android.synthetic.main.appbar_layout.*
 import kotlinx.android.synthetic.main.fragment_issue_pr.*
 import kotlinx.android.synthetic.main.item_issue_timeline_comment.*
@@ -68,33 +69,42 @@ class IssueFragment : Fragment() {
             adapter.submitList(it)
         })
 
-        viewModel.issueLiveData.observe(viewLifecycleOwner, Observer { data ->
-            data?.let { issue ->
-                if (issue.body.isNotEmpty()) {
-                    GlideLoader.loadAvatar(issue.author?.avatarUrl?.toString(), issue_timeline_comment_avatar)
+        viewModel.issueLiveData.observe(viewLifecycleOwner, Observer { resource ->
+            when (resource.status) {
+                Status.SUCCESS -> {
+                    val issue = resource.data ?: return@Observer
+                    if (issue.body.isNotEmpty()) {
+                        GlideLoader.loadAvatar(issue.author?.avatarUrl?.toString(), issue_timeline_comment_avatar)
 
-                    issue_timeline_comment_username.text = issue.author?.login
-                    issue_timeline_comment_created_at.text = DateUtils.getRelativeTimeSpanString(data.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
-                    issue_timeline_comment_content.text = data.body
+                        issue_timeline_comment_username.text = issue.author?.login
+                        issue_timeline_comment_created_at.text = DateUtils.getRelativeTimeSpanString(issue.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
+                        issue_timeline_comment_content.text = issue.body
 
-                    val stringResId = when (issue.authorAssociation) {
-                        CommentAuthorAssociation.COLLABORATOR -> R.string.author_association_collaborator
-                        CommentAuthorAssociation.CONTRIBUTOR -> R.string.author_association_contributor
-                        CommentAuthorAssociation.FIRST_TIMER -> R.string.author_association_first_timer
-                        CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> R.string.author_association_first_timer_contributor
-                        CommentAuthorAssociation.MEMBER -> R.string.author_association_member
-                        CommentAuthorAssociation.NONE -> -1
-                        CommentAuthorAssociation.OWNER -> R.string.author_association_owner
+                        val stringResId = when (issue.authorAssociation) {
+                            CommentAuthorAssociation.COLLABORATOR -> R.string.author_association_collaborator
+                            CommentAuthorAssociation.CONTRIBUTOR -> R.string.author_association_contributor
+                            CommentAuthorAssociation.FIRST_TIMER -> R.string.author_association_first_timer
+                            CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> R.string.author_association_first_timer_contributor
+                            CommentAuthorAssociation.MEMBER -> R.string.author_association_member
+                            CommentAuthorAssociation.NONE -> -1
+                            CommentAuthorAssociation.OWNER -> R.string.author_association_owner
+                        }
+                        issue_timeline_comment_author_association.text = if (stringResId != -1) getString(stringResId) else ""
+                    } else {
+                        issue_timeline_comment_layout.visibility = View.GONE
                     }
-                    issue_timeline_comment_author_association.text = if (stringResId != -1) getString(stringResId) else ""
-                } else {
-                    issue_timeline_comment_layout.visibility = View.GONE
-                }
 
-                val numberString = getString(R.string.issue_pr_number, issueNumber)
-                val byString = getString(R.string.issue_pr_by, issue.author?.login)
-                val createdString = DateUtils.getRelativeTimeSpanString(data.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
-                issue_info.text = getString(R.string.issue_pr_info_format, numberString, byString, createdString)
+                    val numberString = getString(R.string.issue_pr_number, issueNumber)
+                    val byString = getString(R.string.issue_pr_by, issue.author?.login)
+                    val createdString = DateUtils.getRelativeTimeSpanString(issue.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
+                    issue_info.text = getString(R.string.issue_pr_info_format, numberString, byString, createdString)
+                }
+                Status.ERROR -> {
+
+                }
+                Status.LOADING -> {
+
+                }
             }
         })
 

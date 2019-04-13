@@ -134,8 +134,6 @@ dependencies {
 
     // Apollo
     implementation(Deps.Apollo.runtime)
-    implementation(Deps.Apollo.httpCache)
-    implementation(Deps.Apollo.rx2Support)
     implementation(Deps.Apollo.androidSupport)
 
     // Airbnb

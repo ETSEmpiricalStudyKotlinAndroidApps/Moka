@@ -3,55 +3,80 @@ package io.github.tonnyl.moka.ui.users
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.rx2.Rx2Apollo
 import io.github.tonnyl.moka.FollowersQuery
 import io.github.tonnyl.moka.NetworkClient
+import io.github.tonnyl.moka.data.PagedResource
 import io.github.tonnyl.moka.data.UserGraphQL
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.net.Resource
 import timber.log.Timber
 
-class FollowersDataSource(private val login: String) : PageKeyedDataSource<String, UserGraphQL>() {
+class FollowersDataSource(
+        private val login: String,
+        private val loadStatusLiveData: MutableLiveData<PagedResource<List<UserGraphQL>>>
+) : PageKeyedDataSource<String, UserGraphQL>() {
 
-    val status = MutableLiveData<Status>()
+    var retry: (() -> Any)? = null
+
+    private var apolloCall: ApolloQueryCall<FollowersQuery.Data>? = null
 
     override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, UserGraphQL>) {
         Timber.d("loadInitial")
 
-        status.postValue(Status.LOADING)
+        loadStatusLiveData.postValue(PagedResource(initial = Resource.loading(null)))
 
         val followerQuery = FollowersQuery.builder()
                 .login(login)
                 .perPage(params.requestedLoadSize)
                 .build()
 
-        val call = NetworkClient.apolloClient
+        apolloCall = NetworkClient.apolloClient
                 .query(followerQuery)
 
-        try {
-            // triggered by a refresh, we better execute sync
-            val response = Rx2Apollo.from(call).blockingFirst()
+        apolloCall?.enqueue(object : ApolloCall.Callback<FollowersQuery.Data>() {
 
-            status.postValue(if (response.hasErrors().not()) Status.ERROR else Status.SUCCESS)
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
 
-            val list = mutableListOf<UserGraphQL>()
-            val user = response.data()?.user()
-
-            user?.followers()?.nodes()?.forEach { node ->
-                node?.let {
-                    list.add(UserGraphQL.createFromFollowerRaw(node) ?: return@let)
+                retry = {
+                    loadInitial(params, callback)
                 }
+
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.error(e.message, null)))
             }
 
-            callback.onResult(list, if (user?.followers()?.pageInfo()?.hasNextPage() == true) user.followers().pageInfo().startCursor() else null, if (user?.followers()?.pageInfo()?.hasNextPage() == true) user.followers().pageInfo().endCursor() else null)
-        } catch (e: Exception) {
-            status.postValue(Status.ERROR)
-        }
+            override fun onResponse(response: Response<FollowersQuery.Data>) {
+                val list = mutableListOf<UserGraphQL>()
+                val user = response.data()?.user()
+
+                user?.followers()?.nodes()?.forEach { node ->
+                    node?.let {
+                        list.add(UserGraphQL.createFromFollowerRaw(node) ?: return@let)
+                    }
+                }
+
+                val pageInfo = user?.followers()?.pageInfo()
+
+                callback.onResult(
+                        list,
+                        if (pageInfo?.hasNextPage() == true) user.followers().pageInfo().startCursor() else null,
+                        if (pageInfo?.hasNextPage() == true) user.followers().pageInfo().endCursor() else null
+                )
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.success(list)))
+            }
+
+        })
     }
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, UserGraphQL>) {
         Timber.d("loadAfter")
+
+        loadStatusLiveData.postValue(PagedResource(after = Resource.loading(null)))
 
         val followersQuery = FollowersQuery.builder()
                 .login(login)
@@ -59,28 +84,39 @@ class FollowersDataSource(private val login: String) : PageKeyedDataSource<Strin
                 .after(params.key)
                 .build()
 
-        NetworkClient.apolloClient
+        apolloCall = NetworkClient.apolloClient
                 .query(followersQuery)
-                .enqueue(object : ApolloCall.Callback<FollowersQuery.Data>() {
 
-                    override fun onFailure(e: ApolloException) {
-                        Timber.e(e, "loadAfter error: ${e.message}")
+        apolloCall?.enqueue(object : ApolloCall.Callback<FollowersQuery.Data>() {
+
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
+
+                retry = {
+                    loadAfter(params, callback)
+                }
+
+                loadStatusLiveData.postValue(PagedResource(after = Resource.error(e.message, null)))
+            }
+
+            override fun onResponse(response: Response<FollowersQuery.Data>) {
+                val list = mutableListOf<UserGraphQL>()
+                val user = response.data()?.user()
+
+                user?.followers()?.nodes()?.forEach { node ->
+                    node?.let {
+                        list.add(UserGraphQL.createFromFollowerRaw(it) ?: return@let)
                     }
+                }
 
-                    override fun onResponse(response: Response<FollowersQuery.Data>) {
-                        val list = mutableListOf<UserGraphQL>()
-                        val user = response.data()?.user()
+                callback.onResult(list, if (user?.followers()?.pageInfo()?.hasNextPage() == true) user.followers().pageInfo().endCursor() else null)
 
-                        user?.followers()?.nodes()?.forEach { node ->
-                            node?.let {
-                                list.add(UserGraphQL.createFromFollowerRaw(it) ?: return@let)
-                            }
-                        }
+                retry = null
 
-                        callback.onResult(list, if (user?.followers()?.pageInfo()?.hasNextPage() == true) user.followers().pageInfo().endCursor() else null)
-                    }
+                loadStatusLiveData.postValue(PagedResource(after = Resource.success(list)))
+            }
 
-                })
+        })
     }
 
     override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, UserGraphQL>) {
@@ -92,28 +128,47 @@ class FollowersDataSource(private val login: String) : PageKeyedDataSource<Strin
                 .before(params.key)
                 .build()
 
-        NetworkClient.apolloClient
+        apolloCall = NetworkClient.apolloClient
                 .query(followersQuery)
-                .enqueue(object : ApolloCall.Callback<FollowersQuery.Data>() {
 
-                    override fun onFailure(e: ApolloException) {
-                        Timber.e(e, "loadAfter error: ${e.message}")
+        apolloCall?.enqueue(object : ApolloCall.Callback<FollowersQuery.Data>() {
+
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
+
+                retry = {
+                    loadBefore(params, callback)
+                }
+
+                loadStatusLiveData.postValue(PagedResource(before = Resource.error(e.message, null)))
+            }
+
+            override fun onResponse(response: Response<FollowersQuery.Data>) {
+                val list = mutableListOf<UserGraphQL>()
+                val user = response.data()?.user()
+
+                user?.followers()?.nodes()?.forEach { node ->
+                    node?.let {
+                        list.add(UserGraphQL.createFromFollowerRaw(it) ?: return@let)
                     }
+                }
 
-                    override fun onResponse(response: Response<FollowersQuery.Data>) {
-                        val list = mutableListOf<UserGraphQL>()
-                        val user = response.data()?.user()
+                callback.onResult(list, if (user?.followers()?.pageInfo()?.hasPreviousPage() == true) user.followers().pageInfo().startCursor() else null)
 
-                        user?.followers()?.nodes()?.forEach { node ->
-                            node?.let {
-                                list.add(UserGraphQL.createFromFollowerRaw(it) ?: return@let)
-                            }
-                        }
+                retry = null
 
-                        callback.onResult(list, if (user?.followers()?.pageInfo()?.hasPreviousPage() == true) user.followers().pageInfo().startCursor() else null)
-                    }
+                loadStatusLiveData.postValue(PagedResource(before = Resource.success(list)))
+            }
 
-                })
+        })
+    }
+
+    override fun invalidate() {
+        super.invalidate()
+
+        if (apolloCall?.isCanceled == false) {
+            apolloCall?.cancel()
+        }
     }
 
 }

@@ -1,9 +1,11 @@
 package io.github.tonnyl.moka.ui.prs
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import io.github.tonnyl.moka.data.PagedResource
 import io.github.tonnyl.moka.data.item.PullRequestItem
 
 class PullRequestsViewModel(
@@ -11,7 +13,11 @@ class PullRequestsViewModel(
         private val name: String
 ) : ViewModel() {
 
-    private val sourceFactory = PullRequestDataSourceFactory(owner, name)
+    private val _loadStatusLiveData = MutableLiveData<PagedResource<List<PullRequestItem>>>()
+    val loadStatusLiveData: LiveData<PagedResource<List<PullRequestItem>>>
+        get() = _loadStatusLiveData
+
+    private val sourceFactory = PullRequestDataSourceFactory(owner, name, _loadStatusLiveData)
 
     val issuesResults: LiveData<PagedList<PullRequestItem>> by lazy {
         val config = PagedList.Config.Builder()
@@ -21,6 +27,10 @@ class PullRequestsViewModel(
                 .build()
 
         LivePagedListBuilder(sourceFactory, config).build()
+    }
+
+    fun refresh() {
+        sourceFactory.invalidate()
     }
 
 }

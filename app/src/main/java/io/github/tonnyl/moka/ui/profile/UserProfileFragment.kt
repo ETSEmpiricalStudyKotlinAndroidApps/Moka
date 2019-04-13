@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentUserProfileBinding
 import io.github.tonnyl.moka.net.GlideLoader
+import io.github.tonnyl.moka.net.Status
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragment
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs
@@ -50,36 +51,44 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
         val factory = ViewModelFactory(login)
         viewModel = ViewModelProviders.of(this, factory).get(UserProfileViewModel::class.java)
 
-        viewModel.user.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null && response.hasErrors().not()) {
-                val user = response.data()?.user() ?: return@Observer
+        viewModel.user.observe(viewLifecycleOwner, Observer { resource ->
+            when (resource.status) {
+                Status.SUCCESS -> {
+                    val user = resource.data?.user() ?: return@Observer
 
-                GlideLoader.loadAvatar(user.avatarUrl().toString(), profile_avatar)
-                profile_username.text = user.name()
-                profile_login_name.text = user.login()
-                profile_bio.text = user.bio()
-                profile_company_content.text = user.company()
-                profile_location_content.text = user.location()
-                profile_email_content.text = user.email()
-                profile_website_content.text = user.websiteUrl().toString()
-                username = user.name()
-                profile_repositories_count_text.text = formatNumberWithSuffix(user.repositories().totalCount())
-                profile_stars_count_text.text = formatNumberWithSuffix(user.starredRepositories().totalCount())
-                profile_followers_count_text.text = formatNumberWithSuffix(user.followers().totalCount())
-                profile_following_count_text.text = formatNumberWithSuffix(user.following().totalCount())
+                    GlideLoader.loadAvatar(user.avatarUrl().toString(), profile_avatar)
+                    profile_username.text = user.name()
+                    profile_login_name.text = user.login()
+                    profile_bio.text = user.bio()
+                    profile_company_content.text = user.company()
+                    profile_location_content.text = user.location()
+                    profile_email_content.text = user.email()
+                    profile_website_content.text = user.websiteUrl().toString()
+                    username = user.name()
+                    profile_repositories_count_text.text = formatNumberWithSuffix(user.repositories().totalCount())
+                    profile_stars_count_text.text = formatNumberWithSuffix(user.starredRepositories().totalCount())
+                    profile_followers_count_text.text = formatNumberWithSuffix(user.followers().totalCount())
+                    profile_following_count_text.text = formatNumberWithSuffix(user.following().totalCount())
 
-                user.organizations().nodes()?.let {
-                    profile_organizations.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-                    profile_organizations.setHasFixedSize(true)
+                    user.organizations().nodes()?.let {
+                        profile_organizations.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                        profile_organizations.setHasFixedSize(true)
 
-                    val adapter = ProfileOrganizationAdapter()
-                    profile_organizations.adapter = adapter
-                    adapter.submitList(it)
+                        val adapter = ProfileOrganizationAdapter()
+                        profile_organizations.adapter = adapter
+                        adapter.submitList(it)
+                    }
+
+                    val flags = DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
+                    profile_joined_on_content.text = DateUtils.formatDateTime(requireContext(), user.createdAt().time, flags)
+                    profile_updated_on_content.text = DateUtils.formatDateTime(requireContext(), user.updatedAt().time, flags)
                 }
+                Status.ERROR -> {
 
-                val flags = DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
-                profile_joined_on_content.text = DateUtils.formatDateTime(requireContext(), user.createdAt().time, flags)
-                profile_updated_on_content.text = DateUtils.formatDateTime(requireContext(), user.updatedAt().time, flags)
+                }
+                Status.LOADING -> {
+
+                }
             }
         })
 
@@ -125,7 +134,7 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
                 parentFragment?.findNavController()?.navigate(R.id.action_to_repositories, builder.toBundle())
             }
             R.id.toolbar_edit -> {
-                viewModel.user.value?.data()?.user()?.let {
+                viewModel.user.value?.data?.user()?.let {
                     val bundle = EditProfileFragmentArgs(it.login(), it.name(), it.email(), it.bio(), it.websiteUrl()?.toString(), it.company(), it.location())
                     parentFragment?.findNavController()?.navigate(R.id.action_to_edit_profile, bundle.toBundle())
                 }

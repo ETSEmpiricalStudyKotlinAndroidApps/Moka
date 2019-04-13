@@ -172,8 +172,6 @@ object Deps {
     object Apollo {
 
         val runtime = "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
-        val httpCache = "com.apollographql.apollo:apollo-http-cache:${Versions.apollo}"
-        val rx2Support = "com.apollographql.apollo:apollo-rx2-support:${Versions.apollo}"
         val androidSupport = "com.apollographql.apollo:apollo-android-support:${Versions.apollo}"
 
     }

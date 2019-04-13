@@ -3,26 +3,30 @@ package io.github.tonnyl.moka.ui.prs
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.rx2.Rx2Apollo
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.PullRequestsQuery
+import io.github.tonnyl.moka.data.PagedResource
 import io.github.tonnyl.moka.data.item.PullRequestItem
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.net.Resource
 import timber.log.Timber
 
 class PullRequestsDataSource(
         private val owner: String,
-        private val name: String
+        private val name: String,
+        private val loadStatusLiveData: MutableLiveData<PagedResource<List<PullRequestItem>>>
 ) : PageKeyedDataSource<String, PullRequestItem>() {
 
-    val status = MutableLiveData<Status>()
+    var retry: (() -> Any)? = null
+
+    private var apolloCall: ApolloQueryCall<PullRequestsQuery.Data>? = null
 
     override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, PullRequestItem>) {
-        status.postValue(Status.LOADING)
-
         Timber.d("loadInitial")
+
+        loadStatusLiveData.postValue(PagedResource(initial = Resource.loading(null)))
 
         val issuesQuery = PullRequestsQuery.builder()
                 .owner(owner)
@@ -30,30 +34,49 @@ class PullRequestsDataSource(
                 .perPage(params.requestedLoadSize)
                 .build()
 
-        val call = NetworkClient.apolloClient
+        apolloCall = NetworkClient.apolloClient
                 .query(issuesQuery)
 
-        try {
-            // triggered by a refresh, we better execute sync
-            val response = Rx2Apollo.from(call).blockingFirst()
+        apolloCall?.enqueue(object : ApolloCall.Callback<PullRequestsQuery.Data>() {
 
-            status.postValue(if (response.hasErrors().not()) Status.ERROR else Status.SUCCESS)
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
 
-            val list = mutableListOf<PullRequestItem>()
-            val repository = response.data()?.repository()
+                retry = {
+                    loadInitial(params, callback)
+                }
 
-            repository?.pullRequests()?.nodes()?.forEach { node ->
-                list.add(PullRequestItem.createFromRaw(node))
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.error(e.message, null)))
             }
 
-            callback.onResult(list, if (repository?.pullRequests()?.pageInfo()?.hasPreviousPage() == true) repository.pullRequests().pageInfo().startCursor() else null, if (repository?.pullRequests()?.pageInfo()?.hasNextPage() == true) repository.pullRequests().pageInfo().endCursor() else null)
-        } catch (e: Exception) {
-            status.postValue(Status.ERROR)
-        }
+            override fun onResponse(response: Response<PullRequestsQuery.Data>) {
+                val list = mutableListOf<PullRequestItem>()
+                val repository = response.data()?.repository()
+
+                repository?.pullRequests()?.nodes()?.forEach { node ->
+                    list.add(PullRequestItem.createFromRaw(node))
+                }
+
+                val pageInfo = repository?.pullRequests()?.pageInfo()
+
+                callback.onResult(
+                        list,
+                        if (pageInfo?.hasPreviousPage() == true) repository.pullRequests().pageInfo().startCursor() else null,
+                        if (pageInfo?.hasNextPage() == true) repository.pullRequests().pageInfo().endCursor() else null
+                )
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.success(list)))
+            }
+
+        })
     }
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, PullRequestItem>) {
         Timber.d("loadAfter")
+
+        loadStatusLiveData.postValue(PagedResource(after = Resource.loading(null)))
 
         val issuesQuery = PullRequestsQuery.builder()
                 .owner(owner)
@@ -62,30 +85,43 @@ class PullRequestsDataSource(
                 .after(params.key)
                 .build()
 
-        NetworkClient.apolloClient
+        apolloCall = NetworkClient.apolloClient
                 .query(issuesQuery)
-                .enqueue(object : ApolloCall.Callback<PullRequestsQuery.Data>() {
 
-                    override fun onFailure(e: ApolloException) {
-                        Timber.e(e, "loadAfter error: ${e.message}")
-                    }
+        apolloCall?.enqueue(object : ApolloCall.Callback<PullRequestsQuery.Data>() {
 
-                    override fun onResponse(response: Response<PullRequestsQuery.Data>) {
-                        val list = mutableListOf<PullRequestItem>()
-                        val repository = response.data()?.repository()
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
 
-                        repository?.pullRequests()?.nodes()?.forEach { node ->
-                            list.add(PullRequestItem.createFromRaw(node))
-                        }
+                retry = {
+                    loadAfter(params, callback)
+                }
 
-                        callback.onResult(list, if (repository?.pullRequests()?.pageInfo()?.hasNextPage() == true) repository.pullRequests().pageInfo().endCursor() else null)
-                    }
+                loadStatusLiveData.postValue(PagedResource(after = Resource.error(e.message, null)))
+            }
 
-                })
+            override fun onResponse(response: Response<PullRequestsQuery.Data>) {
+                val list = mutableListOf<PullRequestItem>()
+                val repository = response.data()?.repository()
+
+                repository?.pullRequests()?.nodes()?.forEach { node ->
+                    list.add(PullRequestItem.createFromRaw(node))
+                }
+
+                callback.onResult(list, if (repository?.pullRequests()?.pageInfo()?.hasNextPage() == true) repository.pullRequests().pageInfo().endCursor() else null)
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(after = Resource.success(list)))
+            }
+
+        })
     }
 
     override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, PullRequestItem>) {
         Timber.d("loadBefore")
+
+        loadStatusLiveData.postValue(PagedResource(before = Resource.loading(null)))
 
         val issuesQuery = PullRequestsQuery.builder()
                 .owner(owner)
@@ -94,26 +130,45 @@ class PullRequestsDataSource(
                 .before(params.key)
                 .build()
 
-        NetworkClient.apolloClient
+        apolloCall = NetworkClient.apolloClient
                 .query(issuesQuery)
-                .enqueue(object : ApolloCall.Callback<PullRequestsQuery.Data>() {
 
-                    override fun onFailure(e: ApolloException) {
-                        Timber.e(e, "loadBefore error: ${e.message}")
-                    }
+        apolloCall?.enqueue(object : ApolloCall.Callback<PullRequestsQuery.Data>() {
 
-                    override fun onResponse(response: Response<PullRequestsQuery.Data>) {
-                        val list = mutableListOf<PullRequestItem>()
-                        val repository = response.data()?.repository()
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
 
-                        repository?.pullRequests()?.nodes()?.forEach { node ->
-                            list.add(PullRequestItem.createFromRaw(node))
-                        }
+                retry = {
+                    loadBefore(params, callback)
+                }
 
-                        callback.onResult(list, if (repository?.pullRequests()?.pageInfo()?.hasPreviousPage() == true) repository.pullRequests().pageInfo().startCursor() else null)
-                    }
+                loadStatusLiveData.postValue(PagedResource(before = Resource.error(e.message, null)))
+            }
 
-                })
+            override fun onResponse(response: Response<PullRequestsQuery.Data>) {
+                val list = mutableListOf<PullRequestItem>()
+                val repository = response.data()?.repository()
+
+                repository?.pullRequests()?.nodes()?.forEach { node ->
+                    list.add(PullRequestItem.createFromRaw(node))
+                }
+
+                callback.onResult(list, if (repository?.pullRequests()?.pageInfo()?.hasPreviousPage() == true) repository.pullRequests().pageInfo().startCursor() else null)
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(before = Resource.success(list)))
+            }
+
+        })
+    }
+
+    override fun invalidate() {
+        super.invalidate()
+
+        if (apolloCall?.isCanceled == false) {
+            apolloCall?.cancel()
+        }
     }
 
 }

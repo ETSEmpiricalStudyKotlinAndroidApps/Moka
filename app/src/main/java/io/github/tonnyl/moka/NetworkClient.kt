@@ -4,7 +4,6 @@ import android.net.Uri
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
@@ -103,7 +102,6 @@ object NetworkClient {
 
     }
 
-    private val httpCacheStore = DiskLruHttpCacheStore(MokaApp.CACHE_FILE, MAX_SIZE_OF_HTTP_CACHE_FILE)
     // Create NormalizedCacheFactory
     private val sqlCacheFactory = SqlNormalizedCacheFactory(MokaApp.apolloSqlHelper)
     // Create the cache key resolver, this example works well when all types have globally unique ids.
@@ -135,7 +133,6 @@ object NetworkClient {
                 .addCustomTypeAdapter(CustomType.GITOBJECTID, gitObjectIDTypeAdapter)
                 .addCustomTypeAdapter(CustomType.GITSSHREMOTE, gitSSHRemoteTypeAdapter)
                 .serverUrl(SERVER_URL)
-//            .httpCache(ApolloHttpCache(httpCacheStore))
 //            .normalizedCache(memoryFirstThenSqlCacheFactory, resolver)
                 .build()
     }

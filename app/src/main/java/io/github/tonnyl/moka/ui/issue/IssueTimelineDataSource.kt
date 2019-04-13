@@ -3,27 +3,31 @@ package io.github.tonnyl.moka.ui.issue
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.rx2.Rx2Apollo
 import io.github.tonnyl.moka.IssueTimelineQuery
 import io.github.tonnyl.moka.NetworkClient
+import io.github.tonnyl.moka.data.PagedResource
 import io.github.tonnyl.moka.data.item.*
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.net.Resource
 import timber.log.Timber
 
 class IssueTimelineDataSource(
         private val owner: String,
         private val name: String,
-        private val number: Int
+        private val number: Int,
+        private val loadStatusLiveData: MutableLiveData<PagedResource<List<IssueTimelineItem>>>
 ) : PageKeyedDataSource<String, IssueTimelineItem>() {
 
-    val status = MutableLiveData<Status>()
+    var retry: (() -> Any)? = null
+
+    private var apolloCall: ApolloQueryCall<IssueTimelineQuery.Data>? = null
 
     override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, IssueTimelineItem>) {
-        status.postValue(Status.LOADING)
-
         Timber.d("loadInitial")
+
+        loadStatusLiveData.postValue(PagedResource(initial = Resource.loading(null)))
 
         val issueTimelineQuery = IssueTimelineQuery.builder()
                 .owner(owner)
@@ -32,36 +36,48 @@ class IssueTimelineDataSource(
                 .perPage(params.requestedLoadSize)
                 .build()
 
-        val call = NetworkClient.apolloClient
+        apolloCall = NetworkClient.apolloClient
                 .query(issueTimelineQuery)
 
-        try {
-            // triggered by a refresh, we better execute sync
-            val response = Rx2Apollo.from(call).blockingFirst()
+        apolloCall?.enqueue(object : ApolloCall.Callback<IssueTimelineQuery.Data>() {
 
-            status.postValue(if (response.hasErrors().not()) Status.ERROR else Status.SUCCESS)
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
 
-            val list = mutableListOf<IssueTimelineItem>()
-            val timeline = response.data()?.repository()?.issue()?.timeline()
+                retry = {
+                    loadInitial(params, callback)
+                }
 
-            timeline?.nodes()?.forEach { node ->
-                list.add(initTimelineItemWithRawData(node))
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.error(e.message, null)))
             }
 
-            val pageInfo = timeline?.pageInfo()
-            callback.onResult(
-                    list,
-                    if (pageInfo?.hasPreviousPage() == true) timeline.pageInfo().startCursor() else null,
-                    if (pageInfo?.hasNextPage() == true) timeline.pageInfo().endCursor() else null
-            )
+            override fun onResponse(response: Response<IssueTimelineQuery.Data>) {
+                val list = mutableListOf<IssueTimelineItem>()
+                val timeline = response.data()?.repository()?.issue()?.timeline()
 
-        } catch (e: Exception) {
-            status.postValue(Status.ERROR)
-        }
+                timeline?.nodes()?.forEach { node ->
+                    list.add(initTimelineItemWithRawData(node))
+                }
+
+                val pageInfo = timeline?.pageInfo()
+                callback.onResult(
+                        list,
+                        if (pageInfo?.hasPreviousPage() == true) timeline.pageInfo().startCursor() else null,
+                        if (pageInfo?.hasNextPage() == true) timeline.pageInfo().endCursor() else null
+                )
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.success(list)))
+            }
+
+        })
     }
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, IssueTimelineItem>) {
         Timber.d("loadAfter")
+
+        loadStatusLiveData.postValue(PagedResource(after = Resource.loading(null)))
 
         val timelineQuery = IssueTimelineQuery.builder()
                 .owner(owner)
@@ -71,30 +87,43 @@ class IssueTimelineDataSource(
                 .after(params.key)
                 .build()
 
-        NetworkClient.apolloClient
+        apolloCall = NetworkClient.apolloClient
                 .query(timelineQuery)
-                .enqueue(object : ApolloCall.Callback<IssueTimelineQuery.Data>() {
 
-                    override fun onFailure(e: ApolloException) {
-                        Timber.e(e, "loadAfter error: ${e.message}")
-                    }
+        apolloCall?.enqueue(object : ApolloCall.Callback<IssueTimelineQuery.Data>() {
 
-                    override fun onResponse(response: Response<IssueTimelineQuery.Data>) {
-                        val list = mutableListOf<IssueTimelineItem>()
-                        val timeline = response.data()?.repository()?.issue()?.timeline()
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
 
-                        timeline?.nodes()?.forEach { node ->
-                            list.add(initTimelineItemWithRawData(node))
-                        }
+                retry = {
+                    loadAfter(params, callback)
+                }
 
-                        callback.onResult(list, if (timeline?.pageInfo()?.hasNextPage() == true) timeline.pageInfo().endCursor() else null)
-                    }
+                loadStatusLiveData.postValue(PagedResource(after = Resource.error(e.message, null)))
+            }
 
-                })
+            override fun onResponse(response: Response<IssueTimelineQuery.Data>) {
+                val list = mutableListOf<IssueTimelineItem>()
+                val timeline = response.data()?.repository()?.issue()?.timeline()
+
+                timeline?.nodes()?.forEach { node ->
+                    list.add(initTimelineItemWithRawData(node))
+                }
+
+                callback.onResult(list, if (timeline?.pageInfo()?.hasNextPage() == true) timeline.pageInfo().endCursor() else null)
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(after = Resource.success(list)))
+            }
+
+        })
     }
 
     override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, IssueTimelineItem>) {
         Timber.d("loadBefore")
+
+        loadStatusLiveData.postValue(PagedResource(before = Resource.loading(null)))
 
         val timelineQuery = IssueTimelineQuery.builder()
                 .owner(owner)
@@ -104,26 +133,45 @@ class IssueTimelineDataSource(
                 .before(params.key)
                 .build()
 
-        NetworkClient.apolloClient
+        apolloCall = NetworkClient.apolloClient
                 .query(timelineQuery)
-                .enqueue(object : ApolloCall.Callback<IssueTimelineQuery.Data>() {
 
-                    override fun onFailure(e: ApolloException) {
-                        Timber.e(e, "loadAfter error: ${e.message}")
-                    }
+        apolloCall?.enqueue(object : ApolloCall.Callback<IssueTimelineQuery.Data>() {
 
-                    override fun onResponse(response: Response<IssueTimelineQuery.Data>) {
-                        val list = mutableListOf<IssueTimelineItem>()
-                        val timeline = response.data()?.repository()?.issue()?.timeline()
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
 
-                        timeline?.nodes()?.forEach { node ->
-                            list.add(initTimelineItemWithRawData(node))
-                        }
+                retry = {
+                    loadBefore(params, callback)
+                }
 
-                        callback.onResult(list, if (timeline?.pageInfo()?.hasPreviousPage() == true) timeline.pageInfo().startCursor() else null)
-                    }
+                loadStatusLiveData.postValue(PagedResource(before = Resource.error(e.message, null)))
+            }
 
-                })
+            override fun onResponse(response: Response<IssueTimelineQuery.Data>) {
+                val list = mutableListOf<IssueTimelineItem>()
+                val timeline = response.data()?.repository()?.issue()?.timeline()
+
+                timeline?.nodes()?.forEach { node ->
+                    list.add(initTimelineItemWithRawData(node))
+                }
+
+                callback.onResult(list, if (timeline?.pageInfo()?.hasPreviousPage() == true) timeline.pageInfo().startCursor() else null)
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(before = Resource.success(list)))
+            }
+
+        })
+    }
+
+    override fun invalidate() {
+        super.invalidate()
+
+        if (apolloCall?.isCanceled == false) {
+            apolloCall?.cancel()
+        }
     }
 
     private fun initTimelineItemWithRawData(node: IssueTimelineQuery.Node): IssueTimelineItem {

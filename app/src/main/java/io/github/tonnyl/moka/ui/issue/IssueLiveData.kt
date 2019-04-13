@@ -1,48 +1,63 @@
 package io.github.tonnyl.moka.ui.issue
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo.rx2.Rx2Apollo
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloQueryCall
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.exception.ApolloException
 import io.github.tonnyl.moka.IssueQuery
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.data.IssueGraphQL
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.github.tonnyl.moka.net.Resource
 import timber.log.Timber
 
 class IssueLiveData(
         private val owner: String,
         private val name: String,
         private val number: Int
-) : LiveData<IssueGraphQL?>() {
+) : LiveData<Resource<IssueGraphQL?>>() {
 
-    private val call = NetworkClient.apolloClient
-            .query(IssueQuery.builder()
-                    .owner(owner)
-                    .name(name)
-                    .number(number)
-                    .build())
-            .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
-            .watcher()
+    private var call: ApolloQueryCall<IssueQuery.Data>? = null
 
-    private val disposable = Rx2Apollo.from(call)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map {
-                IssueGraphQL.createFromRaw(it.data()?.repository()?.issue())
-            }
-            .subscribe({ data ->
-                value = data
-                Timber.d("disposable data: $data")
-            }, {
-                Timber.e(it, "disposable error: ${it.message}")
-            })
+    init {
+        refresh()
+    }
 
     override fun onInactive() {
         super.onInactive()
-        if (disposable.isDisposed.not()) {
-            disposable.dispose()
+
+        if (call?.isCanceled == false) {
+            call?.cancel()
         }
+    }
+
+    @MainThread
+    fun refresh() {
+        value = Resource.loading(null)
+
+        call = NetworkClient.apolloClient
+                .query(IssueQuery.builder()
+                        .owner(owner)
+                        .name(name)
+                        .number(number)
+                        .build())
+
+        call?.enqueue(object : ApolloCall.Callback<IssueQuery.Data>() {
+
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
+
+                postValue(Resource.error(e.message, null))
+            }
+
+            override fun onResponse(response: Response<IssueQuery.Data>) {
+                val data = IssueGraphQL.createFromRaw(response.data()?.repository()?.issue())
+
+                postValue(Resource.success(data))
+            }
+
+        })
     }
 
 }

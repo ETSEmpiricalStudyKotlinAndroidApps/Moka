@@ -1,14 +1,13 @@
 package io.github.tonnyl.moka.ui.repository
 
 import androidx.lifecycle.LiveData
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo.rx2.Rx2Apollo
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.exception.ApolloException
 import io.github.tonnyl.moka.CurrentLevelTreeViewQuery
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.net.Resource
 import io.github.tonnyl.moka.net.Status
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class RepositoryReadmeFileNameLiveData(
@@ -17,61 +16,66 @@ class RepositoryReadmeFileNameLiveData(
         private val branchName: String
 ) : LiveData<Resource<Pair<String, String>>>() {
 
-    private val TAG = javaClass.simpleName
-
     private val call = NetworkClient.apolloClient
-            .query(CurrentLevelTreeViewQuery.builder().login(login).repoName(name).expression("$branchName:").build())
-            .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
-            .watcher()
-    private val disposable = Rx2Apollo.from(call)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map { response ->
-                if (response.hasErrors()) {
-                    Resource(Status.ERROR, null, response.errors().first().message())
-                } else {
-                    val readmeFiles = response.data()?.repository()?.`object`()?.fragments()?.treeAbstract()?.entries()
-                            ?.filter { it.name().toLowerCase().contains("readme") }
-                    if (readmeFiles.isNullOrEmpty()) {
-                        Resource(Status.SUCCESS, null, null)
-                    } else {
-                        val mdIndex = readmeFiles.indexOfFirst { it.name().endsWith(".md") }
-                        if (mdIndex >= 0) {
-                            return@map Resource(Status.SUCCESS,
-                                    Pair("md", readmeFiles[mdIndex].name()),
-                                    null)
-                        }
-                        val htmlIndex = readmeFiles.indexOfFirst { it.name().endsWith(".html") }
-                        if (htmlIndex >= 0) {
-                            return@map Resource(Status.SUCCESS,
-                                    Pair("html", readmeFiles[htmlIndex].name()),
-                                    null)
-                        }
-                        val plainIndex = readmeFiles.indexOfFirst { it.name().toLowerCase() == "readme" }
-                        if (plainIndex >= 0) {
-                            return@map Resource(Status.SUCCESS,
-                                    Pair("plain", readmeFiles[plainIndex].name()),
-                                    null)
-                        }
-
-                        return@map Resource(Status.SUCCESS,
-                                null,
-                                null)
-                    }
-                }
-            }
-            .subscribe({ data ->
-                this.value = data
-                Timber.d("data: $data")
-            }, {
-                Timber.e(it, "disposable error: ${it.message}")
-            })
+            .query(CurrentLevelTreeViewQuery.builder()
+                    .login(login)
+                    .repoName(name)
+                    .expression("$branchName:")
+                    .build())
 
     override fun onInactive() {
         super.onInactive()
-        if (disposable.isDisposed.not()) {
-            disposable.dispose()
+
+        if (!call.isCanceled) {
+            call.cancel()
         }
+    }
+
+    fun refresh() {
+        value = Resource.loading(null)
+
+        call.enqueue(object : ApolloCall.Callback<CurrentLevelTreeViewQuery.Data>() {
+
+            override fun onFailure(e: ApolloException) {
+                Timber.e(e)
+
+                postValue(Resource.error(e.message, null))
+            }
+
+            override fun onResponse(response: Response<CurrentLevelTreeViewQuery.Data>) {
+                val readmeFiles = response.data()
+                        ?.repository()
+                        ?.`object`()
+                        ?.fragments()
+                        ?.treeAbstract()
+                        ?.entries()
+                        ?.filter {
+                            it.name().toLowerCase().contains("readme")
+                        }
+
+                if (readmeFiles.isNullOrEmpty()) {
+                    Resource(Status.SUCCESS, null, null)
+                } else {
+                    val mdIndex = readmeFiles.indexOfFirst { it.name().endsWith(".md") }
+                    postValue(if (mdIndex >= 0) {
+                        Resource.success(Pair("md", readmeFiles[mdIndex].name()))
+                    } else {
+                        val htmlIndex = readmeFiles.indexOfFirst { it.name().endsWith(".html") }
+                        if (htmlIndex >= 0) {
+                            Resource.success(Pair("html", readmeFiles[htmlIndex].name()))
+                        } else {
+                            val plainIndex = readmeFiles.indexOfFirst { it.name().toLowerCase() == "readme" }
+                            if (plainIndex >= 0) {
+                                Resource.success(Pair("plain", readmeFiles[plainIndex].name()))
+                            } else {
+                                Resource.success(null)
+                            }
+                        }
+                    })
+                }
+            }
+
+        })
     }
 
 }

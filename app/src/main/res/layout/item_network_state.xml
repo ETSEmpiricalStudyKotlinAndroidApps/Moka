@@ -5,9 +5,9 @@
 
     <data>
 
-        <import type="io.github.tonnyl.moka.net.NetworkState" />
+        <import type="io.github.tonnyl.moka.network.NetworkState" />
 
-        <import type="io.github.tonnyl.moka.net.Status" />
+        <import type="io.github.tonnyl.moka.network.Status" />
 
         <variable
             name="state"

@@ -2,7 +2,7 @@ package io.github.tonnyl.moka.data
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import io.github.tonnyl.moka.net.NetworkState
+import io.github.tonnyl.moka.network.NetworkState
 
 data class Listing<T>(
         // the LiveData of paged lists for the UI to observe

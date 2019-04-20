@@ -8,9 +8,9 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import io.github.tonnyl.moka.IssueTimelineQuery
 import io.github.tonnyl.moka.NetworkClient
-import io.github.tonnyl.moka.data.PagedResource
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.*
-import io.github.tonnyl.moka.net.Resource
+import io.github.tonnyl.moka.network.Resource
 import timber.log.Timber
 
 class IssueTimelineDataSource(

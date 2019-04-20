@@ -18,9 +18,7 @@ class TrendingDevelopersFragment : Fragment() {
 
     private lateinit var developerAdapter: TrendingDeveloperAdapter
 
-    private val viewModel: ExploreViewModel by lazy {
-        ViewModelProviders.of(requireParentFragment(), ViewModelFactory()).get(ExploreViewModel::class.java)
-    }
+    private lateinit var viewModel: ExploreViewModel
 
     private lateinit var binding: FragmentExploreDevelopersBinding
 
@@ -32,6 +30,8 @@ class TrendingDevelopersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProviders.of(requireParentFragment(), ViewModelFactory()).get(ExploreViewModel::class.java)
 
         developerAdapter = TrendingDeveloperAdapter("All Languages", "Daily")
         recycler_view.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)

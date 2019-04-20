@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.net
+package io.github.tonnyl.moka.network
 
 import android.content.Context
 import com.google.gson.GsonBuilder

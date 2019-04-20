@@ -6,8 +6,8 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import io.github.tonnyl.moka.CurrentLevelTreeViewQuery
 import io.github.tonnyl.moka.NetworkClient
-import io.github.tonnyl.moka.net.Resource
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.network.Status
 import timber.log.Timber
 
 class RepositoryReadmeFileNameLiveData(

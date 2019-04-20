@@ -8,9 +8,9 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.PullRequestsQuery
-import io.github.tonnyl.moka.data.PagedResource
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.PullRequestItem
-import io.github.tonnyl.moka.net.Resource
+import io.github.tonnyl.moka.network.Resource
 import timber.log.Timber
 
 class PullRequestsDataSource(

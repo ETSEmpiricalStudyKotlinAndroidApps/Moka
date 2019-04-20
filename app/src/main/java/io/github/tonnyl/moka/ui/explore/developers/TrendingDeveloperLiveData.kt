@@ -3,9 +3,9 @@ package io.github.tonnyl.moka.ui.explore.developers
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import io.github.tonnyl.moka.data.TrendingDeveloper
-import io.github.tonnyl.moka.net.Resource
-import io.github.tonnyl.moka.net.RetrofitClient
-import io.github.tonnyl.moka.net.service.TrendingService
+import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.network.RetrofitClient
+import io.github.tonnyl.moka.network.service.TrendingService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

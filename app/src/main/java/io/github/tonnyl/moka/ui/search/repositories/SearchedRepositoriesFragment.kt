@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchPageBinding
-import io.github.tonnyl.moka.net.NetworkState
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.network.NetworkState
+import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.search.SearchViewModel
 import kotlinx.android.synthetic.main.fragment_search_page.*
 import kotlinx.android.synthetic.main.layout_empty_content.*
@@ -26,7 +26,7 @@ class SearchedRepositoriesFragment : Fragment(), View.OnClickListener {
     private lateinit var searchedRepositoriesViewModel: SearchedRepositoriesViewModel
 
     private val adapter: SearchedRepositoryAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        SearchedRepositoryAdapter()
+        SearchedRepositoryAdapter({}, {})
     }
 
     companion object {
@@ -121,6 +121,8 @@ class SearchedRepositoriesFragment : Fragment(), View.OnClickListener {
             triggerRefresh()
         }
 
+        empty_content_retry_button.setOnClickListener(this@SearchedRepositoriesFragment)
+        empty_content_action_text.setOnClickListener(this@SearchedRepositoriesFragment)
     }
 
     override fun onClick(v: View?) {
@@ -135,15 +137,9 @@ class SearchedRepositoriesFragment : Fragment(), View.OnClickListener {
         if (show) {
             empty_content_layout.visibility = View.VISIBLE
             recycler_view.visibility = View.GONE
-
-            empty_content_retry_button.setOnClickListener(this@SearchedRepositoriesFragment)
-            empty_content_action_text.setOnClickListener(this@SearchedRepositoriesFragment)
         } else {
             empty_content_layout.visibility = View.GONE
             recycler_view.visibility = View.VISIBLE
-
-            empty_content_retry_button.setOnClickListener(null)
-            empty_content_action_text.setOnClickListener(null)
         }
     }
 

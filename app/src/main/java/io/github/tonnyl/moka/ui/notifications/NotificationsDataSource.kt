@@ -3,146 +3,130 @@ package io.github.tonnyl.moka.ui.notifications
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.Notification
-import io.github.tonnyl.moka.net.NetworkState
-import io.github.tonnyl.moka.net.service.NotificationsService
+import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.network.service.NotificationsService
 import io.github.tonnyl.moka.util.PageLinks
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
-import java.io.IOException
-import java.util.concurrent.Executor
+import java.util.*
 
 class NotificationsDataSource(
         private val notificationsService: NotificationsService,
-        private val retryExecutor: Executor
+        private val loadStatusLiveData: MutableLiveData<PagedResource<List<Notification>>>
 ) : PageKeyedDataSource<String, Notification>() {
 
-    // keep a function reference for the retry event
-    private var retry: (() -> Any)? = null
+    var retry: (() -> Any)? = null
 
-    /**
-     * There is no sync on the state because paging will always call loadInitial first then wait
-     * for it to return some success value before calling loadAfter.
-     */
-    val networkState = MutableLiveData<NetworkState>()
-
-    val initialLoad = MutableLiveData<NetworkState>()
-
-    fun retryAllFailed() {
-        val prevRetry = retry
-        retry = null
-        prevRetry?.let {
-            retryExecutor.execute {
-                it.invoke()
-            }
-        }
-    }
+    private var call: Call<List<Notification>>? = null
 
     override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, Notification>) {
-        networkState.postValue(NetworkState.LOADING)
-        initialLoad.postValue(NetworkState.LOADING)
+        Timber.d("loadInitial")
 
-        try {
-            // triggered by a refresh, we better execute sync
-            val response = notificationsService.listNotifications(true, 1, params.requestedLoadSize)
-                    .execute()
+        loadStatusLiveData.postValue(PagedResource(initial = Resource.loading(null)))
 
-            retry = null
-            networkState.postValue(NetworkState.LOADED)
-            initialLoad.postValue(NetworkState.LOADED)
+        call = notificationsService.listNotifications(true, 1, params.requestedLoadSize)
 
-            val pl = PageLinks(response)
-            callback.onResult(response.body() ?: emptyList(), pl.prev, pl.next)
-        } catch (ioe: IOException) {
-            Timber.e(ioe, "loadInitial params: $params error: ${ioe.message}")
+        call?.enqueue(object : Callback<List<Notification>> {
 
-            retry = {
-                loadInitial(params, callback)
+            override fun onFailure(call: Call<List<Notification>>, t: Throwable) {
+                Timber.e(t)
+
+                retry = {
+                    loadInitial(params, callback)
+                }
+
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.error(t.message, null)))
             }
 
-            val error = NetworkState.error(ioe.message ?: "unknown error")
-            networkState.postValue(error)
-            initialLoad.postValue(error)
-        }
+            override fun onResponse(call: Call<List<Notification>>, response: Response<List<Notification>>) {
+                val list = response.body() ?: Collections.emptyList()
+
+                val pl = PageLinks(response)
+                callback.onResult(list, pl.prev, pl.next)
+
+                retry = null
+
+                loadStatusLiveData.postValue(PagedResource(initial = Resource.success(list)))
+            }
+
+        })
     }
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Notification>) {
-        networkState.postValue(NetworkState.LOADING)
+        Timber.d("loadAfter")
 
-        notificationsService.listNotificationsByUrl(params.key)
-                .enqueue(object : Callback<List<Notification>> {
+        loadStatusLiveData.postValue(PagedResource(after = Resource.loading(null)))
 
-                    override fun onFailure(call: Call<List<Notification>>, t: Throwable) {
-                        Timber.e(t, "loadAfter params: ${params.key} error: ${t.message}")
+        call = notificationsService.listNotificationsByUrl(params.key)
 
-                        retry = {
-                            loadAfter(params, callback)
-                        }
+        call?.enqueue(object : Callback<List<Notification>> {
 
-                        networkState.postValue(NetworkState.error(t.message ?: "unknown err"))
-                    }
+            override fun onFailure(call: Call<List<Notification>>, t: Throwable) {
+                Timber.e(t)
 
-                    override fun onResponse(call: Call<List<Notification>>, response: Response<List<Notification>>) {
-                        if (response.isSuccessful) {
-                            retry = null
+                retry = {
+                    loadAfter(params, callback)
+                }
 
-                            val pl = PageLinks(response)
-                            Timber.d("pre: ${pl.prev} next: ${pl.next}")
+                loadStatusLiveData.postValue(PagedResource(after = Resource.error(t.message, null)))
+            }
 
-                            callback.onResult((response.body()
-                                    ?: emptyList()).toMutableList(), pl.next)
+            override fun onResponse(call: Call<List<Notification>>, response: Response<List<Notification>>) {
+                val list = response.body() ?: Collections.emptyList()
 
-                            networkState.postValue(NetworkState.LOADED)
-                        } else {
-                            retry = {
-                                loadAfter(params, callback)
-                            }
+                val pl = PageLinks(response)
+                callback.onResult(list, pl.next)
 
-                            networkState.postValue(NetworkState.error("error code: ${response.code()}"))
-                        }
-                    }
+                retry = null
 
-                })
+                loadStatusLiveData.postValue(PagedResource(after = Resource.success(list)))
+            }
+
+        })
     }
 
     override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, Notification>) {
-        networkState.postValue(NetworkState.LOADING)
+        Timber.d("loadBefore")
 
-        notificationsService.listNotificationsByUrl(params.key)
-                .enqueue(object : Callback<List<Notification>> {
+        loadStatusLiveData.postValue(PagedResource(before = Resource.loading(null)))
 
-                    override fun onFailure(call: Call<List<Notification>>, t: Throwable) {
-                        Timber.e(t, "loadBefore params: ${params.key} error: ${t.message}")
+        call = notificationsService.listNotificationsByUrl(params.key)
 
-                        retry = {
-                            loadBefore(params, callback)
-                        }
+        call?.enqueue(object : Callback<List<Notification>> {
 
-                        networkState.postValue(NetworkState.error(t.message ?: "unknown err"))
-                    }
+            override fun onFailure(call: Call<List<Notification>>, t: Throwable) {
+                Timber.e(t)
 
-                    override fun onResponse(call: Call<List<Notification>>, response: Response<List<Notification>>) {
-                        if (response.isSuccessful) {
-                            retry = null
+                retry = {
+                    loadBefore(params, callback)
+                }
 
-                            val pl = PageLinks(response)
-                            Timber.d("pre: ${pl.prev} next: ${pl.next}")
+                loadStatusLiveData.postValue(PagedResource(before = Resource.error(t.message, null)))
+            }
 
-                            callback.onResult((response.body()
-                                    ?: emptyList()).toMutableList(), pl.prev)
+            override fun onResponse(call: Call<List<Notification>>, response: Response<List<Notification>>) {
+                val list = response.body() ?: emptyList()
 
-                            networkState.postValue(NetworkState.LOADED)
-                        } else {
-                            retry = {
-                                loadBefore(params, callback)
-                            }
+                val pl = PageLinks(response)
+                callback.onResult(list, pl.prev)
 
-                            networkState.postValue(NetworkState.error("error code: ${response.code()}"))
-                        }
-                    }
+                retry = null
 
-                })
+                loadStatusLiveData.postValue(PagedResource(before = Resource.success(list)))
+            }
+
+        })
+    }
+
+    override fun invalidate() {
+        super.invalidate()
+
+        if (call?.isCanceled == false) {
+            call?.cancel()
+        }
     }
 
 }

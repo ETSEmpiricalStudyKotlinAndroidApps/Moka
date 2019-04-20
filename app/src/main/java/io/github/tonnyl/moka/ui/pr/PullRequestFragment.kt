@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.CommentAuthorAssociation
 import io.github.tonnyl.moka.databinding.FragmentIssuePrBinding
-import io.github.tonnyl.moka.net.GlideLoader
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.network.GlideLoader
+import io.github.tonnyl.moka.network.Status
 import kotlinx.android.synthetic.main.appbar_layout.*
 import kotlinx.android.synthetic.main.fragment_issue_pr.*
 import kotlinx.android.synthetic.main.item_issue_timeline_comment.*

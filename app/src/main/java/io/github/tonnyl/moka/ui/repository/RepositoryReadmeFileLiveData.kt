@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import io.github.tonnyl.moka.FileContentQuery
 import io.github.tonnyl.moka.NetworkClient
-import io.github.tonnyl.moka.net.Resource
+import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.util.wrapWithHtmlTemplate
 import org.commonmark.ext.autolink.AutolinkExtension
 import org.commonmark.ext.front.matter.YamlFrontMatterExtension

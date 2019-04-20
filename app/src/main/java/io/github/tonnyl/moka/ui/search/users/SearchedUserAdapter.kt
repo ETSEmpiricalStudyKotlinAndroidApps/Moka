@@ -11,9 +11,13 @@ import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 import io.github.tonnyl.moka.databinding.ItemNetworkStateBinding
 import io.github.tonnyl.moka.databinding.ItemSearchedOrganizationBinding
 import io.github.tonnyl.moka.databinding.ItemSearchedUserBinding
-import io.github.tonnyl.moka.net.NetworkState
+import io.github.tonnyl.moka.network.NetworkState
+import io.github.tonnyl.moka.ui.common.NetworkStateViewHolder
 
-class SearchedUserAdapter : PagedListAdapter<SearchedUserOrOrgItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class SearchedUserAdapter(
+        private val beforeRetryCallback: () -> Unit,
+        private val afterRetryCallback: () -> Unit
+) : PagedListAdapter<SearchedUserOrOrgItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     private var beforeNetworkState: NetworkState? = null
     private var afterNetworkState: NetworkState? = null
@@ -39,27 +43,40 @@ class SearchedUserAdapter : PagedListAdapter<SearchedUserOrOrgItem, RecyclerView
         val inflater = LayoutInflater.from(parent.context)
 
         return when (viewType) {
-            VIEW_TYPE_USER -> UserViewHolder(ItemSearchedUserBinding.inflate(inflater, parent, false))
-            VIEW_TYPE_ORGANIZATION -> OrganizationViewHolder(ItemSearchedOrganizationBinding.inflate(inflater, parent, false))
-            else -> NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false))
+            VIEW_TYPE_USER -> {
+                UserViewHolder(ItemSearchedUserBinding.inflate(inflater, parent, false))
+            }
+            VIEW_TYPE_ORGANIZATION -> {
+                OrganizationViewHolder(ItemSearchedOrganizationBinding.inflate(inflater, parent, false))
+            }
+            VIEW_TYPE_BEFORE_NETWORK_STATE -> {
+                NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false), beforeRetryCallback)
+            }
+            VIEW_TYPE_AFTER_NETWORK_STATE -> {
+                NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false), afterRetryCallback)
+            }
+            else -> {
+                throw  IllegalArgumentException("Invalid view type: $viewType")
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is NetworkStateViewHolder) {
-            val viewType = getItemViewType(position)
-            if (viewType == VIEW_TYPE_BEFORE_NETWORK_STATE) {
-                holder.bindTo(beforeNetworkState)
-            } else {
-                holder.bindTo(afterNetworkState)
-            }
-        } else {
-            val item = getItem(position) ?: return
-
-            if (getItemViewType(position) == VIEW_TYPE_USER) {
+        when (getItemViewType(position)) {
+            VIEW_TYPE_USER -> {
+                val item = getItem(position) ?: return
                 (holder as UserViewHolder).bindTo(item as SearchedUserItem)
-            } else {
+            }
+            VIEW_TYPE_ORGANIZATION -> {
+                val item = getItem(position) ?: return
                 (holder as OrganizationViewHolder).bindTo(item as SearchedOrganizationItem)
+            }
+            VIEW_TYPE_AFTER_NETWORK_STATE -> {
+                (holder as NetworkStateViewHolder).bindTo(afterNetworkState)
+            }
+            VIEW_TYPE_BEFORE_NETWORK_STATE -> {
+                (holder as NetworkStateViewHolder).bindTo(beforeNetworkState)
+
             }
         }
     }
@@ -127,17 +144,6 @@ class SearchedUserAdapter : PagedListAdapter<SearchedUserOrOrgItem, RecyclerView
 
         fun bindTo(data: SearchedOrganizationItem) {
             binding.data = data
-            binding.executePendingBindings()
-        }
-
-    }
-
-    class NetworkStateViewHolder(
-            private val binding: ItemNetworkStateBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bindTo(networkState: NetworkState?) {
-            binding.state = networkState
             binding.executePendingBindings()
         }
 

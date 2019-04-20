@@ -9,7 +9,7 @@ import com.apollographql.apollo.exception.ApolloException
 import io.github.tonnyl.moka.IssueQuery
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.data.IssueGraphQL
-import io.github.tonnyl.moka.net.Resource
+import io.github.tonnyl.moka.network.Resource
 import timber.log.Timber
 
 class IssueLiveData(

@@ -8,70 +8,54 @@ import androidx.core.text.PrecomputedTextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import io.github.tonnyl.moka.net.GlideLoader
+import io.github.tonnyl.moka.network.GlideLoader
 
-object ViewBindingAdapters {
+@BindingAdapter("avatarUrl")
+fun AppCompatImageView.avatarUrl(
+        url: String?
+) {
+    GlideLoader.loadAvatar(url, this)
+}
 
-    @JvmStatic
-    @BindingAdapter("avatarUrl")
-    fun avatarUrl(
-            imageView: AppCompatImageView,
-            url: String?
-    ) {
-        GlideLoader.loadAvatar(url, imageView)
-    }
+@BindingAdapter("imageResId")
+fun AppCompatImageView.imageResId(
+        @DrawableRes drawableResId: Int
+) {
+    setImageResource(drawableResId)
+}
 
-    @JvmStatic
-    @BindingAdapter("imageResId")
-    fun imageResId(
-            imageView: AppCompatImageView,
-            @DrawableRes drawableResId: Int
-    ) {
-        imageView.setImageResource(drawableResId)
-    }
+@BindingAdapter("backgroundResId")
+fun AppCompatImageView.backgroundResId(
+        @DrawableRes backgroundResId: Int
+) {
+    setBackgroundResource(backgroundResId)
+}
 
-    @JvmStatic
-    @BindingAdapter("backgroundResId")
-    fun backgroundResId(
-            imageView: AppCompatImageView,
-            @DrawableRes backgroundResId: Int
-    ) {
-        imageView.setBackgroundResource(backgroundResId)
-    }
+@BindingAdapter("colorSchemaColors")
+fun SwipeRefreshLayout.colorSchemaColors(
+        colorResIds: IntArray
+) {
+    setColorSchemeColors(*colorResIds)
+}
 
-    @JvmStatic
-    @BindingAdapter("colorSchemaColors")
-    fun colorSchemaColors(
-            refreshLayout: SwipeRefreshLayout,
-            colorResIds: IntArray
-    ) {
-        refreshLayout.setColorSchemeColors(*colorResIds)
-    }
+@BindingAdapter("textFuture")
+fun AppCompatTextView.textFuture(
+        text: CharSequence?
+) {
+    text ?: return
+    setTextFuture(PrecomputedTextCompat.getTextFuture(
+            text,
+            TextViewCompat.getTextMetricsParams(this),
+            null
+    ))
+}
 
-    @JvmStatic
-    @BindingAdapter("textFuture")
-    fun textFuture(
-            textView: AppCompatTextView,
-            text: CharSequence?
-    ) {
-        text ?: return
-        textView.setTextFuture(PrecomputedTextCompat.getTextFuture(
-                text,
-                TextViewCompat.getTextMetricsParams(textView),
-                null
-        ))
-    }
+@BindingAdapter("invisibleUnless")
+fun View.invisibleUnless(visible: Boolean) {
+    visibility = if (visible) View.VISIBLE else View.GONE
+}
 
-    @JvmStatic
-    @BindingAdapter("invisibleUnless")
-    fun invisibleUnless(view: View, visible: Boolean) {
-        view.visibility = if (visible) View.VISIBLE else View.GONE
-    }
-
-    @JvmStatic
-    @BindingAdapter("goneUnless")
-    fun goneUnless(view: View, visible: Boolean) {
-        view.visibility = if (visible) View.VISIBLE else View.GONE
-    }
-
+@BindingAdapter("goneUnless")
+fun View.goneUnless(visible: Boolean) {
+    visibility = if (visible) View.VISIBLE else View.GONE
 }

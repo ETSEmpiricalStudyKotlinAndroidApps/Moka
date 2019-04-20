@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentUsersBinding
+import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
 import kotlinx.android.synthetic.main.appbar_layout.*
 import kotlinx.android.synthetic.main.fragment_users.*
@@ -23,7 +24,7 @@ class UsersFragment : Fragment(), ItemUserActions {
 
     private val args: UsersFragmentArgs by navArgs()
 
-    private val adapter by lazy {
+    private val userAdapter: UserAdapter by lazy {
         UserAdapter().apply {
             actions = this@UsersFragment
         }
@@ -58,15 +59,63 @@ class UsersFragment : Fragment(), ItemUserActions {
             USER_TYPE_FOLLOWING -> UserType.FOLLOWING
             else -> UserType.FOLLOWER
         }
-        val factory = ViewModelFactory(loginArg, userType)
-        viewModel = ViewModelProviders.of(this, factory).get(UsersViewModel::class.java)
 
-        recycler_view.adapter = adapter
-        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        recycler_view.layoutManager = layoutManager
+        viewModel = ViewModelProviders.of(this, ViewModelFactory(loginArg, userType)).get(UsersViewModel::class.java)
 
-        viewModel.usersResults.observe(viewLifecycleOwner, Observer { list ->
-            adapter.submitList(list)
+        with(recycler_view) {
+            recycler_view.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = userAdapter
+        }
+
+        viewModel.loadStatusLiveData.observe(this, Observer {
+            when (it.initial?.status) {
+                Status.SUCCESS -> {
+
+                }
+                Status.ERROR -> {
+
+                }
+                Status.LOADING -> {
+
+                }
+                null -> {
+
+                }
+            }
+
+            when (it.before?.status) {
+                Status.SUCCESS -> {
+
+                }
+                Status.ERROR -> {
+
+                }
+                Status.LOADING -> {
+
+                }
+                null -> {
+
+                }
+            }
+
+            when (it.after?.status) {
+                Status.SUCCESS -> {
+
+                }
+                Status.ERROR -> {
+
+                }
+                Status.LOADING -> {
+
+                }
+                null -> {
+
+                }
+            }
+        })
+
+        viewModel.usersResults.observe(this, Observer { list ->
+            userAdapter.submitList(list)
         })
 
     }

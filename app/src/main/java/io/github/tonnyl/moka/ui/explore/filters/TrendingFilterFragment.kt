@@ -34,6 +34,12 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
 
     private var queryData: Triple<ExploreTimeSpanType, String, String>? = null
 
+    companion object {
+
+        fun newInstance(): TrendingFilterFragment = TrendingFilterFragment()
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentExploreFilterBinding.inflate(inflater, container, false)
 

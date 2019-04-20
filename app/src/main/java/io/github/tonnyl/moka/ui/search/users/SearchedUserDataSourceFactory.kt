@@ -2,7 +2,7 @@ package io.github.tonnyl.moka.ui.search.users
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
-import io.github.tonnyl.moka.data.PagedResource
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 
 class SearchedUserDataSourceFactory(

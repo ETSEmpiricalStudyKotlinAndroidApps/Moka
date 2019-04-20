@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.net.service
+package io.github.tonnyl.moka.network.service
 
 import io.github.tonnyl.moka.data.AccessToken
 import io.reactivex.Single

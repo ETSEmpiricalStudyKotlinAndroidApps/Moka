@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.net
+package io.github.tonnyl.moka.network
 
 @Suppress("DataClassPrivateConstructor")
 data class NetworkState private constructor(

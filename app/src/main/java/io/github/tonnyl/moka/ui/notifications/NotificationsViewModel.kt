@@ -2,32 +2,61 @@ package io.github.tonnyl.moka.ui.notifications
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations.map
-import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
+import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import io.github.tonnyl.moka.MokaApp.Companion.MAX_SIZE_OF_PAGED_LIST
+import io.github.tonnyl.moka.MokaApp.Companion.PER_PAGE
 import io.github.tonnyl.moka.data.Notification
-import io.github.tonnyl.moka.net.NetworkState
+import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.RetrofitClient
+import io.github.tonnyl.moka.network.service.NotificationsService
+import io.github.tonnyl.moka.util.formatISO8601String
 
-class NotificationsViewModel(
-        private val repository: NotificationsRepository
-) : ViewModel() {
+class NotificationsViewModel : ViewModel() {
 
-    private val refreshTime = MutableLiveData<String>()
-    private val notificationsResult = map(refreshTime) { repository.notifications(20) }
+    private var userLogin: String = ""
 
-    val posts: LiveData<PagedList<Notification>> = switchMap(notificationsResult) { it.pagedList }
-    val networkState: LiveData<NetworkState> = switchMap(notificationsResult) { it.networkState }
-    val refreshState: LiveData<NetworkState> = switchMap(notificationsResult) { it.refreshState }
+    val refreshTime = MutableLiveData<String>()
 
-    fun refreshNotificationList(timeString: String) {
-        refreshTime.value = timeString
+    private val _loadStatusLiveData = MutableLiveData<PagedResource<List<Notification>>>()
+    val loadStatusLiveData: LiveData<PagedResource<List<Notification>>>
+        get() = _loadStatusLiveData
 
-        notificationsResult.value?.refresh?.invoke()
+    private val sourceFactory: NotificationsDataSourceFactory by lazy {
+        NotificationsDataSourceFactory(RetrofitClient.createService(NotificationsService::class.java), _loadStatusLiveData)
+    }
+
+    val notificationsResult: LiveData<PagedList<Notification>> by lazy {
+        val pagingConfig = PagedList.Config.Builder()
+                .setPageSize(PER_PAGE)
+                .setMaxSize(MAX_SIZE_OF_PAGED_LIST)
+                .setInitialLoadSizeHint(PER_PAGE)
+                .setEnablePlaceholders(false)
+                .build()
+
+        LivePagedListBuilder(sourceFactory, pagingConfig).build()
+    }
+
+    fun refreshNotificationsData(login: String, forceUpdate: Boolean) {
+        fun refresh() {
+            userLogin = login
+            refreshTime.value = formatISO8601String()
+
+            sourceFactory.invalidate()
+        }
+
+        if (forceUpdate) {
+            refresh()
+        } else if (login == userLogin) {
+            return
+        }
+
+        refresh()
     }
 
     fun retry() {
-        notificationsResult?.value?.retry?.invoke()
+        sourceFactory.retry()
     }
 
 }

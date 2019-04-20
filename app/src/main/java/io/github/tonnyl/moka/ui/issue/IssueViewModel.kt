@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.IssueGraphQL
-import io.github.tonnyl.moka.data.PagedResource
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
-import io.github.tonnyl.moka.net.Resource
+import io.github.tonnyl.moka.network.Resource
 
 class IssueViewModel(
         private val owner: String,

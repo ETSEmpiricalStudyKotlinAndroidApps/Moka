@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchPageBinding
-import io.github.tonnyl.moka.net.NetworkState
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.network.NetworkState
+import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.search.SearchViewModel
 import kotlinx.android.synthetic.main.fragment_search_page.*
 import kotlinx.android.synthetic.main.layout_empty_content.*
@@ -27,7 +27,7 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
     private lateinit var searchedUsersViewModel: SearchedUsersViewModel
 
     private val adapter: SearchedUserAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        SearchedUserAdapter()
+        SearchedUserAdapter({}, {})
     }
 
     companion object {

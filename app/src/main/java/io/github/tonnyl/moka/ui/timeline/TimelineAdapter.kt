@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.databinding.ItemEventBinding
-import io.github.tonnyl.moka.net.NetworkState
+import io.github.tonnyl.moka.databinding.ItemNetworkStateBinding
+import io.github.tonnyl.moka.network.NetworkState
+import io.github.tonnyl.moka.ui.common.NetworkStateViewHolder
 
 class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
@@ -36,7 +38,23 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = EventViewHolder(ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+
+        return when (viewType) {
+            VIEW_TYPE_BEFORE_NETWORK_STATE, VIEW_TYPE_AFTER_NETWORK_STATE -> {
+                NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false)) {
+
+                }
+            }
+            VIEW_TYPE_TIMELINE_EVENT -> {
+                EventViewHolder(ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            }
+            else -> {
+                throw IllegalArgumentException("Invalid view type: $viewType")
+            }
+        }
+    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position) ?: return

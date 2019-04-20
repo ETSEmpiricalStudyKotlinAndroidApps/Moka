@@ -16,8 +16,8 @@ import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.net.RetrofitClient
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.network.RetrofitClient
+import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.main.MainViewModel
 import kotlinx.android.synthetic.main.fragment_auth.*
 

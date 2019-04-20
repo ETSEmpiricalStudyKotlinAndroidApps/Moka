@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentUserProfileBinding
-import io.github.tonnyl.moka.net.GlideLoader
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.network.GlideLoader
+import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragment
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs

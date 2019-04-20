@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import io.github.tonnyl.moka.UserQuery
-import io.github.tonnyl.moka.net.Resource
+import io.github.tonnyl.moka.network.Resource
 
 class UserProfileViewModel(login: String) : ViewModel() {
 

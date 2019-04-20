@@ -3,9 +3,9 @@ package io.github.tonnyl.moka.ui.timeline
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.Event
-import io.github.tonnyl.moka.data.PagedResource
-import io.github.tonnyl.moka.net.Resource
-import io.github.tonnyl.moka.net.service.EventsService
+import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.network.service.EventsService
 import io.github.tonnyl.moka.util.PageLinks
 import retrofit2.Call
 import retrofit2.Callback
@@ -89,6 +89,10 @@ class TimelineItemDataSource(
     }
 
     override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, Event>) {
+        Timber.d("loadBefore")
+
+        loadStatusLiveData.postValue(PagedResource(before = Resource.loading(null)))
+
         call = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
 
         call?.enqueue(object : Callback<List<Event>> {

@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
 import io.github.tonnyl.moka.databinding.ItemNetworkStateBinding
 import io.github.tonnyl.moka.databinding.ItemSearchedRepositoryBinding
-import io.github.tonnyl.moka.net.NetworkState
+import io.github.tonnyl.moka.network.NetworkState
+import io.github.tonnyl.moka.ui.common.NetworkStateViewHolder
 
-class SearchedRepositoryAdapter : PagedListAdapter<SearchedRepositoryItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class SearchedRepositoryAdapter(
+        private val beforeRetryCallback: () -> Unit,
+        private val afterRetryCallback: () -> Unit
+) : PagedListAdapter<SearchedRepositoryItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     private var beforeNetworkState: NetworkState? = null
     private var afterNetworkState: NetworkState? = null
@@ -35,22 +39,31 @@ class SearchedRepositoryAdapter : PagedListAdapter<SearchedRepositoryItem, Recyc
         val inflater = LayoutInflater.from(parent.context)
 
         return when (viewType) {
+            VIEW_TYPE_BEFORE_NETWORK_STATE -> {
+                NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false), beforeRetryCallback)
+            }
+            VIEW_TYPE_AFTER_NETWORK_STATE -> {
+                NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false), afterRetryCallback)
+            }
             VIEW_TYPE_REPOSITORY -> RepositoryViewHolder(ItemSearchedRepositoryBinding.inflate(inflater, parent, false))
-            else -> NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false))
+            else -> {
+                throw IllegalArgumentException("Invalid view type: $viewType")
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is RepositoryViewHolder) {
-            val item = getItem(position) ?: return
+        when (getItemViewType(position)) {
+            VIEW_TYPE_REPOSITORY -> {
+                val item = getItem(position) ?: return
 
-            holder.bindTo(item)
-        } else if (holder is NetworkStateViewHolder) {
-            val viewType = getItemViewType(position)
-            if (viewType == VIEW_TYPE_BEFORE_NETWORK_STATE) {
-                holder.bindTo(beforeNetworkState)
-            } else {
-                holder.bindTo(afterNetworkState)
+                (holder as RepositoryViewHolder).bindTo(item)
+            }
+            VIEW_TYPE_AFTER_NETWORK_STATE -> {
+                (holder as NetworkStateViewHolder).bindTo(afterNetworkState)
+            }
+            VIEW_TYPE_BEFORE_NETWORK_STATE -> {
+                (holder as NetworkStateViewHolder).bindTo(beforeNetworkState)
             }
         }
     }
@@ -105,17 +118,6 @@ class SearchedRepositoryAdapter : PagedListAdapter<SearchedRepositoryItem, Recyc
 
         fun bindTo(data: SearchedRepositoryItem) {
             binding.data = data
-            binding.executePendingBindings()
-        }
-
-    }
-
-    class NetworkStateViewHolder(
-            private val binding: ItemNetworkStateBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bindTo(networkState: NetworkState?) {
-            binding.state = networkState
             binding.executePendingBindings()
         }
 

@@ -8,9 +8,9 @@ import androidx.paging.PagedList
 import io.github.tonnyl.moka.MokaApp.Companion.MAX_SIZE_OF_PAGED_LIST
 import io.github.tonnyl.moka.MokaApp.Companion.PER_PAGE
 import io.github.tonnyl.moka.data.Event
-import io.github.tonnyl.moka.data.PagedResource
-import io.github.tonnyl.moka.net.RetrofitClient
-import io.github.tonnyl.moka.net.service.EventsService
+import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.RetrofitClient
+import io.github.tonnyl.moka.network.service.EventsService
 
 class TimelineViewModel : ViewModel() {
 

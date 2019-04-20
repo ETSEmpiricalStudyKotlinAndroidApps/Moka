@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.net
+package io.github.tonnyl.moka.network
 
 data class Resource<out T>(
 

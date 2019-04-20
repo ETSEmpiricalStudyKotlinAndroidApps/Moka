@@ -1,6 +1,4 @@
-package io.github.tonnyl.moka.data
-
-import io.github.tonnyl.moka.net.Resource
+package io.github.tonnyl.moka.network
 
 data class PagedResource<out T>(
 

@@ -14,9 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentTimelineBinding
-import io.github.tonnyl.moka.net.GlideLoader
-import io.github.tonnyl.moka.net.NetworkState
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.network.NetworkState
+import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.main.MainViewModel
 import kotlinx.android.synthetic.main.fragment_timeline.*
 import kotlinx.android.synthetic.main.layout_empty_content.*
@@ -47,6 +46,9 @@ class TimelineFragment : Fragment(), View.OnClickListener {
         mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory()).get(MainViewModel::class.java)
         viewModel = ViewModelProviders.of(requireActivity(), ViewModelFactory()).get(TimelineViewModel::class.java)
 
+        binding.mainViewModel = mainViewModel
+        binding.lifecycleOwner = requireActivity()
+
         timelineAdapter = TimelineAdapter(requireContext())
 
         with(recycler_view) {
@@ -55,19 +57,17 @@ class TimelineFragment : Fragment(), View.OnClickListener {
         }
 
         viewModel.loadStatusLiveData.observe(this, Observer {
-            if (it.initial == null
-                    && it.before == null
-                    && it.after == null) {
-                showHideEmptyView(true)
-                swipe_refresh.isRefreshing = false
-            }
-
             when (it.initial?.status) {
-                Status.SUCCESS, Status.ERROR -> {
+                Status.SUCCESS -> {
                     swipe_refresh.isRefreshing = false
                 }
                 Status.LOADING -> {
                     swipe_refresh.isRefreshing = true
+                }
+                Status.ERROR -> {
+                    swipe_refresh.isRefreshing = false
+
+                    showHideEmptyView(true)
                 }
                 null -> {
 
@@ -108,8 +108,9 @@ class TimelineFragment : Fragment(), View.OnClickListener {
         viewModel.eventsResult.observe(this, Observer {
             timelineAdapter.submitList(it)
 
+            val status = viewModel.loadStatusLiveData.value?.initial?.status
             showHideEmptyView(it.isEmpty()
-                    && viewModel.loadStatusLiveData.value?.initial?.status == Status.SUCCESS)
+                    && (status == Status.SUCCESS || status == Status.ERROR))
         })
 
         mainViewModel.login.observe(this, Observer { login ->
@@ -120,8 +121,6 @@ class TimelineFragment : Fragment(), View.OnClickListener {
 
         mainViewModel.loginUserProfile.observe(this, Observer { data ->
             if (data != null) {
-                GlideLoader.loadAvatar(data.viewer().avatarUrl().toString(), main_search_bar_avatar)
-
                 main_search_bar_avatar.setOnClickListener(this@TimelineFragment)
             } else {
 
@@ -134,6 +133,12 @@ class TimelineFragment : Fragment(), View.OnClickListener {
         }
 
         main_search_bar_input_text.setOnClickListener(this@TimelineFragment)
+
+        empty_content_title_text.text = getString(R.string.timeline_content_empty_title)
+        empty_content_action_text.text = getString(R.string.timeline_content_empty_action)
+
+        empty_content_action_text.setOnClickListener(this)
+        empty_content_retry_button.setOnClickListener(this)
     }
 
     override fun onResume() {
@@ -182,12 +187,6 @@ class TimelineFragment : Fragment(), View.OnClickListener {
         if (show) {
             empty_content_layout.visibility = View.VISIBLE
             recycler_view.visibility = View.GONE
-
-            empty_content_title_text.text = getString(R.string.timeline_content_empty_title)
-            empty_content_action_text.text = getString(R.string.timeline_content_empty_action)
-
-            empty_content_action_text.setOnClickListener(this)
-            empty_content_retry_button.setOnClickListener(this)
         } else {
             empty_content_layout.visibility = View.GONE
             recycler_view.visibility = View.VISIBLE

@@ -16,8 +16,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentRepositoryBinding
-import io.github.tonnyl.moka.net.GlideLoader
-import io.github.tonnyl.moka.net.Status
+import io.github.tonnyl.moka.network.GlideLoader
+import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
 import io.github.tonnyl.moka.ui.prs.PullRequestsFragmentArgs
 import io.github.tonnyl.moka.util.formatNumberWithSuffix

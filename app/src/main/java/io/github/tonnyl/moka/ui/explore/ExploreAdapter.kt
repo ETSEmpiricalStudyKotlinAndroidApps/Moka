@@ -31,8 +31,7 @@ class ExploreAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val viewType = getItemViewType(position)
-        when (viewType) {
+        when (getItemViewType(position)) {
             R.layout.item_trending_info -> {
                 if (holder is TrendingInfoViewHolder) {
                     holder.bindTo(language, since)

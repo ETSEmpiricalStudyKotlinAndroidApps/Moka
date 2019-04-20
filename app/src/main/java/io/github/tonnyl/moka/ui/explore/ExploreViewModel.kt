@@ -4,9 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import io.github.tonnyl.moka.data.TrendingDeveloper
-import io.github.tonnyl.moka.data.TrendingRepository
-import io.github.tonnyl.moka.net.Resource
 import io.github.tonnyl.moka.ui.explore.developers.TrendingDeveloperLiveData
 import io.github.tonnyl.moka.ui.explore.filters.LanguagesLiveData
 import io.github.tonnyl.moka.ui.explore.filters.LocalLanguage
@@ -20,9 +17,9 @@ class ExploreViewModel : ViewModel() {
      */
     val queryData = MutableLiveData<Triple<ExploreTimeSpanType, String, String>>()
 
-    val trendingRepositories: LiveData<Resource<List<TrendingRepository>>> = Transformations.map(TrendingRepositoryLiveData()) { it }
+    val trendingRepositories = TrendingRepositoryLiveData()
 
-    val trendingDevelopers: LiveData<Resource<List<TrendingDeveloper>>> = Transformations.map(TrendingDeveloperLiveData()) { it }
+    val trendingDevelopers = TrendingDeveloperLiveData()
 
     init {
         // todo store/restore value from sp.

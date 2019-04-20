@@ -3,11 +3,11 @@ package io.github.tonnyl.moka.ui.auth
 import androidx.lifecycle.LiveData
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.data.AuthenticatedUser
-import io.github.tonnyl.moka.net.Resource
-import io.github.tonnyl.moka.net.RetrofitClient
-import io.github.tonnyl.moka.net.Status
-import io.github.tonnyl.moka.net.service.AccessTokenService
-import io.github.tonnyl.moka.net.service.UserService
+import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.network.RetrofitClient
+import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.network.service.AccessTokenService
+import io.github.tonnyl.moka.network.service.UserService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers

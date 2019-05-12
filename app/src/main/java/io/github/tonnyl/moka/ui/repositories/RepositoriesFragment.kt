@@ -14,8 +14,6 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentRepositoriesBinding
 import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
-import kotlinx.android.synthetic.main.appbar_layout.*
-import kotlinx.android.synthetic.main.fragment_repositories.*
 
 class RepositoriesFragment : Fragment(), ItemRepositoryActions {
 
@@ -49,17 +47,19 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions {
         val usernameArg = RepositoriesFragmentArgs.fromBundle(arguments
                 ?: throw IllegalArgumentException("Missing arguments")).username
 
-        toolbar.setNavigationOnClickListener {
+        binding.appbarLayout.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 
-        toolbar.title = context?.getString(if (repositoriesTypeArg == REPOSITORY_TYPE_OWNED) R.string.repositories_owned else R.string.repositories_stars, usernameArg)
+        binding.appbarLayout.toolbar.title = context?.getString(if (repositoriesTypeArg == REPOSITORY_TYPE_OWNED) R.string.repositories_owned else R.string.repositories_stars, usernameArg)
 
         val factory = ViewModelFactory(loginArg, if (repositoriesTypeArg == REPOSITORY_TYPE_OWNED) RepositoryType.OWNED else RepositoryType.STARRED)
         viewModel = ViewModelProviders.of(this, factory).get(RepositoriesViewModel::class.java)
 
-        recycler_view.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        recycler_view.adapter = adapter
+        with(binding.recyclerView) {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = this@RepositoriesFragment.adapter
+        }
 
         viewModel.repositoriesResults.observe(viewLifecycleOwner, Observer { list ->
             adapter.submitList(list)

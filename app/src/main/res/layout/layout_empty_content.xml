@@ -1,66 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/empty_content_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/fragment_content_padding"
-    android:visibility="gone"
-    tools:visibility="visible">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/empty_content_icon"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:padding="@dimen/regular_icon_padding"
-        app:layout_constraintBottom_toTopOf="@id/empty_content_title_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/ic_menu_timeline_24"
-        app:tint="@color/colorTextSecondary" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/empty_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/fragment_content_padding"
+        android:visibility="gone"
+        tools:visibility="visible">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/empty_content_title_text"
-        style="@style/TextAppearance.MaterialComponents.Headline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="@dimen/fragment_content_padding_half"
-        android:paddingBottom="@dimen/fragment_content_padding_half"
-        android:textColor="@color/colorTextSecondary"
-        app:layout_constraintBottom_toTopOf="@id/empty_content_retry_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/empty_content_icon"
-        tools:text="@string/timeline_content_empty_title" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/empty_content_icon"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:padding="@dimen/regular_icon_padding"
+            app:layout_constraintBottom_toTopOf="@id/empty_content_title_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:srcCompat="@drawable/ic_menu_timeline_24"
+            app:tint="@color/colorTextSecondary" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/empty_content_retry_button"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/common_retry"
-        app:layout_constraintBottom_toTopOf="@id/empty_content_action_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/empty_content_title_text" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/empty_content_title_text"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="@dimen/fragment_content_padding_half"
+            android:paddingBottom="@dimen/fragment_content_padding_half"
+            android:textColor="@color/colorTextSecondary"
+            app:layout_constraintBottom_toTopOf="@id/empty_content_retry_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/empty_content_icon"
+            tools:text="@string/timeline_content_empty_title" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/empty_content_action_text"
-        style="@style/TextAppearance.MaterialComponents.Body1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="@dimen/fragment_content_padding_half"
-        android:paddingBottom="@dimen/fragment_content_padding_half"
-        android:textColor="@color/colorTextAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/empty_content_retry_button"
-        tools:text="@string/timeline_content_empty_action" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/empty_content_retry_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/common_retry"
+            app:layout_constraintBottom_toTopOf="@id/empty_content_action_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/empty_content_title_text" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/empty_content_action_text"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="@dimen/fragment_content_padding_half"
+            android:paddingBottom="@dimen/fragment_content_padding_half"
+            android:textColor="@color/colorTextAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/empty_content_retry_button"
+            tools:text="@string/timeline_content_empty_action" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

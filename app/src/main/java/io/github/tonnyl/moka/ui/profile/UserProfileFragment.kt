@@ -21,7 +21,6 @@ import io.github.tonnyl.moka.ui.repositories.RepositoriesFragment
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs
 import io.github.tonnyl.moka.ui.users.UsersFragment
 import io.github.tonnyl.moka.util.formatNumberWithSuffix
-import kotlinx.android.synthetic.main.fragment_user_profile.*
 
 class UserProfileFragment : Fragment(), View.OnClickListener {
 
@@ -44,7 +43,7 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         login = args.login
 
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 
@@ -56,32 +55,34 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
                 Status.SUCCESS -> {
                     val user = resource.data?.user() ?: return@Observer
 
-                    GlideLoader.loadAvatar(user.avatarUrl().toString(), profile_avatar)
-                    profile_username.text = user.name()
-                    profile_login_name.text = user.login()
-                    profile_bio.text = user.bio()
-                    profile_company_content.text = user.company()
-                    profile_location_content.text = user.location()
-                    profile_email_content.text = user.email()
-                    profile_website_content.text = user.websiteUrl().toString()
+                    GlideLoader.loadAvatar(user.avatarUrl().toString(), binding.profileAvatar)
+                    binding.profileUsername.text = user.name()
+                    binding.profileLoginName.text = user.login()
+                    binding.profileBio.text = user.bio()
+                    binding.profileCompanyContent.text = user.company()
+                    binding.profileLocationContent.text = user.location()
+                    binding.profileEmailContent.text = user.email()
+                    binding.profileWebsiteContent.text = user.websiteUrl().toString()
                     username = user.name()
-                    profile_repositories_count_text.text = formatNumberWithSuffix(user.repositories().totalCount())
-                    profile_stars_count_text.text = formatNumberWithSuffix(user.starredRepositories().totalCount())
-                    profile_followers_count_text.text = formatNumberWithSuffix(user.followers().totalCount())
-                    profile_following_count_text.text = formatNumberWithSuffix(user.following().totalCount())
+                    binding.profileRepositoriesCountText.text = formatNumberWithSuffix(user.repositories().totalCount())
+                    binding.profileStarsCountText.text = formatNumberWithSuffix(user.starredRepositories().totalCount())
+                    binding.profileFollowersCountText.text = formatNumberWithSuffix(user.followers().totalCount())
+                    binding.profileFollowingCountText.text = formatNumberWithSuffix(user.following().totalCount())
 
                     user.organizations().nodes()?.let {
-                        profile_organizations.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-                        profile_organizations.setHasFixedSize(true)
+                        with(binding.profileOrganizations) {
+                            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                            setHasFixedSize(true)
+                            val adapter = ProfileOrganizationAdapter()
+                            this.adapter = adapter
+                            adapter.submitList(it)
+                        }
 
-                        val adapter = ProfileOrganizationAdapter()
-                        profile_organizations.adapter = adapter
-                        adapter.submitList(it)
                     }
 
                     val flags = DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
-                    profile_joined_on_content.text = DateUtils.formatDateTime(requireContext(), user.createdAt().time, flags)
-                    profile_updated_on_content.text = DateUtils.formatDateTime(requireContext(), user.updatedAt().time, flags)
+                    binding.profileJoinedOnContent.text = DateUtils.formatDateTime(requireContext(), user.createdAt().time, flags)
+                    binding.profileUpdatedOnContent.text = DateUtils.formatDateTime(requireContext(), user.updatedAt().time, flags)
                 }
                 Status.ERROR -> {
 
@@ -92,16 +93,16 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
             }
         })
 
-        profile_repositories_text_layout.setOnClickListener(this)
-        profile_stars_text_layout.setOnClickListener(this)
-        profile_followers_text_layout.setOnClickListener(this)
-        profile_following_text_layout.setOnClickListener(this)
-        profile_company_layout.setOnClickListener(this)
-        profile_email_layout.setOnClickListener(this)
-        profile_location_layout.setOnClickListener(this)
-        profile_website_layout.setOnClickListener(this)
-        profile_organizations_category_see_all.setOnClickListener(this)
-        toolbar_edit.setOnClickListener(this)
+        binding.profileRepositoriesTextLayout.setOnClickListener(this)
+        binding.profileStarsTextLayout.setOnClickListener(this)
+        binding.profileFollowersTextLayout.setOnClickListener(this)
+        binding.profileFollowingTextLayout.setOnClickListener(this)
+        binding.profileCompanyLayout.setOnClickListener(this)
+        binding.profileEmailLayout.setOnClickListener(this)
+        binding.profileLocationLayout.setOnClickListener(this)
+        binding.profileWebsiteLayout.setOnClickListener(this)
+        binding.profileOrganizationsCategorySeeAll.setOnClickListener(this)
+        binding.toolbarEdit.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {

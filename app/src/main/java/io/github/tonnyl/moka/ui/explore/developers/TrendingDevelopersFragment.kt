@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.databinding.FragmentExploreDevelopersBinding
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
-import kotlinx.android.synthetic.main.fragment_explore_developers.*
 
 class TrendingDevelopersFragment : Fragment() {
 
@@ -33,9 +32,11 @@ class TrendingDevelopersFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(requireParentFragment(), ViewModelFactory()).get(ExploreViewModel::class.java)
 
-        developerAdapter = TrendingDeveloperAdapter("All Languages", "Daily")
-        recycler_view.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        recycler_view.adapter = developerAdapter
+        with(binding.recyclerView) {
+            developerAdapter = TrendingDeveloperAdapter("All Languages", "Daily")
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = developerAdapter
+        }
 
         viewModel.trendingDevelopers.observe(this, Observer { response ->
             response.data?.let {

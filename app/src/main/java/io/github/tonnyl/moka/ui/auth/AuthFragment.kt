@@ -16,10 +16,10 @@ import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.databinding.FragmentAuthBinding
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.main.MainViewModel
-import kotlinx.android.synthetic.main.fragment_auth.*
 
 class AuthFragment : Fragment() {
 
@@ -31,11 +31,16 @@ class AuthFragment : Fragment() {
         ViewModelProviders.of(requireActivity(), ViewModelFactory()).get(MainViewModel::class.java)
     }
 
+    private lateinit var binding: FragmentAuthBinding
+
     private lateinit var accountManager: AccountManager
 
     private val args: AuthFragmentArgs by navArgs()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_auth, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentAuthBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,7 +59,7 @@ class AuthFragment : Fragment() {
             }, null)
         }
 
-        auth_get_started.setOnClickListener {
+        binding.authGetStarted.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 data = Uri.parse("""
                     |${RetrofitClient.GITHUB_AUTHORIZE_URL}
@@ -74,27 +79,27 @@ class AuthFragment : Fragment() {
                         initTokensAndGoToMainPage(it.first, it.second.login, true)
                     }
 
-                    loading_animation_view.visibility = View.GONE
-                    loading_animation_view.cancelAnimation()
+                    binding.loadingAnimationView.visibility = View.GONE
+                    binding.loadingAnimationView.cancelAnimation()
 
-                    auth_get_started.visibility = View.VISIBLE
+                    binding.authGetStarted.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
-                    loading_animation_view.visibility = View.GONE
-                    loading_animation_view.cancelAnimation()
+                    binding.loadingAnimationView.visibility = View.GONE
+                    binding.loadingAnimationView.cancelAnimation()
 
-                    auth_get_started.visibility = View.VISIBLE
+                    binding.authGetStarted.visibility = View.VISIBLE
                 }
                 Status.LOADING -> {
-                    loading_animation_view.visibility = View.VISIBLE
-                    loading_animation_view.playAnimation()
+                    binding.loadingAnimationView.visibility = View.VISIBLE
+                    binding.loadingAnimationView.playAnimation()
 
-                    auth_get_started.visibility = View.GONE
+                    binding.authGetStarted.visibility = View.GONE
                 }
             }
         })
 
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 

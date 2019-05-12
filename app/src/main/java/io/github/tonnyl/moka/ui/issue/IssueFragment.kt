@@ -17,9 +17,6 @@ import io.github.tonnyl.moka.data.CommentAuthorAssociation
 import io.github.tonnyl.moka.databinding.FragmentIssuePrBinding
 import io.github.tonnyl.moka.network.GlideLoader
 import io.github.tonnyl.moka.network.Status
-import kotlinx.android.synthetic.main.appbar_layout.*
-import kotlinx.android.synthetic.main.fragment_issue_pr.*
-import kotlinx.android.synthetic.main.item_issue_timeline_comment.*
 
 class IssueFragment : Fragment() {
 
@@ -52,18 +49,21 @@ class IssueFragment : Fragment() {
         issueNumber = args.number
         issueTitle = args.title
 
-        issue_title.text = issueTitle
-
-        toolbar.title = ""
-        toolbar.setNavigationOnClickListener {
-            parentFragment?.findNavController()?.navigateUp()
-        }
-
         viewModel = ViewModelProviders.of(this, ViewModelFactory(repositoryOwner, repositoryName, issueNumber)).get(IssueViewModel::class.java)
 
-        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        issue_timeline_recycler_view.layoutManager = layoutManager
-        issue_timeline_recycler_view.adapter = adapter
+        binding.issueTitle.text = issueTitle
+
+        with(binding.appbarLayout.toolbar) {
+            title = ""
+            setNavigationOnClickListener {
+                parentFragment?.findNavController()?.navigateUp()
+            }
+        }
+
+        with(binding.issueTimelineRecyclerView) {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = this@IssueFragment.adapter
+        }
 
         viewModel.issueTimelineResults.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
@@ -73,31 +73,33 @@ class IssueFragment : Fragment() {
             when (resource.status) {
                 Status.SUCCESS -> {
                     val issue = resource.data ?: return@Observer
-                    if (issue.body.isNotEmpty()) {
-                        GlideLoader.loadAvatar(issue.author?.avatarUrl?.toString(), issue_timeline_comment_avatar)
+                    with(binding.itemIssueTimelineComment) {
+                        if (issue.body.isNotEmpty()) {
+                            GlideLoader.loadAvatar(issue.author?.avatarUrl?.toString(), issueTimelineCommentAvatar)
 
-                        issue_timeline_comment_username.text = issue.author?.login
-                        issue_timeline_comment_created_at.text = DateUtils.getRelativeTimeSpanString(issue.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
-                        issue_timeline_comment_content.text = issue.body
+                            issueTimelineCommentUsername.text = issue.author?.login
+                            issueTimelineCommentCreatedAt.text = DateUtils.getRelativeTimeSpanString(issue.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
+                            issueTimelineCommentContent.text = issue.body
 
-                        val stringResId = when (issue.authorAssociation) {
-                            CommentAuthorAssociation.COLLABORATOR -> R.string.author_association_collaborator
-                            CommentAuthorAssociation.CONTRIBUTOR -> R.string.author_association_contributor
-                            CommentAuthorAssociation.FIRST_TIMER -> R.string.author_association_first_timer
-                            CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> R.string.author_association_first_timer_contributor
-                            CommentAuthorAssociation.MEMBER -> R.string.author_association_member
-                            CommentAuthorAssociation.NONE -> -1
-                            CommentAuthorAssociation.OWNER -> R.string.author_association_owner
+                            val stringResId = when (issue.authorAssociation) {
+                                CommentAuthorAssociation.COLLABORATOR -> R.string.author_association_collaborator
+                                CommentAuthorAssociation.CONTRIBUTOR -> R.string.author_association_contributor
+                                CommentAuthorAssociation.FIRST_TIMER -> R.string.author_association_first_timer
+                                CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> R.string.author_association_first_timer_contributor
+                                CommentAuthorAssociation.MEMBER -> R.string.author_association_member
+                                CommentAuthorAssociation.NONE -> -1
+                                CommentAuthorAssociation.OWNER -> R.string.author_association_owner
+                            }
+                            issueTimelineCommentAuthorAssociation.text = if (stringResId != -1) getString(stringResId) else ""
+                        } else {
+                            root.visibility = View.GONE
                         }
-                        issue_timeline_comment_author_association.text = if (stringResId != -1) getString(stringResId) else ""
-                    } else {
-                        issue_timeline_comment_layout.visibility = View.GONE
                     }
 
                     val numberString = getString(R.string.issue_pr_number, issueNumber)
                     val byString = getString(R.string.issue_pr_by, issue.author?.login)
                     val createdString = DateUtils.getRelativeTimeSpanString(issue.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
-                    issue_info.text = getString(R.string.issue_pr_info_format, numberString, byString, createdString)
+                    binding.issueInfo.text = getString(R.string.issue_pr_info_format, numberString, byString, createdString)
                 }
                 Status.ERROR -> {
 

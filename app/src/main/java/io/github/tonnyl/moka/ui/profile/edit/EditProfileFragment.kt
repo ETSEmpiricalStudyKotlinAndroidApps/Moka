@@ -10,14 +10,16 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.databinding.FragmentEditProfileBinding
 import io.github.tonnyl.moka.network.Status
-import kotlinx.android.synthetic.main.fragment_edit_profile.*
 
 class EditProfileFragment : Fragment(), View.OnClickListener {
 
     private lateinit var viewModel: EditProfileViewModel
 
     private val args: EditProfileFragmentArgs by navArgs()
+
+    private lateinit var binding: FragmentEditProfileBinding
 
     private var name: String? = null
     private var bio: String? = null
@@ -29,7 +31,9 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
 
-        return inflater.inflate(R.layout.fragment_edit_profile, container, false)
+        binding = FragmentEditProfileBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,28 +46,28 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         company = args.company
         location = args.location
 
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 
         val factory = ViewModelFactory()
         viewModel = ViewModelProviders.of(this, factory).get(EditProfileViewModel::class.java)
 
-        fragment_edit_profile_email_input_edit.setText(email)
+        binding.fragmentEditProfileEmailInputEdit.setText(email)
         name?.let {
-            fragment_edit_profile_name_input_edit.setText(it)
+            binding.fragmentEditProfileNameInputEdit.setText(it)
         }
         bio?.let {
-            fragment_edit_profile_bio_input_edit.setText(it)
+            binding.fragmentEditProfileBioInputEdit.setText(it)
         }
         url?.let {
-            fragment_edit_profile_link_input_edit.setText(it)
+            binding.fragmentEditProfileLinkInputEdit.setText(it)
         }
         company?.let {
-            fragment_edit_profile_group_input_edit.setText(it)
+            binding.fragmentEditProfileGroupInputEdit.setText(it)
         }
         location?.let {
-            fragment_edit_profile_location_input_edit.setText(it)
+            binding.fragmentEditProfileLocationInputEdit.setText(it)
         }
 
         viewModel.data.observe(viewLifecycleOwner, Observer { data ->
@@ -72,15 +76,15 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                     parentFragment?.findNavController()?.navigateUp()
                 }
                 Status.ERROR -> {
-                    toolbar_done.isEnabled = true
+                    binding.toolbarDone.isEnabled = true
                 }
                 Status.LOADING -> {
-                    toolbar_done.isEnabled = false
+                    binding.toolbarDone.isEnabled = false
                 }
             }
         })
 
-        toolbar_done.setOnClickListener(this)
+        binding.toolbarDone.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -88,12 +92,12 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         when (v.id) {
             R.id.toolbar_done -> {
                 viewModel.data.updateUserInformation(
-                        fragment_edit_profile_name_input_edit.text.toString(),
-                        fragment_edit_profile_email_input_edit.text.toString(),
-                        fragment_edit_profile_link_input_edit.text.toString(),
-                        fragment_edit_profile_group_input_edit.text.toString(),
-                        fragment_edit_profile_location_input_edit.text.toString(),
-                        fragment_edit_profile_bio_input_edit.text.toString()
+                        binding.fragmentEditProfileNameInputEdit.text.toString(),
+                        binding.fragmentEditProfileEmailInputEdit.text.toString(),
+                        binding.fragmentEditProfileLinkInputEdit.text.toString(),
+                        binding.fragmentEditProfileGroupInputEdit.text.toString(),
+                        binding.fragmentEditProfileLocationInputEdit.text.toString(),
+                        binding.fragmentEditProfileBioInputEdit.text.toString()
                 )
             }
         }

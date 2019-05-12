@@ -15,8 +15,6 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentUsersBinding
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
-import kotlinx.android.synthetic.main.appbar_layout.*
-import kotlinx.android.synthetic.main.fragment_users.*
 
 class UsersFragment : Fragment(), ItemUserActions {
 
@@ -49,11 +47,11 @@ class UsersFragment : Fragment(), ItemUserActions {
         val userTypeArg = args.usersType
         val usernameArg = args.username
 
-        toolbar.setNavigationOnClickListener {
+        binding.appbarLayout.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 
-        toolbar.title = context?.getString(if (userTypeArg == USER_TYPE_FOLLOWERS) R.string.users_followers_title else R.string.users_following_title, usernameArg)
+        binding.appbarLayout.toolbar.title = context?.getString(if (userTypeArg == USER_TYPE_FOLLOWERS) R.string.users_followers_title else R.string.users_following_title, usernameArg)
 
         val userType = when (userTypeArg) {
             USER_TYPE_FOLLOWING -> UserType.FOLLOWING
@@ -62,8 +60,8 @@ class UsersFragment : Fragment(), ItemUserActions {
 
         viewModel = ViewModelProviders.of(this, ViewModelFactory(loginArg, userType)).get(UsersViewModel::class.java)
 
-        with(recycler_view) {
-            recycler_view.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        with(binding.recyclerView) {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = userAdapter
         }
 

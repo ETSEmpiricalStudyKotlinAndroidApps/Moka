@@ -16,7 +16,6 @@
     <string name="navigation_menu_explore" translation_description="The exploration menu item title of navigation drawer.">Explore</string>
     <string name="navigation_menu_settings" translation_description="The settings menu item title of navigation drawer.">Settings</string>
     <string name="navigation_menu_about" translation_description="The about menu item title of navigation drawer.">About</string>
-    <string name="navigation_menu_drafts">Drafts</string>
     <string name="navigation_menu_faq_help">FAQ &amp; Help</string>
     <string name="navigation_menu_feedback">Feedback</string>
 

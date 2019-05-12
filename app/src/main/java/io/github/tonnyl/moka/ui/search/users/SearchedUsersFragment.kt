@@ -14,8 +14,6 @@ import io.github.tonnyl.moka.databinding.FragmentSearchPageBinding
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.search.SearchViewModel
-import kotlinx.android.synthetic.main.fragment_search_page.*
-import kotlinx.android.synthetic.main.layout_empty_content.*
 import io.github.tonnyl.moka.ui.search.ViewModelFactory as ParentViewModelFactory
 
 class SearchedUsersFragment : Fragment(), View.OnClickListener {
@@ -56,17 +54,17 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
             if (it.initial == null
                     && it.before == null
                     && it.after == null) {
-                empty_content_layout.visibility = View.GONE
-                recycler_view.visibility = View.GONE
-                swipe_refresh.isRefreshing = false
+                binding.emptyContent.root.visibility = View.GONE
+                binding.recyclerView.visibility = View.GONE
+                binding.swipeRefresh.isRefreshing = false
             }
 
             when (it.initial?.status) {
                 Status.SUCCESS, Status.ERROR -> {
-                    swipe_refresh.isRefreshing = false
+                    binding.swipeRefresh.isRefreshing = false
                 }
                 Status.LOADING -> {
-                    swipe_refresh.isRefreshing = true
+                    binding.swipeRefresh.isRefreshing = true
                 }
                 null -> {
 
@@ -108,17 +106,17 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
             showHideEmptyView(it.isEmpty()
                     && searchedUsersViewModel.loadStatusLiveData.value?.initial?.status == Status.SUCCESS)
 
-            if (recycler_view.adapter == null) {
-                recycler_view.setHasFixedSize(false)
-                recycler_view.layoutManager = LinearLayoutManager(context
+            if (binding.recyclerView.adapter == null) {
+                binding.recyclerView.setHasFixedSize(false)
+                binding.recyclerView.layoutManager = LinearLayoutManager(context
                         ?: return@Observer, RecyclerView.VERTICAL, false)
-                recycler_view.adapter = adapter
+                binding.recyclerView.adapter = adapter
             }
 
             adapter.submitList(it)
         })
 
-        swipe_refresh.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             triggerRefresh()
         }
 
@@ -134,11 +132,11 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
 
     private fun showHideEmptyView(show: Boolean) {
         if (show) {
-            empty_content_layout.visibility = View.VISIBLE
-            recycler_view.visibility = View.GONE
+            binding.emptyContent.root.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
         } else {
-            empty_content_layout.visibility = View.GONE
-            recycler_view.visibility = View.VISIBLE
+            binding.emptyContent.root.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
         }
     }
 

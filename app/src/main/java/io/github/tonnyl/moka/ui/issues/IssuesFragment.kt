@@ -16,8 +16,6 @@ import io.github.tonnyl.moka.databinding.FragmentIssuesBinding
 import io.github.tonnyl.moka.ui.common.IssuePRActions
 import io.github.tonnyl.moka.ui.issue.IssueFragmentArgs
 import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
-import kotlinx.android.synthetic.main.appbar_layout.*
-import kotlinx.android.synthetic.main.fragment_issues.*
 
 class IssuesFragment : Fragment(), IssuePRActions {
 
@@ -45,17 +43,21 @@ class IssuesFragment : Fragment(), IssuePRActions {
         owner = args.owner
         name = args.name
 
-        toolbar.setTitle(R.string.issues)
-        toolbar.setNavigationOnClickListener {
-            parentFragment?.findNavController()?.navigateUp()
-        }
-
         viewModel = ViewModelProviders.of(this, ViewModelFactory(owner, name)).get(IssuesViewModel::class.java)
 
-        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        recycler_view.layoutManager = layoutManager
-        adapter.actions = this@IssuesFragment
-        recycler_view.adapter = adapter
+        with(binding.appbarLayout.toolbar) {
+            setTitle(R.string.issues)
+            setNavigationOnClickListener {
+                parentFragment?.findNavController()?.navigateUp()
+            }
+        }
+
+        with(binding.recyclerView) {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = this@IssuesFragment.adapter.apply {
+                actions = this@IssuesFragment
+            }
+        }
 
         viewModel.issuesResults.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)

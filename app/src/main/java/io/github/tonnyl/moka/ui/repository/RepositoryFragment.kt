@@ -21,7 +21,6 @@ import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
 import io.github.tonnyl.moka.ui.prs.PullRequestsFragmentArgs
 import io.github.tonnyl.moka.util.formatNumberWithSuffix
-import kotlinx.android.synthetic.main.fragment_repository.*
 
 class RepositoryFragment : Fragment() {
 
@@ -42,11 +41,11 @@ class RepositoryFragment : Fragment() {
         val loginArg = args.login
         val nameArg = args.name
 
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 
-        repository_bottom_app_bar.replaceMenu(R.menu.fragment_repository_menu)
+        binding.repositoryBottomAppBar.replaceMenu(R.menu.fragment_repository_menu)
 
         val factory = ViewModelFactory(loginArg, nameArg)
         viewModel = ViewModelProviders.of(this, factory).get(RepositoryViewModel::class.java)
@@ -54,67 +53,67 @@ class RepositoryFragment : Fragment() {
         viewModel.repositoryResult.observe(viewLifecycleOwner, Observer { resources ->
             when (resources.status) {
                 Status.SUCCESS -> {
-                    GlideLoader.loadAvatar(resources.data?.ownerAvatarUrl?.toString(), repository_owner_avatar)
-                    repository_owner_name.text = resources.data?.ownerName
-                    repository_owner_login.text = resources.data?.ownerLogin
-                    repository_name.text = nameArg
-                    repository_description.text = resources.data?.description
+                    GlideLoader.loadAvatar(resources.data?.ownerAvatarUrl?.toString(), binding.repositoryOwnerAvatar)
+                    binding.repositoryOwnerName.text = resources.data?.ownerName
+                    binding.repositoryOwnerLogin.text = resources.data?.ownerLogin
+                    binding.repositoryName.text = nameArg
+                    binding.repositoryDescription.text = resources.data?.description
 
                     if (resources.data?.primaryLanguage != null) {
-                        repository_language_content.text = resources.data.primaryLanguage.name
-                        (repository_language_content.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.parseColor(resources.data.primaryLanguage.color))
+                        binding.repositoryLanguageContent.text = resources.data.primaryLanguage.name
+                        (binding.repositoryLanguageContent.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.parseColor(resources.data.primaryLanguage.color))
                     } else {
-                        repository_language_content.text = context?.getString(R.string.programming_language_unknown)
-                        (repository_language_content.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.BLACK)
+                        binding.repositoryLanguageContent.text = context?.getString(R.string.programming_language_unknown)
+                        (binding.repositoryLanguageContent.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.BLACK)
                     }
-                    repository_license_content.text = resources.data?.licenseInfo?.name
+                    binding.repositoryLicenseContent.text = resources.data?.licenseInfo?.name
 
                     val flags = DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
                     resources.data?.updatedAt?.let {
-                        repository_updated_on_content.text = DateUtils.formatDateTime(requireContext(), it.time, flags)
+                        binding.repositoryUpdatedOnContent.text = DateUtils.formatDateTime(requireContext(), it.time, flags)
                     }
                     resources.data?.createdAt?.let {
-                        repository_created_on_content.text = DateUtils.formatDateTime(requireContext(), it.time, flags)
+                        binding.repositoryCreatedOnContent.text = DateUtils.formatDateTime(requireContext(), it.time, flags)
                     }
 
-                    repository_branch_content.text = resources.data?.branchCount.toString()
-                    repository_releases_content.text = resources.data?.releasesCount.toString()
+                    binding.repositoryBranchContent.text = resources.data?.branchCount.toString()
+                    binding.repositoryReleasesContent.text = resources.data?.releasesCount.toString()
 
                     val watchersCount = resources.data?.watchersCount ?: 0
-                    repository_watchers_count_text.text = formatNumberWithSuffix(watchersCount)
+                    binding.repositoryWatchersCountText.text = formatNumberWithSuffix(watchersCount)
                     val stargazersCount = resources.data?.stargazersCount ?: 0
-                    repository_stargazers_count_text.text = formatNumberWithSuffix(stargazersCount)
+                    binding.repositoryStargazersCountText.text = formatNumberWithSuffix(stargazersCount)
                     val forksCount = resources.data?.forksCount ?: 0
-                    repository_forks_count_text.text = formatNumberWithSuffix(forksCount)
+                    binding.repositoryForksCountText.text = formatNumberWithSuffix(forksCount)
                     val issuesCount = resources.data?.issuesCount ?: 0
-                    repository_issues_count_text.text = formatNumberWithSuffix(issuesCount)
+                    binding.repositoryIssuesCountText.text = formatNumberWithSuffix(issuesCount)
 
-                    repository_issues_text_layout.setOnClickListener {
+                    binding.repositoryIssuesTextLayout.setOnClickListener {
                         val args = IssuesFragmentArgs(loginArg, nameArg)
                         parentFragment?.findNavController()?.navigate(R.id.action_to_issues, args.toBundle())
                     }
 
                     val pullRequestsCount = resources.data?.pullRequestsCount ?: 0
-                    repository_pull_requests_count_text.text = formatNumberWithSuffix(pullRequestsCount)
+                    binding.repositoryPullRequestsCountText.text = formatNumberWithSuffix(pullRequestsCount)
 
-                    repository_pull_requests_text_layout.setOnClickListener {
+                    binding.repositoryPullRequestsTextLayout.setOnClickListener {
                         val args = PullRequestsFragmentArgs(loginArg, nameArg)
                         parentFragment?.findNavController()?.navigate(R.id.action_to_prs, args.toBundle())
                     }
 
                     val projectsCount = resources.data?.projectsCount ?: 0
-                    repository_projects_count_text.text = formatNumberWithSuffix(projectsCount)
+                    binding.repositoryProjectsCountText.text = formatNumberWithSuffix(projectsCount)
 
                     resources.data?.defaultBranchRef?.let {
                         observeReadmeFileNameData(resources.data.defaultBranchRef.name)
                     }
 
                     resources.data?.topics?.let { topicList ->
-                        repository_topics.apply {
+                        binding.repositoryTopics.apply {
                             setHasFixedSize(true)
                             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                             val adapter = RepositoryTopicAdapter()
-                            repository_topics.adapter = adapter
+                            this.adapter = adapter
                             adapter.submitList(topicList)
                         }
                     }
@@ -152,7 +151,7 @@ class RepositoryFragment : Fragment() {
         viewModel.setExpression(expression).observe(viewLifecycleOwner, Observer { resources ->
             when (resources.status) {
                 Status.SUCCESS -> {
-                    repository_readme_content.apply {
+                    binding.repositoryReadmeContent.apply {
                         isScrollbarFadingEnabled = true
                         settings.javaScriptEnabled = false
                         settings.builtInZoomControls = false
@@ -167,7 +166,7 @@ class RepositoryFragment : Fragment() {
                     }
 
                     val html = resources.data ?: return@Observer
-                    repository_readme_content.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null)
+                    binding.repositoryReadmeContent.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null)
                 }
                 Status.ERROR -> {
 

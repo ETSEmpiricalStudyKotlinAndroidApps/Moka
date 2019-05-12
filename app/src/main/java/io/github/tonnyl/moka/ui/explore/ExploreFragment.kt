@@ -20,9 +20,6 @@ import io.github.tonnyl.moka.ui.explore.filters.TrendingFilterFragment
 import io.github.tonnyl.moka.ui.main.MainViewModel
 import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
-import kotlinx.android.synthetic.main.fragment_explore.*
-import kotlinx.android.synthetic.main.layout_empty_content.*
-import kotlinx.android.synthetic.main.layout_main_search_bar.*
 import io.github.tonnyl.moka.ui.main.ViewModelFactory as MainViewModelFactory
 
 class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -59,25 +56,25 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
             when {
                 repositoriesValue?.status == Status.LOADING
                         || developersValue?.status == Status.LOADING -> {
-                    swipe_refresh.isRefreshing = true
+                    binding.swipeRefresh.isRefreshing = true
                 }
                 repositoriesValue?.status == Status.ERROR
                         || developersValue?.status == Status.ERROR -> {
-                    swipe_refresh.isRefreshing = false
+                    binding.swipeRefresh.isRefreshing = false
 
                     showHideEmptyView(true)
                 }
                 repositoriesValue?.status == Status.SUCCESS
                         && developersValue?.status == Status.SUCCESS -> {
-                    swipe_refresh.isRefreshing = false
+                    binding.swipeRefresh.isRefreshing = false
 
                     if (!repositoriesValue.data.isNullOrEmpty()
                             && !developersValue.data.isNullOrEmpty()) {
                         if (!this::repositoryAdapter.isInitialized) {
-                            recycler_view.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                            binding.recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                             repositoryAdapter = ExploreAdapter("All Languages", "Daily", repositoriesValue.data, developersValue.data)
                             repositoryAdapter.actions = this@ExploreFragment
-                            recycler_view.adapter = repositoryAdapter
+                            binding.recyclerView.adapter = repositoryAdapter
                         } else {
                             repositoryAdapter.repositories = repositoriesValue.data
                             repositoryAdapter.developers = developersValue.data
@@ -95,7 +92,7 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
 
         mainViewModel.loginUserProfile.observe(this, Observer { data ->
             if (data != null) {
-                main_search_bar_avatar.setOnClickListener(this@ExploreFragment)
+                binding.mainSearchBar.mainSearchBarAvatar.setOnClickListener(this@ExploreFragment)
             } else {
 
             }
@@ -109,13 +106,13 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
             dealDataAndUpdateUI()
         })
 
-        empty_content_title_text.text = getString(R.string.timeline_content_empty_title)
-        empty_content_action_text.text = getString(R.string.timeline_content_empty_action)
+        binding.emptyContent.emptyContentTitleText.text = getString(R.string.timeline_content_empty_title)
+        binding.emptyContent.emptyContentActionText.text = getString(R.string.timeline_content_empty_action)
 
-        fab.setOnClickListener(this@ExploreFragment)
-        swipe_refresh.setOnRefreshListener(this@ExploreFragment)
-        empty_content_action_text.setOnClickListener(this)
-        empty_content_retry_button.setOnClickListener(this)
+        binding.fab.setOnClickListener(this@ExploreFragment)
+        binding.swipeRefresh.setOnRefreshListener(this@ExploreFragment)
+        binding.emptyContent.emptyContentActionText.setOnClickListener(this)
+        binding.emptyContent.emptyContentRetryButton.setOnClickListener(this)
     }
 
     override fun onResume() {
@@ -124,7 +121,7 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
             drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
                     ?: return
         }
-        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, main_search_bar_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, binding.mainSearchBar.mainSearchBarToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 
         drawer.addDrawerListener(toggle)
         toggle.syncState()
@@ -168,11 +165,11 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
 
     private fun showHideEmptyView(show: Boolean) {
         if (show) {
-            empty_content_layout.visibility = View.VISIBLE
-            recycler_view.visibility = View.GONE
+            binding.emptyContent.root.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
         } else {
-            empty_content_layout.visibility = View.GONE
-            recycler_view.visibility = View.VISIBLE
+            binding.emptyContent.root.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
         }
     }
 

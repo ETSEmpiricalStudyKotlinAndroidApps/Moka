@@ -7,7 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/appbar_layout" />
+        <include
+            android:id="@+id/appbar_layout"
+            layout="@layout/appbar_layout" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"

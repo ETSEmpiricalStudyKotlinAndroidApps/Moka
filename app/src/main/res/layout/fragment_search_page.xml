@@ -19,7 +19,9 @@
                 android:layout_height="match_parent"
                 tools:listitem="@layout/item_searched_repository" />
 
-            <include layout="@layout/layout_empty_content" />
+            <include
+                android:id="@+id/empty_content"
+                layout="@layout/layout_empty_content" />
 
         </FrameLayout>
 

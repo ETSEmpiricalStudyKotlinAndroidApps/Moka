@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.databinding.FragmentSearchBinding
 import io.github.tonnyl.moka.util.hideKeyboard
 import io.github.tonnyl.moka.util.showKeyboard
-import kotlinx.android.synthetic.main.fragment_search.*
 
 class SearchFragment : Fragment() {
 
@@ -30,15 +29,15 @@ class SearchFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(this@SearchFragment, ViewModelFactory()).get(SearchViewModel::class.java)
 
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 
-        toolbar_input.setOnEditorActionListener { v, actionId, _ ->
+        binding.toolbarInput.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 hideKeyboard(v)
 
-                val input = toolbar_input.text?.trim()
+                val input = v.text?.trim()
                 if (!input.isNullOrEmpty()) {
                     viewModel.input.value = input.toString()
                 }
@@ -48,15 +47,15 @@ class SearchFragment : Fragment() {
         }
 
         val pagerAdapter = SearchPagerAdapter(requireContext(), childFragmentManager)
-        view_pager.adapter = pagerAdapter
+        binding.viewPager.adapter = pagerAdapter
 
-        tab_layout.setupWithViewPager(view_pager)
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
 
-        showKeyboard(toolbar_input)
+        showKeyboard(binding.toolbarInput)
     }
 
     override fun onDestroyView() {
-        hideKeyboard(toolbar_input)
+        hideKeyboard(binding.toolbarInput)
 
         super.onDestroyView()
     }

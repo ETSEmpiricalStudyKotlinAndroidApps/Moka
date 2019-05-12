@@ -16,8 +16,6 @@ import io.github.tonnyl.moka.databinding.FragmentPrsBinding
 import io.github.tonnyl.moka.ui.common.IssuePRActions
 import io.github.tonnyl.moka.ui.pr.PullRequestFragmentArgs
 import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
-import kotlinx.android.synthetic.main.appbar_layout.*
-import kotlinx.android.synthetic.main.fragment_prs.*
 
 class PullRequestsFragment : Fragment(), IssuePRActions {
 
@@ -45,16 +43,17 @@ class PullRequestsFragment : Fragment(), IssuePRActions {
         owner = args.owner
         name = args.name
 
-        toolbar.setTitle(R.string.pull_requests)
-        toolbar.setNavigationOnClickListener {
+        binding.appbarLayout.toolbar.setTitle(R.string.pull_requests)
+        binding.appbarLayout.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 
         viewModel = ViewModelProviders.of(this, ViewModelFactory(owner, name)).get(PullRequestsViewModel::class.java)
 
-        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        recycler_view.layoutManager = layoutManager
-        recycler_view.adapter = adapter
+        with(binding.recyclerView) {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = this@PullRequestsFragment.adapter
+        }
         adapter.actions = this@PullRequestsFragment
 
         viewModel.issuesResults.observe(viewLifecycleOwner, Observer {

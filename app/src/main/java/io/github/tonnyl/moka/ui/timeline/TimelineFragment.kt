@@ -17,9 +17,6 @@ import io.github.tonnyl.moka.databinding.FragmentTimelineBinding
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.main.MainViewModel
-import kotlinx.android.synthetic.main.fragment_timeline.*
-import kotlinx.android.synthetic.main.layout_empty_content.*
-import kotlinx.android.synthetic.main.layout_main_search_bar.*
 import io.github.tonnyl.moka.ui.main.ViewModelFactory as MainViewModelFactory
 
 class TimelineFragment : Fragment(), View.OnClickListener {
@@ -51,21 +48,21 @@ class TimelineFragment : Fragment(), View.OnClickListener {
 
         timelineAdapter = TimelineAdapter(requireContext())
 
-        with(recycler_view) {
-            recycler_view.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            recycler_view.adapter = timelineAdapter
+        with(binding.recyclerView) {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = timelineAdapter
         }
 
         viewModel.loadStatusLiveData.observe(this, Observer {
             when (it.initial?.status) {
                 Status.SUCCESS -> {
-                    swipe_refresh.isRefreshing = false
+                    binding.swipeRefresh.isRefreshing = false
                 }
                 Status.LOADING -> {
-                    swipe_refresh.isRefreshing = true
+                    binding.swipeRefresh.isRefreshing = true
                 }
                 Status.ERROR -> {
-                    swipe_refresh.isRefreshing = false
+                    binding.swipeRefresh.isRefreshing = false
 
                     showHideEmptyView(true)
                 }
@@ -121,24 +118,24 @@ class TimelineFragment : Fragment(), View.OnClickListener {
 
         mainViewModel.loginUserProfile.observe(this, Observer { data ->
             if (data != null) {
-                main_search_bar_avatar.setOnClickListener(this@TimelineFragment)
+                binding.mainSearchBar.mainSearchBarAvatar.setOnClickListener(this@TimelineFragment)
             } else {
 
             }
         })
 
-        swipe_refresh.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             viewModel.refreshEventsData(mainViewModel.login.value
                     ?: return@setOnRefreshListener, true)
         }
 
-        main_search_bar_input_text.setOnClickListener(this@TimelineFragment)
+        binding.mainSearchBar.mainSearchBarInputText.setOnClickListener(this@TimelineFragment)
 
-        empty_content_title_text.text = getString(R.string.timeline_content_empty_title)
-        empty_content_action_text.text = getString(R.string.timeline_content_empty_action)
+        binding.emptyContent.emptyContentTitleText.text = getString(R.string.timeline_content_empty_title)
+        binding.emptyContent.emptyContentActionText.text = getString(R.string.timeline_content_empty_action)
 
-        empty_content_action_text.setOnClickListener(this)
-        empty_content_retry_button.setOnClickListener(this)
+        binding.emptyContent.emptyContentActionText.setOnClickListener(this)
+        binding.emptyContent.emptyContentRetryButton.setOnClickListener(this)
     }
 
     override fun onResume() {
@@ -147,7 +144,7 @@ class TimelineFragment : Fragment(), View.OnClickListener {
             drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
                     ?: return
         }
-        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, main_search_bar_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, binding.mainSearchBar.mainSearchBarToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 
         drawer.addDrawerListener(toggle)
         toggle.syncState()
@@ -166,8 +163,8 @@ class TimelineFragment : Fragment(), View.OnClickListener {
                 parentFragment?.findNavController()?.navigate(R.id.nav_explore)
             }
             R.id.empty_content_retry_button -> {
-                swipe_refresh.post {
-                    swipe_refresh.isRefreshing = true
+                binding.swipeRefresh.post {
+                    binding.swipeRefresh.isRefreshing = true
                 }
                 viewModel.refreshEventsData(mainViewModel.login.value ?: return, true)
             }
@@ -185,11 +182,11 @@ class TimelineFragment : Fragment(), View.OnClickListener {
 
     private fun showHideEmptyView(show: Boolean) {
         if (show) {
-            empty_content_layout.visibility = View.VISIBLE
-            recycler_view.visibility = View.GONE
+            binding.emptyContent.root.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
         } else {
-            empty_content_layout.visibility = View.GONE
-            recycler_view.visibility = View.VISIBLE
+            binding.emptyContent.root.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
         }
     }
 

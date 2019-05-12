@@ -18,7 +18,6 @@ import io.github.tonnyl.moka.databinding.FragmentExploreFilterBinding
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
-import kotlinx.android.synthetic.main.fragment_explore_filter.*
 
 class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener {
 
@@ -51,7 +50,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
 
         queryData = viewModel.queryData.value?.copy()
 
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             dismiss()
         }
 
@@ -75,7 +74,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
             updateToolbarTitle()
         }
 
-        recycler_view.apply {
+        with(binding.recyclerView) {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             adapter = filterAdapter
         }
@@ -84,7 +83,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
             filterAdapter.submitList(it)
         })
 
-        toolbar_done.setOnClickListener(this)
+        binding.toolbarDone.setOnClickListener(this)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -112,7 +111,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
     }
 
     private fun updateToolbarTitle() {
-        toolbar.title = getString(
+        binding.toolbar.title = getString(
                 R.string.explore_filter_info,
                 getString(when (queryData?.first) {
                     ExploreTimeSpanType.WEEKLY -> R.string.explore_trending_filter_time_span_weekly

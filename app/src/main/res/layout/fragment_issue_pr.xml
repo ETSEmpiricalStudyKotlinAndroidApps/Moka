@@ -7,7 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/appbar_layout" />
+        <include
+            android:id="@+id/appbar_layout"
+            layout="@layout/appbar_layout" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
@@ -49,6 +51,7 @@
                         tools:text="#234 · created by tonny 3 days ago" />
 
                     <include
+                        android:id="@+id/item_issue_timeline_comment"
                         layout="@layout/item_issue_timeline_comment"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -63,7 +66,7 @@
                         android:nestedScrollingEnabled="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_layout"
+                        app:layout_constraintTop_toBottomOf="@id/item_issue_timeline_comment"
                         tools:listitem="@layout/item_issue_timeline_comment" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

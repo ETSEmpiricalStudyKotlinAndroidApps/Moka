@@ -4,7 +4,7 @@ object Versions {
     val targetSdk = "Q"
     val minSdk = 23
 
-    val androidGradle = "3.5.0-alpha13"
+    val androidGradle = "3.5.0-beta01"
     val gmsGoogleServiceGradle = "4.2.0"
     val fabricToolsGradle = "1.26.1"
     val kotlin = "1.3.30"
@@ -14,6 +14,7 @@ object Versions {
     val coordinatorLayout = "1.1.0-alpha01"
     val appcompat = "1.1.0-alpha04"
     val databinding = "3.2.0-alpha11"
+    val drawerLayout = "1.1.0-alpha01"
     val material = "1.1.0-alpha06"
     val viewpager2 = "1.0.0-alpha03"
     val browser = "1.0.0"
@@ -86,6 +87,7 @@ object Deps {
         val appcompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
         val fragment = "androidx.fragment:fragment-ktx:${Versions.fragment}"
         val preference = "androidx.preference:preference:${Versions.preference}"
+        val drawerLayout = "androidx.drawerlayout:drawerlayout:${Versions.drawerLayout}"
 
         object Lifecycle {
 

@@ -4,16 +4,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.ItemTrendingFilterTimeSpanBinding
 import io.github.tonnyl.moka.databinding.ItemTrendingLanguageBinding
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
+import java.util.*
 
-class FilterAdapter : ListAdapter<LocalLanguage?, RecyclerView.ViewHolder>(DIFF_CALLBACK),
-        View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+class FilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+
+    private var languages: List<LocalLanguage>? = Collections.emptyList()
 
     /**
      * View -> Clicked [View]
@@ -25,18 +25,6 @@ class FilterAdapter : ListAdapter<LocalLanguage?, RecyclerView.ViewHolder>(DIFF_
     }
 
     var onRadioButtonClickListener: (View, ExploreTimeSpanType) -> Unit = { _, _ ->
-
-    }
-
-    companion object {
-
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<LocalLanguage?>() {
-
-            override fun areItemsTheSame(oldItem: LocalLanguage, newItem: LocalLanguage): Boolean = oldItem.name == newItem.name
-
-            override fun areContentsTheSame(oldItem: LocalLanguage, newItem: LocalLanguage): Boolean = oldItem == newItem
-
-        }
 
     }
 
@@ -59,7 +47,7 @@ class FilterAdapter : ListAdapter<LocalLanguage?, RecyclerView.ViewHolder>(DIFF_
 
             }
             is LanguageViewHolder -> {
-                val item = getItem(position) ?: return
+                val item = languages?.get(position - 2) ?: return
 
                 holder.bindTo(item)
             }
@@ -72,12 +60,7 @@ class FilterAdapter : ListAdapter<LocalLanguage?, RecyclerView.ViewHolder>(DIFF_
         else -> R.layout.item_trending_language
     }
 
-    override fun getItem(position: Int): LocalLanguage? = when (position) {
-        0, 1 -> null
-        else -> super.getItem(position - 2)
-    }
-
-    override fun getItemCount(): Int = super.getItemCount() + 2
+    override fun getItemCount(): Int = (languages?.size ?: 0) + 2
 
     override fun onClick(v: View?) {
         v ?: return
@@ -104,6 +87,11 @@ class FilterAdapter : ListAdapter<LocalLanguage?, RecyclerView.ViewHolder>(DIFF_
         }
 
         onRadioButtonClickListener.invoke(group.findViewById(checkedId), timeSpan)
+    }
+
+    fun updateDataSource(languages: List<LocalLanguage>?) {
+        this.languages = languages
+        notifyDataSetChanged()
     }
 
     class LanguageViewHolder(

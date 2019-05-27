@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.explore
+package io.github.tonnyl.moka.ui.explore.repositories
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData

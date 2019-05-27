@@ -10,11 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.databinding.ItemTrendingDeveloperBinding
+import io.github.tonnyl.moka.ui.explore.ExploreRepositoryActions
 
 class TrendingDeveloperAdapter(
         var language: String,
         var since: String
 ) : ListAdapter<TrendingDeveloper, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+
+    var actions: ExploreRepositoryActions? = null
 
     companion object {
 
@@ -28,13 +31,15 @@ class TrendingDeveloperAdapter(
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = TrendingDeveloperViewHolder(ItemTrendingDeveloperBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return TrendingDeveloperViewHolder(ItemTrendingDeveloperBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val data = getItem(position) ?: return
 
         if (holder is TrendingDeveloperViewHolder) {
-            holder.bindTo(data, position)
+            holder.bindTo(language, since, data, position, actions)
         }
     }
 
@@ -44,15 +49,20 @@ class TrendingDeveloperAdapter(
 
         private val foregroundColorSpan = ForegroundColorSpan(ResourcesCompat.getColor(binding.root.resources, R.color.colorTextPrimary, null))
 
-        fun bindTo(data: TrendingDeveloper, position: Int) {
+        fun bindTo(
+                language: String,
+                since: String,
+                data: TrendingDeveloper,
+                position: Int,
+                repositoryActions: ExploreRepositoryActions?
+        ) {
             binding.apply {
-                rank = position
+                rank = position + 1
                 span = foregroundColorSpan
-                avatar = data.avatar
-                login = data.username
-                username = data.name
-                repositoryName = data.repository.name
-                repositoryDescription = data.repository.description
+                developer = data
+                this.language = language
+                this.since = since
+                this.actions = repositoryActions
             }
 
             binding.executePendingBindings()

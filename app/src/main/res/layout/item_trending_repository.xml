@@ -23,6 +23,14 @@
             name="actions"
             type="io.github.tonnyl.moka.ui.explore.ExploreRepositoryActions" />
 
+        <variable
+            name="language"
+            type="java.lang.String" />
+
+        <variable
+            name="since"
+            type="java.lang.String" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,24 +44,25 @@
         android:padding="@dimen/fragment_content_padding">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/item_trending_repository_overline"
-            style="@style/TextAppearance.MaterialComponents.Overline"
-            android:layout_width="wrap_content"
+            android:id="@+id/item_trending_info_text"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             app:goneUnless="@{position == 1}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:textFuture="@{@string/explore_trending_repositories}"
-            tools:text="@string/explore_trending_repositories" />
+            app:textFuture="@{@string/explore_filter_info(language, since)}"
+            tools:text="All Languages | Daily" />
 
         <Space
-            android:id="@+id/item_trending_repository_space_between_overline_and_avatar"
+            android:id="@+id/item_trending_info_space"
             android:layout_width="0dp"
-            android:layout_height="@dimen/list_item_spacing"
+            android:layout_height="@dimen/fragment_content_padding"
             app:goneUnless="@{position == 1}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_overline" />
+            app:layout_constraintTop_toBottomOf="@id/item_trending_info_text" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_trending_repository_user_avatar"
@@ -62,7 +71,7 @@
             android:onClick="@{() -> actions.openProfile(repository.author)}"
             app:avatarUrl='@{repository.builtBy.isEmpty() ? "" : repository.builtBy.get(0).avatar }'
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_info_space"
             tools:src="@tools:sample/avatars" />
 
         <Space
@@ -71,7 +80,7 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_trending_repository_user_avatar"
-            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar" />
+            app:layout_constraintTop_toBottomOf="@id/item_trending_info_space" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_trending_repository_title"
@@ -86,7 +95,7 @@
             android:textSize="@dimen/list_item_title_text"
             app:layout_constraintEnd_toStartOf="@id/item_trending_repository_rank"
             app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
-            app:layout_constraintTop_toBottomOf="@id/item_trending_repository_space_between_overline_and_avatar"
+            app:layout_constraintTop_toBottomOf="@id/item_trending_info_space"
             app:textFuture="@{@string/repository_name_with_username(repository.author, repository.name)}"
             tools:text="@sample/repository.json/repositories/name" />
 

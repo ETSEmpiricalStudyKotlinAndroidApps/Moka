@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.explore.developers
+package io.github.tonnyl.moka.ui.explore.repositories
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,17 +14,16 @@ import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
 
-class TrendingDevelopersFragment : Fragment() {
+class TrendingRepositoriesFragment : Fragment() {
 
-    private lateinit var developerAdapter: TrendingDeveloperAdapter
-
+    private lateinit var repositoriesAdapter: TrendingRepositoryAdapter
     private lateinit var viewModel: ExploreViewModel
 
     private lateinit var binding: FragmentExplorePageBinding
 
     companion object {
 
-        fun newInstance(): TrendingDevelopersFragment = TrendingDevelopersFragment()
+        fun newInstance(): TrendingRepositoriesFragment = TrendingRepositoriesFragment()
 
     }
 
@@ -40,19 +39,19 @@ class TrendingDevelopersFragment : Fragment() {
         viewModel = ViewModelProviders.of(requireParentFragment(), ViewModelFactory()).get(ExploreViewModel::class.java)
 
         with(binding.recyclerView) {
-            developerAdapter = TrendingDeveloperAdapter("All Languages", "Daily")
+            repositoriesAdapter = TrendingRepositoryAdapter("All Languages", "Daily")
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = developerAdapter
+            adapter = repositoriesAdapter
         }
 
-        viewModel.trendingDevelopers.observe(this, Observer {
+        viewModel.trendingRepositories.observe(this, Observer {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding.swipeRefresh.isRefreshing = false
 
                     showHideEmptyView(it.data.isNullOrEmpty())
 
-                    developerAdapter.submitList(it.data)
+                    repositoriesAdapter.submitList(it.data)
                 }
                 Status.ERROR -> {
                     binding.swipeRefresh.isRefreshing = false
@@ -66,7 +65,7 @@ class TrendingDevelopersFragment : Fragment() {
         })
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.trendingDevelopers.refresh()
+            viewModel.trendingRepositories.refresh()
         }
     }
 

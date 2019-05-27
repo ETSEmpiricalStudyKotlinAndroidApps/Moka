@@ -254,12 +254,6 @@
 
     </fragment>
 
-    <fragment
-        android:id="@+id/trending_developers_fragment"
-        android:name="io.github.tonnyl.moka.ui.explore.developers.TrendingDevelopersFragment"
-        android:label="Trending developers"
-        tools:layout="@layout/fragment_explore_developers" />
-
     <action
         android:id="@+id/action_timeline_to_user_profile"
         app:destination="@id/user_profile_fragment" />
@@ -307,10 +301,6 @@
     <action
         android:id="@+id/action_to_search"
         app:destination="@id/search_fragment" />
-
-    <action
-        android:id="@+id/action_to_trending_developers"
-        app:destination="@id/trending_developers_fragment" />
 
     <action
         android:id="@+id/action_to_profile"

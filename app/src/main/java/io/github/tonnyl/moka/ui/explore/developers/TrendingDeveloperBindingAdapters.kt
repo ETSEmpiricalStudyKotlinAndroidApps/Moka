@@ -14,7 +14,7 @@ fun AppCompatTextView.trendingRank(
         rank: Int
 ) {
     setTextFuture(PrecomputedTextCompat.getTextFuture(
-            (rank + 1).toString(),
+            rank.toString(),
             TextViewCompat.getTextMetricsParams(this),
             null
     ))

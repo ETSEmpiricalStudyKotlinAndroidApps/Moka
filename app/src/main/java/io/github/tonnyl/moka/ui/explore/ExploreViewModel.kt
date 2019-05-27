@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import io.github.tonnyl.moka.ui.explore.developers.TrendingDeveloperLiveData
 import io.github.tonnyl.moka.ui.explore.filters.LanguagesLiveData
 import io.github.tonnyl.moka.ui.explore.filters.LocalLanguage
+import io.github.tonnyl.moka.ui.explore.repositories.TrendingRepositoryLiveData
 import java.io.InputStream
 
 class ExploreViewModel : ViewModel() {

@@ -10,12 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentExploreBinding
-import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.explore.filters.TrendingFilterFragment
 import io.github.tonnyl.moka.ui.main.MainViewModel
 import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
@@ -26,8 +23,6 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
 
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
-
-    private lateinit var repositoryAdapter: ExploreAdapter
 
     private lateinit var viewModel: ExploreViewModel
     private lateinit var mainViewModel: MainViewModel
@@ -49,46 +44,10 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
         binding.mainViewModel = mainViewModel
         binding.lifecycleOwner = requireActivity()
 
-        fun dealDataAndUpdateUI() {
-            val repositoriesValue = viewModel.trendingRepositories.value
-            val developersValue = viewModel.trendingDevelopers.value
+        val adapter = ExplorePagerAdapter(requireContext(), childFragmentManager)
+        binding.viewPager.adapter = adapter
 
-            when {
-                repositoriesValue?.status == Status.LOADING
-                        || developersValue?.status == Status.LOADING -> {
-                    binding.swipeRefresh.isRefreshing = true
-                }
-                repositoriesValue?.status == Status.ERROR
-                        || developersValue?.status == Status.ERROR -> {
-                    binding.swipeRefresh.isRefreshing = false
-
-                    showHideEmptyView(true)
-                }
-                repositoriesValue?.status == Status.SUCCESS
-                        && developersValue?.status == Status.SUCCESS -> {
-                    binding.swipeRefresh.isRefreshing = false
-
-                    if (!repositoriesValue.data.isNullOrEmpty()
-                            && !developersValue.data.isNullOrEmpty()) {
-                        if (!this::repositoryAdapter.isInitialized) {
-                            binding.recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                            repositoryAdapter = ExploreAdapter("All Languages", "Daily", repositoriesValue.data, developersValue.data)
-                            repositoryAdapter.actions = this@ExploreFragment
-                            binding.recyclerView.adapter = repositoryAdapter
-                        } else {
-                            repositoryAdapter.repositories = repositoriesValue.data
-                            repositoryAdapter.developers = developersValue.data
-
-                            repositoryAdapter.notifyDataSetChanged()
-                        }
-
-                        showHideEmptyView(false)
-                    } else {
-                        showHideEmptyView(true)
-                    }
-                }
-            }
-        }
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
 
         mainViewModel.loginUserProfile.observe(this, Observer { data ->
             if (data != null) {
@@ -98,21 +57,7 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
             }
         })
 
-        viewModel.trendingRepositories.observe(this, Observer {
-            dealDataAndUpdateUI()
-        })
-
-        viewModel.trendingDevelopers.observe(this, Observer {
-            dealDataAndUpdateUI()
-        })
-
-        binding.emptyContent.emptyContentTitleText.text = getString(R.string.timeline_content_empty_title)
-        binding.emptyContent.emptyContentActionText.text = getString(R.string.timeline_content_empty_action)
-
         binding.fab.setOnClickListener(this@ExploreFragment)
-        binding.swipeRefresh.setOnRefreshListener(this@ExploreFragment)
-        binding.emptyContent.emptyContentActionText.setOnClickListener(this)
-        binding.emptyContent.emptyContentRetryButton.setOnClickListener(this)
     }
 
     override fun onResume() {
@@ -161,16 +106,6 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
     override fun openRepository(login: String, repositoryName: String) {
         val builder = RepositoryFragmentArgs(login, repositoryName)
         findNavController().navigate(R.id.action_to_repository, builder.toBundle())
-    }
-
-    private fun showHideEmptyView(show: Boolean) {
-        if (show) {
-            binding.emptyContent.root.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
-        } else {
-            binding.emptyContent.root.visibility = View.GONE
-            binding.recyclerView.visibility = View.VISIBLE
-        }
     }
 
 }

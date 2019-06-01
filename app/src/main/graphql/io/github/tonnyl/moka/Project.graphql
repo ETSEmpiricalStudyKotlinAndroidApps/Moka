@@ -1,0 +1,39 @@
+fragment Project on Project {
+  body
+  bodyHTML
+  closed
+  closedAt
+  createdAt
+  creator {
+    avatarUrl
+    login
+    resourcePath
+    url
+  }
+  databaseId
+  id
+  name
+  number
+  resourcePath
+  state
+  updatedAt
+  url
+  viewerCanUpdate
+}
+
+query usersProjects($owner: String!, $after: String, $before: String, $perPage: Int!) {
+  user(login: $owner) {
+    projects(last: $perPage, after: $after, before: $before) {
+      nodes {
+        ...Project
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+}

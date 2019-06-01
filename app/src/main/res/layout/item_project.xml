@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.text.format.DateUtils" />
+
+        <import type="io.github.tonnyl.moka.data.item.Project" />
+
+        <variable
+            name="project"
+            type="Project" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_project_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/fragment_content_padding">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_project_name"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textFuture="@{project.name}"
+            tools:text="@sample/project.json/projects/name" />
+
+        <Space
+            android:id="@+id/item_project_name_body_space"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/fragment_content_padding_half"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_project_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_project_body"
+            style="@style/TextAppearance.MaterialComponents.Body2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_project_name_body_space"
+            app:textFuture="@{project.body}"
+            tools:text="@sample/project.json/projects/body" />
+
+        <Space
+            android:id="@+id/item_project_body_updated_at_space"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/fragment_content_padding_half"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_project_body" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/item_project_updated_at"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/fragment_content_padding_half"
+            android:gravity="center_vertical"
+            android:paddingStart="0dp"
+            android:paddingEnd="@dimen/fragment_content_padding"
+            app:drawableStartCompat="@drawable/ic_access_time_black_18"
+            app:drawableTint="@color/colorTextSecondary"
+            app:layout_constraintEnd_toStartOf="@id/item_project_created_by_avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_project_body_updated_at_space"
+            app:textFuture="@{DateUtils.getRelativeTimeSpanString(project.updatedAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
+            tools:text="@sample/project.json/projects/updatedAt" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/item_project_created_by_avatar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:avatarUrl="@{project.creator.avatarUrl.toString()}"
+            app:layout_constraintBottom_toBottomOf="@id/item_project_updated_at"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/item_project_updated_at"
+            tools:src="@tools:sample/avatars" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -11,7 +11,7 @@ import io.github.tonnyl.moka.ui.explore.repositories.TrendingRepositoriesFragmen
 class ExplorePagerAdapter(
         private val context: Context,
         fm: FragmentManager
-) : FragmentPagerAdapter(fm, RESUME_ONLY_CURRENT_FRAGMENT) {
+) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private val titles = arrayOf(R.string.explore_trending_repositories, R.string.explore_trending_developers)
 

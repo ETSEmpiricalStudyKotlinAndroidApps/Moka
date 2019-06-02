@@ -104,10 +104,8 @@ dependencies {
     implementation(Deps.AndroidX.Navigation.navigationUIKtx)
     implementation(Deps.AndroidX.WorkManager.runtime)
     implementation(Deps.AndroidX.Paging.common)
-    implementation(Deps.AndroidX.Paging.rxJava2)
     implementation(Deps.AndroidX.Paging.runtime)
     implementation(Deps.AndroidX.Room.common)
-    implementation(Deps.AndroidX.Room.rxJava2)
     kapt(Deps.AndroidX.Room.compiler)
     kapt(Deps.AndroidX.DataBinding.compiler)
 
@@ -116,10 +114,6 @@ dependencies {
     implementation(Deps.Google.crashlytics)
     implementation(Deps.Google.firebaseCore)
 
-    // RxJava2
-    implementation(Deps.RxJava2.rxJava2)
-    implementation(Deps.RxJava2.rxAndroid)
-
     // Glide
     implementation(Deps.Glide.glide)
     implementation(Deps.Glide.okhttp3Integration)
@@ -127,7 +121,7 @@ dependencies {
 
     // Retrofit
     implementation(Deps.Retrofit.retrofit)
-    implementation(Deps.Retrofit.rxJava2Adapter)
+    implementation(Deps.Retrofit.coroutinesAdapter)
     implementation(Deps.Retrofit.gsonConverter)
 
     // OkHttp

@@ -28,10 +28,9 @@ object Versions {
     val preference = "1.1.0-alpha05"
     val swipeRefreshLayout = "1.1.0-alpha01"
     val glide = "4.9.0"
-    val rxjava2 = "2.2.8"
-    val rxandroid = "2.1.1"
     val lottie = "3.0.0"
     val retrofit = "2.5.0"
+    val coroutinesAdapter = "0.9.2"
     val okhttpLoggingInterceptor = "3.10.0"
     val apollo = "1.0.1-SNAPSHOT"
     val commonMark = "0.12.1"
@@ -105,7 +104,6 @@ object Deps {
         object Paging {
 
             val common = "androidx.paging:paging-common:${Versions.paging}"
-            val rxJava2 = "androidx.paging:paging-rxjava2:${Versions.paging}"
             val runtime = "androidx.paging:paging-runtime-ktx:${Versions.paging}"
 
         }
@@ -113,7 +111,6 @@ object Deps {
         object Room {
 
             val common = "androidx.room:room-common:${Versions.room}"
-            val rxJava2 = "androidx.room:room-rxjava2:${Versions.room}"
             val compiler = "androidx.room:room-compiler:${Versions.room}"
 
         }
@@ -140,13 +137,6 @@ object Deps {
 
     }
 
-    object RxJava2 {
-
-        val rxJava2 = "io.reactivex.rxjava2:rxjava:${Versions.rxjava2}"
-        val rxAndroid = "io.reactivex.rxjava2:rxandroid:${Versions.rxandroid}"
-
-    }
-
     object Glide {
 
         val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
@@ -158,8 +148,8 @@ object Deps {
     object Retrofit {
 
         val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
-        val rxJava2Adapter = "com.squareup.retrofit2:adapter-rxjava2:${Versions.retrofit}"
         val gsonConverter = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
+        val coroutinesAdapter = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${Versions.coroutinesAdapter}"
 
     }
 

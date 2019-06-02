@@ -1,14 +1,16 @@
 package io.github.tonnyl.moka.ui.explore
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.github.tonnyl.moka.ui.explore.developers.TrendingDeveloperLiveData
-import io.github.tonnyl.moka.ui.explore.filters.LanguagesLiveData
 import io.github.tonnyl.moka.ui.explore.filters.LocalLanguage
 import io.github.tonnyl.moka.ui.explore.repositories.TrendingRepositoryLiveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.InputStream
+import java.nio.charset.Charset
 
 class ExploreViewModel : ViewModel() {
 
@@ -22,11 +24,27 @@ class ExploreViewModel : ViewModel() {
 
     val trendingDevelopers = TrendingDeveloperLiveData()
 
+    private val _languages = MutableLiveData<List<LocalLanguage>>()
+    val languages: LiveData<List<LocalLanguage>>
+        get() = _languages
+
     init {
         // todo store/restore value from sp.
         queryData.value = Triple(ExploreTimeSpanType.DAILY, "all", "All language")
     }
 
-    fun languages(inputStream: InputStream): LiveData<List<LocalLanguage>> = Transformations.map(LanguagesLiveData(inputStream)) { it }
+    fun loadLanguagesData(inputStream: InputStream) {
+        viewModelScope.launch {
+            val languagesResult = withContext(Dispatchers.IO) {
+                val size = inputStream.available()
+                val buffer = ByteArray(size)
+                inputStream.read(buffer)
+                inputStream.close()
+                val json = String(buffer, Charset.forName("UTF-8"))
+                Gson().fromJson<List<LocalLanguage>>(json, object : TypeToken<List<LocalLanguage>>() {}.type)
+            }
+            _languages.value = languagesResult
+        }
+    }
 
 }

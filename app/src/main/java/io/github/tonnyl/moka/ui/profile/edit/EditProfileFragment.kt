@@ -70,7 +70,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             binding.fragmentEditProfileLocationInputEdit.setText(it)
         }
 
-        viewModel.data.observe(viewLifecycleOwner, Observer { data ->
+        viewModel.loadingStatus.observe(this, Observer { data ->
             when (data.status) {
                 Status.SUCCESS -> {
                     parentFragment?.findNavController()?.navigateUp()
@@ -91,7 +91,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         v ?: return
         when (v.id) {
             R.id.toolbar_done -> {
-                viewModel.data.updateUserInformation(
+                viewModel.updateUserInformation(
                         binding.fragmentEditProfileNameInputEdit.text.toString(),
                         binding.fragmentEditProfileEmailInputEdit.text.toString(),
                         binding.fragmentEditProfileLinkInputEdit.text.toString(),

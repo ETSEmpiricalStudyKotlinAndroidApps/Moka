@@ -79,9 +79,11 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), View.OnClickListener
             adapter = filterAdapter
         }
 
-        viewModel.languages(requireContext().assets.open("languages.json")).observe(this, Observer {
+        viewModel.languages.observe(this, Observer {
             filterAdapter.updateDataSource(it)
         })
+
+        viewModel.loadLanguagesData(requireContext().assets.open("languages.json"))
 
         binding.toolbarDone.setOnClickListener(this)
     }

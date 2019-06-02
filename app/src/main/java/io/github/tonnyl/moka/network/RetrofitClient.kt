@@ -2,12 +2,12 @@ package io.github.tonnyl.moka.network
 
 import android.content.Context
 import com.google.gson.GsonBuilder
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import io.github.tonnyl.moka.BuildConfig
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.DateFormat
 
@@ -61,7 +61,7 @@ object RetrofitClient {
             val retrofitBuilder = Retrofit.Builder()
                     .baseUrl(GITHUB_V1_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addCallAdapterFactory(CoroutineCallAdapterFactory())
 
             retrofit = retrofitBuilder
                     .client(httpClientBuilder.build())

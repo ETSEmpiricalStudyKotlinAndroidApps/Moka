@@ -7,6 +7,8 @@
 
         <import type="io.github.tonnyl.moka.data.TrendingRepository" />
 
+        <import type="io.github.tonnyl.moka.util.NumberUtilsKt" />
+
         <variable
             name="repository"
             type="TrendingRepository" />
@@ -64,24 +66,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_trending_info_text" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/item_trending_repository_user_avatar"
-            android:layout_width="@dimen/repository_list_avatar_width"
-            android:layout_height="@dimen/repository_list_avatar_height"
-            android:onClick="@{() -> actions.openProfile(repository.author)}"
-            app:avatarUrl='@{repository.builtBy.isEmpty() ? "" : repository.builtBy.get(0).avatar }'
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_trending_info_space"
-            tools:src="@tools:sample/avatars" />
-
-        <Space
-            android:id="@+id/item_trending_repository_space"
-            android:layout_width="@dimen/fragment_content_padding"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/item_trending_repository_user_avatar"
-            app:layout_constraintTop_toBottomOf="@id/item_trending_info_space" />
-
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_trending_repository_title"
             style="@style/TextAppearance.MaterialComponents.Subtitle1"
@@ -94,7 +78,7 @@
             android:textColor="@color/colorTextAccent"
             android:textSize="@dimen/list_item_title_text"
             app:layout_constraintEnd_toStartOf="@id/item_trending_repository_rank"
-            app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_trending_info_space"
             app:textFuture="@{@string/repository_name_with_username(repository.author, repository.name)}"
             tools:text="@sample/repository.json/repositories/name" />
@@ -107,8 +91,9 @@
             android:background="@drawable/bg_trending_rank"
             android:gravity="center"
             android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="@id/item_trending_repository_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/item_trending_repository_user_avatar"
+            app:layout_constraintTop_toTopOf="@id/item_trending_repository_title"
             app:textFuture="@{String.valueOf(position)}"
             tools:text="1" />
 
@@ -121,7 +106,7 @@
             android:textColor="@color/list_item_text_caption"
             android:textSize="@dimen/list_item_caption_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_trending_repository_title"
             app:textFuture='@{repository.description != null ? repository.description : ""}'
             tools:text="@sample/repository.json/repositories/description" />
@@ -134,7 +119,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_trending_repository_caption"
             app:textFuture='@{@string/explore_period_stars(repository.currentPeriodStars, "today")}'
             tools:text="@string/explore_period_stars" />
@@ -146,7 +131,7 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/language_dot"
             android:drawablePadding="4dp"
-            app:layout_constraintStart_toEndOf="@id/item_trending_repository_space"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_trending_repository_period_stars"
             app:repositoryLanguageDrawableColor="@{repository.languageColor}"
             app:textFuture="@{repository.language == null ? @string/programming_language_unknown : repository.language}"
@@ -162,7 +147,7 @@
             android:drawablePadding="@dimen/list_content_padding"
             app:layout_constraintStart_toEndOf="@id/item_trending_repository_language_text"
             app:layout_constraintTop_toBottomOf="@id/item_trending_repository_period_stars"
-            app:textFuture="@{String.valueOf(repository.stars)}"
+            app:textFuture="@{NumberUtilsKt.formatNumberWithSuffix(repository.stars)}"
             tools:text="@sample/repository.json/repositories/stargazerCount" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -175,7 +160,7 @@
             android:drawablePadding="@dimen/list_content_padding"
             app:layout_constraintStart_toEndOf="@id/item_trending_repository_star_count_text"
             app:layout_constraintTop_toBottomOf="@id/item_trending_repository_period_stars"
-            app:textFuture="@{String.valueOf(repository.forks)}"
+            app:textFuture="@{NumberUtilsKt.formatNumberWithSuffix(repository.forks)}"
             tools:text="@sample/repository.json/repositories/forkCount" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

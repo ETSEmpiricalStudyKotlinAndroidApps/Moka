@@ -36,8 +36,8 @@ class EditProfileViewModel : ViewModel() {
             val body = mapOf(Pair("name", name), Pair("email", email), Pair("url", url), Pair("company", company), Pair("location", location), Pair("bio", bio))
 
             val updateResponse = withContext(Dispatchers.IO) {
-                service.updateUseInformationAsync(body)
-            }.await()
+                service.updateUseInformation(body)
+            }
 
             _loadingStatus.value = if (updateResponse.isSuccessful) {
                 Resource(Status.SUCCESS, Unit, null)

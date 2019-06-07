@@ -106,6 +106,9 @@ dependencies {
     implementation(Deps.AndroidX.Paging.common)
     implementation(Deps.AndroidX.Paging.runtime)
     implementation(Deps.AndroidX.Room.common)
+    implementation(Deps.AndroidX.Room.runtime)
+    implementation(Deps.AndroidX.Room.coroutines)
+    implementation(Deps.AndroidX.Room.migration)
     kapt(Deps.AndroidX.Room.compiler)
     kapt(Deps.AndroidX.DataBinding.compiler)
 
@@ -121,7 +124,6 @@ dependencies {
 
     // Retrofit
     implementation(Deps.Retrofit.retrofit)
-    implementation(Deps.Retrofit.coroutinesAdapter)
     implementation(Deps.Retrofit.gsonConverter)
 
     // OkHttp

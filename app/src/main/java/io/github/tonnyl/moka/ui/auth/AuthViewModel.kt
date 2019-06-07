@@ -30,7 +30,7 @@ class AuthViewModel : ViewModel() {
 
         viewModelScope.launch {
             val tokenResult = withContext(Dispatchers.IO) {
-                service.getAccessTokenAsync(
+                service.getAccessToken(
                         RetrofitClient.GITHUB_GET_ACCESS_TOKEN_URL,
                         BuildConfig.CLIENT_ID,
                         BuildConfig.CLIENT_SECRET,
@@ -38,14 +38,14 @@ class AuthViewModel : ViewModel() {
                         RetrofitClient.GITHUB_AUTHORIZE_CALLBACK_URI,
                         state
                 )
-            }.await()
+            }
 
             RetrofitClient.lastToken = tokenResult.body()?.accessToken
             val userService = RetrofitClient.createService(UserService::class.java)
 
             val authUserResult = withContext(Dispatchers.IO) {
-                userService.getAuthenticatedUserAsync()
-            }.await()
+                userService.getAuthenticatedUser()
+            }
 
             val body = authUserResult.body()
             _authTokenAndUserResult.value = if (authUserResult.isSuccessful && body != null) {

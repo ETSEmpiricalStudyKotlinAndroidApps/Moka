@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.network
 
 import android.content.Context
 import com.google.gson.GsonBuilder
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import io.github.tonnyl.moka.BuildConfig
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -61,7 +60,6 @@ object RetrofitClient {
             val retrofitBuilder = Retrofit.Builder()
                     .baseUrl(GITHUB_V1_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addCallAdapterFactory(CoroutineCallAdapterFactory())
 
             retrofit = retrofitBuilder
                     .client(httpClientBuilder.build())

@@ -1,10 +1,10 @@
 object Versions {
 
-    val compileSdk = "android-Q"
-    val targetSdk = "Q"
+    val compileSdk = 29
+    val targetSdk = 29
     val minSdk = 23
 
-    val androidGradle = "3.5.0-beta03"
+    val androidGradle = "3.5.0-beta04"
     val gmsGoogleServiceGradle = "4.2.0"
     val fabricToolsGradle = "1.26.1"
     val kotlin = "1.3.30"
@@ -16,7 +16,7 @@ object Versions {
     val databinding = "3.2.0-alpha11"
     val drawerLayout = "1.1.0-alpha01"
     val material = "1.1.0-alpha07"
-    val viewpager2 = "1.0.0-alpha04"
+    val viewpager2 = "1.0.0-alpha05"
     val browser = "1.0.0"
     val lifecycle = "2.1.0-alpha04"
     val navigation = "2.1.0-alpha02"
@@ -24,13 +24,13 @@ object Versions {
     val paging = "2.1.0"
     val workManager = "2.1.0-alpha02"
     val room = "2.1.0-rc01"
+    val roomCoroutines = "2.1.0-alpha04"
     val matisse = "0.5.2-beta4"
     val preference = "1.1.0-alpha05"
     val swipeRefreshLayout = "1.1.0-alpha01"
     val glide = "4.9.0"
     val lottie = "3.0.0"
-    val retrofit = "2.5.0"
-    val coroutinesAdapter = "0.9.2"
+    val retrofit = "2.6.0"
     val okhttpLoggingInterceptor = "3.10.0"
     val apollo = "1.0.1-SNAPSHOT"
     val commonMark = "0.12.1"
@@ -112,6 +112,9 @@ object Deps {
 
             val common = "androidx.room:room-common:${Versions.room}"
             val compiler = "androidx.room:room-compiler:${Versions.room}"
+            val runtime = "androidx.room:room-runtime:${Versions.room}"
+            val coroutines = "androidx.room:room-coroutines:${Versions.roomCoroutines}"
+            val migration = "androidx.room:room-migration:${Versions.room}"
 
         }
 
@@ -149,7 +152,6 @@ object Deps {
 
         val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
         val gsonConverter = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
-        val coroutinesAdapter = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${Versions.coroutinesAdapter}"
 
     }
 

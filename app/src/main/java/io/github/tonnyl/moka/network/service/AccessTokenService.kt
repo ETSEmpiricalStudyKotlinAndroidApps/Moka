@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.network.service
 
 import io.github.tonnyl.moka.data.AccessToken
-import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -20,13 +19,13 @@ interface AccessTokenService {
     @Headers(value = ["Accept: application/json"])
     @POST
     @FormUrlEncoded
-    fun getAccessTokenAsync(
+    suspend fun getAccessToken(
             @Url url: String,
             @Field("client_id") clientId: String,
             @Field("client_secret") clientSecret: String,
             @Field("code") code: String,
             @Field("redirect_uri") redirectUri: String,
             @Field("state") state: String
-    ): Deferred<Response<AccessToken>>
+    ): Response<AccessToken>
 
 }

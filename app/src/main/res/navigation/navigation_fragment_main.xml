@@ -50,6 +50,16 @@
     </fragment>
 
     <fragment
+        android:id="@id/nav_settings"
+        android:name="io.github.tonnyl.moka.ui.settings.SettingsFragment"
+        android:label="Settings" />
+
+    <fragment
+        android:id="@id/nav_about"
+        android:name="io.github.tonnyl.moka.ui.about.AboutFragment"
+        android:label="About" />
+
+    <fragment
         android:id="@+id/user_profile_fragment"
         android:name="io.github.tonnyl.moka.ui.profile.UserProfileFragment"
         tools:label="User Profile"

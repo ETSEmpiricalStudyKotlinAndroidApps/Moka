@@ -336,4 +336,69 @@
     <string name="search_tab_repositories">Repositories</string>
     <string name="search_tab_users">Users</string>
 
+    <string name="about_version_info_category">Version info</string>
+    <string name="about_build_version_title">Build version</string>
+    <string name="about_whats_new_title">What\'s new?</string>
+    <string name="about_view_in_google_play_store_title">View in Google Play Store</string>
+    <string name="about_join_the_beta_program_title">Join the beta program</string>
+    <string name="about_terms_privacy_category">Terms &amp; Privacy</string>
+    <string name="about_privacy_policy">Privacy policy</string>
+    <string name="about_terms_of_service">Terms of Service</string>
+    <string name="about_open_source_category">Open source</string>
+    <string name="about_view_source_code_title">View source code</string>
+    <string name="about_open_source_licenses_title">Open source licenses</string>
+    <string name="about_open_source_licenses_summary">License details of open source software</string>
+    <string name="about_others_category">Others</string>
+
+    <string name="settings_theme_category">Theme</string>
+    <string name="settings_theme_title">Choose theme</string>
+    <string name="settings_notifications_category">Notifications</string>
+    <string name="settings_enable_notifications_title">Enable notifications</string>
+    <string name="settings_sync_interval_title">Sync interval</string>
+    <string name="settings_do_not_disturb_title">Do not disturb</string>
+    <string name="settings_do_not_disturb_summary">Don\'t send notifications from 23:00 to 06:00</string>
+    <string name="settings_notifications_summary">Due to network traffic situation and battery limitations, notifications are not real time and may be delayed several minutes.</string>
+    <string name="settings_drafts_category">Drafts</string>
+    <string name="settings_auto_save_title">Auto save</string>
+    <string name="settings_clear_drafts_title">Clear drafts</string>
+    <string name="settings_search_category">Search</string>
+    <string name="settings_do_not_keep_search_history_title">Do not keep search history</string>
+    <string name="settings_clear_search_history_title">Clear search history</string>
+    <string name="settings_cache_category">Cache</string>
+    <string name="settings_keep_data_title">Keep data</string>
+    <string name="settings_clear_local_data_title">Clear local data</string>
+    <string name="settings_maximum_size_of_image_cache_title">Maximum size of image cache</string>
+    <string name="settings_clear_image_cache_title">Clear image cache</string>
+
+    <string-array name="choose_theme_entries">
+        <item>Follow system</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
+    <string-array name="sync_interval_entries">
+        <item>10 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>6 hours</item>
+        <item>12 hours</item>
+        <item>24 hours</item>
+    </string-array>
+
+    <string-array name="keep_data_entries">
+        <item>1 day</item>
+        <item>3 days</item>
+        <item>1 week</item>
+        <item>1 month</item>
+        <item>Forever</item>
+    </string-array>
+
+    <string-array name="maximum_size_of_image_cache_entries">
+        <item>100 MB</item>
+        <item>200 MB</item>
+        <item>300 MB</item>
+        <item>500 MB</item>
+        <item>1 GB</item>
+    </string-array>
+
 </resources>

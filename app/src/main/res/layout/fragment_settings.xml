@@ -1,7 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</LinearLayout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:liftOnScroll="true">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:theme="@style/ToolbarTheme"
+                app:navigationIcon="@drawable/ic_arrow_back_24"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="@string/navigation_menu_settings"
+                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                app:titleTextColor="@color/colorControlNormal" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <fragment
+            android:id="@+id/about_preference_fragment"
+            android:name="io.github.tonnyl.moka.ui.settings.SettingsPreferenceFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

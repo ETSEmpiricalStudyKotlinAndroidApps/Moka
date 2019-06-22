@@ -50,7 +50,7 @@ class RepositoryFragment : Fragment() {
         val factory = ViewModelFactory(loginArg, nameArg)
         viewModel = ViewModelProviders.of(this, factory).get(RepositoryViewModel::class.java)
 
-        viewModel.repositoryResult.observe(viewLifecycleOwner, Observer { resources ->
+        viewModel.repositoryResult.observe(this, Observer { resources ->
             when (resources.status) {
                 Status.SUCCESS -> {
                     GlideLoader.loadAvatar(resources.data?.ownerAvatarUrl?.toString(), binding.repositoryOwnerAvatar)
@@ -61,19 +61,27 @@ class RepositoryFragment : Fragment() {
 
                     if (resources.data?.primaryLanguage != null) {
                         binding.repositoryLanguageContent.text = resources.data.primaryLanguage.name
-                        (binding.repositoryLanguageContent.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.parseColor(resources.data.primaryLanguage.color))
+                        (binding.repositoryLanguageContent.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(
+                            Color.parseColor(resources.data.primaryLanguage.color)
+                        )
                     } else {
-                        binding.repositoryLanguageContent.text = context?.getString(R.string.programming_language_unknown)
-                        (binding.repositoryLanguageContent.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(Color.BLACK)
+                        binding.repositoryLanguageContent.text =
+                            context?.getString(R.string.programming_language_unknown)
+                        (binding.repositoryLanguageContent.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(
+                            Color.BLACK
+                        )
                     }
                     binding.repositoryLicenseContent.text = resources.data?.licenseInfo?.name
 
-                    val flags = DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
+                    val flags =
+                        DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
                     resources.data?.updatedAt?.let {
-                        binding.repositoryUpdatedOnContent.text = DateUtils.formatDateTime(requireContext(), it.time, flags)
+                        binding.repositoryUpdatedOnContent.text =
+                            DateUtils.formatDateTime(requireContext(), it.time, flags)
                     }
                     resources.data?.createdAt?.let {
-                        binding.repositoryCreatedOnContent.text = DateUtils.formatDateTime(requireContext(), it.time, flags)
+                        binding.repositoryCreatedOnContent.text =
+                            DateUtils.formatDateTime(requireContext(), it.time, flags)
                     }
 
                     binding.repositoryBranchContent.text = resources.data?.branchCount.toString()
@@ -105,7 +113,7 @@ class RepositoryFragment : Fragment() {
                     binding.repositoryProjectsCountText.text = formatNumberWithSuffix(projectsCount)
 
                     resources.data?.defaultBranchRef?.let {
-                        observeReadmeFileNameData(resources.data.defaultBranchRef.name)
+                        viewModel.updateBranchName(it.name)
                     }
 
                     resources.data?.topics?.let { topicList ->
@@ -127,14 +135,12 @@ class RepositoryFragment : Fragment() {
             }
         })
 
-    }
-
-    private fun observeReadmeFileNameData(branchName: String) {
-        viewModel.setBranchName(branchName).observe(viewLifecycleOwner, Observer { resources ->
+        viewModel.readmeFileName.observe(this, Observer { resources ->
             when (resources.status) {
                 Status.SUCCESS -> {
                     if (resources.data != null) {
-                        observeReadmeFileContent("$branchName:${resources.data.second}")
+                        val branchName = viewModel.repositoryResult.value?.data?.defaultBranchRef?.name
+                        viewModel.updateExpression("$branchName:${resources.data.second}")
                     }
                 }
                 Status.ERROR -> {
@@ -145,10 +151,8 @@ class RepositoryFragment : Fragment() {
                 }
             }
         })
-    }
 
-    private fun observeReadmeFileContent(expression: String) {
-        viewModel.setExpression(expression).observe(viewLifecycleOwner, Observer { resources ->
+        viewModel.readmeFile.observe(this, Observer { resources ->
             when (resources.status) {
                 Status.SUCCESS -> {
                     binding.repositoryReadmeContent.apply {
@@ -166,7 +170,13 @@ class RepositoryFragment : Fragment() {
                     }
 
                     val html = resources.data ?: return@Observer
-                    binding.repositoryReadmeContent.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null)
+                    binding.repositoryReadmeContent.loadDataWithBaseURL(
+                        "file:///android_asset/",
+                        html,
+                        "text/html",
+                        "UTF-8",
+                        null
+                    )
                 }
                 Status.ERROR -> {
 
@@ -176,6 +186,7 @@ class RepositoryFragment : Fragment() {
                 }
             }
         })
+
     }
 
 }

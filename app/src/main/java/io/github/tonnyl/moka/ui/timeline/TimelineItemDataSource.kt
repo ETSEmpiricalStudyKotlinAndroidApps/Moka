@@ -7,41 +7,36 @@ import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.EventsService
 import io.github.tonnyl.moka.util.PageLinks
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class TimelineItemDataSource(
-        private val eventsService: EventsService,
-        var login: String,
-        private val loadStatusLiveData: MutableLiveData<PagedResource<List<Event>>>
+    private val coroutineScope: CoroutineScope,
+    private val eventsService: EventsService,
+    var login: String,
+    private val loadStatusLiveData: MutableLiveData<PagedResource<List<Event>>>
 ) : PageKeyedDataSource<String, Event>() {
 
     var retry: (() -> Any)? = null
 
-    private var call: Call<List<Event>>? = null
-
     override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, Event>) {
         Timber.d("loadInitial")
 
-        loadStatusLiveData.postValue(PagedResource(initial = Resource.loading(null)))
+        coroutineScope.launch(Dispatchers.Main) {
+            loadStatusLiveData.value = PagedResource(initial = Resource.loading(null))
 
-        call = eventsService.listPublicEventThatAUserHasReceived(login, page = 1, perPage = params.requestedLoadSize)
-
-        call?.enqueue(object : Callback<List<Event>> {
-
-            override fun onFailure(call: Call<List<Event>>, t: Throwable) {
-                Timber.e(t)
-
-                retry = {
-                    loadInitial(params, callback)
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    eventsService.listPublicEventThatAUserHasReceived(
+                        login,
+                        page = 1,
+                        perPage = params.requestedLoadSize
+                    )
                 }
 
-                loadStatusLiveData.postValue(PagedResource(initial = Resource.error(t.message, null)))
-            }
-
-            override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
                 val list = response.body() ?: emptyList()
 
                 val pl = PageLinks(response)
@@ -49,32 +44,30 @@ class TimelineItemDataSource(
 
                 retry = null
 
-                loadStatusLiveData.postValue(PagedResource(initial = Resource.success(list)))
-            }
+                loadStatusLiveData.value = PagedResource(initial = Resource.success(list))
+            } catch (e: Exception) {
+                Timber.e(e)
 
-        })
+                retry = {
+                    loadInitial(params, callback)
+                }
+
+                loadStatusLiveData.value = PagedResource(initial = Resource.error(e.message, null))
+            }
+        }
     }
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Event>) {
         Timber.d("loadAfter")
 
-        loadStatusLiveData.postValue(PagedResource(after = Resource.loading(null)))
+        coroutineScope.launch(Dispatchers.Main) {
+            loadStatusLiveData.value = PagedResource(after = Resource.loading(null))
 
-        call = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
-
-        call?.enqueue(object : Callback<List<Event>> {
-
-            override fun onFailure(call: Call<List<Event>>, t: Throwable) {
-                Timber.e(t)
-
-                retry = {
-                    loadAfter(params, callback)
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
                 }
 
-                loadStatusLiveData.postValue(PagedResource(after = Resource.error(t.message, null)))
-            }
-
-            override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
                 val list = response.body() ?: emptyList()
 
                 val pl = PageLinks(response)
@@ -82,32 +75,30 @@ class TimelineItemDataSource(
 
                 retry = null
 
-                loadStatusLiveData.postValue(PagedResource(after = Resource.success(list)))
-            }
+                loadStatusLiveData.value = PagedResource(after = Resource.success(list))
+            } catch (e: Exception) {
+                Timber.e(e)
 
-        })
+                retry = {
+                    loadAfter(params, callback)
+                }
+
+                loadStatusLiveData.value = PagedResource(after = Resource.error(e.message, null))
+            }
+        }
     }
 
     override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, Event>) {
         Timber.d("loadBefore")
 
-        loadStatusLiveData.postValue(PagedResource(before = Resource.loading(null)))
+        coroutineScope.launch(Dispatchers.Main) {
+            loadStatusLiveData.value = PagedResource(before = Resource.loading(null))
 
-        call = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
-
-        call?.enqueue(object : Callback<List<Event>> {
-
-            override fun onFailure(call: Call<List<Event>>, t: Throwable) {
-                Timber.e(t)
-
-                retry = {
-                    loadBefore(params, callback)
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
                 }
 
-                loadStatusLiveData.postValue(PagedResource(before = Resource.error(t.message, null)))
-            }
-
-            override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
                 val list = response.body() ?: emptyList()
 
                 val pl = PageLinks(response)
@@ -115,17 +106,16 @@ class TimelineItemDataSource(
 
                 retry = null
 
-                loadStatusLiveData.postValue(PagedResource(before = Resource.success(list)))
+                loadStatusLiveData.value = PagedResource(before = Resource.success(list))
+            } catch (e: Exception) {
+                Timber.e(e)
+
+                retry = {
+                    loadBefore(params, callback)
+                }
+
+                loadStatusLiveData.value = PagedResource(before = Resource.error(e.message, null))
             }
-
-        })
-    }
-
-    override fun invalidate() {
-        super.invalidate()
-
-        if (call?.isCanceled == false) {
-            call?.cancel()
         }
     }
 

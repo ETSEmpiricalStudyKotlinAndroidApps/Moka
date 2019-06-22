@@ -4,16 +4,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
+import kotlinx.coroutines.CoroutineScope
 
 class SearchedRepositoriesDataSourceFactory(
-        var keywords: String,
-        private val loadStatusLiveData: MutableLiveData<PagedResource<List<SearchedRepositoryItem>>>
+    private val coroutineScope: CoroutineScope,
+    var keywords: String,
+    private val loadStatusLiveData: MutableLiveData<PagedResource<List<SearchedRepositoryItem>>>
 ) : DataSource.Factory<String, SearchedRepositoryItem>() {
 
     private val searchedRepositoriesLiveData = MutableLiveData<SearchedRepositoriesItemDataSource>()
 
-    override fun create(): DataSource<String, SearchedRepositoryItem> = SearchedRepositoriesItemDataSource(keywords, loadStatusLiveData).apply {
-        searchedRepositoriesLiveData.postValue(this)
+    override fun create(): DataSource<String, SearchedRepositoryItem> {
+        return SearchedRepositoriesItemDataSource(coroutineScope, keywords, loadStatusLiveData).apply {
+            searchedRepositoriesLiveData.postValue(this)
+        }
     }
 
     fun invalidate() {

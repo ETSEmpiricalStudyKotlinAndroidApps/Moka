@@ -79,6 +79,18 @@ apollo {
         put("X509Certificate", "java.lang.String")
     }
     customTypeMapping.set(map)
+
+    // Java Beans Semantic Naming will result in those methods being pre-pended with get or is
+//    setUseJavaBeansSemanticNaming(true)
+
+    // Explicitly provide GraphQL schema file location and package name for generated models
+    sourceSet {
+        setSchemaFile("/src/main/graphql/io/github/tonnyl/moka/schema.json")
+    }
+
+    setOutputPackageName("io.github.tonnyl.moka")
+
+//    setGenerateKotlinModels(true)
 }
 
 dependencies {
@@ -132,6 +144,7 @@ dependencies {
     // Apollo
     implementation(Deps.Apollo.runtime)
     implementation(Deps.Apollo.androidSupport)
+    implementation(Deps.Apollo.coroutinesSupport)
 
     // Airbnb
     implementation(Deps.Airbnb.lottie)
@@ -148,7 +161,6 @@ dependencies {
     implementation(Deps.matisse)
     implementation(Deps.jsoup)
     implementation(Deps.timber)
-    compileOnly(Deps.jsr250)
 
     testImplementation(Deps.Test.junit)
     testImplementation(Deps.Test.pagingCommon)

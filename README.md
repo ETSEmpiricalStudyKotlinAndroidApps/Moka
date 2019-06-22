@@ -6,7 +6,7 @@ An Android app for github.com.
 
 ## Feature
 + Entirely written in [Kotlin](https://kotlinlang.org/)
-+ Uses [RxJava](https://github.com/ReactiveX/RxJava) 2
++ Uses [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 + Uses [Architecture Components](https://developer.android.com/topic/libraries/architecture/), including LiveData, Navigation, Paging, Room, ViewModel and Work Manager
 + Uses [apollo-android](https://github.com/apollographql/apollo-android) for working with [GitHub's GraphQL API v4](https://developer.github.com/v4/)
 

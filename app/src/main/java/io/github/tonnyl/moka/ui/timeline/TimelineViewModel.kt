@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.timeline
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.MokaApp.Companion.MAX_SIZE_OF_PAGED_LIST
@@ -21,16 +22,21 @@ class TimelineViewModel : ViewModel() {
         get() = _loadStatusLiveData
 
     private val sourceFactory: TimelineDataSourceFactory by lazy {
-        TimelineDataSourceFactory(RetrofitClient.createService(EventsService::class.java), userLogin, _loadStatusLiveData)
+        TimelineDataSourceFactory(
+            viewModelScope,
+            RetrofitClient.createService(EventsService::class.java),
+            userLogin,
+            _loadStatusLiveData
+        )
     }
 
     val eventsResult: LiveData<PagedList<Event>> by lazy {
         val pagingConfig = PagedList.Config.Builder()
-                .setPageSize(PER_PAGE)
-                .setMaxSize(MAX_SIZE_OF_PAGED_LIST)
-                .setInitialLoadSizeHint(PER_PAGE)
-                .setEnablePlaceholders(false)
-                .build()
+            .setPageSize(PER_PAGE)
+            .setMaxSize(MAX_SIZE_OF_PAGED_LIST)
+            .setInitialLoadSizeHint(PER_PAGE)
+            .setEnablePlaceholders(false)
+            .build()
 
         LivePagedListBuilder(sourceFactory, pagingConfig).build()
     }

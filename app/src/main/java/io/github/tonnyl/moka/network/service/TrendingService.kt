@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.network.service
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingLanguages
 import io.github.tonnyl.moka.data.TrendingRepository
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Url
@@ -20,11 +20,11 @@ interface TrendingService {
      * @return If successful, return a list of [TrendingRepository].
      */
     @GET
-    fun listTrendingRepositories(
-            @Url url: String = "https://github-trending-api.now.sh/repositories",
-            @Query("language") language: String,
-            @Query("since") since: String
-    ): Call<List<TrendingRepository>>
+    suspend fun listTrendingRepositories(
+        @Url url: String = "https://github-trending-api.now.sh/repositories",
+        @Query("language") language: String,
+        @Query("since") since: String
+    ): Response<List<TrendingRepository>>
 
     /**
      * List all trending developers.
@@ -36,11 +36,11 @@ interface TrendingService {
      * @return If successful, return a list of [TrendingDeveloper].
      */
     @GET
-    fun listTrendingDevelopers(
-            @Url url: String = "https://github-trending-api.now.sh/developers",
-            @Query("language") language: String,
-            @Query("since") since: String
-    ): Call<List<TrendingDeveloper>>
+    suspend fun listTrendingDevelopers(
+        @Url url: String = "https://github-trending-api.now.sh/developers",
+        @Query("language") language: String,
+        @Query("since") since: String
+    ): Response<List<TrendingDeveloper>>
 
     /**
      * List popular languages and all languages.
@@ -50,8 +50,8 @@ interface TrendingService {
      * @return If successful, return a list of [TrendingLanguages].
      */
     @GET
-    fun listLanguages(
-            @Url url: String = "https://github-trending-api.now.sh/languages"
-    ): Call<List<TrendingLanguages>>
+    suspend fun listLanguages(
+        @Url url: String = "https://github-trending-api.now.sh/languages"
+    ): Response<List<TrendingLanguages>>
 
 }

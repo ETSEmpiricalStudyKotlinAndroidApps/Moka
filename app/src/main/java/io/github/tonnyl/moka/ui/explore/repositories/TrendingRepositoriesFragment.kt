@@ -65,7 +65,7 @@ class TrendingRepositoriesFragment : Fragment() {
         })
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.trendingRepositories.refresh()
+            viewModel.refreshTrendingRepositories()
         }
     }
 

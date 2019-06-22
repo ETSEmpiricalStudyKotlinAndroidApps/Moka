@@ -50,7 +50,7 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
         val factory = ViewModelFactory(login)
         viewModel = ViewModelProviders.of(this, factory).get(UserProfileViewModel::class.java)
 
-        viewModel.user.observe(viewLifecycleOwner, Observer { resource ->
+        viewModel.userProfile.observe(viewLifecycleOwner, Observer { resource ->
             when (resource.status) {
                 Status.SUCCESS -> {
                     val user = resource.data?.user() ?: return@Observer
@@ -135,7 +135,7 @@ class UserProfileFragment : Fragment(), View.OnClickListener {
                 parentFragment?.findNavController()?.navigate(R.id.action_to_repositories, builder.toBundle())
             }
             R.id.toolbar_edit -> {
-                viewModel.user.value?.data?.user()?.let {
+                viewModel.userProfile.value?.data?.user()?.let {
                     val bundle = EditProfileFragmentArgs(it.login(), it.name(), it.email(), it.bio(), it.websiteUrl()?.toString(), it.company(), it.location())
                     parentFragment?.findNavController()?.navigate(R.id.action_to_edit_profile, bundle.toBundle())
                 }

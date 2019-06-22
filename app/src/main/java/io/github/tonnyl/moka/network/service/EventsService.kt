@@ -1,7 +1,7 @@
 package io.github.tonnyl.moka.network.service
 
 import io.github.tonnyl.moka.data.Event
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -15,15 +15,15 @@ interface EventsService {
      * Otherwise, you'll only see public events.
      */
     @GET("users/{username}/received_events/public")
-    fun listPublicEventThatAUserHasReceived(
-            @Path("username") username: String,
-            @Query("page") page: Int,
-            @Query("per_page") perPage: Int
-    ): Call<List<Event>>
+    suspend fun listPublicEventThatAUserHasReceived(
+        @Path("username") username: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): Response<List<Event>>
 
     @GET
-    fun listPublicEventThatAUserHasReceivedByUrl(
-            @Url url: String
-    ): Call<List<Event>>
+    suspend fun listPublicEventThatAUserHasReceivedByUrl(
+        @Url url: String
+    ): Response<List<Event>>
 
 }

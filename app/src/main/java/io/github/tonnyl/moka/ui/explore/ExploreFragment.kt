@@ -94,8 +94,8 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
     }
 
     override fun onRefresh() {
-        viewModel.trendingDevelopers.refresh()
-        viewModel.trendingRepositories.refresh()
+        viewModel.refreshTrendingDevelopers()
+        viewModel.refreshTrendingRepositories()
     }
 
     override fun openProfile(login: String) {

@@ -66,7 +66,7 @@ class TrendingDevelopersFragment : Fragment() {
         })
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.trendingDevelopers.refresh()
+            viewModel.refreshTrendingDevelopers()
         }
     }
 

@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.notifications
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.MokaApp.Companion.MAX_SIZE_OF_PAGED_LIST
@@ -24,16 +25,20 @@ class NotificationsViewModel : ViewModel() {
         get() = _loadStatusLiveData
 
     private val sourceFactory: NotificationsDataSourceFactory by lazy {
-        NotificationsDataSourceFactory(RetrofitClient.createService(NotificationsService::class.java), _loadStatusLiveData)
+        NotificationsDataSourceFactory(
+            viewModelScope,
+            RetrofitClient.createService(NotificationsService::class.java),
+            _loadStatusLiveData
+        )
     }
 
     val notificationsResult: LiveData<PagedList<Notification>> by lazy {
         val pagingConfig = PagedList.Config.Builder()
-                .setPageSize(PER_PAGE)
-                .setMaxSize(MAX_SIZE_OF_PAGED_LIST)
-                .setInitialLoadSizeHint(PER_PAGE)
-                .setEnablePlaceholders(false)
-                .build()
+            .setPageSize(PER_PAGE)
+            .setMaxSize(MAX_SIZE_OF_PAGED_LIST)
+            .setInitialLoadSizeHint(PER_PAGE)
+            .setEnablePlaceholders(false)
+            .build()
 
         LivePagedListBuilder(sourceFactory, pagingConfig).build()
     }

@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.search.users
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.MokaApp
@@ -18,16 +19,16 @@ class SearchedUsersViewModel : ViewModel() {
         get() = _loadStatusLiveData
 
     private val sourceFactory: SearchedUserDataSourceFactory by lazy {
-        SearchedUserDataSourceFactory(keywords, _loadStatusLiveData)
+        SearchedUserDataSourceFactory(viewModelScope, keywords, _loadStatusLiveData)
     }
 
     val searchedUsersResult: LiveData<PagedList<SearchedUserOrOrgItem>> by lazy {
         val pagingConfig: PagedList.Config = PagedList.Config.Builder()
-                .setPageSize(MokaApp.PER_PAGE)
-                .setMaxSize(MokaApp.MAX_SIZE_OF_PAGED_LIST)
-                .setInitialLoadSizeHint(MokaApp.PER_PAGE)
-                .setEnablePlaceholders(false)
-                .build()
+            .setPageSize(MokaApp.PER_PAGE)
+            .setMaxSize(MokaApp.MAX_SIZE_OF_PAGED_LIST)
+            .setInitialLoadSizeHint(MokaApp.PER_PAGE)
+            .setEnablePlaceholders(false)
+            .build()
 
         LivePagedListBuilder(sourceFactory, pagingConfig).build()
     }

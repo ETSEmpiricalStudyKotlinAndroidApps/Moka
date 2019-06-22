@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.network.service
 
 import io.github.tonnyl.moka.data.Notification
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface NotificationsService {
@@ -14,19 +15,19 @@ interface NotificationsService {
      * @return If successful, return a list of [Notification].
      */
     @GET("notifications")
-    fun listNotifications(
-            @Query("all") all: Boolean = true,
-            @Query("page") page: Int,
-            @Query("per_page") perPage: Int
-    ): Call<List<Notification>>
+    suspend fun listNotifications(
+        @Query("all") all: Boolean = true,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): Response<List<Notification>>
 
     /**
      * Refer [listNotifications].
      */
     @GET
-    fun listNotificationsByUrl(
-            @Url url: String
-    ): Call<List<Notification>>
+    suspend fun listNotificationsByUrl(
+        @Url url: String
+    ): Response<List<Notification>>
 
     /**
      * Marking a notification as "read" removes it from the default view on GitHub.
@@ -37,9 +38,9 @@ interface NotificationsService {
      * @return If successful, return a [Unit] wrapped by a [Call].
      */
     @PUT("notifications")
-    fun markAsRead(
-            @Query("last_read_at") lastReadAt: String
-    ): Call<Unit>
+    suspend fun markAsRead(
+        @Query("last_read_at") lastReadAt: String
+    ): Response<Unit>
 
     /**
      * Mutes all future notifications for a conversation until you comment on the thread or get @mentioned.
@@ -49,8 +50,8 @@ interface NotificationsService {
      * @return If successful, return a [Unit] wrapped by [Call].
      */
     @DELETE("notifications/threads/{thread_id}/subscription")
-    fun deleteAThreadSubscription(
-            @Path("thread_id") threadId: String
-    ): Call<Unit>
+    suspend fun deleteAThreadSubscription(
+        @Path("thread_id") threadId: String
+    ): Response<Unit>
 
 }

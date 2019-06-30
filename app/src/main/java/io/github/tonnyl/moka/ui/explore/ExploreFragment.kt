@@ -15,7 +15,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentExploreBinding
 import io.github.tonnyl.moka.ui.explore.filters.TrendingFilterFragment
 import io.github.tonnyl.moka.ui.main.MainViewModel
-import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.ui.main.ViewModelFactory as MainViewModelFactory
 
@@ -99,7 +99,7 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
     }
 
     override fun openProfile(login: String) {
-        val builder = UserProfileFragmentArgs(login)
+        val builder = ProfileFragmentArgs(login)
         findNavController().navigate(R.id.action_to_profile, builder.toBundle())
     }
 

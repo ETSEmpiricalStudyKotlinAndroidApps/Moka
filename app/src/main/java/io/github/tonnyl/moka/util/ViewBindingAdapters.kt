@@ -1,6 +1,9 @@
 package io.github.tonnyl.moka.util
 
+import android.net.Uri
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -12,50 +15,71 @@ import io.github.tonnyl.moka.network.GlideLoader
 
 @BindingAdapter("avatarUrl")
 fun AppCompatImageView.avatarUrl(
-        url: String?
+    url: String?
 ) {
     GlideLoader.loadAvatar(url, this)
 }
 
+@BindingAdapter("avatarUrl")
+fun AppCompatImageView.avatarUrl(
+    url: Uri?
+) {
+    avatarUrl(url?.toString())
+}
+
 @BindingAdapter("imageResId")
 fun AppCompatImageView.imageResId(
-        @DrawableRes drawableResId: Int
+    @DrawableRes drawableResId: Int
 ) {
     setImageResource(drawableResId)
 }
 
 @BindingAdapter("backgroundResId")
 fun AppCompatImageView.backgroundResId(
-        @DrawableRes backgroundResId: Int
+    @DrawableRes backgroundResId: Int
 ) {
     setBackgroundResource(backgroundResId)
 }
 
 @BindingAdapter("colorSchemaColors")
 fun SwipeRefreshLayout.colorSchemaColors(
-        colorResIds: IntArray
+    colorResIds: IntArray
 ) {
     setColorSchemeColors(*colorResIds)
 }
 
 @BindingAdapter("textFuture")
 fun AppCompatTextView.textFuture(
-        text: CharSequence?
+    text: CharSequence?
 ) {
     text ?: return
-    setTextFuture(PrecomputedTextCompat.getTextFuture(
+    setTextFuture(
+        PrecomputedTextCompat.getTextFuture(
             text,
             TextViewCompat.getTextMetricsParams(this),
             null
-    ))
+        )
+    )
 }
 
 @BindingAdapter("invisibleUnless")
 fun View.invisibleUnless(visible: Boolean) {
-    visibility = if (visible) View.VISIBLE else View.GONE
+    visibility = if (visible) VISIBLE else GONE
 }
 
 @BindingAdapter("goneUnless")
 fun View.goneUnless(visible: Boolean) {
-    visibility = if (visible) View.VISIBLE else View.GONE
+    visibility = if (visible) VISIBLE else GONE
+}
+
+@BindingAdapter("visibleUnless")
+fun View.visibleUnless(visible: Boolean) {
+    visibility = if (visible) VISIBLE else GONE
+}
+
+@BindingAdapter("intOrZero")
+fun AppCompatTextView.intOrZero(
+    value: Int?
+) {
+    text = value?.toString() ?: "0"
 }

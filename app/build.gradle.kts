@@ -3,10 +3,10 @@ import kotlin.collections.LinkedHashMap
 
 plugins {
     id("com.android.application")
+    id("com.apollographql.android")
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("kotlin-kapt")
-    id("com.apollographql.android")
     id("androidx.navigation.safeargs.kotlin")
     id("io.fabric")
 }

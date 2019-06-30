@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentUsersBinding
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 
 class UsersFragment : Fragment(), ItemUserActions {
 
@@ -119,7 +119,7 @@ class UsersFragment : Fragment(), ItemUserActions {
     }
 
     override fun openProfile(login: String) {
-        val builder = UserProfileFragmentArgs(login)
+        val builder = ProfileFragmentArgs(login)
         findNavController().navigate(R.id.action_to_profile, builder.toBundle())
     }
 

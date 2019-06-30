@@ -42,6 +42,9 @@ query User($login: String!) {
             avatarUrl
         }
      }
+     projects {
+       totalCount
+     }
   }
 }
 
@@ -79,16 +82,19 @@ query viewer {
     followers {
       totalCount
     }
-		following {
+    following {
       totalCount
     }
     starredRepositories {
       totalCount
     }
     organizations(first: 20) {
-        nodes {
-            avatarUrl
-        }
+      nodes {
+        avatarUrl
+      }
+    }
+    projects {
+      totalCount
     }
   }
 }
@@ -133,6 +139,9 @@ query following($login:String!, $perPage: Int!, $before: String, $after: String)
           totalCount
         }
         starredRepositories {
+          totalCount
+        }
+        projects {
           totalCount
         }
       }
@@ -187,6 +196,9 @@ query followers($login:String!, $perPage: Int!, $before: String, $after: String)
           totalCount
         }
         starredRepositories {
+          totalCount
+        }
+        projects {
           totalCount
         }
       }

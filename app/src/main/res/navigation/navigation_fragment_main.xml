@@ -60,15 +60,20 @@
         android:label="About" />
 
     <fragment
-        android:id="@+id/user_profile_fragment"
-        android:name="io.github.tonnyl.moka.ui.profile.UserProfileFragment"
+        android:id="@+id/profile_fragment"
+        android:name="io.github.tonnyl.moka.ui.profile.ProfileFragment"
         tools:label="User Profile"
-        tools:layout="@layout/fragment_user_profile">
+        tools:layout="@layout/fragment_profile">
 
         <argument
             android:name="login"
             app:argType="string"
             app:nullable="false" />
+
+        <argument
+            android:name="profileType"
+            android:defaultValue="NOT_SPECIFIED"
+            app:argType="io.github.tonnyl.moka.ui.profile.ProfileType" />
 
         <action
             android:id="@+id/action_user_profile_to_users"
@@ -286,7 +291,7 @@
 
     <action
         android:id="@+id/action_timeline_to_user_profile"
-        app:destination="@id/user_profile_fragment" />
+        app:destination="@id/profile_fragment" />
 
     <action
         android:id="@+id/action_timeline_to_repository"
@@ -334,6 +339,6 @@
 
     <action
         android:id="@+id/action_to_profile"
-        app:destination="@id/user_profile_fragment" />
+        app:destination="@id/profile_fragment" />
 
 </navigation>

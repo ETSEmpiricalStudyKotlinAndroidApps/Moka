@@ -6,6 +6,8 @@
     <string name="common_retry">Retry</string>
     <string name="common_error_requesting_data">Error requesting data.</string>
 
+    <string name="see_all">See all</string>
+
     <string name="repository_name_with_username">%1$s/%2$s</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -33,13 +35,10 @@
     <string name="profile_email">Email</string>
     <string name="profile_location">Location</string>
     <string name="profile_website">Website</string>
-    <string name="profile_organizations">Organizations</string>
-    <string name="profile_organizations_see_all">See all</string>
     <string name="profile_info">Info</string>
     <string name="profile_contact">Contact</string>
     <string name="profile_joined_on">Joined on</string>
     <string name="profile_updated_on">Updated on</string>
-    <string name="user_profile_pinned">Pinned</string>
     <string name="user_profile_follow" translation_description="The button's content text to follow a user of user profile.">Follow</string>
     <string name="user_profile_unfollow" translation_description="The button's content text to unfollow a user of user profile.">Unfollow</string>
     <string name="user_profile_company_desc" translation_description="The content description of company image of user profile.">Company</string>

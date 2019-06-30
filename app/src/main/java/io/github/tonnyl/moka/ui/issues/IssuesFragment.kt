@@ -15,7 +15,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentIssuesBinding
 import io.github.tonnyl.moka.ui.common.IssuePRActions
 import io.github.tonnyl.moka.ui.issue.IssueFragmentArgs
-import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 
 class IssuesFragment : Fragment(), IssuePRActions {
 
@@ -70,7 +70,7 @@ class IssuesFragment : Fragment(), IssuePRActions {
     }
 
     override fun openProfile(login: String) {
-        val profileFragmentArgs = UserProfileFragmentArgs(login)
+        val profileFragmentArgs = ProfileFragmentArgs(login)
         findNavController().navigate(R.id.action_to_profile, profileFragmentArgs.toBundle())
     }
 

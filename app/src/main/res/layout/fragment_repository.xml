@@ -531,7 +531,7 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/profile_organizations_see_all"
+                    android:text="@string/see_all"
                     android:textColor="@color/colorTextAccent"
                     app:layout_constraintBottom_toBottomOf="@id/repository_topics_category_title"
                     app:layout_constraintEnd_toEndOf="parent"

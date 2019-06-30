@@ -19,7 +19,7 @@
         <include
             android:id="@+id/main_search_bar"
             layout="@layout/layout_main_search_bar"
-            bind:avatarUrl="@{mainViewModel.loginUserProfile.viewer().avatarUrl().toString()}" />
+            bind:mainViewModel="@{mainViewModel}" />
 
         <LinearLayout
             android:layout_width="match_parent"

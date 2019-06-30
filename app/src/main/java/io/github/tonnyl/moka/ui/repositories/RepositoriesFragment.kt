@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentRepositoriesBinding
-import io.github.tonnyl.moka.ui.profile.UserProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 
 class RepositoriesFragment : Fragment(), ItemRepositoryActions {
@@ -73,7 +73,7 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions {
     }
 
     override fun openProfile(login: String) {
-        val builder = UserProfileFragmentArgs(login)
+        val builder = ProfileFragmentArgs(login)
         findNavController().navigate(R.id.action_to_profile, builder.toBundle())
     }
 

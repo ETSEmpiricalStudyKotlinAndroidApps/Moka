@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.timeline
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.Event
+import io.github.tonnyl.moka.db.dao.EventDao
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.EventsService
@@ -16,44 +17,52 @@ import timber.log.Timber
 class TimelineItemDataSource(
     private val coroutineScope: CoroutineScope,
     private val eventsService: EventsService,
-    var login: String,
+    private val eventDao: EventDao,
+    private var login: String,
     private val loadStatusLiveData: MutableLiveData<PagedResource<List<Event>>>
 ) : PageKeyedDataSource<String, Event>() {
 
     var retry: (() -> Any)? = null
 
-    override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, Event>) {
-        Timber.d("loadInitial")
+    override fun loadInitial(
+        params: LoadInitialParams<String>,
+        callback: LoadInitialCallback<String, Event>
+    ) {
+        Timber.d("loadInitial login: $login")
 
-        coroutineScope.launch(Dispatchers.Main) {
-            loadStatusLiveData.value = PagedResource(initial = Resource.loading(null))
+        if (login.isEmpty()) {
+            return
+        }
 
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    eventsService.listPublicEventThatAUserHasReceived(
-                        login,
-                        page = 1,
-                        perPage = params.requestedLoadSize
-                    )
-                }
+        loadStatusLiveData.postValue(PagedResource(initial = Resource.loading(null)))
 
-                val list = response.body() ?: emptyList()
+        // triggered by a refresh, we better execute sync
+        try {
+            val response = eventsService.listPublicEventThatAUserHasReceived(
+                login,
+                page = 1,
+                perPage = params.requestedLoadSize
+            ).execute()
 
-                val pl = PageLinks(response)
-                callback.onResult(list, pl.prev, pl.next)
-
-                retry = null
-
-                loadStatusLiveData.value = PagedResource(initial = Resource.success(list))
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                retry = {
-                    loadInitial(params, callback)
-                }
-
-                loadStatusLiveData.value = PagedResource(initial = Resource.error(e.message, null))
+            val list = response.body() ?: emptyList()
+            if (list.isNotEmpty()) {
+                eventDao.insertAll(list)
             }
+
+            retry = null
+
+            loadStatusLiveData.postValue(PagedResource(initial = Resource.success(list)))
+
+            val pl = PageLinks(response)
+            callback.onResult(list, pl.prev, pl.next)
+        } catch (e: Exception) {
+            Timber.e(e)
+
+            retry = {
+                loadInitial(params, callback)
+            }
+
+            loadStatusLiveData.postValue(PagedResource(initial = Resource.error(e.message, null)))
         }
     }
 
@@ -70,12 +79,18 @@ class TimelineItemDataSource(
 
                 val list = response.body() ?: emptyList()
 
-                val pl = PageLinks(response)
-                callback.onResult(list, pl.next)
+                withContext(Dispatchers.IO) {
+                    if (list.isNotEmpty()) {
+                        eventDao.insertAll(list)
+                    }
+                }
 
                 retry = null
 
                 loadStatusLiveData.value = PagedResource(after = Resource.success(list))
+
+                val pl = PageLinks(response)
+                callback.onResult(list, pl.next)
             } catch (e: Exception) {
                 Timber.e(e)
 
@@ -101,12 +116,18 @@ class TimelineItemDataSource(
 
                 val list = response.body() ?: emptyList()
 
-                val pl = PageLinks(response)
-                callback.onResult(list, pl.prev)
+                withContext(Dispatchers.IO) {
+                    if (list.isNotEmpty()) {
+                        eventDao.insertAll(list)
+                    }
+                }
 
                 retry = null
 
                 loadStatusLiveData.value = PagedResource(before = Resource.success(list))
+
+                val pl = PageLinks(response)
+                callback.onResult(list, pl.prev)
             } catch (e: Exception) {
                 Timber.e(e)
 

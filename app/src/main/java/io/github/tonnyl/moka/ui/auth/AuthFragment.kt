@@ -14,12 +14,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.BuildConfig
-import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentAuthBinding
+import io.github.tonnyl.moka.network.NetworkClient
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.main.MainViewModel
+import io.github.tonnyl.moka.ui.MainViewModel
 
 class AuthFragment : Fragment() {
 
@@ -37,7 +37,11 @@ class AuthFragment : Fragment() {
 
     private val args: AuthFragmentArgs by navArgs()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentAuthBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -50,24 +54,40 @@ class AuthFragment : Fragment() {
         val accounts = accountManager.getAccountsByType(Authenticator.KEY_ACCOUNT_TYPE)
 
         if (accounts.isNotEmpty()) {
-            accountManager.getAuthToken(accounts[0], Authenticator.KEY_AUTH_TYPE, null, true, { future ->
-                if (future.isDone) {
-                    val token = future.result.get(AccountManager.KEY_AUTHTOKEN).toString()
+            val latestAccount = accounts[0]
+            val userLogin = accountManager.getUserData(latestAccount, Authenticator.KEY_LOGIN)
+            accountManager.getAuthToken(
+                latestAccount,
+                Authenticator.KEY_AUTH_TYPE,
+                null,
+                true,
+                { future ->
+                    if (future.isDone) {
+                        val token = future.result.get(AccountManager.KEY_AUTHTOKEN).toString()
 
-                    initTokensAndGoToMainPage(token, accounts[0].name, false)
-                }
-            }, null)
+                        initTokensAndGoToMainPage(
+                            token,
+                            latestAccount.name.toLong(),
+                            userLogin,
+                            false
+                        )
+                    }
+                },
+                null
+            )
         }
 
         binding.authGetStarted.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("""
+                data = Uri.parse(
+                    """
                     |${RetrofitClient.GITHUB_AUTHORIZE_URL}
                     |?client_id=${BuildConfig.CLIENT_ID}
                     |&redirect_uri=${RetrofitClient.GITHUB_AUTHORIZE_CALLBACK_URI}
                     |&scope=${RetrofitClient.SCOPE}
                     |&state=${System.currentTimeMillis()}
-                """.trimMargin())
+                """.trimMargin()
+                )
             }
             startActivity(intent)
         }
@@ -76,7 +96,8 @@ class AuthFragment : Fragment() {
             when (resource.status) {
                 Status.SUCCESS -> {
                     resource.data?.let {
-                        initTokensAndGoToMainPage(it.first, it.second.login, true)
+                        val (token, authUser) = it
+                        initTokensAndGoToMainPage(token, authUser.id, authUser.login, true)
                     }
 
                     binding.loadingAnimationView.visibility = View.GONE
@@ -111,8 +132,13 @@ class AuthFragment : Fragment() {
         }
     }
 
-    private fun initTokensAndGoToMainPage(token: String, login: String, shouldAddNew: Boolean) {
-        val account = Account(login, Authenticator.KEY_ACCOUNT_TYPE)
+    private fun initTokensAndGoToMainPage(
+        token: String,
+        id: Long,
+        login: String,
+        shouldAddNew: Boolean
+    ) {
+        val account = Account(id.toString(), Authenticator.KEY_ACCOUNT_TYPE)
 
         if (shouldAddNew) {
             accountManager.addAccountExplicitly(account, "", Bundle().apply {
@@ -125,6 +151,7 @@ class AuthFragment : Fragment() {
         RetrofitClient.lastToken = token
 
         mainViewModel.login.value = login
+        mainViewModel.userId.value = id
 
         findNavController().navigate(R.id.action_to_main)
     }

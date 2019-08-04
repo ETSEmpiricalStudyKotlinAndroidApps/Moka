@@ -10,14 +10,21 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.databinding.FragmentExplorePageBinding
+import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
+import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
 class TrendingDevelopersFragment : Fragment() {
 
     private lateinit var developerAdapter: TrendingDeveloperAdapter
 
+    private val mainViewModel: MainViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProviders.of(requireActivity(), MainViewModelFactory())
+            .get(MainViewModel::class.java)
+    }
     private lateinit var viewModel: ExploreViewModel
 
     private lateinit var binding: FragmentExplorePageBinding
@@ -28,7 +35,11 @@ class TrendingDevelopersFragment : Fragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentExplorePageBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -37,7 +48,12 @@ class TrendingDevelopersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(requireParentFragment(), ViewModelFactory()).get(ExploreViewModel::class.java)
+        MokaDataBase.getInstance(requireContext(), mainViewModel.userId.value ?: return).let {
+            viewModel = ViewModelProviders.of(
+                requireParentFragment(),
+                ViewModelFactory(it.trendingDevelopersDao(), it.trendingRepositoriesDao())
+            ).get(ExploreViewModel::class.java)
+        }
 
         with(binding.recyclerView) {
             developerAdapter = TrendingDeveloperAdapter("All Languages", "Daily")
@@ -45,24 +61,26 @@ class TrendingDevelopersFragment : Fragment() {
             adapter = developerAdapter
         }
 
-        viewModel.trendingDevelopers.observe(this, Observer {
+        viewModel.developersRemoteStatus.observe(this, Observer {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding.swipeRefresh.isRefreshing = false
 
                     showHideEmptyView(it.data.isNullOrEmpty())
-
-                    developerAdapter.submitList(it.data)
                 }
                 Status.ERROR -> {
                     binding.swipeRefresh.isRefreshing = false
 
-                    showHideEmptyView(true)
+                    showHideEmptyView(viewModel.developersLocalData.value.isNullOrEmpty())
                 }
                 Status.LOADING -> {
                     binding.swipeRefresh.isRefreshing = true
                 }
             }
+        })
+
+        viewModel.developersLocalData.observe(this, Observer {
+            developerAdapter.submitList(it)
         })
 
         binding.swipeRefresh.setOnRefreshListener {

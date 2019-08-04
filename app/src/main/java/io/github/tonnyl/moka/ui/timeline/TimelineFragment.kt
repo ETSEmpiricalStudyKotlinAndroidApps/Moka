@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentTimelineBinding
-import io.github.tonnyl.moka.network.NetworkState
+import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.main.MainViewModel
-import io.github.tonnyl.moka.ui.main.ViewModelFactory as MainViewModelFactory
+import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
 class TimelineFragment : Fragment(), View.OnClickListener {
 
@@ -31,7 +31,11 @@ class TimelineFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentTimelineBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentTimelineBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -40,17 +44,28 @@ class TimelineFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory()).get(MainViewModel::class.java)
-        viewModel = ViewModelProviders.of(requireActivity(), ViewModelFactory()).get(TimelineViewModel::class.java)
+        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory())
+            .get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(
+            requireActivity(),
+            ViewModelFactory(
+                MokaDataBase.getInstance(
+                    requireContext(),
+                    mainViewModel.userId.value ?: return
+                ).eventDao()
+            )
+        ).get(TimelineViewModel::class.java)
 
-        binding.mainViewModel = mainViewModel
-        binding.lifecycleOwner = requireActivity()
-
-        timelineAdapter = TimelineAdapter(requireContext())
+        binding.apply {
+            mainViewModel = this@TimelineFragment.mainViewModel
+            lifecycleOwner = this@TimelineFragment.viewLifecycleOwner
+        }
 
         with(binding.recyclerView) {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = timelineAdapter
+            adapter = TimelineAdapter(requireContext()).also {
+                timelineAdapter = it
+            }
         }
 
         viewModel.loadStatusLiveData.observe(this, Observer {
@@ -63,38 +78,6 @@ class TimelineFragment : Fragment(), View.OnClickListener {
                 }
                 Status.ERROR -> {
                     binding.swipeRefresh.isRefreshing = false
-
-                    showHideEmptyView(true)
-                }
-                null -> {
-
-                }
-            }
-
-            when (it.after?.status) {
-                Status.SUCCESS -> {
-                    timelineAdapter.setAfterNetworkState(NetworkState.LOADED)
-                }
-                Status.ERROR -> {
-                    timelineAdapter.setAfterNetworkState(NetworkState.error(it.after.message))
-                }
-                Status.LOADING -> {
-                    timelineAdapter.setAfterNetworkState(NetworkState.LOADING)
-                }
-                null -> {
-
-                }
-            }
-
-            when (it.before?.status) {
-                Status.SUCCESS -> {
-                    timelineAdapter.setBeforeNetworkState(NetworkState.LOADED)
-                }
-                Status.ERROR -> {
-                    timelineAdapter.setBeforeNetworkState(NetworkState.error(it.before.message))
-                }
-                Status.LOADING -> {
-                    timelineAdapter.setBeforeNetworkState(NetworkState.LOADING)
                 }
                 null -> {
 
@@ -102,17 +85,14 @@ class TimelineFragment : Fragment(), View.OnClickListener {
             }
         })
 
-        viewModel.eventsResult.observe(this, Observer {
+        viewModel.data.observe(this, Observer {
             timelineAdapter.submitList(it)
-
-            val status = viewModel.loadStatusLiveData.value?.initial?.status
-            showHideEmptyView(it.isEmpty()
-                    && (status == Status.SUCCESS || status == Status.ERROR))
+            showHideEmptyView(it.isEmpty())
         })
 
         mainViewModel.login.observe(this, Observer { login ->
             login?.let {
-                viewModel.refreshEventsData(it, false)
+                viewModel.refreshData(it, false)
             }
         })
 
@@ -125,14 +105,18 @@ class TimelineFragment : Fragment(), View.OnClickListener {
         })
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.refreshEventsData(mainViewModel.login.value
-                    ?: return@setOnRefreshListener, true)
+            viewModel.refreshData(
+                mainViewModel.login.value
+                    ?: return@setOnRefreshListener, true
+            )
         }
 
         binding.mainSearchBar.mainSearchBarInputText.setOnClickListener(this@TimelineFragment)
 
-        binding.emptyContent.emptyContentTitleText.text = getString(R.string.timeline_content_empty_title)
-        binding.emptyContent.emptyContentActionText.text = getString(R.string.timeline_content_empty_action)
+        binding.emptyContent.emptyContentTitleText.text =
+            getString(R.string.timeline_content_empty_title)
+        binding.emptyContent.emptyContentActionText.text =
+            getString(R.string.timeline_content_empty_action)
 
         binding.emptyContent.emptyContentActionText.setOnClickListener(this)
         binding.emptyContent.emptyContentRetryButton.setOnClickListener(this)
@@ -142,9 +126,15 @@ class TimelineFragment : Fragment(), View.OnClickListener {
         super.onResume()
         if (!::drawer.isInitialized) {
             drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
-                    ?: return
+                ?: return
         }
-        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, binding.mainSearchBar.mainSearchBarToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle = ActionBarDrawerToggle(
+            parentFragment?.activity,
+            drawer,
+            binding.mainSearchBar.mainSearchBarToolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
 
         drawer.addDrawerListener(toggle)
         toggle.syncState()
@@ -166,7 +156,7 @@ class TimelineFragment : Fragment(), View.OnClickListener {
                 binding.swipeRefresh.post {
                     binding.swipeRefresh.isRefreshing = true
                 }
-                viewModel.refreshEventsData(mainViewModel.login.value ?: return, true)
+                viewModel.refreshData(mainViewModel.login.value ?: return, true)
             }
             R.id.main_search_bar_avatar -> {
                 val bundle = Bundle().apply {

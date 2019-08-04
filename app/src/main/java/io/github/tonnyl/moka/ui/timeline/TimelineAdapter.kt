@@ -134,7 +134,8 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                 }
                 Event.CREATE_EVENT -> {
                     // data.payload.refType -> The object that was created. Can be one of "repository", "branch", or "tag"
-                    val action = context.getString(when (data.payload.refType) {
+                    val action = context.getString(
+                        when (data.payload?.refType) {
                         "repository" -> R.string.event_create_type_repository
                         "branch" -> R.string.event_create_type_branch
                         // including "tag"
@@ -143,7 +144,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     setPrimaryTextSpan(context.getString(R.string.event_create, action))
 
                     // data.payload.ref -> The git ref (or null if only a repository was created).
-                    data.payload.ref?.let {
+                    data.payload?.ref?.let {
                         actionBuilder.append(it)
                         setPrimaryTextSpan(context.getString(R.string.event_at))
                     }
@@ -153,13 +154,13 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     // final string example: github created repository github/github
                 }
                 Event.COMMIT_COMMENT_EVENT -> {
-                    data.payload.commitComment?.body?.let {
+                    data.payload?.commitComment?.body?.let {
                         content = it
                     }
 
                     setPrimaryTextSpan(context.getString(R.string.event_comment_on_commit))
 
-                    data.payload.commitComment?.commitId?.let {
+                    data.payload?.commitComment?.commitId?.let {
                         actionBuilder.append(it.substring(0, 8))
                     }
 
@@ -172,7 +173,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                 Event.DOWNLOAD_EVENT -> {
                     setPrimaryTextSpan(context.getString(R.string.event_download))
 
-                    actionBuilder.append(data.payload.download?.name)
+                    actionBuilder.append(data.payload?.download?.name)
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 
@@ -183,7 +184,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                 Event.FOLLOW_EVENT -> {
                     setPrimaryTextSpan(context.getString(R.string.event_follow))
 
-                    actionBuilder.append(data.payload.target?.login)
+                    actionBuilder.append(data.payload?.target?.login)
 
                     // final string example: github followed octocat
                 }
@@ -197,13 +198,14 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     setPrimaryTextSpan(context.getString(R.string.event_to))
 
                     // data.payload.forkee -> The created repository.
-                    actionBuilder.append(data.payload.forkee?.fullName)
+                    actionBuilder.append(data.payload?.forkee?.fullName)
 
                     // final string example: github forked actocat/Hello-World to github/Hello-World
                 }
                 Event.GIST_EVENT -> {
                     // data.payload.action -> The action that was performed. Can be "create" or "update".
-                    val action = context.getString(when (data.payload.action) {
+                    val action = context.getString(
+                        when (data.payload?.action) {
                         "create" -> R.string.event_gist_action_created
                         // including "update".
                         else -> R.string.event_gist_action_updated
@@ -211,13 +213,14 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     setPrimaryTextSpan(context.getString(R.string.event_gist, action))
 
-                    actionBuilder.append(data.payload.gist?.description)
+                    actionBuilder.append(data.payload?.gist?.description)
 
                     // final string example: github created Gist Hello World Examples
                 }
                 Event.GOLLUM_EVENT -> {
                     // data.payload.pages[][action] -> The action that was performed on the page. Can be "created" or "edited".
-                    val action: String = context.getString(when (data.payload.pages?.firstOrNull()?.action) {
+                    val action: String = context.getString(
+                        when (data.payload?.pages?.firstOrNull()?.action) {
                         "created" -> R.string.event_gollum_event_action_created
                         // including "edited"
                         else -> R.string.event_gollum_event_action_edited
@@ -230,13 +233,14 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     // final string example: github edit a wiki page at github/github
                 }
                 Event.ISSUE_COMMENT_EVENT -> {
-                    data.payload.comment?.body?.let {
+                    data.payload?.comment?.body?.let {
                         content = it
                     }
 
                     // data.payload.action -> The action that was performed on the comment.
                     // Can be one of "created", "edited", or "deleted".
-                    val action = context.getString(when (data.payload.action) {
+                    val action = context.getString(
+                        when (data.payload?.action) {
                         "created" -> R.string.event_issue_comment_action_created
                         "edited" -> R.string.event_issue_comment_action_edited
                         else -> R.string.event_issue_comment_action_deleted
@@ -244,7 +248,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     setPrimaryTextSpan(context.getString(R.string.event_issue_comment, action))
 
-                    actionBuilder.append("#${data.payload.issue?.number}")
+                    actionBuilder.append("#${data.payload?.issue?.number}")
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 
@@ -253,14 +257,15 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     // final string example: github commented on issue #1 at github/github
                 }
                 Event.ISSUES_EVENT -> {
-                    data.payload.issue?.title?.let {
+                    data.payload?.issue?.title?.let {
                         content = it
                     }
 
                     // data.payload.action -> The action that was performed. Can be one of "opened",
                     // "edited", "deleted", "transferred", "pinned", "unpinned", "closed", "reopened",
                     // "assigned", "unassigned", "labeled", "unlabeled", "milestoned", or "demilestoned".
-                    val action = context.getString(when (data.payload.action) {
+                    val action = context.getString(
+                        when (data.payload?.action) {
                         "opened" -> R.string.event_issue_action_opened
                         "edited" -> R.string.event_issue_action_edited
                         "deleted" -> R.string.event_issue_action_deleted
@@ -280,7 +285,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     setPrimaryTextSpan(context.getString(R.string.event_issue, action))
 
-                    actionBuilder.append("#${data.payload.issue?.number}")
+                    actionBuilder.append("#${data.payload?.issue?.number}")
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 
@@ -292,7 +297,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     val actionStringResId: Int
                     val toOrFromStringResId: Int
 
-                    when (data.payload.action) {
+                    when (data.payload?.action) {
                         "added" -> {
                             actionStringResId = R.string.event_added
                             toOrFromStringResId = R.string.event_to
@@ -310,7 +315,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     setPrimaryTextSpan(context.getString(actionStringResId))
 
-                    actionBuilder.append(data.payload.member?.login ?: "")
+                    actionBuilder.append(data.payload?.member?.login ?: "")
 
                     setPrimaryTextSpan(context.getString(toOrFromStringResId))
 
@@ -326,14 +331,15 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     // final string example: github open-sourced github/github
                 }
                 Event.PULL_REQUEST_EVENT -> {
-                    data.payload.pullRequest?.title?.let {
+                    data.payload?.pullRequest?.title?.let {
                         content = it
                     }
 
                     // data.payload.action -> The action that was performed. Can be one of "assigned",
                     // "unassigned", "review_requested", "review_request_removed", "labeled", "unlabeled",
                     // "opened", "edited", "closed", or "reopened".
-                    val action = context.getString(when (data.payload.action) {
+                    val action = context.getString(
+                        when (data.payload?.action) {
                         "assigned" -> R.string.event_pull_request_action_assigned
                         "unassigned" -> R.string.event_pull_request_action_unassigned
                         "review_requested" -> R.string.event_pull_request_action_review_requested
@@ -350,7 +356,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     setPrimaryTextSpan(context.getString(R.string.event_pull_request, action))
 
-                    actionBuilder.append("#${data.payload.pullRequest?.number}")
+                    actionBuilder.append("#${data.payload?.pullRequest?.number}")
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 
@@ -359,13 +365,14 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     // final string example: github opened a pull request #1 at github/github
                 }
                 Event.PULL_REQUEST_REVIEW_COMMENT_EVENT -> {
-                    data.payload.comment?.body?.let {
+                    data.payload?.comment?.body?.let {
                         content = it
                     }
 
                     // data.payload.action -> The action that was performed on the comment.
                     // Can be one of "created", "edited", or "deleted".
-                    val action = context.getString(when (data.payload.action) {
+                    val action = context.getString(
+                        when (data.payload?.action) {
                         "created" -> R.string.event_pull_request_review_comment_action_created
                         "edited" -> R.string.event_pull_request_review_comment_action_edited
                         // including "deleted"
@@ -374,7 +381,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     setPrimaryTextSpan(context.getString(R.string.event_pull_request_review_comment, action))
 
-                    actionBuilder.append("#${data.payload.pullRequest?.number}")
+                    actionBuilder.append("#${data.payload?.pullRequest?.number}")
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 
@@ -383,13 +390,14 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     // final string example: github commented on pull request #1 at github/github
                 }
                 Event.PULL_REQUEST_REVIEW_EVENT -> {
-                    data.payload.review?.body?.let {
+                    data.payload?.review?.body?.let {
                         content = it
                     }
 
                     // data.payload.action -> The action that was performed.
                     // Can be "submitted", "edited", or "dismissed".
-                    val action = context.getString(when (data.payload.action) {
+                    val action = context.getString(
+                        when (data.payload?.action) {
                         "submitted" -> R.string.event_pull_request_review_action_submitted
                         "edited" -> R.string.event_pull_request_review_action_edited
                         // including "dismissed"
@@ -398,7 +406,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     setPrimaryTextSpan(context.getString(R.string.event_pull_request_review, action))
 
-                    actionBuilder.append("#${data.payload.pullRequest?.number}")
+                    actionBuilder.append("#${data.payload?.pullRequest?.number}")
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 
@@ -409,7 +417,8 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                 Event.REPOSITORY_EVENT -> {
                     // data.payload.action -> The action that was performed.
                     // This can be one of "created", "deleted" (organization hooks only), "archived", "unarchived", "publicized", or "privatized".
-                    val action = context.getString(when (data.payload.action) {
+                    val action = context.getString(
+                        when (data.payload?.action) {
                         "created" -> R.string.event_repository_action_created
                         "deleted" -> R.string.event_repository_action_deleted
                         "archived" -> R.string.event_repository_action_archived
@@ -429,14 +438,14 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     // data.payload.ref -> The full Git ref that was pushed. Example: refs/heads/master.
                     actionBuilder.append(when {
-                        data.payload.ref?.startsWith("refs/heads/") == true -> {
-                            data.payload.ref.substring(11)
+                        data.payload?.ref?.startsWith("refs/heads/") == true -> {
+                            data.payload?.ref?.substring(11)
                         }
-                        data.payload.ref?.startsWith("refs/tags/") == true -> {
-                            data.payload.ref.substring(10)
+                        data.payload?.ref?.startsWith("refs/tags/") == true -> {
+                            data.payload?.ref?.substring(10)
                         }
                         else -> {
-                            data.payload.ref
+                            data.payload?.ref
                         }
                     })
 
@@ -455,7 +464,8 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                 }
                 Event.DELETE_EVENT -> {
                     // data.payload.refType -> The object that was deleted. Can be "branch" or "tag".
-                    val deleteRefType = context.getString(when (data.payload.refType) {
+                    val deleteRefType = context.getString(
+                        when (data.payload?.refType) {
                         "branch" -> R.string.event_delete_type_branch
                         // including "tag"
                         else -> R.string.event_delete_type_tag
@@ -463,7 +473,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     setPrimaryTextSpan(context.getString(R.string.event_delete, deleteRefType))
 
                     // data.payload.ref -> The full git ref.
-                    actionBuilder.append(data.payload.ref)
+                    actionBuilder.append(data.payload?.ref)
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 
@@ -476,7 +486,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     setPrimaryTextSpan(context.getString(R.string.event_release))
 
-                    actionBuilder.append(data.payload.release?.name ?: "")
+                    actionBuilder.append(data.payload?.release?.name ?: "")
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 
@@ -493,7 +503,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                 }
                 Event.ORG_BLOCK_EVENT -> {
                     // data.payload.action -> The action performed. Can be "blocked" or "unblocked".
-                    val blockType = when (data.payload.action) {
+                    val blockType = when (data.payload?.action) {
                         "blocked" -> R.string.event_org_block_type_block
                         // including "unblocked"
                         else -> R.string.event_org_block_type_unblock
@@ -501,14 +511,15 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     setPrimaryTextSpan(context.getString(blockType))
 
                     // data.payload.blockedUser -> Information about the user that was blocked or unblocked.
-                    actionBuilder.append(data.payload.blockedUser?.login)
+                    actionBuilder.append(data.payload?.blockedUser?.login)
 
                     // final string example: github blocked octocat
                 }
                 Event.PROJECT_CARD_EVENT -> {
                     // data.payload.action -> The action performed on the project card.
                     // Can be "created", "updated", "moved", "converted", or "deleted".
-                    val action = context.getString(when (data.payload.action) {
+                    val action = context.getString(
+                        when (data.payload?.action) {
                         "created" -> R.string.event_project_card_action_created
                         "updated" -> R.string.event_project_card_action_updated
                         "moved" -> R.string.event_project_card_action_moved
@@ -518,7 +529,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     })
                     setPrimaryTextSpan(context.getString(R.string.event_project_card, action))
 
-                    actionBuilder.append(data.payload.projectCard?.note ?: "")
+                    actionBuilder.append(data.payload?.projectCard?.note ?: "")
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 
@@ -529,7 +540,8 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                 Event.PROJECT_COLUMN_EVENT -> {
                     // data.payload.action -> The action that was performed on the project column.
                     // Can be one of "created", "edited", "moved" or "deleted".
-                    val action = context.getString(when (data.payload.action) {
+                    val action = context.getString(
+                        when (data.payload?.action) {
                         "created" -> R.string.event_project_column_created
                         "updated" -> R.string.event_project_column_updated
                         "moved" -> R.string.event_project_column_moved
@@ -538,7 +550,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
                     })
                     setPrimaryTextSpan(context.getString(R.string.event_project_column, action))
 
-                    actionBuilder.append(data.payload.projectColumn?.name ?: "")
+                    actionBuilder.append(data.payload?.projectColumn?.name ?: "")
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 
@@ -552,7 +564,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     // data.payload.action -> The action that was performed.
                     // Can be one of: "member_added", "member_removed", or "member_invited".
-                    when (data.payload.action) {
+                    when (data.payload?.action) {
                         "member_added" -> {
                             actionStringResId = R.string.event_organization_member_added
                             toOrFromId = R.string.event_to
@@ -571,19 +583,20 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     // data.payload.membership -> The membership between the user and the organization.
                     // Not present when the action is "member_invited".
-                    actionBuilder.append(data.payload.membership?.user?.login)
+                    actionBuilder.append(data.payload?.membership?.user?.login)
 
                     setPrimaryTextSpan(context.getString(toOrFromId))
 
                     // data.payload.organization -> The organization in question.
-                    actionBuilder.append(data.payload.organization?.login)
+                    actionBuilder.append(data.payload?.organization?.login)
 
                     // final string example: octocat invited tonnyl to github
                 }
                 Event.PROJECT_EVENT -> {
                     // data.payload.action -> The action that was performed on the project.
                     // Can be one of "created", "edited", "closed", "reopened", or "deleted".
-                    val action = context.getString(when (data.payload.action) {
+                    val action = context.getString(
+                        when (data.payload?.action) {
                         "created" -> R.string.event_project_created
                         "edited" -> R.string.event_project_edited
                         "closed" -> R.string.event_project_closed
@@ -594,7 +607,7 @@ class TimelineAdapter(val context: Context) : PagedListAdapter<Event, RecyclerVi
 
                     setPrimaryTextSpan(action)
 
-                    actionBuilder.append(data.payload.project?.name ?: "")
+                    actionBuilder.append(data.payload?.project?.name ?: "")
 
                     setPrimaryTextSpan(context.getString(R.string.event_at))
 

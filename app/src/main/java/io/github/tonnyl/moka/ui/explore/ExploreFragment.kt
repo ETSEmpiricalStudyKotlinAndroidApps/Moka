@@ -13,13 +13,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentExploreBinding
+import io.github.tonnyl.moka.db.MokaDataBase
+import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.explore.filters.TrendingFilterFragment
-import io.github.tonnyl.moka.ui.main.MainViewModel
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
-import io.github.tonnyl.moka.ui.main.ViewModelFactory as MainViewModelFactory
+import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
-class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListener,
+    SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
@@ -29,7 +31,11 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
 
     private lateinit var binding: FragmentExploreBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentExploreBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -38,11 +44,19 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory()).get(MainViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, ViewModelFactory()).get(ExploreViewModel::class.java)
+        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory())
+            .get(MainViewModel::class.java)
+        MokaDataBase.getInstance(requireContext(), mainViewModel.userId.value ?: return).let {
+            viewModel = ViewModelProviders.of(
+                this,
+                ViewModelFactory(it.trendingDevelopersDao(), it.trendingRepositoriesDao())
+            ).get(ExploreViewModel::class.java)
+        }
 
-        binding.mainViewModel = mainViewModel
-        binding.lifecycleOwner = requireActivity()
+        with(binding) {
+            mainViewModel = this@ExploreFragment.mainViewModel
+            lifecycleOwner = this@ExploreFragment.viewLifecycleOwner
+        }
 
         val adapter = ExplorePagerAdapter(requireContext(), childFragmentManager)
         binding.viewPager.adapter = adapter
@@ -64,9 +78,15 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
         super.onResume()
         if (!::drawer.isInitialized) {
             drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
-                    ?: return
+                ?: return
         }
-        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, binding.mainSearchBar.mainSearchBarToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle = ActionBarDrawerToggle(
+            parentFragment?.activity,
+            drawer,
+            binding.mainSearchBar.mainSearchBarToolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
 
         drawer.addDrawerListener(toggle)
         toggle.syncState()

@@ -7,81 +7,83 @@ import java.util.*
 
 @Parcelize
 data class AuthenticatedUser(
-        @SerializedName("login")
-        val login: String,
 
-        @SerializedName("id")
-        val id: Long,
+    @SerializedName("login")
+    val login: String,
 
-        @SerializedName("node_id")
-        val nodeId: String,
+    @SerializedName("id")
+    val id: Long,
 
-        @SerializedName("avatar_url")
-        val avatarUrl: String,
+    @SerializedName("node_id")
+    val nodeId: String,
 
-        @SerializedName("html_url")
-        val htmlUrl: String,
+    @SerializedName("avatar_url")
+    val avatarUrl: String,
 
-        @SerializedName("type")
-        val type: String,
+    @SerializedName("html_url")
+    val htmlUrl: String,
 
-        @SerializedName("site_admin")
-        val siteAdmin: Boolean,
+    @SerializedName("type")
+    val type: String,
 
-        @SerializedName("name")
-        val name: String?,
+    @SerializedName("site_admin")
+    val siteAdmin: Boolean,
 
-        @SerializedName("company")
-        val company: String?,
+    @SerializedName("name")
+    val name: String?,
 
-        @SerializedName("blog")
-        val blog: String?,
+    @SerializedName("company")
+    val company: String?,
 
-        @SerializedName("location")
-        val location: String?,
+    @SerializedName("blog")
+    val blog: String?,
 
-        @SerializedName("email")
-        val email: String,
+    @SerializedName("location")
+    val location: String?,
 
-        @SerializedName("hireable")
-        val hireable: Boolean,
+    @SerializedName("email")
+    val email: String,
 
-        @SerializedName("bio")
-        val bio: String?,
+    @SerializedName("hireable")
+    val hireable: Boolean,
 
-        @SerializedName("public_repos")
-        val publicRepos: Int,
+    @SerializedName("bio")
+    val bio: String?,
 
-        @SerializedName("public_gists")
-        val publicGists: Int,
+    @SerializedName("public_repos")
+    val publicRepos: Int,
 
-        @SerializedName("followers")
-        val followers: Long,
+    @SerializedName("public_gists")
+    val publicGists: Int,
 
-        @SerializedName("following")
-        val following: Long,
+    @SerializedName("followers")
+    val followers: Long,
 
-        @SerializedName("created_at")
-        val createdAt: Date,
+    @SerializedName("following")
+    val following: Long,
 
-        @SerializedName("updated_at")
-        val updatedAt: Date,
+    @SerializedName("created_at")
+    val createdAt: Date,
 
-        @SerializedName("private_gists")
-        val privateGists: Int,
+    @SerializedName("updated_at")
+    val updatedAt: Date,
 
-        @SerializedName("total_private_repos")
-        val totalPrivateRepos: Int,
+    @SerializedName("private_gists")
+    val privateGists: Int,
 
-        @SerializedName("owned_private_repos")
-        val ownedPrivateRepos: Int,
+    @SerializedName("total_private_repos")
+    val totalPrivateRepos: Int,
 
-        @SerializedName("disk_usage")
-        val diskUsage: Long,
+    @SerializedName("owned_private_repos")
+    val ownedPrivateRepos: Int,
 
-        @SerializedName("collaborators")
-        val collaborators: Int,
+    @SerializedName("disk_usage")
+    val diskUsage: Long,
 
-        @SerializedName("two_factor_authentication")
-        val twoFactorAuthentication: Boolean
+    @SerializedName("collaborators")
+    val collaborators: Int,
+
+    @SerializedName("two_factor_authentication")
+    val twoFactorAuthentication: Boolean
+
 ) : Parcelable

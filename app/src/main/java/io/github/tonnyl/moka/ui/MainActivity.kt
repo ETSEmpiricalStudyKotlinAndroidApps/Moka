@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.main
+package io.github.tonnyl.moka.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +14,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProviders.of(this, ViewModelFactory()).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(
+            this,
+            ViewModelFactory()
+        ).get(MainViewModel::class.java)
 
         viewModel.login.observe(this, Observer {
             viewModel.getUserProfile()

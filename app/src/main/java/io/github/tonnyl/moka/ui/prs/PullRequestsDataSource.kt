@@ -3,10 +3,10 @@ package io.github.tonnyl.moka.ui.prs
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.apollographql.apollo.coroutines.toDeferred
-import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.PullRequestsQuery
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.PullRequestItem
+import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

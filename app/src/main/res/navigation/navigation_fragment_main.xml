@@ -37,13 +37,13 @@
 
         <argument
             android:name="login"
-            android:defaultValue="null"
+            android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />
 
         <argument
             android:name="repository_name"
-            android:defaultValue="null"
+            android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />
 

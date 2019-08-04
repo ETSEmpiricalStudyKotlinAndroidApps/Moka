@@ -1,13 +1,16 @@
 package io.github.tonnyl.moka.ui.repository
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.coroutines.toDeferred
-import io.github.tonnyl.moka.NetworkClient
-import io.github.tonnyl.moka.data.RepositoryGraphQL
-import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.CurrentLevelTreeViewQuery
 import io.github.tonnyl.moka.FileContentQuery
 import io.github.tonnyl.moka.RepositoryQuery
+import io.github.tonnyl.moka.data.RepositoryGraphQL
+import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.util.wrapWithHtmlTemplate
 import kotlinx.coroutines.Dispatchers

@@ -2,6 +2,8 @@ package io.github.tonnyl.moka.data
 
 import android.annotation.SuppressLint
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import java.util.*
@@ -9,455 +11,593 @@ import java.util.*
 @Parcelize
 @SuppressLint("ParcelCreator")
 data class EventPayload(
-        @SerializedName("action")
-        val action: String,
 
-        @SerializedName("comment")
-        val comment: EventComment?,
+    @SerializedName("action")
+    @ColumnInfo(name = "action")
+    var action: String?,
 
-        @SerializedName("commit_comment")
-        val commitComment: EventComment?,
+    @SerializedName("comment")
+    @Embedded(prefix = "comment_")
+    var comment: EventComment?,
 
-        @SerializedName("issue")
-        val issue: EventIssue?,
+    @SerializedName("commit_comment")
+    @Embedded(prefix = "commit_comment_")
+    var commitComment: EventComment?,
 
-        @SerializedName("pull_request")
-        val pullRequest: EventPullRequest?,
+    @SerializedName("issue")
+    @Embedded(prefix = "issue_")
+    var issue: EventIssue?,
 
-        @SerializedName("review")
-        val review: EventReview?,
+    @SerializedName("pull_request")
+    @Embedded(prefix = "pull_request_")
+    var pullRequest: EventPullRequest?,
 
-        /**
-         * Only for [Event.DOWNLOAD_EVENT].
-         */
-        @SerializedName("download")
-        val download: EventDownload?,
+    @SerializedName("review")
+    @Embedded(prefix = "review_")
+    var review: EventReview?,
 
-        /**
-         * Only for [Event.FOLLOW_EVENT]
-         */
-        @SerializedName("target")
-        val target: EventActor?,
+    /**
+     * Only for [Event.DOWNLOAD_EVENT].
+     */
+    @SerializedName("download")
+    @Embedded(prefix = "download_")
+    var download: EventDownload?,
 
-        /**
-         * Only for [Event.FORK_EVENT]
-         */
-        @SerializedName("forkee")
-        val forkee: EventRepository?,
+    /**
+     * Only for [Event.FOLLOW_EVENT]
+     */
+    @SerializedName("target")
+    @Embedded(prefix = "target_")
+    var target: EventActor?,
 
-        /**
-         * Only for [Event.GIST_EVENT]
-         */
-        @SerializedName("gist")
-        val gist: Gist?,
+    /**
+     * Only for [Event.FORK_EVENT]
+     */
+    @SerializedName("forkee")
+    @Embedded(prefix = "forkee_")
+    var forkee: EventRepository?,
 
-        /**
-         * Only for [Event.GOLLUM_EVENT]
-         */
-        @SerializedName("pages")
-        val pages: List<EventGollumPage>?,
+    /**
+     * Only for [Event.GIST_EVENT]
+     */
+    @SerializedName("gist")
+    @Embedded(prefix = "gist_")
+    var gist: Gist?,
 
-        /**
-         * Only for [Event.MEMBER_EVENT]
-         */
-        @SerializedName("member")
-        val member: EventActor?,
+    /**
+     * Only for [Event.GOLLUM_EVENT]
+     */
+    @SerializedName("pages")
+    @ColumnInfo(name = "pages")
+    var pages: List<EventGollumPage>?,
 
-        /**
-         * Only for [Event.TEAM_ADD_EVENT]
-         */
-        @SerializedName("team")
-        val team: EventTeam?,
+    /**
+     * Only for [Event.MEMBER_EVENT]
+     */
+    @SerializedName("member")
+    @Embedded(prefix = "member_")
+    var member: EventActor?,
 
-        /**
-         * Only for [Event.TEAM_ADD_EVENT]
-         */
-        @SerializedName("organization")
-        val organization: EventActor?,
+    /**
+     * Only for [Event.TEAM_ADD_EVENT]
+     */
+    @SerializedName("team")
+    @Embedded(prefix = "team_")
+    var team: EventTeam?,
 
-        /**
-         * Only for [Event.RELEASE_EVENT]
-         */
-        @SerializedName("release")
-        val release: EventRelease?,
+    /**
+     * Only for [Event.TEAM_ADD_EVENT]
+     */
+    @SerializedName("organization")
+    @Embedded(prefix = "organization_")
+    var organization: EventActor?,
 
-        /**
-         * Only for [Event.ORG_BLOCK_EVENT]
-         */
-        @SerializedName("blocked_user")
-        val blockedUser: EventActor?,
+    /**
+     * Only for [Event.RELEASE_EVENT]
+     */
+    @SerializedName("release")
+    @Embedded(prefix = "release_")
+    var release: EventRelease?,
 
-        /**
-         * Only for [Event.PROJECT_CARD_EVENT]
-         */
-        @SerializedName("project_card")
-        val projectCard: EventProjectCard?,
+    /**
+     * Only for [Event.ORG_BLOCK_EVENT]
+     */
+    @SerializedName("blocked_user")
+    @Embedded(prefix = "blocked_user_")
+    var blockedUser: EventActor?,
 
-        /**
-         * Only for [Event.PROJECT_COLUMN_EVENT]
-         */
-        @SerializedName("project_column")
-        val projectColumn: EventProjectColumn?,
+    /**
+     * Only for [Event.PROJECT_CARD_EVENT]
+     */
+    @SerializedName("project_card")
+    @Embedded(prefix = "project_card_")
+    var projectCard: EventProjectCard?,
 
-        /**
-         * Only for [Event.ORGANIZATION_EVENT]
-         */
-        @SerializedName("membership")
-        val membership: EventMembership?,
+    /**
+     * Only for [Event.PROJECT_COLUMN_EVENT]
+     */
+    @SerializedName("project_column")
+    @Embedded(prefix = "project_column_")
+    var projectColumn: EventProjectColumn?,
 
-        /**
-         * Only for [Event.ORGANIZATION_EVENT]
-         */
-        @SerializedName("invitation")
-        val invitation: EventActor?,
+    /**
+     * Only for [Event.ORGANIZATION_EVENT]
+     */
+    @SerializedName("membership")
+    @Embedded(prefix = "membership_")
+    var membership: EventMembership?,
 
-        /**
-         * Only for [Event.PROJECT_EVENT]
-         */
-        @SerializedName("project")
-        val project: EventProject?,
+    /**
+     * Only for [Event.ORGANIZATION_EVENT]
+     */
+    @SerializedName("invitation")
+    @Embedded(prefix = "invitation_")
+    var invitation: EventActor?,
 
-        /**
-         * Only for [Event.PUSH_EVENT]
-         *
-         * The number of commits in the push.
-         */
-        @SerializedName("size")
-        val size: Int?,
+    /**
+     * Only for [Event.PROJECT_EVENT]
+     */
+    @SerializedName("project")
+    @Embedded(prefix = "project_")
+    var project: EventProject?,
 
-        @SerializedName("ref_type")
-        val refType: String?,
+    /**
+     * Only for [Event.PUSH_EVENT]
+     *
+     * The number of commits in the push.
+     */
+    @SerializedName("size")
+    @ColumnInfo(name = "size")
+    var size: Int?,
 
-        @SerializedName("ref")
-        val ref: String?
+    @SerializedName("ref_type")
+    @ColumnInfo(name = "ref_type")
+    var refType: String?,
+
+    @SerializedName("ref")
+    @ColumnInfo(name = "ref")
+    var ref: String?
+
 ) : Parcelable
 
 @Parcelize
 data class EventComment(
-        @SerializedName("html_url")
-        val htmlUrl: String,
 
-        @SerializedName("id")
-        val id: Long,
+    @SerializedName("html_url")
+    @ColumnInfo(name = "html_url")
+    var htmlUrl: String,
 
-        @SerializedName("user")
-        val user: EventActor,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: Long,
 
-        @SerializedName("created_at")
-        val createdAt: Date,
+    @SerializedName("user")
+    @Embedded(prefix = "user_")
+    var user: EventActor,
 
-        @SerializedName("updated_at")
-        val updatedAt: Date,
+    @SerializedName("created_at")
+    @ColumnInfo(name = "created_at")
+    var createdAt: Date,
 
-        @SerializedName("author_association")
-        val authorAssociation: String,
+    @SerializedName("updated_at")
+    @ColumnInfo(name = "updated_at")
+    var updatedAt: Date,
 
-        @SerializedName("body")
-        val body: String,
+    @SerializedName("author_association")
+    @ColumnInfo(name = "author_association")
+    var authorAssociation: String,
 
-        @SerializedName("commit_id")
-        val commitId: String?
+    @SerializedName("body")
+    @ColumnInfo(name = "body")
+    var body: String,
+
+    @SerializedName("commit_id")
+    @ColumnInfo(name = "commit_id")
+    var commitId: String?
+
 ) : Parcelable
 
 @Parcelize
 data class EventPullRequest(
-        @SerializedName("id")
-        val id: String,
 
-        @SerializedName("html_url")
-        val htmlUrl: String,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: String,
 
-        @SerializedName("diff_url")
-        val diffUrl: String,
+    @SerializedName("html_url")
+    @ColumnInfo(name = "html_url")
+    var htmlUrl: String,
 
-        @SerializedName("patch_url")
-        val patchUrl: String,
+    @SerializedName("diff_url")
+    @ColumnInfo(name = "diff_url")
+    var diffUrl: String,
 
-        @SerializedName("number")
-        val number: Long,
+    @SerializedName("patch_url")
+    @ColumnInfo(name = "patch_url")
+    var patchUrl: String,
 
-        @SerializedName("state")
-        val state: String,
+    @SerializedName("number")
+    @ColumnInfo(name = "number")
+    var number: Long,
 
-        @SerializedName("locked")
-        val locked: Boolean,
+    @SerializedName("state")
+    @ColumnInfo(name = "state")
+    var state: String,
 
-        @SerializedName("title")
-        val title: String,
+    @SerializedName("locked")
+    @ColumnInfo(name = "locked")
+    var locked: Boolean,
 
-        @SerializedName("user")
-        val user: EventActor,
+    @SerializedName("title")
+    @ColumnInfo(name = "title")
+    var title: String,
 
-        @SerializedName("body")
-        val body: String?,
+    @SerializedName("user")
+    @Embedded(prefix = "user_")
+    var user: EventActor,
 
-        @SerializedName("created_at")
-        val createdAt: Date,
+    @SerializedName("body")
+    @ColumnInfo(name = "body")
+    var body: String?,
 
-        @SerializedName("updated_at")
-        val updatedAt: Date,
+    @SerializedName("created_at")
+    @ColumnInfo(name = "created_at")
+    var createdAt: Date,
 
-        @SerializedName("closed_at")
-        val closedAt: Date?,
+    @SerializedName("updated_at")
+    @ColumnInfo(name = "updated_at")
+    var updatedAt: Date,
 
-        @SerializedName("merged_at")
-        val mergedAt: Date?,
+    @SerializedName("closed_at")
+    @ColumnInfo(name = "closed_at")
+    var closedAt: Date?,
 
-        @SerializedName("author_association")
-        val authorAssociation: String
+    @SerializedName("merged_at")
+    @ColumnInfo(name = "merged_at")
+    var mergedAt: Date?,
+
+    @SerializedName("author_association")
+    @ColumnInfo(name = "author_association")
+    var authorAssociation: String
+
 ) : Parcelable
 
 @Parcelize
 data class EventReview(
-        @SerializedName("id")
-        val id: String,
 
-        @SerializedName("user")
-        val user: EventActor,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: String,
 
-        @SerializedName("body")
-        val body: String?,
+    @SerializedName("user")
+    @Embedded(prefix = "user_")
+    var user: EventActor,
 
-        @SerializedName("submitted_at")
-        val submittedAt: Date,
+    @SerializedName("body")
+    @ColumnInfo(name = "body")
+    var body: String?,
 
-        @SerializedName("state")
-        val state: String,
+    @SerializedName("submitted_at")
+    @ColumnInfo(name = "submitted_at")
+    var submittedAt: Date,
 
-        @SerializedName("html_url")
-        val htmlUrl: String,
+    @SerializedName("state")
+    @ColumnInfo(name = "state")
+    var state: String,
 
-        @SerializedName("author_association")
-        val authorAssociation: String
+    @SerializedName("html_url")
+    @ColumnInfo(name = "html_url")
+    var htmlUrl: String,
+
+    @SerializedName("author_association")
+    @ColumnInfo(name = "author_association")
+    var authorAssociation: String
+
 ) : Parcelable
 
 @Parcelize
 data class EventDownload(
-        @SerializedName("id")
-        val id: Int,
 
-        @SerializedName("name")
-        val name: String,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: Int,
 
-        @SerializedName("description")
-        val description: String,
+    @SerializedName("name")
+    @ColumnInfo(name = "name")
+    var name: String,
 
-        @SerializedName("size")
-        val size: Long,
+    @SerializedName("description")
+    @ColumnInfo(name = "description")
+    var description: String,
 
-        @SerializedName("download_count")
-        val downloadCount: Long,
+    @SerializedName("size")
+    @ColumnInfo(name = "size")
+    var size: Long,
 
-        @SerializedName("content_type")
-        val contentType: String
+    @SerializedName("download_count")
+    @ColumnInfo(name = "download_count")
+    var downloadCount: Long,
+
+    @SerializedName("content_type")
+    @ColumnInfo(name = "content_type")
+    var contentType: String
+
 ) : Parcelable
 
 @Parcelize
 data class EventGollumPage(
-        /**
-         * The name of the page.
-         */
-        @SerializedName("page_name")
-        val pageName: String,
 
-        /**
-         * The current page title.
-         */
-        @SerializedName("title")
-        val title: String,
+    /**
+     * The name of the page.
+     */
+    @SerializedName("page_name")
+    var pageName: String,
 
-        @SerializedName("summary")
-        val summary: String?,
+    /**
+     * The current page title.
+     */
+    @SerializedName("title")
+    var title: String,
 
-        /**
-         * The action that was performed on the page. Can be created or edited.
-         */
-        @SerializedName("action")
-        val action: String,
+    @SerializedName("summary")
+    var summary: String?,
 
-        /**
-         * The latest commit SHA of the page.
-         */
-        @SerializedName("sha")
-        val sha: String,
+    /**
+     * The action that was performed on the page. Can be created or edited.
+     */
+    @SerializedName("action")
+    var action: String,
 
-        /**
-         * Points to the HTML wiki page.
-         */
-        @SerializedName("html_url")
-        val htmlUrl: String
+    /**
+     * The latest commit SHA of the page.
+     */
+    @SerializedName("sha")
+    var sha: String,
+
+    /**
+     * Points to the HTML wiki page.
+     */
+    @SerializedName("html_url")
+    var htmlUrl: String
+
 ) : Parcelable
 
 @Parcelize
 data class EventTeam(
-        @SerializedName("name")
-        val name: String,
 
-        @SerializedName("id")
-        val id: Long,
+    @SerializedName("name")
+    @ColumnInfo(name = "name")
+    var name: String,
 
-        @SerializedName("slug")
-        val slug: String,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: Long,
 
-        @SerializedName("description")
-        val description: String,
+    @SerializedName("slug")
+    @ColumnInfo(name = "slug")
+    var slug: String,
 
-        @SerializedName("privacy")
-        val privacy: Boolean,
+    @SerializedName("description")
+    @ColumnInfo(name = "description")
+    var description: String,
 
-        @SerializedName("permission")
-        val permission: String
+    @SerializedName("privacy")
+    @ColumnInfo(name = "privacy")
+    var privacy: Boolean,
+
+    @SerializedName("permission")
+    @ColumnInfo(name = "permission")
+    var permission: String
+
 ) : Parcelable
 
 @Parcelize
 data class EventRelease(
-        @SerializedName("html_url")
-        val htmlUrl: String,
 
-        @SerializedName("id")
-        val id: Long,
+    @SerializedName("html_url")
+    @ColumnInfo(name = "html_url")
+    var htmlUrl: String,
 
-        @SerializedName("tag_name")
-        val tagName: String,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: Long,
 
-        @SerializedName("target_commitish")
-        val targetCommitish: String,
+    @SerializedName("tag_name")
+    @ColumnInfo(name = "tag_name")
+    var tagName: String,
 
-        @SerializedName("name")
-        val name: String?,
+    @SerializedName("target_commitish")
+    @ColumnInfo(name = "target_commitish")
+    var targetCommitish: String,
 
-        @SerializedName("draft")
-        val draft: Boolean,
+    @SerializedName("name")
+    @ColumnInfo(name = "name")
+    var name: String?,
 
-        @SerializedName("author")
-        val author: EventActor,
+    @SerializedName("draft")
+    @ColumnInfo(name = "draft")
+    var draft: Boolean,
 
-        @SerializedName("prerelease")
-        val prerelease: Boolean,
+    @SerializedName("author")
+    @Embedded(prefix = "author_")
+    var author: EventActor,
 
-        @SerializedName("created_at")
-        val createdAt: Date,
+    @SerializedName("prerelease")
+    @ColumnInfo(name = "prerelease")
+    var prerelease: Boolean,
 
-        @SerializedName("published_at")
-        val publishedAt: Date,
+    @SerializedName("created_at")
+    @ColumnInfo(name = "created_at")
+    var createdAt: Date,
 
-        @SerializedName("body")
-        val body: String
+    @SerializedName("published_at")
+    @ColumnInfo(name = "published_at")
+    var publishedAt: Date,
+
+    @SerializedName("body")
+    @ColumnInfo(name = "body")
+    var body: String
+
 ) : Parcelable
 
 @Parcelize
 data class EventProjectCard(
-        @SerializedName("column_id")
-        val columnId: Long,
 
-        @SerializedName("id")
-        val id: Long,
+    @SerializedName("column_id")
+    @ColumnInfo(name = "column_id")
+    var columnId: Long,
 
-        @SerializedName("note")
-        val note: String,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: Long,
 
-        @SerializedName("creator")
-        val creator: EventActor,
+    @SerializedName("note")
+    @ColumnInfo(name = "note")
+    var note: String,
 
-        @SerializedName("created_at")
-        val createdAt: Date,
+    @SerializedName("creator")
+    @Embedded(prefix = "creator_")
+    var creator: EventActor,
 
-        @SerializedName("updated_at")
-        val updatedAt: Date
+    @SerializedName("created_at")
+    @ColumnInfo(name = "created_at")
+    var createdAt: Date,
+
+    @SerializedName("updated_at")
+    @ColumnInfo(name = "updated_at")
+    var updatedAt: Date
+
 ) : Parcelable
 
 @Parcelize
 data class EventProjectColumn(
-        @SerializedName("id")
-        val id: Long,
 
-        @SerializedName("name")
-        val name: String,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: Long,
 
-        @SerializedName("created_at")
-        val createdAt: Date,
+    @SerializedName("name")
+    @ColumnInfo(name = "name")
+    var name: String,
 
-        @SerializedName("updated_at")
-        val updatedAt: Date
+    @SerializedName("created_at")
+    @ColumnInfo(name = "created_at")
+    var createdAt: Date,
+
+    @SerializedName("updated_at")
+    @ColumnInfo(name = "updated_at")
+    var updatedAt: Date
+
 ) : Parcelable
 
 @Parcelize
 data class EventProject(
-        @SerializedName("html_url")
-        val htmlUrl: String,
 
-        @SerializedName("id")
-        val id: Long,
+    @SerializedName("html_url")
+    @ColumnInfo(name = "html_url")
+    var htmlUrl: String,
 
-        @SerializedName("name")
-        val name: String,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: Long,
 
-        @SerializedName("body")
-        val body: String,
+    @SerializedName("name")
+    @ColumnInfo(name = "name")
+    var name: String,
 
-        @SerializedName("number")
-        val number: Int,
+    @SerializedName("body")
+    @ColumnInfo(name = "body")
+    var body: String,
 
-        @SerializedName("state")
-        val state: String,
+    @SerializedName("number")
+    @ColumnInfo(name = "number")
+    var number: Int,
 
-        @SerializedName("creator")
-        val creator: EventActor,
+    @SerializedName("state")
+    @ColumnInfo(name = "state")
+    var state: String,
 
-        @SerializedName("created_at")
-        val createdAt: Date,
+    @SerializedName("creator")
+    @Embedded(prefix = "creator_")
+    var creator: EventActor,
 
-        @SerializedName("updated_at")
-        val updatedAt: Date
+    @SerializedName("created_at")
+    @ColumnInfo(name = "created_at")
+    var createdAt: Date,
+
+    @SerializedName("updated_at")
+    @ColumnInfo(name = "updated_at")
+    var updatedAt: Date
+
 ) : Parcelable
 
 @Parcelize
 data class EventGistFile(
-        @SerializedName("filename")
-        val filename: String,
 
-        @SerializedName("type")
-        val type: String,
+    @SerializedName("filename")
+    @ColumnInfo(name = "filename")
+    var filename: String,
 
-        @SerializedName("language")
-        val language: String,
+    @SerializedName("type")
+    @ColumnInfo(name = "type")
+    var type: String,
 
-        @SerializedName("raw_url")
-        val rawUrl: String,
+    @SerializedName("language")
+    @ColumnInfo(name = "language")
+    var language: String,
 
-        @SerializedName("size")
-        val size: Long
+    @SerializedName("raw_url")
+    @ColumnInfo(name = "raw_url")
+    var rawUrl: String,
+
+    @SerializedName("size")
+    @ColumnInfo(name = "size")
+    var size: Long
+
 ) : Parcelable
 
 @Parcelize
 data class EventIssue(
-        @SerializedName("repository_url")
-        val repositoryUrl: String,
 
-        @SerializedName("html_url")
-        val htmlUrl: String,
+    @SerializedName("repository_url")
+    @ColumnInfo(name = "repository_url")
+    var repositoryUrl: String,
 
-        @SerializedName("id")
-        val id: Long,
+    @SerializedName("html_url")
+    @ColumnInfo(name = "html_url")
+    var htmlUrl: String,
 
-        @SerializedName("number")
-        val number: Int,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: Long,
 
-        @SerializedName("title")
-        val title: String,
+    @SerializedName("number")
+    @ColumnInfo(name = "number")
+    var number: Int,
 
-        @SerializedName("user")
-        val user: EventActor
+    @SerializedName("title")
+    @ColumnInfo(name = "title")
+    var title: String,
+
+    @SerializedName("user")
+    @Embedded(prefix = "user_")
+    var user: EventActor
+
 ) : Parcelable
 
 @Parcelize
 data class EventMembership(
-        @SerializedName("state")
-        val state: String,
 
-        @SerializedName("role")
-        val role: String,
+    @SerializedName("state")
+    @ColumnInfo(name = "state")
+    var state: String,
 
-        @SerializedName("user")
-        val user: EventActor
+    @SerializedName("role")
+    @ColumnInfo(name = "role")
+    var role: String,
+
+    @SerializedName("user")
+    @Embedded(prefix = "user_")
+    var user: EventActor
+
 ) : Parcelable

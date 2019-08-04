@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.coroutines.toDeferred
-import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.OrganizationQuery
 import io.github.tonnyl.moka.UserQuery
 import io.github.tonnyl.moka.data.Organization
 import io.github.tonnyl.moka.data.UserGraphQL
+import io.github.tonnyl.moka.network.NetworkClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import kotlinx.coroutines.Dispatchers

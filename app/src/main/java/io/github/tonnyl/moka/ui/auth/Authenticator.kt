@@ -4,9 +4,11 @@ import android.accounts.*
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import io.github.tonnyl.moka.ui.main.MainActivity
+import io.github.tonnyl.moka.ui.MainActivity
 
-class Authenticator(private val context: Context) : AbstractAccountAuthenticator(context) {
+class Authenticator(
+    private val context: Context
+) : AbstractAccountAuthenticator(context) {
 
     companion object {
 
@@ -16,10 +18,19 @@ class Authenticator(private val context: Context) : AbstractAccountAuthenticator
 
     }
 
-    override fun editProperties(response: AccountAuthenticatorResponse, accountType: String): Bundle? = null
+    override fun editProperties(
+        response: AccountAuthenticatorResponse,
+        accountType: String
+    ): Bundle? = null
 
     @Throws(NetworkErrorException::class)
-    override fun addAccount(response: AccountAuthenticatorResponse, accountType: String, authTokenType: String, requiredFeatures: Array<String>, options: Bundle): Bundle {
+    override fun addAccount(
+        response: AccountAuthenticatorResponse,
+        accountType: String,
+        authTokenType: String,
+        requiredFeatures: Array<String>,
+        options: Bundle
+    ): Bundle {
         val intent = Intent(context, MainActivity::class.java)
         intent.putExtra(KEY_ACCOUNT_TYPE, accountType)
         intent.putExtra(KEY_AUTH_TYPE, authTokenType)
@@ -32,10 +43,19 @@ class Authenticator(private val context: Context) : AbstractAccountAuthenticator
     }
 
     @Throws(NetworkErrorException::class)
-    override fun confirmCredentials(response: AccountAuthenticatorResponse, account: Account, options: Bundle): Bundle? = null
+    override fun confirmCredentials(
+        response: AccountAuthenticatorResponse,
+        account: Account,
+        options: Bundle
+    ): Bundle? = null
 
     @Throws(NetworkErrorException::class)
-    override fun getAuthToken(response: AccountAuthenticatorResponse, account: Account, authTokenType: String, options: Bundle): Bundle {
+    override fun getAuthToken(
+        response: AccountAuthenticatorResponse,
+        account: Account,
+        authTokenType: String,
+        options: Bundle
+    ): Bundle {
         val am = AccountManager.get(context)
         val authToken = am.peekAuthToken(account, authTokenType)
 
@@ -61,13 +81,25 @@ class Authenticator(private val context: Context) : AbstractAccountAuthenticator
     override fun getAuthTokenLabel(authTokenType: String): String? = null
 
     @Throws(NetworkErrorException::class)
-    override fun updateCredentials(response: AccountAuthenticatorResponse, account: Account, authTokenType: String, options: Bundle): Bundle? = null
+    override fun updateCredentials(
+        response: AccountAuthenticatorResponse,
+        account: Account,
+        authTokenType: String,
+        options: Bundle
+    ): Bundle? = null
 
     @Throws(NetworkErrorException::class)
-    override fun hasFeatures(response: AccountAuthenticatorResponse, account: Account, features: Array<String>): Bundle? = null
+    override fun hasFeatures(
+        response: AccountAuthenticatorResponse,
+        account: Account,
+        features: Array<String>
+    ): Bundle? = null
 
     @Throws(NetworkErrorException::class)
-    override fun getAccountRemovalAllowed(response: AccountAuthenticatorResponse, account: Account): Bundle {
+    override fun getAccountRemovalAllowed(
+        response: AccountAuthenticatorResponse,
+        account: Account
+    ): Bundle {
         return super.getAccountRemovalAllowed(response, account)
     }
 

@@ -38,6 +38,12 @@ android {
             buildConfigField("String", "TEST_TOKEN", "\"${System.getenv("TEST_TOKEN")}\"")
         }
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = mapOf("room.schemaLocation" to "$projectDir/schemas")
+            }
+        }
+
     }
     buildTypes {
         getByName("release") {

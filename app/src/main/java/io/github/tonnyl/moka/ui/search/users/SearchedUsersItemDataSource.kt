@@ -3,12 +3,12 @@ package io.github.tonnyl.moka.ui.search.users
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.apollographql.apollo.coroutines.toDeferred
-import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.SearchUserQuery
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.SearchedOrganizationItem
 import io.github.tonnyl.moka.data.item.SearchedUserItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
+import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

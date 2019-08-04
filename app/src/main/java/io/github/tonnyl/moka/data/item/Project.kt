@@ -2,6 +2,10 @@ package io.github.tonnyl.moka.data.item
 
 import android.net.Uri
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 import io.github.tonnyl.moka.fragment.Project as RawProject
@@ -10,101 +14,118 @@ import io.github.tonnyl.moka.type.ProjectState as RawProjectState
 /**
  * Projects manage issues, pull requests and notes within a project owner.
  */
+@Entity(tableName = "project")
 @Parcelize
 data class Project(
 
-        /**
-         * The project's description body.
-         */
-        val body: String?,
+    /**
+     * The project's description body.
+     */
+    @ColumnInfo(name = "body")
+    var body: String?,
 
-        /**
-         * The projects description body rendered to HTML.
-         */
-        val bodyHTML: String,
+    /**
+     * The projects description body rendered to HTML.
+     */
+    @ColumnInfo(name = "body_HTML")
+    var bodyHTML: String,
 
-        /**
-         * true if the object is closed (definition of closed may depend on type).
-         */
-        val closed: Boolean,
+    /**
+     * true if the object is closed (definition of closed may depend on type).
+     */
+    @ColumnInfo(name = "closed")
+    var closed: Boolean,
 
-        /**
-         * Identifies the date and time when the object was closed.
-         */
-        val closedAt: Date?,
+    /**
+     * Identifies the date and time when the object was closed.
+     */
+    @ColumnInfo(name = "closed_at")
+    var closedAt: Date?,
 
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    @ColumnInfo(name = "created_at")
+    var createdAt: Date,
 
-        /**
-         * The actor who originally created the project.
-         */
-        val creator: ProjectActor?,
+    /**
+     * The actor who originally created the project.
+     */
+    @Embedded(prefix = "project_creator")
+    var creator: ProjectActor?,
 
-        /**
-         * Identifies the primary key from the database.
-         */
-        val databaseId: Int?,
+    /**
+     * Identifies the primary key from the database.
+     */
+    @ColumnInfo(name = "databaseId")
+    var databaseId: Int?,
 
-        val id: String,
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    var id: String,
 
-        /**
-         * The project's name.
-         */
-        val name: String,
+    /**
+     * The project's name.
+     */
+    @ColumnInfo(name = "name")
+    var name: String,
 
-        /**
-         * The project's number.
-         */
-        val number: Int,
+    /**
+     * The project's number.
+     */
+    @ColumnInfo(name = "number")
+    var number: Int,
 
-        /**
-         * The HTTP path for this project.
-         */
-        val resourcePath: Uri,
+    /**
+     * The HTTP path for this project.
+     */
+    @ColumnInfo(name = "resource_path")
+    var resourcePath: Uri,
 
-        /**
-         * Whether the project is open or closed.
-         */
-        val state: ProjectState,
+    /**
+     * Whether the project is open or closed.
+     */
+    @ColumnInfo(name = "state")
+    var state: ProjectState,
 
-        /**
-         * Identifies the date and time when the object was last updated.
-         */
-        val updatedAt: Date,
+    /**
+     * Identifies the date and time when the object was last updated.
+     */
+    @ColumnInfo(name = "updated_at")
+    var updatedAt: Date,
 
-        /**
-         * The HTTP URL for this project.
-         */
-        val url: Uri,
+    /**
+     * The HTTP URL for this project.
+     */
+    @ColumnInfo(name = "url")
+    var url: Uri,
 
-        /**
-         * Check if the current viewer can update this object.
-         */
-        val viewerCanUpdate: Boolean
+    /**
+     * Check if the current viewer can update this object.
+     */
+    @ColumnInfo(name = "viewer_can_update")
+    var viewerCanUpdate: Boolean
 
 ) : Parcelable {
 
     companion object {
 
         fun createFromRaw(data: RawProject): Project = Project(
-                data.body(),
-                data.bodyHTML(),
-                data.closed(),
-                data.closedAt(),
-                data.createdAt(),
-                ProjectActor.createFromRaw(data.creator()),
-                data.databaseId(),
-                data.id(),
-                data.name(),
-                data.number(),
-                data.resourcePath(),
-                ProjectState.createFromRaw(data.state()),
-                data.updatedAt(),
-                data.url(),
-                data.viewerCanUpdate()
+            data.body(),
+            data.bodyHTML(),
+            data.closed(),
+            data.closedAt(),
+            data.createdAt(),
+            ProjectActor.createFromRaw(data.creator()),
+            data.databaseId(),
+            data.id(),
+            data.name(),
+            data.number(),
+            data.resourcePath(),
+            ProjectState.createFromRaw(data.state()),
+            data.updatedAt(),
+            data.url(),
+            data.viewerCanUpdate()
         )
 
     }
@@ -117,25 +138,29 @@ data class Project(
 @Parcelize
 data class ProjectActor(
 
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri,
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    @ColumnInfo(name = "avatar_url")
+    var avatarUrl: Uri,
 
-        /**
-         * The username of the actor.
-         */
-        val login: String,
+    /**
+     * The username of the actor.
+     */
+    @ColumnInfo(name = "login")
+    var login: String,
 
-        /**
-         * The HTTP path for this actor.
-         */
-        val resourcePath: Uri,
+    /**
+     * The HTTP path for this actor.
+     */
+    @ColumnInfo(name = "resource_path")
+    var resourcePath: Uri,
 
-        /**
-         * The HTTP URL for this actor.
-         */
-        val url: Uri
+    /**
+     * The HTTP URL for this actor.
+     */
+    @ColumnInfo(name = "url")
+    var url: Uri
 
 ) : Parcelable {
 
@@ -145,10 +170,10 @@ data class ProjectActor(
             null
         } else {
             ProjectActor(
-                    data.avatarUrl(),
-                    data.login(),
-                    data.resourcePath(),
-                    data.url()
+                data.avatarUrl(),
+                data.login(),
+                data.resourcePath(),
+                data.url()
             )
         }
 

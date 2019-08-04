@@ -14,10 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentNotificationsBinding
+import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.main.MainViewModel
-import io.github.tonnyl.moka.ui.main.ViewModelFactory as MainViewModelFactory
+import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
 class NotificationsFragment : Fragment(), View.OnClickListener {
 
@@ -29,7 +30,11 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentNotificationsBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentNotificationsBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -38,8 +43,17 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory()).get(MainViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, ViewModelFactory()).get(NotificationsViewModel::class.java)
+        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory())
+            .get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(
+            this,
+            ViewModelFactory(
+                MokaDataBase.getInstance(
+                    requireContext(),
+                    mainViewModel.userId.value ?: return
+                ).notificationsDao()
+            )
+        ).get(NotificationsViewModel::class.java)
 
         binding.mainViewModel = mainViewModel
         binding.lifecycleOwner = requireActivity()
@@ -55,8 +69,10 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
             adapter = notificationAdapter
         }
 
-        binding.emptyContent.emptyContentTitleText.text = getString(R.string.timeline_content_empty_title)
-        binding.emptyContent.emptyContentActionText.text = getString(R.string.timeline_content_empty_action)
+        binding.emptyContent.emptyContentTitleText.text =
+            getString(R.string.timeline_content_empty_title)
+        binding.emptyContent.emptyContentActionText.text =
+            getString(R.string.timeline_content_empty_action)
 
         binding.emptyContent.emptyContentActionText.setOnClickListener(this)
         binding.emptyContent.emptyContentRetryButton.setOnClickListener(this)
@@ -71,8 +87,6 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
                 }
                 Status.ERROR -> {
                     binding.swipeRefresh.isRefreshing = false
-
-                    showHideEmptyView(true)
                 }
                 null -> {
 
@@ -110,18 +124,14 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
             }
         })
 
-        viewModel.notificationsResult.observe(this, Observer {
+        viewModel.data.observe(this, Observer {
             notificationAdapter.submitList(it)
-
-            val status = viewModel.loadStatusLiveData.value?.initial?.status
-
-            showHideEmptyView(it.isEmpty()
-                    && (status == Status.SUCCESS || status == Status.ERROR))
+            showHideEmptyView(it.isEmpty())
         })
 
         mainViewModel.login.observe(this, Observer { login ->
             login?.let {
-                viewModel.refreshNotificationsData(it, false)
+                viewModel.refreshData(it, false)
             }
         })
 
@@ -134,8 +144,10 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
         })
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.refreshNotificationsData(mainViewModel.login.value
-                    ?: return@setOnRefreshListener, true)
+            viewModel.refreshData(
+                mainViewModel.login.value
+                    ?: return@setOnRefreshListener, true
+            )
         }
 
     }
@@ -144,9 +156,15 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
         super.onResume()
         if (!::drawer.isInitialized) {
             drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
-                    ?: return
+                ?: return
         }
-        toggle = ActionBarDrawerToggle(parentFragment?.activity, drawer, binding.mainSearchBar.mainSearchBarToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        toggle = ActionBarDrawerToggle(
+            parentFragment?.activity,
+            drawer,
+            binding.mainSearchBar.mainSearchBarToolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
 
         drawer.addDrawerListener(toggle)
         toggle.syncState()
@@ -160,7 +178,7 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         // trick: use the position as item view's order.
-        val notification = viewModel.notificationsResult.value?.get(item.order)
+        val notification = viewModel.data.value?.get(item.order)
 
         when (item.itemId) {
             R.id.notification_menu_mark_as_read -> {

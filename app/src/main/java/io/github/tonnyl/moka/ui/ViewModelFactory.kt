@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.main
+package io.github.tonnyl.moka.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

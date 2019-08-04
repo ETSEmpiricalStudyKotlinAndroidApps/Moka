@@ -15,11 +15,11 @@ interface NotificationsService {
      * @return If successful, return a list of [Notification].
      */
     @GET("notifications")
-    suspend fun listNotifications(
+    fun listNotifications(
         @Query("all") all: Boolean = true,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
-    ): Response<List<Notification>>
+    ): Call<List<Notification>>
 
     /**
      * Refer [listNotifications].
@@ -35,7 +35,7 @@ interface NotificationsService {
      * @param lastReadAt Describes the last point that notifications were checked. Anything updated since this time will not be updated.
      * This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ. Default: Time.now
      *
-     * @return If successful, return a [Unit] wrapped by a [Call].
+     * @return If successful, return a [Unit] wrapped by [Response].
      */
     @PUT("notifications")
     suspend fun markAsRead(
@@ -47,7 +47,7 @@ interface NotificationsService {
      *
      * @param threadId thread id of notification.
      *
-     * @return If successful, return a [Unit] wrapped by [Call].
+     * @return If successful, return a [Unit] wrapped by [Response].
      */
     @DELETE("notifications/threads/{thread_id}/subscription")
     suspend fun deleteAThreadSubscription(

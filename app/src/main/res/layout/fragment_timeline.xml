@@ -8,7 +8,7 @@
 
         <variable
             name="mainViewModel"
-            type="io.github.tonnyl.moka.ui.main.MainViewModel" />
+            type="io.github.tonnyl.moka.ui.MainViewModel" />
 
     </data>
 

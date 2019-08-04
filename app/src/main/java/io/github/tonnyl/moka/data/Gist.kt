@@ -1,39 +1,54 @@
 package io.github.tonnyl.moka.data
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
 data class Gist(
-        @SerializedName("id")
-        val id: String,
 
-        @SerializedName("html_url")
-        val htmlUrl: String,
+    @SerializedName("id")
+    @ColumnInfo(name = "id")
+    var id: String,
 
-        @SerializedName("files")
-        val files: Map<String, EventGistFile>,
+    @SerializedName("html_url")
+    @ColumnInfo(name = "html_url")
+    var htmlUrl: String,
 
-        @SerializedName("public")
-        val public: Boolean,
+    @SerializedName("files")
+    @ColumnInfo(name = "files")
+    var files: Map<String, EventGistFile>,
 
-        @SerializedName("created_at")
-        val createdAt: Date,
+    // note the difference of serialized name, column name and field name
+    @SerializedName("public")
+    @ColumnInfo(name = "is_public")
+    var isPublic: Boolean,
 
-        @SerializedName("updated_at")
-        val updatedAt: Date,
+    @SerializedName("created_at")
+    @ColumnInfo(name = "created_at")
+    var createdAt: Date,
 
-        @SerializedName("description")
-        val description: String,
+    @SerializedName("updated_at")
+    @ColumnInfo(name = "updated_at")
+    var updatedAt: Date,
 
-        @SerializedName("comments")
-        val comments: Int,
+    @SerializedName("description")
+    @ColumnInfo(name = "description")
+    var description: String,
 
-        @SerializedName("owner")
-        val owner: EventActor,
+    @SerializedName("comments")
+    @ColumnInfo(name = "comments")
+    var comments: Int,
 
-        @SerializedName("truncated")
-        val truncated: Boolean
+    @SerializedName("owner")
+    @Embedded(prefix = "owner_")
+    var owner: EventActor,
+
+    @SerializedName("truncated")
+    @ColumnInfo(name = "truncated")
+    var truncated: Boolean
+
 ) : Parcelable

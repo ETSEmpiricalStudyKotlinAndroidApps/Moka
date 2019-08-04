@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.notifications
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.Notification
+import io.github.tonnyl.moka.db.dao.NotificationDao
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.NotificationsService
@@ -17,43 +18,52 @@ import java.util.*
 class NotificationsDataSource(
     private val coroutineScope: CoroutineScope,
     private val notificationsService: NotificationsService,
+    private val notificationDao: NotificationDao,
     private val loadStatusLiveData: MutableLiveData<PagedResource<List<Notification>>>
 ) : PageKeyedDataSource<String, Notification>() {
 
     var retry: (() -> Any)? = null
 
-    override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, Notification>) {
+    override fun loadInitial(
+        params: LoadInitialParams<String>,
+        callback: LoadInitialCallback<String, Notification>
+    ) {
         Timber.d("loadInitial")
 
-        coroutineScope.launch(Dispatchers.Main) {
-            loadStatusLiveData.value = PagedResource(initial = Resource.loading(null))
+        loadStatusLiveData.postValue(PagedResource(initial = Resource.loading(null)))
 
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    notificationsService.listNotifications(true, 1, params.requestedLoadSize)
-                }
+        // triggered by a refresh, we better execute sync
+        try {
+            val response = notificationsService.listNotifications(true, 1, params.requestedLoadSize)
+                .execute()
 
-                val list = response.body() ?: Collections.emptyList()
-
-                val pl = PageLinks(response)
-                callback.onResult(list, pl.prev, pl.next)
-
-                retry = null
-
-                loadStatusLiveData.value = PagedResource(initial = Resource.success(list))
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                retry = {
-                    loadInitial(params, callback)
-                }
-
-                loadStatusLiveData.value = PagedResource(initial = Resource.error(e.message, null))
+            val list = response.body() ?: Collections.emptyList()
+            if (list.isNotEmpty()) {
+                notificationDao.insert(list)
             }
+
+            retry = null
+
+            loadStatusLiveData.postValue(PagedResource(initial = Resource.success(list)))
+
+            val pl = PageLinks(response)
+            callback.onResult(list, pl.prev, pl.next)
+        } catch (e: Exception) {
+            Timber.e(e)
+
+            retry = {
+                loadInitial(params, callback)
+            }
+
+            loadStatusLiveData.postValue(PagedResource(initial = Resource.error(e.message, null)))
         }
+
     }
 
-    override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Notification>) {
+    override fun loadAfter(
+        params: LoadParams<String>,
+        callback: LoadCallback<String, Notification>
+    ) {
         Timber.d("loadAfter")
 
         coroutineScope.launch(Dispatchers.Main) {
@@ -65,13 +75,16 @@ class NotificationsDataSource(
                 }
 
                 val list = response.body() ?: Collections.emptyList()
-
-                val pl = PageLinks(response)
-                callback.onResult(list, pl.next)
+                if (list.isNotEmpty()) {
+                    notificationDao.insert(list)
+                }
 
                 retry = null
 
                 loadStatusLiveData.value = PagedResource(after = Resource.success(list))
+
+                val pl = PageLinks(response)
+                callback.onResult(list, pl.next)
             } catch (e: Exception) {
                 Timber.e(e)
 
@@ -84,7 +97,10 @@ class NotificationsDataSource(
         }
     }
 
-    override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, Notification>) {
+    override fun loadBefore(
+        params: LoadParams<String>,
+        callback: LoadCallback<String, Notification>
+    ) {
         Timber.d("loadBefore")
 
         coroutineScope.launch(Dispatchers.Main) {
@@ -95,14 +111,17 @@ class NotificationsDataSource(
                     notificationsService.listNotificationsByUrl(params.key)
                 }
 
-                val list = response.body() ?: emptyList()
-
-                val pl = PageLinks(response)
-                callback.onResult(list, pl.prev)
+                val list = response.body() ?: Collections.emptyList()
+                if (list.isNotEmpty()) {
+                    notificationDao.insert(list)
+                }
 
                 retry = null
 
                 loadStatusLiveData.value = PagedResource(before = Resource.success(list))
+
+                val pl = PageLinks(response)
+                callback.onResult(list, pl.next)
             } catch (e: Exception) {
                 Timber.e(e)
 

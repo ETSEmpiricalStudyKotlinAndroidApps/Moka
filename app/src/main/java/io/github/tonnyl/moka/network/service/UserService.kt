@@ -16,7 +16,7 @@ interface UserService {
      */
     @PATCH("/user")
     suspend fun updateUseInformation(
-            @Body params: Map<String, String?>
+        @Body params: Map<String, String?>
     ): Response<Unit>
 
 }

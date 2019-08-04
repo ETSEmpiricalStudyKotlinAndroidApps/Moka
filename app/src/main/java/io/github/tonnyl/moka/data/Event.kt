@@ -1,77 +1,100 @@
 package io.github.tonnyl.moka.data
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import io.github.tonnyl.moka.data.Event.Companion.CREATE_EVENT
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
+@Entity(tableName = "event")
 data class Event(
-        @SerializedName("id")
-        val id: String,
 
-        @SerializedName("type")
-        val type: String,
+    @SerializedName("id")
+    @PrimaryKey
+    var id: String,
 
-        @SerializedName("public")
-        val public: Boolean,
+    @SerializedName("type")
+    @ColumnInfo(name = "type")
+    var type: String,
 
-        @SerializedName("actor")
-        val actor: EventActor,
+    // note the difference of serialized name, column name and field name
+    @SerializedName("public")
+    @ColumnInfo(name = "is_public")
+    var isPublic: Boolean,
 
-        @SerializedName("repo")
-        val repo: EventRepository?,
+    @SerializedName("actor")
+    @Embedded(prefix = "actor_")
+    var actor: EventActor,
 
-        @SerializedName("org")
-        val org: EventOrg?,
+    @SerializedName("repo")
+    @Embedded(prefix = "repo_")
+    var repo: EventRepository?,
 
-        @SerializedName("created_at")
-        val createdAt: Date,
+    @SerializedName("org")
+    @Embedded(prefix = "org_")
+    var org: EventOrg?,
 
-        @SerializedName("payload")
-        val payload: EventPayload,
+    @SerializedName("created_at")
+    @ColumnInfo(name = "created_at")
+    var createdAt: Date,
 
-        /**
-         * Only for [CREATE_EVENT].
-         *
-         * The git ref (or null if only a repository was created).
-         */
-        @SerializedName("ref")
-        val ref: String?,
+    @SerializedName("payload")
+    @Embedded(prefix = "payload_")
+    var payload: EventPayload?,
 
-        /**
-         * Only for [CREATE_EVENT].
-         *
-         * The object that was created. Can be one of repository, branch, or tag
-         */
-        @SerializedName("ref_type")
-        val refType: String?,
+    /**
+     * Only for [CREATE_EVENT].
+     *
+     * The git ref (or null if only a repository was created).
+     */
+    @SerializedName("ref")
+    @ColumnInfo(name = "ref")
+    var ref: String?,
 
-        /**
-         * Only for [CREATE_EVENT].
-         *
-         * The name of the repository's default branch (usually master).
-         */
-        @SerializedName("master_branch")
-        val masterBranch: String?,
+    /**
+     * Only for [CREATE_EVENT].
+     *
+     * The object that was created. Can be one of repository, branch, or tag
+     */
+    @SerializedName("ref_type")
+    @ColumnInfo(name = "ref_type")
+    var refType: String?,
 
-        /**
-         * Only for [CREATE_EVENT].
-         *
-         * The repository's current description.
-         */
-        @SerializedName("description")
-        val description: String?,
+    /**
+     * Only for [CREATE_EVENT].
+     *
+     * The name of the repository's default branch (usually master).
+     */
+    @SerializedName("master_branch")
+    @ColumnInfo(name = "master_branch")
+    var masterBranch: String?,
 
-        @SerializedName("pusher_type")
-        val pusherType: String?,
+    /**
+     * Only for [CREATE_EVENT].
+     *
+     * The repository's current description.
+     */
+    @SerializedName("description")
+    @ColumnInfo(name = "description")
+    var description: String?,
 
-        @SerializedName("head")
-        val head: String?,
+    @SerializedName("pusher_type")
+    @ColumnInfo(name = "pusher_type")
+    var pusherType: String?,
 
-        @SerializedName("before")
-        val before: String?
+    @SerializedName("head")
+    @ColumnInfo(name = "head")
+    var head: String?,
+
+    @SerializedName("before")
+    @ColumnInfo(name = "before")
+    var before: String?
+
 ) : Parcelable {
 
     companion object {

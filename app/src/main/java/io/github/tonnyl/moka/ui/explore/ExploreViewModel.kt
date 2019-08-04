@@ -9,6 +9,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingRepository
+import io.github.tonnyl.moka.db.dao.TrendingDeveloperDao
+import io.github.tonnyl.moka.db.dao.TrendingRepositoryDao
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.service.TrendingService
@@ -20,7 +22,10 @@ import timber.log.Timber
 import java.io.InputStream
 import java.nio.charset.Charset
 
-class ExploreViewModel : ViewModel() {
+class ExploreViewModel(
+    private val localDevelopersSource: TrendingDeveloperDao,
+    private val localRepositoriesSource: TrendingRepositoryDao
+) : ViewModel() {
 
     /**
      * Triple: first -> time span, second -> language param, third -> language name.
@@ -32,17 +37,21 @@ class ExploreViewModel : ViewModel() {
     val languages: LiveData<List<LocalLanguage>>
         get() = _languages
 
-    private val _trendingRepositories = MutableLiveData<Resource<List<TrendingRepository>>>()
-    val trendingRepositories: LiveData<Resource<List<TrendingRepository>>>
-        get() = _trendingRepositories
+    private val _repositoriesRemoteStatus = MutableLiveData<Resource<List<TrendingRepository>>>()
+    val repositoriesRemoteStatus: LiveData<Resource<List<TrendingRepository>>>
+        get() = _repositoriesRemoteStatus
 
-    private val _trendingDevelopers = MutableLiveData<Resource<List<TrendingDeveloper>>>()
-    val trendingDevelopers: LiveData<Resource<List<TrendingDeveloper>>>
-        get() = _trendingDevelopers
+    private val _developersRemoteStatus = MutableLiveData<Resource<List<TrendingDeveloper>>>()
+    val developersRemoteStatus: LiveData<Resource<List<TrendingDeveloper>>>
+        get() = _developersRemoteStatus
+
+    val repositoriesLocalData = localRepositoriesSource.trendingRepositories()
+    val developersLocalData = localDevelopersSource.trendingDevelopers()
 
     init {
         // todo store/restore value from sp.
-        queryData.value = Triple(ExploreTimeSpanType.DAILY, "all", "All language")
+
+        queryData.value = Triple(ExploreTimeSpanType.DAILY, "", "All language")
 
         refreshTrendingDevelopers()
         refreshTrendingRepositories()
@@ -56,7 +65,10 @@ class ExploreViewModel : ViewModel() {
                 inputStream.read(buffer)
                 inputStream.close()
                 val json = String(buffer, Charset.forName("UTF-8"))
-                Gson().fromJson<List<LocalLanguage>>(json, object : TypeToken<List<LocalLanguage>>() {}.type)
+                Gson().fromJson<List<LocalLanguage>>(
+                    json,
+                    object : TypeToken<List<LocalLanguage>>() {}.type
+                )
             }
             _languages.value = languagesResult
         }
@@ -66,20 +78,32 @@ class ExploreViewModel : ViewModel() {
     fun refreshTrendingDevelopers() {
         val queryDataValue = queryData.value ?: return
 
-        _trendingDevelopers.value = Resource.loading(null)
+        _developersRemoteStatus.value = Resource.loading(null)
 
         viewModelScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
                     RetrofitClient.createService(TrendingService::class.java)
-                        .listTrendingDevelopers(language = queryDataValue.first.value, since = queryDataValue.second)
+                        .listTrendingDevelopers(
+                            since = queryDataValue.first.value,
+                            language = queryDataValue.second
+                        )
                 }
 
-                _trendingDevelopers.value = Resource.success(response.body())
+                val list = response.body()
+
+                withContext(Dispatchers.IO) {
+                    if (!list.isNullOrEmpty()) {
+                        localDevelopersSource.deleteAll()
+                        localDevelopersSource.insert(list)
+                    }
+                }
+
+                _developersRemoteStatus.value = Resource.success(list)
             } catch (e: Exception) {
                 Timber.e(e)
 
-                _trendingDevelopers.value = Resource.error(e.message, null)
+                _developersRemoteStatus.value = Resource.error(e.message, null)
             }
         }
     }
@@ -88,20 +112,32 @@ class ExploreViewModel : ViewModel() {
     fun refreshTrendingRepositories() {
         val queryDataValue = queryData.value ?: return
 
-        _trendingRepositories.value = Resource.loading(null)
+        _repositoriesRemoteStatus.value = Resource.loading(null)
 
         viewModelScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
                     RetrofitClient.createService(TrendingService::class.java)
-                        .listTrendingRepositories(language = queryDataValue.first.value, since = queryDataValue.second)
+                        .listTrendingRepositories(
+                            since = queryDataValue.first.value,
+                            language = queryDataValue.second
+                        )
                 }
 
-                _trendingRepositories.value = Resource.success(response.body())
+                val list = response.body()
+
+                withContext(Dispatchers.IO) {
+                    if (!list.isNullOrEmpty()) {
+                        localRepositoriesSource.deleteAll()
+                        localRepositoriesSource.insert(list)
+                    }
+                }
+
+                _repositoriesRemoteStatus.value = Resource.success(list)
             } catch (e: Exception) {
                 Timber.e(e)
 
-                _trendingRepositories.value = Resource.error(e.message, null)
+                _repositoriesRemoteStatus.value = Resource.error(e.message, null)
             }
         }
     }

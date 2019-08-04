@@ -1,11 +1,11 @@
-package io.github.tonnyl.moka.ui.main
+package io.github.tonnyl.moka.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.coroutines.toDeferred
-import io.github.tonnyl.moka.NetworkClient
 import io.github.tonnyl.moka.ViewerQuery
+import io.github.tonnyl.moka.network.NetworkClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -14,6 +14,8 @@ import timber.log.Timber
 class MainViewModel : ViewModel() {
 
     val login = MutableLiveData<String?>()
+    val userId = MutableLiveData<Long?>()
+
     val loginUserProfile = MutableLiveData<ViewerQuery.Data?>()
 
     fun getUserProfile() {

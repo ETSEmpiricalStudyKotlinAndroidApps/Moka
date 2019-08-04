@@ -1,0 +1,1740 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "0e1994b4831a844d85f9d0557b1b5ce8",
+    "entities": [
+      {
+        "tableName": "event",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `type` TEXT NOT NULL, `is_public` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `ref` TEXT, `ref_type` TEXT, `master_branch` TEXT, `description` TEXT, `pusher_type` TEXT, `head` TEXT, `before` TEXT, `actor_id` INTEGER NOT NULL, `actor_login` TEXT NOT NULL, `actor_avatar_url` TEXT NOT NULL, `actor_html_url` TEXT, `actor_type` TEXT, `repo_id` TEXT, `repo_name` TEXT, `repo_full_name` TEXT, `repo_url` TEXT, `repo_html_url` TEXT, `org_id` INTEGER, `org_login` TEXT, `org_gravatar_id` TEXT, `org_url` TEXT, `org_avatar_url` TEXT, `payload_action` TEXT, `payload_pages` TEXT, `payload_size` INTEGER, `payload_ref_type` TEXT, `payload_ref` TEXT, `payload_comment_html_url` TEXT, `payload_comment_id` INTEGER, `payload_comment_created_at` INTEGER, `payload_comment_updated_at` INTEGER, `payload_comment_author_association` TEXT, `payload_comment_body` TEXT, `payload_comment_commit_id` TEXT, `payload_comment_user_id` INTEGER, `payload_comment_user_login` TEXT, `payload_comment_user_avatar_url` TEXT, `payload_comment_user_html_url` TEXT, `payload_comment_user_type` TEXT, `payload_commit_comment_html_url` TEXT, `payload_commit_comment_id` INTEGER, `payload_commit_comment_created_at` INTEGER, `payload_commit_comment_updated_at` INTEGER, `payload_commit_comment_author_association` TEXT, `payload_commit_comment_body` TEXT, `payload_commit_comment_commit_id` TEXT, `payload_commit_comment_user_id` INTEGER, `payload_commit_comment_user_login` TEXT, `payload_commit_comment_user_avatar_url` TEXT, `payload_commit_comment_user_html_url` TEXT, `payload_commit_comment_user_type` TEXT, `payload_issue_repository_url` TEXT, `payload_issue_html_url` TEXT, `payload_issue_id` INTEGER, `payload_issue_number` INTEGER, `payload_issue_title` TEXT, `payload_issue_user_id` INTEGER, `payload_issue_user_login` TEXT, `payload_issue_user_avatar_url` TEXT, `payload_issue_user_html_url` TEXT, `payload_issue_user_type` TEXT, `payload_pull_request_id` TEXT, `payload_pull_request_html_url` TEXT, `payload_pull_request_diff_url` TEXT, `payload_pull_request_patch_url` TEXT, `payload_pull_request_number` INTEGER, `payload_pull_request_state` TEXT, `payload_pull_request_locked` INTEGER, `payload_pull_request_title` TEXT, `payload_pull_request_body` TEXT, `payload_pull_request_created_at` INTEGER, `payload_pull_request_updated_at` INTEGER, `payload_pull_request_closed_at` INTEGER, `payload_pull_request_merged_at` INTEGER, `payload_pull_request_author_association` TEXT, `payload_pull_request_user_id` INTEGER, `payload_pull_request_user_login` TEXT, `payload_pull_request_user_avatar_url` TEXT, `payload_pull_request_user_html_url` TEXT, `payload_pull_request_user_type` TEXT, `payload_review_id` TEXT, `payload_review_body` TEXT, `payload_review_submitted_at` INTEGER, `payload_review_state` TEXT, `payload_review_html_url` TEXT, `payload_review_author_association` TEXT, `payload_review_user_id` INTEGER, `payload_review_user_login` TEXT, `payload_review_user_avatar_url` TEXT, `payload_review_user_html_url` TEXT, `payload_review_user_type` TEXT, `payload_download_id` INTEGER, `payload_download_name` TEXT, `payload_download_description` TEXT, `payload_download_size` INTEGER, `payload_download_download_count` INTEGER, `payload_download_content_type` TEXT, `payload_target_id` INTEGER, `payload_target_login` TEXT, `payload_target_avatar_url` TEXT, `payload_target_html_url` TEXT, `payload_target_type` TEXT, `payload_forkee_id` TEXT, `payload_forkee_name` TEXT, `payload_forkee_full_name` TEXT, `payload_forkee_url` TEXT, `payload_forkee_html_url` TEXT, `payload_gist_id` TEXT, `payload_gist_html_url` TEXT, `payload_gist_files` TEXT, `payload_gist_is_public` INTEGER, `payload_gist_created_at` INTEGER, `payload_gist_updated_at` INTEGER, `payload_gist_description` TEXT, `payload_gist_comments` INTEGER, `payload_gist_truncated` INTEGER, `payload_gist_owner_id` INTEGER, `payload_gist_owner_login` TEXT, `payload_gist_owner_avatar_url` TEXT, `payload_gist_owner_html_url` TEXT, `payload_gist_owner_type` TEXT, `payload_member_id` INTEGER, `payload_member_login` TEXT, `payload_member_avatar_url` TEXT, `payload_member_html_url` TEXT, `payload_member_type` TEXT, `payload_team_name` TEXT, `payload_team_id` INTEGER, `payload_team_slug` TEXT, `payload_team_description` TEXT, `payload_team_privacy` INTEGER, `payload_team_permission` TEXT, `payload_organization_id` INTEGER, `payload_organization_login` TEXT, `payload_organization_avatar_url` TEXT, `payload_organization_html_url` TEXT, `payload_organization_type` TEXT, `payload_release_html_url` TEXT, `payload_release_id` INTEGER, `payload_release_tag_name` TEXT, `payload_release_target_commitish` TEXT, `payload_release_name` TEXT, `payload_release_draft` INTEGER, `payload_release_prerelease` INTEGER, `payload_release_created_at` INTEGER, `payload_release_published_at` INTEGER, `payload_release_body` TEXT, `payload_release_author_id` INTEGER, `payload_release_author_login` TEXT, `payload_release_author_avatar_url` TEXT, `payload_release_author_html_url` TEXT, `payload_release_author_type` TEXT, `payload_blocked_user_id` INTEGER, `payload_blocked_user_login` TEXT, `payload_blocked_user_avatar_url` TEXT, `payload_blocked_user_html_url` TEXT, `payload_blocked_user_type` TEXT, `payload_project_card_column_id` INTEGER, `payload_project_card_id` INTEGER, `payload_project_card_note` TEXT, `payload_project_card_created_at` INTEGER, `payload_project_card_updated_at` INTEGER, `payload_project_card_creator_id` INTEGER, `payload_project_card_creator_login` TEXT, `payload_project_card_creator_avatar_url` TEXT, `payload_project_card_creator_html_url` TEXT, `payload_project_card_creator_type` TEXT, `payload_project_column_id` INTEGER, `payload_project_column_name` TEXT, `payload_project_column_created_at` INTEGER, `payload_project_column_updated_at` INTEGER, `payload_membership_state` TEXT, `payload_membership_role` TEXT, `payload_membership_user_id` INTEGER, `payload_membership_user_login` TEXT, `payload_membership_user_avatar_url` TEXT, `payload_membership_user_html_url` TEXT, `payload_membership_user_type` TEXT, `payload_invitation_id` INTEGER, `payload_invitation_login` TEXT, `payload_invitation_avatar_url` TEXT, `payload_invitation_html_url` TEXT, `payload_invitation_type` TEXT, `payload_project_html_url` TEXT, `payload_project_id` INTEGER, `payload_project_name` TEXT, `payload_project_body` TEXT, `payload_project_number` INTEGER, `payload_project_state` TEXT, `payload_project_created_at` INTEGER, `payload_project_updated_at` INTEGER, `payload_project_creator_id` INTEGER, `payload_project_creator_login` TEXT, `payload_project_creator_avatar_url` TEXT, `payload_project_creator_html_url` TEXT, `payload_project_creator_type` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isPublic",
+            "columnName": "is_public",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ref",
+            "columnName": "ref",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "refType",
+            "columnName": "ref_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "masterBranch",
+            "columnName": "master_branch",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pusherType",
+            "columnName": "pusher_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "head",
+            "columnName": "head",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "before",
+            "columnName": "before",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actor.id",
+            "columnName": "actor_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actor.login",
+            "columnName": "actor_login",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actor.avatarUrl",
+            "columnName": "actor_avatar_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actor.htmlUrl",
+            "columnName": "actor_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actor.type",
+            "columnName": "actor_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repo.id",
+            "columnName": "repo_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repo.name",
+            "columnName": "repo_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repo.fullName",
+            "columnName": "repo_full_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repo.url",
+            "columnName": "repo_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repo.htmlUrl",
+            "columnName": "repo_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "org.id",
+            "columnName": "org_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "org.login",
+            "columnName": "org_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "org.grAvatarId",
+            "columnName": "org_gravatar_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "org.url",
+            "columnName": "org_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "org.avatarUrl",
+            "columnName": "org_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.action",
+            "columnName": "payload_action",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pages",
+            "columnName": "payload_pages",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.size",
+            "columnName": "payload_size",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.refType",
+            "columnName": "payload_ref_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.ref",
+            "columnName": "payload_ref",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.htmlUrl",
+            "columnName": "payload_comment_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.id",
+            "columnName": "payload_comment_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.createdAt",
+            "columnName": "payload_comment_created_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.updatedAt",
+            "columnName": "payload_comment_updated_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.authorAssociation",
+            "columnName": "payload_comment_author_association",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.body",
+            "columnName": "payload_comment_body",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.commitId",
+            "columnName": "payload_comment_commit_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.user.id",
+            "columnName": "payload_comment_user_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.user.login",
+            "columnName": "payload_comment_user_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.user.avatarUrl",
+            "columnName": "payload_comment_user_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.user.htmlUrl",
+            "columnName": "payload_comment_user_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.comment.user.type",
+            "columnName": "payload_comment_user_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.htmlUrl",
+            "columnName": "payload_commit_comment_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.id",
+            "columnName": "payload_commit_comment_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.createdAt",
+            "columnName": "payload_commit_comment_created_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.updatedAt",
+            "columnName": "payload_commit_comment_updated_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.authorAssociation",
+            "columnName": "payload_commit_comment_author_association",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.body",
+            "columnName": "payload_commit_comment_body",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.commitId",
+            "columnName": "payload_commit_comment_commit_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.user.id",
+            "columnName": "payload_commit_comment_user_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.user.login",
+            "columnName": "payload_commit_comment_user_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.user.avatarUrl",
+            "columnName": "payload_commit_comment_user_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.user.htmlUrl",
+            "columnName": "payload_commit_comment_user_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.commitComment.user.type",
+            "columnName": "payload_commit_comment_user_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.issue.repositoryUrl",
+            "columnName": "payload_issue_repository_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.issue.htmlUrl",
+            "columnName": "payload_issue_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.issue.id",
+            "columnName": "payload_issue_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.issue.number",
+            "columnName": "payload_issue_number",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.issue.title",
+            "columnName": "payload_issue_title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.issue.user.id",
+            "columnName": "payload_issue_user_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.issue.user.login",
+            "columnName": "payload_issue_user_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.issue.user.avatarUrl",
+            "columnName": "payload_issue_user_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.issue.user.htmlUrl",
+            "columnName": "payload_issue_user_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.issue.user.type",
+            "columnName": "payload_issue_user_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.id",
+            "columnName": "payload_pull_request_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.htmlUrl",
+            "columnName": "payload_pull_request_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.diffUrl",
+            "columnName": "payload_pull_request_diff_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.patchUrl",
+            "columnName": "payload_pull_request_patch_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.number",
+            "columnName": "payload_pull_request_number",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.state",
+            "columnName": "payload_pull_request_state",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.locked",
+            "columnName": "payload_pull_request_locked",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.title",
+            "columnName": "payload_pull_request_title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.body",
+            "columnName": "payload_pull_request_body",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.createdAt",
+            "columnName": "payload_pull_request_created_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.updatedAt",
+            "columnName": "payload_pull_request_updated_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.closedAt",
+            "columnName": "payload_pull_request_closed_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.mergedAt",
+            "columnName": "payload_pull_request_merged_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.authorAssociation",
+            "columnName": "payload_pull_request_author_association",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.user.id",
+            "columnName": "payload_pull_request_user_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.user.login",
+            "columnName": "payload_pull_request_user_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.user.avatarUrl",
+            "columnName": "payload_pull_request_user_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.user.htmlUrl",
+            "columnName": "payload_pull_request_user_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.pullRequest.user.type",
+            "columnName": "payload_pull_request_user_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.id",
+            "columnName": "payload_review_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.body",
+            "columnName": "payload_review_body",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.submittedAt",
+            "columnName": "payload_review_submitted_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.state",
+            "columnName": "payload_review_state",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.htmlUrl",
+            "columnName": "payload_review_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.authorAssociation",
+            "columnName": "payload_review_author_association",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.user.id",
+            "columnName": "payload_review_user_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.user.login",
+            "columnName": "payload_review_user_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.user.avatarUrl",
+            "columnName": "payload_review_user_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.user.htmlUrl",
+            "columnName": "payload_review_user_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.review.user.type",
+            "columnName": "payload_review_user_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.download.id",
+            "columnName": "payload_download_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.download.name",
+            "columnName": "payload_download_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.download.description",
+            "columnName": "payload_download_description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.download.size",
+            "columnName": "payload_download_size",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.download.downloadCount",
+            "columnName": "payload_download_download_count",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.download.contentType",
+            "columnName": "payload_download_content_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.target.id",
+            "columnName": "payload_target_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.target.login",
+            "columnName": "payload_target_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.target.avatarUrl",
+            "columnName": "payload_target_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.target.htmlUrl",
+            "columnName": "payload_target_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.target.type",
+            "columnName": "payload_target_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.forkee.id",
+            "columnName": "payload_forkee_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.forkee.name",
+            "columnName": "payload_forkee_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.forkee.fullName",
+            "columnName": "payload_forkee_full_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.forkee.url",
+            "columnName": "payload_forkee_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.forkee.htmlUrl",
+            "columnName": "payload_forkee_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.id",
+            "columnName": "payload_gist_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.htmlUrl",
+            "columnName": "payload_gist_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.files",
+            "columnName": "payload_gist_files",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.isPublic",
+            "columnName": "payload_gist_is_public",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.createdAt",
+            "columnName": "payload_gist_created_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.updatedAt",
+            "columnName": "payload_gist_updated_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.description",
+            "columnName": "payload_gist_description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.comments",
+            "columnName": "payload_gist_comments",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.truncated",
+            "columnName": "payload_gist_truncated",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.owner.id",
+            "columnName": "payload_gist_owner_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.owner.login",
+            "columnName": "payload_gist_owner_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.owner.avatarUrl",
+            "columnName": "payload_gist_owner_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.owner.htmlUrl",
+            "columnName": "payload_gist_owner_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.gist.owner.type",
+            "columnName": "payload_gist_owner_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.member.id",
+            "columnName": "payload_member_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.member.login",
+            "columnName": "payload_member_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.member.avatarUrl",
+            "columnName": "payload_member_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.member.htmlUrl",
+            "columnName": "payload_member_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.member.type",
+            "columnName": "payload_member_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.team.name",
+            "columnName": "payload_team_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.team.id",
+            "columnName": "payload_team_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.team.slug",
+            "columnName": "payload_team_slug",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.team.description",
+            "columnName": "payload_team_description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.team.privacy",
+            "columnName": "payload_team_privacy",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.team.permission",
+            "columnName": "payload_team_permission",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.organization.id",
+            "columnName": "payload_organization_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.organization.login",
+            "columnName": "payload_organization_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.organization.avatarUrl",
+            "columnName": "payload_organization_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.organization.htmlUrl",
+            "columnName": "payload_organization_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.organization.type",
+            "columnName": "payload_organization_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.htmlUrl",
+            "columnName": "payload_release_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.id",
+            "columnName": "payload_release_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.tagName",
+            "columnName": "payload_release_tag_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.targetCommitish",
+            "columnName": "payload_release_target_commitish",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.name",
+            "columnName": "payload_release_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.draft",
+            "columnName": "payload_release_draft",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.prerelease",
+            "columnName": "payload_release_prerelease",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.createdAt",
+            "columnName": "payload_release_created_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.publishedAt",
+            "columnName": "payload_release_published_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.body",
+            "columnName": "payload_release_body",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.author.id",
+            "columnName": "payload_release_author_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.author.login",
+            "columnName": "payload_release_author_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.author.avatarUrl",
+            "columnName": "payload_release_author_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.author.htmlUrl",
+            "columnName": "payload_release_author_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.release.author.type",
+            "columnName": "payload_release_author_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.blockedUser.id",
+            "columnName": "payload_blocked_user_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.blockedUser.login",
+            "columnName": "payload_blocked_user_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.blockedUser.avatarUrl",
+            "columnName": "payload_blocked_user_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.blockedUser.htmlUrl",
+            "columnName": "payload_blocked_user_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.blockedUser.type",
+            "columnName": "payload_blocked_user_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectCard.columnId",
+            "columnName": "payload_project_card_column_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectCard.id",
+            "columnName": "payload_project_card_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectCard.note",
+            "columnName": "payload_project_card_note",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectCard.createdAt",
+            "columnName": "payload_project_card_created_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectCard.updatedAt",
+            "columnName": "payload_project_card_updated_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectCard.creator.id",
+            "columnName": "payload_project_card_creator_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectCard.creator.login",
+            "columnName": "payload_project_card_creator_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectCard.creator.avatarUrl",
+            "columnName": "payload_project_card_creator_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectCard.creator.htmlUrl",
+            "columnName": "payload_project_card_creator_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectCard.creator.type",
+            "columnName": "payload_project_card_creator_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectColumn.id",
+            "columnName": "payload_project_column_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectColumn.name",
+            "columnName": "payload_project_column_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectColumn.createdAt",
+            "columnName": "payload_project_column_created_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.projectColumn.updatedAt",
+            "columnName": "payload_project_column_updated_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.membership.state",
+            "columnName": "payload_membership_state",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.membership.role",
+            "columnName": "payload_membership_role",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.membership.user.id",
+            "columnName": "payload_membership_user_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.membership.user.login",
+            "columnName": "payload_membership_user_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.membership.user.avatarUrl",
+            "columnName": "payload_membership_user_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.membership.user.htmlUrl",
+            "columnName": "payload_membership_user_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.membership.user.type",
+            "columnName": "payload_membership_user_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.invitation.id",
+            "columnName": "payload_invitation_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.invitation.login",
+            "columnName": "payload_invitation_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.invitation.avatarUrl",
+            "columnName": "payload_invitation_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.invitation.htmlUrl",
+            "columnName": "payload_invitation_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.invitation.type",
+            "columnName": "payload_invitation_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.htmlUrl",
+            "columnName": "payload_project_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.id",
+            "columnName": "payload_project_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.name",
+            "columnName": "payload_project_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.body",
+            "columnName": "payload_project_body",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.number",
+            "columnName": "payload_project_number",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.state",
+            "columnName": "payload_project_state",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.createdAt",
+            "columnName": "payload_project_created_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.updatedAt",
+            "columnName": "payload_project_updated_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.creator.id",
+            "columnName": "payload_project_creator_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.creator.login",
+            "columnName": "payload_project_creator_login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.creator.avatarUrl",
+            "columnName": "payload_project_creator_avatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.creator.htmlUrl",
+            "columnName": "payload_project_creator_html_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "payload.project.creator.type",
+            "columnName": "payload_project_creator_type",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "notification",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `reason` TEXT NOT NULL, `unread` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `last_read_at` INTEGER NOT NULL, `url` TEXT NOT NULL, `repository_id` INTEGER NOT NULL, `repository_node_id` TEXT NOT NULL, `repository_name` TEXT NOT NULL, `repository_full_name` TEXT NOT NULL, `repository_is_private` INTEGER NOT NULL, `repository_html_url` TEXT NOT NULL, `repository_description` TEXT NOT NULL, `repository_fork` INTEGER NOT NULL, `repository_url` TEXT NOT NULL, `repository_owner_login` TEXT NOT NULL, `repository_owner_id` INTEGER NOT NULL, `repository_owner_node_id` TEXT NOT NULL, `repository_owner_avatar_url` TEXT NOT NULL, `repository_owner_gravatar_id` TEXT NOT NULL, `repository_owner_url` TEXT NOT NULL, `repository_owner_html_url` TEXT NOT NULL, `repository_owner_followers_url` TEXT NOT NULL, `repository_owner_following_url` TEXT NOT NULL, `repository_owner_gists_url` TEXT NOT NULL, `repository_owner_starred_url` TEXT NOT NULL, `repository_owner_subscriptions_url` TEXT NOT NULL, `repository_owner_organizations_url` TEXT NOT NULL, `repository_owner_repos_url` TEXT NOT NULL, `repository_owner_events_url` TEXT NOT NULL, `repository_owner_received_events_url` TEXT NOT NULL, `repository_owner_type` TEXT NOT NULL, `repository_owner_site_admin` INTEGER NOT NULL, `subject_title` TEXT NOT NULL, `subject_url` TEXT NOT NULL, `subject_latest_comment_url` TEXT NOT NULL, `subject_type` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reason",
+            "columnName": "reason",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unread",
+            "columnName": "unread",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastReadAt",
+            "columnName": "last_read_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.id",
+            "columnName": "repository_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.nodeId",
+            "columnName": "repository_node_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.name",
+            "columnName": "repository_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.fullName",
+            "columnName": "repository_full_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.isPrivate",
+            "columnName": "repository_is_private",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.htmlUrl",
+            "columnName": "repository_html_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.description",
+            "columnName": "repository_description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.fork",
+            "columnName": "repository_fork",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.url",
+            "columnName": "repository_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.login",
+            "columnName": "repository_owner_login",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.id",
+            "columnName": "repository_owner_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.nodeId",
+            "columnName": "repository_owner_node_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.avatarUrl",
+            "columnName": "repository_owner_avatar_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.gravatarId",
+            "columnName": "repository_owner_gravatar_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.url",
+            "columnName": "repository_owner_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.htmlUrl",
+            "columnName": "repository_owner_html_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.followersUrl",
+            "columnName": "repository_owner_followers_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.followingUrl",
+            "columnName": "repository_owner_following_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.gistsUrl",
+            "columnName": "repository_owner_gists_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.starredUrl",
+            "columnName": "repository_owner_starred_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.subscriptionsUrl",
+            "columnName": "repository_owner_subscriptions_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.organizationsUrl",
+            "columnName": "repository_owner_organizations_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.reposUrl",
+            "columnName": "repository_owner_repos_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.eventsUrl",
+            "columnName": "repository_owner_events_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.receivedEventsUrl",
+            "columnName": "repository_owner_received_events_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.type",
+            "columnName": "repository_owner_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.owner.siteAdmin",
+            "columnName": "repository_owner_site_admin",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject.title",
+            "columnName": "subject_title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject.url",
+            "columnName": "subject_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject.latestCommentUrl",
+            "columnName": "subject_latest_comment_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject.type",
+            "columnName": "subject_type",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "trending_developer",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `username` TEXT NOT NULL, `name` TEXT, `type` TEXT NOT NULL, `url` TEXT NOT NULL, `avatar` TEXT NOT NULL, `trending_developer_repository_name` TEXT NOT NULL, `trending_developer_repository_description` TEXT, `trending_developer_repository_url` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avatar",
+            "columnName": "avatar",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.name",
+            "columnName": "trending_developer_repository_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repository.description",
+            "columnName": "trending_developer_repository_description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repository.url",
+            "columnName": "trending_developer_repository_url",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "trending_repository",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `author` TEXT NOT NULL, `name` TEXT NOT NULL, `avatar` TEXT NOT NULL, `url` TEXT NOT NULL, `description` TEXT, `language` TEXT, `language_color` TEXT, `stars` INTEGER NOT NULL, `forks` INTEGER NOT NULL, `current_period_stars` INTEGER NOT NULL, `builtBy` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avatar",
+            "columnName": "avatar",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "language",
+            "columnName": "language",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "languageColor",
+            "columnName": "language_color",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "stars",
+            "columnName": "stars",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forks",
+            "columnName": "forks",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentPeriodStars",
+            "columnName": "current_period_stars",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "builtBy",
+            "columnName": "builtBy",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "project",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`body` TEXT, `body_HTML` TEXT NOT NULL, `closed` INTEGER NOT NULL, `closed_at` INTEGER, `created_at` INTEGER NOT NULL, `databaseId` INTEGER, `id` TEXT NOT NULL, `name` TEXT NOT NULL, `number` INTEGER NOT NULL, `resource_path` TEXT NOT NULL, `state` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `url` TEXT NOT NULL, `viewer_can_update` INTEGER NOT NULL, `project_creatoravatar_url` TEXT, `project_creatorlogin` TEXT, `project_creatorresource_path` TEXT, `project_creatorurl` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "body",
+            "columnName": "body",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bodyHTML",
+            "columnName": "body_HTML",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "closed",
+            "columnName": "closed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "closedAt",
+            "columnName": "closed_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "databaseId",
+            "columnName": "databaseId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "number",
+            "columnName": "number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "resourcePath",
+            "columnName": "resource_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "state",
+            "columnName": "state",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "viewerCanUpdate",
+            "columnName": "viewer_can_update",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "creator.avatarUrl",
+            "columnName": "project_creatoravatar_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creator.login",
+            "columnName": "project_creatorlogin",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creator.resourcePath",
+            "columnName": "project_creatorresource_path",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creator.url",
+            "columnName": "project_creatorurl",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e1994b4831a844d85f9d0557b1b5ce8')"
+    ]
+  }
+}

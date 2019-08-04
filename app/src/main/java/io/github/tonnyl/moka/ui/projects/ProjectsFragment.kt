@@ -11,10 +11,11 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.databinding.FragmentProjectsBinding
+import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.main.MainViewModel
-import io.github.tonnyl.moka.ui.main.ViewModelFactory as MainViewModelFactory
+import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
 class ProjectsFragment : Fragment() {
 
@@ -29,7 +30,11 @@ class ProjectsFragment : Fragment() {
         ProjectAdapter()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentProjectsBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -38,12 +43,27 @@ class ProjectsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory()).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory())
+            .get(MainViewModel::class.java)
+
+        val loginOfMySelf = mainViewModel.login.value
+        val login = args.login ?: loginOfMySelf ?: ""
+
         viewModel = ViewModelProviders.of(
-                this,
-                ViewModelFactory(args.login ?: mainViewModel.login.value
-                ?: return, args.repositoryName)
+            this,
+            ViewModelFactory(
+                login == loginOfMySelf,
+                MokaDataBase.getInstance(
+                    requireContext(),
+                    mainViewModel.userId.value ?: return
+                ).projectsDao(),
+                args.repositoryName
+            )
         ).get(ProjectsViewModel::class.java)
+
+        mainViewModel.login.observe(viewLifecycleOwner, Observer {
+            viewModel.refreshData(login, true)
+        })
 
         with(binding.recyclerView) {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -57,8 +77,6 @@ class ProjectsFragment : Fragment() {
                 }
                 Status.ERROR -> {
                     binding.swipeRefresh.isRefreshing = false
-
-                    showHideEmptyView(true)
                 }
                 Status.LOADING -> {
                     binding.swipeRefresh.isRefreshing = true
@@ -99,16 +117,14 @@ class ProjectsFragment : Fragment() {
             }
         })
 
-        viewModel.projectsResult.observe(this, Observer {
+        viewModel.data.observe(this, Observer {
             projectAdapter.submitList(it)
 
-            val status = viewModel.loadStatusLiveData.value?.initial?.status
-            showHideEmptyView(it.isEmpty()
-                    && (status == Status.SUCCESS || status == Status.ERROR))
+            showHideEmptyView(it.isEmpty())
         })
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.refreshProjectsData()
+            viewModel.refreshData(login, true)
         }
     }
 

@@ -8,10 +8,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.apollographql.apollo.coroutines.toDeferred
-import io.github.tonnyl.moka.NetworkClient
+import io.github.tonnyl.moka.IssueQuery
 import io.github.tonnyl.moka.data.IssueGraphQL
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
-import io.github.tonnyl.moka.IssueQuery
+import io.github.tonnyl.moka.network.NetworkClient
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import kotlinx.coroutines.Dispatchers

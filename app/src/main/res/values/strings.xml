@@ -50,6 +50,8 @@
     <string name="user_profile_link_desc" translation_description="The content description of link image of user profile.">Link</string>
     <string name="user_profile_link_action" translation_description="The open action text of snackabar when click the link image of user profile.">Open</string>
     <string name="user_profile_edit_profile">Edit profile</string>
+    <string name="user_profile_content_empty_title">User not found</string>
+    <string name="user_profile_content_empty_action">Search</string>
 
     <string name="event_at">&#160;at&#160;</string>
     <string name="event_to">&#160;to&#160;</string>
@@ -234,10 +236,15 @@
 
     <string name="issues">Issues</string>
     <string name="pull_requests">Pull requests</string>
+    <string name="issue_pr_title_format">#%1$d %2$s</string><!-- #234 CoroutineExceptionHandler is invoked from a random thread -->
     <string name="issue_pr_number">#%1$d</string>
     <string name="issue_pr_by">by %1$s</string>
-    <string name="issue_pr_info_format">%1$s · %2$s · %3$s</string><!-- #234 · by tonny · 3 days ago -->
+    <string name="issue_pr_info_format">%1$s · %2$s · %3$s</string><!-- open · by tonny · 3 days ago -->
+    <string name="issue_pr_status_open">open</string>
+    <string name="issue_pr_status_closed">closed</string>
+    <string name="issue_pr_status_merged">merged</string>
 
+    <string name="issue">Issue</string>
     <string name="issue_timeline_assigned_event_self_assigned">self-assigned this</string>
     <string name="issue_timeline_assigned_event_assigned_someone">assigned <![CDATA[<b>%1$s</b>]]></string> <!--assigned username-->
     <string name="issue_timeline_unassigned_event_self_unassigned">removed their assignment</string>
@@ -312,6 +319,8 @@
     <string name="notification_caption_notification_type">%1$s - &#160;</string>
     <string name="notification_mark_as_read">Mark as read</string>
     <string name="notification_unsubscribe">Unsubscribe</string>
+    <string name="notification_content_empty_title">You haven\'t received any notifications yet</string>
+    <string name="notification_content_empty_action">Check Timeline</string>
 
     <string name="search_input_hint">Search repositories &amp; users</string>
 
@@ -327,13 +336,19 @@
     <string name="explore_trending_filter_time_span_weekly">Weekly</string>
     <string name="explore_trending_filter_time_span_monthly">Monthly</string>
     <string name="explore_trending_filter_languages">Languages</string>
-    <string name="explore_trending_repository_developers_list_all">All</string>
+    <string name="explore_trending_filter_all_languages">All Languages</string>
+    <string name="explore_trending_developers_content_empty_title">No trending developers yet</string>
+    <string name="explore_trending_repositories_content_empty_title">No trending repositories yet</string>
+    <string name="explore_trending_content_empty_action">Search</string>
 
     <string name="timeline_content_empty_title">You haven\'t received any events yet</string>
     <string name="timeline_content_empty_action">Explore More</string>
 
     <string name="search_tab_repositories">Repositories</string>
     <string name="search_tab_users">Users</string>
+
+    <string name="projects_content_empty_title">No projects yet</string>
+    <string name="projects_content_empty_action">Create new</string>
 
     <string name="about_version_info_category">Version info</string>
     <string name="about_build_version_title">Build version</string>
@@ -399,5 +414,8 @@
         <item>500 MB</item>
         <item>1 GB</item>
     </string-array>
+
+    <string name="users_content_empty_title">No users found</string>
+    <string name="users_content_empty_action">Back to profile</string>
 
 </resources>

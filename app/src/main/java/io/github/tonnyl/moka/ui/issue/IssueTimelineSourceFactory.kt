@@ -2,28 +2,34 @@ package io.github.tonnyl.moka.ui.issue
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
-import kotlinx.coroutines.CoroutineScope
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
 
 class IssueTimelineSourceFactory(
-    private val coroutineScope: CoroutineScope,
     private val owner: String,
     private val name: String,
     private val number: Int,
-    private val loadStatusLiveData: MutableLiveData<PagedResource<List<IssueTimelineItem>>>
+    private val initialLoadStatus: MutableLiveData<Resource<List<IssueTimelineItem>>>,
+    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<IssueTimelineItem>>>
 ) : DataSource.Factory<String, IssueTimelineItem>() {
 
-    private val issueTimelineLiveData = MutableLiveData<IssueTimelineDataSource>()
+    private var sourceFactory: IssueTimelineDataSource? = null
 
     override fun create(): DataSource<String, IssueTimelineItem> {
-        return IssueTimelineDataSource(coroutineScope, owner, name, number, loadStatusLiveData).apply {
-            issueTimelineLiveData.postValue(this)
+        return IssueTimelineDataSource(
+            owner,
+            name,
+            number,
+            initialLoadStatus,
+            pagedLoadStatus
+        ).also {
+            sourceFactory = it
         }
     }
 
-    fun invalidate() {
-        issueTimelineLiveData.value?.invalidate()
+    fun retryLoadPreviousNext() {
+        sourceFactory?.retry?.invoke()
     }
 
 }

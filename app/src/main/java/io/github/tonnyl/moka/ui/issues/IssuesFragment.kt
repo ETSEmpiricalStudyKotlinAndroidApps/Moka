@@ -9,22 +9,19 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.databinding.FragmentIssuesBinding
-import io.github.tonnyl.moka.ui.common.IssuePRActions
+import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.issue.IssueFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 
-class IssuesFragment : Fragment(), IssuePRActions {
+class IssuesFragment : Fragment(), IssueItemActions, EmptyViewActions, PagingNetworkStateActions {
 
-    private val adapter: IssueAdapter by lazy {
-        IssueAdapter()
+    private val issueAdapter: IssueAdapter by lazy {
+        IssueAdapter(this@IssuesFragment, this@IssuesFragment)
     }
-
-    private lateinit var owner: String
-    private lateinit var name: String
 
     private lateinit var viewModel: IssuesViewModel
 
@@ -32,7 +29,11 @@ class IssuesFragment : Fragment(), IssuePRActions {
 
     private lateinit var binding: FragmentIssuesBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentIssuesBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -40,38 +41,57 @@ class IssuesFragment : Fragment(), IssuePRActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        owner = args.owner
-        name = args.name
 
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(owner, name)).get(IssuesViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, ViewModelFactory(args.owner, args.name))
+            .get(IssuesViewModel::class.java)
 
-        with(binding.appbarLayout.toolbar) {
-            setTitle(R.string.issues)
-            setNavigationOnClickListener {
-                parentFragment?.findNavController()?.navigateUp()
+        with(binding) {
+            with(appbarLayout.toolbar) {
+                title = getString(R.string.issues)
+                setNavigationOnClickListener {
+                    parentFragment?.findNavController()?.navigateUp()
+                }
             }
+
+            emptyViewActions = this@IssuesFragment
+            viewModel = this@IssuesFragment.viewModel
+            lifecycleOwner = viewLifecycleOwner
         }
 
-        with(binding.recyclerView) {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = this@IssuesFragment.adapter.apply {
-                actions = this@IssuesFragment
+        viewModel.data.observe(this, Observer {
+            with(binding.recyclerView) {
+                if (adapter == null) {
+                    adapter = issueAdapter
+                }
             }
-        }
 
-        viewModel.issuesResults.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+            issueAdapter.submitList(it)
         })
     }
 
-    override fun openIssueOrPR(number: Int, title: String) {
-        val issueFragmentArgs = IssueFragmentArgs(owner, name, number, title)
-        parentFragment?.findNavController()?.navigate(R.id.action_to_issue, issueFragmentArgs.toBundle())
+    override fun openPullRequestItem(data: IssueItem) {
+        parentFragment?.findNavController()
+            ?.navigate(
+                R.id.action_to_issue,
+                IssueFragmentArgs(args.owner, args.name, data).toBundle()
+            )
     }
 
     override fun openProfile(login: String) {
         val profileFragmentArgs = ProfileFragmentArgs(login)
         findNavController().navigate(R.id.action_to_profile, profileFragmentArgs.toBundle())
+    }
+
+    override fun retryInitial() {
+        viewModel.refresh()
+    }
+
+    override fun doAction() {
+
+    }
+
+    override fun retryLoadPreviousNext() {
+        viewModel.retryLoadPreviousNext()
     }
 
 }

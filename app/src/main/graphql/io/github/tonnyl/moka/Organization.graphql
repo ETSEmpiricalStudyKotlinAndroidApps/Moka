@@ -15,8 +15,6 @@ query organization($login: String!) {
     projectsResourcePath
     projectsUrl
     resourcePath
-    teamsResourcePath
-    teamsUrl
     url
     viewerCanAdminister
     viewerCanChangePinnedItems

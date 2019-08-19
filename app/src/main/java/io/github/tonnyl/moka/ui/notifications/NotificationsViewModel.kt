@@ -7,7 +7,8 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.db.dao.NotificationDao
-import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.service.NotificationsService
 import io.github.tonnyl.moka.ui.NetworkDatabaseSourceViewModel
@@ -16,9 +17,16 @@ class NotificationsViewModel(
     private val localSource: NotificationDao
 ) : NetworkDatabaseSourceViewModel<Notification>() {
 
-    private val _loadStatusLiveData = MutableLiveData<PagedResource<List<Notification>>>()
-    val loadStatusLiveData: LiveData<PagedResource<List<Notification>>>
-        get() = _loadStatusLiveData
+    private val _initialLoadStatusLiveData = MutableLiveData<Resource<List<Notification>>>()
+    val initialLoadStatusLiveData: LiveData<Resource<List<Notification>>>
+        get() = _initialLoadStatusLiveData
+
+    private val _previousNextLoadStatusLiveData =
+        MutableLiveData<PagedResource2<List<Notification>>>()
+    val previousNextLoadStatusLiveData: LiveData<PagedResource2<List<Notification>>>
+        get() = _previousNextLoadStatusLiveData
+
+    private lateinit var sourceFactory: NotificationsDataSourceFactory
 
     override fun initLocalSource(): LiveData<PagedList<Notification>> {
         return LivePagedListBuilder(
@@ -28,15 +36,21 @@ class NotificationsViewModel(
     }
 
     override fun initRemoteSource(): LiveData<PagedList<Notification>> {
+        sourceFactory = NotificationsDataSourceFactory(
+            viewModelScope,
+            RetrofitClient.createService(NotificationsService::class.java),
+            localSource,
+            _initialLoadStatusLiveData,
+            _previousNextLoadStatusLiveData
+        )
         return LivePagedListBuilder(
-            NotificationsDataSourceFactory(
-                viewModelScope,
-                RetrofitClient.createService(NotificationsService::class.java),
-                localSource,
-                _loadStatusLiveData
-            ),
+            sourceFactory,
             pagingConfig
         ).build()
+    }
+
+    fun retryLoadPreviousNext() {
+        sourceFactory.retryLoadPreviousNext()
     }
 
 }

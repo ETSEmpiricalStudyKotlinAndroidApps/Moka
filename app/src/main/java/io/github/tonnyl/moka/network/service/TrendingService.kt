@@ -22,7 +22,7 @@ interface TrendingService {
     @GET
     suspend fun listTrendingRepositories(
         @Url url: String = "https://github-trending-api.now.sh/repositories",
-        @Query("language") language: String,
+        @Query("language") language: String?,
         @Query("since") since: String
     ): Response<List<TrendingRepository>>
 
@@ -38,7 +38,7 @@ interface TrendingService {
     @GET
     suspend fun listTrendingDevelopers(
         @Url url: String = "https://github-trending-api.now.sh/developers",
-        @Query("language") language: String,
+        @Query("language") language: String?,
         @Query("since") since: String
     ): Response<List<TrendingDeveloper>>
 

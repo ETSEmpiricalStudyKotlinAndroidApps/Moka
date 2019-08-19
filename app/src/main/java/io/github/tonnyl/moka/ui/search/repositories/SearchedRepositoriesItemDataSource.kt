@@ -2,22 +2,20 @@ package io.github.tonnyl.moka.ui.search.repositories
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.apollographql.apollo.coroutines.toDeferred
 import io.github.tonnyl.moka.SearchRepositoriesQuery
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
 import io.github.tonnyl.moka.network.NetworkClient
-import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import io.github.tonnyl.moka.util.execute
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class SearchedRepositoriesItemDataSource(
-    private val coroutineScope: CoroutineScope,
     var keywords: String,
-    val loadStatusLiveData: MutableLiveData<PagedResource<List<SearchedRepositoryItem>>>
+    private val initialLoadStatus: MutableLiveData<Resource<List<SearchedRepositoryItem>>>,
+    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<SearchedRepositoryItem>>>
 ) : PageKeyedDataSource<String, SearchedRepositoryItem>() {
 
     var retry: (() -> Any)? = null
@@ -28,144 +26,182 @@ class SearchedRepositoriesItemDataSource(
     ) {
         Timber.d("loadInitial keywords: $keywords")
 
-        coroutineScope.launch(Dispatchers.Main) {
-            if (keywords.isEmpty()) {
-                loadStatusLiveData.value = PagedResource()
+        if (keywords.isEmpty()) {
+            return
+        }
 
-                return@launch
+        initialLoadStatus.postValue(Resource.loading(null))
+
+        try {
+            val userQuery = SearchRepositoriesQuery.builder()
+                .queryWords(keywords)
+                .first(params.requestedLoadSize)
+                .build()
+
+            val response = runBlocking {
+                NetworkClient.apolloClient
+                    .query(userQuery)
+                    .execute()
             }
 
-            loadStatusLiveData.value = PagedResource(initial = Resource.loading(null))
+            val list = mutableListOf<SearchedRepositoryItem>()
+            val search = response.data()?.search()
 
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    val userQuery = SearchRepositoriesQuery.builder()
-                        .queryWords(keywords)
-                        .first(params.requestedLoadSize)
-                        .build()
-
-                    NetworkClient.apolloClient.query(userQuery).toDeferred()
-                }.await()
-
-                val list = mutableListOf<SearchedRepositoryItem>()
-                val search = response.data()?.search()
-
-                search?.nodes()?.forEach { node ->
-                    list.add(convertRawDataToSearchedRepositoryItem(node))
+            search?.nodes()?.forEach { node ->
+                convertRawDataToSearchedRepositoryItem(node)?.let {
+                    list.add(it)
                 }
-
-                val pageInfo = search?.pageInfo()
-                callback.onResult(
-                    list,
-                    if (pageInfo?.hasPreviousPage() == true) pageInfo.startCursor() else null,
-                    if (pageInfo?.hasNextPage() == true) pageInfo.endCursor() else null
-                )
-
-                retry = null
-
-                loadStatusLiveData.value = PagedResource(initial = Resource.success(list))
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                retry = {
-                    loadInitial(params, callback)
-                }
-
-                loadStatusLiveData.value = PagedResource(initial = Resource.error(e.message, null))
             }
 
+            val pageInfo = search?.pageInfo()
+            callback.onResult(
+                list,
+                if (pageInfo?.hasPreviousPage() == true) {
+                    pageInfo.startCursor()
+                } else {
+                    null
+                },
+                if (pageInfo?.hasNextPage() == true) {
+                    pageInfo.endCursor()
+                } else {
+                    null
+                }
+            )
+
+            retry = null
+
+            initialLoadStatus.postValue(Resource.success(list))
+        } catch (e: Exception) {
+            Timber.e(e)
+
+            retry = {
+                loadInitial(params, callback)
+            }
+
+            initialLoadStatus.postValue(Resource.error(e.message, null))
         }
     }
 
-    override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, SearchedRepositoryItem>) {
+    override fun loadAfter(
+        params: LoadParams<String>,
+        callback: LoadCallback<String, SearchedRepositoryItem>
+    ) {
         Timber.d("loadAfter keywords: $keywords")
 
-        coroutineScope.launch(Dispatchers.Main) {
-            loadStatusLiveData.value = PagedResource(after = Resource.loading(null))
+        pagedLoadStatus.postValue(
+            PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
+        )
 
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    val searchUserQuery = SearchRepositoriesQuery.builder()
-                        .queryWords(keywords)
-                        .first(params.requestedLoadSize)
-                        .after(params.key)
-                        .build()
+        try {
+            val searchUserQuery = SearchRepositoriesQuery.builder()
+                .queryWords(keywords)
+                .first(params.requestedLoadSize)
+                .after(params.key)
+                .build()
 
-                    NetworkClient.apolloClient.query(searchUserQuery).toDeferred()
-                }.await()
-
-                val list = mutableListOf<SearchedRepositoryItem>()
-                val search = response.data()?.search()
-
-                search?.nodes()?.forEach { node ->
-                    list.add(convertRawDataToSearchedRepositoryItem(node))
-                }
-
-                retry = null
-
-                callback.onResult(
-                    list,
-                    if (search?.pageInfo()?.hasNextPage() == true) search.pageInfo().endCursor() else null
-                )
-
-                loadStatusLiveData.value = PagedResource(after = Resource.success(list))
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                retry = {
-                    loadAfter(params, callback)
-                }
-
-                loadStatusLiveData.value = PagedResource(after = Resource.error(e.message, null))
+            val response = runBlocking {
+                NetworkClient.apolloClient
+                    .query(searchUserQuery)
+                    .execute()
             }
+
+            val list = mutableListOf<SearchedRepositoryItem>()
+            val search = response.data()?.search()
+
+            search?.nodes()?.forEach { node ->
+                convertRawDataToSearchedRepositoryItem(node)?.let {
+                    list.add(it)
+                }
+            }
+
+            retry = null
+
+            callback.onResult(
+                list,
+                if (search?.pageInfo()?.hasNextPage() == true) {
+                    search.pageInfo().endCursor()
+                } else {
+                    null
+                }
+            )
+
+            pagedLoadStatus.postValue(
+                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+
+            retry = {
+                loadAfter(params, callback)
+            }
+
+            pagedLoadStatus.postValue(
+                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+            )
         }
     }
 
-    override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, SearchedRepositoryItem>) {
+    override fun loadBefore(
+        params: LoadParams<String>,
+        callback: LoadCallback<String, SearchedRepositoryItem>
+    ) {
         Timber.d("loadBefore keywords: $keywords")
 
-        coroutineScope.launch(Dispatchers.Main) {
-            loadStatusLiveData.value = PagedResource(before = Resource.loading(null))
+        pagedLoadStatus.postValue(
+            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+        )
 
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    val searchUserQuery = SearchRepositoriesQuery.builder()
-                        .queryWords(keywords)
-                        .first(params.requestedLoadSize)
-                        .before(params.key)
-                        .build()
+        try {
+            val searchUserQuery = SearchRepositoriesQuery.builder()
+                .queryWords(keywords)
+                .first(params.requestedLoadSize)
+                .before(params.key)
+                .build()
 
-                    NetworkClient.apolloClient.query(searchUserQuery).toDeferred()
-                }.await()
-
-                val list = mutableListOf<SearchedRepositoryItem>()
-                val search = response.data()?.search()
-
-                search?.nodes()?.forEach { node ->
-                    list.add(convertRawDataToSearchedRepositoryItem(node))
-                }
-
-                retry = null
-
-                callback.onResult(
-                    list,
-                    if (search?.pageInfo()?.hasPreviousPage() == true) search.pageInfo().startCursor() else null
-                )
-
-                loadStatusLiveData.value = PagedResource(before = Resource.success(list))
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                retry = {
-                    loadBefore(params, callback)
-                }
-
-                loadStatusLiveData.value = PagedResource(before = Resource.error(e.message, null))
+            val response = runBlocking {
+                NetworkClient.apolloClient
+                    .query(searchUserQuery)
+                    .execute()
             }
+
+            val list = mutableListOf<SearchedRepositoryItem>()
+            val search = response.data()?.search()
+
+            search?.nodes()?.forEach { node ->
+                convertRawDataToSearchedRepositoryItem(node)?.let {
+                    list.add(it)
+                }
+            }
+
+            retry = null
+
+            callback.onResult(
+                list,
+                if (search?.pageInfo()?.hasPreviousPage() == true) {
+                    search.pageInfo().startCursor()
+                } else {
+                    null
+                }
+            )
+
+            pagedLoadStatus.postValue(
+                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+
+            retry = {
+                loadBefore(params, callback)
+            }
+
+            pagedLoadStatus.postValue(
+                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+            )
         }
     }
 
-    private fun convertRawDataToSearchedRepositoryItem(node: SearchRepositoriesQuery.Node): SearchedRepositoryItem =
-        SearchedRepositoryItem.createFromRaw(node.fragments().repositoryFragment())!!
+    private fun convertRawDataToSearchedRepositoryItem(node: SearchRepositoriesQuery.Node): SearchedRepositoryItem? {
+        return SearchedRepositoryItem.createFromRaw(node.fragments().repositoryFragment())
+    }
 
 }

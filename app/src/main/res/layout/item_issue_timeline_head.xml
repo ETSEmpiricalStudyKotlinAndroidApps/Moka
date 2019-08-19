@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="info"
+            type="String" />
+
+        <variable
+            name="viewModel"
+            type="io.github.tonnyl.moka.ui.issue.IssueViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/issue_title"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/list_item_spacing"
+            app:textFuture="@{title}"
+            tools:text="@sample/issue.json/issues/title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/issue_info"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/list_item_spacing"
+            android:paddingEnd="@dimen/list_item_spacing"
+            app:textFuture="@{info}"
+            tools:text="#234 · created by tonny 3 days ago" />
+
+        <include
+            layout="@layout/item_issue_timeline_comment"
+            bind:comment="@{viewModel.issueLiveData.data}" />
+
+    </LinearLayout>
+
+</layout>

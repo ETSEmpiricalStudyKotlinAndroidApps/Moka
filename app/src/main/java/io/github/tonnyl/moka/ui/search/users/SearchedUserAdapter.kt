@@ -2,58 +2,53 @@ package io.github.tonnyl.moka.ui.search.users
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.SearchedOrganizationItem
 import io.github.tonnyl.moka.data.item.SearchedUserItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
-import io.github.tonnyl.moka.databinding.ItemNetworkStateBinding
 import io.github.tonnyl.moka.databinding.ItemSearchedOrganizationBinding
 import io.github.tonnyl.moka.databinding.ItemSearchedUserBinding
-import io.github.tonnyl.moka.network.NetworkState
-import io.github.tonnyl.moka.ui.common.NetworkStateViewHolder
+import io.github.tonnyl.moka.ui.PagedResourceAdapter
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class SearchedUserAdapter(
-        private val beforeRetryCallback: () -> Unit,
-        private val afterRetryCallback: () -> Unit
-) : PagedListAdapter<SearchedUserOrOrgItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
-
-    private var beforeNetworkState: NetworkState? = null
-    private var afterNetworkState: NetworkState? = null
+    override val retryActions: PagingNetworkStateActions
+) : PagedResourceAdapter<SearchedUserOrOrgItem>(DIFF_CALLBACK, retryActions) {
 
     companion object {
 
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<SearchedUserOrOrgItem>() {
 
-            override fun areItemsTheSame(oldItem: SearchedUserOrOrgItem, newItem: SearchedUserOrOrgItem): Boolean = oldItem.hashCode() == newItem.hashCode()
+            override fun areItemsTheSame(
+                oldItem: SearchedUserOrOrgItem,
+                newItem: SearchedUserOrOrgItem
+            ): Boolean = oldItem.areItemsTheSame(newItem)
 
-            override fun areContentsTheSame(oldItem: SearchedUserOrOrgItem, newItem: SearchedUserOrOrgItem): Boolean = oldItem.compare(newItem)
+            override fun areContentsTheSame(
+                oldItem: SearchedUserOrOrgItem,
+                newItem: SearchedUserOrOrgItem
+            ): Boolean = oldItem.areContentsTheSame(newItem)
 
         }
 
-        const val VIEW_TYPE_BEFORE_NETWORK_STATE = 0x00
-        const val VIEW_TYPE_USER = 0x01
-        const val VIEW_TYPE_ORGANIZATION = 0x02
-        const val VIEW_TYPE_AFTER_NETWORK_STATE = 0x03
-
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-
         return when (viewType) {
-            VIEW_TYPE_USER -> {
+            R.layout.item_searched_user -> {
                 UserViewHolder(ItemSearchedUserBinding.inflate(inflater, parent, false))
             }
-            VIEW_TYPE_ORGANIZATION -> {
-                OrganizationViewHolder(ItemSearchedOrganizationBinding.inflate(inflater, parent, false))
-            }
-            VIEW_TYPE_BEFORE_NETWORK_STATE -> {
-                NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false), beforeRetryCallback)
-            }
-            VIEW_TYPE_AFTER_NETWORK_STATE -> {
-                NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false), afterRetryCallback)
+            R.layout.item_searched_organization -> {
+                OrganizationViewHolder(
+                    ItemSearchedOrganizationBinding.inflate(
+                        inflater,
+                        parent,
+                        false
+                    )
+                )
             }
             else -> {
                 throw  IllegalArgumentException("Invalid view type: $viewType")
@@ -61,74 +56,33 @@ class SearchedUserAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (getItemViewType(position)) {
-            VIEW_TYPE_USER -> {
-                val item = getItem(position) ?: return
+    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = getItem(position) ?: return
+
+        when (getViewType(position)) {
+            R.layout.item_searched_user -> {
                 (holder as UserViewHolder).bindTo(item as SearchedUserItem)
             }
-            VIEW_TYPE_ORGANIZATION -> {
-                val item = getItem(position) ?: return
+            R.layout.item_searched_organization -> {
                 (holder as OrganizationViewHolder).bindTo(item as SearchedOrganizationItem)
             }
-            VIEW_TYPE_AFTER_NETWORK_STATE -> {
-                (holder as NetworkStateViewHolder).bindTo(afterNetworkState)
-            }
-            VIEW_TYPE_BEFORE_NETWORK_STATE -> {
-                (holder as NetworkStateViewHolder).bindTo(beforeNetworkState)
-
-            }
         }
     }
 
-    override fun getItemViewType(position: Int): Int = when {
-        hasBeforeExtraRow() && position == 0 -> VIEW_TYPE_BEFORE_NETWORK_STATE
-        hasAfterExtraRow() && position == itemCount - 1 -> VIEW_TYPE_AFTER_NETWORK_STATE
-        else -> {
-            if (getItem(position) is SearchedUserItem) VIEW_TYPE_USER else VIEW_TYPE_ORGANIZATION
-        }
-    }
-
-    override fun getItemCount(): Int = super.getItemCount() + if (hasBeforeExtraRow()) 1 else 0 + if (hasAfterExtraRow()) 1 else 0
-
-    private fun hasBeforeExtraRow() = beforeNetworkState != null && beforeNetworkState != NetworkState.LOADED
-
-    private fun hasAfterExtraRow() = afterNetworkState != null && afterNetworkState != NetworkState.LOADED
-
-    fun setBeforeNetworkState(newNetworkState: NetworkState?) {
-        val previousState = this.beforeNetworkState
-        val hadExtraRow = hasBeforeExtraRow()
-        this.beforeNetworkState = newNetworkState
-        val hasExtraRow = hasBeforeExtraRow()
-        if (hadExtraRow != hasExtraRow) {
-            if (hadExtraRow) {
-                notifyItemRemoved(super.getItemCount())
-            } else {
-                notifyItemInserted(super.getItemCount())
+    override fun getViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is SearchedUserItem -> {
+                R.layout.item_searched_user
             }
-        } else if (hasExtraRow && previousState != newNetworkState) {
-            notifyItemChanged(0)
-        }
-    }
-
-    fun setAfterNetworkState(newNetworkState: NetworkState?) {
-        val previousState = this.afterNetworkState
-        val hadExtraRow = hasAfterExtraRow()
-        this.afterNetworkState = newNetworkState
-        val hasExtraRow = hasAfterExtraRow()
-        if (hadExtraRow != hasExtraRow) {
-            if (hadExtraRow) {
-                notifyItemRemoved(super.getItemCount())
-            } else {
-                notifyItemInserted(super.getItemCount())
+            // is SearchedOrganizationItem
+            else -> {
+                R.layout.item_searched_organization
             }
-        } else if (hasExtraRow && previousState != newNetworkState) {
-            notifyItemChanged(itemCount - 1)
         }
     }
 
     class UserViewHolder(
-            private val binding: ItemSearchedUserBinding
+        private val binding: ItemSearchedUserBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(data: SearchedUserItem) {
@@ -139,7 +93,7 @@ class SearchedUserAdapter(
     }
 
     class OrganizationViewHolder(
-            private val binding: ItemSearchedOrganizationBinding
+        private val binding: ItemSearchedOrganizationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(data: SearchedOrganizationItem) {

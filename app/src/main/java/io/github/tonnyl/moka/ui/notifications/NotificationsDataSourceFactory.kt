@@ -4,7 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.db.dao.NotificationDao
-import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.NotificationsService
 import kotlinx.coroutines.CoroutineScope
 
@@ -12,16 +13,26 @@ class NotificationsDataSourceFactory(
     private val coroutineScope: CoroutineScope,
     private val notificationsService: NotificationsService,
     private val notificationDao: NotificationDao,
-    private val loadStatusLiveData: MutableLiveData<PagedResource<List<Notification>>>
+    private val initialLoadStatus: MutableLiveData<Resource<List<Notification>>>,
+    private val previousNextStatus: MutableLiveData<PagedResource2<List<Notification>>>
 ) : DataSource.Factory<String, Notification>() {
+
+    private var dataSource: NotificationsDataSource? = null
 
     override fun create(): DataSource<String, Notification> {
         return NotificationsDataSource(
             coroutineScope,
             notificationsService,
             notificationDao,
-            loadStatusLiveData
-        )
+            initialLoadStatus,
+            previousNextStatus
+        ).also {
+            dataSource = it
+        }
+    }
+
+    fun retryLoadPreviousNext() {
+        dataSource?.retry?.invoke()
     }
 
 }

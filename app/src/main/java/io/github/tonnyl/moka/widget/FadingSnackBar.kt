@@ -28,7 +28,11 @@ import io.github.tonnyl.moka.R
 /**
  * A custom snackbar implementation allowing more control over placement and entry/exit animations.
  */
-class FadingSnackbar(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
+class FadingSnackBar @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : FrameLayout(context, attrs, defStyle) {
 
     private val message: TextView
     private val action: Button
@@ -41,20 +45,19 @@ class FadingSnackbar(context: Context, attrs: AttributeSet) : FrameLayout(contex
 
     fun dismiss() {
         if (visibility == VISIBLE && alpha == 1f) {
-            animate()
-                    .alpha(0f)
-                    .withEndAction { visibility = GONE }
-                    .duration = EXIT_DURATION
+            animate().alpha(0f)
+                .withEndAction { visibility = GONE }
+                .duration = EXIT_DURATION
         }
     }
 
     fun show(
-            @StringRes messageId: Int = 0,
-            messageText: CharSequence? = null,
-            @StringRes actionId: Int? = null,
-            longDuration: Boolean = true,
-            actionClick: () -> Unit = { dismiss() },
-            dismissListener: () -> Unit = { }
+        @StringRes messageId: Int = 0,
+        messageText: CharSequence? = null,
+        @StringRes actionId: Int? = null,
+        longDuration: Boolean = true,
+        actionClick: () -> Unit = { dismiss() },
+        dismissListener: () -> Unit = { }
     ) {
         message.text = messageText ?: context.getString(messageId)
         if (actionId != null) {
@@ -70,9 +73,8 @@ class FadingSnackbar(context: Context, attrs: AttributeSet) : FrameLayout(contex
         }
         alpha = 0f
         visibility = VISIBLE
-        animate()
-                .alpha(1f)
-                .duration = ENTER_DURATION
+        animate().alpha(1f)
+            .duration = ENTER_DURATION
         val showDuration = ENTER_DURATION + if (longDuration) LONG_DURATION else SHORT_DURATION
         postDelayed({
             dismiss()

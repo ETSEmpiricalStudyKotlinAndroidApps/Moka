@@ -20,4 +20,7 @@ interface EventDao {
     @Query("DELETE FROM event WHERE created_at < :date")
     fun deleteByCreatedAt(date: Date)
 
+    @Query("DELETE FROM event")
+    fun deleteAll()
+
 }

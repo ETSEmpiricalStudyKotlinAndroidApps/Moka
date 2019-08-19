@@ -10,33 +10,56 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.CommentAuthorAssociation
-import io.github.tonnyl.moka.databinding.FragmentIssuePrBinding
-import io.github.tonnyl.moka.network.GlideLoader
+import io.github.tonnyl.moka.databinding.FragmentPrBinding
+import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
-class PullRequestFragment : Fragment() {
+class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
     private lateinit var viewModel: PullRequestViewModel
 
-    private lateinit var binding: FragmentIssuePrBinding
+    private lateinit var binding: FragmentPrBinding
 
     private val args: PullRequestFragmentArgs by navArgs()
 
-    private lateinit var repositoryOwner: String
-    private lateinit var repositoryName: String
-    private var prNumber: Int = 0
-    private lateinit var prTitle: String
-
-    private val adapter: PullRequestTimelineAdapter by lazy {
-        PullRequestTimelineAdapter()
+    private val pullRequestTimelineAdapter by lazy {
+        PullRequestTimelineAdapter(
+            getString(
+                R.string.issue_pr_title_format,
+                args.pullRequestItem.number,
+                args.pullRequestItem.title
+            ),
+            getString(
+                R.string.issue_pr_info_format,
+                getString(
+                    when {
+                        args.pullRequestItem.closed -> R.string.issue_pr_status_closed
+                        args.pullRequestItem.merged -> R.string.issue_pr_status_merged
+                        else -> R.string.issue_pr_status_open
+                    }
+                ),
+                getString(R.string.issue_pr_by, args.pullRequestItem.login),
+                DateUtils.getRelativeTimeSpanString(
+                    args.pullRequestItem.createdAt.time,
+                    System.currentTimeMillis(),
+                    DateUtils.MINUTE_IN_MILLIS
+                )
+            ),
+            viewLifecycleOwner,
+            viewModel,
+            this@PullRequestFragment
+        )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentIssuePrBinding.inflate(inflater, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentPrBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -44,72 +67,68 @@ class PullRequestFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        repositoryOwner = args.owner
-        repositoryName = args.name
-        prNumber = args.number
-        prTitle = args.title
+        viewModel = ViewModelProviders.of(
+            this,
+            ViewModelFactory(args.repositoryOwner, args.repositoryName, args.pullRequestItem.number)
+        ).get(PullRequestViewModel::class.java)
 
-        binding.issueTitle.text = prTitle
-
-        with(binding.appbarLayout.toolbar) {
-            title = getString(R.string.pull_request)
-            setNavigationOnClickListener {
-                parentFragment?.findNavController()?.navigateUp()
+        with(binding) {
+            with(appbarLayout.toolbar) {
+                title = getString(R.string.pull_request)
+                setNavigationOnClickListener {
+                    parentFragment?.findNavController()?.navigateUp()
+                }
             }
+
+            viewModel = this@PullRequestFragment.viewModel
+            emptyViewActions = this@PullRequestFragment
+            lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(repositoryOwner, repositoryName, prNumber)).get(PullRequestViewModel::class.java)
+        viewModel.data.observe(this, Observer {
+            with(binding.recyclerView) {
+                if (adapter == null) {
+                    adapter = pullRequestTimelineAdapter
+                }
+            }
 
-        with(binding.issueTimelineRecyclerView) {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = this@PullRequestFragment.adapter
-        }
-
-        viewModel.pullRequestTimelineResults.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+            pullRequestTimelineAdapter.submitList(it)
         })
 
-        viewModel.pullRequestLiveData.observe(viewLifecycleOwner, Observer { resource ->
-            when (resource.status) {
+        viewModel.pagedLoadStatus.observe(this, Observer {
+            when (it.resource?.status) {
                 Status.SUCCESS -> {
-                    val pullRequest = resource.data ?: return@Observer
-
-                    with(binding.itemIssueTimelineComment) {
-                        if (pullRequest.body.isNotEmpty()) {
-                            GlideLoader.loadAvatar(pullRequest.author?.avatarUrl?.toString(), binding.itemIssueTimelineComment.issueTimelineCommentAvatar)
-
-                            issueTimelineCommentUsername.text = pullRequest.author?.login
-                            issueTimelineCommentCreatedAt.text = DateUtils.getRelativeTimeSpanString(pullRequest.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
-                            issueTimelineCommentContent.text = pullRequest.body
-
-                            val stringResId = when (pullRequest.authorAssociation) {
-                                CommentAuthorAssociation.COLLABORATOR -> R.string.author_association_collaborator
-                                CommentAuthorAssociation.CONTRIBUTOR -> R.string.author_association_contributor
-                                CommentAuthorAssociation.FIRST_TIMER -> R.string.author_association_first_timer
-                                CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> R.string.author_association_first_timer_contributor
-                                CommentAuthorAssociation.MEMBER -> R.string.author_association_member
-                                CommentAuthorAssociation.OWNER -> R.string.author_association_owner
-                                else -> -1
-                            }
-                            issueTimelineCommentAuthorAssociation.text = if (stringResId != -1) getString(stringResId) else ""
-                        } else {
-                            root.visibility = View.GONE
-                        }
-                    }
-
-                    val numberString = getString(R.string.issue_pr_number, pullRequest.number)
-                    val byString = getString(R.string.issue_pr_by, pullRequest.author?.login)
-                    val createdString = DateUtils.getRelativeTimeSpanString(pullRequest.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
-                    binding.issueInfo.text = getString(R.string.issue_pr_info_format, numberString, byString, createdString)
+                    pullRequestTimelineAdapter.setNetworkState(
+                        Pair(it.direction, NetworkState.LOADED)
+                    )
                 }
                 Status.ERROR -> {
-
+                    pullRequestTimelineAdapter.setNetworkState(
+                        Pair(it.direction, NetworkState.error(it.resource.message))
+                    )
                 }
                 Status.LOADING -> {
+                    pullRequestTimelineAdapter.setNetworkState(
+                        Pair(it.direction, NetworkState.LOADING)
+                    )
+                }
+                null -> {
 
                 }
             }
         })
+    }
+
+    override fun retryInitial() {
+        viewModel.refresh()
+    }
+
+    override fun doAction() {
+
+    }
+
+    override fun retryLoadPreviousNext() {
+        viewModel.retryLoadPreviousNext()
     }
 
 }

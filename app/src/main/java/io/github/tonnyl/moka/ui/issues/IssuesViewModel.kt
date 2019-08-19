@@ -2,36 +2,41 @@ package io.github.tonnyl.moka.ui.issues
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.IssueItem
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
 
 class IssuesViewModel(
     private val owner: String,
     private val name: String
-) : ViewModel() {
+) : NetworkCacheSourceViewModel<IssueItem>() {
 
-    private val _loadStatusLiveData = MutableLiveData<PagedResource<List<IssueItem>>>()
-    val loadStatusLiveData: LiveData<PagedResource<List<IssueItem>>>
-        get() = _loadStatusLiveData
+    private val _initialLoadStatus = MutableLiveData<Resource<List<IssueItem>>>()
+    val initialLoadStatus: LiveData<Resource<List<IssueItem>>>
+        get() = _initialLoadStatus
 
-    private val sourceFactory = IssuesDataSourceFactory(viewModelScope, owner, name, _loadStatusLiveData)
+    private val _pagedLoadStatus = MutableLiveData<PagedResource2<List<IssueItem>>>()
+    val pagedLoadStatus: LiveData<PagedResource2<List<IssueItem>>>
+        get() = _pagedLoadStatus
 
-    val issuesResults: LiveData<PagedList<IssueItem>> by lazy {
-        val config = PagedList.Config.Builder()
-            .setPageSize(20)
-            .setInitialLoadSizeHint(20 * 1)
-            .setEnablePlaceholders(false)
-            .build()
+    private lateinit var sourceFactory: IssuesDataSourceFactory
 
-        LivePagedListBuilder(sourceFactory, config).build()
+    init {
+        refresh()
     }
 
-    fun refresh() {
-        sourceFactory.invalidate()
+    override fun initRemoteSource(): LiveData<PagedList<IssueItem>> {
+        sourceFactory = IssuesDataSourceFactory(owner, name, _initialLoadStatus, _pagedLoadStatus)
+
+        return LivePagedListBuilder(sourceFactory, pagingConfig)
+            .build()
+    }
+
+    override fun retryLoadPreviousNext() {
+        sourceFactory.retryLoadPreviousNext()
     }
 
 }

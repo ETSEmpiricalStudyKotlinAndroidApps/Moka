@@ -103,7 +103,7 @@ query issue($owner: String!, $name: String!, $number: Int!) {
 query issueTimeline($owner: String!, $name: String!, $number: Int!, $after: String, $before: String, $perPage: Int!) {
   repository(owner: $owner, name: $name) {
     issue(number: $number) {
-      timeline(first: $perPage, after: $after, before: $before) {
+      timelineItems(first: $perPage, after: $after, before: $before) {
         nodes {
           typename: __typename
           ... AssignedEventFragment

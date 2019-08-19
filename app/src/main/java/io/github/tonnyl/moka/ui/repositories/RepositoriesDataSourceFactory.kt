@@ -2,32 +2,43 @@ package io.github.tonnyl.moka.ui.repositories
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.RepositoryAbstract
-import kotlinx.coroutines.CoroutineScope
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
 
 class RepositoriesDataSourceFactory(
-    private val coroutineScope: CoroutineScope,
     private val login: String,
     private val repositoryType: RepositoryType,
-    private val loadStatusLiveData: MutableLiveData<PagedResource<List<RepositoryAbstract>>>
+    private val loadStatusLiveData: MutableLiveData<Resource<List<RepositoryAbstract>>>,
+    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<RepositoryAbstract>>>
 ) : DataSource.Factory<String, RepositoryAbstract>() {
 
-    private val ownedRepositoriesLiveData = MutableLiveData<OwnedRepositoriesDataSource>()
-    private val starredRepositoriesLiveData = MutableLiveData<StarredRepositoriesDataSource>()
+    private var starredDataSource: StarredRepositoriesDataSource? = null
+    private var ownedDataSource: OwnedRepositoriesDataSource? = null
 
     override fun create(): DataSource<String, RepositoryAbstract> = when (repositoryType) {
-        RepositoryType.STARRED -> StarredRepositoriesDataSource(coroutineScope, login, loadStatusLiveData).apply {
-            starredRepositoriesLiveData.postValue(this)
+        RepositoryType.STARRED -> {
+            StarredRepositoriesDataSource(
+                login,
+                loadStatusLiveData,
+                pagedLoadStatus
+            ).also {
+                starredDataSource = it
+            }
         }
-        RepositoryType.OWNED -> OwnedRepositoriesDataSource(coroutineScope, login, loadStatusLiveData).apply {
-            ownedRepositoriesLiveData.postValue(this)
+        RepositoryType.OWNED -> {
+            OwnedRepositoriesDataSource(
+                login,
+                loadStatusLiveData,
+                pagedLoadStatus
+            ).also {
+                ownedDataSource = it
+            }
         }
     }
 
-    fun invalidate() {
-        ownedRepositoriesLiveData.value?.invalidate()
-        starredRepositoriesLiveData.value?.invalidate()
+    fun retryLoadPreviousNext() {
+        starredDataSource?.retry?.invoke()
     }
 
 }

@@ -7,14 +7,21 @@ import androidx.databinding.BindingAdapter
 
 @BindingAdapter("repositoryLanguageDrawableColor")
 fun AppCompatTextView.repositoryLanguageDrawableColor(
-        color: String?
+    color: String?
 ) {
+    val colorString = if (color == null) {
+        null
+    } else if (color.length == 4 && color[0] == '#') {
+        "#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}"
+    } else {
+        color
+    }
     (compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(
-            color?.let {
-                Color.parseColor(it)
-            } ?: run {
-                Color.BLACK
-            }
+        color?.let {
+            Color.parseColor(colorString)
+        } ?: run {
+            Color.BLACK
+        }
     )
 
 }

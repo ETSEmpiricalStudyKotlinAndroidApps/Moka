@@ -9,6 +9,10 @@
             name="mainViewModel"
             type="io.github.tonnyl.moka.ui.MainViewModel" />
 
+        <variable
+            name="actions"
+            type="io.github.tonnyl.moka.ui.SearchBarActions" />
+
     </data>
 
     <merge
@@ -57,6 +61,7 @@
                             android:imeOptions="flagNoExtractUi"
                             android:inputType="textFilter"
                             android:maxLines="1"
+                            android:onClick="@{() -> actions.openSearch()}"
                             android:textColorHint="@color/colorTextSecondary"
                             android:textCursorDrawable="@drawable/custom_cursor" />
 
@@ -64,6 +69,7 @@
                             android:id="@+id/main_search_bar_avatar"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
+                            android:onClick="@{() -> actions.openAccountDialog()}"
                             android:padding="8dp"
                             android:scaleType="centerCrop"
                             app:avatarUrl="@{mainViewModel.loginUserProfile.viewer().avatarUrl()}"

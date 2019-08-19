@@ -81,16 +81,6 @@ data class Organization(
     val resourcePath: Uri,
 
     /**
-     * The HTTP path listing organization's teams
-     */
-    val teamsResourcePath: Uri,
-
-    /**
-     * The HTTP URL listing organization's teams
-     */
-    val teamsUrl: Uri,
-
-    /**
      * The HTTP URL for this organization.
      */
     val url: Uri,
@@ -157,8 +147,6 @@ data class Organization(
                 data.projectsResourcePath(),
                 data.projectsUrl(),
                 data.resourcePath(),
-                data.teamsResourcePath(),
-                data.teamsUrl(),
                 data.url(),
                 data.viewerCanAdminister(),
                 data.viewerCanChangePinnedItems(),

@@ -123,14 +123,9 @@
             android:name="login"
             app:argType="string" />
 
-        <!--available type: followers/following-->
         <argument
-            android:name="users_type"
-            app:argType="string" />
-
-        <argument
-            android:name="username"
-            app:argType="string" />
+            android:name="usersType"
+            app:argType="io.github.tonnyl.moka.ui.users.UsersType" />
 
     </fragment>
 
@@ -145,12 +140,12 @@
             app:argType="string" />
 
         <argument
-            android:name="repositories_type"
-            app:argType="string" />
+            android:name="repositoriesType"
+            app:argType="io.github.tonnyl.moka.ui.repositories.RepositoryType" />
 
         <argument
-            android:name="username"
-            app:argType="string" />
+            android:name="profileType"
+            app:argType="io.github.tonnyl.moka.ui.profile.ProfileType" />
 
     </fragment>
 
@@ -194,27 +189,19 @@
         android:id="@+id/issue_fragment"
         android:name="io.github.tonnyl.moka.ui.issue.IssueFragment"
         android:label="Issue"
-        tools:layout="@layout/fragment_issue_pr">
+        tools:layout="@layout/fragment_pr">
 
         <argument
-            android:name="owner"
-            app:argType="string"
-            app:nullable="false" />
+            android:name="repositoryOwner"
+            app:argType="string" />
 
         <argument
-            android:name="name"
-            app:argType="string"
-            app:nullable="false" />
+            android:name="repositoryName"
+            app:argType="string" />
 
         <argument
-            android:name="number"
-            app:argType="integer"
-            app:nullable="false" />
-
-        <argument
-            android:name="title"
-            app:argType="string"
-            app:nullable="false" />
+            android:name="issueItem"
+            app:argType="io.github.tonnyl.moka.data.item.IssueItem" />
 
     </fragment>
 
@@ -222,27 +209,19 @@
         android:id="@+id/pr_fragment"
         android:name="io.github.tonnyl.moka.ui.pr.PullRequestFragment"
         android:label="PullRequest"
-        tools:layout="@layout/fragment_issue_pr">
+        tools:layout="@layout/fragment_pr">
 
         <argument
-            android:name="owner"
-            app:argType="string"
-            app:nullable="false" />
+            android:name="pullRequestItem"
+            app:argType="io.github.tonnyl.moka.data.item.PullRequestItem" />
 
         <argument
-            android:name="name"
-            app:argType="string"
-            app:nullable="false" />
+            android:name="repositoryOwner"
+            app:argType="string" />
 
         <argument
-            android:name="number"
-            app:argType="integer"
-            app:nullable="false" />
-
-        <argument
-            android:name="title"
-            app:argType="string"
-            app:nullable="false" />
+            android:name="repositoryName"
+            app:argType="string" />
 
     </fragment>
 

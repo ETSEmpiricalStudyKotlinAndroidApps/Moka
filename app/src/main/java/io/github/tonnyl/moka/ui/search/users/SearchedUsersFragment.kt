@@ -7,25 +7,24 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.databinding.FragmentSearchPageBinding
+import io.github.tonnyl.moka.databinding.FragmentSearchedUsersBinding
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.search.SearchViewModel
 import io.github.tonnyl.moka.ui.search.ViewModelFactory as ParentViewModelFactory
 
-class SearchedUsersFragment : Fragment(), View.OnClickListener {
+class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
 
-    private lateinit var binding: FragmentSearchPageBinding
+    private lateinit var binding: FragmentSearchedUsersBinding
 
     private lateinit var parentViewModel: SearchViewModel
 
     private lateinit var searchedUsersViewModel: SearchedUsersViewModel
 
-    private val adapter: SearchedUserAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        SearchedUserAdapter({}, {})
+    private val searchedUserAdapter: SearchedUserAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        SearchedUserAdapter(this@SearchedUsersFragment)
     }
 
     companion object {
@@ -34,8 +33,12 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSearchPageBinding.inflate(inflater, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSearchedUsersBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -43,58 +46,35 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        parentViewModel = ViewModelProviders.of(requireParentFragment(), ParentViewModelFactory()).get(SearchViewModel::class.java)
-        searchedUsersViewModel = ViewModelProviders.of(this, ViewModelFactory()).get(SearchedUsersViewModel::class.java)
+        parentViewModel = ViewModelProviders.of(requireParentFragment(), ParentViewModelFactory())
+            .get(SearchViewModel::class.java)
+        searchedUsersViewModel = ViewModelProviders.of(this, ViewModelFactory())
+            .get(SearchedUsersViewModel::class.java)
+
+        binding.apply {
+            this.viewModel = searchedUsersViewModel
+            emptyViewActions = this@SearchedUsersFragment
+            lifecycleOwner = viewLifecycleOwner
+        }
 
         parentViewModel.input.observe(requireParentFragment(), Observer {
             searchedUsersViewModel.refresh(it)
         })
 
-        searchedUsersViewModel.loadStatusLiveData.observe(this, Observer {
-            if (it.initial == null
-                    && it.before == null
-                    && it.after == null) {
-                binding.emptyContent.root.visibility = View.GONE
-                binding.recyclerView.visibility = View.GONE
-                binding.swipeRefresh.isRefreshing = false
-            }
-
-            when (it.initial?.status) {
-                Status.SUCCESS, Status.ERROR -> {
-                    binding.swipeRefresh.isRefreshing = false
-                }
-                Status.LOADING -> {
-                    binding.swipeRefresh.isRefreshing = true
-                }
-                null -> {
-
-                }
-            }
-
-            when (it.after?.status) {
+        searchedUsersViewModel.pagedLoadStatus.observe(this, Observer {
+            when (it.resource?.status) {
                 Status.SUCCESS -> {
-                    adapter.setAfterNetworkState(NetworkState.LOADED)
+                    searchedUserAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADED))
                 }
                 Status.ERROR -> {
-                    adapter.setAfterNetworkState(NetworkState.error(it.after.message))
+                    searchedUserAdapter.setNetworkState(
+                        Pair(it.direction, NetworkState.error(it.resource.message))
+                    )
                 }
                 Status.LOADING -> {
-                    adapter.setAfterNetworkState(NetworkState.LOADING)
-                }
-                null -> {
-
-                }
-            }
-
-            when (it.before?.status) {
-                Status.SUCCESS -> {
-                    adapter.setBeforeNetworkState(NetworkState.LOADED)
-                }
-                Status.ERROR -> {
-                    adapter.setBeforeNetworkState(NetworkState.error(it.before.message))
-                }
-                Status.LOADING -> {
-                    adapter.setBeforeNetworkState(NetworkState.LOADING)
+                    searchedUserAdapter.setNetworkState(
+                        Pair(it.direction, NetworkState.LOADING)
+                    )
                 }
                 null -> {
 
@@ -102,18 +82,14 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
             }
         })
 
-        searchedUsersViewModel.searchedUsersResult.observe(this, Observer {
-            showHideEmptyView(it.isEmpty()
-                    && searchedUsersViewModel.loadStatusLiveData.value?.initial?.status == Status.SUCCESS)
-
-            if (binding.recyclerView.adapter == null) {
-                binding.recyclerView.setHasFixedSize(false)
-                binding.recyclerView.layoutManager = LinearLayoutManager(context
-                        ?: return@Observer, RecyclerView.VERTICAL, false)
-                binding.recyclerView.adapter = adapter
+        searchedUsersViewModel.data.observe(this, Observer {
+            with(binding.recyclerView) {
+                if (adapter == null) {
+                    adapter = searchedUserAdapter
+                }
             }
 
-            adapter.submitList(it)
+            searchedUserAdapter.submitList(it)
         })
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -122,22 +98,16 @@ class SearchedUsersFragment : Fragment(), View.OnClickListener {
 
     }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.empty_content_retry_button -> {
-                triggerRefresh()
-            }
-        }
+    override fun retryLoadPreviousNext() {
+        searchedUsersViewModel.retryLoadPreviousNext()
     }
 
-    private fun showHideEmptyView(show: Boolean) {
-        if (show) {
-            binding.emptyContent.root.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
-        } else {
-            binding.emptyContent.root.visibility = View.GONE
-            binding.recyclerView.visibility = View.VISIBLE
-        }
+    override fun retryInitial() {
+        searchedUsersViewModel.refresh()
+    }
+
+    override fun doAction() {
+
     }
 
     private fun triggerRefresh() {

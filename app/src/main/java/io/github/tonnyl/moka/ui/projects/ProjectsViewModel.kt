@@ -2,12 +2,12 @@ package io.github.tonnyl.moka.ui.projects
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.db.dao.ProjectsDao
-import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.ui.NetworkDatabaseSourceViewModel
 
 class ProjectsViewModel(
@@ -16,9 +16,15 @@ class ProjectsViewModel(
     private val repositoryName: String?
 ) : NetworkDatabaseSourceViewModel<Project>() {
 
-    private val _loadStatusLiveData = MutableLiveData<PagedResource<List<Project>>>()
-    val loadStatusLiveData: LiveData<PagedResource<List<Project>>>
-        get() = _loadStatusLiveData
+    private var sourceFactory: ProjectsDataSourceFactory? = null
+
+    private val _initialLoadStatusLiveData = MutableLiveData<Resource<List<Project>>>()
+    val initialLoadStatusLiveData: LiveData<Resource<List<Project>>>
+        get() = _initialLoadStatusLiveData
+
+    private val _previousNextLoadStatusLiveData = MutableLiveData<PagedResource2<List<Project>>>()
+    val previousNextLoadStatusLiveData: LiveData<PagedResource2<List<Project>>>
+        get() = _previousNextLoadStatusLiveData
 
     override fun initLocalSource(): LiveData<PagedList<Project>> {
         return LivePagedListBuilder(
@@ -28,17 +34,23 @@ class ProjectsViewModel(
     }
 
     override fun initRemoteSource(): LiveData<PagedList<Project>> {
+        val sourceFactory = ProjectsDataSourceFactory(
+            login,
+            isMyself,
+            localSource,
+            repositoryName,
+            _initialLoadStatusLiveData,
+            _previousNextLoadStatusLiveData
+        )
+
         return LivePagedListBuilder(
-            ProjectsDataSourceFactory(
-                viewModelScope,
-                login,
-                isMyself,
-                localSource,
-                repositoryName,
-                _loadStatusLiveData
-            ),
+            sourceFactory,
             pagingConfig
         ).build()
+    }
+
+    fun retryLoadPreviousNext() {
+        sourceFactory?.retryLoadPreviousNext()
     }
 
 }

@@ -10,17 +10,25 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.databinding.FragmentNotificationsBinding
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
+import io.github.tonnyl.moka.ui.SearchBarActions
+import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.widget.ListCategoryDecoration
 import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
-class NotificationsFragment : Fragment(), View.OnClickListener {
+class NotificationsFragment : Fragment(), SearchBarActions,
+    EmptyViewActions, NotificationActions,
+    PagingNetworkStateActions {
 
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
@@ -29,6 +37,12 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
     private lateinit var mainViewModel: MainViewModel
 
     private lateinit var binding: FragmentNotificationsBinding
+
+    private val notificationAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        NotificationAdapter(this@NotificationsFragment).apply {
+            notificationActions = this@NotificationsFragment
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,78 +69,61 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
             )
         ).get(NotificationsViewModel::class.java)
 
-        binding.mainViewModel = mainViewModel
-        binding.lifecycleOwner = requireActivity()
-
-        val notificationAdapter = NotificationAdapter({
-
-        }, {
-
-        })
-
-        with(binding.recyclerView) {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = notificationAdapter
+        binding.apply {
+            emptyViewActions = this@NotificationsFragment
+            searchBarActions = this@NotificationsFragment
+            viewModel = this@NotificationsFragment.viewModel
+            mainViewModel = this@NotificationsFragment.mainViewModel
+            lifecycleOwner = viewLifecycleOwner
         }
 
-        binding.emptyContent.emptyContentTitleText.text =
-            getString(R.string.timeline_content_empty_title)
-        binding.emptyContent.emptyContentActionText.text =
-            getString(R.string.timeline_content_empty_action)
+        viewModel.data.observe(this, Observer {
+            with(binding.recyclerView) {
+                if (adapter == null) {
+                    addItemDecoration(
+                        ListCategoryDecoration(
+                            this,
+                            getString(R.string.navigation_menu_notifications)
+                        )
+                    )
 
-        binding.emptyContent.emptyContentActionText.setOnClickListener(this)
-        binding.emptyContent.emptyContentRetryButton.setOnClickListener(this)
+                    adapter = notificationAdapter
+                }
 
-        viewModel.loadStatusLiveData.observe(this, Observer {
-            when (it.initial?.status) {
-                Status.SUCCESS -> {
-                    binding.swipeRefresh.isRefreshing = false
-                }
-                Status.LOADING -> {
-                    binding.swipeRefresh.isRefreshing = true
-                }
-                Status.ERROR -> {
-                    binding.swipeRefresh.isRefreshing = false
-                }
-                null -> {
-
-                }
-            }
-
-            when (it.after?.status) {
-                Status.SUCCESS -> {
-                    notificationAdapter.setAfterNetworkState(NetworkState.LOADED)
-                }
-                Status.ERROR -> {
-                    notificationAdapter.setAfterNetworkState(NetworkState.error(it.after.message))
-                }
-                Status.LOADING -> {
-                    notificationAdapter.setAfterNetworkState(NetworkState.LOADING)
-                }
-                null -> {
-
-                }
-            }
-
-            when (it.before?.status) {
-                Status.SUCCESS -> {
-                    notificationAdapter.setBeforeNetworkState(NetworkState.LOADED)
-                }
-                Status.ERROR -> {
-                    notificationAdapter.setBeforeNetworkState(NetworkState.error(it.before.message))
-                }
-                Status.LOADING -> {
-                    notificationAdapter.setBeforeNetworkState(NetworkState.LOADING)
-                }
-                null -> {
-
-                }
+                notificationAdapter.submitList(it)
             }
         })
 
-        viewModel.data.observe(this, Observer {
-            notificationAdapter.submitList(it)
-            showHideEmptyView(it.isEmpty())
+        viewModel.previousNextLoadStatusLiveData.observe(this, Observer {
+            when (it.resource?.status) {
+                Status.SUCCESS -> {
+                    notificationAdapter.setNetworkState(
+                        Pair(
+                            it.direction,
+                            NetworkState.LOADED
+                        )
+                    )
+                }
+                Status.ERROR -> {
+                    notificationAdapter.setNetworkState(
+                        Pair(
+                            it.direction,
+                            NetworkState.error(it.resource.message)
+                        )
+                    )
+                }
+                Status.LOADING -> {
+                    notificationAdapter.setNetworkState(
+                        Pair(
+                            it.direction,
+                            NetworkState.LOADING
+                        )
+                    )
+                }
+                null -> {
+
+                }
+            }
         })
 
         mainViewModel.login.observe(this, Observer { login ->
@@ -135,19 +132,16 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
             }
         })
 
-        mainViewModel.loginUserProfile.observe(this, Observer { data ->
-            if (data != null) {
-                binding.mainSearchBar.mainSearchBarAvatar.setOnClickListener(this@NotificationsFragment)
-            } else {
-
-            }
-        })
-
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.refreshData(
                 mainViewModel.login.value
                     ?: return@setOnRefreshListener, true
             )
+        }
+
+        with(binding.emptyContent) {
+            emptyContentTitleText.text = getString(R.string.timeline_content_empty_title)
+            emptyContentActionText.text = getString(R.string.timeline_content_empty_action)
         }
 
     }
@@ -192,18 +186,33 @@ class NotificationsFragment : Fragment(), View.OnClickListener {
         return true
     }
 
-    override fun onClick(v: View?) {
+    override fun openSearch() {
+        findNavController().navigate(R.id.action_to_search)
+    }
+
+    override fun openAccountDialog() {
+        mainViewModel.login.value?.let {
+            val args = ProfileFragmentArgs(it, ProfileType.USER).toBundle()
+            findNavController().navigate(R.id.action_timeline_to_user_profile, args)
+        }
+    }
+
+    override fun retryInitial() {
+        mainViewModel.login.value?.let {
+            viewModel.refreshData(it, true)
+        }
+    }
+
+    override fun doAction() {
 
     }
 
-    private fun showHideEmptyView(show: Boolean) {
-        if (show) {
-            binding.emptyContent.root.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
-        } else {
-            binding.emptyContent.root.visibility = View.GONE
-            binding.recyclerView.visibility = View.VISIBLE
-        }
+    override fun openNotification(notification: Notification) {
+
+    }
+
+    override fun retryLoadPreviousNext() {
+        viewModel.retryLoadPreviousNext()
     }
 
 }

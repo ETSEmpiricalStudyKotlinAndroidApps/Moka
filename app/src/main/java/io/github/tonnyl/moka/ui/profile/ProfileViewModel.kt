@@ -4,27 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.apollographql.apollo.coroutines.toDeferred
 import io.github.tonnyl.moka.OrganizationQuery
 import io.github.tonnyl.moka.UserQuery
 import io.github.tonnyl.moka.data.Organization
 import io.github.tonnyl.moka.data.UserGraphQL
 import io.github.tonnyl.moka.network.NetworkClient
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class ProfileViewModel(
     private val login: String,
     private val profileType: ProfileType
 ) : ViewModel() {
-
-    private val _loadStatusLiveData = MutableLiveData<Resource<Unit>>()
-    val loadStatusLiveData: LiveData<Resource<Unit>>
-        get() = _loadStatusLiveData
 
     private val _userProfile = MutableLiveData<UserGraphQL?>()
     val userProfile: LiveData<UserGraphQL?>
@@ -34,13 +29,11 @@ class ProfileViewModel(
     val organizationProfile: LiveData<Organization?>
         get() = _organizationProfile
 
-    private val _initLoadStatus = MutableLiveData<Resource<Unit>>()
-    val initLoadStatus: LiveData<Resource<Unit>>
-        get() = _initLoadStatus
+    private val _loadStatus = MutableLiveData<Resource<Unit>>()
+    val loadStatus: LiveData<Resource<Unit>>
+        get() = _loadStatus
 
     init {
-        _initLoadStatus.value = Resource.loading(Unit)
-
         refreshData()
     }
 
@@ -60,68 +53,53 @@ class ProfileViewModel(
     }
 
     private fun refreshUserProfile() {
-        viewModelScope.launch(Dispatchers.Main) {
-            _loadStatusLiveData.value = Resource.loading(null)
+        viewModelScope.launch(Dispatchers.IO) {
+            _loadStatus.postValue(Resource.loading(null))
 
             try {
-                val response = withContext(Dispatchers.IO) {
-                    NetworkClient.apolloClient
-                        .query(
-                            UserQuery.builder()
-                                .login(login)
-                                .build()
-                        ).toDeferred()
-                }.await()
+                val response = NetworkClient.apolloClient
+                    .query(
+                        UserQuery.builder()
+                            .login(login)
+                            .build()
+                    )
+                    .execute()
 
-                if (_initLoadStatus.value?.status == Status.LOADING) {
-                    _initLoadStatus.value = Resource.success(Unit)
-                }
-
-                _loadStatusLiveData.value = Resource.success(Unit)
-                _userProfile.value = UserGraphQL.createFromRaw(response.data()?.user())
+                _loadStatus.postValue(Resource.success(Unit))
+                _userProfile.postValue(UserGraphQL.createFromRaw(response.data()?.user()))
             } catch (e: Exception) {
                 Timber.e(e)
 
-                if (_initLoadStatus.value?.status == Status.LOADING) {
-                    _initLoadStatus.value = Resource.error(e.message, Unit)
-                }
-
-                _loadStatusLiveData.value = Resource.error(e.message, null)
-                _userProfile.value = null
+                _loadStatus.postValue(Resource.error(e.message, null))
+                // don't send null value to keep data shown in the screen.
             }
         }
     }
 
     private fun refreshOrganization() {
-        viewModelScope.launch(Dispatchers.Main) {
-            _loadStatusLiveData.value = Resource.loading(null)
+        viewModelScope.launch(Dispatchers.IO) {
+            _loadStatus.postValue(Resource.loading(null))
 
             try {
-                val response = withContext(Dispatchers.IO) {
+                val response = runBlocking {
                     NetworkClient.apolloClient
                         .query(
                             OrganizationQuery.builder()
                                 .login(login)
                                 .build()
-                        ).toDeferred()
-                }.await()
-
-                if (_initLoadStatus.value?.status == Status.LOADING) {
-                    _initLoadStatus.value = Resource.success(Unit)
+                        )
+                        .execute()
                 }
 
-                _loadStatusLiveData.value = Resource.success(Unit)
-                _organizationProfile.value =
+                _loadStatus.postValue(Resource.success(Unit))
+                _organizationProfile.postValue(
                     Organization.createFromRaw(response.data()?.organization())
+                )
             } catch (e: Exception) {
                 Timber.e(e)
 
-                if (_initLoadStatus.value?.status == Status.LOADING) {
-                    _initLoadStatus.value = Resource.error(e.message, null)
-                }
-
-                _loadStatusLiveData.value = Resource.error(e.message, null)
-                _organizationProfile.value = null
+                _loadStatus.postValue(Resource.error(e.message, null))
+                // don't send null value to keep data shown in the screen.
             }
         }
     }

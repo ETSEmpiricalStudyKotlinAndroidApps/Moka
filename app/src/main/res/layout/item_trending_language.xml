@@ -11,6 +11,14 @@
             name="language"
             type="LocalLanguage" />
 
+        <variable
+            name="filterActions"
+            type="io.github.tonnyl.moka.ui.explore.filters.FilterActions" />
+
+        <variable
+            name="viewModel"
+            type="io.github.tonnyl.moka.ui.explore.ExploreViewModel" />
+
     </data>
 
     <LinearLayout
@@ -20,6 +28,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
+        android:onClick="@{() -> filterActions.actionSelect(language)}"
         android:orientation="horizontal"
         android:paddingStart="@dimen/fragment_content_padding"
         android:paddingEnd="@dimen/fragment_content_padding">

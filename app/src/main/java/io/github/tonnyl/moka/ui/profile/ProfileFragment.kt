@@ -12,12 +12,14 @@ import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentProfileBinding
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileFragmentArgs
-import io.github.tonnyl.moka.ui.repositories.RepositoriesFragment
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs
-import io.github.tonnyl.moka.ui.users.UsersFragment
+import io.github.tonnyl.moka.ui.repositories.RepositoryType
+import io.github.tonnyl.moka.ui.users.UsersFragmentArgs
+import io.github.tonnyl.moka.ui.users.UsersType
 
-class ProfileFragment : Fragment(), ProfileActions {
+class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
 
     private lateinit var viewModel: ProfileViewModel
     private val args: ProfileFragmentArgs by navArgs()
@@ -25,6 +27,19 @@ class ProfileFragment : Fragment(), ProfileActions {
     private var username: String? = ""
 
     private lateinit var binding: FragmentProfileBinding
+
+    private val specifiedProfileType: ProfileType
+        get() {
+            return if (args.profileType == ProfileType.NOT_SPECIFIED) {
+                if (viewModel.userProfile.value != null) {
+                    ProfileType.USER
+                } else {
+                    ProfileType.ORGANIZATION
+                }
+            } else {
+                args.profileType
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,15 +59,17 @@ class ProfileFragment : Fragment(), ProfileActions {
         }
 
         val factory = ViewModelFactory(args.login, args.profileType)
-        viewModel = ViewModelProviders.of(this, factory).get(ProfileViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, factory)
+            .get(ProfileViewModel::class.java)
 
         binding.apply {
+            emptyViewActions = this@ProfileFragment
             viewModel = this@ProfileFragment.viewModel
             actions = this@ProfileFragment
             lifecycleOwner = this@ProfileFragment
         }
 
-        viewModel.loadStatusLiveData.observe(this, Observer { resource ->
+        viewModel.loadStatus.observe(this, Observer { resource ->
             when (resource.status) {
                 Status.SUCCESS -> {
                     binding.swipeRefresh.isRefreshing = false
@@ -71,9 +88,6 @@ class ProfileFragment : Fragment(), ProfileActions {
             }
         })
 
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.refreshData()
-        }
     }
 
     override fun toggleFollow() {
@@ -98,7 +112,9 @@ class ProfileFragment : Fragment(), ProfileActions {
 
     override fun openRepositories() {
         val builder = RepositoriesFragmentArgs(
-            args.login, RepositoriesFragment.REPOSITORY_TYPE_OWNED, username ?: return
+            args.login,
+            RepositoryType.OWNED,
+            specifiedProfileType
         )
         parentFragment?.findNavController()
             ?.navigate(R.id.action_to_repositories, builder.toBundle())
@@ -106,28 +122,30 @@ class ProfileFragment : Fragment(), ProfileActions {
 
     override fun openStars() {
         val builder = RepositoriesFragmentArgs(
-            args.login, RepositoriesFragment.REPOSITORY_TYPE_STARS, username ?: return
+            args.login,
+            RepositoryType.STARRED,
+            specifiedProfileType
         )
         parentFragment?.findNavController()
             ?.navigate(R.id.action_to_repositories, builder.toBundle())
     }
 
     override fun openFollowers() {
-        val bundle = Bundle().apply {
-            putString("login", args.login)
-            putString("users_type", UsersFragment.USER_TYPE_FOLLOWERS)
-            putString("username", username)
-        }
-        parentFragment?.findNavController()?.navigate(R.id.action_user_profile_to_users, bundle)
+        val args = UsersFragmentArgs(
+            args.login,
+            UsersType.FOLLOWER
+        ).toBundle()
+        parentFragment?.findNavController()
+            ?.navigate(R.id.action_user_profile_to_users, args)
     }
 
     override fun openFollowings() {
-        val bundle = Bundle().apply {
-            putString("login", args.login)
-            putString("users_type", UsersFragment.USER_TYPE_FOLLOWING)
-            putString("username", username)
-        }
-        parentFragment?.findNavController()?.navigate(R.id.action_user_profile_to_users, bundle)
+        val args = UsersFragmentArgs(
+            args.login,
+            UsersType.FOLLOWING
+        ).toBundle()
+        parentFragment?.findNavController()
+            ?.navigate(R.id.action_user_profile_to_users, args)
     }
 
     override fun openProjects() {
@@ -152,6 +170,14 @@ class ProfileFragment : Fragment(), ProfileActions {
 
     override fun openAvatar() {
 
+    }
+
+    override fun doAction() {
+
+    }
+
+    override fun retryInitial() {
+        viewModel.refreshData()
     }
 
 }

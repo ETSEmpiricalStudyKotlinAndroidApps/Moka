@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.network
 import android.content.Context
 import com.google.gson.GsonBuilder
 import io.github.tonnyl.moka.BuildConfig
+import io.github.tonnyl.moka.network.service.TrendingService
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -27,7 +28,8 @@ object RetrofitClient {
     const val GITHUB_AUTHORIZE_CALLBACK_URI_SCHEMA = "moka-app"
     const val GITHUB_AUTHORIZE_CALLBACK_URI_HOST = "callback"
     // Scope
-    const val SCOPE = "repo+admin:org+admin:public_key+admin:repo_hook+admin:org_hook+gist+notifications+user+delete_repo+write:discussion+admin:gpg_key"
+    const val SCOPE =
+        "repo+admin:org+admin:public_key+admin:repo_hook+admin:org_hook+gist+notifications+user+delete_repo+write:discussion+admin:gpg_key"
 
     fun init(context: Context) {
         cache?.let {
@@ -40,30 +42,35 @@ object RetrofitClient {
         if (!::retrofit.isInitialized) {
             // Custom the http client.
             val httpClientBuilder = OkHttpClient.Builder()
-            httpClientBuilder.addInterceptor { chain ->
-                val original = chain.request()
+            if (serviceClass !is TrendingService) {
+                httpClientBuilder.addInterceptor { chain ->
+                    val original = chain.request()
 
-                // Custom the request header.
-                val requestBuilder = original.newBuilder()
+                    // Custom the request header.
+                    val requestBuilder = original.newBuilder()
                         .header("Authorization", "Bearer $lastToken")
                         .method(original.method(), original.body())
-                val request = requestBuilder.build()
-                chain.proceed(request)
-            }.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                    .cache(cache)
+                    val request = requestBuilder.build()
+                    chain.proceed(request)
+                }
+            }
+
+            httpClientBuilder.addInterceptor(
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            ).cache(cache)
 
             val gson = GsonBuilder()
-                    .setDateFormat(DateFormat.FULL, DateFormat.FULL)
-                    .create()
+                .setDateFormat(DateFormat.FULL, DateFormat.FULL)
+                .create()
 
             // Set the corresponding convert factory and call adapter factory.
             val retrofitBuilder = Retrofit.Builder()
-                    .baseUrl(GITHUB_V1_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(GITHUB_V1_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
 
             retrofit = retrofitBuilder
-                    .client(httpClientBuilder.build())
-                    .build()
+                .client(httpClientBuilder.build())
+                .build()
         }
 
         return retrofit.create(serviceClass)

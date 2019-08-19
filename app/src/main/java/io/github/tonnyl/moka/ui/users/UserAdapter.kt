@@ -2,31 +2,49 @@ package io.github.tonnyl.moka.ui.users
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserGraphQL
 import io.github.tonnyl.moka.databinding.ItemUserBinding
+import io.github.tonnyl.moka.ui.PagedResourceAdapter
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
-class UserAdapter : PagedListAdapter<UserGraphQL, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class UserAdapter(
+    override val retryActions: PagingNetworkStateActions
+) : PagedResourceAdapter<UserGraphQL>(DIFF_CALLBACK, retryActions) {
 
     var actions: ItemUserActions? = null
 
     companion object {
 
+        const val VIEW_TYPE_USER = R.layout.item_user
+
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UserGraphQL>() {
 
-            override fun areItemsTheSame(oldItem: UserGraphQL, newItem: UserGraphQL): Boolean = oldItem.id == newItem.id
+            override fun areItemsTheSame(oldItem: UserGraphQL, newItem: UserGraphQL): Boolean {
+                return oldItem.id == newItem.id
+            }
 
-            override fun areContentsTheSame(oldItem: UserGraphQL, newItem: UserGraphQL): Boolean = oldItem == newItem
+            override fun areContentsTheSame(oldItem: UserGraphQL, newItem: UserGraphQL): Boolean {
+                return oldItem == newItem
+            }
 
         }
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = UserViewHolder(ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return UserViewHolder(
+            ItemUserBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
+    }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
         if (holder is UserViewHolder) {
@@ -34,17 +52,15 @@ class UserAdapter : PagedListAdapter<UserGraphQL, RecyclerView.ViewHolder>(DIFF_
         }
     }
 
+    override fun getViewType(position: Int): Int = VIEW_TYPE_USER
+
     class UserViewHolder(
-            private val binding: ItemUserBinding
+        private val binding: ItemUserBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(data: UserGraphQL, userActions: ItemUserActions?) {
             binding.apply {
-                avatar = data.avatarUrl.toString()
-                username = data.name
-                login = data.login
-                bio = data.bio
-                following = data.viewerIsFollowing
+                user = data
                 actions = userActions
             }
 

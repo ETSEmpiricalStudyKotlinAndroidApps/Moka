@@ -10,8 +10,6 @@
 
         <import type="io.github.tonnyl.moka.network.Status" />
 
-        <import type="io.github.tonnyl.moka.ui.profile.ProfileActions" />
-
         <variable
             name="viewModel"
             type="io.github.tonnyl.moka.ui.profile.ProfileViewModel" />
@@ -22,7 +20,11 @@
 
         <variable
             name="actions"
-            type="ProfileActions" />
+            type="io.github.tonnyl.moka.ui.profile.ProfileActions" />
+
+        <variable
+            name="emptyViewActions"
+            type="io.github.tonnyl.moka.ui.EmptyViewActions" />
 
     </data>
 
@@ -99,7 +101,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:colorSchemaColors="@{@intArray/swipe_refresh}"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:onRefresh="@{() -> emptyViewActions.retryInitial()}"
+            app:stopRefreshing="@{viewModel.loadStatus != null &amp;&amp; viewModel.loadStatus.status != Status.LOADING}">
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/scroll_view"
@@ -116,12 +120,16 @@
                     <include
                         android:id="@+id/layout_empty_content"
                         layout="@layout/layout_empty_content"
-                        bind:goneUnless="@{viewModel.initLoadStatus.status == Status.ERROR}" />
+                        bind:actionString="@{@string/user_profile_content_empty_action}"
+                        bind:actions="@{emptyViewActions}"
+                        bind:goneUnless="@{viewModel.loadStatus != null &amp;&amp; viewModel.loadStatus.status != Status.LOADING &amp;&amp; (viewModel.userProfile != null &amp;&amp; viewModel.organizationProfile != null)}"
+                        bind:iconDrawable="@{@drawable/ic_person_outline_24}"
+                        bind:titleString="@{viewModel.loadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/user_profile_content_empty_title}" />
 
                     <include
                         android:id="@+id/layout_loading"
                         layout="@layout/layout_loading"
-                        bind:goneUnless="@{viewModel.initLoadStatus.status == Status.LOADING}" />
+                        bind:goneUnless="@{viewModel.userProfile == null &amp;&amp; viewModel.organizationProfile == null &amp;&amp; viewModel.loadStatus.status == Status.LOADING}" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -130,7 +138,7 @@
                         android:clipToPadding="false"
                         android:paddingTop="@dimen/fragment_content_padding"
                         android:paddingBottom="@dimen/fragment_content_padding"
-                        app:goneUnless="@{viewModel.initLoadStatus.status == Status.SUCCESS}">
+                        app:goneUnless="@{viewModel.userProfile != null || viewModel.organizationProfile != null}">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/profile_avatar"
@@ -332,6 +340,7 @@
                             style="@style/LinearLayoutCountTypeStyle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:onClick="@{() -> actions.openFollowings()}"
                             app:layout_constraintEnd_toStartOf="@id/profile_projects_text_layout"
                             app:layout_constraintHorizontal_weight="1"
                             app:layout_constraintStart_toEndOf="@id/profile_space_tab_left"
@@ -572,7 +581,7 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <io.github.tonnyl.moka.widget.FadingSnackbar
+        <io.github.tonnyl.moka.widget.FadingSnackBar
             android:id="@+id/snackbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

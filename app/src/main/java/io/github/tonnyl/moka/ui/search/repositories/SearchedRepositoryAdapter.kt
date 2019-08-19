@@ -9,11 +9,11 @@ import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
 import io.github.tonnyl.moka.databinding.ItemNetworkStateBinding
 import io.github.tonnyl.moka.databinding.ItemSearchedRepositoryBinding
 import io.github.tonnyl.moka.network.NetworkState
-import io.github.tonnyl.moka.ui.common.NetworkStateViewHolder
+import io.github.tonnyl.moka.ui.NetworkStateViewHolder
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class SearchedRepositoryAdapter(
-        private val beforeRetryCallback: () -> Unit,
-        private val afterRetryCallback: () -> Unit
+    private val retryActions: PagingNetworkStateActions
 ) : PagedListAdapter<SearchedRepositoryItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     private var beforeNetworkState: NetworkState? = null
@@ -23,9 +23,15 @@ class SearchedRepositoryAdapter(
 
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<SearchedRepositoryItem>() {
 
-            override fun areItemsTheSame(oldItem: SearchedRepositoryItem, newItem: SearchedRepositoryItem): Boolean = oldItem == newItem
+            override fun areItemsTheSame(
+                oldItem: SearchedRepositoryItem,
+                newItem: SearchedRepositoryItem
+            ): Boolean = oldItem == newItem
 
-            override fun areContentsTheSame(oldItem: SearchedRepositoryItem, newItem: SearchedRepositoryItem): Boolean = oldItem.id == newItem.id
+            override fun areContentsTheSame(
+                oldItem: SearchedRepositoryItem,
+                newItem: SearchedRepositoryItem
+            ): Boolean = oldItem.id == newItem.id
 
         }
 
@@ -40,12 +46,30 @@ class SearchedRepositoryAdapter(
 
         return when (viewType) {
             VIEW_TYPE_BEFORE_NETWORK_STATE -> {
-                NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false), beforeRetryCallback)
+                NetworkStateViewHolder(
+                    ItemNetworkStateBinding.inflate(
+                        inflater,
+                        parent,
+                        false
+                    )
+                )
             }
             VIEW_TYPE_AFTER_NETWORK_STATE -> {
-                NetworkStateViewHolder(ItemNetworkStateBinding.inflate(inflater, parent, false), afterRetryCallback)
+                NetworkStateViewHolder(
+                    ItemNetworkStateBinding.inflate(
+                        inflater,
+                        parent,
+                        false
+                    )
+                )
             }
-            VIEW_TYPE_REPOSITORY -> RepositoryViewHolder(ItemSearchedRepositoryBinding.inflate(inflater, parent, false))
+            VIEW_TYPE_REPOSITORY -> RepositoryViewHolder(
+                ItemSearchedRepositoryBinding.inflate(
+                    inflater,
+                    parent,
+                    false
+                )
+            )
             else -> {
                 throw IllegalArgumentException("Invalid view type: $viewType")
             }
@@ -60,10 +84,10 @@ class SearchedRepositoryAdapter(
                 (holder as RepositoryViewHolder).bindTo(item)
             }
             VIEW_TYPE_AFTER_NETWORK_STATE -> {
-                (holder as NetworkStateViewHolder).bindTo(afterNetworkState)
+                (holder as NetworkStateViewHolder).bindTo(afterNetworkState, retryActions)
             }
             VIEW_TYPE_BEFORE_NETWORK_STATE -> {
-                (holder as NetworkStateViewHolder).bindTo(beforeNetworkState)
+                (holder as NetworkStateViewHolder).bindTo(beforeNetworkState, retryActions)
             }
         }
     }
@@ -74,11 +98,15 @@ class SearchedRepositoryAdapter(
         else -> VIEW_TYPE_REPOSITORY
     }
 
-    override fun getItemCount(): Int = super.getItemCount() + if (hasBeforeExtraRow()) 1 else 0 + if (hasAfterExtraRow()) 1 else 0
+    override fun getItemCount(): Int {
+        return super.getItemCount() + if (hasBeforeExtraRow()) 1 else 0 + if (hasAfterExtraRow()) 1 else 0
+    }
 
-    private fun hasBeforeExtraRow() = beforeNetworkState != null && beforeNetworkState != NetworkState.LOADED
+    private fun hasBeforeExtraRow() =
+        beforeNetworkState != null && beforeNetworkState != NetworkState.LOADED
 
-    private fun hasAfterExtraRow() = afterNetworkState != null && afterNetworkState != NetworkState.LOADED
+    private fun hasAfterExtraRow() =
+        afterNetworkState != null && afterNetworkState != NetworkState.LOADED
 
     fun setBeforeNetworkState(newNetworkState: NetworkState?) {
         val previousState = this.beforeNetworkState
@@ -113,7 +141,7 @@ class SearchedRepositoryAdapter(
     }
 
     class RepositoryViewHolder(
-            private val binding: ItemSearchedRepositoryBinding
+        private val binding: ItemSearchedRepositoryBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(data: SearchedRepositoryItem) {

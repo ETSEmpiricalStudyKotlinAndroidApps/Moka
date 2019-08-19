@@ -7,19 +7,23 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import io.github.tonnyl.moka.databinding.FragmentExplorePageBinding
+import androidx.navigation.fragment.findNavController
+import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.TrendingDeveloper
+import io.github.tonnyl.moka.databinding.FragmentExploreDevelopersBinding
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
+import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.widget.ListCategoryDecoration
 import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
-class TrendingDevelopersFragment : Fragment() {
-
-    private lateinit var developerAdapter: TrendingDeveloperAdapter
+class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
+    EmptyViewActions {
 
     private val mainViewModel: MainViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProviders.of(requireActivity(), MainViewModelFactory())
@@ -27,7 +31,13 @@ class TrendingDevelopersFragment : Fragment() {
     }
     private lateinit var viewModel: ExploreViewModel
 
-    private lateinit var binding: FragmentExplorePageBinding
+    private lateinit var binding: FragmentExploreDevelopersBinding
+
+    private val developerAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        TrendingDeveloperAdapter().apply {
+            actions = this@TrendingDevelopersFragment
+        }
+    }
 
     companion object {
 
@@ -40,7 +50,7 @@ class TrendingDevelopersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentExplorePageBinding.inflate(inflater, container, false)
+        binding = FragmentExploreDevelopersBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -55,47 +65,67 @@ class TrendingDevelopersFragment : Fragment() {
             ).get(ExploreViewModel::class.java)
         }
 
-        with(binding.recyclerView) {
-            developerAdapter = TrendingDeveloperAdapter("All Languages", "Daily")
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = developerAdapter
+        binding.apply {
+            viewModel = this@TrendingDevelopersFragment.viewModel
+            emptyViewActions = this@TrendingDevelopersFragment
+            lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.developersRemoteStatus.observe(this, Observer {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    binding.swipeRefresh.isRefreshing = false
+        viewModel.developersLocalData.observe(this, Observer {
+            with(binding.recyclerView) {
+                if (adapter == null) {
+                    addItemDecoration(
+                        ListCategoryDecoration(
+                            this,
+                            getString(
+                                R.string.explore_filter_info,
+                                viewModel.queryData.value?.second?.name
+                                    ?: getString(R.string.explore_trending_filter_all_languages),
+                                getString(
+                                    when (viewModel.queryData.value?.first) {
+                                        ExploreTimeSpanType.WEEKLY -> {
+                                            R.string.explore_trending_filter_time_span_weekly
+                                        }
+                                        ExploreTimeSpanType.MONTHLY -> {
+                                            R.string.explore_trending_filter_time_span_monthly
+                                        }
+                                        // including ExploreTimeSpanType.DAILY
+                                        else -> {
+                                            R.string.explore_trending_filter_time_span_daily
+                                        }
+                                    }
+                                )
+                            )
+                        )
+                    )
 
-                    showHideEmptyView(it.data.isNullOrEmpty())
+                    adapter = developerAdapter
                 }
-                Status.ERROR -> {
-                    binding.swipeRefresh.isRefreshing = false
 
-                    showHideEmptyView(viewModel.developersLocalData.value.isNullOrEmpty())
-                }
-                Status.LOADING -> {
-                    binding.swipeRefresh.isRefreshing = true
-                }
+                developerAdapter.submitList(it)
             }
         })
 
-        viewModel.developersLocalData.observe(this, Observer {
-            developerAdapter.submitList(it)
-        })
-
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.refreshTrendingDevelopers()
+            retryInitial()
         }
     }
 
-    private fun showHideEmptyView(show: Boolean) {
-        if (show) {
-            binding.emptyContent.root.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
-        } else {
-            binding.emptyContent.root.visibility = View.GONE
-            binding.recyclerView.visibility = View.VISIBLE
-        }
+    override fun openProfile(developer: TrendingDeveloper) {
+        val args = ProfileFragmentArgs(developer.username, ProfileType.USER).toBundle()
+        findNavController().navigate(R.id.action_timeline_to_user_profile, args)
+    }
+
+    override fun openRepository(developer: TrendingDeveloper) {
+
+    }
+
+    override fun retryInitial() {
+        viewModel.refreshTrendingDevelopers()
+    }
+
+    override fun doAction() {
+
     }
 
 }

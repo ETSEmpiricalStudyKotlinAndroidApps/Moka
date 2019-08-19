@@ -27,11 +27,9 @@ class ExploreViewModel(
     private val localRepositoriesSource: TrendingRepositoryDao
 ) : ViewModel() {
 
-    /**
-     * Triple: first -> time span, second -> language param, third -> language name.
-     * Pay attention to its order, DO NOT make a mistake.
-     */
-    val queryData = MutableLiveData<Triple<ExploreTimeSpanType, String, String>>()
+    private val _queryData = MutableLiveData<Pair<ExploreTimeSpanType, LocalLanguage?>>()
+    val queryData: LiveData<Pair<ExploreTimeSpanType, LocalLanguage?>>
+        get() = _queryData
 
     private val _languages = MutableLiveData<List<LocalLanguage>>()
     val languages: LiveData<List<LocalLanguage>>
@@ -50,8 +48,10 @@ class ExploreViewModel(
 
     init {
         // todo store/restore value from sp.
-
-        queryData.value = Triple(ExploreTimeSpanType.DAILY, "", "All language")
+        _queryData.value = Pair(
+            ExploreTimeSpanType.DAILY,
+            LocalLanguage(null, "All Languages", "#ECECEC")
+        )
 
         refreshTrendingDevelopers()
         refreshTrendingRepositories()
@@ -86,7 +86,7 @@ class ExploreViewModel(
                     RetrofitClient.createService(TrendingService::class.java)
                         .listTrendingDevelopers(
                             since = queryDataValue.first.value,
-                            language = queryDataValue.second
+                            language = queryDataValue.second?.urlParam
                         )
                 }
 
@@ -120,7 +120,7 @@ class ExploreViewModel(
                     RetrofitClient.createService(TrendingService::class.java)
                         .listTrendingRepositories(
                             since = queryDataValue.first.value,
-                            language = queryDataValue.second
+                            language = queryDataValue.second?.urlParam
                         )
                 }
 

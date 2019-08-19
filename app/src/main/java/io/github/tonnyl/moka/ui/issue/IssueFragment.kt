@@ -10,33 +10,56 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.CommentAuthorAssociation
-import io.github.tonnyl.moka.databinding.FragmentIssuePrBinding
-import io.github.tonnyl.moka.network.GlideLoader
+import io.github.tonnyl.moka.databinding.FragmentIssueBinding
+import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
-class IssueFragment : Fragment() {
+class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
-    private val adapter: IssueTimelineAdapter by lazy {
-        IssueTimelineAdapter()
+    private val issueTimelineAdapter: IssueTimelineAdapter by lazy {
+        IssueTimelineAdapter(
+            getString(
+                R.string.issue_pr_title_format,
+                args.issueItem.number,
+                args.issueItem.title
+            ),
+            getString(
+                R.string.issue_pr_info_format,
+                getString(
+                    if (args.issueItem.closed) {
+                        R.string.issue_pr_status_closed
+                    } else {
+                        R.string.issue_pr_status_open
+                    }
+                ),
+                getString(R.string.issue_pr_by, args.issueItem.login),
+                DateUtils.getRelativeTimeSpanString(
+                    args.issueItem.createdAt.time,
+                    System.currentTimeMillis(),
+                    DateUtils.MINUTE_IN_MILLIS
+                )
+            ),
+            viewLifecycleOwner,
+            viewModel,
+            this@IssueFragment
+        )
     }
-
-    private lateinit var repositoryOwner: String
-    private lateinit var repositoryName: String
-    private var issueNumber: Int = 0
-    private lateinit var issueTitle: String
 
     private lateinit var viewModel: IssueViewModel
 
     private val args: IssueFragmentArgs by navArgs()
 
-    private lateinit var binding: FragmentIssuePrBinding
+    private lateinit var binding: FragmentIssueBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentIssuePrBinding.inflate(inflater, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentIssueBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -44,72 +67,69 @@ class IssueFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        repositoryOwner = args.owner
-        repositoryName = args.name
-        issueNumber = args.number
-        issueTitle = args.title
+        viewModel = ViewModelProviders.of(
+            this,
+            ViewModelFactory(args.repositoryOwner, args.repositoryName, args.issueItem.number)
+        ).get(IssueViewModel::class.java)
 
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(repositoryOwner, repositoryName, issueNumber)).get(IssueViewModel::class.java)
-
-        binding.issueTitle.text = issueTitle
-
-        with(binding.appbarLayout.toolbar) {
-            title = ""
-            setNavigationOnClickListener {
-                parentFragment?.findNavController()?.navigateUp()
+        with(binding) {
+            with(appbarLayout.toolbar) {
+                title = getString(R.string.issue)
+                setNavigationOnClickListener {
+                    parentFragment?.findNavController()?.navigateUp()
+                }
             }
+
+            emptyViewActions = this@IssueFragment
+            viewModel = this@IssueFragment.viewModel
+            lifecycleOwner = viewLifecycleOwner
         }
 
-        with(binding.issueTimelineRecyclerView) {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = this@IssueFragment.adapter
-        }
+        viewModel.data.observe(this, Observer {
+            with(binding.recyclerView) {
+                if (adapter == null) {
+                    adapter = issueTimelineAdapter
+                }
+            }
 
-        viewModel.issueTimelineResults.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+            issueTimelineAdapter.submitList(it)
         })
 
-        viewModel.issueLiveData.observe(viewLifecycleOwner, Observer { resource ->
-            when (resource.status) {
+        viewModel.pagedLoadStatus.observe(this, Observer {
+            when (it.resource?.status) {
                 Status.SUCCESS -> {
-                    val issue = resource.data ?: return@Observer
-                    with(binding.itemIssueTimelineComment) {
-                        if (issue.body.isNotEmpty()) {
-                            GlideLoader.loadAvatar(issue.author?.avatarUrl?.toString(), issueTimelineCommentAvatar)
-
-                            issueTimelineCommentUsername.text = issue.author?.login
-                            issueTimelineCommentCreatedAt.text = DateUtils.getRelativeTimeSpanString(issue.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
-                            issueTimelineCommentContent.text = issue.body
-
-                            val stringResId = when (issue.authorAssociation) {
-                                CommentAuthorAssociation.COLLABORATOR -> R.string.author_association_collaborator
-                                CommentAuthorAssociation.CONTRIBUTOR -> R.string.author_association_contributor
-                                CommentAuthorAssociation.FIRST_TIMER -> R.string.author_association_first_timer
-                                CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR -> R.string.author_association_first_timer_contributor
-                                CommentAuthorAssociation.MEMBER -> R.string.author_association_member
-                                CommentAuthorAssociation.NONE -> -1
-                                CommentAuthorAssociation.OWNER -> R.string.author_association_owner
-                            }
-                            issueTimelineCommentAuthorAssociation.text = if (stringResId != -1) getString(stringResId) else ""
-                        } else {
-                            root.visibility = View.GONE
-                        }
-                    }
-
-                    val numberString = getString(R.string.issue_pr_number, issueNumber)
-                    val byString = getString(R.string.issue_pr_by, issue.author?.login)
-                    val createdString = DateUtils.getRelativeTimeSpanString(issue.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
-                    binding.issueInfo.text = getString(R.string.issue_pr_info_format, numberString, byString, createdString)
+                    issueTimelineAdapter.setNetworkState(
+                        Pair(it.direction, NetworkState.LOADED)
+                    )
                 }
                 Status.ERROR -> {
-
+                    issueTimelineAdapter.setNetworkState(
+                        Pair(it.direction, NetworkState.error(it.resource.message))
+                    )
                 }
                 Status.LOADING -> {
+                    issueTimelineAdapter.setNetworkState(
+                        Pair(it.direction, NetworkState.LOADING)
+                    )
+                }
+                null -> {
 
                 }
             }
         })
 
+    }
+
+    override fun retryInitial() {
+        viewModel.refresh()
+    }
+
+    override fun doAction() {
+
+    }
+
+    override fun retryLoadPreviousNext() {
+        viewModel.retryLoadPreviousNext()
     }
 
 }

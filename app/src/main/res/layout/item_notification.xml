@@ -8,32 +8,16 @@
         <import type="android.text.format.DateUtils" />
 
         <variable
-            name="position"
-            type="java.lang.Integer" />
-
-        <variable
-            name="avatar"
-            type="java.lang.String" />
-
-        <variable
-            name="repositoryName"
-            type="java.lang.String" />
-
-        <variable
-            name="reason"
-            type="java.lang.String" />
-
-        <variable
-            name="title"
-            type="java.lang.String" />
-
-        <variable
-            name="timeInMillis"
-            type="java.lang.Long" />
+            name="notification"
+            type="io.github.tonnyl.moka.data.Notification" />
 
         <variable
             name="span"
             type="android.text.style.ForegroundColorSpan" />
+
+        <variable
+            name="notificationActions"
+            type="io.github.tonnyl.moka.ui.notifications.NotificationActions" />
 
     </data>
 
@@ -44,34 +28,16 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
+        android:onClick="@{() -> notificationActions.openNotification(notification)}"
         android:padding="@dimen/fragment_content_padding">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/item_notification_overline"
-            style="@style/TextAppearance.MaterialComponents.Overline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/navigation_menu_notifications"
-            app:goneUnless="@{position == 0}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Space
-            android:id="@+id/item_notification_space_between_overline_and_avatar"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/list_item_spacing"
-            app:goneUnless="@{position == 0}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_notification_overline" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_notification_repository_avatar"
             android:layout_width="@dimen/regular_icon_size"
             android:layout_height="@dimen/regular_icon_size"
-            app:avatarUrl="@{avatar}"
+            app:avatarUrl="@{notification.repository.owner.avatarUrl}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_notification_space_between_overline_and_avatar"
+            app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
         <Space
@@ -80,19 +46,19 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_notification_repository_avatar"
-            app:layout_constraintTop_toBottomOf="@id/item_notification_space_between_overline_and_avatar" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_notification_repository_name"
             style="@style/TextAppearance.MaterialComponents.Body1"
-            textFuture="@{repositoryName}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_notification_space_to_end_of_avatar"
-            app:layout_constraintTop_toBottomOf="@id/item_notification_space_between_overline_and_avatar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textFuture="@{notification.repository.fullName}"
             tools:text="@sample/notification.json/notification/repo_full_name" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -103,9 +69,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_notification_space_to_end_of_avatar"
             app:layout_constraintTop_toBottomOf="@id/item_notification_repository_name"
-            app:notificationReason="@{reason}"
+            app:notificationReason="@{notification.reason}"
             app:notificationReasonSpan="@{span}"
-            app:notificationTitle="@{title}"
+            app:notificationTitle="@{notification.subject.title}"
             tools:text="@sample/notification.json/notification/subject/title" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -117,7 +83,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_notification_space_to_end_of_avatar"
             app:layout_constraintTop_toBottomOf="@id/item_notification_caption"
-            app:textFuture="@{DateUtils.getRelativeTimeSpanString(timeInMillis, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
+            app:textFuture="@{DateUtils.getRelativeTimeSpanString(notification.updatedAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
             tools:text="@sample/notification.json/notification/updated_at" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

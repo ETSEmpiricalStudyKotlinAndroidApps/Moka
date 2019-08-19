@@ -7,27 +7,35 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import io.github.tonnyl.moka.databinding.FragmentExplorePageBinding
+import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.TrendingRepository
+import io.github.tonnyl.moka.databinding.FragmentExploreRepositoriesBinding
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
+import io.github.tonnyl.moka.widget.ListCategoryDecoration
 import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
-class TrendingRepositoriesFragment : Fragment() {
+class TrendingRepositoriesFragment : Fragment(), TrendingRepositoryAction,
+    EmptyViewActions {
 
-    private lateinit var repositoriesAdapter: TrendingRepositoryAdapter
-
-    private lateinit var viewModel: ExploreViewModel
     private val mainViewModel: MainViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProviders.of(requireActivity(), MainViewModelFactory())
             .get(MainViewModel::class.java)
     }
 
-    private lateinit var binding: FragmentExplorePageBinding
+    private lateinit var binding: FragmentExploreRepositoriesBinding
+
+    private lateinit var viewModel: ExploreViewModel
+
+    private val repositoryAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        TrendingRepositoryAdapter().apply {
+            actions = this@TrendingRepositoriesFragment
+        }
+    }
 
     companion object {
 
@@ -40,7 +48,7 @@ class TrendingRepositoriesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentExplorePageBinding.inflate(inflater, container, false)
+        binding = FragmentExploreRepositoriesBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -55,47 +63,62 @@ class TrendingRepositoriesFragment : Fragment() {
             ).get(ExploreViewModel::class.java)
         }
 
-        with(binding.recyclerView) {
-            repositoriesAdapter = TrendingRepositoryAdapter("All Languages", "Daily")
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = repositoriesAdapter
+        binding.apply {
+            viewModel = this@TrendingRepositoriesFragment.viewModel
+            emptyViewActions = this@TrendingRepositoriesFragment
+            lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.repositoriesRemoteStatus.observe(this, Observer {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    binding.swipeRefresh.isRefreshing = false
+        viewModel.repositoriesLocalData.observe(this, Observer {
+            with(binding.recyclerView) {
+                if (adapter == null) {
+                    addItemDecoration(
+                        ListCategoryDecoration(
+                            this,
+                            getString(
+                                R.string.explore_filter_info,
+                                viewModel.queryData.value?.second?.name
+                                    ?: getString(R.string.explore_trending_filter_all_languages),
+                                getString(
+                                    when (viewModel.queryData.value?.first) {
+                                        ExploreTimeSpanType.WEEKLY -> {
+                                            R.string.explore_trending_filter_time_span_weekly
+                                        }
+                                        ExploreTimeSpanType.MONTHLY -> {
+                                            R.string.explore_trending_filter_time_span_monthly
+                                        }
+                                        // including ExploreTimeSpanType.DAILY
+                                        else -> {
+                                            R.string.explore_trending_filter_time_span_daily
+                                        }
+                                    }
+                                )
+                            )
+                        )
+                    )
 
-                    showHideEmptyView(it.data.isNullOrEmpty())
+                    adapter = repositoryAdapter
                 }
-                Status.ERROR -> {
-                    binding.swipeRefresh.isRefreshing = false
 
-                    showHideEmptyView(viewModel.repositoriesLocalData.value.isNullOrEmpty())
-                }
-                Status.LOADING -> {
-                    binding.swipeRefresh.isRefreshing = true
-                }
+                repositoryAdapter.submitList(it)
             }
         })
 
-        viewModel.repositoriesLocalData.observe(this, Observer {
-            repositoriesAdapter.submitList(it)
-        })
-
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.refreshTrendingRepositories()
+            retryInitial()
         }
     }
 
-    private fun showHideEmptyView(show: Boolean) {
-        if (show) {
-            binding.emptyContent.root.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
-        } else {
-            binding.emptyContent.root.visibility = View.GONE
-            binding.recyclerView.visibility = View.VISIBLE
-        }
+    override fun openRepository(repository: TrendingRepository) {
+
+    }
+
+    override fun retryInitial() {
+        viewModel.refreshTrendingRepositories()
+    }
+
+    override fun doAction() {
+
     }
 
 }

@@ -8,31 +8,36 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentRepositoriesBinding
+import io.github.tonnyl.moka.network.NetworkState
+import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 
-class RepositoriesFragment : Fragment(), ItemRepositoryActions {
+class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions,
+    PagingNetworkStateActions {
 
     private lateinit var viewModel: RepositoriesViewModel
 
+    private val args: RepositoriesFragmentArgs by navArgs()
+
     private lateinit var binding: FragmentRepositoriesBinding
 
-    private val adapter by lazy {
-        RepositoryAdapter().apply {
+    private val repositoryAdapter by lazy {
+        RepositoryAdapter(this@RepositoriesFragment).apply {
             repositoryActions = this@RepositoriesFragment
         }
     }
 
-    companion object {
-        const val REPOSITORY_TYPE_STARS = "stars"
-        const val REPOSITORY_TYPE_OWNED = "owned"
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentRepositoriesBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -40,45 +45,88 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = RepositoriesFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).login
-        val repositoriesTypeArg = RepositoriesFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).repositoriesType
-        val usernameArg = RepositoriesFragmentArgs.fromBundle(arguments
-                ?: throw IllegalArgumentException("Missing arguments")).username
+        val loginArg = args.login
+        val repositoriesTypeArg = args.repositoriesType
 
-        binding.appbarLayout.toolbar.setNavigationOnClickListener {
-            parentFragment?.findNavController()?.navigateUp()
+        viewModel = ViewModelProviders.of(this, ViewModelFactory(loginArg, repositoriesTypeArg))
+            .get(RepositoriesViewModel::class.java)
+
+        with(binding) {
+            appbarLayout.toolbar.setNavigationOnClickListener {
+                parentFragment?.findNavController()?.navigateUp()
+            }
+
+            appbarLayout.toolbar.title = context?.getString(
+                when (repositoriesTypeArg) {
+                    RepositoryType.STARRED -> {
+                        R.string.repositories_stars
+                    }
+                    RepositoryType.OWNED -> {
+                        R.string.repositories_owned
+                    }
+                },
+                loginArg
+            )
+
+            emptyViewActions = this@RepositoriesFragment
+            viewModel = this@RepositoriesFragment.viewModel
+            lifecycleOwner = viewLifecycleOwner
         }
 
-        binding.appbarLayout.toolbar.title = context?.getString(if (repositoriesTypeArg == REPOSITORY_TYPE_OWNED) R.string.repositories_owned else R.string.repositories_stars, usernameArg)
+        viewModel.data.observe(this, Observer { list ->
+            with(binding.recyclerView) {
+                if (adapter == null) {
+                    adapter = repositoryAdapter
+                }
+            }
+            repositoryAdapter.submitList(list)
+        })
 
-        val factory = ViewModelFactory(loginArg, if (repositoriesTypeArg == REPOSITORY_TYPE_OWNED) RepositoryType.OWNED else RepositoryType.STARRED)
-        viewModel = ViewModelProviders.of(this, factory).get(RepositoriesViewModel::class.java)
+        viewModel.pagedLoadStatus.observe(this, Observer {
+            when (it.resource?.status) {
+                Status.SUCCESS -> {
+                    repositoryAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADED))
+                }
+                Status.ERROR -> {
+                    repositoryAdapter.setNetworkState(
+                        Pair(it.direction, NetworkState.error(it.resource.message))
+                    )
+                }
+                Status.LOADING -> {
+                    repositoryAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADING))
+                }
+                null -> {
 
-        with(binding.recyclerView) {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = this@RepositoriesFragment.adapter
-        }
-
-        viewModel.repositoriesResults.observe(viewLifecycleOwner, Observer { list ->
-            adapter.submitList(list)
+                }
+            }
         })
 
     }
 
     override fun openRepository(login: String, repositoryName: String) {
-        val builder = RepositoryFragmentArgs(login, repositoryName)
-        findNavController().navigate(R.id.action_to_repository, builder.toBundle())
+        val repositoryArgs = RepositoryFragmentArgs(login, repositoryName).toBundle()
+        findNavController().navigate(R.id.action_to_repository, repositoryArgs)
     }
 
     override fun openProfile(login: String) {
-        val builder = ProfileFragmentArgs(login)
-        findNavController().navigate(R.id.action_to_profile, builder.toBundle())
+        val profileArgs = ProfileFragmentArgs(login).toBundle()
+        findNavController().navigate(R.id.action_to_profile, profileArgs)
     }
 
     override fun starRepositoryClicked(repositoryNameWithOwner: String, star: Boolean) {
 
+    }
+
+    override fun retryInitial() {
+        viewModel.refresh()
+    }
+
+    override fun doAction() {
+
+    }
+
+    override fun retryLoadPreviousNext() {
+        viewModel.retryLoadPreviousNext()
     }
 
 }

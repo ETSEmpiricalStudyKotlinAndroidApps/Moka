@@ -11,6 +11,10 @@
             name="selectedType"
             type="ExploreTimeSpanType" />
 
+        <variable
+            name="filterActions"
+            type="io.github.tonnyl.moka.ui.explore.filters.FilterActions" />
+
     </data>
 
     <LinearLayout
@@ -45,6 +49,7 @@
                 style="@style/Widget.AppCompat.CompoundButton.RadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:onClick="@{() -> filterActions.timeSpanSelect(@id/item_trending_filter_time_span_daily)}"
                 android:paddingStart="@dimen/fragment_content_padding"
                 android:paddingEnd="@dimen/fragment_content_padding"
                 android:text="@string/explore_trending_filter_time_span_daily" />
@@ -54,6 +59,7 @@
                 style="@style/Widget.AppCompat.CompoundButton.RadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:onClick="@{() -> filterActions.timeSpanSelect(@id/item_trending_filter_time_span_weekly)}"
                 android:paddingStart="@dimen/fragment_content_padding"
                 android:paddingEnd="@dimen/fragment_content_padding"
                 android:text="@string/explore_trending_filter_time_span_weekly"
@@ -64,6 +70,7 @@
                 style="@style/Widget.AppCompat.CompoundButton.RadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:onClick="@{() -> filterActions.timeSpanSelect(@id/item_trending_filter_time_span_monthly)}"
                 android:paddingStart="@dimen/fragment_content_padding"
                 android:paddingEnd="@dimen/fragment_content_padding"
                 android:text="@string/explore_trending_filter_time_span_monthly"

@@ -14,24 +14,12 @@
             type="TrendingRepository" />
 
         <variable
-            name="position"
+            name="rank"
             type="java.lang.Integer" />
 
         <variable
-            name="period"
-            type="java.lang.String" />
-
-        <variable
             name="actions"
-            type="io.github.tonnyl.moka.ui.explore.ExploreRepositoryActions" />
-
-        <variable
-            name="language"
-            type="java.lang.String" />
-
-        <variable
-            name="since"
-            type="java.lang.String" />
+            type="io.github.tonnyl.moka.ui.explore.repositories.TrendingRepositoryAction" />
 
     </data>
 
@@ -42,29 +30,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> actions.openRepository(repository.author, repository.name)}"
+        android:onClick="@{() -> actions.openRepository(repository)}"
         android:padding="@dimen/fragment_content_padding">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/item_trending_info_text"
-            style="@style/TextAppearance.AppCompat.Body2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:goneUnless="@{position == 1}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:textFuture="@{@string/explore_filter_info(language, since)}"
-            tools:text="All Languages | Daily" />
-
-        <Space
-            android:id="@+id/item_trending_info_space"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/fragment_content_padding"
-            app:goneUnless="@{position == 1}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_trending_info_text" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_trending_repository_avatar"
@@ -72,7 +39,7 @@
             android:layout_height="@dimen/repository_list_avatar_height"
             app:avatarUrl="@{repository.avatar}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_trending_info_space"
+            app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
         <Space
@@ -81,7 +48,7 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_trending_repository_avatar"
-            app:layout_constraintTop_toBottomOf="@id/item_trending_info_space" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_trending_repository_title"
@@ -96,7 +63,7 @@
             android:textSize="@dimen/list_item_title_text"
             app:layout_constraintEnd_toStartOf="@id/item_trending_repository_rank"
             app:layout_constraintStart_toEndOf="@id/item_trending_repository_avatar_info_space"
-            app:layout_constraintTop_toBottomOf="@id/item_trending_info_space"
+            app:layout_constraintTop_toTopOf="parent"
             app:textFuture="@{@string/repository_name_with_username(repository.author, repository.name)}"
             tools:text="@sample/repository.json/repositories/name" />
 
@@ -111,7 +78,7 @@
             app:layout_constraintBottom_toBottomOf="@id/item_trending_repository_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/item_trending_repository_title"
-            app:textFuture="@{String.valueOf(position)}"
+            app:textFuture="@{String.valueOf(rank)}"
             tools:text="1" />
 
         <androidx.appcompat.widget.AppCompatTextView

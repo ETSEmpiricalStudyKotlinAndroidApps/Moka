@@ -88,7 +88,9 @@ fragment IssueCommentFragment on IssueComment {
     login
   }
   authorAssociation
-  body, createdAt
+  body,
+  createdAt
+  id
   editor {
     avatarUrl
     login
@@ -379,8 +381,8 @@ fragment ReviewDismissedEventFragment on ReviewDismissedEvent {
   }
   createdAt
   id
-  message
-  messageHtml
+  dismissalMessage
+  dismissalMessageHTML
   previousReviewState
   review {
     author {

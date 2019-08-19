@@ -9,6 +9,22 @@
             name="goneUnless"
             type="Boolean" />
 
+        <variable
+            name="actions"
+            type="io.github.tonnyl.moka.ui.EmptyViewActions" />
+
+        <variable
+            name="iconDrawable"
+            type="android.graphics.drawable.Drawable" />
+
+        <variable
+            name="titleString"
+            type="String" />
+
+        <variable
+            name="actionString"
+            type="String" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,21 +32,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/fragment_content_padding"
-        app:goneUnless="@{goneUnless}"
-        tools:visibility="visible">
+        app:goneUnless="@{goneUnless}">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/empty_content_icon"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:padding="@dimen/regular_icon_padding"
+            android:src="@{iconDrawable}"
             app:layout_constraintBottom_toTopOf="@id/empty_content_title_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            app:srcCompat="@drawable/ic_menu_timeline_24"
-            app:tint="@color/colorTextSecondary" />
+            app:tint="@color/colorTextSecondary"
+            tools:src="@drawable/ic_menu_timeline_24" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/empty_content_title_text"
@@ -40,6 +56,7 @@
             android:gravity="center"
             android:paddingTop="@dimen/fragment_content_padding_half"
             android:paddingBottom="@dimen/fragment_content_padding_half"
+            android:text="@{titleString}"
             android:textColor="@color/colorTextSecondary"
             app:layout_constraintBottom_toTopOf="@id/empty_content_retry_button"
             app:layout_constraintEnd_toEndOf="parent"
@@ -52,6 +69,7 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> actions.retryInitial()}"
             android:text="@string/common_retry"
             app:layout_constraintBottom_toTopOf="@id/empty_content_action_text"
             app:layout_constraintEnd_toEndOf="parent"
@@ -64,8 +82,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> actions.doAction()}"
             android:paddingTop="@dimen/fragment_content_padding_half"
             android:paddingBottom="@dimen/fragment_content_padding_half"
+            android:text="@{actionString}"
             android:textColor="@color/colorTextAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

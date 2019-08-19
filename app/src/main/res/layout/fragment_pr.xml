@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="io.github.tonnyl.moka.network.Status" />
+
+        <variable
+            name="viewModel"
+            type="io.github.tonnyl.moka.ui.pr.PullRequestViewModel" />
+
+        <variable
+            name="emptyViewActions"
+            type="io.github.tonnyl.moka.ui.EmptyViewActions" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/appbar_layout"
+            layout="@layout/appbar_layout"
+            bind:liftOnScrollTargetViewId="@{@id/recycler_view}" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:colorSchemaColors="@{@intArray/swipe_refresh}"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <include
+                    layout="@layout/layout_empty_content"
+                    bind:actionString="@{@string/users_content_empty_action}"
+                    bind:actions="@{emptyViewActions}"
+                    bind:goneUnless="@{viewModel.pullRequest != null || (viewModel.initialLoadStatus != null &amp;&amp; viewModel.initialLoadStatus.status != Status.LOADING &amp;&amp; (viewModel.data == null || viewModel.data.size() == 0))}"
+                    bind:iconDrawable="@{@drawable/ic_outline_people_24}"
+                    bind:titleString="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/users_content_empty_title}" />
+
+                <include
+                    android:id="@+id/layout_loading"
+                    layout="@layout/layout_loading"
+                    bind:goneUnless="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatus.status == Status.LOADING}" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    style="@style/RecyclerViewStyle"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    tools:listitem="@layout/item_issue_timeline_comment" />
+
+            </FrameLayout>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

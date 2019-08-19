@@ -2,36 +2,40 @@ package io.github.tonnyl.moka.ui.users
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.UserGraphQL
-import kotlinx.coroutines.CoroutineScope
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
 
 class UsersDataSourceFactory(
-    private val coroutineScope: CoroutineScope,
     private val login: String,
-    private val userType: UserType,
-    private val loadStatusLiveData: MutableLiveData<PagedResource<List<UserGraphQL>>>
+    private val usersType: UsersType,
+    private val initialLoadStatus: MutableLiveData<Resource<List<UserGraphQL>>>,
+    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<UserGraphQL>>>
 ) : DataSource.Factory<String, UserGraphQL>() {
 
-    private val followingLiveData by lazy {
-        MutableLiveData<FollowingDataSource>()
-    }
-    private val followersLiveData by lazy {
-        MutableLiveData<FollowersDataSource>()
+    private var followingDataSource: FollowingDataSource? = null
+    private var followersDataSource: FollowersDataSource? = null
+
+    override fun create(): DataSource<String, UserGraphQL> = when (usersType) {
+        UsersType.FOLLOWER -> FollowersDataSource(
+            login,
+            initialLoadStatus,
+            pagedLoadStatus
+        ).also {
+            followersDataSource = it
+        }
+        UsersType.FOLLOWING -> FollowingDataSource(
+            login,
+            initialLoadStatus,
+            pagedLoadStatus
+        ).also {
+            followingDataSource = it
+        }
     }
 
-    override fun create(): DataSource<String, UserGraphQL> = when (userType) {
-        UserType.FOLLOWER -> FollowersDataSource(coroutineScope, login, loadStatusLiveData).apply {
-            followersLiveData.postValue(this)
-        }
-        UserType.FOLLOWING -> FollowingDataSource(coroutineScope, login, loadStatusLiveData).apply {
-            followingLiveData.postValue(this)
-        }
-    }
-
-    fun invalidate() {
-        followingLiveData.value?.invalidate()
-        followersLiveData.value?.invalidate()
+    fun retryLoadPreviousNext() {
+        followingDataSource?.retry?.invoke()
+        followersDataSource?.retry?.invoke()
     }
 
 }

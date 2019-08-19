@@ -153,4 +153,14 @@
         <item name="android:textColor">@color/colorTextPrimary</item>
     </style>
 
+    <style name="RecyclerViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fadeScrollbars">true</item>
+        <item name="android:scrollbarStyle">insideOverlay</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="layoutManager">LinearLayoutManager</item>
+        <item name="layout_behavior">@string/appbar_scrolling_view_behavior</item>
+    </style>
+
 </resources>

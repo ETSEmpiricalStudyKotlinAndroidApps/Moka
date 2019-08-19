@@ -2,13 +2,17 @@ package io.github.tonnyl.moka.ui.repositories
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryAbstract
 import io.github.tonnyl.moka.databinding.ItemRepositoryBinding
+import io.github.tonnyl.moka.ui.PagedResourceAdapter
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
-class RepositoryAdapter : PagedListAdapter<RepositoryAbstract, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class RepositoryAdapter(
+    override val retryActions: PagingNetworkStateActions
+) : PagedResourceAdapter<RepositoryAbstract>(DIFF_CALLBACK, retryActions) {
 
     var repositoryActions: ItemRepositoryActions? = null
 
@@ -16,17 +20,31 @@ class RepositoryAdapter : PagedListAdapter<RepositoryAbstract, RecyclerView.View
 
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RepositoryAbstract>() {
 
-            override fun areItemsTheSame(oldItem: RepositoryAbstract, newItem: RepositoryAbstract): Boolean = oldItem.id == newItem.id
+            override fun areItemsTheSame(
+                oldItem: RepositoryAbstract,
+                newItem: RepositoryAbstract
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
 
-            override fun areContentsTheSame(oldItem: RepositoryAbstract, newItem: RepositoryAbstract): Boolean = oldItem == newItem
+            override fun areContentsTheSame(
+                oldItem: RepositoryAbstract,
+                newItem: RepositoryAbstract
+            ): Boolean {
+                return oldItem == newItem
+            }
 
         }
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = RepositoryViewHolder(ItemRepositoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return RepositoryViewHolder(
+            ItemRepositoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        )
+    }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
         if (holder is RepositoryViewHolder) {
@@ -34,8 +52,10 @@ class RepositoryAdapter : PagedListAdapter<RepositoryAbstract, RecyclerView.View
         }
     }
 
+    override fun getViewType(position: Int): Int = R.layout.item_repository
+
     class RepositoryViewHolder(
-            private val binding: ItemRepositoryBinding
+        private val binding: ItemRepositoryBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(data: RepositoryAbstract, repositoryActions: ItemRepositoryActions?) {

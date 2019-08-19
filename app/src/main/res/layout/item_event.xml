@@ -9,25 +9,15 @@
 
         <import type="android.text.format.DateUtils" />
 
-        <import type="android.text.SpannableStringBuilder" />
-
-        <import type="android.text.TextUtils" />
-
-        <variable
-            name="position"
-            type="java.lang.Integer" />
+        <import type="io.github.tonnyl.moka.ui.profile.ProfileType" />
 
         <variable
             name="event"
             type="Event" />
 
         <variable
-            name="action"
-            type="SpannableStringBuilder" />
-
-        <variable
-            name="content"
-            type="java.lang.String" />
+            name="eventActions"
+            type="io.github.tonnyl.moka.ui.timeline.EventActions" />
 
     </data>
 
@@ -38,34 +28,17 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
+        android:onClick="@{() -> eventActions.openEventDetails(event)}"
         android:padding="@dimen/list_item_spacing">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/event_overline"
-            style="@style/TextAppearance.MaterialComponents.Overline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/navigation_menu_timeline"
-            app:goneUnless="@{position == 0}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Space
-            android:id="@+id/event_space_between_overline_and_avatar"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/list_item_spacing"
-            app:goneUnless="@{position == 0}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/event_overline" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/event_user_avatar"
             android:layout_width="@dimen/repository_list_avatar_width"
             android:layout_height="@dimen/repository_list_avatar_height"
+            android:onClick="@{() -> eventActions.openProfile(event.actor.login, ProfileType.USER)}"
             app:avatarUrl="@{event.actor.avatarUrl}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/event_space_between_overline_and_avatar"
+            app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
         <Space
@@ -74,22 +47,23 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/event_user_avatar"
-            app:layout_constraintTop_toBottomOf="@id/event_space_between_overline_and_avatar" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/event_action"
             style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:breakStrategy="high_quality"
-            android:fontFamily="sans-serif-medium"
+            android:breakStrategy="simple"
             android:hyphenationFrequency="full"
-            android:textColor="@color/colorAccent"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/colorTextPrimary"
+            app:eventActionTextFuture="@{event}"
+            app:eventActions="@{eventActions}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/event_space_between_avatar_and_action"
-            app:layout_constraintTop_toBottomOf="@id/event_space_between_overline_and_avatar"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread"
-            app:textFuture="@{action}"
             tools:text="TonnyL starred PaperPlane" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -100,11 +74,10 @@
             android:ellipsize="end"
             android:hyphenationFrequency="none"
             android:maxLines="8"
-            app:goneUnless="@{!TextUtils.isEmpty(content)}"
+            app:eventContentVisibilityOrTextFuture="@{event}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/event_space_between_avatar_and_action"
             app:layout_constraintTop_toBottomOf="@id/event_action"
-            app:textFuture="@{content}"
             tools:text="@tools:sample/lorem[49]" />
 
         <androidx.appcompat.widget.AppCompatTextView

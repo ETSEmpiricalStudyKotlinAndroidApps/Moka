@@ -7,21 +7,20 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentExploreBinding
 import io.github.tonnyl.moka.db.MokaDataBase
+import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.SearchBarActions
 import io.github.tonnyl.moka.ui.explore.filters.TrendingFilterFragment
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
-import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
-class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListener,
-    SwipeRefreshLayout.OnRefreshListener {
+class ExploreFragment : Fragment(), SearchBarActions,
+    EmptyViewActions, ExploreActions {
 
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
@@ -53,7 +52,8 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
             ).get(ExploreViewModel::class.java)
         }
 
-        with(binding) {
+        binding.apply {
+            exploreActions = this@ExploreFragment
             mainViewModel = this@ExploreFragment.mainViewModel
             lifecycleOwner = this@ExploreFragment.viewLifecycleOwner
         }
@@ -62,16 +62,6 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
         binding.viewPager.adapter = adapter
 
         binding.tabLayout.setupWithViewPager(binding.viewPager)
-
-        mainViewModel.loginUserProfile.observe(this, Observer { data ->
-            if (data != null) {
-                binding.mainSearchBar.mainSearchBarAvatar.setOnClickListener(this@ExploreFragment)
-            } else {
-
-            }
-        })
-
-        binding.fab.setOnClickListener(this@ExploreFragment)
     }
 
     override fun onResume() {
@@ -98,34 +88,28 @@ class ExploreFragment : Fragment(), ExploreRepositoryActions, View.OnClickListen
         drawer.removeDrawerListener(toggle)
     }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.fab -> {
-                val sheet = TrendingFilterFragment.newInstance()
-                sheet.show(childFragmentManager, TrendingFilterFragment::class.java.simpleName)
-            }
-            R.id.empty_content_action_text -> {
+    override fun openSearch() {
+        findNavController().navigate(R.id.action_to_search)
+    }
 
-            }
-            R.id.empty_content_retry_button -> {
-
-            }
+    override fun openAccountDialog() {
+        mainViewModel.login.value?.let {
+            val args = ProfileFragmentArgs(it).toBundle()
+            findNavController().navigate(R.id.action_to_profile, args)
         }
     }
 
-    override fun onRefresh() {
-        viewModel.refreshTrendingDevelopers()
-        viewModel.refreshTrendingRepositories()
+    override fun retryInitial() {
+
     }
 
-    override fun openProfile(login: String) {
-        val builder = ProfileFragmentArgs(login)
-        findNavController().navigate(R.id.action_to_profile, builder.toBundle())
+    override fun doAction() {
+
     }
 
-    override fun openRepository(login: String, repositoryName: String) {
-        val builder = RepositoryFragmentArgs(login, repositoryName)
-        findNavController().navigate(R.id.action_to_repository, builder.toBundle())
+    override fun openFilters() {
+        val sheet = TrendingFilterFragment.newInstance()
+        sheet.show(childFragmentManager, TrendingFilterFragment::class.java.simpleName)
     }
 
 }

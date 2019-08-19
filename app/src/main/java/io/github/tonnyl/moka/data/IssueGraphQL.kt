@@ -224,12 +224,12 @@ data class IssueGraphQL(
                 data.viewerCanUpdate(),
                 data.viewerCannotUpdateReasons().map {
                     return@map when (it) {
-                        VERIFIED_EMAIL_REQUIRED -> CommentCannotUpdateReason.VERIFIED_EMAIL_REQUIRED
-                        INSUFFICIENT_ACCESS -> CommentCannotUpdateReason.INSUFFICIENT_ACCESS
-                        LOCKED -> CommentCannotUpdateReason.LOCKED
-                        LOGIN_REQUIRED -> CommentCannotUpdateReason.LOGIN_REQUIRED
-                        MAINTENANCE -> CommentCannotUpdateReason.MAINTENANCE
-                        else -> CommentCannotUpdateReason.VERIFIED_EMAIL_REQUIRED
+                        VERIFIED_EMAIL_REQUIRED -> VERIFIED_EMAIL_REQUIRED
+                        INSUFFICIENT_ACCESS -> INSUFFICIENT_ACCESS
+                        LOCKED -> LOCKED
+                        LOGIN_REQUIRED -> LOGIN_REQUIRED
+                        MAINTENANCE -> MAINTENANCE
+                        else -> VERIFIED_EMAIL_REQUIRED
                     }
                 },
                 data.viewerDidAuthor(),

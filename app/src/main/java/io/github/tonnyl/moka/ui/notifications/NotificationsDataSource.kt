@@ -4,7 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.db.dao.NotificationDao
-import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.NotificationsService
 import io.github.tonnyl.moka.util.PageLinks
@@ -19,7 +20,8 @@ class NotificationsDataSource(
     private val coroutineScope: CoroutineScope,
     private val notificationsService: NotificationsService,
     private val notificationDao: NotificationDao,
-    private val loadStatusLiveData: MutableLiveData<PagedResource<List<Notification>>>
+    private val initialLoadStatus: MutableLiveData<Resource<List<Notification>>>,
+    private val previousNextStatus: MutableLiveData<PagedResource2<List<Notification>>>
 ) : PageKeyedDataSource<String, Notification>() {
 
     var retry: (() -> Any)? = null
@@ -30,7 +32,7 @@ class NotificationsDataSource(
     ) {
         Timber.d("loadInitial")
 
-        loadStatusLiveData.postValue(PagedResource(initial = Resource.loading(null)))
+        initialLoadStatus.postValue(Resource.loading(null))
 
         // triggered by a refresh, we better execute sync
         try {
@@ -39,12 +41,13 @@ class NotificationsDataSource(
 
             val list = response.body() ?: Collections.emptyList()
             if (list.isNotEmpty()) {
+                notificationDao.deleteAll()
                 notificationDao.insert(list)
             }
 
             retry = null
 
-            loadStatusLiveData.postValue(PagedResource(initial = Resource.success(list)))
+            initialLoadStatus.postValue(Resource.success(list))
 
             val pl = PageLinks(response)
             callback.onResult(list, pl.prev, pl.next)
@@ -55,7 +58,7 @@ class NotificationsDataSource(
                 loadInitial(params, callback)
             }
 
-            loadStatusLiveData.postValue(PagedResource(initial = Resource.error(e.message, null)))
+            initialLoadStatus.postValue(Resource.error(e.message, null))
         }
 
     }
@@ -67,7 +70,10 @@ class NotificationsDataSource(
         Timber.d("loadAfter")
 
         coroutineScope.launch(Dispatchers.Main) {
-            loadStatusLiveData.value = PagedResource(after = Resource.loading(null))
+            previousNextStatus.value = PagedResource2(
+                PagedResourceDirection.AFTER,
+                Resource.loading(null)
+            )
 
             try {
                 val response = withContext(Dispatchers.IO) {
@@ -81,7 +87,10 @@ class NotificationsDataSource(
 
                 retry = null
 
-                loadStatusLiveData.value = PagedResource(after = Resource.success(list))
+                previousNextStatus.value = PagedResource2(
+                    PagedResourceDirection.AFTER,
+                    Resource.success(list)
+                )
 
                 val pl = PageLinks(response)
                 callback.onResult(list, pl.next)
@@ -92,7 +101,10 @@ class NotificationsDataSource(
                     loadAfter(params, callback)
                 }
 
-                loadStatusLiveData.value = PagedResource(after = Resource.error(e.message, null))
+                previousNextStatus.value = PagedResource2(
+                    PagedResourceDirection.AFTER,
+                    Resource.error(e.message, null)
+                )
             }
         }
     }
@@ -104,7 +116,10 @@ class NotificationsDataSource(
         Timber.d("loadBefore")
 
         coroutineScope.launch(Dispatchers.Main) {
-            loadStatusLiveData.value = PagedResource(before = Resource.loading(null))
+            previousNextStatus.value = PagedResource2(
+                PagedResourceDirection.BEFORE,
+                Resource.loading(null)
+            )
 
             try {
                 val response = withContext(Dispatchers.IO) {
@@ -118,7 +133,10 @@ class NotificationsDataSource(
 
                 retry = null
 
-                loadStatusLiveData.value = PagedResource(before = Resource.success(list))
+                previousNextStatus.value = PagedResource2(
+                    PagedResourceDirection.BEFORE,
+                    Resource.success(list)
+                )
 
                 val pl = PageLinks(response)
                 callback.onResult(list, pl.next)
@@ -129,7 +147,10 @@ class NotificationsDataSource(
                     loadBefore(params, callback)
                 }
 
-                loadStatusLiveData.value = PagedResource(before = Resource.error(e.message, null))
+                previousNextStatus.value = PagedResource2(
+                    PagedResourceDirection.BEFORE,
+                    Resource.error(e.message, null)
+                )
             }
         }
     }

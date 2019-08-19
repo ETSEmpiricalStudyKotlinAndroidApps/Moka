@@ -2,43 +2,47 @@ package io.github.tonnyl.moka.ui.search.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import io.github.tonnyl.moka.MokaApp
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
 
-class SearchedRepositoriesViewModel : ViewModel() {
+class SearchedRepositoriesViewModel : NetworkCacheSourceViewModel<SearchedRepositoryItem>() {
 
     private var keywords: String = ""
 
-    private val _loadStatusLiveData = MutableLiveData<PagedResource<List<SearchedRepositoryItem>>>()
-    val loadStatusLiveData: LiveData<PagedResource<List<SearchedRepositoryItem>>>
-        get() = _loadStatusLiveData
+    private val _initialLoadStatus = MutableLiveData<Resource<List<SearchedRepositoryItem>>>()
+    val initialLoadStatus: LiveData<Resource<List<SearchedRepositoryItem>>>
+        get() = _initialLoadStatus
 
-    private val sourceFactory: SearchedRepositoriesDataSourceFactory by lazy {
-        SearchedRepositoriesDataSourceFactory(viewModelScope, keywords, _loadStatusLiveData)
+    private val _pagedLoadStatus = MutableLiveData<PagedResource2<List<SearchedRepositoryItem>>>()
+    val pagedLoadStatus: LiveData<PagedResource2<List<SearchedRepositoryItem>>>
+        get() = _pagedLoadStatus
+
+    private lateinit var sourceFactory: SearchedRepositoriesDataSourceFactory
+
+    override fun initRemoteSource(): LiveData<PagedList<SearchedRepositoryItem>> {
+        sourceFactory = SearchedRepositoriesDataSourceFactory(
+            keywords,
+            _initialLoadStatus,
+            _pagedLoadStatus
+        )
+
+        return LivePagedListBuilder(sourceFactory, pagingConfig)
+            .build()
     }
 
-    val searchedUsersResult: LiveData<PagedList<SearchedRepositoryItem>> by lazy {
-        val pagingConfig: PagedList.Config = PagedList.Config.Builder()
-            .setPageSize(MokaApp.PER_PAGE)
-            .setMaxSize(MokaApp.MAX_SIZE_OF_PAGED_LIST)
-            .setInitialLoadSizeHint(MokaApp.PER_PAGE)
-            .setEnablePlaceholders(false)
-            .build()
-
-        LivePagedListBuilder(sourceFactory, pagingConfig).build()
+    override fun retryLoadPreviousNext() {
+        sourceFactory.retryLoadPreviousNext()
     }
 
     fun refresh(keywords: String) {
         if (this.keywords != keywords) {
             this.keywords = keywords
 
-            sourceFactory.keywords = this.keywords
-            sourceFactory.invalidate()
+            refresh()
         }
     }
 }

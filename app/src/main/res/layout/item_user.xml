@@ -8,24 +8,8 @@
         <import type="android.text.TextUtils" />
 
         <variable
-            name="avatar"
-            type="java.lang.String" />
-
-        <variable
-            name="username"
-            type="java.lang.String" />
-
-        <variable
-            name="login"
-            type="java.lang.String" />
-
-        <variable
-            name="bio"
-            type="java.lang.String" />
-
-        <variable
-            name="following"
-            type="java.lang.Boolean" />
+            name="user"
+            type="io.github.tonnyl.moka.data.UserGraphQL" />
 
         <variable
             name="actions"
@@ -40,14 +24,14 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> actions.openProfile(login)}"
+        android:onClick="@{() -> actions.openProfile(user.login)}"
         android:padding="@dimen/fragment_content_padding">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_user_avatar"
             android:layout_width="@dimen/repository_list_avatar_width"
             android:layout_height="@dimen/repository_list_avatar_height"
-            app:avatarUrl="@{avatar}"
+            app:avatarUrl="@{user.avatarUrl.toString()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
@@ -57,13 +41,15 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> actions.followUserClicked(login, false)}"
-            android:text="@string/user_profile_follow"
+            android:onClick="@{() -> actions.followUserClicked(user.login, false)}"
+            android:text="@{user.viewerIsFollowing ? @string/user_profile_unfollow : @string/user_profile_follow}"
             android:textAllCaps="false"
             android:textColor="@color/colorTextAccent"
             app:layout_constraintBottom_toBottomOf="@id/item_user_avatar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/item_user_avatar" />
+            app:layout_constraintTop_toTopOf="@id/item_user_avatar"
+            app:visibleUnless="@{user.viewerCanFollow}"
+            tools:text="@string/user_profile_unfollow" />
 
         <Space
             android:id="@+id/item_user_space_1"
@@ -83,11 +69,11 @@
             android:maxLines="1"
             android:textColor="@color/list_item_text_title"
             android:textSize="@dimen/list_item_title_text"
-            app:goneUnless="@{!TextUtils.isEmpty(username)}"
+            app:goneUnless="@{!TextUtils.isEmpty(user.name)}"
             app:layout_constraintEnd_toStartOf="@id/item_user_space_2"
             app:layout_constraintStart_toEndOf="@id/item_user_space_1"
             app:layout_constraintTop_toTopOf="parent"
-            app:textFuture="@{username}"
+            app:textFuture="@{user.name}"
             tools:text="@sample/user.json/users/name" />
 
         <Space
@@ -111,7 +97,7 @@
             app:layout_constraintEnd_toStartOf="@id/item_user_space_2"
             app:layout_constraintStart_toEndOf="@id/item_user_space_1"
             app:layout_constraintTop_toBottomOf="@id/item_user_name"
-            app:textFuture="@{login}"
+            app:textFuture="@{user.login}"
             tools:text="@sample/user.json/users/login" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -129,11 +115,11 @@
             android:fontFamily="sans-serif"
             android:textColor="@color/list_item_text_caption"
             android:textSize="@dimen/list_item_caption_text"
-            app:goneUnless="@{!TextUtils.isEmpty(bio)}"
+            app:goneUnless="@{!TextUtils.isEmpty(user.bio)}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_user_space_1"
             app:layout_constraintTop_toBottomOf="@id/item_user_barrier"
-            app:textFuture="@{bio}"
+            app:textFuture="@{user.bio}"
             tools:text="@sample/user.json/users/bio" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

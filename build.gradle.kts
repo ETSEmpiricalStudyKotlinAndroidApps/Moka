@@ -38,3 +38,10 @@ allprojects {
 task<Delete>("clean") {
     delete(rootProject.buildDir)
 }
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-XXLanguage:+InlineClasses")
+    }
+}

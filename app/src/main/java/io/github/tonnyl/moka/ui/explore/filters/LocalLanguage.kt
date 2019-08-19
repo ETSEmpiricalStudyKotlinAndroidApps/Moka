@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class LocalLanguage(
-        val urlParam: String,
-        val name: String,
-        val color: String
+    val urlParam: String?,
+    val name: String,
+    val color: String
 ) : Parcelable

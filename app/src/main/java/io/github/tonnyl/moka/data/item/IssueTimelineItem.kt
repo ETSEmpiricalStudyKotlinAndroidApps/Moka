@@ -11,28 +11,146 @@ import io.github.tonnyl.moka.type.CommentAuthorAssociation as RawAuthorAssociati
 
 open class IssueTimelineItem {
 
-    fun compare(other: IssueTimelineItem): Boolean {
+    fun areItemsTheSame(other: IssueTimelineItem): Boolean {
         if (this::class != other::class) {
             return false
         }
         return when {
-            (this is AssignedEvent && other is AssignedEvent)
-                    || (this is ClosedEvent && other is ClosedEvent)
-                    || (this is CommitEvent && other is CommitEvent)
-                    || (this is CrossReferencedEvent && other is CrossReferencedEvent)
-                    || (this is DemilestonedEvent && other is DemilestonedEvent)
-                    || (this is IssueCommentEvent && other is IssueCommentEvent)
-                    || (this is LabeledEvent && other is LabeledEvent)
-                    || (this is LockedEvent && other is LockedEvent)
-                    || (this is MilestonedEvent && other is MilestonedEvent)
-                    || (this is ReferencedEvent && other is ReferencedEvent)
-                    || (this is RenamedTitleEvent && other is RenamedTitleEvent)
-                    || (this is ReopenedEvent && other is ReopenedEvent)
-                    || (this is TransferredEvent && other is TransferredEvent)
-                    || (this is UnassignedEvent && other is UnassignedEvent)
-                    || (this is UnlabeledEvent && other is UnlabeledEvent)
-                    || (this is UnlockedEvent && other is UnlockedEvent) -> this == other
+            this is AssignedEvent
+                    && other is AssignedEvent -> {
+                this.id == other.id
+            }
+            this is ClosedEvent
+                    && other is ClosedEvent -> {
+                this.id == other.id
+            }
+            this is CommitEvent
+                    && other is CommitEvent -> {
+                this.oid == other.oid
+            }
+            this is CrossReferencedEvent
+                    && other is CrossReferencedEvent -> {
+                this.id == other.id
+            }
+            this is DemilestonedEvent
+                    && other is DemilestonedEvent -> {
+                this.id == other.id
+            }
+            this is IssueCommentEvent
+                    && other is IssueCommentEvent -> {
+                this.id == other.id
+            }
+            this is LabeledEvent
+                    && other is LabeledEvent -> {
+                this.id == other.id
+            }
+            this is LockedEvent
+                    && other is LockedEvent -> {
+                this.id == other.id
+            }
+            this is MilestonedEvent
+                    && other is MilestonedEvent -> {
+                this.id == other.id
+            }
+            this is ReferencedEvent
+                    && other is ReferencedEvent -> {
+                this.id == other.id
+            }
+            this is RenamedTitleEvent
+                    && other is RenamedTitleEvent -> {
+                this.id == other.id
+            }
+            this is ReopenedEvent
+                    && other is ReopenedEvent -> {
+                this.id == other.id
+            }
+            this is TransferredEvent
+                    && other is TransferredEvent -> {
+                this.id == other.id
+            }
+            this is UnassignedEvent
+                    && other is UnassignedEvent -> {
+                this.id == other.id
+            }
+            this is UnlabeledEvent
+                    && other is UnlabeledEvent -> {
+                this.id == other.id
+            }
+            this is UnlockedEvent
+                    && other is UnlockedEvent -> {
+                this.id == other.id
+            }
             else -> false
+        }
+    }
+
+    fun areContentsTheSame(other: IssueTimelineItem): Boolean {
+        return when {
+            this is AssignedEvent
+                    && other is AssignedEvent -> {
+                this == other
+            }
+            this is ClosedEvent
+                    && other is ClosedEvent -> {
+                this == other
+            }
+            this is CommitEvent
+                    && other is CommitEvent -> {
+                this == other
+            }
+            this is CrossReferencedEvent
+                    && other is CrossReferencedEvent -> {
+                this == other
+            }
+            this is DemilestonedEvent
+                    && other is DemilestonedEvent -> {
+                this == other
+            }
+            this is IssueCommentEvent
+                    && other is IssueCommentEvent -> {
+                this == other
+            }
+            this is LabeledEvent
+                    && other is LabeledEvent -> {
+                this == other
+            }
+            this is LockedEvent
+                    && other is LockedEvent -> {
+                this == other
+            }
+            this is MilestonedEvent
+                    && other is MilestonedEvent -> {
+                this == other
+            }
+            this is ReferencedEvent
+                    && other is ReferencedEvent -> {
+                this == other
+            }
+            this is RenamedTitleEvent
+                    && other is RenamedTitleEvent -> {
+                this == other
+            }
+            this is ReopenedEvent
+                    && other is ReopenedEvent -> {
+                this == other
+            }
+            this is TransferredEvent
+                    && other is TransferredEvent -> {
+                this == other
+            }
+            this is UnassignedEvent
+                    && other is UnassignedEvent -> {
+                this == other
+            }
+            this is UnlabeledEvent
+                    && other is UnlabeledEvent -> {
+                this == other
+            }
+            this is UnlockedEvent
+                    && other is UnlockedEvent -> {
+                this == other
+            }
+            else -> true
         }
     }
 
@@ -43,43 +161,44 @@ open class IssueTimelineItem {
  */
 @Parcelize
 data class AssignedEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         *
-         * Argument: size
-         * Type: Int
-         * Description: The size of the resulting square image.
-         */
-        val actorAvatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val actorLogin: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String,
-        /**
-         * The username used to login.
-         */
-        val assigneeLogin: String?,
-        /**
-         * The user's public profile name.
-         */
-        val assigneeName: String?
+    /**
+     * A URL pointing to the actor's public avatar.
+     *
+     * Argument: size
+     * Type: Int
+     * Description: The size of the resulting square image.
+     */
+    val actorAvatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val actorLogin: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String,
+    /**
+     * The username used to login.
+     */
+    val assigneeLogin: String?,
+    /**
+     * The user's public profile name.
+     */
+    val assigneeName: String?
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: AssignedEventFragment?): AssignedEvent? = if (data == null) null else AssignedEvent(
+        fun createFromRaw(data: AssignedEventFragment?): AssignedEvent? =
+            if (data == null) null else AssignedEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id(),
                 data.user()?.login(),
                 data.user()?.name()
-        )
+            )
 
     }
 
@@ -90,29 +209,30 @@ data class AssignedEvent(
  */
 @Parcelize
 data class ClosedEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: ClosedEventFragment?): ClosedEvent? = if (data == null) null else ClosedEvent(
+        fun createFromRaw(data: ClosedEventFragment?): ClosedEvent? =
+            if (data == null) null else ClosedEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id()
-        )
+            )
 
     }
 
@@ -123,24 +243,25 @@ data class ClosedEvent(
  */
 @Parcelize
 data class CommitEvent(
-        val authorAvatarUrl: Uri?,
-        val authorLogin: String?,
-        val committerAvatarUri: Uri?,
-        val committerLogin: String?,
-        val message: String,
-        val oid: String
+    val authorAvatarUrl: Uri?,
+    val authorLogin: String?,
+    val committerAvatarUri: Uri?,
+    val committerLogin: String?,
+    val message: String,
+    val oid: String
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: CommitEventFragment?): CommitEvent? = if (data == null) null else CommitEvent(
+        fun createFromRaw(data: CommitEventFragment?): CommitEvent? =
+            if (data == null) null else CommitEvent(
                 data.author()?.avatarUrl(),
                 data.author()?.user()?.login(),
                 data.committer()?.avatarUrl(),
                 data.committer()?.user()?.login(),
                 data.message(),
                 data.oid()
-        )
+            )
 
     }
 
@@ -151,26 +272,27 @@ data class CommitEvent(
  */
 @Parcelize
 data class CrossReferencedEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String,
-        val issue: ReferencedEventIssueFragmentItem?,
-        val pullRequest: ReferencedEventPullRequestFragmentItem?
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String,
+    val issue: ReferencedEventIssueFragmentItem?,
+    val pullRequest: ReferencedEventPullRequestFragmentItem?
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: CrossReferencedEventFragment?): CrossReferencedEvent? = if (data == null) null else CrossReferencedEvent(
+        fun createFromRaw(data: CrossReferencedEventFragment?): CrossReferencedEvent? =
+            if (data == null) null else CrossReferencedEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
@@ -191,7 +313,7 @@ data class CrossReferencedEvent(
                         ReferencedEventPullRequestFragmentItem(fragment.title(), fragment.number())
                     }
                 }()
-        )
+            )
 
     }
 
@@ -202,34 +324,35 @@ data class CrossReferencedEvent(
  */
 @Parcelize
 data class DemilestonedEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String,
-        /**
-         * Identifies the milestone title associated with the 'demilestoned' event.
-         */
-        val milestoneTitle: String
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String,
+    /**
+     * Identifies the milestone title associated with the 'demilestoned' event.
+     */
+    val milestoneTitle: String
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: DemilestonedEventFragment?): DemilestonedEvent? = if (data == null) null else DemilestonedEvent(
+        fun createFromRaw(data: DemilestonedEventFragment?): DemilestonedEvent? =
+            if (data == null) null else DemilestonedEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id(),
                 data.milestoneTitle()
-        )
+            )
 
     }
 
@@ -240,36 +363,38 @@ data class DemilestonedEvent(
  */
 @Parcelize
 data class IssueCommentEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val authorAvatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val authorLogin: String?,
-        val authorAssociation: CommentAuthorAssociation,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        /**
-         * The body as Markdown.
-         */
-        val body: String,
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val editorAvatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val editorLogin: String?
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val authorAvatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val authorLogin: String?,
+    val authorAssociation: CommentAuthorAssociation,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    /**
+     * The body as Markdown.
+     */
+    val body: String,
+    val id: String,
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val editorAvatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val editorLogin: String?
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: IssueCommentFragment?): IssueCommentEvent? = if (data == null) null else IssueCommentEvent(
+        fun createFromRaw(data: IssueCommentFragment?): IssueCommentEvent? =
+            if (data == null) null else IssueCommentEvent(
                 data.author()?.avatarUrl(),
                 data.author()?.login(),
                 when (data.authorAssociation()) {
@@ -284,9 +409,10 @@ data class IssueCommentEvent(
                 },
                 data.createdAt(),
                 data.body(),
+                data.id(),
                 data.editor()?.avatarUrl(),
                 data.editor()?.login()
-        )
+            )
 
     }
 
@@ -297,33 +423,34 @@ data class IssueCommentEvent(
  */
 @Parcelize
 data class LabeledEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String,
-        val labelName: String,
-        val labelColor: String
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String,
+    val labelName: String,
+    val labelColor: String
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: LabeledEventFragment?): LabeledEvent? = if (data == null) null else LabeledEvent(
+        fun createFromRaw(data: LabeledEventFragment?): LabeledEvent? =
+            if (data == null) null else LabeledEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id(),
                 data.label().name(),
                 data.label().color()
-        )
+            )
 
     }
 
@@ -334,28 +461,29 @@ data class LabeledEvent(
  */
 @Parcelize
 data class LockedEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String,
-        /**
-         * Reason that the conversation was locked (optional).
-         */
-        val lockReason: LockReason?
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String,
+    /**
+     * Reason that the conversation was locked (optional).
+     */
+    val lockReason: LockReason?
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: LockedEventFragment?): LockedEvent? = if (data == null) null else LockedEvent(
+        fun createFromRaw(data: LockedEventFragment?): LockedEvent? =
+            if (data == null) null else LockedEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
@@ -367,7 +495,7 @@ data class LockedEvent(
                     // io.github.tonnyl.moka.type.LockReason.SPAM, io.github.tonnyl.moka.type.LockReason.`$UNKNOWN`
                     else -> LockReason.SPAM
                 }
-        )
+            )
 
     }
 
@@ -378,34 +506,35 @@ data class LockedEvent(
  */
 @Parcelize
 data class MilestonedEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String,
-        /**
-         * Identifies the milestone title associated with the 'milestoned' event.
-         */
-        val milestoneTitle: String
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String,
+    /**
+     * Identifies the milestone title associated with the 'milestoned' event.
+     */
+    val milestoneTitle: String
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: MilestonedEventFragment?): MilestonedEvent? = if (data == null) null else MilestonedEvent(
+        fun createFromRaw(data: MilestonedEventFragment?): MilestonedEvent? =
+            if (data == null) null else MilestonedEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id(),
                 data.milestoneTitle()
-        )
+            )
 
     }
 
@@ -416,26 +545,27 @@ data class MilestonedEvent(
  */
 @Parcelize
 data class ReferencedEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String,
-        val issue: ReferencedEventIssueFragmentItem?,
-        val pullRequest: ReferencedEventPullRequestFragmentItem?
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String,
+    val issue: ReferencedEventIssueFragmentItem?,
+    val pullRequest: ReferencedEventPullRequestFragmentItem?
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: ReferencedEventFragment?): ReferencedEvent? = if (data == null) null else ReferencedEvent(
+        fun createFromRaw(data: ReferencedEventFragment?): ReferencedEvent? =
+            if (data == null) null else ReferencedEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
@@ -456,7 +586,7 @@ data class ReferencedEvent(
                         ReferencedEventPullRequestFragmentItem(fragment.title(), fragment.number())
                     }
                 }()
-        )
+            )
     }
 
 }
@@ -466,39 +596,40 @@ data class ReferencedEvent(
  */
 @Parcelize
 data class RenamedTitleEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        /**
-         * Identifies the current title of the issue or pull request.
-         */
-        val currentTitle: String,
-        val id: String,
-        /**
-         * Identifies the previous title of the issue or pull request.
-         */
-        val previousTitle: String
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    /**
+     * Identifies the current title of the issue or pull request.
+     */
+    val currentTitle: String,
+    val id: String,
+    /**
+     * Identifies the previous title of the issue or pull request.
+     */
+    val previousTitle: String
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: RenamedTitleEventFragment?): RenamedTitleEvent? = if (data == null) null else RenamedTitleEvent(
+        fun createFromRaw(data: RenamedTitleEventFragment?): RenamedTitleEvent? =
+            if (data == null) null else RenamedTitleEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.currentTitle(),
                 data.id(),
                 data.previousTitle()
-        )
+            )
 
     }
 
@@ -509,29 +640,30 @@ data class RenamedTitleEvent(
  */
 @Parcelize
 data class ReopenedEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: ReopenedEventFragment?): ReopenedEvent? = if (data == null) null else ReopenedEvent(
+        fun createFromRaw(data: ReopenedEventFragment?): ReopenedEvent? =
+            if (data == null) null else ReopenedEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id()
-        )
+            )
 
     }
 
@@ -539,31 +671,32 @@ data class ReopenedEvent(
 
 @Parcelize
 data class TransferredEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String,
-        val nameWithOwnerOfFromRepository: String?
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String,
+    val nameWithOwnerOfFromRepository: String?
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: TransferredEventFragment?): TransferredEvent? = if (data == null) null else TransferredEvent(
+        fun createFromRaw(data: TransferredEventFragment?): TransferredEvent? =
+            if (data == null) null else TransferredEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id(),
                 data.fromRepository()?.nameWithOwner()
-        )
+            )
 
     }
 
@@ -574,43 +707,44 @@ data class TransferredEvent(
  */
 @Parcelize
 data class UnassignedEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         *
-         * Argument: size
-         * Type: Int
-         * Description: The size of the resulting square image.
-         */
-        val actorAvatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val actorLogin: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String,
-        /**
-         * The username used to login.
-         */
-        val assigneeLogin: String?,
-        /**
-         * The user's public profile name.
-         */
-        val assigneeName: String?
+    /**
+     * A URL pointing to the actor's public avatar.
+     *
+     * Argument: size
+     * Type: Int
+     * Description: The size of the resulting square image.
+     */
+    val actorAvatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val actorLogin: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String,
+    /**
+     * The username used to login.
+     */
+    val assigneeLogin: String?,
+    /**
+     * The user's public profile name.
+     */
+    val assigneeName: String?
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: UnassignedEventFragment?): UnassignedEvent? = if (data == null) null else UnassignedEvent(
+        fun createFromRaw(data: UnassignedEventFragment?): UnassignedEvent? =
+            if (data == null) null else UnassignedEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id(),
                 data.user()?.login(),
                 data.user()?.name()
-        )
+            )
 
     }
 
@@ -618,33 +752,34 @@ data class UnassignedEvent(
 
 @Parcelize
 data class UnlabeledEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val createdAt: Date,
-        val id: String,
-        val labelName: String,
-        val labelColor: String
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+    val id: String,
+    val labelName: String,
+    val labelColor: String
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: UnlabeledEventFragment?): UnlabeledEvent? = if (data == null) null else UnlabeledEvent(
+        fun createFromRaw(data: UnlabeledEventFragment?): UnlabeledEvent? =
+            if (data == null) null else UnlabeledEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id(),
                 data.label().name(),
                 data.label().color()
-        )
+            )
 
     }
 
@@ -655,29 +790,30 @@ data class UnlabeledEvent(
  */
 @Parcelize
 data class UnlockedEvent(
-        /**
-         * A URL pointing to the actor's public avatar.
-         */
-        val avatarUrl: Uri?,
-        /**
-         * The username of the actor.
-         */
-        val login: String?,
-        val createdAt: Date,
-        /**
-         * Identifies the date and time when the object was created.
-         */
-        val id: String
+    /**
+     * A URL pointing to the actor's public avatar.
+     */
+    val avatarUrl: Uri?,
+    /**
+     * The username of the actor.
+     */
+    val login: String?,
+    val createdAt: Date,
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val id: String
 ) : Parcelable, IssueTimelineItem() {
 
     companion object {
 
-        fun createFromRaw(data: UnlockedEventFragment?): UnlockedEvent? = if (data == null) null else UnlockedEvent(
+        fun createFromRaw(data: UnlockedEventFragment?): UnlockedEvent? =
+            if (data == null) null else UnlockedEvent(
                 data.actor()?.avatarUrl(),
                 data.actor()?.login(),
                 data.createdAt(),
                 data.id()
-        )
+            )
 
     }
 
@@ -685,16 +821,17 @@ data class UnlockedEvent(
 
 @Parcelize
 data class ReferencedEventIssueFragmentItem(
-        val title: String,
-        val number: Int
+    val title: String,
+    val number: Int
 ) : Parcelable {
 
     companion object {
 
-        fun createFromRaw(data: ReferencedEventIssueFragment?): ReferencedEventIssueFragmentItem? = if (data == null) null else ReferencedEventIssueFragmentItem(
+        fun createFromRaw(data: ReferencedEventIssueFragment?): ReferencedEventIssueFragmentItem? =
+            if (data == null) null else ReferencedEventIssueFragmentItem(
                 data.title(),
                 data.number()
-        )
+            )
 
     }
 
@@ -702,16 +839,17 @@ data class ReferencedEventIssueFragmentItem(
 
 @Parcelize
 data class ReferencedEventPullRequestFragmentItem(
-        val title: String,
-        val number: Int
+    val title: String,
+    val number: Int
 ) : Parcelable {
 
     companion object {
 
-        fun createFromRaw(data: ReferencedEventPullRequestFragment?): ReferencedEventPullRequestFragmentItem? = if (data == null) null else ReferencedEventPullRequestFragmentItem(
+        fun createFromRaw(data: ReferencedEventPullRequestFragment?): ReferencedEventPullRequestFragmentItem? =
+            if (data == null) null else ReferencedEventPullRequestFragmentItem(
                 data.title(),
                 data.number()
-        )
+            )
 
     }
 

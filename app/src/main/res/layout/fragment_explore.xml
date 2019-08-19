@@ -10,6 +10,10 @@
             name="mainViewModel"
             type="io.github.tonnyl.moka.ui.MainViewModel" />
 
+        <variable
+            name="exploreActions"
+            type="io.github.tonnyl.moka.ui.explore.ExploreActions" />
+
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -60,6 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{() -> exploreActions.openFilters()}"
             app:srcCompat="@drawable/ic_filter_24" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

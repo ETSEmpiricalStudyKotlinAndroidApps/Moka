@@ -5,33 +5,9 @@
 
     <data>
 
-        <import type="java.util.Date" />
-
-        <import type="android.text.format.DateUtils" />
-
         <variable
-            name="login"
-            type="java.lang.String" />
-
-        <variable
-            name="createdAt"
-            type="Date" />
-
-        <variable
-            name="avatar"
-            type="java.lang.String" />
-
-        <variable
-            name="content"
-            type="java.lang.CharSequence" />
-
-        <variable
-            name="iconResId"
-            type="java.lang.Integer" />
-
-        <variable
-            name="backgroundResId"
-            type="java.lang.Integer" />
+            name="issueTimelineEvent"
+            type="io.github.tonnyl.moka.data.item.IssueTimelineItem" />
 
     </data>
 
@@ -47,8 +23,7 @@
             android:layout_width="@dimen/issue_timeline_avatar_size"
             android:layout_height="@dimen/issue_timeline_avatar_size"
             android:padding="@dimen/issue_timeline_event_padding"
-            app:backgroundResId="@{backgroundResId}"
-            app:imageResId="@{iconResId}"
+            app:issueTimelineEventBgAndIconResId="@{issueTimelineEvent}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@android:color/white"
@@ -60,7 +35,7 @@
             android:layout_width="@dimen/issue_timeline_event_author_size"
             android:layout_height="@dimen/issue_timeline_event_author_size"
             android:layout_marginStart="@dimen/list_item_spacing"
-            app:avatarUrl="@{avatar}"
+            app:issueTimelineEventAvatar="@{issueTimelineEvent}"
             app:layout_constraintBottom_toBottomOf="@id/issue_timeline_event_icon"
             app:layout_constraintStart_toEndOf="@id/issue_timeline_event_icon"
             app:layout_constraintTop_toTopOf="@id/issue_timeline_event_icon"
@@ -74,11 +49,11 @@
             android:layout_marginStart="@dimen/list_item_spacing"
             android:ellipsize="end"
             android:maxLines="1"
+            app:issueTimelineEventLogin="@{issueTimelineEvent}"
             app:layout_constraintBottom_toBottomOf="@id/issue_timeline_event_author_avatar"
             app:layout_constraintEnd_toStartOf="@id/issue_timeline_event_created_at"
             app:layout_constraintStart_toEndOf="@id/issue_timeline_event_author_avatar"
             app:layout_constraintTop_toTopOf="@id/issue_timeline_event_author_avatar"
-            app:textFuture="@{login}"
             tools:text="@sample/issue_timeline.json/event/author" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -86,11 +61,11 @@
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:issueTimelineEventCreatedAt="@{issueTimelineEvent}"
             app:layout_constraintBottom_toBottomOf="@id/issue_timeline_event_author_avatar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/issue_timeline_event_author_name"
             app:layout_constraintTop_toTopOf="@id/issue_timeline_event_author_avatar"
-            app:textFuture='@{createdAt == null ? "" : DateUtils.getRelativeTimeSpanString(createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}'
             tools:text="@sample/issue_timeline.json/event/created" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -99,10 +74,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/list_item_spacing"
+            app:issueTimelineEventContentTextFuture="@{issueTimelineEvent}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/issue_timeline_event_author_avatar"
-            app:textFuture="@{content}"
             tools:text="@sample/issue_timeline.json/event/body" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

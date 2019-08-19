@@ -2,63 +2,77 @@ package io.github.tonnyl.moka.ui.pr
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.apollographql.apollo.coroutines.toDeferred
 import io.github.tonnyl.moka.PullRequestQuery
 import io.github.tonnyl.moka.data.PullRequestGraphQL
+import io.github.tonnyl.moka.data.extension.transformToPullRequestIssueComment
 import io.github.tonnyl.moka.data.item.PullRequestTimelineItem
 import io.github.tonnyl.moka.network.NetworkClient
-import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
+import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class PullRequestViewModel(
     private val owner: String,
     private val name: String,
     private val number: Int
-) : ViewModel() {
+) : NetworkCacheSourceViewModel<PullRequestTimelineItem>() {
 
-    private val _loadStatusLiveData = MutableLiveData<PagedResource<List<PullRequestTimelineItem>>>()
-    val loadStatusLiveData: LiveData<PagedResource<List<PullRequestTimelineItem>>>
-        get() = _loadStatusLiveData
+    private val _initialLoadStatus = MutableLiveData<Resource<List<PullRequestTimelineItem>>>()
+    val initialLoadStatus: LiveData<Resource<List<PullRequestTimelineItem>>>
+        get() = _initialLoadStatus
 
-    private val _pullRequestLiveData = MutableLiveData<Resource<PullRequestGraphQL?>>()
-    val pullRequestLiveData: LiveData<Resource<PullRequestGraphQL?>>
-        get() = _pullRequestLiveData
+    private val _pagedLoadStatus = MutableLiveData<PagedResource2<List<PullRequestTimelineItem>>>()
+    val pagedLoadStatus: LiveData<PagedResource2<List<PullRequestTimelineItem>>>
+        get() = _pagedLoadStatus
 
-    private val sourceFactory =
-        PullRequestTimelineSourceFactory(viewModelScope, owner, name, number, _loadStatusLiveData)
+    private val _pullRequest = MutableLiveData<Resource<PullRequestTimelineItem?>>()
+    val pullRequest: LiveData<Resource<PullRequestTimelineItem?>>
+        get() = _pullRequest
 
-    val pullRequestTimelineResults: LiveData<PagedList<PullRequestTimelineItem>> by lazy {
-        val config = PagedList.Config.Builder()
-            .setPageSize(20)
-            .setInitialLoadSizeHint(20 * 1)
-            .setEnablePlaceholders(false)
-            .build()
-
-        LivePagedListBuilder(sourceFactory, config).build()
-    }
+    private lateinit var sourceFactory: PullRequestTimelineSourceFactory
 
     init {
         refreshPullRequestData()
+        refresh()
     }
 
-    fun refresh() {
-        sourceFactory.invalidate()
+    override fun initRemoteSource(): LiveData<PagedList<PullRequestTimelineItem>> {
+        sourceFactory = PullRequestTimelineSourceFactory(
+            owner,
+            name,
+            number,
+            _initialLoadStatus,
+            _pagedLoadStatus
+        )
+
+        return LivePagedListBuilder(sourceFactory, pagingConfig)
+            .build()
     }
 
-    fun refreshPullRequestData() {
-        viewModelScope.launch(Dispatchers.Main) {
-            _pullRequestLiveData.value = Resource.loading(null)
+    override fun retryLoadPreviousNext() {
+        sourceFactory.retryLoadPreviousNext()
+    }
+
+    override fun refresh() {
+        super.refresh()
+
+        refreshPullRequestData()
+    }
+
+    private fun refreshPullRequestData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _pullRequest.postValue(Resource.loading(null))
 
             try {
-                val response = withContext(Dispatchers.IO) {
+                val response = runBlocking {
                     NetworkClient.apolloClient
                         .query(
                             PullRequestQuery.builder()
@@ -66,18 +80,19 @@ class PullRequestViewModel(
                                 .name(name)
                                 .number(number)
                                 .build()
-                        ).toDeferred()
-                }.await()
+                        )
+                        .execute()
+                }
 
-                Timber.d("response: $response")
+                val data = PullRequestGraphQL.createFromRaw(
+                    response.data()?.repository()?.pullRequest()
+                )
 
-                val data = PullRequestGraphQL.createFromRaw(response.data()?.repository()?.pullRequest())
-
-                _pullRequestLiveData.value = Resource.success(data)
+                _pullRequest.postValue(Resource.success(data?.transformToPullRequestIssueComment()))
             } catch (e: Exception) {
                 Timber.e(e)
 
-                _pullRequestLiveData.value = Resource.error(e.message, null)
+                _pullRequest.postValue(Resource.error(e.message, null))
             }
         }
     }

@@ -117,6 +117,7 @@ dependencies {
     implementation(Deps.AndroidX.preference)
     implementation(Deps.AndroidX.viewpager2)
     implementation(Deps.AndroidX.drawerLayout)
+    implementation(Deps.AndroidX.recyclerView)
     implementation(Deps.AndroidX.Lifecycle.lifecycleExtensions)
     implementation(Deps.AndroidX.Navigation.navigationFragmentKtx)
     implementation(Deps.AndroidX.Navigation.navigationUIKtx)
@@ -150,7 +151,6 @@ dependencies {
     // Apollo
     implementation(Deps.Apollo.runtime)
     implementation(Deps.Apollo.androidSupport)
-    implementation(Deps.Apollo.coroutinesSupport)
 
     // Airbnb
     implementation(Deps.Airbnb.lottie)

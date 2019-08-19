@@ -1,6 +1,6 @@
 package io.github.tonnyl.moka.ui.users
 
-enum class UserType {
+enum class UsersType {
 
     FOLLOWER,
 

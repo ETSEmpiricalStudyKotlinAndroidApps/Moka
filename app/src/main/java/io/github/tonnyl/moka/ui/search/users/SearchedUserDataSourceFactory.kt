@@ -2,29 +2,26 @@ package io.github.tonnyl.moka.ui.search.users
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
-import kotlinx.coroutines.CoroutineScope
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
 
 class SearchedUserDataSourceFactory(
-    private val coroutineScope: CoroutineScope,
     var keywords: String,
-    private val loadStatusLiveData: MutableLiveData<PagedResource<List<SearchedUserOrOrgItem>>>
+    private val initialLoadStatus: MutableLiveData<Resource<List<SearchedUserOrOrgItem>>>,
+    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<SearchedUserOrOrgItem>>>
 ) : DataSource.Factory<String, SearchedUserOrOrgItem>() {
 
-    private val searchedUserLiveData = MutableLiveData<SearchedUsersItemDataSource>()
+    private var dataSource: SearchedUsersItemDataSource? = null
 
     override fun create(): DataSource<String, SearchedUserOrOrgItem> {
-        return SearchedUsersItemDataSource(coroutineScope, keywords, loadStatusLiveData).apply {
-            searchedUserLiveData.postValue(this)
+        return SearchedUsersItemDataSource(keywords, initialLoadStatus, pagedLoadStatus).also {
+            dataSource = it
         }
     }
 
-    fun invalidate() {
-        searchedUserLiveData.value?.let {
-            it.keywords = this.keywords
-            it.invalidate()
-        }
+    fun retryLoadPreviousNext() {
+        dataSource?.retry?.invoke()
     }
 
 }

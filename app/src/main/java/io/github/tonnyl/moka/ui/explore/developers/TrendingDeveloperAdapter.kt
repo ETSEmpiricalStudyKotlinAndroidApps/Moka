@@ -10,59 +10,71 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.databinding.ItemTrendingDeveloperBinding
-import io.github.tonnyl.moka.ui.explore.ExploreRepositoryActions
 
-class TrendingDeveloperAdapter(
-        var language: String,
-        var since: String
-) : ListAdapter<TrendingDeveloper, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class TrendingDeveloperAdapter : ListAdapter<TrendingDeveloper, RecyclerView.ViewHolder>(
+    DIFF_CALLBACK
+) {
 
-    var actions: ExploreRepositoryActions? = null
+    var actions: TrendingDeveloperAction? = null
 
     companion object {
 
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TrendingDeveloper>() {
 
-            override fun areItemsTheSame(oldItem: TrendingDeveloper, newItem: TrendingDeveloper): Boolean = oldItem.url == newItem.url
+            override fun areItemsTheSame(
+                oldItem: TrendingDeveloper,
+                newItem: TrendingDeveloper
+            ): Boolean = oldItem.url == newItem.url
 
-            override fun areContentsTheSame(oldItem: TrendingDeveloper, newItem: TrendingDeveloper): Boolean = oldItem == newItem
+            override fun areContentsTheSame(
+                oldItem: TrendingDeveloper,
+                newItem: TrendingDeveloper
+            ): Boolean = oldItem == newItem
 
         }
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return TrendingDeveloperViewHolder(ItemTrendingDeveloperBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return TrendingDeveloperViewHolder(
+            ItemTrendingDeveloperBinding.inflate(
+                LayoutInflater.from(
+                    parent.context
+                ), parent, false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val data = getItem(position) ?: return
 
         if (holder is TrendingDeveloperViewHolder) {
-            holder.bindTo(language, since, data, position, actions)
+            holder.bindTo(data, position, actions)
         }
     }
 
     class TrendingDeveloperViewHolder(
-            private val binding: ItemTrendingDeveloperBinding
+        private val binding: ItemTrendingDeveloperBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val foregroundColorSpan = ForegroundColorSpan(ResourcesCompat.getColor(binding.root.resources, R.color.colorTextPrimary, null))
+        private val foregroundColorSpan = ForegroundColorSpan(
+            ResourcesCompat.getColor(
+                binding.root.resources,
+                R.color.colorTextPrimary,
+                null
+            )
+        )
 
         fun bindTo(
-                language: String,
-                since: String,
-                data: TrendingDeveloper,
-                position: Int,
-                repositoryActions: ExploreRepositoryActions?
+            data: TrendingDeveloper,
+            position: Int,
+            repositoryActions: TrendingDeveloperAction?
         ) {
             binding.apply {
                 rank = position + 1
                 span = foregroundColorSpan
                 developer = data
-                this.language = language
-                this.since = since
-                this.actions = repositoryActions
+                actions = repositoryActions
             }
 
             binding.executePendingBindings()

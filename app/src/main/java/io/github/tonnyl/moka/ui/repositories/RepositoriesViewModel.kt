@@ -2,37 +2,46 @@ package io.github.tonnyl.moka.ui.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.data.RepositoryAbstract
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
 
 class RepositoriesViewModel(
     private val login: String,
     private val repositoryType: RepositoryType
-) : ViewModel() {
+) : NetworkCacheSourceViewModel<RepositoryAbstract>() {
 
-    private val _loadStatusLiveData = MutableLiveData<PagedResource<List<RepositoryAbstract>>>()
-    val loadStatusLiveData: LiveData<PagedResource<List<RepositoryAbstract>>>
-        get() = _loadStatusLiveData
+    private val _initialLoadStatus = MutableLiveData<Resource<List<RepositoryAbstract>>>()
+    val initialLoadStatus: LiveData<Resource<List<RepositoryAbstract>>>
+        get() = _initialLoadStatus
 
-    private val sourceFactory =
-        RepositoriesDataSourceFactory(viewModelScope, login, repositoryType, _loadStatusLiveData)
+    private val _pagedLoadStatus = MutableLiveData<PagedResource2<List<RepositoryAbstract>>>()
+    val pagedLoadStatus: LiveData<PagedResource2<List<RepositoryAbstract>>>
+        get() = _pagedLoadStatus
 
-    val repositoriesResults: LiveData<PagedList<RepositoryAbstract>> by lazy {
-        val config = PagedList.Config.Builder()
-            .setPageSize(20)
-            .setInitialLoadSizeHint(20 * 1)
-            .setEnablePlaceholders(false)
-            .build()
+    private lateinit var sourceFactory: RepositoriesDataSourceFactory
 
-        LivePagedListBuilder(sourceFactory, config).build()
+    init {
+        refresh()
     }
 
-    fun refresh() {
-        sourceFactory.invalidate()
+    override fun initRemoteSource(): LiveData<PagedList<RepositoryAbstract>> {
+        sourceFactory = RepositoriesDataSourceFactory(
+            login,
+            repositoryType,
+            _initialLoadStatus,
+            _pagedLoadStatus
+        )
+
+        return LivePagedListBuilder(sourceFactory, pagingConfig)
+            .build()
+    }
+
+    override fun retryLoadPreviousNext() {
+        sourceFactory.retryLoadPreviousNext()
     }
 
 }

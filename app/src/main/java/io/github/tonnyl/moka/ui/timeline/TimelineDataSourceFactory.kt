@@ -4,7 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.db.dao.EventDao
-import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.EventsService
 import kotlinx.coroutines.CoroutineScope
 
@@ -13,8 +14,11 @@ class TimelineDataSourceFactory(
     private val eventsService: EventsService,
     private val eventDao: EventDao,
     var login: String,
-    private val loadStatusLiveData: MutableLiveData<PagedResource<List<Event>>>
+    private val initialLoadStatusLiveData: MutableLiveData<Resource<List<Event>>>,
+    private val previousNextStatusLiveData: MutableLiveData<PagedResource2<List<Event>>>
 ) : DataSource.Factory<String, Event>() {
+
+    private var dataSource: TimelineItemDataSource? = null
 
     override fun create(): DataSource<String, Event> {
         return TimelineItemDataSource(
@@ -22,8 +26,15 @@ class TimelineDataSourceFactory(
             eventsService,
             eventDao,
             login,
-            loadStatusLiveData
-        )
+            initialLoadStatusLiveData,
+            previousNextStatusLiveData
+        ).also {
+            dataSource = it
+        }
+    }
+
+    fun retryLoadPreviousNext() {
+        dataSource?.retry?.invoke()
     }
 
 }

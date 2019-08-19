@@ -2,33 +2,48 @@ package io.github.tonnyl.moka.ui.prs
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.PullRequestItem
-import io.github.tonnyl.moka.databinding.ItemIssuePrBinding
-import io.github.tonnyl.moka.ui.common.IssuePRActions
+import io.github.tonnyl.moka.databinding.ItemPullRequestBinding
+import io.github.tonnyl.moka.ui.PagedResourceAdapter
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
-class PullRequestAdapter : PagedListAdapter<PullRequestItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
-
-    var actions: IssuePRActions? = null
+class PullRequestAdapter(
+    private val actions: PullRequestItemActions,
+    override val retryActions: PagingNetworkStateActions
+) : PagedResourceAdapter<PullRequestItem>(DIFF_CALLBACK, retryActions) {
 
     companion object {
 
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<PullRequestItem>() {
 
-            override fun areItemsTheSame(oldItem: PullRequestItem, newItem: PullRequestItem): Boolean = oldItem.id == newItem.id
+            override fun areItemsTheSame(
+                oldItem: PullRequestItem,
+                newItem: PullRequestItem
+            ): Boolean = oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: PullRequestItem, newItem: PullRequestItem): Boolean = oldItem == newItem
+            override fun areContentsTheSame(
+                oldItem: PullRequestItem,
+                newItem: PullRequestItem
+            ): Boolean = oldItem == newItem
 
         }
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = PullRequestViewHolder(ItemIssuePrBinding.inflate(LayoutInflater.from(parent.context), parent, false), actions)
+    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return PullRequestViewHolder(
+            ItemPullRequestBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ), actions
+        )
+    }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
         if (holder is PullRequestViewHolder) {
@@ -36,20 +51,17 @@ class PullRequestAdapter : PagedListAdapter<PullRequestItem, RecyclerView.ViewHo
         }
     }
 
+    override fun getViewType(position: Int): Int = R.layout.item_pull_request
+
     class PullRequestViewHolder(
-            private val binding: ItemIssuePrBinding,
-            private val issuePRActions: IssuePRActions?
+        private val binding: ItemPullRequestBinding,
+        private val pullRequestItemActions: PullRequestItemActions?
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(data: PullRequestItem) {
             binding.apply {
-                avatar = data.avatarUrl?.toString()
-                number = data.number
-                login = data.login
-                title = data.title
-                updateTimeInMillis = data.createdAt.time
-                statusDrawableResId = if (data.merged) R.drawable.ic_pr_merged else if (data.closed) R.drawable.ic_pr_closed else R.drawable.ic_pr_open
-                actions = issuePRActions
+                pullRequest = data
+                actions = pullRequestItemActions
             }
 
             binding.executePendingBindings()

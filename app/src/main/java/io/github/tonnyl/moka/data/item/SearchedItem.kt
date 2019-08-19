@@ -14,14 +14,34 @@ import io.github.tonnyl.moka.type.SubscriptionState as RawSubscriptionState
 
 open class SearchedUserOrOrgItem {
 
-    fun compare(other: SearchedUserOrOrgItem): Boolean {
+    fun areItemsTheSame(other: SearchedUserOrOrgItem): Boolean {
         if (this::class != other::class) {
             return false
         }
 
         return when {
-            (this is SearchedUserItem && other is SearchedUserItem)
-                    || (this is SearchedOrganizationItem && other is SearchedOrganizationItem) -> this == other
+            this is SearchedUserItem
+                    && other is SearchedUserItem -> {
+                this.id == other.id
+            }
+            this is SearchedOrganizationItem
+                    && other is SearchedOrganizationItem -> {
+                this.id == other.id
+            }
+            else -> false
+        }
+    }
+
+    fun areContentsTheSame(other: SearchedUserOrOrgItem): Boolean {
+        return when {
+            this is SearchedUserItem
+                    && other is SearchedUserItem -> {
+                this == other
+            }
+            this is SearchedOrganizationItem
+                    && other is SearchedOrganizationItem -> {
+                this == other
+            }
             else -> false
         }
     }

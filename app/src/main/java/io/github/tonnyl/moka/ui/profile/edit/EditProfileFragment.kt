@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -15,9 +15,9 @@ import io.github.tonnyl.moka.network.Status
 
 class EditProfileFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var viewModel: EditProfileViewModel
+    private val args by navArgs<EditProfileFragmentArgs>()
 
-    private val args: EditProfileFragmentArgs by navArgs()
+    private val viewModel by viewModels<EditProfileViewModel>()
 
     private lateinit var binding: FragmentEditProfileBinding
 
@@ -28,7 +28,11 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     private var company: String? = null
     private var location: String? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         setHasOptionsMenu(true)
 
         binding = FragmentEditProfileBinding.inflate(inflater, container, false)
@@ -49,9 +53,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         binding.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
-
-        val factory = ViewModelFactory()
-        viewModel = ViewModelProviders.of(this, factory).get(EditProfileViewModel::class.java)
 
         binding.fragmentEditProfileEmailInputEdit.setText(email)
         name?.let {
@@ -92,12 +93,12 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         when (v.id) {
             R.id.toolbar_done -> {
                 viewModel.updateUserInformation(
-                        binding.fragmentEditProfileNameInputEdit.text.toString(),
-                        binding.fragmentEditProfileEmailInputEdit.text.toString(),
-                        binding.fragmentEditProfileLinkInputEdit.text.toString(),
-                        binding.fragmentEditProfileGroupInputEdit.text.toString(),
-                        binding.fragmentEditProfileLocationInputEdit.text.toString(),
-                        binding.fragmentEditProfileBioInputEdit.text.toString()
+                    binding.fragmentEditProfileNameInputEdit.text.toString(),
+                    binding.fragmentEditProfileEmailInputEdit.text.toString(),
+                    binding.fragmentEditProfileLinkInputEdit.text.toString(),
+                    binding.fragmentEditProfileGroupInputEdit.text.toString(),
+                    binding.fragmentEditProfileLocationInputEdit.text.toString(),
+                    binding.fragmentEditProfileBioInputEdit.text.toString()
                 )
             }
         }

@@ -7,17 +7,15 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentExploreBinding
-import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.SearchBarActions
 import io.github.tonnyl.moka.ui.explore.filters.TrendingFilterFragment
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
-import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
 class ExploreFragment : Fragment(), SearchBarActions,
     EmptyViewActions, ExploreActions {
@@ -25,8 +23,7 @@ class ExploreFragment : Fragment(), SearchBarActions,
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
 
-    private lateinit var viewModel: ExploreViewModel
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var binding: FragmentExploreBinding
 
@@ -42,15 +39,6 @@ class ExploreFragment : Fragment(), SearchBarActions,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory())
-            .get(MainViewModel::class.java)
-        MokaDataBase.getInstance(requireContext(), mainViewModel.userId.value ?: return).let {
-            viewModel = ViewModelProviders.of(
-                this,
-                ViewModelFactory(it.trendingDevelopersDao(), it.trendingRepositoriesDao())
-            ).get(ExploreViewModel::class.java)
-        }
 
         binding.apply {
             exploreActions = this@ExploreFragment
@@ -89,13 +77,13 @@ class ExploreFragment : Fragment(), SearchBarActions,
     }
 
     override fun openSearch() {
-        findNavController().navigate(R.id.action_to_search)
+        findNavController().navigate(R.id.search_fragment)
     }
 
     override fun openAccountDialog() {
-        mainViewModel.login.value?.let {
-            val args = ProfileFragmentArgs(it).toBundle()
-            findNavController().navigate(R.id.action_to_profile, args)
+        mainViewModel.currentUser.value?.let {
+            val args = ProfileFragmentArgs(it.login).toBundle()
+            findNavController().navigate(R.id.profile_fragment, args)
         }
     }
 

@@ -6,7 +6,7 @@ import io.github.tonnyl.moka.SearchUserQuery
 import io.github.tonnyl.moka.data.item.SearchedOrganizationItem
 import io.github.tonnyl.moka.data.item.SearchedUserItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
-import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
@@ -41,7 +41,7 @@ class SearchedUsersItemDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(userQuery)
                     .execute()
             }
@@ -102,7 +102,7 @@ class SearchedUsersItemDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(searchUserQuery)
                     .execute()
             }
@@ -161,7 +161,7 @@ class SearchedUsersItemDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(searchUserQuery)
                     .execute()
             }

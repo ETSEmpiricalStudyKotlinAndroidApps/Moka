@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -19,9 +19,11 @@ import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 
 class UsersFragment : Fragment(), ItemUserActions, EmptyViewActions, PagingNetworkStateActions {
 
-    private lateinit var viewModel: UsersViewModel
+    private val args by navArgs<UsersFragmentArgs>()
 
-    private val args: UsersFragmentArgs by navArgs()
+    private val viewModel by viewModels<UsersViewModel> {
+        ViewModelFactory(args.login, args.usersType)
+    }
 
     private val userAdapter: UserAdapter by lazy {
         UserAdapter(this@UsersFragment).apply {
@@ -43,11 +45,6 @@ class UsersFragment : Fragment(), ItemUserActions, EmptyViewActions, PagingNetwo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = args.login
-        val userTypeArg = args.usersType
-
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(loginArg, userTypeArg))
-            .get(UsersViewModel::class.java)
 
         binding.apply {
             appbarLayout.toolbar.setNavigationOnClickListener {
@@ -55,7 +52,7 @@ class UsersFragment : Fragment(), ItemUserActions, EmptyViewActions, PagingNetwo
             }
 
             appbarLayout.toolbar.title = context?.getString(
-                when (userTypeArg) {
+                when (args.usersType) {
                     UsersType.FOLLOWER -> {
                         R.string.users_followers_title
 
@@ -64,7 +61,7 @@ class UsersFragment : Fragment(), ItemUserActions, EmptyViewActions, PagingNetwo
                         R.string.users_following_title
                     }
                 },
-                loginArg
+                args.login
             )
 
             viewModel = this@UsersFragment.viewModel
@@ -104,7 +101,7 @@ class UsersFragment : Fragment(), ItemUserActions, EmptyViewActions, PagingNetwo
 
     override fun openProfile(login: String) {
         val builder = ProfileFragmentArgs(login)
-        findNavController().navigate(R.id.action_to_profile, builder.toBundle())
+        findNavController().navigate(R.id.profile_fragment, builder.toBundle())
     }
 
     override fun followUserClicked(login: String, follow: Boolean) {

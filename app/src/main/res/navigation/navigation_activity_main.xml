@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_activity_main"
-    app:startDestination="@id/auth_fragment">
+    app:startDestination="@id/main_fragment">
 
     <fragment
         android:id="@+id/main_fragment"
@@ -23,32 +23,5 @@
 
     </fragment>
 
-    <fragment
-        android:id="@+id/auth_fragment"
-        android:name="io.github.tonnyl.moka.ui.auth.AuthFragment"
-        tools:label="Auth"
-        tools:layout="@layout/fragment_auth">
-
-        <argument
-            android:name="code"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="state"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
-
-        <deepLink app:uri="tonnyl.io/moka/callback?code={code}&amp;state={state}" />
-
-        <action
-            android:id="@+id/action_to_main"
-            app:destination="@id/main_fragment"
-            app:popUpTo="@+id/navigation_activity_main"
-            app:popUpToInclusive="true" />
-
-    </fragment>
 
 </navigation>

@@ -418,4 +418,8 @@
     <string name="users_content_empty_title">No users found</string>
     <string name="users_content_empty_action">Back to profile</string>
 
+    <string name="accounts_view_profile">View profile</string>
+    <string name="accounts_add_another_account">Add another account</string>
+    <string name="accounts_manage_your_github_account">Manage your Github account</string>
+
 </resources>

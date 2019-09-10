@@ -4,7 +4,6 @@ import android.accounts.*
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import io.github.tonnyl.moka.ui.MainActivity
 
 class Authenticator(
     private val context: Context
@@ -14,7 +13,7 @@ class Authenticator(
 
         var KEY_ACCOUNT_TYPE = "io.github.tonnyl.moka"
         var KEY_AUTH_TYPE = "KEY_AUTH_TYPE"
-        var KEY_LOGIN = "KEY_LOGIN"
+        var KEY_AUTH_USER_INFO = "KEY_AUTH_USER_INFO"
 
     }
 
@@ -27,11 +26,11 @@ class Authenticator(
     override fun addAccount(
         response: AccountAuthenticatorResponse,
         accountType: String,
-        authTokenType: String,
-        requiredFeatures: Array<String>,
-        options: Bundle
-    ): Bundle {
-        val intent = Intent(context, MainActivity::class.java)
+        authTokenType: String?,
+        requiredFeatures: Array<String>?,
+        options: Bundle?
+    ): Bundle? {
+        val intent = Intent(context, AuthActivity::class.java)
         intent.putExtra(KEY_ACCOUNT_TYPE, accountType)
         intent.putExtra(KEY_AUTH_TYPE, authTokenType)
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
@@ -59,7 +58,7 @@ class Authenticator(
         val am = AccountManager.get(context)
         val authToken = am.peekAuthToken(account, authTokenType)
 
-        if (authToken.isNotEmpty()) {
+        if (!authToken.isNullOrEmpty()) {
             return Bundle().apply {
                 putString(AccountManager.KEY_ACCOUNT_NAME, account.name)
                 putString(AccountManager.KEY_ACCOUNT_TYPE, account.type)
@@ -67,7 +66,7 @@ class Authenticator(
             }
         }
 
-        val intent = Intent(context, MainActivity::class.java).apply {
+        val intent = Intent(context, AuthActivity::class.java).apply {
             putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
             putExtra(KEY_ACCOUNT_TYPE, account.type)
             putExtra(KEY_AUTH_TYPE, authTokenType)

@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.SearchRepositoriesQuery
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
-import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
@@ -39,7 +39,7 @@ class SearchedRepositoriesItemDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(userQuery)
                     .execute()
             }
@@ -100,7 +100,7 @@ class SearchedRepositoriesItemDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(searchUserQuery)
                     .execute()
             }
@@ -159,7 +159,7 @@ class SearchedRepositoriesItemDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(searchUserQuery)
                     .execute()
             }

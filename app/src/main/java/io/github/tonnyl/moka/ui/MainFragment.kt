@@ -15,7 +15,11 @@ class MainFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -25,10 +29,16 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // add a default argument to nav controller.
-        val host: NavHostFragment = childFragmentManager.findFragmentById(R.id.main_fragment_nav_host) as NavHostFragment
+        val host: NavHostFragment = childFragmentManager
+            .findFragmentById(R.id.main_fragment_nav_host) as NavHostFragment
         binding.navView.setupWithNavController(host.navController)
 
-        AppBarConfiguration(host.navController.graph, binding.drawerLayout)
+        AppBarConfiguration(
+            host.navController.graph,
+            binding.drawerLayout,
+            fallbackOnNavigateUpListener = {
+                true
+            })
     }
 
 }

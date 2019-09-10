@@ -8,7 +8,7 @@ import io.github.tonnyl.moka.OrganizationQuery
 import io.github.tonnyl.moka.UserQuery
 import io.github.tonnyl.moka.data.Organization
 import io.github.tonnyl.moka.data.UserGraphQL
-import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
@@ -57,7 +57,7 @@ class ProfileViewModel(
             _loadStatus.postValue(Resource.loading(null))
 
             try {
-                val response = NetworkClient.apolloClient
+                val response = GraphQLClient.apolloClient
                     .query(
                         UserQuery.builder()
                             .login(login)
@@ -82,7 +82,7 @@ class ProfileViewModel(
 
             try {
                 val response = runBlocking {
-                    NetworkClient.apolloClient
+                    GraphQLClient.apolloClient
                         .query(
                             OrganizationQuery.builder()
                                 .login(login)

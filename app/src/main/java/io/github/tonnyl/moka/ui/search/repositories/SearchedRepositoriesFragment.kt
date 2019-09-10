@@ -5,20 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import io.github.tonnyl.moka.databinding.FragmentSearchedRepositoriesBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.search.SearchViewModel
-import io.github.tonnyl.moka.ui.search.ViewModelFactory as ParentViewModelFactory
 
 class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
 
     private lateinit var binding: FragmentSearchedRepositoriesBinding
 
-    private lateinit var parentViewModel: SearchViewModel
-    private lateinit var viewModel: SearchedRepositoriesViewModel
+    private val parentViewModel by viewModels<SearchViewModel>(
+        ownerProducer = {
+            requireParentFragment()
+        }
+    )
+    private val viewModel by viewModels<SearchedRepositoriesViewModel>()
 
     private val searchedRepositoryAdapter: SearchedRepositoryAdapter by lazy(LazyThreadSafetyMode.NONE) {
         SearchedRepositoryAdapter(this@SearchedRepositoriesFragment)
@@ -42,11 +45,6 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        parentViewModel = ViewModelProviders.of(requireParentFragment(), ParentViewModelFactory())
-            .get(SearchViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, ViewModelFactory())
-            .get(SearchedRepositoriesViewModel::class.java)
 
         binding.apply {
             emptyViewActions = this@SearchedRepositoriesFragment

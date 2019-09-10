@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
@@ -20,16 +21,24 @@ import io.github.tonnyl.moka.ui.explore.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
-import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
 class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
     EmptyViewActions {
 
-    private val mainViewModel: MainViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProviders.of(requireActivity(), MainViewModelFactory())
-            .get(MainViewModel::class.java)
-    }
-    private lateinit var viewModel: ExploreViewModel
+    private val mainViewModel by activityViewModels<MainViewModel>()
+    private val viewModel by viewModels<ExploreViewModel>(
+        ownerProducer = {
+            requireParentFragment()
+        },
+        factoryProducer = {
+            MokaDataBase.getInstance(
+                requireContext(),
+                mainViewModel.currentUser.value?.id ?: 0L
+            ).let {
+                ViewModelFactory(it.trendingDevelopersDao(), it.trendingRepositoriesDao())
+            }
+        }
+    )
 
     private lateinit var binding: FragmentExploreDevelopersBinding
 
@@ -57,13 +66,6 @@ class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        MokaDataBase.getInstance(requireContext(), mainViewModel.userId.value ?: return).let {
-            viewModel = ViewModelProviders.of(
-                requireParentFragment(),
-                ViewModelFactory(it.trendingDevelopersDao(), it.trendingRepositoriesDao())
-            ).get(ExploreViewModel::class.java)
-        }
 
         binding.apply {
             viewModel = this@TrendingDevelopersFragment.viewModel
@@ -113,7 +115,7 @@ class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
 
     override fun openProfile(developer: TrendingDeveloper) {
         val args = ProfileFragmentArgs(developer.username, ProfileType.USER).toBundle()
-        findNavController().navigate(R.id.action_timeline_to_user_profile, args)
+        findNavController().navigate(R.id.profile_fragment, args)
     }
 
     override fun openRepository(developer: TrendingDeveloper) {

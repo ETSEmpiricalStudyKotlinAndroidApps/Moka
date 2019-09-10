@@ -10,7 +10,7 @@ import io.github.tonnyl.moka.data.IssueGraphQL
 import io.github.tonnyl.moka.data.extension.transformToIssueCommentEvent
 import io.github.tonnyl.moka.data.item.IssueCommentEvent
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
-import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
@@ -73,7 +73,7 @@ class IssueViewModel(
             _issueLiveData.postValue(Resource.loading(null))
             try {
                 val response = runBlocking {
-                    NetworkClient.apolloClient.query(
+                    GraphQLClient.apolloClient.query(
                         IssueQuery.builder()
                             .owner(owner)
                             .name(name)

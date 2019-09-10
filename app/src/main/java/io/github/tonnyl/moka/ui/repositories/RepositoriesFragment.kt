@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -21,9 +21,11 @@ import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions,
     PagingNetworkStateActions {
 
-    private lateinit var viewModel: RepositoriesViewModel
+    private val args by navArgs<RepositoriesFragmentArgs>()
 
-    private val args: RepositoriesFragmentArgs by navArgs()
+    private val viewModel by viewModels<RepositoriesViewModel> {
+        ViewModelFactory(args.login, args.repositoriesType)
+    }
 
     private lateinit var binding: FragmentRepositoriesBinding
 
@@ -45,11 +47,6 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = args.login
-        val repositoriesTypeArg = args.repositoriesType
-
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(loginArg, repositoriesTypeArg))
-            .get(RepositoriesViewModel::class.java)
 
         with(binding) {
             appbarLayout.toolbar.setNavigationOnClickListener {
@@ -57,7 +54,7 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions
             }
 
             appbarLayout.toolbar.title = context?.getString(
-                when (repositoriesTypeArg) {
+                when (args.repositoriesType) {
                     RepositoryType.STARRED -> {
                         R.string.repositories_stars
                     }
@@ -65,7 +62,7 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions
                         R.string.repositories_owned
                     }
                 },
-                loginArg
+                args.login
             )
 
             emptyViewActions = this@RepositoriesFragment
@@ -105,12 +102,12 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions
 
     override fun openRepository(login: String, repositoryName: String) {
         val repositoryArgs = RepositoryFragmentArgs(login, repositoryName).toBundle()
-        findNavController().navigate(R.id.action_to_repository, repositoryArgs)
+        findNavController().navigate(R.id.repository_fragment, repositoryArgs)
     }
 
     override fun openProfile(login: String) {
         val profileArgs = ProfileFragmentArgs(login).toBundle()
-        findNavController().navigate(R.id.action_to_profile, profileArgs)
+        findNavController().navigate(R.id.profile_fragment, profileArgs)
     }
 
     override fun starRepositoryClicked(repositoryNameWithOwner: String, star: Boolean) {

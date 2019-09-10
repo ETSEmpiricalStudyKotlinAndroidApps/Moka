@@ -88,7 +88,7 @@
                         android:onClick="@{() -> actions.editProfile()}"
                         android:src="@drawable/ic_edit_white_24"
                         android:tint="@color/colorControlNormal"
-                        app:goneUnless="@{(mainViewModel.login == viewModel.userProfile.login) || (mainViewModel.login == viewModel.organizationProfile.login)}" />
+                        app:goneUnless="@{(mainViewModel.currentUser.login == viewModel.userProfile.login) || (mainViewModel.currentUser.login == viewModel.organizationProfile.login)}" />
 
                 </LinearLayout>
 

@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -48,7 +48,9 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
         )
     }
 
-    private lateinit var viewModel: IssueViewModel
+    private val viewModel by viewModels<IssueViewModel> {
+        ViewModelFactory(args.repositoryOwner, args.repositoryName, args.issueItem.number)
+    }
 
     private val args: IssueFragmentArgs by navArgs()
 
@@ -66,11 +68,6 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProviders.of(
-            this,
-            ViewModelFactory(args.repositoryOwner, args.repositoryName, args.issueItem.number)
-        ).get(IssueViewModel::class.java)
 
         with(binding) {
             with(appbarLayout.toolbar) {

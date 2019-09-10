@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.auth
 
-import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Intent
 import android.net.Uri
@@ -9,31 +8,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.BuildConfig
-import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.databinding.FragmentAuthBinding
-import io.github.tonnyl.moka.network.NetworkClient
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.MainActivity
+import io.github.tonnyl.moka.util.insertNewAccount
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class AuthFragment : Fragment() {
 
-    private val viewModel by lazy {
-        ViewModelProviders.of(this, ViewModelFactory()).get(AuthViewModel::class.java)
-    }
-
-    private val mainViewModel: MainViewModel by lazy {
-        ViewModelProviders.of(requireActivity(), ViewModelFactory()).get(MainViewModel::class.java)
-    }
+    private val viewModel by viewModels<AuthViewModel>()
 
     private lateinit var binding: FragmentAuthBinding
 
-    private lateinit var accountManager: AccountManager
+    private val accountManager by lazy(LazyThreadSafetyMode.NONE) {
+        AccountManager.get(requireContext())
+    }
 
     private val args: AuthFragmentArgs by navArgs()
 
@@ -48,34 +46,6 @@ class AuthFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        accountManager = AccountManager.get(requireContext())
-
-        val accounts = accountManager.getAccountsByType(Authenticator.KEY_ACCOUNT_TYPE)
-
-        if (accounts.isNotEmpty()) {
-            val latestAccount = accounts[0]
-            val userLogin = accountManager.getUserData(latestAccount, Authenticator.KEY_LOGIN)
-            accountManager.getAuthToken(
-                latestAccount,
-                Authenticator.KEY_AUTH_TYPE,
-                null,
-                true,
-                { future ->
-                    if (future.isDone) {
-                        val token = future.result.get(AccountManager.KEY_AUTHTOKEN).toString()
-
-                        initTokensAndGoToMainPage(
-                            token,
-                            latestAccount.name.toLong(),
-                            userLogin,
-                            false
-                        )
-                    }
-                },
-                null
-            )
-        }
 
         binding.authGetStarted.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -97,7 +67,10 @@ class AuthFragment : Fragment() {
                 Status.SUCCESS -> {
                     resource.data?.let {
                         val (token, authUser) = it
-                        initTokensAndGoToMainPage(token, authUser.id, authUser.login, true)
+                        initTokensAndGoToMainPage(
+                            token,
+                            authUser
+                        )
                     }
 
                     binding.loadingAnimationView.visibility = View.GONE
@@ -121,7 +94,7 @@ class AuthFragment : Fragment() {
         })
 
         binding.toolbar.setNavigationOnClickListener {
-            parentFragment?.findNavController()?.navigateUp()
+            activity?.finish()
         }
 
         val codeArg = args.code
@@ -134,26 +107,22 @@ class AuthFragment : Fragment() {
 
     private fun initTokensAndGoToMainPage(
         token: String,
-        id: Long,
-        login: String,
-        shouldAddNew: Boolean
+        authenticatedUser: AuthenticatedUser
     ) {
-        val account = Account(id.toString(), Authenticator.KEY_ACCOUNT_TYPE)
+        lifecycleScope.launchWhenCreated {
+            try {
+                withContext(Dispatchers.IO) {
+                    accountManager.insertNewAccount(token, authenticatedUser)
+                }
 
-        if (shouldAddNew) {
-            accountManager.addAccountExplicitly(account, "", Bundle().apply {
-                putString(Authenticator.KEY_LOGIN, login)
-            })
-            accountManager.setAuthToken(account, Authenticator.KEY_AUTH_TYPE, token)
+                val intent = Intent(activity, MainActivity::class.java)
+                startActivity(intent)
+
+                activity?.finish()
+            } catch (e: Exception) {
+                Timber.e(e, "insertNewAccount error")
+            }
         }
-
-        NetworkClient.accessToken = token
-        RetrofitClient.lastToken = token
-
-        mainViewModel.login.value = login
-        mainViewModel.userId.value = id
-
-        findNavController().navigate(R.id.action_to_main)
     }
 
 }

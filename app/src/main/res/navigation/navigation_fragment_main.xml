@@ -5,6 +5,12 @@
     android:id="@+id/navigation_fragment_main_graph"
     app:startDestination="@id/nav_timeline">
 
+    <activity
+        android:id="@+id/auth_activity"
+        android:name="io.github.tonnyl.moka.ui.auth.AuthActivity"
+        tools:label="Auth Activity"
+        tools:layout="@layout/activity_auth" />
+
     <fragment
         android:id="@+id/search_fragment"
         android:name="io.github.tonnyl.moka.ui.search.SearchFragment"
@@ -268,56 +274,10 @@
 
     </fragment>
 
-    <action
-        android:id="@+id/action_timeline_to_user_profile"
-        app:destination="@id/profile_fragment" />
-
-    <action
-        android:id="@+id/action_timeline_to_repository"
-        app:destination="@id/repository_fragment" />
-
-    <action
-        android:id="@+id/action_to_about"
-        app:destination="@id/about_fragment" />
-
-    <action
-        android:id="@+id/action_to_settings"
-        app:destination="@id/settings_fragment" />
-
-    <action
-        android:id="@+id/action_to_repositories"
-        app:destination="@id/repositories_fragment" />
-
-    <action
-        android:id="@+id/action_to_repository"
-        app:destination="@id/repository_fragment" />
-
-    <action
-        android:id="@+id/action_to_issues"
-        app:destination="@id/issues_fragment" />
-
-    <action
-        android:id="@+id/action_to_prs"
-        app:destination="@id/prs_fragment" />
-
-    <action
-        android:id="@+id/action_to_issue"
-        app:destination="@id/issue_fragment" />
-
-    <action
-        android:id="@+id/action_to_pr"
-        app:destination="@id/pr_fragment" />
-
-    <action
-        android:id="@+id/action_to_edit_profile"
-        app:destination="@id/edit_profile_fragment" />
-
-    <action
-        android:id="@+id/action_to_search"
-        app:destination="@id/search_fragment" />
-
-    <action
-        android:id="@+id/action_to_profile"
-        app:destination="@id/profile_fragment" />
+    <dialog
+        android:id="@+id/account_dialog"
+        android:name="io.github.tonnyl.moka.ui.account.AccountDialogFragment"
+        tools:label="Account"
+        tools:layout="@layout/dialog_fragment_account" />
 
 </navigation>

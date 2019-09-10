@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import java.util.*
 import kotlin.collections.LinkedHashMap
 
@@ -64,6 +65,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        this as KotlinJvmOptions
+        jvmTarget = "1.8"
+    }
+
     dataBinding {
         isEnabled = true
     }
@@ -126,7 +132,6 @@ dependencies {
     implementation(Deps.AndroidX.Paging.runtime)
     implementation(Deps.AndroidX.Room.common)
     implementation(Deps.AndroidX.Room.runtime)
-    implementation(Deps.AndroidX.Room.coroutines)
     implementation(Deps.AndroidX.Room.migration)
     kapt(Deps.AndroidX.Room.compiler)
     kapt(Deps.AndroidX.DataBinding.compiler)
@@ -185,7 +190,7 @@ dependencies {
     androidTestImplementation(Deps.AndroidTest.work)
     androidTestImplementation(Deps.AndroidTest.navigation)
     androidTestImplementation(Deps.AndroidTest.room)
-    androidTestImplementation(Deps.AndroidTest.retrofitMock)
+    androidTestImplementation(Deps.AndroidTest.fragment)
 }
 
 apply(plugin = "com.google.gms.google-services")

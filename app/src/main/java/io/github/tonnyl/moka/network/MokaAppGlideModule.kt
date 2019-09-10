@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka
+package io.github.tonnyl.moka.network
 
 import android.content.Context
 import com.bumptech.glide.Glide
@@ -37,7 +37,13 @@ class MokaAppGlideModule : AppGlideModule() {
         builder.setMemoryCache(LruResourceCache(memoryCacheSize))
 
         // Internal cache
-        builder.setDiskCache(InternalCacheDiskCacheFactory(context, CACHE_FILE_NAME, MAX_CACHE_SIZE))
+        builder.setDiskCache(
+            InternalCacheDiskCacheFactory(
+                context,
+                CACHE_FILE_NAME,
+                MAX_CACHE_SIZE
+            )
+        )
     }
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {

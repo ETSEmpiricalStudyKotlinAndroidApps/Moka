@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -19,11 +19,13 @@ import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
-    private lateinit var viewModel: PullRequestViewModel
+    private val args by navArgs<PullRequestFragmentArgs>()
+
+    private val viewModel by viewModels<PullRequestViewModel> {
+        ViewModelFactory(args.repositoryOwner, args.repositoryName, args.pullRequestItem.number)
+    }
 
     private lateinit var binding: FragmentPrBinding
-
-    private val args: PullRequestFragmentArgs by navArgs()
 
     private val pullRequestTimelineAdapter by lazy {
         PullRequestTimelineAdapter(
@@ -66,11 +68,6 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProviders.of(
-            this,
-            ViewModelFactory(args.repositoryOwner, args.repositoryName, args.pullRequestItem.number)
-        ).get(PullRequestViewModel::class.java)
 
         with(binding) {
             with(appbarLayout.toolbar) {

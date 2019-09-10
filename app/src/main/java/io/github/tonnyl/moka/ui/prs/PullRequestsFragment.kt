@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -20,13 +20,15 @@ import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 class PullRequestsFragment : Fragment(), PullRequestItemActions, PagingNetworkStateActions,
     EmptyViewActions {
 
+    private val args by navArgs<PullRequestsFragmentArgs>()
+
+    private val viewModel by viewModels<PullRequestsViewModel> {
+        ViewModelFactory(args.owner, args.name)
+    }
+
     private val pullRequestAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PullRequestAdapter(this@PullRequestsFragment, this@PullRequestsFragment)
     }
-
-    private lateinit var viewModel: PullRequestsViewModel
-
-    private val args: PullRequestsFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentPrsBinding
 
@@ -42,9 +44,6 @@ class PullRequestsFragment : Fragment(), PullRequestItemActions, PagingNetworkSt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(args.owner, args.name))
-            .get(PullRequestsViewModel::class.java)
 
         with(binding) {
             with(appbarLayout.toolbar) {
@@ -74,14 +73,14 @@ class PullRequestsFragment : Fragment(), PullRequestItemActions, PagingNetworkSt
     override fun openPullRequestItem(data: PullRequestItem) {
         parentFragment?.findNavController()
             ?.navigate(
-                R.id.action_to_pr,
+                R.id.pr_fragment,
                 PullRequestFragmentArgs(data, args.owner, args.name).toBundle()
             )
     }
 
     override fun openProfile(login: String) {
         val profileFragmentArgs = ProfileFragmentArgs(login)
-        findNavController().navigate(R.id.action_to_profile, profileFragmentArgs.toBundle())
+        findNavController().navigate(R.id.profile_fragment, profileFragmentArgs.toBundle())
     }
 
     override fun retryLoadPreviousNext() {

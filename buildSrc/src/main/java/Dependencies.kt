@@ -32,7 +32,7 @@ object Versions {
     val lottie = "3.0.7"
     val retrofit = "2.6.1"
     val okhttpLoggingInterceptor = "3.14.2"
-    val apollo = "1.1.1"
+    val apollo = "1.1.3"
     val commonMark = "0.12.1"
     val jsoup = "1.11.3"
     val timber = "4.7.1"

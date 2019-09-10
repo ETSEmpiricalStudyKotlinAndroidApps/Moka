@@ -9,7 +9,7 @@ import io.github.tonnyl.moka.PullRequestQuery
 import io.github.tonnyl.moka.data.PullRequestGraphQL
 import io.github.tonnyl.moka.data.extension.transformToPullRequestIssueComment
 import io.github.tonnyl.moka.data.item.PullRequestTimelineItem
-import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
@@ -73,7 +73,7 @@ class PullRequestViewModel(
 
             try {
                 val response = runBlocking {
-                    NetworkClient.apolloClient
+                    GraphQLClient.apolloClient
                         .query(
                             PullRequestQuery.builder()
                                 .owner(owner)

@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Notification
@@ -24,7 +25,6 @@ import io.github.tonnyl.moka.ui.SearchBarActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
-import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
 class NotificationsFragment : Fragment(), SearchBarActions,
     EmptyViewActions, NotificationActions,
@@ -33,8 +33,15 @@ class NotificationsFragment : Fragment(), SearchBarActions,
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
 
-    private lateinit var viewModel: NotificationsViewModel
-    private lateinit var mainViewModel: MainViewModel
+    private val viewModel by viewModels<NotificationsViewModel> {
+        ViewModelFactory(
+            MokaDataBase.getInstance(
+                requireContext(),
+                mainViewModel.currentUser.value?.id ?: 0L
+            ).notificationsDao()
+        )
+    }
+    private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var binding: FragmentNotificationsBinding
 
@@ -56,18 +63,6 @@ class NotificationsFragment : Fragment(), SearchBarActions,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory())
-            .get(MainViewModel::class.java)
-        viewModel = ViewModelProviders.of(
-            this,
-            ViewModelFactory(
-                MokaDataBase.getInstance(
-                    requireContext(),
-                    mainViewModel.userId.value ?: return
-                ).notificationsDao()
-            )
-        ).get(NotificationsViewModel::class.java)
 
         binding.apply {
             emptyViewActions = this@NotificationsFragment
@@ -126,15 +121,13 @@ class NotificationsFragment : Fragment(), SearchBarActions,
             }
         })
 
-        mainViewModel.login.observe(this, Observer { login ->
-            login?.let {
-                viewModel.refreshData(it, false)
-            }
+        mainViewModel.currentUser.observe(this, Observer {
+            viewModel.refreshData(it.login, false)
         })
 
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.refreshData(
-                mainViewModel.login.value
+                mainViewModel.currentUser.value?.login
                     ?: return@setOnRefreshListener, true
             )
         }
@@ -187,18 +180,18 @@ class NotificationsFragment : Fragment(), SearchBarActions,
     }
 
     override fun openSearch() {
-        findNavController().navigate(R.id.action_to_search)
+        findNavController().navigate(R.id.search_fragment)
     }
 
     override fun openAccountDialog() {
-        mainViewModel.login.value?.let {
+        mainViewModel.currentUser.value?.login?.let {
             val args = ProfileFragmentArgs(it, ProfileType.USER).toBundle()
-            findNavController().navigate(R.id.action_timeline_to_user_profile, args)
+            findNavController().navigate(R.id.profile_fragment, args)
         }
     }
 
     override fun retryInitial() {
-        mainViewModel.login.value?.let {
+        mainViewModel.currentUser.value?.login?.let {
             viewModel.refreshData(it, true)
         }
     }

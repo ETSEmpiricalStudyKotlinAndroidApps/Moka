@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.databinding.FragmentProjectsBinding
 import io.github.tonnyl.moka.db.MokaDataBase
@@ -15,13 +16,20 @@ import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
-import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
-class ProjectsFragment : Fragment(), PagingNetworkStateActions,
-    EmptyViewActions {
+class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
 
-    private lateinit var mainViewModel: MainViewModel
-    private lateinit var viewModel: ProjectsViewModel
+    private val mainViewModel by activityViewModels<MainViewModel>()
+    private val viewModel by viewModels<ProjectsViewModel> {
+        ViewModelFactory(
+            login == mainViewModel.currentUser.value?.login,
+            MokaDataBase.getInstance(
+                requireContext(),
+                mainViewModel.currentUser.value?.id ?: 0L
+            ).projectsDao(),
+            args.repositoryName
+        )
+    }
 
     private lateinit var binding: FragmentProjectsBinding
 
@@ -33,7 +41,7 @@ class ProjectsFragment : Fragment(), PagingNetworkStateActions,
 
     private val login: String
         get() {
-            val loginOfMySelf = mainViewModel.login.value
+            val loginOfMySelf = mainViewModel.currentUser.value?.login
             return args.login ?: loginOfMySelf ?: ""
         }
 
@@ -50,29 +58,14 @@ class ProjectsFragment : Fragment(), PagingNetworkStateActions,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory())
-            .get(MainViewModel::class.java)
-
-        viewModel = ViewModelProviders.of(
-            this,
-            ViewModelFactory(
-                login == mainViewModel.login.value,
-                MokaDataBase.getInstance(
-                    requireContext(),
-                    mainViewModel.userId.value ?: return
-                ).projectsDao(),
-                args.repositoryName
-            )
-        ).get(ProjectsViewModel::class.java)
-
         binding.apply {
             emptyViewActions = this@ProjectsFragment
             viewModel = this@ProjectsFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
-        mainViewModel.login.observe(viewLifecycleOwner, Observer {
-            viewModel.refreshData(login, true)
+        mainViewModel.currentUser.observe(viewLifecycleOwner, Observer {
+            viewModel.refreshData(it.login, true)
         })
 
         viewModel.previousNextLoadStatusLiveData.observe(this, Observer {

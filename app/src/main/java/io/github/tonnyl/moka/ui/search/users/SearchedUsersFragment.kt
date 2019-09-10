@@ -5,23 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import io.github.tonnyl.moka.databinding.FragmentSearchedUsersBinding
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.search.SearchViewModel
-import io.github.tonnyl.moka.ui.search.ViewModelFactory as ParentViewModelFactory
 
 class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
 
     private lateinit var binding: FragmentSearchedUsersBinding
 
-    private lateinit var parentViewModel: SearchViewModel
-
-    private lateinit var searchedUsersViewModel: SearchedUsersViewModel
+    private val parentViewModel by viewModels<SearchViewModel>(
+        ownerProducer = {
+            requireParentFragment()
+        }
+    )
+    private val searchedUsersViewModel by viewModels<SearchedUsersViewModel>()
 
     private val searchedUserAdapter: SearchedUserAdapter by lazy(LazyThreadSafetyMode.NONE) {
         SearchedUserAdapter(this@SearchedUsersFragment)
@@ -45,11 +47,6 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        parentViewModel = ViewModelProviders.of(requireParentFragment(), ParentViewModelFactory())
-            .get(SearchViewModel::class.java)
-        searchedUsersViewModel = ViewModelProviders.of(this, ViewModelFactory())
-            .get(SearchedUsersViewModel::class.java)
 
         binding.apply {
             this.viewModel = searchedUsersViewModel

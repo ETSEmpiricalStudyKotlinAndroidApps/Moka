@@ -8,7 +8,7 @@ import io.github.tonnyl.moka.CurrentLevelTreeViewQuery
 import io.github.tonnyl.moka.FileContentQuery
 import io.github.tonnyl.moka.RepositoryQuery
 import io.github.tonnyl.moka.data.RepositoryGraphQL
-import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.util.execute
@@ -52,7 +52,7 @@ class RepositoryViewModel(
 
             try {
                 val response = runBlocking {
-                    NetworkClient.apolloClient
+                    GraphQLClient.apolloClient
                         .query(
                             RepositoryQuery.builder()
                                 .login(login)
@@ -80,7 +80,7 @@ class RepositoryViewModel(
 
             try {
                 val response = runBlocking {
-                    NetworkClient.apolloClient
+                    GraphQLClient.apolloClient
                         .query(
                             FileContentQuery.builder()
                                 .login(login)
@@ -129,7 +129,7 @@ class RepositoryViewModel(
 
             try {
                 val response = runBlocking {
-                    NetworkClient.apolloClient
+                    GraphQLClient.apolloClient
                         .query(
                             CurrentLevelTreeViewQuery.builder()
                                 .login(login)

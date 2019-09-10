@@ -5,7 +5,7 @@ import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.UsersProjectsQuery
 import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.db.dao.ProjectsDao
-import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
@@ -43,7 +43,7 @@ class ProjectsDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(projectsQuery)
                     .execute()
             }
@@ -104,7 +104,7 @@ class ProjectsDataSource(
                     .perPage(params.requestedLoadSize)
                     .build()
 
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(projectsQuery)
                     .execute()
             }
@@ -164,7 +164,7 @@ class ProjectsDataSource(
                     .perPage(params.requestedLoadSize)
                     .build()
 
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(projectsQuery)
                     .execute()
             }

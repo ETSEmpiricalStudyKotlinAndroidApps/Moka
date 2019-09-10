@@ -17,7 +17,8 @@ import kotlinx.coroutines.withContext
 
 class AuthViewModel : ViewModel() {
 
-    private val _authTokenAndUserResult = MutableLiveData<Resource<Pair<String, AuthenticatedUser>>>()
+    private val _authTokenAndUserResult =
+        MutableLiveData<Resource<Pair<String, AuthenticatedUser>>>()
     val authTokenAndUserResult: LiveData<Resource<Pair<String, AuthenticatedUser>>>
         get() = _authTokenAndUserResult
 
@@ -31,16 +32,16 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             val tokenResult = withContext(Dispatchers.IO) {
                 service.getAccessToken(
-                        RetrofitClient.GITHUB_GET_ACCESS_TOKEN_URL,
-                        BuildConfig.CLIENT_ID,
-                        BuildConfig.CLIENT_SECRET,
-                        code,
-                        RetrofitClient.GITHUB_AUTHORIZE_CALLBACK_URI,
-                        state
+                    RetrofitClient.GITHUB_GET_ACCESS_TOKEN_URL,
+                    BuildConfig.CLIENT_ID,
+                    BuildConfig.CLIENT_SECRET,
+                    code,
+                    RetrofitClient.GITHUB_AUTHORIZE_CALLBACK_URI,
+                    state
                 )
             }
 
-            RetrofitClient.lastToken = tokenResult.body()?.accessToken
+            RetrofitClient.accessToken.set(tokenResult.body()?.accessToken)
             val userService = RetrofitClient.createService(UserService::class.java)
 
             val authUserResult = withContext(Dispatchers.IO) {
@@ -49,8 +50,12 @@ class AuthViewModel : ViewModel() {
 
             val body = authUserResult.body()
             _authTokenAndUserResult.value = if (authUserResult.isSuccessful && body != null) {
-                Resource(Status.SUCCESS, Pair(RetrofitClient.lastToken
-                        ?: "", body), null)
+                Resource(
+                    Status.SUCCESS, Pair(
+                        tokenResult.body()?.accessToken ?: "", body
+                    ),
+                    null
+                )
             } else {
                 Resource(Status.ERROR, null, authUserResult.message())
             }

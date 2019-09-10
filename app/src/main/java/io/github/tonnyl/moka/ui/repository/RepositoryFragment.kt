@@ -9,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,13 +24,19 @@ import io.github.tonnyl.moka.util.formatNumberWithSuffix
 
 class RepositoryFragment : Fragment() {
 
-    private lateinit var viewModel: RepositoryViewModel
+    private val args by navArgs<RepositoryFragmentArgs>()
 
-    private val args: RepositoryFragmentArgs by navArgs()
+    private val viewModel by viewModels<RepositoryViewModel> {
+        ViewModelFactory(args.login, args.name)
+    }
 
     private lateinit var binding: FragmentRepositoryBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentRepositoryBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -47,13 +53,13 @@ class RepositoryFragment : Fragment() {
 
         binding.repositoryBottomAppBar.replaceMenu(R.menu.fragment_repository_menu)
 
-        val factory = ViewModelFactory(loginArg, nameArg)
-        viewModel = ViewModelProviders.of(this, factory).get(RepositoryViewModel::class.java)
-
         viewModel.repositoryResult.observe(this, Observer { resources ->
             when (resources.status) {
                 Status.SUCCESS -> {
-                    GlideLoader.loadAvatar(resources.data?.ownerAvatarUrl?.toString(), binding.repositoryOwnerAvatar)
+                    GlideLoader.loadAvatar(
+                        resources.data?.ownerAvatarUrl?.toString(),
+                        binding.repositoryOwnerAvatar
+                    )
                     binding.repositoryOwnerName.text = resources.data?.ownerName
                     binding.repositoryOwnerLogin.text = resources.data?.ownerLogin
                     binding.repositoryName.text = nameArg
@@ -85,12 +91,14 @@ class RepositoryFragment : Fragment() {
                     }
 
                     binding.repositoryBranchContent.text = resources.data?.branchCount.toString()
-                    binding.repositoryReleasesContent.text = resources.data?.releasesCount.toString()
+                    binding.repositoryReleasesContent.text =
+                        resources.data?.releasesCount.toString()
 
                     val watchersCount = resources.data?.watchersCount ?: 0
                     binding.repositoryWatchersCountText.text = formatNumberWithSuffix(watchersCount)
                     val stargazersCount = resources.data?.stargazersCount ?: 0
-                    binding.repositoryStargazersCountText.text = formatNumberWithSuffix(stargazersCount)
+                    binding.repositoryStargazersCountText.text =
+                        formatNumberWithSuffix(stargazersCount)
                     val forksCount = resources.data?.forksCount ?: 0
                     binding.repositoryForksCountText.text = formatNumberWithSuffix(forksCount)
                     val issuesCount = resources.data?.issuesCount ?: 0
@@ -98,15 +106,18 @@ class RepositoryFragment : Fragment() {
 
                     binding.repositoryIssuesTextLayout.setOnClickListener {
                         val args = IssuesFragmentArgs(loginArg, nameArg)
-                        parentFragment?.findNavController()?.navigate(R.id.action_to_issues, args.toBundle())
+                        parentFragment?.findNavController()
+                            ?.navigate(R.id.issues_fragment, args.toBundle())
                     }
 
                     val pullRequestsCount = resources.data?.pullRequestsCount ?: 0
-                    binding.repositoryPullRequestsCountText.text = formatNumberWithSuffix(pullRequestsCount)
+                    binding.repositoryPullRequestsCountText.text =
+                        formatNumberWithSuffix(pullRequestsCount)
 
                     binding.repositoryPullRequestsTextLayout.setOnClickListener {
                         val args = PullRequestsFragmentArgs(loginArg, nameArg)
-                        parentFragment?.findNavController()?.navigate(R.id.action_to_prs, args.toBundle())
+                        parentFragment?.findNavController()
+                            ?.navigate(R.id.prs_fragment, args.toBundle())
                     }
 
                     val projectsCount = resources.data?.projectsCount ?: 0
@@ -119,7 +130,11 @@ class RepositoryFragment : Fragment() {
                     resources.data?.topics?.let { topicList ->
                         binding.repositoryTopics.apply {
                             setHasFixedSize(true)
-                            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                            layoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.HORIZONTAL,
+                                false
+                            )
                             val adapter = RepositoryTopicAdapter()
                             this.adapter = adapter
                             adapter.submitList(topicList)
@@ -139,7 +154,8 @@ class RepositoryFragment : Fragment() {
             when (resources.status) {
                 Status.SUCCESS -> {
                     if (resources.data != null) {
-                        val branchName = viewModel.repositoryResult.value?.data?.defaultBranchRef?.name
+                        val branchName =
+                            viewModel.repositoryResult.value?.data?.defaultBranchRef?.name
                         viewModel.updateExpression("$branchName:${resources.data.second}")
                     }
                 }

@@ -7,8 +7,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Event
@@ -23,7 +24,6 @@ import io.github.tonnyl.moka.ui.SearchBarActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
-import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
 class TimelineFragment : Fragment(), SearchBarActions,
     EmptyViewActions, EventActions, PagingNetworkStateActions {
@@ -31,8 +31,15 @@ class TimelineFragment : Fragment(), SearchBarActions,
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
 
-    private lateinit var viewModel: TimelineViewModel
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel by activityViewModels<MainViewModel>()
+    private val viewModel by viewModels<TimelineViewModel> {
+        ViewModelFactory(
+            MokaDataBase.getInstance(
+                requireContext(),
+                mainViewModel.currentUser.value?.id ?: 0L
+            ).eventDao()
+        )
+    }
 
     private val timelineAdapter by lazy(LazyThreadSafetyMode.NONE) {
         TimelineAdapter(this@TimelineFragment).apply {
@@ -54,18 +61,6 @@ class TimelineFragment : Fragment(), SearchBarActions,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        mainViewModel = ViewModelProviders.of(requireActivity(), MainViewModelFactory())
-            .get(MainViewModel::class.java)
-        viewModel = ViewModelProviders.of(
-            requireActivity(),
-            ViewModelFactory(
-                MokaDataBase.getInstance(
-                    requireContext(),
-                    mainViewModel.userId.value ?: return
-                ).eventDao()
-            )
-        ).get(TimelineViewModel::class.java)
 
         binding.apply {
             emptyViewActions = this@TimelineFragment
@@ -113,15 +108,13 @@ class TimelineFragment : Fragment(), SearchBarActions,
             }
         })
 
-        mainViewModel.login.observe(this, Observer { login ->
-            login?.let {
-                viewModel.refreshData(it, false)
-            }
+        mainViewModel.currentUser.observe(this, Observer {
+            viewModel.refreshData(it.login, false)
         })
 
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.refreshData(
-                mainViewModel.login.value
+                mainViewModel.currentUser.value?.login
                     ?: return@setOnRefreshListener, true
             )
         }
@@ -158,15 +151,11 @@ class TimelineFragment : Fragment(), SearchBarActions,
     }
 
     override fun openAccountDialog() {
-        mainViewModel.login.value?.let {
-            val args = ProfileFragmentArgs(it, ProfileType.USER).toBundle()
-            findNavController().navigate(R.id.action_timeline_to_user_profile, args)
-
-        }
+        findNavController().navigate(R.id.account_dialog)
     }
 
     override fun openSearch() {
-        findNavController().navigate(R.id.action_to_search)
+        findNavController().navigate(R.id.search_fragment)
     }
 
     override fun doAction() {
@@ -174,7 +163,7 @@ class TimelineFragment : Fragment(), SearchBarActions,
     }
 
     override fun retryInitial() {
-        viewModel.refreshData(mainViewModel.login.value ?: return, true)
+        viewModel.refreshData(mainViewModel.currentUser.value?.login ?: return, true)
     }
 
     override fun retryLoadPreviousNext() {
@@ -183,7 +172,7 @@ class TimelineFragment : Fragment(), SearchBarActions,
 
     override fun openProfile(login: String, profileType: ProfileType) {
         val args = ProfileFragmentArgs(login, profileType).toBundle()
-        findNavController().navigate(R.id.action_timeline_to_user_profile, args)
+        findNavController().navigate(R.id.profile_fragment, args)
     }
 
     override fun openEventDetails(event: Event) {

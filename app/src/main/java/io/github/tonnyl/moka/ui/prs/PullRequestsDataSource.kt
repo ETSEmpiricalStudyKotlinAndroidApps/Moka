@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.PullRequestsQuery
 import io.github.tonnyl.moka.data.item.PullRequestItem
-import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
@@ -37,7 +37,7 @@ class PullRequestsDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(issuesQuery)
                     .execute()
             }
@@ -98,7 +98,7 @@ class PullRequestsDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(issuesQuery)
                     .execute()
             }
@@ -156,7 +156,7 @@ class PullRequestsDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(issuesQuery)
                     .execute()
             }

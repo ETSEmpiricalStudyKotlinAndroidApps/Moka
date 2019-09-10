@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.PullRequestTimelineQuery
 import io.github.tonnyl.moka.data.item.*
-import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
@@ -39,7 +39,7 @@ class PullRequestTimelineDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(pullRequestTimelineQuery)
                     .execute()
             }
@@ -102,7 +102,7 @@ class PullRequestTimelineDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(timelineQuery)
                     .execute()
             }
@@ -163,7 +163,7 @@ class PullRequestTimelineDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(timelineQuery)
                     .execute()
             }

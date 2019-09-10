@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.network
 
 import android.widget.ImageView
-import io.github.tonnyl.moka.GlideApp
 
 object GlideLoader {
 

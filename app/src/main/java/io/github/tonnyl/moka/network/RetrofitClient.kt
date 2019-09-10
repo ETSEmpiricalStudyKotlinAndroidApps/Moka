@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.network
 
 import android.content.Context
 import com.google.gson.GsonBuilder
-import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.network.service.TrendingService
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -10,11 +9,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.DateFormat
+import java.util.concurrent.atomic.AtomicReference
 
 object RetrofitClient {
 
     // The latest token
-    var lastToken: String? = BuildConfig.TEST_TOKEN
+    val accessToken = AtomicReference<String>()
     // The [retrofit2.Retrofit] instance for whole app.
     private lateinit var retrofit: Retrofit
 
@@ -48,7 +48,7 @@ object RetrofitClient {
 
                     // Custom the request header.
                     val requestBuilder = original.newBuilder()
-                        .header("Authorization", "Bearer $lastToken")
+                        .header("Authorization", "Bearer ${accessToken.get()}")
                         .method(original.method(), original.body())
                     val request = requestBuilder.build()
                     chain.proceed(request)

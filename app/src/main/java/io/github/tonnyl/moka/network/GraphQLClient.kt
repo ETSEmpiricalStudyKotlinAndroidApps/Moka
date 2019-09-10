@@ -4,17 +4,17 @@ import android.net.Uri
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.response.CustomTypeAdapter
 import com.apollographql.apollo.response.CustomTypeValue
-import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.type.CustomType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.atomic.AtomicReference
 
-object NetworkClient {
+object GraphQLClient {
 
-    var accessToken: String = BuildConfig.TEST_TOKEN
+    val accessToken = AtomicReference<String>()
 
     private const val SERVER_URL = "https://api.github.com/graphql"
 
@@ -26,7 +26,7 @@ object NetworkClient {
             .authenticator { _, response ->
                 response.request()
                     .newBuilder()
-                    .addHeader("Authorization", "Bearer $accessToken")
+                    .addHeader("Authorization", "Bearer ${accessToken.get()}")
                     .build()
             }
             .build()

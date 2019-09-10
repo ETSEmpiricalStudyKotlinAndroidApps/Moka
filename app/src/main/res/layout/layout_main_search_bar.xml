@@ -72,7 +72,7 @@
                             android:onClick="@{() -> actions.openAccountDialog()}"
                             android:padding="8dp"
                             android:scaleType="centerCrop"
-                            app:avatarUrl="@{mainViewModel.loginUserProfile.viewer().avatarUrl()}"
+                            app:avatarUrl="@{mainViewModel.currentUser.avatarUrl}"
                             tools:src="@tools:sample/avatars" />
 
                     </LinearLayout>

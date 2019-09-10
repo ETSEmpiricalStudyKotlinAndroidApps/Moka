@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.StarredRepositoriesQuery
 import io.github.tonnyl.moka.data.RepositoryAbstract
-import io.github.tonnyl.moka.network.NetworkClient
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
@@ -35,7 +35,7 @@ class StarredRepositoriesDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(repositoriesQuery)
                     .execute()
             }
@@ -95,7 +95,7 @@ class StarredRepositoriesDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(repositoriesQuery)
                     .execute()
             }
@@ -151,7 +151,7 @@ class StarredRepositoriesDataSource(
                 .build()
 
             val response = runBlocking {
-                NetworkClient.apolloClient
+                GraphQLClient.apolloClient
                     .query(repositoriesQuery)
                     .execute()
             }

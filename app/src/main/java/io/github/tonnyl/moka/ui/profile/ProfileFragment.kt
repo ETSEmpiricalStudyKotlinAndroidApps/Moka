@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -21,10 +21,10 @@ import io.github.tonnyl.moka.ui.users.UsersType
 
 class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
 
-    private lateinit var viewModel: ProfileViewModel
-    private val args: ProfileFragmentArgs by navArgs()
-
-    private var username: String? = ""
+    private val args by navArgs<ProfileFragmentArgs>()
+    private val viewModel by viewModels<ProfileViewModel> {
+        ViewModelFactory(args.login, args.profileType)
+    }
 
     private lateinit var binding: FragmentProfileBinding
 
@@ -57,10 +57,6 @@ class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
         binding.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
-
-        val factory = ViewModelFactory(args.login, args.profileType)
-        viewModel = ViewModelProviders.of(this, factory)
-            .get(ProfileViewModel::class.java)
 
         binding.apply {
             emptyViewActions = this@ProfileFragment
@@ -106,7 +102,7 @@ class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
                 it.location
             )
             parentFragment?.findNavController()
-                ?.navigate(R.id.action_to_edit_profile, bundle.toBundle())
+                ?.navigate(R.id.edit_profile_fragment, bundle.toBundle())
         }
     }
 
@@ -117,7 +113,7 @@ class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
             specifiedProfileType
         )
         parentFragment?.findNavController()
-            ?.navigate(R.id.action_to_repositories, builder.toBundle())
+            ?.navigate(R.id.repositories_fragment, builder.toBundle())
     }
 
     override fun openStars() {
@@ -127,7 +123,7 @@ class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
             specifiedProfileType
         )
         parentFragment?.findNavController()
-            ?.navigate(R.id.action_to_repositories, builder.toBundle())
+            ?.navigate(R.id.repositories_fragment, builder.toBundle())
     }
 
     override fun openFollowers() {

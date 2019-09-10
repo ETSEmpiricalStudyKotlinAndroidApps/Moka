@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -19,14 +19,15 @@ import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 
 class IssuesFragment : Fragment(), IssueItemActions, EmptyViewActions, PagingNetworkStateActions {
 
+    private val args by navArgs<IssuesFragmentArgs>()
+
     private val issueAdapter: IssueAdapter by lazy {
         IssueAdapter(this@IssuesFragment, this@IssuesFragment)
     }
 
-    private lateinit var viewModel: IssuesViewModel
-
-    private val args: IssuesFragmentArgs by navArgs()
-
+    private val viewModel by viewModels<IssuesViewModel> {
+        ViewModelFactory(args.owner, args.name)
+    }
     private lateinit var binding: FragmentIssuesBinding
 
     override fun onCreateView(
@@ -42,8 +43,6 @@ class IssuesFragment : Fragment(), IssueItemActions, EmptyViewActions, PagingNet
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(args.owner, args.name))
-            .get(IssuesViewModel::class.java)
 
         with(binding) {
             with(appbarLayout.toolbar) {
@@ -72,14 +71,14 @@ class IssuesFragment : Fragment(), IssueItemActions, EmptyViewActions, PagingNet
     override fun openPullRequestItem(data: IssueItem) {
         parentFragment?.findNavController()
             ?.navigate(
-                R.id.action_to_issue,
+                R.id.issue_fragment,
                 IssueFragmentArgs(args.owner, args.name, data).toBundle()
             )
     }
 
     override fun openProfile(login: String) {
         val profileFragmentArgs = ProfileFragmentArgs(login)
-        findNavController().navigate(R.id.action_to_profile, profileFragmentArgs.toBundle())
+        findNavController().navigate(R.id.profile_fragment, profileFragmentArgs.toBundle())
     }
 
     override fun retryInitial() {

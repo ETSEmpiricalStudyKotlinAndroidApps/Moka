@@ -6,8 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -18,7 +19,6 @@ import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
-import io.github.tonnyl.moka.ui.ViewModelFactory as MainViewModelFactory
 
 class TrendingFilterFragment : BottomSheetDialogFragment(), FilterActions {
 
@@ -28,11 +28,20 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), FilterActions {
         }
     }
 
-    private lateinit var viewModel: ExploreViewModel
-    private val mainViewModel: MainViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProviders.of(requireActivity(), MainViewModelFactory())
-            .get(MainViewModel::class.java)
-    }
+    private val viewModel by viewModels<ExploreViewModel>(
+        ownerProducer = {
+            requireParentFragment()
+        },
+        factoryProducer = {
+            MokaDataBase.getInstance(
+                requireContext(),
+                mainViewModel.currentUser.value?.id ?: 0L
+            ).let {
+                ViewModelFactory(it.trendingDevelopersDao(), it.trendingRepositoriesDao())
+            }
+        }
+    )
+    private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var binding: FragmentExploreFilterBinding
 
@@ -56,13 +65,6 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), FilterActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        MokaDataBase.getInstance(requireContext(), mainViewModel.userId.value ?: return).let {
-            viewModel = ViewModelProviders.of(
-                requireParentFragment(),
-                ViewModelFactory(it.trendingDevelopersDao(), it.trendingRepositoriesDao())
-            ).get(ExploreViewModel::class.java)
-        }
 
         binding.apply {
             filterActions = this@TrendingFilterFragment

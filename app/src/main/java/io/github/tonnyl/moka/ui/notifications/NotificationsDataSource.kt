@@ -9,15 +9,10 @@ import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.NotificationsService
 import io.github.tonnyl.moka.util.PageLinks
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 
 class NotificationsDataSource(
-    private val coroutineScope: CoroutineScope,
     private val notificationsService: NotificationsService,
     private val notificationDao: NotificationDao,
     private val initialLoadStatus: MutableLiveData<Resource<List<Notification>>>,
@@ -69,43 +64,40 @@ class NotificationsDataSource(
     ) {
         Timber.d("loadAfter")
 
-        coroutineScope.launch(Dispatchers.Main) {
-            previousNextStatus.value = PagedResource2(
+        previousNextStatus.postValue(
+            PagedResource2(
                 PagedResourceDirection.AFTER,
                 Resource.loading(null)
             )
+        )
 
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    notificationsService.listNotificationsByUrl(params.key)
-                }
+        try {
+            val response = notificationsService.listNotificationsByUrl(params.key)
+                .execute()
 
-                val list = response.body() ?: Collections.emptyList()
-                if (list.isNotEmpty()) {
-                    notificationDao.insert(list)
-                }
-
-                retry = null
-
-                previousNextStatus.value = PagedResource2(
-                    PagedResourceDirection.AFTER,
-                    Resource.success(list)
-                )
-
-                val pl = PageLinks(response)
-                callback.onResult(list, pl.next)
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                retry = {
-                    loadAfter(params, callback)
-                }
-
-                previousNextStatus.value = PagedResource2(
-                    PagedResourceDirection.AFTER,
-                    Resource.error(e.message, null)
-                )
+            val list = response.body() ?: Collections.emptyList()
+            if (list.isNotEmpty()) {
+                notificationDao.insert(list)
             }
+
+            retry = null
+
+            previousNextStatus.postValue(
+                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+            )
+
+            val pl = PageLinks(response)
+            callback.onResult(list, pl.next)
+        } catch (e: Exception) {
+            Timber.e(e)
+
+            retry = {
+                loadAfter(params, callback)
+            }
+
+            previousNextStatus.postValue(
+                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+            )
         }
     }
 
@@ -115,43 +107,37 @@ class NotificationsDataSource(
     ) {
         Timber.d("loadBefore")
 
-        coroutineScope.launch(Dispatchers.Main) {
-            previousNextStatus.value = PagedResource2(
-                PagedResourceDirection.BEFORE,
-                Resource.loading(null)
+        previousNextStatus.postValue(
+            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+        )
+
+        try {
+            val response = notificationsService.listNotificationsByUrl(params.key)
+                .execute()
+
+            val list = response.body() ?: Collections.emptyList()
+            if (list.isNotEmpty()) {
+                notificationDao.insert(list)
+            }
+
+            retry = null
+
+            previousNextStatus.postValue(
+                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
             )
 
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    notificationsService.listNotificationsByUrl(params.key)
-                }
+            val pl = PageLinks(response)
+            callback.onResult(list, pl.next)
+        } catch (e: Exception) {
+            Timber.e(e)
 
-                val list = response.body() ?: Collections.emptyList()
-                if (list.isNotEmpty()) {
-                    notificationDao.insert(list)
-                }
-
-                retry = null
-
-                previousNextStatus.value = PagedResource2(
-                    PagedResourceDirection.BEFORE,
-                    Resource.success(list)
-                )
-
-                val pl = PageLinks(response)
-                callback.onResult(list, pl.next)
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                retry = {
-                    loadBefore(params, callback)
-                }
-
-                previousNextStatus.value = PagedResource2(
-                    PagedResourceDirection.BEFORE,
-                    Resource.error(e.message, null)
-                )
+            retry = {
+                loadBefore(params, callback)
             }
+
+            previousNextStatus.postValue(
+                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+            )
         }
     }
 

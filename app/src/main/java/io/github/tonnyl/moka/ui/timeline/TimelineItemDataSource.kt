@@ -9,14 +9,10 @@ import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.EventsService
 import io.github.tonnyl.moka.util.PageLinks
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 
 class TimelineItemDataSource(
-    private val coroutineScope: CoroutineScope,
     private val eventsService: EventsService,
     private val eventDao: EventDao,
     var login: String,
@@ -72,76 +68,74 @@ class TimelineItemDataSource(
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Event>) {
         Timber.d("loadAfter")
 
-        coroutineScope.launch(Dispatchers.IO) {
-            previousNextStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
-            )
+        previousNextStatus.postValue(
+            PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
+        )
 
-            try {
-                val response = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
+        try {
+            val response = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
+                .execute()
 
-                val list = response.body() ?: Collections.emptyList()
+            val list = response.body() ?: Collections.emptyList()
 
-                if (list.isNotEmpty()) {
-                    eventDao.insertAll(list)
-                }
-
-                retry = null
-
-                val pl = PageLinks(response)
-                callback.onResult(list, pl.next)
-                previousNextStatus.postValue(
-                    PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
-                )
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                retry = {
-                    loadAfter(params, callback)
-                }
-
-                previousNextStatus.postValue(
-                    PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
-                )
+            if (list.isNotEmpty()) {
+                eventDao.insertAll(list)
             }
+
+            retry = null
+
+            val pl = PageLinks(response)
+            callback.onResult(list, pl.next)
+            previousNextStatus.postValue(
+                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+
+            retry = {
+                loadAfter(params, callback)
+            }
+
+            previousNextStatus.postValue(
+                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+            )
         }
     }
 
     override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, Event>) {
         Timber.d("loadBefore")
 
-        coroutineScope.launch(Dispatchers.IO) {
-            previousNextStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
-            )
+        previousNextStatus.postValue(
+            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+        )
 
-            try {
-                val response = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
+        try {
+            val response = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
+                .execute()
 
-                val list = response.body() ?: Collections.emptyList()
+            val list = response.body() ?: Collections.emptyList()
 
-                if (list.isNotEmpty()) {
-                    eventDao.insertAll(list)
-                }
-
-                retry = null
-
-                val pl = PageLinks(response)
-                callback.onResult(list, pl.prev)
-                previousNextStatus.postValue(
-                    PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
-                )
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                retry = {
-                    loadBefore(params, callback)
-                }
-
-                previousNextStatus.postValue(
-                    PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
-                )
+            if (list.isNotEmpty()) {
+                eventDao.insertAll(list)
             }
+
+            retry = null
+
+            val pl = PageLinks(response)
+            callback.onResult(list, pl.prev)
+            previousNextStatus.postValue(
+                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+
+            retry = {
+                loadBefore(params, callback)
+            }
+
+            previousNextStatus.postValue(
+                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+            )
         }
     }
 

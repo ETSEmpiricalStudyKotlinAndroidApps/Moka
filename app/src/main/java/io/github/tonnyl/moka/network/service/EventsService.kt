@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.network.service
 
 import io.github.tonnyl.moka.data.Event
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -23,8 +22,8 @@ interface EventsService {
     ): Call<List<Event>>
 
     @GET
-    suspend fun listPublicEventThatAUserHasReceivedByUrl(
+    fun listPublicEventThatAUserHasReceivedByUrl(
         @Url url: String
-    ): Response<List<Event>>
+    ): Call<List<Event>>
 
 }

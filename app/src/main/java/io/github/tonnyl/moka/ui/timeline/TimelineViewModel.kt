@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.ui.timeline
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.Event
@@ -36,7 +35,6 @@ class TimelineViewModel(
 
     override fun initRemoteSource(): LiveData<PagedList<Event>> {
         sourceFactory = TimelineDataSourceFactory(
-            viewModelScope,
             RetrofitClient.createService(EventsService::class.java),
             localSource,
             login,

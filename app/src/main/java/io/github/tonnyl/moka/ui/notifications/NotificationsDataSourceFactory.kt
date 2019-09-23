@@ -7,10 +7,8 @@ import io.github.tonnyl.moka.db.dao.NotificationDao
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.NotificationsService
-import kotlinx.coroutines.CoroutineScope
 
 class NotificationsDataSourceFactory(
-    private val coroutineScope: CoroutineScope,
     private val notificationsService: NotificationsService,
     private val notificationDao: NotificationDao,
     private val initialLoadStatus: MutableLiveData<Resource<List<Notification>>>,
@@ -21,7 +19,6 @@ class NotificationsDataSourceFactory(
 
     override fun create(): DataSource<String, Notification> {
         return NotificationsDataSource(
-            coroutineScope,
             notificationsService,
             notificationDao,
             initialLoadStatus,

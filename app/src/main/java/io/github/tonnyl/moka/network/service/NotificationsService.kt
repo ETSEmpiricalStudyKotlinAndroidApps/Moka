@@ -25,9 +25,9 @@ interface NotificationsService {
      * Refer [listNotifications].
      */
     @GET
-    suspend fun listNotificationsByUrl(
+    fun listNotificationsByUrl(
         @Url url: String
-    ): Response<List<Notification>>
+    ): Call<List<Notification>>
 
     /**
      * Marking a notification as "read" removes it from the default view on GitHub.

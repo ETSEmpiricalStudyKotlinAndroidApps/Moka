@@ -7,10 +7,8 @@ import io.github.tonnyl.moka.db.dao.EventDao
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.EventsService
-import kotlinx.coroutines.CoroutineScope
 
 class TimelineDataSourceFactory(
-    private val scope: CoroutineScope,
     private val eventsService: EventsService,
     private val eventDao: EventDao,
     var login: String,
@@ -22,7 +20,6 @@ class TimelineDataSourceFactory(
 
     override fun create(): DataSource<String, Event> {
         return TimelineItemDataSource(
-            scope,
             eventsService,
             eventDao,
             login,

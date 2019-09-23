@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.ui.notifications
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.Notification
@@ -37,7 +36,6 @@ class NotificationsViewModel(
 
     override fun initRemoteSource(): LiveData<PagedList<Notification>> {
         sourceFactory = NotificationsDataSourceFactory(
-            viewModelScope,
             RetrofitClient.createService(NotificationsService::class.java),
             localSource,
             _initialLoadStatusLiveData,

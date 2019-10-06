@@ -7,7 +7,7 @@
 
         <variable
             name="comment"
-            type="io.github.tonnyl.moka.data.item.IssueCommentEvent" />
+            type="io.github.tonnyl.moka.data.item.IssueComment" />
 
         <import type="java.util.Date" />
 
@@ -25,7 +25,7 @@
             android:id="@+id/issue_timeline_comment_avatar"
             android:layout_width="@dimen/issue_timeline_avatar_size"
             android:layout_height="@dimen/issue_timeline_avatar_size"
-            app:avatarUrl="@{comment.authorAvatarUrl.toString()}"
+            app:avatarUrl="@{comment.author.avatarUrl.toString()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
@@ -43,7 +43,7 @@
             app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_avatar"
             app:layout_constraintTop_toTopOf="@id/issue_timeline_comment_avatar"
             app:layout_constraintVertical_chainStyle="spread"
-            app:textFuture="@{comment.authorLogin}"
+            app:textFuture="@{comment.author.login}"
             tools:text="@sample/issue_timeline.json/timeline/author" />
 
         <androidx.appcompat.widget.AppCompatTextView

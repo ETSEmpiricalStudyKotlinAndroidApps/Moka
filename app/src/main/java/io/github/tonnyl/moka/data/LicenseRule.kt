@@ -1,48 +1,32 @@
 package io.github.tonnyl.moka.data
 
 import android.os.Parcelable
-import io.github.tonnyl.moka.RepositoryQuery
 import kotlinx.android.parcel.Parcelize
+import io.github.tonnyl.moka.fragment.LicenseRule as RawLicenseRule
 
 /**
  * Describes a License's conditions, permissions, and limitations.
  */
 @Parcelize
 data class LicenseRule(
-        /**
-         * A description of the rule
-         */
-        val description: String,
-        /**
-         * The machine-readable rule key
-         */
-        val key: String,
-        /**
-         * The human-readable rule label
-         */
-        val label: String
-) : Parcelable {
 
-    companion object {
+    /**
+     * A description of the rule
+     */
+    val description: String,
 
-        fun createFromRawCondition(condition: RepositoryQuery.Condition): LicenseRule = LicenseRule(
-                condition.description(),
-                condition.key(),
-                condition.label()
-        )
+    /**
+     * The machine-readable rule key
+     */
+    val key: String,
 
-        fun createFromRawLimitation(condition: RepositoryQuery.Limitation): LicenseRule = LicenseRule(
-                condition.description(),
-                condition.key(),
-                condition.label()
-        )
+    /**
+     * The human-readable rule label
+     */
+    val label: String
 
-        fun createFromRawPermission(condition: RepositoryQuery.Permission): LicenseRule = LicenseRule(
-                condition.description(),
-                condition.key(),
-                condition.label()
-        )
+) : Parcelable
 
-    }
-
+fun RawLicenseRule.toNonNullLicenseRule(): LicenseRule {
+    return LicenseRule(description(), key(), label())
 }

@@ -6,12 +6,14 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class AccessToken(
-        @SerializedName("access_token")
-        val accessToken: String,
 
-        @SerializedName("scope")
-        val scope: String,
+    @SerializedName("access_token")
+    val accessToken: String,
 
-        @SerializedName("token_type")
-        val tokenType: String
+    @SerializedName("scope")
+    val scope: String,
+
+    @SerializedName("token_type")
+    val tokenType: String
+
 ) : Parcelable

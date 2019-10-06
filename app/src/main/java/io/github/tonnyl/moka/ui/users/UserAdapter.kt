@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.UserGraphQL
+import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.databinding.ItemUserBinding
 import io.github.tonnyl.moka.ui.PagedResourceAdapter
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class UserAdapter(
     override val retryActions: PagingNetworkStateActions
-) : PagedResourceAdapter<UserGraphQL>(DIFF_CALLBACK, retryActions) {
+) : PagedResourceAdapter<UserItem>(DIFF_CALLBACK, retryActions) {
 
     var actions: ItemUserActions? = null
 
@@ -20,13 +20,13 @@ class UserAdapter(
 
         const val VIEW_TYPE_USER = R.layout.item_user
 
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UserGraphQL>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UserItem>() {
 
-            override fun areItemsTheSame(oldItem: UserGraphQL, newItem: UserGraphQL): Boolean {
+            override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: UserGraphQL, newItem: UserGraphQL): Boolean {
+            override fun areContentsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
                 return oldItem == newItem
             }
 
@@ -58,7 +58,7 @@ class UserAdapter(
         private val binding: ItemUserBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: UserGraphQL, userActions: ItemUserActions?) {
+        fun bindTo(data: UserItem, userActions: ItemUserActions?) {
             binding.apply {
                 user = data
                 actions = userActions

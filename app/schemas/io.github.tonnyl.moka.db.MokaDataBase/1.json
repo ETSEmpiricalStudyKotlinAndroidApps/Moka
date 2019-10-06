@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0e1994b4831a844d85f9d0557b1b5ce8",
+    "identityHash": "c95697ad7c419a820b2c14ef89429657",
     "entities": [
       {
         "tableName": "event",
@@ -1610,7 +1610,7 @@
       },
       {
         "tableName": "project",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`body` TEXT, `body_HTML` TEXT NOT NULL, `closed` INTEGER NOT NULL, `closed_at` INTEGER, `created_at` INTEGER NOT NULL, `databaseId` INTEGER, `id` TEXT NOT NULL, `name` TEXT NOT NULL, `number` INTEGER NOT NULL, `resource_path` TEXT NOT NULL, `state` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `url` TEXT NOT NULL, `viewer_can_update` INTEGER NOT NULL, `project_creatoravatar_url` TEXT, `project_creatorlogin` TEXT, `project_creatorresource_path` TEXT, `project_creatorurl` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`body` TEXT, `body_HTML` TEXT NOT NULL, `closed` INTEGER NOT NULL, `closed_at` INTEGER, `created_at` INTEGER NOT NULL, `id` TEXT NOT NULL, `name` TEXT NOT NULL, `number` INTEGER NOT NULL, `resource_path` TEXT NOT NULL, `state` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `url` TEXT NOT NULL, `viewer_can_update` INTEGER NOT NULL, `project_creatoravatar_url` TEXT, `project_creatorlogin` TEXT, `project_creatorurl` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "body",
@@ -1641,12 +1641,6 @@
             "columnName": "created_at",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "databaseId",
-            "columnName": "databaseId",
-            "affinity": "INTEGER",
-            "notNull": false
           },
           {
             "fieldPath": "id",
@@ -1709,12 +1703,6 @@
             "notNull": false
           },
           {
-            "fieldPath": "creator.resourcePath",
-            "columnName": "project_creatorresource_path",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
             "fieldPath": "creator.url",
             "columnName": "project_creatorurl",
             "affinity": "TEXT",
@@ -1734,7 +1722,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e1994b4831a844d85f9d0557b1b5ce8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c95697ad7c419a820b2c14ef89429657')"
     ]
   }
 }

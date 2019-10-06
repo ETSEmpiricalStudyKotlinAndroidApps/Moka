@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.PullRequestsQuery
 import io.github.tonnyl.moka.data.item.PullRequestItem
+import io.github.tonnyl.moka.data.item.toNonNullPullRequestItem
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
@@ -46,20 +47,20 @@ class PullRequestsDataSource(
             val repository = response.data()?.repository()
 
             repository?.pullRequests()?.nodes()?.forEach { node ->
-                list.add(PullRequestItem.createFromRaw(node))
+                list.add(node.toNonNullPullRequestItem())
             }
 
-            val pageInfo = repository?.pullRequests()?.pageInfo()
+            val pageInfo = repository?.pullRequests()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
                 if (pageInfo?.hasPreviousPage() == true) {
-                    repository.pullRequests().pageInfo().startCursor()
+                    pageInfo.startCursor()
                 } else {
                     null
                 },
                 if (pageInfo?.hasNextPage() == true) {
-                    repository.pullRequests().pageInfo().endCursor()
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -107,13 +108,15 @@ class PullRequestsDataSource(
             val repository = response.data()?.repository()
 
             repository?.pullRequests()?.nodes()?.forEach { node ->
-                list.add(PullRequestItem.createFromRaw(node))
+                list.add(node.toNonNullPullRequestItem())
             }
+
+            val pageInfo = repository?.pullRequests()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
-                if (repository?.pullRequests()?.pageInfo()?.hasNextPage() == true) {
-                    repository.pullRequests().pageInfo().endCursor()
+                if (pageInfo?.hasNextPage() == true) {
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -165,13 +168,15 @@ class PullRequestsDataSource(
             val repository = response.data()?.repository()
 
             repository?.pullRequests()?.nodes()?.forEach { node ->
-                list.add(PullRequestItem.createFromRaw(node))
+                list.add(node.toNonNullPullRequestItem())
             }
+
+            val pageInfo = repository?.pullRequests()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
-                if (repository?.pullRequests()?.pageInfo()?.hasPreviousPage() == true) {
-                    repository.pullRequests().pageInfo().startCursor()
+                if (pageInfo?.hasPreviousPage() == true) {
+                    pageInfo.startCursor()
                 } else {
                     null
                 }

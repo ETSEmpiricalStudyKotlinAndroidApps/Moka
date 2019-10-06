@@ -6,7 +6,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.item.*
+import io.github.tonnyl.moka.data.item.IssueComment
+import io.github.tonnyl.moka.data.item.PullRequestCommitCommentThread
+import io.github.tonnyl.moka.data.item.PullRequestReviewThread
+import io.github.tonnyl.moka.data.item.PullRequestTimelineItem
 import io.github.tonnyl.moka.databinding.ItemPrTimelineCommentBinding
 import io.github.tonnyl.moka.databinding.ItemPrTimelineEventBinding
 import io.github.tonnyl.moka.databinding.ItemPrTimelineHeadBinding
@@ -92,10 +95,7 @@ class PullRequestTimelineAdapter(
             R.layout.item_pr_timeline_head
         } else {
             when (getItem(position - 1)) {
-                is PullRequestIssueComment,
-                is PullRequestReviewComment -> {
-                    R.layout.item_pr_timeline_comment
-                }
+                is IssueComment,
                 is PullRequestReviewThread,
                 is PullRequestCommitCommentThread -> {
                     R.layout.item_pr_timeline_thread

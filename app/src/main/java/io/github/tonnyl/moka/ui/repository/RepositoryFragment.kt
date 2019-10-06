@@ -57,11 +57,11 @@ class RepositoryFragment : Fragment() {
             when (resources.status) {
                 Status.SUCCESS -> {
                     GlideLoader.loadAvatar(
-                        resources.data?.ownerAvatarUrl?.toString(),
+                        resources.data?.owner?.avatarUrl?.toString(),
                         binding.repositoryOwnerAvatar
                     )
                     binding.repositoryOwnerName.text = resources.data?.ownerName
-                    binding.repositoryOwnerLogin.text = resources.data?.ownerLogin
+                    binding.repositoryOwnerLogin.text = resources.data?.owner?.login
                     binding.repositoryName.text = nameArg
                     binding.repositoryDescription.text = resources.data?.description
 

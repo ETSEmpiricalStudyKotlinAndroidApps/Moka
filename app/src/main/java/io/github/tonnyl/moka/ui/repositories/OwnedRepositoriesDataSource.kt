@@ -3,7 +3,8 @@ package io.github.tonnyl.moka.ui.repositories
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.OwnedRepositoriesQuery
-import io.github.tonnyl.moka.data.RepositoryAbstract
+import io.github.tonnyl.moka.data.RepositoryItem
+import io.github.tonnyl.moka.data.toNonNullRepositoryItem
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
@@ -14,15 +15,15 @@ import timber.log.Timber
 
 class OwnedRepositoriesDataSource(
     private val login: String,
-    private val loadStatusLiveData: MutableLiveData<Resource<List<RepositoryAbstract>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<RepositoryAbstract>>>
-) : PageKeyedDataSource<String, RepositoryAbstract>() {
+    private val loadStatusLiveData: MutableLiveData<Resource<List<RepositoryItem>>>,
+    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<RepositoryItem>>>
+) : PageKeyedDataSource<String, RepositoryItem>() {
 
     var retry: (() -> Any)? = null
 
     override fun loadInitial(
         params: LoadInitialParams<String>,
-        callback: LoadInitialCallback<String, RepositoryAbstract>
+        callback: LoadInitialCallback<String, RepositoryItem>
     ) {
         Timber.d("loadInitial")
 
@@ -40,24 +41,24 @@ class OwnedRepositoriesDataSource(
                     .execute()
             }
 
-            val list = mutableListOf<RepositoryAbstract>()
+            val list = mutableListOf<RepositoryItem>()
             val user = response.data()?.user()
 
             user?.repositories()?.nodes()?.forEach { node ->
-                list.add(RepositoryAbstract.createFromOwnedRepositoryDataNode(node))
+                list.add(node.fragments().repositoryListItemFragment().toNonNullRepositoryItem())
             }
 
-            val pageInfo = user?.repositories()?.pageInfo()
+            val pageInfo = user?.repositories()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
                 if (pageInfo?.hasPreviousPage() == true) {
-                    user.repositories().pageInfo().startCursor()
+                    pageInfo.startCursor()
                 } else {
                     null
                 },
                 if (pageInfo?.hasNextPage() == true) {
-                    user.repositories().pageInfo().endCursor()
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -79,7 +80,7 @@ class OwnedRepositoriesDataSource(
 
     override fun loadAfter(
         params: LoadParams<String>,
-        callback: LoadCallback<String, RepositoryAbstract>
+        callback: LoadCallback<String, RepositoryItem>
     ) {
         Timber.d("loadAfter")
 
@@ -100,17 +101,19 @@ class OwnedRepositoriesDataSource(
                     .execute()
             }
 
-            val list = mutableListOf<RepositoryAbstract>()
+            val list = mutableListOf<RepositoryItem>()
             val user = response.data()?.user()
 
             user?.repositories()?.nodes()?.forEach { node ->
-                list.add(RepositoryAbstract.createFromOwnedRepositoryDataNode(node))
+                list.add(node.fragments().repositoryListItemFragment().toNonNullRepositoryItem())
             }
+
+            val pageInfo = user?.repositories()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
-                if (user?.repositories()?.pageInfo()?.hasNextPage() == true) {
-                    user.repositories().pageInfo().endCursor()
+                if (pageInfo?.hasNextPage() == true) {
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -136,7 +139,7 @@ class OwnedRepositoriesDataSource(
 
     override fun loadBefore(
         params: LoadParams<String>,
-        callback: LoadCallback<String, RepositoryAbstract>
+        callback: LoadCallback<String, RepositoryItem>
     ) {
         Timber.d("loadBefore")
 
@@ -157,17 +160,19 @@ class OwnedRepositoriesDataSource(
                     .execute()
             }
 
-            val list = mutableListOf<RepositoryAbstract>()
+            val list = mutableListOf<RepositoryItem>()
             val user = response.data()?.user()
 
             user?.repositories()?.nodes()?.forEach { node ->
-                list.add(RepositoryAbstract.createFromOwnedRepositoryDataNode(node))
+                list.add(node.fragments().repositoryListItemFragment().toNonNullRepositoryItem())
             }
+
+            val pageInfo = user?.repositories()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
-                if (user?.repositories()?.pageInfo()?.hasPreviousPage() == true) {
-                    user.repositories().pageInfo().startCursor()
+                if (pageInfo?.hasPreviousPage() == true) {
+                    pageInfo.startCursor()
                 } else {
                     null
                 }

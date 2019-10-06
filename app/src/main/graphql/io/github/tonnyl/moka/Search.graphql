@@ -1,252 +1,28 @@
-fragment RepositoryFragment on Repository {
-  codeOfConduct {
-    body
-    id
-    key
-    name
-    resourcePath
-    url
-  }
-  createdAt
-  databaseId
-  defaultBranchRef {
-    id
-    name
-    prefix
-    target {
-      abbreviatedOid
-      commitResourcePath
-      commitUrl
-      id
-      oid
+query SearchRepositories($queryWords: String!, $first: Int, $last: Int, $after: String, $before: String) {
+    search(query: $queryWords, type: REPOSITORY, first: $first, last: $last, after: $after, before: $before) {
+        nodes {
+            ... RepositoryListItemFragment
+        }
+        # Information to aid in pagination.
+        pageInfo {
+            ... PageInfo
+        }
+        # The number of repositories that matched the search query.
+        repositoryCount
     }
-  }
-  description
-  descriptionHTML
-  diskUsage
-  forkCount
-  hasIssuesEnabled
-  hasWikiEnabled
-  homepageUrl
-  id
-  isArchived
-  isFork
-  isLocked
-  isMirror
-  isPrivate
-  licenseInfo {
-  #   body
-  #   conditions {
-  #     description
-  #     key
-  #     label
-  #   }
-    description
-    featured
-    hidden
-    id
-    implementation
-  #  key
-  #   limitations {
-  #     description
-  #     key
-  #     label
-  #   }
-    name
-    nickname
-  #   permissions {
-  #     description
-  #     key
-  #     label
-  #   }
-    pseudoLicense
-    spdxId
-    url
-  }
-  lockReason
-  mergeCommitAllowed
-  mirrorUrl
-  name
-  nameWithOwner
-  object {
-    abbreviatedOid
-    commitResourcePath
-    commitUrl
-    id
-    oid
-  }
-  owner {
-    avatarUrl
-    id
-    login
-    resourcePath
-    url
-  }
-  parent {
-    nameWithOwner
-  }
-  primaryLanguage {
-    color
-    id
-    name
-  }
-  projectsResourcePath
-  projectsUrl
-  pushedAt
-  rebaseMergeAllowed
-  resourcePath
-  shortDescriptionHTML
-  squashMergeAllowed
-  sshUrl
-  updatedAt
-  url
-  viewerCanAdminister
-  viewerCanCreateProjects
-  viewerCanSubscribe
-  viewerCanUpdateTopics
-  viewerHasStarred
-  viewerPermission
-  viewerSubscription
-  issues {
-    totalCount
-  }
-  pullRequests {
-    totalCount
-  }
-  watchers {
-    totalCount
-  }
-  forks {
-    totalCount
-  }
-  stargazers {
-    totalCount
-  }
-  projects {
-    totalCount
-  }
-  refs(first: 1, refPrefix: "refs/heads/") {
-    totalCount
-  }
-  releases {
-    totalCount
-  }
 }
 
-query searchRepositories($queryWords: String!, $first: Int, $last: Int, $after: String, $before: String) {
-  search(query: $queryWords, type: REPOSITORY, first: $first, last: $last, after: $after, before: $before) {
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+query SearchUser($queryWords: String!, $first: Int, $last: Int, $after: String, $before: String) {
+    search(query: $queryWords, type: USER, first: $first, last: $last, after: $after, before: $before) {
+        nodes {
+            ... OrganizationListItemFragment
+            ... UserListItemFragment
+        }
+        # Information to aid in pagination.
+        pageInfo {
+            ... PageInfo
+        }
+        # The number of users that matched the search query.
+        userCount
     }
-
-    nodes {
-      ... RepositoryFragment
-    }
-
-    repositoryCount
-  }
-}
-
-fragment UserFragment on User {
-   avatarUrl
-   bio
-   bioHTML
-   company
-   companyHTML
-   createdAt
-   databaseId
-   email
-   id
-   isBountyHunter
-   isCampusExpert
-   isDeveloperProgramMember
-   isHireable
-   isEmployee
-   isSiteAdmin
-   isViewer
-   location
-   login
-   name
-   projectsResourcePath
-   projectsUrl
-   resourcePath
-   status {
-     createdAt
-     emoji
-     id
-     indicatesLimitedAvailability
-     message
-     updatedAt
-   }
-   updatedAt
-   url
-   viewerCanCreateProjects
-   viewerCanFollow
-   viewerIsFollowing
-   websiteUrl
-   repositories {
-     totalCount
-   }
-   followers {
-     totalCount
-   }
-    following {
-     totalCount
-   }
-   starredRepositories {
-     totalCount
-   }
-   organizations(first: 20) {
-      nodes {
-          avatarUrl
-      }
-   }
-}
-
-fragment OrgFragment on Organization {
-  avatarUrl
-  databaseId
-  description
-  publicEmail: email
-  id
-  isVerified
-  location
-  login
-  name
-  newTeamResourcePath
-  newTeamUrl
-  projectsResourcePath
-  projectsUrl
-  resourcePath
-  teamsResourcePath
-  teamsUrl
-  url
-  viewerCanAdminister
-  viewerCanCreateProjects
-  viewerCanCreateRepositories
-  viewerCanCreateTeams
-  viewerIsAMember
-  websiteUrl
-}
-
-query searchUser($queryWords: String!, $first: Int, $last: Int, $after: String, $before: String) {
-  search(query: $queryWords, type: USER, first: $first, last: $last, after: $after, before: $before) {
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
-    }
-
-    nodes {
-      typename: __typename
-      ... OrgFragment
-      ... UserFragment
-    }
-
-    userCount
-  }
 }

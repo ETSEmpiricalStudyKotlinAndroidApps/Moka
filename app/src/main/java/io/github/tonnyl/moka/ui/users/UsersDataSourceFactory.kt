@@ -2,21 +2,21 @@ package io.github.tonnyl.moka.ui.users
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
-import io.github.tonnyl.moka.data.UserGraphQL
+import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
 
 class UsersDataSourceFactory(
     private val login: String,
     private val usersType: UsersType,
-    private val initialLoadStatus: MutableLiveData<Resource<List<UserGraphQL>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<UserGraphQL>>>
-) : DataSource.Factory<String, UserGraphQL>() {
+    private val initialLoadStatus: MutableLiveData<Resource<List<UserItem>>>,
+    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<UserItem>>>
+) : DataSource.Factory<String, UserItem>() {
 
     private var followingDataSource: FollowingDataSource? = null
     private var followersDataSource: FollowersDataSource? = null
 
-    override fun create(): DataSource<String, UserGraphQL> = when (usersType) {
+    override fun create(): DataSource<String, UserItem> = when (usersType) {
         UsersType.FOLLOWER -> FollowersDataSource(
             login,
             initialLoadStatus,

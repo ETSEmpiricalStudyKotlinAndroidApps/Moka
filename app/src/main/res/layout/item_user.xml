@@ -9,7 +9,7 @@
 
         <variable
             name="user"
-            type="io.github.tonnyl.moka.data.UserGraphQL" />
+            type="io.github.tonnyl.moka.data.UserItem" />
 
         <variable
             name="actions"

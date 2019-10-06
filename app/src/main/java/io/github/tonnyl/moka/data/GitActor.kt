@@ -10,24 +10,29 @@ import java.util.*
  */
 @Parcelize
 data class GitActor(
-        /**
-         * A URL pointing to the author's public avatar.
-         */
-        val avatarUrl: Uri,
-        /**
-         * The timestamp of the Git action (authoring or committing).
-         */
-        val date: Date?,
-        /**
-         * The email in the Git commit.
-         */
-        val email: String?,
-        /**
-         * The name in the Git commit.
-         */
-        val name: String?,
-        /**
-         * The GitHub user corresponding to the email field. Null if no such user exists.
-         */
-        val user: UserGraphQL?
+    /**
+     * A URL pointing to the author's public avatar.
+     */
+    val avatarUrl: Uri,
+
+    /**
+     * The timestamp of the Git action (authoring or committing).
+     */
+    val date: Date?,
+
+    /**
+     * The email in the Git commit.
+     */
+    val email: String?,
+
+    /**
+     * The name in the Git commit.
+     */
+    val name: String?,
+
+    /**
+     * The GitHub user corresponding to the email field. Null if no such user exists.
+     */
+    val user: User?
+
 ) : Parcelable

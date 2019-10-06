@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.IssuesQuery
 import io.github.tonnyl.moka.data.item.IssueItem
+import io.github.tonnyl.moka.data.item.toNonNullIssueItem
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
@@ -45,20 +46,20 @@ class IssuesDataSource(
             val repository = response.data()?.repository()
 
             repository?.issues()?.nodes()?.forEach { node ->
-                list.add(IssueItem.createFromRaw(node))
+                list.add(node.toNonNullIssueItem())
             }
 
-            val pageInfo = repository?.issues()?.pageInfo()
+            val pageInfo = repository?.issues()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
                 if (pageInfo?.hasPreviousPage() == true) {
-                    repository.issues().pageInfo().startCursor()
+                    pageInfo.startCursor()
                 } else {
                     null
                 },
                 if (pageInfo?.hasNextPage() == true) {
-                    repository.issues().pageInfo().endCursor()
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -103,13 +104,15 @@ class IssuesDataSource(
             val repository = response.data()?.repository()
 
             repository?.issues()?.nodes()?.forEach { node ->
-                list.add(IssueItem.createFromRaw(node))
+                list.add(node.toNonNullIssueItem())
             }
+
+            val pageInfo = repository?.issues()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
-                if (repository?.issues()?.pageInfo()?.hasNextPage() == true) {
-                    repository.issues().pageInfo().endCursor()
+                if (pageInfo?.hasNextPage() == true) {
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -158,13 +161,15 @@ class IssuesDataSource(
             val repository = response.data()?.repository()
 
             repository?.issues()?.nodes()?.forEach { node ->
-                list.add(IssueItem.createFromRaw(node))
+                list.add(node.toNonNullIssueItem())
             }
+
+            val pageInfo = repository?.issues()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
-                if (repository?.issues()?.pageInfo()?.hasPreviousPage() == true) {
-                    repository.issues().pageInfo().startCursor()
+                if (pageInfo?.hasPreviousPage() == true) {
+                    pageInfo.startCursor()
                 } else {
                     null
                 }

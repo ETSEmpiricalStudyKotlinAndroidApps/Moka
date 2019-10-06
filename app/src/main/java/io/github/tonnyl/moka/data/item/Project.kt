@@ -6,10 +6,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import io.github.tonnyl.moka.type.ProjectState
 import kotlinx.android.parcel.Parcelize
 import java.util.*
+import io.github.tonnyl.moka.fragment.Actor as RawActor
 import io.github.tonnyl.moka.fragment.Project as RawProject
-import io.github.tonnyl.moka.type.ProjectState as RawProjectState
 
 /**
  * Projects manage issues, pull requests and notes within a project owner.
@@ -53,12 +54,6 @@ data class Project(
      */
     @Embedded(prefix = "project_creator")
     var creator: ProjectActor?,
-
-    /**
-     * Identifies the primary key from the database.
-     */
-    @ColumnInfo(name = "databaseId")
-    var databaseId: Int?,
 
     @PrimaryKey
     @ColumnInfo(name = "id")
@@ -106,30 +101,25 @@ data class Project(
     @ColumnInfo(name = "viewer_can_update")
     var viewerCanUpdate: Boolean
 
-) : Parcelable {
+) : Parcelable
 
-    companion object {
-
-        fun createFromRaw(data: RawProject): Project = Project(
-            data.body(),
-            data.bodyHTML(),
-            data.closed(),
-            data.closedAt(),
-            data.createdAt(),
-            ProjectActor.createFromRaw(data.creator()),
-            data.databaseId(),
-            data.id(),
-            data.name(),
-            data.number(),
-            data.resourcePath(),
-            ProjectState.createFromRaw(data.state()),
-            data.updatedAt(),
-            data.url(),
-            data.viewerCanUpdate()
-        )
-
-    }
-
+fun RawProject.toNonNullProject(): Project {
+    return Project(
+        body(),
+        bodyHTML(),
+        closed(),
+        closedAt(),
+        createdAt(),
+        creator()?.fragments()?.actor()?.toNonNullProjectActor(),
+        id(),
+        name(),
+        number(),
+        resourcePath(),
+        state(),
+        updatedAt(),
+        url(),
+        viewerCanUpdate()
+    )
 }
 
 /**
@@ -151,59 +141,13 @@ data class ProjectActor(
     var login: String,
 
     /**
-     * The HTTP path for this actor.
-     */
-    @ColumnInfo(name = "resource_path")
-    var resourcePath: Uri,
-
-    /**
      * The HTTP URL for this actor.
      */
     @ColumnInfo(name = "url")
     var url: Uri
 
-) : Parcelable {
+) : Parcelable
 
-    companion object {
-
-        fun createFromRaw(data: RawProject.Creator?): ProjectActor? = if (data == null) {
-            null
-        } else {
-            ProjectActor(
-                data.avatarUrl(),
-                data.login(),
-                data.resourcePath(),
-                data.url()
-            )
-        }
-
-    }
-
-}
-
-/**
- * State of the project; either 'open' or 'closed'.
- */
-enum class ProjectState {
-
-    /**
-     * The project is closed.
-     */
-    CLOSED,
-
-    /**
-     * The project is open.
-     */
-    OPEN;
-
-    companion object {
-
-        fun createFromRaw(data: RawProjectState): ProjectState = when (data) {
-            RawProjectState.OPEN -> OPEN
-            // including RawProjectState.CLOSED, RawProjectState.`$UNKNOWN`
-            else -> CLOSED
-        }
-
-    }
-
+fun RawActor.toNonNullProjectActor(): ProjectActor {
+    return ProjectActor(avatarUrl(), login(), url())
 }

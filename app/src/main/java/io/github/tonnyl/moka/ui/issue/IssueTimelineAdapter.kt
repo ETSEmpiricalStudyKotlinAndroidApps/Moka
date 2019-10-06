@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.item.IssueCommentEvent
+import io.github.tonnyl.moka.data.item.IssueComment
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
 import io.github.tonnyl.moka.databinding.ItemIssueTimelineCommentBinding
 import io.github.tonnyl.moka.databinding.ItemIssueTimelineEventBinding
@@ -76,7 +76,7 @@ class IssueTimelineAdapter(
         val item = getItem(position - 1) ?: return
         when (viewType) {
             R.layout.item_issue_timeline_comment -> {
-                (holder as CommentViewHolder).bindTo(item as IssueCommentEvent)
+                (holder as CommentViewHolder).bindTo(item as IssueComment)
             }
             R.layout.item_issue_timeline_event -> {
                 (holder as EventViewHolder).bindTo(item)
@@ -89,7 +89,7 @@ class IssueTimelineAdapter(
             R.layout.item_issue_timeline_head
         } else {
             when (getItem(position - 1)) {
-                is IssueCommentEvent -> {
+                is IssueComment -> {
                     R.layout.item_issue_timeline_comment
                 }
                 else -> {
@@ -118,7 +118,7 @@ class IssueTimelineAdapter(
         private val binding: ItemIssueTimelineCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: IssueCommentEvent) {
+        fun bindTo(data: IssueComment) {
             binding.run {
                 comment = data
                 executePendingBindings()

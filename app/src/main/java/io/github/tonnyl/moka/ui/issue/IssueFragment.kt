@@ -35,7 +35,7 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
                         R.string.issue_pr_status_open
                     }
                 ),
-                getString(R.string.issue_pr_by, args.issueItem.login),
+                getString(R.string.issue_pr_by, args.issueItem.actor?.login),
                 DateUtils.getRelativeTimeSpanString(
                     args.issueItem.createdAt.time,
                     System.currentTimeMillis(),

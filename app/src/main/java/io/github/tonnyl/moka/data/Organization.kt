@@ -14,11 +14,6 @@ data class Organization(
     val avatarUrl: Uri,
 
     /**
-     * Identifies the primary key from the database.
-     */
-    val databaseId: Int?,
-
-    /**
      * The organization's public profile description.
      */
     val description: String?,
@@ -124,42 +119,35 @@ data class Organization(
 
     val projectsTotalCount: Int
 
-) : Parcelable {
+) : Parcelable
 
-    companion object {
+fun RawOrganization?.toNullableOrganization(): Organization? {
+    this ?: return null
 
-        fun createFromRaw(data: RawOrganization?): Organization? = if (data == null) {
-            null
-        } else {
-            Organization(
-                data.avatarUrl(),
-                data.databaseId(),
-                data.description(),
-                data.email(),
-                data.id(),
-                data.isVerified,
-                data.location(),
-                data.login(),
-                data.name(),
-                data.newTeamResourcePath(),
-                data.newTeamUrl(),
-                data.pinnedItemsRemaining(),
-                data.projectsResourcePath(),
-                data.projectsUrl(),
-                data.resourcePath(),
-                data.url(),
-                data.viewerCanAdminister(),
-                data.viewerCanChangePinnedItems(),
-                data.viewerCanCreateProjects(),
-                data.viewerCanCreateRepositories(),
-                data.viewerCanCreateTeams(),
-                data.viewerIsAMember(),
-                data.websiteUrl(),
-                data.repositories().totalCount(),
-                data.projects().totalCount()
-            )
-        }
-
-    }
-
+    return Organization(
+        avatarUrl(),
+        description(),
+        email(),
+        id(),
+        isVerified,
+        location(),
+        login(),
+        name(),
+        newTeamResourcePath(),
+        newTeamUrl(),
+        pinnedItemsRemaining(),
+        projectsResourcePath(),
+        projectsUrl(),
+        resourcePath(),
+        url(),
+        viewerCanAdminister(),
+        viewerCanChangePinnedItems(),
+        viewerCanCreateProjects(),
+        viewerCanCreateRepositories(),
+        viewerCanCreateTeams(),
+        viewerIsAMember(),
+        websiteUrl(),
+        repositories().totalCount(),
+        projects().totalCount()
+    )
 }

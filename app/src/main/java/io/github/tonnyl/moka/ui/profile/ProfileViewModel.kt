@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.OrganizationQuery
 import io.github.tonnyl.moka.UserQuery
 import io.github.tonnyl.moka.data.Organization
-import io.github.tonnyl.moka.data.UserGraphQL
+import io.github.tonnyl.moka.data.User
+import io.github.tonnyl.moka.data.toNonNullUser
+import io.github.tonnyl.moka.data.toNullableOrganization
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.util.execute
@@ -21,8 +23,8 @@ class ProfileViewModel(
     private val profileType: ProfileType
 ) : ViewModel() {
 
-    private val _userProfile = MutableLiveData<UserGraphQL?>()
-    val userProfile: LiveData<UserGraphQL?>
+    private val _userProfile = MutableLiveData<User?>()
+    val userProfile: LiveData<User?>
         get() = _userProfile
 
     private val _organizationProfile = MutableLiveData<Organization?>()
@@ -66,7 +68,7 @@ class ProfileViewModel(
                     .execute()
 
                 _loadStatus.postValue(Resource.success(Unit))
-                _userProfile.postValue(UserGraphQL.createFromRaw(response.data()?.user()))
+                _userProfile.postValue(response.data()?.user()?.fragments()?.user()?.toNonNullUser())
             } catch (e: Exception) {
                 Timber.e(e)
 
@@ -93,7 +95,7 @@ class ProfileViewModel(
 
                 _loadStatus.postValue(Resource.success(Unit))
                 _organizationProfile.postValue(
-                    Organization.createFromRaw(response.data()?.organization())
+                    response.data()?.organization().toNullableOrganization()
                 )
             } catch (e: Exception) {
                 Timber.e(e)

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import io.github.tonnyl.moka.data.RepositoryAbstract
+import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
@@ -12,14 +12,14 @@ import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
 class RepositoriesViewModel(
     private val login: String,
     private val repositoryType: RepositoryType
-) : NetworkCacheSourceViewModel<RepositoryAbstract>() {
+) : NetworkCacheSourceViewModel<RepositoryItem>() {
 
-    private val _initialLoadStatus = MutableLiveData<Resource<List<RepositoryAbstract>>>()
-    val initialLoadStatus: LiveData<Resource<List<RepositoryAbstract>>>
+    private val _initialLoadStatus = MutableLiveData<Resource<List<RepositoryItem>>>()
+    val initialLoadStatus: LiveData<Resource<List<RepositoryItem>>>
         get() = _initialLoadStatus
 
-    private val _pagedLoadStatus = MutableLiveData<PagedResource2<List<RepositoryAbstract>>>()
-    val pagedLoadStatus: LiveData<PagedResource2<List<RepositoryAbstract>>>
+    private val _pagedLoadStatus = MutableLiveData<PagedResource2<List<RepositoryItem>>>()
+    val pagedLoadStatus: LiveData<PagedResource2<List<RepositoryItem>>>
         get() = _pagedLoadStatus
 
     private lateinit var sourceFactory: RepositoriesDataSourceFactory
@@ -28,7 +28,7 @@ class RepositoriesViewModel(
         refresh()
     }
 
-    override fun initRemoteSource(): LiveData<PagedList<RepositoryAbstract>> {
+    override fun initRemoteSource(): LiveData<PagedList<RepositoryItem>> {
         sourceFactory = RepositoriesDataSourceFactory(
             login,
             repositoryType,

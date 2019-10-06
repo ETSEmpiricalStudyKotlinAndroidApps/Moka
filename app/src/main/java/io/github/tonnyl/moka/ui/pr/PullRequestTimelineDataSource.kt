@@ -2,8 +2,9 @@ package io.github.tonnyl.moka.ui.pr
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import io.github.tonnyl.moka.PullRequestTimelineQuery
+import io.github.tonnyl.moka.PullRequestTimelineItemsQuery
 import io.github.tonnyl.moka.data.item.*
+import io.github.tonnyl.moka.fragment.*
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
@@ -31,7 +32,7 @@ class PullRequestTimelineDataSource(
         initialLoadStatus.postValue(Resource.loading(null))
 
         try {
-            val pullRequestTimelineQuery = PullRequestTimelineQuery.builder()
+            val pullRequestTimelineQuery = PullRequestTimelineItemsQuery.builder()
                 .owner(owner)
                 .name(name)
                 .number(number)
@@ -53,16 +54,17 @@ class PullRequestTimelineDataSource(
                 }
             }
 
-            val pageInfo = timeline?.pageInfo()
+            val pageInfo = timeline?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
                 if (pageInfo?.hasPreviousPage() == true) {
-                    timeline.pageInfo().startCursor()
+                    pageInfo.startCursor()
                 } else {
                     null
                 },
                 if (pageInfo?.hasNextPage() == true) {
-                    timeline.pageInfo().endCursor()
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -93,7 +95,7 @@ class PullRequestTimelineDataSource(
         )
 
         try {
-            val timelineQuery = PullRequestTimelineQuery.builder()
+            val timelineQuery = PullRequestTimelineItemsQuery.builder()
                 .owner(owner)
                 .name(name)
                 .number(number)
@@ -116,10 +118,12 @@ class PullRequestTimelineDataSource(
                 }
             }
 
+            val pageInfo = timeline?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
-                if (timeline?.pageInfo()?.hasNextPage() == true) {
-                    timeline.pageInfo().endCursor()
+                if (pageInfo?.hasNextPage() == true) {
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -154,7 +158,7 @@ class PullRequestTimelineDataSource(
         )
 
         try {
-            val timelineQuery = PullRequestTimelineQuery.builder()
+            val timelineQuery = PullRequestTimelineItemsQuery.builder()
                 .owner(owner)
                 .name(name)
                 .number(number)
@@ -177,10 +181,12 @@ class PullRequestTimelineDataSource(
                 }
             }
 
+            val pageInfo = timeline?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
-                if (timeline?.pageInfo()?.hasPreviousPage() == true) {
-                    timeline.pageInfo().startCursor()
+                if (pageInfo?.hasPreviousPage() == true) {
+                    pageInfo.startCursor()
                 } else {
                     null
                 }
@@ -204,89 +210,160 @@ class PullRequestTimelineDataSource(
         }
     }
 
-    private fun initTimelineItemWithRawData(node: PullRequestTimelineQuery.Node): PullRequestTimelineItem? {
-        return when {
-            node.fragments().assignedEventFragment() != null -> {
-                PullRequestAssignedEvent.createFromRaw(node.fragments().assignedEventFragment())
+    private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Node): PullRequestTimelineItem? {
+        return when (node.__typename()) {
+            AddedToProjectEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().addedToProjectEventFragment()?.toNonNullAddedToProjectEvent()
             }
-            node.fragments().baseRefForcePushedEventFragment() != null -> {
-                PullRequestBaseRefForcePushedEvent.createFromRaw(node.fragments().baseRefForcePushedEventFragment())
+            AssignedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().assignedEventFragment()?.toNonNullAssignedEvent()
             }
-            node.fragments().closedEventFragment() != null -> {
-                PullRequestClosedEvent.createFromRaw(node.fragments().closedEventFragment())
+            BaseRefChangedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().baseRefChangedEventFragment()?.toNonNullBaseRefChangedEvent()
             }
-//            node.fragments().commitEventFragment() != null -> {
-//                PullRequestCommitEvent.createFromRaw(node.fragments().commitEventFragment())
-//            }
-            node.fragments().crossReferencedEventFragment() != null -> {
-                PullRequestCrossReferencedEvent.createFromRaw(node.fragments().crossReferencedEventFragment())
+            BaseRefForcePushedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .baseRefForcePushedEventFragment()
+                    ?.toNonNullBaseRefForcePushedEvent()
             }
-            node.fragments().demilestonedEventFragment() != null -> {
-                PullRequestDemilestonedEvent.createFromRaw(node.fragments().demilestonedEventFragment())
+            ClosedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().closedEventFragment()?.toNonNullClosedEvent()
             }
-            node.fragments().deployedEventFragment() != null -> {
-                PullRequestDeployedEvent.createFromRaw(node.fragments().deployedEventFragment())
+            // CommentDeletedEventFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments().commentDeletedEventFragment()?.toNonNullCommentDeletedEvent()
+            // }
+            ConvertedNoteToIssueEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .convertedNoteToIssueEventFragment()
+                    ?.toNonNullConvertedNoteToIssueEvent()
             }
-            node.fragments().deploymentEnvironmentChangedEventFragment() != null -> {
-                PullRequestDeploymentEnvironmentChangedEvent.createFromRaw(node.fragments().deploymentEnvironmentChangedEventFragment())
+            CrossReferencedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().crossReferencedEventFragment()?.toNonNullCrossReferencedEvent()
             }
-            node.fragments().headRefDeletedEventFragment() != null -> {
-                PullRequestHeadRefDeletedEvent.createFromRaw(node.fragments().headRefDeletedEventFragment())
+            DemilestonedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().demilestonedEventFragment()?.toNonNullDemilestonedEvent()
             }
-            node.fragments().headRefForcePushedEventFragment() != null -> {
-                PullRequestHeadRefForcePushedEvent.createFromRaw(node.fragments().headRefForcePushedEventFragment())
+            DeployedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().deployedEventFragment()?.toNonNullDeployedEvent()
             }
-            node.fragments().headRefRestoredEventFragment() != null -> {
-                PullRequestHeadRefRestoredEvent.createFromRaw(node.fragments().headRefRestoredEventFragment())
+            DeploymentEnvironmentChangedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .deploymentEnvironmentChangedEventFragment()
+                    ?.toNonNullDeploymentEnvironmentChangedEvent()
             }
-            node.fragments().issueCommentFragment() != null -> {
-                PullRequestIssueComment.createFromRaw(node.fragments().issueCommentFragment())
+            HeadRefDeletedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().headRefDeletedEventFragment()?.toNonNullHeadRefDeletedEvent()
             }
-            node.fragments().labeledEventFragment() != null -> {
-                PullRequestLabeledEvent.createFromRaw(node.fragments().labeledEventFragment())
+            HeadRefForcePushedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .headRefForcePushedEventFragment()
+                    ?.toNonNullHeadRefForcePushedEvent()
             }
-            node.fragments().lockedEventFragment() != null -> {
-                PullRequestLockedEvent.createFromRaw(node.fragments().lockedEventFragment())
+            HeadRefRestoredEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().headRefRestoredEventFragment()?.toNonNullHeadRefRestoredEvent()
             }
-            node.fragments().mergedEventFragment() != null -> {
-                PullRequestMergedEvent.createFromRaw(node.fragments().mergedEventFragment())
+            IssueCommentFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().issueCommentFragment()?.toNonNullIssueComment()
             }
-            node.fragments().milestonedEventFragment() != null -> {
-                PullRequestMilestonedEvent.createFromRaw(node.fragments().milestonedEventFragment())
+            LabeledEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().labeledEventFragment()?.toNonNullLabeledEvent()
             }
-            node.fragments().pullRequestReviewEventFragment() != null -> {
-                PullRequestReview.createFromRaw(node.fragments().pullRequestReviewEventFragment())
+            LockedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().lockedEventFragment()?.toNonNullLockedEvent()
             }
-            node.fragments().pullRequestReviewThreadFragment() != null -> {
-                PullRequestReviewThread.createFromRaw(node.fragments().pullRequestReviewThreadFragment())
+            MarkedAsDuplicateEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().markedAsDuplicateEventFragment()?.toNonNullMarkedAsDuplicateEvent()
             }
-            node.fragments().referencedEventFragment() != null -> {
-                PullRequestReferencedEvent.createFromRaw(node.fragments().referencedEventFragment())
+            // MentionedEventFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments().mentionedEventFragment()?.toNonNullMentionedEvent()
+            // }
+            MergedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().mergedEventFragment()?.toNonNullMergedEvent()
             }
-            node.fragments().renamedTitleEventFragment() != null -> {
-                PullRequestRenamedTitleEvent.createFromRaw(node.fragments().renamedTitleEventFragment())
+            MilestonedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().milestonedEventFragment()?.toNonNullMilestonedEvent()
             }
-            node.fragments().reopenedEventFragment() != null -> {
-                PullRequestReopenedEvent.createFromRaw(node.fragments().reopenedEventFragment())
+            MovedColumnsInProjectEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .movedColumnsInProjectEventFragment()
+                    ?.toNonNullMovedColumnsInProjectEvent()
             }
-            node.fragments().reviewDismissedEventFragment() != null -> {
-                PullRequestReviewDismissedEvent.createFromRaw(node.fragments().reviewDismissedEventFragment())
+            PinnedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().pinnedEventFragment()?.toNonNullPinnedEvent()
             }
-            node.fragments().reviewRequestRemovedEventFragment() != null -> {
-                PullRequestReviewRequestRemovedEvent.createFromRaw(node.fragments().reviewDismissedEventFragment())
+            PullRequestCommitFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().pullRequestCommitFragment()?.toNonNullPullRequestCommit()
             }
-            node.fragments().reviewRequestedEventFragment() != null -> {
-                PullRequestReviewRequestedEvent.createFromRaw(node.fragments().reviewRequestedEventFragment())
+            PullRequestCommitCommentThreadFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .pullRequestCommitCommentThreadFragment()
+                    ?.toNonNullPullRequestCommitCommentThread()
             }
-            node.fragments().unassignedEventFragment() != null -> {
-                PullRequestUnassignedEvent.createFromRaw(node.fragments().unassignedEventFragment())
+            PullRequestReviewFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().pullRequestReviewFragment()?.toNonNullPullRequestReview()
             }
-            node.fragments().unlabeledEventFragment() != null -> {
-                PullRequestUnlabeledEvent.createFromRaw(node.fragments().unlabeledEventFragment())
+            PullRequestReviewThreadFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .pullRequestReviewThreadFragment()
+                    ?.toNonNullPullRequestReviewThread()
             }
-            node.fragments().unlockedEventFragment() != null -> {
-                PullRequestUnlockedEvent.createFromRaw(node.fragments().unlockedEventFragment())
+            // PullRequestRevisionMarkerFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments()
+            //         .pullRequestRevisionMarkerFragment()
+            //         ?.toNonNullPullRequestRevisionMarker()
+            // }
+            ReadyForReviewEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().readyForReviewEventFragment()?.toNonNullReadyForReviewEvent()
             }
+            ReferencedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().referencedEventFragment()?.toNonNullReferencedEvent()
+            }
+            RemovedFromProjectEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .removedFromProjectEventFragment()
+                    ?.toNonNullRemovedFromProjectEvent()
+            }
+            RenamedTitleEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().renamedTitleEventFragment()?.toNonNullRenamedTitleEvent()
+            }
+            ReopenedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().reopenedEventFragment()?.toNonNullReopenedEvent()
+            }
+            ReviewDismissedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().reviewDismissedEventFragment()?.toNonNullReviewDismissedEvent()
+            }
+            ReviewRequestRemovedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .reviewRequestRemovedEventFragment()
+                    ?.toNonNullReviewRequestRemovedEvent()
+            }
+            ReviewRequestedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().reviewRequestedEventFragment()?.toNonNullReviewRequestedEvent()
+            }
+            // SubscribedEventFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments().subscribedEventFragment()?.toNonNullSubscribedEvent()
+            // }
+            TransferredEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().transferredEventFragment()?.toNonNullTransferredEvent()
+            }
+            UnassignedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().unassignedEventFragment()?.toNonNullUnassignedEvent()
+            }
+            UnlabeledEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().unlabeledEventFragment()?.toNonNullUnlabeledEvent()
+            }
+            UnlockedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().unlockedEventFragment()?.toNonNullUnlockedEvent()
+            }
+            UnpinnedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().unpinnedEventFragment()?.toNonNullUnpinnedEvent()
+            }
+            // UnsubscribedEventFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments().unsubscribedEventFragment()?.toNonNullUnsubscribedEvent()
+            // }
+            // UserBlockedEventFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments().userBlockedEventFragment()?.toNonNullUserBlockedEvent()
+            // }
             else -> {
                 // unsupported type, just ignore it.
                 null

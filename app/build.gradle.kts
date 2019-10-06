@@ -83,12 +83,12 @@ apollo {
     val map = LinkedHashMap<String, String>().apply {
         put("GitTimestamp", "java.util.Date")
         put("DateTime", "java.util.Date")
-        put("HTML", "java.lang.String")
+        put("HTML", "String")
         put("URI", "android.net.Uri")
-        put("ID", "java.lang.String")
-        put("GitObjectID", "java.lang.String")
-        put("GitSSHRemote", "java.lang.String")
-        put("X509Certificate", "java.lang.String")
+        put("ID", "String")
+        put("GitObjectID", "String")
+        put("GitSSHRemote", "String")
+        put("X509Certificate", "String")
     }
     customTypeMapping.set(map)
 
@@ -174,7 +174,6 @@ dependencies {
     implementation(Deps.timber)
 
     testImplementation(Deps.Test.junit)
-    testImplementation(Deps.Test.pagingCommon)
     testImplementation(Deps.Test.mockitoCore)
     testImplementation(Deps.Test.hamcrestAll)
     testImplementation(Deps.Test.retrofitMock)

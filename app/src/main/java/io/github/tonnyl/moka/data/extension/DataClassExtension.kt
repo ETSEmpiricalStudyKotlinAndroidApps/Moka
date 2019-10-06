@@ -1,33 +1,40 @@
 package io.github.tonnyl.moka.data.extension
 
-import io.github.tonnyl.moka.data.IssueGraphQL
-import io.github.tonnyl.moka.data.PullRequestGraphQL
-import io.github.tonnyl.moka.data.item.IssueCommentEvent
-import io.github.tonnyl.moka.data.item.PullRequestIssueComment
+import io.github.tonnyl.moka.data.Issue
+import io.github.tonnyl.moka.data.PullRequest
+import io.github.tonnyl.moka.data.item.IssueComment
 import java.util.*
 
-fun IssueGraphQL.transformToIssueCommentEvent(): IssueCommentEvent {
-    return IssueCommentEvent(
-        author?.avatarUrl,
-        author?.login,
+fun Issue.transformToIssueCommentEvent(): IssueComment {
+    return IssueComment(
+        author,
         authorAssociation,
         createdAt,
         body,
         UUID.randomUUID().toString(),
-        editor?.avatarUrl,
-        editor?.login
+        editor,
+        false,
+        viewerCanReact,
+        viewerDidAuthor,
+        viewerCanUpdate,
+        false,
+        viewerCannotUpdateReasons
     )
 }
 
-fun PullRequestGraphQL.transformToPullRequestIssueComment(): PullRequestIssueComment {
-    return PullRequestIssueComment(
-        author?.avatarUrl,
-        author?.login,
+fun PullRequest.transformToPullRequestIssueComment(): IssueComment {
+    return IssueComment(
+        author,
         authorAssociation,
         createdAt,
         body,
         UUID.randomUUID().toString(),
-        editor?.avatarUrl,
-        editor?.login
+        editor,
+        false,
+        viewerCanReact,
+        viewerDidAuthor,
+        viewerCanUpdate,
+        false,
+        viewerCannotUpdateReasons
     )
 }

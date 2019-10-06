@@ -1,61 +1,39 @@
 package io.github.tonnyl.moka.data
 
 import android.os.Parcelable
-import io.github.tonnyl.moka.PullRequestQuery
-import io.github.tonnyl.moka.RepositoryQuery
-import io.github.tonnyl.moka.fragment.RepositoryFragment
 import kotlinx.android.parcel.Parcelize
+import io.github.tonnyl.moka.fragment.Ref as RawRef
 
 /**
  * Represents a Git reference.
  */
 @Parcelize
 data class Ref(
-        val id: String,
-        /**
-         * The ref name.
-         */
-        val name: String,
-        /**
-         * The ref's prefix, such as refs/heads/ or refs/tags/.
-         */
-        val prefix: String,
-        /**
-         * The object the ref points to.
-         */
-        val target: GitObject?
-) : Parcelable {
 
-    companion object {
+    val id: String,
 
-        fun createFromRaw(data: RepositoryQuery.DefaultBranchRef?): Ref? = if (data == null) null else Ref(
-                data.id(),
-                data.name(),
-                data.prefix(),
-                GitObject.createFromRaw(data.target())
-        )
+    /**
+     * The ref name.
+     */
+    val name: String,
 
-        fun createFromRepositoryQueryBaseRef(data: PullRequestQuery.BaseRef?): Ref? = if (data == null) null else Ref(
-                data.id(),
-                data.name(),
-                data.prefix(),
-                GitObject.createFromRaw(data.target())
-        )
+    /**
+     * The ref's prefix, such as refs/heads/ or refs/tags/.
+     */
+    val prefix: String,
 
-        fun createFromRepositoryQueryHeadRef(data: PullRequestQuery.HeadRef?): Ref? = if (data == null) null else Ref(
-                data.id(),
-                data.name(),
-                data.prefix(),
-                GitObject.createFromRaw(data.target())
-        )
+    /**
+     * The object the ref points to.
+     */
+    val target: GitObject
 
-        fun createFromRaw(data: RepositoryFragment.DefaultBranchRef?): Ref? = if (data == null) null else Ref(
-                data.id(),
-                data.name(),
-                data.prefix(),
-                GitObject.createFromRaw(data.target())
-        )
+) : Parcelable
 
-    }
-
+fun RawRef.toNonNullRef(): Ref {
+    return Ref(
+        id(),
+        name(),
+        prefix(),
+        target().fragments().gitObject().toNonNullGitObject()
+    )
 }

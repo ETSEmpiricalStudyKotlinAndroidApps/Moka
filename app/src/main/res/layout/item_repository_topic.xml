@@ -4,11 +4,11 @@
 
     <data>
 
-        <import type="io.github.tonnyl.moka.data.Topic" />
+        <import type="io.github.tonnyl.moka.data.RepositoryTopic" />
 
         <variable
             name="topic"
-            type="Topic" />
+            type="RepositoryTopic" />
 
     </data>
 
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/fragment_content_padding_half"
         android:layout_marginEnd="@dimen/fragment_content_padding_half"
-        android:text="@{topic.name}"
+        android:text="@{topic.topic.name}"
         tools:text="@sample/repository_topic.json/topics/name" />
 
 </layout>

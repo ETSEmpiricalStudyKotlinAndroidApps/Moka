@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.UsersProjectsQuery
 import io.github.tonnyl.moka.data.item.Project
+import io.github.tonnyl.moka.data.item.toNonNullProject
 import io.github.tonnyl.moka.db.dao.ProjectsDao
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
@@ -52,7 +53,7 @@ class ProjectsDataSource(
             val user = response.data()?.user()
 
             user?.projects()?.nodes()?.forEach { node ->
-                list.add(Project.createFromRaw(node.fragments().project()))
+                list.add(node.fragments().project().toNonNullProject())
             }
 
             if (isMyself && list.isNotEmpty()) {
@@ -63,7 +64,7 @@ class ProjectsDataSource(
 
             initialLoadStatusLiveData.postValue(Resource.success(list))
 
-            val pageInfo = user?.projects()?.pageInfo()
+            val pageInfo = user?.projects()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
@@ -113,7 +114,7 @@ class ProjectsDataSource(
             val user = response.data()?.user()
 
             user?.projects()?.nodes()?.forEach { node ->
-                list.add(Project.createFromRaw(node.fragments().project()))
+                list.add(node.fragments().project().toNonNullProject())
             }
 
             if (isMyself && list.isNotEmpty()) {
@@ -126,7 +127,7 @@ class ProjectsDataSource(
                 PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
             )
 
-            val pageInfo = user?.projects()?.pageInfo()
+            val pageInfo = user?.projects()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
@@ -173,7 +174,7 @@ class ProjectsDataSource(
             val user = response.data()?.user()
 
             user?.projects()?.nodes()?.forEach { node ->
-                list.add(Project.createFromRaw(node.fragments().project()))
+                list.add(node.fragments().project().toNonNullProject())
             }
 
             if (isMyself && list.isNotEmpty()) {
@@ -186,7 +187,7 @@ class ProjectsDataSource(
                 PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
             )
 
-            val pageInfo = user?.projects()?.pageInfo()
+            val pageInfo = user?.projects()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,

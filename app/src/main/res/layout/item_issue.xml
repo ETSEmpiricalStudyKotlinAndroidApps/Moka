@@ -65,8 +65,8 @@
             android:layout_width="@dimen/issue_item_author_avatar_size"
             android:layout_height="@dimen/issue_item_author_avatar_size"
             android:layout_marginTop="@dimen/list_item_spacing"
-            android:onClick="@{() -> actions.openProfile(issue.login)}"
-            app:avatarUrl="@{issue.avatarUrl.toString()}"
+            android:onClick="@{() -> actions.openProfile(issue.actor.login)}"
+            app:avatarUrl="@{issue.actor.avatarUrl.toString()}"
             app:layout_constraintStart_toStartOf="@id/issue_pr_item_title"
             app:layout_constraintTop_toBottomOf="@id/issue_pr_item_title"
             tools:src="@tools:sample/avatars" />
@@ -81,7 +81,7 @@
             app:layout_constraintBottom_toBottomOf="@id/issue_pr_item_avatar"
             app:layout_constraintStart_toEndOf="@id/issue_pr_item_avatar"
             app:layout_constraintTop_toTopOf="@id/issue_pr_item_avatar"
-            app:textFuture="@{issue.login}"
+            app:textFuture="@{issue.actor.login}"
             tools:text="@sample/issue.json/issues/author" />
 
         <androidx.appcompat.widget.AppCompatTextView

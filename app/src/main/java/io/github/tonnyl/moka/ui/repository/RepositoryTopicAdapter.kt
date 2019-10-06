@@ -5,18 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import io.github.tonnyl.moka.data.Topic
+import io.github.tonnyl.moka.data.RepositoryTopic
 import io.github.tonnyl.moka.databinding.ItemRepositoryTopicBinding
 
-class RepositoryTopicAdapter : ListAdapter<Topic, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class RepositoryTopicAdapter :
+    ListAdapter<RepositoryTopic, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Topic>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RepositoryTopic>() {
 
-            override fun areItemsTheSame(oldItem: Topic, newItem: Topic): Boolean = oldItem.id == newItem.id
+            override fun areItemsTheSame(
+                oldItem: RepositoryTopic,
+                newItem: RepositoryTopic
+            ): Boolean = oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: Topic, newItem: Topic): Boolean = oldItem == newItem
+            override fun areContentsTheSame(
+                oldItem: RepositoryTopic,
+                newItem: RepositoryTopic
+            ): Boolean = oldItem == newItem
 
         }
 
@@ -35,7 +42,7 @@ class RepositoryTopicAdapter : ListAdapter<Topic, RecyclerView.ViewHolder>(DIFF_
             private val binding: ItemRepositoryTopicBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: Topic) {
+        fun bindTo(data: RepositoryTopic) {
             binding.apply {
                 topic = data
             }

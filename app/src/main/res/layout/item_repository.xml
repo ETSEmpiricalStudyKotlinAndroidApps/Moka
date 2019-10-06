@@ -5,13 +5,13 @@
 
     <data>
 
-        <import type="io.github.tonnyl.moka.data.RepositoryAbstract" />
+        <import type="io.github.tonnyl.moka.data.RepositoryItem" />
 
         <import type="io.github.tonnyl.moka.ui.repositories.ItemRepositoryActions" />
 
         <variable
             name="repository"
-            type="RepositoryAbstract" />
+            type="RepositoryItem" />
 
         <variable
             name="actions"
@@ -107,8 +107,8 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/language_dot"
                 android:drawablePadding="4dp"
-                app:repositoryLanguageDrawableColor="@{repository.primaryLanguageColor}"
-                app:textFuture="@{repository.primaryLanguageName == null ? @string/programming_language_unknown : repository.primaryLanguageName}"
+                app:repositoryLanguageDrawableColor="@{repository.primaryLanguage.color}"
+                app:textFuture="@{repository.primaryLanguage.name == null ? @string/programming_language_unknown : repository.primaryLanguage.name}"
                 tools:text="@sample/language.json/languages/name" />
 
             <androidx.appcompat.widget.AppCompatTextView

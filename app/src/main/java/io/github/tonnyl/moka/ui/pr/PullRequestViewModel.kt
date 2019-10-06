@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.PullRequestQuery
-import io.github.tonnyl.moka.data.PullRequestGraphQL
 import io.github.tonnyl.moka.data.extension.transformToPullRequestIssueComment
 import io.github.tonnyl.moka.data.item.PullRequestTimelineItem
+import io.github.tonnyl.moka.data.toNullablePullRequest
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
@@ -84,9 +84,7 @@ class PullRequestViewModel(
                         .execute()
                 }
 
-                val data = PullRequestGraphQL.createFromRaw(
-                    response.data()?.repository()?.pullRequest()
-                )
+                val data = response.data()?.repository()?.pullRequest().toNullablePullRequest()
 
                 _pullRequest.postValue(Resource.success(data?.transformToPullRequestIssueComment()))
             } catch (e: Exception) {

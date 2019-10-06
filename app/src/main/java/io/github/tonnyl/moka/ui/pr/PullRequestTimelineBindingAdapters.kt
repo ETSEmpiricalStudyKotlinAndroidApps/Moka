@@ -13,9 +13,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
 import androidx.databinding.BindingAdapter
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.LockReason
-import io.github.tonnyl.moka.data.PullRequestReviewState
 import io.github.tonnyl.moka.data.item.*
+import io.github.tonnyl.moka.type.LockReason
+import io.github.tonnyl.moka.type.PullRequestReviewState
 import io.github.tonnyl.moka.util.*
 
 @BindingAdapter("prTimelineItemContentTextFuture")
@@ -23,8 +23,8 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
     data: PullRequestTimelineItem?
 ) {
     val content = when (data) {
-        is PullRequestAssignedEvent -> {
-            if (data.actorLogin == data.assigneeLogin) {
+        is AssignedEvent -> {
+            if (data.actor?.login == data.assigneeLogin) {
                 context.getString(R.string.issue_timeline_assigned_event_self_assigned)
             } else {
                 HtmlCompat.fromHtml(
@@ -36,25 +36,18 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
                 )
             }
         }
-        is PullRequestBaseRefForcePushedEvent -> {
+        is BaseRefForcePushedEvent -> {
             context.getString(
                 R.string.pull_request_force_pushed_branch,
-                data.refName,
-                data.beforeCommitOid.toShortOid(),
-                data.afterCommitOid.toShortOid()
+                data.ref?.name,
+                data.beforeCommit?.oid?.toShortOid(),
+                data.afterCommit?.oid?.toShortOid()
             )
         }
-        is PullRequestClosedEvent -> {
+        is ClosedEvent -> {
             context.getString(R.string.issue_timeline_closed_event_closed)
         }
-        is PullRequestCommitEvent -> {
-            context.getString(
-                R.string.pull_request_review_commit_message_oid,
-                data.message,
-                data.oid.toShortOid()
-            )
-        }
-        is PullRequestCrossReferencedEvent -> {
+        is CrossReferencedEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
                     R.string.issue_timeline_cross_referenced_event_cross_referenced,
@@ -64,7 +57,7 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }
-        is PullRequestDemilestonedEvent -> {
+        is DemilestonedEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
                     R.string.issue_timeline_demilestoned_event_demilestoned, data.milestoneTitle
@@ -72,7 +65,7 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }
-        is PullRequestDeployedEvent -> {
+        is DeployedEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
                     R.string.pull_request_deployed_to_branch, data.deploymentEnvironment
@@ -80,31 +73,31 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }
-        is PullRequestDeploymentEnvironmentChangedEvent -> {
+        is DeploymentEnvironmentChangedEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
-                    R.string.pull_request_changed_deploy_environment, data.environment
+                    R.string.pull_request_changed_deploy_environment, data.deployment.environment
                 ),
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }
-        is PullRequestHeadRefDeletedEvent -> {
+        is HeadRefDeletedEvent -> {
             context.getString(
                 R.string.pull_request_deleted_branch, data.headRefName
             )
         }
-        is PullRequestHeadRefForcePushedEvent -> {
+        is HeadRefForcePushedEvent -> {
             context.getString(
                 R.string.pull_request_force_pushed_branch,
-                data.refName,
+                data.ref?.name,
                 data.beforeCommitOid.toShortOid(),
                 data.afterCommitOid.toShortOid()
             )
         }
-        is PullRequestHeadRefRestoredEvent -> {
-            context.getString(R.string.pull_request_restore_branch, data.headRefName)
+        is HeadRefRestoredEvent -> {
+            context.getString(R.string.pull_request_restore_branch, data.pullRequestHeadRefName)
         }
-        is PullRequestLockedEvent -> {
+        is LockedEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
                     R.string.issue_timeline_locked_event_locked_as,
@@ -121,15 +114,15 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }
-        is PullRequestLabeledEvent -> {
+        is LabeledEvent -> {
             val first = context.getString(R.string.issue_timeline_labeled_event_labeled)
             val second = context.getString(R.string.issue_timeline_label)
-            val all = "$first ${data.labelName} $second"
+            val all = "$first ${data.label.name} $second"
             val spannable = SpannableString(all)
             spannable.setSpan(
-                BackgroundColorSpan(Color.parseColor("#${data.labelColor}")),
+                BackgroundColorSpan(Color.parseColor("#${data.label.color}")),
                 first.length,
-                first.length + data.labelName.length + 2,
+                first.length + data.label.name.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             spannable.setSpan(
@@ -141,13 +134,13 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
                     )
                 ),
                 first.length,
-                first.length + data.labelName.length + 2,
+                first.length + data.label.name.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
             spannable
         }
-        is PullRequestMergedEvent -> {
+        is MergedEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
                     R.string.pull_request_merged_commit,
@@ -157,7 +150,7 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }
-        is PullRequestMilestonedEvent -> {
+        is MilestonedEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
                     R.string.issue_timeline_milestoned_event_milestoned,
@@ -192,7 +185,7 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
 
             reviewStateText
         }
-        is PullRequestReferencedEvent -> {
+        is ReferencedEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
                     R.string.issue_timeline_referenced_event_referenced,
@@ -201,7 +194,7 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
                 ), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }
-        is PullRequestRenamedTitleEvent -> {
+        is RenamedTitleEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
                     R.string.issue_timeline_renamed_title_event_change_title,
@@ -211,15 +204,15 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }
-        is PullRequestReopenedEvent -> {
+        is ReopenedEvent -> {
             context.getString(R.string.issue_timeline_reopened_event_reopened)
         }
-        is PullRequestReviewDismissedEvent -> {
+        is ReviewDismissedEvent -> {
             if (data.dismissalMessage.isNullOrEmpty()) {
                 HtmlCompat.fromHtml(
                     context.getString(
                         R.string.pull_request_dismiss_someones_review_and_left_a_comment,
-                        data.reviewAuthorLogin,
+                        data.review?.author?.login,
                         data.dismissalMessage
                     ),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
@@ -227,58 +220,60 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
             } else {
                 HtmlCompat.fromHtml(
                     context.getString(
-                        R.string.pull_request_dismiss_someones_review, data.reviewAuthorLogin
+                        R.string.pull_request_dismiss_someones_review, data.review?.author?.login
                     ),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
             }
         }
-        is PullRequestReviewRequestRemovedEvent -> {
+        is ReviewRequestRemovedEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
                     R.string.pull_request_removed_someones_review_request,
-                    data.requestedReviewerUserLogin ?: data.requestedReviewerTeamCombinedSlug
+                    data.requestedReviewerUser?.login
+                        ?: data.requestedReviewerTeam?.combinedSlug
+                        ?: data.requestedReviewerMannequin?.login
                 ),
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }
-        is PullRequestReviewRequestedEvent -> {
-            if (data.login == data.requestedReviewerUserLogin
-                || data.login == data.requestedReviewerTeamCombinedSlug
-            ) {
+        is ReviewRequestedEvent -> {
+
+            if (data.actor?.login == data.requestedReviewerLogin) {
                 context.getString(R.string.pull_request_self_requested_a_review)
             } else {
                 HtmlCompat.fromHtml(
                     context.getString(
                         R.string.pull_request_requested_review_from,
-                        data.requestedReviewerUserLogin ?: data.requestedReviewerTeamCombinedSlug
+                        data.requestedReviewerLogin
                     ),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
             }
         }
-        is PullRequestUnassignedEvent -> {
-            if (data.actorLogin == data.assigneeLogin) {
+        is UnassignedEvent -> {
+            val assigneeLogin = data.assignee.assigneeLogin
+            if (data.actor?.login == assigneeLogin) {
                 context.getString(R.string.issue_timeline_unassigned_event_self_unassigned)
             } else {
                 HtmlCompat.fromHtml(
                     context.getString(
                         R.string.issue_timeline_unassigned_event_unassigned_someone,
-                        data.assigneeLogin
+                        assigneeLogin
                     ),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
             }
         }
-        is PullRequestUnlabeledEvent -> {
+        is UnlabeledEvent -> {
             val first = context.getString(R.string.issue_timeline_unlabeled_event_unlabeled)
             val second = context.getString(R.string.issue_timeline_label)
-            val all = "$first ${data.labelName} $second"
+            val all = "$first ${data.label.name} $second"
             val spannable = SpannableString(all)
             spannable.setSpan(
-                BackgroundColorSpan(Color.parseColor("#${data.labelColor}")),
+                BackgroundColorSpan(Color.parseColor("#${data.label.color}")),
                 first.length,
-                first.length + data.labelName.length + 2,
+                first.length + data.label.name.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             spannable.setSpan(
@@ -290,19 +285,16 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
                     )
                 ),
                 first.length,
-                first.length + data.labelName.length + 2,
+                first.length + data.label.name.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
             spannable
         }
-        is PullRequestUnlockedEvent -> {
+        is UnlockedEvent -> {
             context.getString(R.string.issue_timeline_unlocked_event_unlocked)
         }
-        is PullRequestIssueComment -> {
-            data.body
-        }
-        is PullRequestReviewComment -> {
+        is IssueComment -> {
             data.body
         }
         else -> {
@@ -323,86 +315,83 @@ fun AppCompatTextView.prTimelineItemLoginTextFuture(
     data: PullRequestTimelineItem?
 ) {
     val login = when (data) {
-        is PullRequestAssignedEvent -> {
-            data.actorLogin
+        is AssignedEvent -> {
+            data.actor?.login
         }
-        is PullRequestBaseRefForcePushedEvent -> {
-            data.actorLogin
+        is BaseRefForcePushedEvent -> {
+            data.actor?.login
         }
-        is PullRequestClosedEvent -> {
-            data.login
+        is ClosedEvent -> {
+            data.actor?.login
         }
-        is PullRequestCommitEvent -> {
-            data.authorLogin ?: data.committerLogin
+        is PullRequestCommit -> {
+            data.commit.committer?.user?.login
         }
-        is PullRequestCrossReferencedEvent -> {
-            data.login
+        is CrossReferencedEvent -> {
+            data.actor?.login
         }
-        is PullRequestDemilestonedEvent -> {
-            data.login
+        is DemilestonedEvent -> {
+            data.actor?.login
         }
-        is PullRequestDeployedEvent -> {
-            data.login
+        is DeployedEvent -> {
+            data.actor?.login
         }
-        is PullRequestDeploymentEnvironmentChangedEvent -> {
-            data.login
+        is DeploymentEnvironmentChangedEvent -> {
+            data.actor?.login
         }
-        is PullRequestHeadRefDeletedEvent -> {
-            data.login
+        is HeadRefDeletedEvent -> {
+            data.actor?.login
         }
-        is PullRequestHeadRefForcePushedEvent -> {
-            data.login
+        is HeadRefForcePushedEvent -> {
+            data.actor?.login
         }
-        is PullRequestHeadRefRestoredEvent -> {
-            data.login
+        is HeadRefRestoredEvent -> {
+            data.actor?.login
         }
-        is PullRequestLockedEvent -> {
-            data.login
+        is LockedEvent -> {
+            data.actor?.login
         }
-        is PullRequestLabeledEvent -> {
-            data.login
+        is LabeledEvent -> {
+            data.actor?.login
         }
-        is PullRequestMergedEvent -> {
-            data.login
+        is MergedEvent -> {
+            data.actor?.login
         }
-        is PullRequestMilestonedEvent -> {
-            data.login
+        is MilestonedEvent -> {
+            data.actor?.login
         }
         is PullRequestReview -> {
-            data.login
+            data.author?.login
         }
-        is PullRequestReferencedEvent -> {
-            data.login
+        is ReferencedEvent -> {
+            data.actor?.login
         }
-        is PullRequestRenamedTitleEvent -> {
-            data.login
+        is RenamedTitleEvent -> {
+            data.actor?.login
         }
-        is PullRequestReopenedEvent -> {
-            data.login
+        is ReopenedEvent -> {
+            data.actor?.login
         }
-        is PullRequestReviewDismissedEvent -> {
-            data.login
+        is ReviewDismissedEvent -> {
+            data.actor?.login
         }
-        is PullRequestReviewRequestRemovedEvent -> {
-            data.login
+        is ReviewRequestRemovedEvent -> {
+            data.actor?.login
         }
-        is PullRequestReviewRequestedEvent -> {
-            data.login
+        is ReviewRequestedEvent -> {
+            data.actor?.login
         }
-        is PullRequestUnassignedEvent -> {
-            data.actorLogin
+        is UnassignedEvent -> {
+            data.actor?.login
         }
-        is PullRequestUnlabeledEvent -> {
-            data.login
+        is UnlabeledEvent -> {
+            data.actor?.login
         }
-        is PullRequestUnlockedEvent -> {
-            data.login
+        is UnlockedEvent -> {
+            data.actor?.login
         }
-        is PullRequestIssueComment -> {
-            data.authorLogin
-        }
-        is PullRequestReviewComment -> {
-            data.authorLogin
+        is IssueComment -> {
+            data.author?.login
         }
         else -> {
             null
@@ -417,93 +406,90 @@ fun AppCompatImageView.prTimelineItemAvatar(
     data: PullRequestTimelineItem?
 ) {
     val avatarUrl = when (data) {
-        is PullRequestAssignedEvent -> {
-            data.actorAvatarUrl?.toString()
+        is AssignedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestBaseRefForcePushedEvent -> {
-            data.actorAvatarUrl?.toString()
+        is BaseRefForcePushedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestClosedEvent -> {
-            data.avatarUrl?.toString()
+        is ClosedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestCommitEvent -> {
-            data.authorAvatarUrl?.toString() ?: data.committerAvatarUrl?.toString()
+        is PullRequestCommit -> {
+            data.commit.committer?.avatarUrl?.toString()
         }
-        is PullRequestCrossReferencedEvent -> {
-            data.avatarUrl?.toString()
+        is CrossReferencedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestDemilestonedEvent -> {
-            data.avatarUrl?.toString()
+        is DemilestonedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestDeployedEvent -> {
-            data.avatarUrl?.toString()
+        is DeployedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestDeploymentEnvironmentChangedEvent -> {
-            data.avatarUrl?.toString()
+        is DeploymentEnvironmentChangedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestHeadRefDeletedEvent -> {
-            data.avatarUrl?.toString()
+        is HeadRefDeletedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestHeadRefForcePushedEvent -> {
-            data.avatarUrl?.toString()
+        is HeadRefForcePushedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestHeadRefRestoredEvent -> {
-            data.avatarUrl?.toString()
+        is HeadRefRestoredEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestLockedEvent -> {
-            data.avatarUrl?.toString()
+        is LockedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestLabeledEvent -> {
-            data.avatarUrl?.toString()
+        is LabeledEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestMergedEvent -> {
-            data.avatarUrl?.toString()
+        is MergedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestMilestonedEvent -> {
-            data.avatarUrl?.toString()
+        is MilestonedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
         is PullRequestReview -> {
-            data.avatarUrl?.toString()
+            data.author?.avatarUrl?.toString()
         }
-        is PullRequestReferencedEvent -> {
-            data.avatarUrl?.toString()
+        is ReferencedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestRenamedTitleEvent -> {
-            data.avatarUrl?.toString()
+        is RenamedTitleEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestReopenedEvent -> {
-            data.avatarUrl?.toString()
+        is ReopenedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestReviewDismissedEvent -> {
-            data.avatarUrl?.toString()
+        is ReviewDismissedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestReviewRequestRemovedEvent -> {
-            data.avatarUrl?.toString()
+        is ReviewRequestRemovedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestReviewRequestedEvent -> {
-            data.avatarUrl?.toString()
+        is ReviewRequestedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestUnassignedEvent -> {
-            data.actorAvatarUrl?.toString()
+        is UnassignedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestUnlabeledEvent -> {
-            data.avatarUrl?.toString()
+        is UnlabeledEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestUnlockedEvent -> {
-            data.avatarUrl?.toString()
+        is UnlockedEvent -> {
+            data.actor?.avatarUrl?.toString()
         }
-        is PullRequestIssueComment -> {
-            data.authorAvatarUrl?.toString()
-        }
-        is PullRequestReviewComment -> {
-            data.authorAvatarUrl?.toString()
+        is IssueComment -> {
+            data.author?.avatarUrl?.toString()
         }
         else -> {
             null
         }
     }
 
-    avatarUrl(avatarUrl ?: "")
+    avatarUrl(avatarUrl)
 }
 
 @BindingAdapter("prTimelineItemCreatedAt")
@@ -511,85 +497,82 @@ fun AppCompatTextView.prTimelineItemCreatedAt(
     data: PullRequestTimelineItem?
 ) {
     val createdAt = when (data) {
-        is PullRequestAssignedEvent -> {
+        is AssignedEvent -> {
             data.createdAt
         }
-        is PullRequestBaseRefForcePushedEvent -> {
+        is BaseRefForcePushedEvent -> {
             data.createdAt
         }
-        is PullRequestClosedEvent -> {
+        is ClosedEvent -> {
             data.createdAt
         }
-        is PullRequestCommitEvent -> {
+        is PullRequestCommit -> {
             null
         }
-        is PullRequestCrossReferencedEvent -> {
+        is CrossReferencedEvent -> {
             data.createdAt
         }
-        is PullRequestDemilestonedEvent -> {
+        is DemilestonedEvent -> {
             data.createdAt
         }
-        is PullRequestDeployedEvent -> {
+        is DeployedEvent -> {
             data.createdAt
         }
-        is PullRequestDeploymentEnvironmentChangedEvent -> {
+        is DeploymentEnvironmentChangedEvent -> {
             data.createdAt
         }
-        is PullRequestHeadRefDeletedEvent -> {
+        is HeadRefDeletedEvent -> {
             data.createdAt
         }
-        is PullRequestHeadRefForcePushedEvent -> {
+        is HeadRefForcePushedEvent -> {
             data.createdAt
         }
-        is PullRequestHeadRefRestoredEvent -> {
+        is HeadRefRestoredEvent -> {
             data.createdAt
         }
-        is PullRequestLockedEvent -> {
+        is LockedEvent -> {
             data.createdAt
         }
-        is PullRequestLabeledEvent -> {
+        is LabeledEvent -> {
             data.createdAt
         }
-        is PullRequestMergedEvent -> {
+        is MergedEvent -> {
             data.createdAt
         }
-        is PullRequestMilestonedEvent -> {
+        is MilestonedEvent -> {
             data.createdAt
         }
         is PullRequestReview -> {
             data.createdAt
         }
-        is PullRequestReferencedEvent -> {
+        is ReferencedEvent -> {
             data.createdAt
         }
-        is PullRequestRenamedTitleEvent -> {
+        is RenamedTitleEvent -> {
             data.createdAt
         }
-        is PullRequestReopenedEvent -> {
+        is ReopenedEvent -> {
             data.createdAt
         }
-        is PullRequestReviewDismissedEvent -> {
+        is ReviewDismissedEvent -> {
             data.createdAt
         }
-        is PullRequestReviewRequestRemovedEvent -> {
+        is ReviewRequestRemovedEvent -> {
             data.createdAt
         }
-        is PullRequestReviewRequestedEvent -> {
+        is ReviewRequestedEvent -> {
             data.createdAt
         }
-        is PullRequestUnassignedEvent -> {
+        is UnassignedEvent -> {
             data.createdAt
         }
-        is PullRequestUnlabeledEvent -> {
+        is UnlabeledEvent -> {
             data.createdAt
         }
-        is PullRequestUnlockedEvent -> {
+        is UnlockedEvent -> {
             data.createdAt
         }
-        is PullRequestIssueComment -> {
-            data.createdAt
-        }
-        is PullRequestReviewComment -> {
+        is IssueComment -> {
             data.createdAt
         }
         else -> {
@@ -613,63 +596,63 @@ fun AppCompatImageView.prTimelineItemIconAndBgResId(
     val iconResId: Int?
     val bgResId: Int?
     when (data) {
-        is PullRequestAssignedEvent -> {
+        is AssignedEvent -> {
             iconResId = R.drawable.ic_person_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestBaseRefForcePushedEvent -> {
+        is BaseRefForcePushedEvent -> {
             iconResId = R.drawable.ic_person_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestClosedEvent -> {
+        is ClosedEvent -> {
             iconResId = R.drawable.ic_pr_issue_close_24
             bgResId = R.drawable.bg_issue_timeline_event_2
         }
-        is PullRequestCommitEvent -> {
+        is PullRequestCommit -> {
             iconResId = R.drawable.ic_commit_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestCrossReferencedEvent -> {
+        is CrossReferencedEvent -> {
             iconResId = R.drawable.ic_bookmark_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestDemilestonedEvent -> {
+        is DemilestonedEvent -> {
             iconResId = R.drawable.ic_milestone_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestDeployedEvent -> {
+        is DeployedEvent -> {
             iconResId = R.drawable.ic_rocket_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestDeploymentEnvironmentChangedEvent -> {
+        is DeploymentEnvironmentChangedEvent -> {
             iconResId = R.drawable.ic_rocket_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestHeadRefDeletedEvent -> {
+        is HeadRefDeletedEvent -> {
             iconResId = R.drawable.ic_delete_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestHeadRefForcePushedEvent -> {
+        is HeadRefForcePushedEvent -> {
             iconResId = R.drawable.ic_person_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestHeadRefRestoredEvent -> {
+        is HeadRefRestoredEvent -> {
             iconResId = R.drawable.ic_restore_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestLockedEvent -> {
+        is LockedEvent -> {
             iconResId = R.drawable.ic_lock_outline_24dp
             bgResId = R.drawable.bg_issue_timeline_event_2
         }
-        is PullRequestLabeledEvent -> {
+        is LabeledEvent -> {
             iconResId = R.drawable.ic_label_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestMergedEvent -> {
+        is MergedEvent -> {
             iconResId = R.drawable.ic_pr_merged
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestMilestonedEvent -> {
+        is MilestonedEvent -> {
             iconResId = R.drawable.ic_milestone_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
@@ -690,39 +673,39 @@ fun AppCompatImageView.prTimelineItemIconAndBgResId(
                 }
             }
         }
-        is PullRequestReferencedEvent -> {
+        is ReferencedEvent -> {
             iconResId = R.drawable.ic_bookmark_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestRenamedTitleEvent -> {
+        is RenamedTitleEvent -> {
             iconResId = R.drawable.ic_edit_white_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestReopenedEvent -> {
+        is ReopenedEvent -> {
             iconResId = R.drawable.ic_dot_24
             bgResId = R.drawable.bg_issue_timeline_event_3
         }
-        is PullRequestReviewDismissedEvent -> {
+        is ReviewDismissedEvent -> {
             iconResId = R.drawable.ic_close_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestReviewRequestRemovedEvent -> {
+        is ReviewRequestRemovedEvent -> {
             iconResId = R.drawable.ic_close_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestReviewRequestedEvent -> {
+        is ReviewRequestedEvent -> {
             iconResId = R.drawable.ic_eye_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestUnassignedEvent -> {
+        is UnassignedEvent -> {
             iconResId = R.drawable.ic_person_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestUnlabeledEvent -> {
+        is UnlabeledEvent -> {
             iconResId = R.drawable.ic_label_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
-        is PullRequestUnlockedEvent -> {
+        is UnlockedEvent -> {
             iconResId = R.drawable.ic_key_24
             bgResId = R.drawable.bg_issue_timeline_event_2
         }
@@ -741,10 +724,7 @@ fun AppCompatTextView.prTimelineCommentAuthorAssociation(
     data: PullRequestTimelineItem?
 ) {
     val authorAssociation = when (data) {
-        is PullRequestIssueComment -> {
-            data.authorAssociation
-        }
-        is PullRequestReviewComment -> {
+        is IssueComment -> {
             data.authorAssociation
         }
         else -> {

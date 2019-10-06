@@ -2,8 +2,9 @@ package io.github.tonnyl.moka.ui.issue
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import io.github.tonnyl.moka.IssueTimelineQuery
+import io.github.tonnyl.moka.IssueTimelineItemsQuery
 import io.github.tonnyl.moka.data.item.*
+import io.github.tonnyl.moka.fragment.*
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
@@ -31,7 +32,7 @@ class IssueTimelineDataSource(
         initialLoadStatus.postValue(Resource.loading(null))
 
         try {
-            val issueTimelineQuery = IssueTimelineQuery.builder()
+            val issueTimelineQuery = IssueTimelineItemsQuery.builder()
                 .owner(owner)
                 .name(name)
                 .number(number)
@@ -53,16 +54,17 @@ class IssueTimelineDataSource(
                 }
             }
 
-            val pageInfo = timeline?.pageInfo()
+            val pageInfo = timeline?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
                 if (pageInfo?.hasPreviousPage() == true) {
-                    timeline.pageInfo().startCursor()
+                    pageInfo.startCursor()
                 } else {
                     null
                 },
-                if (pageInfo?.hasNextPage() == true) {
-                    timeline.pageInfo().endCursor()
+                if (pageInfo?.hasPreviousPage() == true) {
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -93,7 +95,7 @@ class IssueTimelineDataSource(
         )
 
         try {
-            val timelineQuery = IssueTimelineQuery.builder()
+            val timelineQuery = IssueTimelineItemsQuery.builder()
                 .owner(owner)
                 .name(name)
                 .number(number)
@@ -116,10 +118,12 @@ class IssueTimelineDataSource(
                 }
             }
 
+            val pageInfo = timeline?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
-                if (timeline?.pageInfo()?.hasNextPage() == true) {
-                    timeline.pageInfo().endCursor()
+                if (pageInfo?.hasNextPage() == true) {
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -154,7 +158,7 @@ class IssueTimelineDataSource(
         )
 
         try {
-            val timelineQuery = IssueTimelineQuery.builder()
+            val timelineQuery = IssueTimelineItemsQuery.builder()
                 .owner(owner)
                 .name(name)
                 .number(number)
@@ -177,10 +181,12 @@ class IssueTimelineDataSource(
                 }
             }
 
+            val pageInfo = timeline?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
-                if (timeline?.pageInfo()?.hasPreviousPage() == true) {
-                    timeline.pageInfo().startCursor()
+                if (pageInfo?.hasPreviousPage() == true) {
+                    pageInfo.startCursor()
                 } else {
                     null
                 }
@@ -204,57 +210,97 @@ class IssueTimelineDataSource(
         }
     }
 
-    private fun initTimelineItemWithRawData(node: IssueTimelineQuery.Node): IssueTimelineItem? {
-        return when {
-            node.fragments().assignedEventFragment() != null -> {
-                AssignedEvent.createFromRaw(node.fragments().assignedEventFragment())
+    private fun initTimelineItemWithRawData(node: IssueTimelineItemsQuery.Node): IssueTimelineItem? {
+        return when (node.__typename()) {
+            AddedToProjectEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().addedToProjectEventFragment()?.toNonNullAddedToProjectEvent()
             }
-            node.fragments().closedEventFragment() != null -> {
-                ClosedEvent.createFromRaw(node.fragments().closedEventFragment())
+            AssignedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().assignedEventFragment()?.toNonNullAssignedEvent()
             }
-            node.fragments().commitEventFragment() != null -> {
-                CommitEvent.createFromRaw(node.fragments().commitEventFragment())
+            ClosedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().closedEventFragment()?.toNonNullClosedEvent()
             }
-            node.fragments().crossReferencedEventFragment() != null -> {
-                CrossReferencedEvent.createFromRaw(node.fragments().crossReferencedEventFragment())
+            // CommentDeletedEventFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments().commentDeletedEventFragment()?.toNonNullCommentDeletedEvent()
+            // }
+            ConvertedNoteToIssueEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .convertedNoteToIssueEventFragment()
+                    ?.toNonNullConvertedNoteToIssueEvent()
             }
-            node.fragments().demilestonedEventFragment() != null -> {
-                DemilestonedEvent.createFromRaw(node.fragments().demilestonedEventFragment())
+            CrossReferencedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().crossReferencedEventFragment()?.toNonNullCrossReferencedEvent()
             }
-            node.fragments().issueCommentFragment() != null -> {
-                IssueCommentEvent.createFromRaw(node.fragments().issueCommentFragment())
+            DemilestonedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().demilestonedEventFragment()?.toNonNullDemilestonedEvent()
             }
-            node.fragments().labeledEventFragment() != null -> {
-                LabeledEvent.createFromRaw(node.fragments().labeledEventFragment())
+            IssueCommentFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().issueCommentFragment()?.toNonNullIssueComment()
             }
-            node.fragments().lockedEventFragment() != null -> {
-                LockedEvent.createFromRaw(node.fragments().lockedEventFragment())
+            LabeledEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().labeledEventFragment()?.toNonNullLabeledEvent()
             }
-            node.fragments().milestonedEventFragment() != null -> {
-                MilestonedEvent.createFromRaw(node.fragments().milestonedEventFragment())
+            LockedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().lockedEventFragment()?.toNonNullLockedEvent()
             }
-            node.fragments().referencedEventFragment() != null -> {
-                ReferencedEvent.createFromRaw(node.fragments().referencedEventFragment())
+            MarkedAsDuplicateEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().markedAsDuplicateEventFragment()?.toNonNullMarkedAsDuplicateEvent()
             }
-            node.fragments().renamedTitleEventFragment() != null -> {
-                RenamedTitleEvent.createFromRaw(node.fragments().renamedTitleEventFragment())
+            // MentionedEventFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments().mentionedEventFragment()?.toNonNullMentionedEvent()
+            // }
+            MilestonedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().milestonedEventFragment()?.toNonNullMilestonedEvent()
             }
-            node.fragments().reopenedEventFragment() != null -> {
-                ReopenedEvent.createFromRaw(node.fragments().reopenedEventFragment())
+            MovedColumnsInProjectEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .movedColumnsInProjectEventFragment()
+                    ?.toNonNullMovedColumnsInProjectEvent()
             }
-            node.fragments().transferredEventFragment() != null -> {
-                TransferredEvent.createFromRaw(node.fragments().transferredEventFragment())
+            PinnedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().pinnedEventFragment()?.toNonNullPinnedEvent()
             }
-            node.fragments().unassignedEventFragment() != null -> {
-                UnassignedEvent.createFromRaw(node.fragments().unassignedEventFragment())
+            ReferencedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().referencedEventFragment()?.toNonNullReferencedEvent()
             }
-            node.fragments().unlabeledEventFragment() != null -> {
-                UnlabeledEvent.createFromRaw(node.fragments().unlabeledEventFragment())
+            RemovedFromProjectEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments()
+                    .removedFromProjectEventFragment()
+                    ?.toNonNullRemovedFromProjectEvent()
             }
-            node.fragments().unlockedEventFragment() != null -> {
-                UnlockedEvent.createFromRaw(node.fragments().unlockedEventFragment())
+            RenamedTitleEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().renamedTitleEventFragment()?.toNonNullRenamedTitleEvent()
             }
+            ReopenedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().reopenedEventFragment()?.toNonNullReopenedEvent()
+            }
+            // SubscribedEventFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments().subscribedEventFragment()?.toNonNullSubscribedEvent()
+            // }
+            TransferredEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().transferredEventFragment()?.toNonNullTransferredEvent()
+            }
+            UnassignedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().unassignedEventFragment()?.toNonNullUnassignedEvent()
+            }
+            UnlabeledEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().unlabeledEventFragment()?.toNonNullUnlabeledEvent()
+            }
+            UnlockedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().unlockedEventFragment()?.toNonNullUnlockedEvent()
+            }
+            UnpinnedEventFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().unpinnedEventFragment()?.toNonNullUnpinnedEvent()
+            }
+            // UnsubscribedEventFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments().unsubscribedEventFragment()?.toNonNullUnsubscribedEvent()
+            // }
+            // UserBlockedEventFragment.POSSIBLE_TYPES.first() -> {
+            //     node.fragments().userBlockedEventFragment()?.toNonNullUserBlockedEvent()
+            // }
             else -> {
+                // unsupported type, just ignore it.
                 null
             }
         }

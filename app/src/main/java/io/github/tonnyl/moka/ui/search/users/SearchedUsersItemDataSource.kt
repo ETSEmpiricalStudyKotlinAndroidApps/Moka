@@ -3,9 +3,11 @@ package io.github.tonnyl.moka.ui.search.users
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.SearchUserQuery
-import io.github.tonnyl.moka.data.item.SearchedOrganizationItem
-import io.github.tonnyl.moka.data.item.SearchedUserItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
+import io.github.tonnyl.moka.data.item.toNonNullSearchedOrganizationItem
+import io.github.tonnyl.moka.data.item.toNonNullSearchedUserItem
+import io.github.tonnyl.moka.fragment.OrganizationListItemFragment
+import io.github.tonnyl.moka.fragment.UserListItemFragment
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
@@ -55,7 +57,8 @@ class SearchedUsersItemDataSource(
                 }
             }
 
-            val pageInfo = search?.pageInfo()
+            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
                 if (pageInfo?.hasPreviousPage() == true) {
@@ -116,10 +119,12 @@ class SearchedUsersItemDataSource(
                 }
             }
 
+            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
-                if (search?.pageInfo()?.hasNextPage() == true) {
-                    search.pageInfo().endCursor()
+                if (pageInfo?.hasNextPage() == true) {
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -175,10 +180,12 @@ class SearchedUsersItemDataSource(
                 }
             }
 
+            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
-                if (search?.pageInfo()?.hasPreviousPage() == true) {
-                    search.pageInfo().startCursor()
+                if (pageInfo?.hasPreviousPage() == true) {
+                    pageInfo.startCursor()
                 } else {
                     null
                 }
@@ -203,15 +210,14 @@ class SearchedUsersItemDataSource(
     }
 
     private fun initSearchedUserOrOrgItemWithRawData(node: SearchUserQuery.Node): SearchedUserOrOrgItem? {
-        return when {
-            node.fragments().userFragment() != null -> {
-                SearchedUserItem.createFromRaw(node.fragments().userFragment())
+        return when (node.__typename()) {
+            UserListItemFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().userListItemFragment()?.toNonNullSearchedUserItem()
             }
-            node.fragments().orgFragment() != null -> {
-                SearchedOrganizationItem.createFromRaw(node.fragments().orgFragment())
+            OrganizationListItemFragment.POSSIBLE_TYPES.first() -> {
+                node.fragments().organizationListItemFragment()?.toNonNullSearchedOrganizationItem()
             }
             else -> {
-                // unsupported type, just ignore it.
                 null
             }
         }

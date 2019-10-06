@@ -12,8 +12,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
 import androidx.databinding.BindingAdapter
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.LockReason
 import io.github.tonnyl.moka.data.item.*
+import io.github.tonnyl.moka.type.LockReason
 import io.github.tonnyl.moka.util.avatarUrl
 import io.github.tonnyl.moka.util.backgroundResId
 import io.github.tonnyl.moka.util.imageResId
@@ -39,9 +39,6 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
         is ClosedEvent -> {
             context.getString(R.string.issue_timeline_closed_event_closed)
         }
-        is CommitEvent -> {
-            event.message
-        }
         is CrossReferencedEvent -> {
             HtmlCompat.fromHtml(
                 context.getString(
@@ -62,12 +59,12 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
         is LabeledEvent -> {
             val first = context.getString(R.string.issue_timeline_labeled_event_labeled)
             val second = context.getString(R.string.issue_timeline_label)
-            val all = "$first ${event.labelName} $second"
+            val all = "$first ${event.label.name} $second"
             val spannable = SpannableString(all)
             spannable.setSpan(
-                BackgroundColorSpan(Color.parseColor("#${event.labelColor}")),
+                BackgroundColorSpan(Color.parseColor("#${event.label.color}")),
                 first.length,
-                first.length + event.labelName.length + 2,
+                first.length + event.label.name.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             spannable.setSpan(
@@ -79,7 +76,7 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
                     )
                 ),
                 first.length,
-                first.length + event.labelName.length + 2,
+                first.length + event.label.name.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
@@ -137,13 +134,14 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
             )
         }
         is UnassignedEvent -> {
-            if (event.assigneeLogin == event.assigneeLogin) {
+            val assigneeLogin = event.assignee.assigneeLogin
+            if (event.actor?.login == assigneeLogin) {
                 context.getString(R.string.issue_timeline_unassigned_event_self_unassigned)
             } else {
                 HtmlCompat.fromHtml(
                     context.getString(
                         R.string.issue_timeline_assigned_event_assigned_someone,
-                        event.assigneeLogin
+                        assigneeLogin
                     ),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
@@ -152,12 +150,12 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
         is UnlabeledEvent -> {
             val first = context.getString(R.string.issue_timeline_unlabeled_event_unlabeled)
             val second = context.getString(R.string.issue_timeline_label)
-            val all = "$first ${event.labelName} $second"
+            val all = "$first ${event.label.name} $second"
             val spannable = SpannableString(all)
             spannable.setSpan(
-                BackgroundColorSpan(Color.parseColor("#${event.labelColor}")),
+                BackgroundColorSpan(Color.parseColor("#${event.label.color}")),
                 first.length,
-                first.length + event.labelName.length + 2,
+                first.length + event.label.name.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             spannable.setSpan(
@@ -169,7 +167,7 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
                     )
                 ),
                 first.length,
-                first.length + event.labelName.length + 2,
+                first.length + event.label.name.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
@@ -192,49 +190,46 @@ fun AppCompatImageView.issueTimelineEventAvatar(
 ) {
     val avatarUrl = when (event) {
         is AssignedEvent -> {
-            event.actorAvatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is ClosedEvent -> {
-            event.avatarUrl?.toString()
-        }
-        is CommitEvent -> {
-            event.authorAvatarUrl?.toString() ?: event.committerAvatarUri?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is CrossReferencedEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is DemilestonedEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is LabeledEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is LockedEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is MilestonedEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is ReferencedEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is RenamedTitleEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is ReopenedEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is TransferredEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is UnassignedEvent -> {
-            event.actorAvatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is UnlabeledEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         is UnlockedEvent -> {
-            event.avatarUrl?.toString()
+            event.actor?.avatarUrl?.toString()
         }
         else -> {
             null
@@ -250,49 +245,46 @@ fun AppCompatTextView.issueTimelineEventLogin(
 ) {
     val login = when (event) {
         is AssignedEvent -> {
-            event.actorLogin
+            event.actor?.login
         }
         is ClosedEvent -> {
-            event.login
-        }
-        is CommitEvent -> {
-            event.authorLogin ?: event.committerLogin
+            event.actor?.login
         }
         is CrossReferencedEvent -> {
-            event.login
+            event.actor?.login
         }
         is DemilestonedEvent -> {
-            event.login
+            event.actor?.login
         }
         is LabeledEvent -> {
-            event.login
+            event.actor?.login
         }
         is LockedEvent -> {
-            event.login
+            event.actor?.login
         }
         is MilestonedEvent -> {
-            event.login
+            event.actor?.login
         }
         is ReferencedEvent -> {
-            event.login
+            event.actor?.login
         }
         is RenamedTitleEvent -> {
-            event.login
+            event.actor?.login
         }
         is ReopenedEvent -> {
-            event.login
+            event.actor?.login
         }
         is TransferredEvent -> {
-            event.login
+            event.actor?.login
         }
         is UnassignedEvent -> {
-            event.actorLogin
+            event.actor?.login
         }
         is UnlabeledEvent -> {
-            event.login
+            event.actor?.login
         }
         is UnlockedEvent -> {
-            event.login
+            event.actor?.login
         }
         else -> {
             null
@@ -312,9 +304,6 @@ fun AppCompatTextView.issueTimelineEventCreatedAt(
         }
         is ClosedEvent -> {
             event.createdAt
-        }
-        is CommitEvent -> {
-            null
         }
         is CrossReferencedEvent -> {
             event.createdAt
@@ -380,10 +369,6 @@ fun AppCompatImageView.issueTimelineEventBgAndIconResId(
         is ClosedEvent -> {
             iconResId = R.drawable.ic_pr_issue_close_24
             backgroundResId = R.drawable.bg_issue_timeline_event_2
-        }
-        is CommitEvent -> {
-            iconResId = R.drawable.ic_commit_24
-            backgroundResId = R.drawable.bg_issue_timeline_event_1
         }
         is CrossReferencedEvent -> {
             iconResId = R.drawable.ic_bookmark_24

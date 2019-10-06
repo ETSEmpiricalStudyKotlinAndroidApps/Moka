@@ -1,41 +1,56 @@
 package io.github.tonnyl.moka.data
 
+import android.net.Uri
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import io.github.tonnyl.moka.fragment.RepositoryOwner as RawRepositoryOwner
 
+/**
+ * Represents an owner of a Repository.
+ */
 @Parcelize
-class RepositoryOwner(
-        val login: String,
-        val id: Int,
-        @SerializedName("node_id")
-        val nodeId: String,
-        @SerializedName("avatar_url")
-        val avatarUrl: String,
-        @SerializedName("gravatar_id")
-        val gravatarId: String,
-        val url: String,
-        @SerializedName("html_url")
-        val htmlUrl: String,
-        @SerializedName("followers_url")
-        val followersUrl: String,
-        @SerializedName("following_url")
-        val followingUrl: String,
-        @SerializedName("gists_url")
-        val gistsUrl: String,
-        @SerializedName("starred_url")
-        val starredUrl: String,
-        @SerializedName("subscriptions_url")
-        val subscriptionsUrl: String,
-        @SerializedName("organizations_url")
-        val organizationsUrl: String,
-        @SerializedName("repos_url")
-        val reposUrl: String,
-        @SerializedName("events_url")
-        val eventsUrl: String,
-        @SerializedName("received_events_url")
-        val receivedEventsUrl: String,
-        val type: String,
-        @SerializedName("site_admin")
-        val siteAdmin: Boolean
+data class RepositoryOwner(
+
+    /**
+     * A URL pointing to the owner's public avatar.
+     *
+     * Argument: size
+     * Type: Int
+     * Description: The size of the resulting square image.
+     */
+    val avatarUrl: Uri,
+
+    val id: String,
+
+    /**
+     * The username used to login.
+     */
+    val login: String,
+
+    /**
+     * The HTTP URL for the owner.
+     */
+    val resourcePath: Uri,
+
+    /**
+     * The HTTP URL for the owner.
+     */
+    val url: Uri
+
 ) : Parcelable
+
+fun RawRepositoryOwner?.toRepositoryOwner(): RepositoryOwner? {
+    this ?: return null
+
+    return toNonNullRepositoryOwner()
+}
+
+fun RawRepositoryOwner.toNonNullRepositoryOwner(): RepositoryOwner {
+    return RepositoryOwner(
+        avatarUrl(),
+        id(),
+        login(),
+        resourcePath(),
+        url()
+    )
+}

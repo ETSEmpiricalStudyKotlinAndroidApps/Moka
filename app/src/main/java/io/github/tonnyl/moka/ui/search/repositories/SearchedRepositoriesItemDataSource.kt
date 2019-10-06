@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.SearchRepositoriesQuery
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
+import io.github.tonnyl.moka.data.item.toNonNullSearchedRepositoryItem
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
@@ -53,7 +54,8 @@ class SearchedRepositoriesItemDataSource(
                 }
             }
 
-            val pageInfo = search?.pageInfo()
+            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
                 if (pageInfo?.hasPreviousPage() == true) {
@@ -116,10 +118,12 @@ class SearchedRepositoriesItemDataSource(
 
             retry = null
 
+            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
-                if (search?.pageInfo()?.hasNextPage() == true) {
-                    search.pageInfo().endCursor()
+                if (pageInfo?.hasNextPage() == true) {
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -175,10 +179,12 @@ class SearchedRepositoriesItemDataSource(
 
             retry = null
 
+            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+
             callback.onResult(
                 list,
-                if (search?.pageInfo()?.hasPreviousPage() == true) {
-                    search.pageInfo().startCursor()
+                if (pageInfo?.hasPreviousPage() == true) {
+                    pageInfo.startCursor()
                 } else {
                     null
                 }
@@ -201,7 +207,7 @@ class SearchedRepositoriesItemDataSource(
     }
 
     private fun convertRawDataToSearchedRepositoryItem(node: SearchRepositoriesQuery.Node): SearchedRepositoryItem? {
-        return SearchedRepositoryItem.createFromRaw(node.fragments().repositoryFragment())
+        return node.fragments().repositoryListItemFragment()?.toNonNullSearchedRepositoryItem()
     }
 
 }

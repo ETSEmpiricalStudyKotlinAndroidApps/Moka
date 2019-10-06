@@ -1,149 +1,333 @@
 package io.github.tonnyl.moka.data
 
+import android.net.Uri
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
+import io.github.tonnyl.moka.RepositoryQuery
+import io.github.tonnyl.moka.type.RepositoryLockReason
+import io.github.tonnyl.moka.type.RepositoryPermission
+import io.github.tonnyl.moka.type.SubscriptionState
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+/**
+ * A repository contains the content for a project.
+ */
 @Parcelize
 data class Repository(
-        val id: Int,
-        @SerializedName("node_id")
-        val nodeId: String,
-        val name: String,
-        @SerializedName("full_name")
-        val fullName: String,
-        val owner: RepositoryOwner,
-        val private: Boolean,
-        @SerializedName("html_url")
-        val htmlUrl: String,
-        val description: String,
-        val fork: Boolean,
-        val url: String,
-        @SerializedName("archive_url")
-        val archiveUrl: String,
-        @SerializedName("assignees_url")
-        val assigneesUrl: String,
-        @SerializedName("blobs_url")
-        val blobsUrl: String,
-        @SerializedName("branches_url")
-        val branchesUrl: String,
-        @SerializedName("collaborators_url")
-        val collaboratorsUrl: String,
-        @SerializedName("comments_url")
-        val commentsUrl: String,
-        @SerializedName("commits_url")
-        val commitsUrl: String,
-        @SerializedName("compare_url")
-        val compareUrl: String,
-        @SerializedName("contents_url")
-        val contentsUrl: String,
-        @SerializedName("contributors_url")
-        val contributorsUrl: String,
-        @SerializedName("deployments_url")
-        val deploymentsUrl: String,
-        @SerializedName("downloads_url")
-        val downloadsUrl: String,
-        @SerializedName("events_url")
-        val eventsUrl: String,
-        @SerializedName("forks_url")
-        val forksUrl: String,
-        @SerializedName("git_commits_url")
-        val gitCommitsUrl: String,
-        @SerializedName("git_refs_url")
-        val gitRefsUrl: String,
-        @SerializedName("git_tags_url")
-        val gitTagsUrl: String,
-        @SerializedName("git_url")
-        val gitUrl: String,
-        @SerializedName("issue_comment_url")
-        val issueCommentUrl: String,
-        @SerializedName("issue_events_url")
-        val issueEventsUrl: String,
-        @SerializedName("issues_url")
-        val issuesUrl: String,
-        @SerializedName("keys_url")
-        val keysUrl: String,
-        @SerializedName("labels_url")
-        val labelsUrl: String,
-        @SerializedName("languages_url")
-        val languagesUrl: String,
-        @SerializedName("merges_url")
-        val mergesUrl: String,
-        @SerializedName("milestones_url")
-        val milestonesUrl: String,
-        @SerializedName("notifications_url")
-        val notificationsUrl: String,
-        @SerializedName("pulls_url")
-        val pullsUrl: String,
-        @SerializedName("releases_url")
-        val releasesUrl: String,
-        @SerializedName("ssh_url")
-        val sshUrl: String,
-        @SerializedName("stargazers_url")
-        val stargazersUrl: String,
-        @SerializedName("statuses_url")
-        val statusesUrl: String,
-        @SerializedName("subscribers_url")
-        val subscribersUrl: String,
-        @SerializedName("subscription_url")
-        val subscriptionUrl: String,
-        @SerializedName("tags_url")
-        val tagsUrl: String,
-        @SerializedName("teams_url")
-        val teamsUrl: String,
-        @SerializedName("trees_url")
-        val treesUrl: String,
-        @SerializedName("clone_url")
-        val cloneUrl: String,
-        @SerializedName("mirror_url")
-        val mirrorUrl: String,
-        @SerializedName("hooks_url")
-        val hooksUrl: String,
-        @SerializedName("svn_url")
-        val svnUrl: String,
-        val homepage: String,
-        val language: String?,
-        @SerializedName("forks_count")
-        val forksCount: Int,
-        @SerializedName("stargazers_count")
-        val stargazersCount: Int,
-        @SerializedName("watchers_count")
-        val watchersCount: Int,
-        @SerializedName("size")
-        val size: Int,
-        @SerializedName("default_branch")
-        val defaultBranch: String,
-        @SerializedName("open_issues_count")
-        val openIssuesCount: Int,
-        val topics: List<String>,
-        @SerializedName("has_issues")
-        val hasIssues: Boolean,
-        @SerializedName("has_projects")
-        val hasProjects: Boolean,
-        @SerializedName("has_wiki")
-        val hasWiki: Boolean,
-        @SerializedName("has_pages")
-        val hasPages: Boolean,
-        @SerializedName("has_downloads")
-        val hasDownloads: Boolean,
-        val archived: Boolean,
-        @SerializedName("pushed_at")
-        val pushedAt: Date,
-        @SerializedName("created_at")
-        val createdAt: Date,
-        @SerializedName("updated_at")
-        val updatedAt: Date,
-        val permissions: RepositoryPermissions,
-        @SerializedName("allow_rebase_merge")
-        val allowRebaseMerge: Boolean,
-        @SerializedName("allow_squash_merge")
-        val allowSquashMerge: Boolean,
-        @SerializedName("allow_merge_commit")
-        val allowMergeCommit: Boolean,
-        @SerializedName("subscribers_count")
-        val subscribersCount: Int,
-        @SerializedName("network_count")
-        val networkCount: Int,
-        val license: RepositoryLicense
+
+    /**
+     * Returns the code of conduct for this repository.
+     */
+    val codeOfConduct: CodeOfConduct?,
+
+    /**
+     * Identifies the date and time when the object was created.
+     */
+    val createdAt: Date,
+
+    /**
+     * The Ref associated with the repository's default branch.
+     */
+    val defaultBranchRef: Ref?,
+
+    /**
+     * The description of the repository.
+     */
+    val description: String?,
+
+    /**
+     * The description of the repository rendered to HTML.
+     */
+    val descriptionHTML: String,
+
+    /**
+     * The number of kilobytes this repository occupies on disk.
+     */
+    val diskUsage: Int?,
+
+    /**
+     * Returns how many forks there are of this repository in the whole network.
+     */
+    val forkCount: Int,
+
+    /**
+     * Indicates if the repository has issues feature enabled.
+     */
+    val hasIssuesEnabled: Boolean,
+
+    /**
+     * Indicates if the repository has wiki feature enabled.
+     */
+    val hasWikiEnabled: Boolean,
+
+    /**
+     * The repository's URL.
+     */
+    val homepageUrl: Uri?,
+
+    val id: String,
+
+    /**
+     * Indicates if the repository is unmaintained.
+     */
+    val isArchived: Boolean,
+
+    /**
+     * Identifies if the repository is a fork.
+     */
+    val isFork: Boolean,
+
+    /**
+     * Indicates if the repository has been locked or not.
+     */
+    val isLocked: Boolean,
+
+    /**
+     * Identifies if the repository is a mirror.
+     */
+    val isMirror: Boolean,
+
+    /**
+     * Identifies if the repository is private.
+     */
+    val isPrivate: Boolean,
+
+    /**
+     * Identifies if the repository is a template that can be used to generate new repositories.
+     */
+    val isTemplate: Boolean,
+
+    /**
+     * The license associated with the repository.
+     */
+    val licenseInfo: License?,
+
+    /**
+     * The reason the repository has been locked.
+     */
+    val lockReason: RepositoryLockReason?,
+
+    /**
+     * Whether or not PRs are merged with a merge commit on this repository.
+     */
+    val mergeCommitAllowed: Boolean,
+
+    /**
+     * The repository's original mirror URL.
+     */
+    val mirrorUrl: Uri?,
+
+    /**
+     * The name of the repository.
+     */
+    val name: String,
+
+    /**
+     * The repository's name with owner.
+     */
+    val nameWithOwner: String,
+
+    /**
+     * The image used to represent this repository in Open Graph data.
+     */
+    val openGraphImageUrl: Uri,
+
+    /**
+     * The User owner of the repository.
+     */
+    val owner: RepositoryOwner,
+
+    /**
+     * The primary language of the repository's code.
+     */
+    val primaryLanguage: Language?,
+
+    /**
+     * The HTTP path listing the repository's projects.
+     */
+    val projectsResourcePath: Uri,
+
+    /**
+     * The HTTP URL listing the repository's projects.
+     */
+    val projectsUrl: Uri,
+
+    /**
+     * Identifies when the repository was last pushed to.
+     */
+    val pushedAt: Date?,
+
+    /**
+     * Whether or not rebase-merging is enabled on this repository.
+     */
+    val rebaseMergeAllowed: Boolean,
+
+    /**
+     * The HTTP path for this repository.
+     */
+    val resourcePath: Uri,
+
+    /**
+     * A description of the repository, rendered to HTML without any links in it.
+     *
+     * Argument: limit
+     * Type: Int
+     * Description: How many characters to return. The default value is 200.
+     */
+    val shortDescriptionHTML: String,
+
+    /**
+     * Whether or not squash-merging is enabled on this repository.
+     */
+    val squashMergeAllowed: Boolean,
+
+    /**
+     * The SSH URL to clone this repository.
+     */
+    val sshUrl: String,
+
+    /**
+     * Identifies the date and time when the object was last updated.
+     */
+    val updatedAt: Date,
+
+    /**
+     * The HTTP URL for this repository.
+     */
+    val url: Uri,
+
+    /**
+     * Whether this repository has a custom image to use with Open Graph as opposed to being
+     * represented by the owner's avatar.
+     */
+    val usesCustomOpenGraphImage: Boolean,
+
+    /**
+     * Indicates whether the viewer has admin permissions on this repository.
+     */
+    val viewerCanAdminister: Boolean,
+
+    /**
+     * Can the current viewer create new projects on this owner.
+     */
+    val viewerCanCreateProjects: Boolean,
+
+    /**
+     * Check if the viewer is able to change their subscription status for the repository.
+     */
+    val viewerCanSubscribe: Boolean,
+
+    /**
+     * Indicates whether the viewer can update the topics of this repository.
+     */
+    val viewerCanUpdateTopics: Boolean,
+
+    /**
+     * Returns a boolean indicating whether the viewing user has starred this starrable.
+     */
+    val viewerHasStarred: Boolean,
+
+    /**
+     * The users permission level on the repository. Will return null if authenticated as an GitHub App.
+     */
+    val viewerPermission: RepositoryPermission?,
+
+    /**
+     * Identifies if the viewer is watching, not watching, or ignoring the subscribable entity.
+     */
+    val viewerSubscription: SubscriptionState?,
+
+    val ownerName: String?,
+
+    val isViewer: Boolean,
+
+    val viewerIsFollowing: Boolean,
+
+    val viewerCanFollow: Boolean,
+
+    val forksCount: Int,
+
+    val stargazersCount: Int,
+
+    val issuesCount: Int,
+
+    val pullRequestsCount: Int,
+
+    val watchersCount: Int,
+
+    val projectsCount: Int,
+
+    val releasesCount: Int,
+
+    val branchCount: Int,
+
+    val topics: List<RepositoryTopic>?
+
 ) : Parcelable
+
+fun RepositoryQuery.Data?.toNullableRepository(): Repository? {
+    val user = this?.user() ?: return null
+    val repository = user.repository() ?: return null
+
+    return Repository(
+        repository.codeOfConduct()?.fragments()?.codeOfConduct()?.toNonNullCodeOfConduct(),
+        repository.createdAt(),
+        repository.defaultBranchRef()?.fragments()?.ref()?.toNonNullRef(),
+        repository.description(),
+        repository.descriptionHTML(),
+        repository.diskUsage(),
+        repository.forkCount(),
+        repository.hasIssuesEnabled(),
+        repository.hasWikiEnabled(),
+        repository.homepageUrl(),
+        user.id(),
+        repository.isArchived,
+        repository.isFork,
+        repository.isLocked,
+        repository.isMirror,
+        repository.isPrivate,
+        repository.isTemplate,
+        repository.licenseInfo()?.fragments()?.license()?.toNonNullLicense(),
+        repository.lockReason(),
+        repository.mergeCommitAllowed(),
+        repository.mirrorUrl(),
+        repository.name(),
+        repository.nameWithOwner(),
+        repository.openGraphImageUrl(),
+        repository.owner().fragments().repositoryOwner().toNonNullRepositoryOwner(),
+        repository.primaryLanguage()?.fragments()?.language()?.toNonNullLanguage(),
+        repository.projectsResourcePath(),
+        repository.projectsUrl(),
+        repository.pushedAt(),
+        repository.rebaseMergeAllowed(),
+        repository.resourcePath(),
+        repository.shortDescriptionHTML(),
+        repository.squashMergeAllowed(),
+        repository.sshUrl(),
+        repository.updatedAt(),
+        repository.url(),
+        repository.usesCustomOpenGraphImage(),
+        repository.viewerCanAdminister(),
+        repository.viewerCanCreateProjects(),
+        repository.viewerCanSubscribe(),
+        repository.viewerCanUpdateTopics(),
+        repository.viewerHasStarred(),
+        repository.viewerPermission(),
+        repository.viewerSubscription(),
+        user.name(),
+        user.isViewer,
+        user.viewerIsFollowing(),
+        user.viewerCanFollow(),
+        repository.forks().totalCount(),
+        repository.stargazers().totalCount(),
+        repository.issues().totalCount(),
+        repository.pullRequests().totalCount(),
+        repository.watchers().totalCount(),
+        repository.projects().totalCount(),
+        repository.releases().totalCount(),
+        repository.refs()?.totalCount() ?: 0,
+        repository.repositoryTopics().nodes()?.map {
+            it.fragments().repositoryTopic().toNonNullRepositoryTopic()
+        }
+    )
+}

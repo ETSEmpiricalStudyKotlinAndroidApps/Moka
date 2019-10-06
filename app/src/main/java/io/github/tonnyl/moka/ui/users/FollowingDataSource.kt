@@ -3,7 +3,8 @@ package io.github.tonnyl.moka.ui.users
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.FollowingQuery
-import io.github.tonnyl.moka.data.UserGraphQL
+import io.github.tonnyl.moka.data.UserItem
+import io.github.tonnyl.moka.data.toNonNullUserItem
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
@@ -14,15 +15,15 @@ import timber.log.Timber
 
 class FollowingDataSource(
     private val login: String,
-    private val initialLoadStatus: MutableLiveData<Resource<List<UserGraphQL>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<UserGraphQL>>>
-) : PageKeyedDataSource<String, UserGraphQL>() {
+    private val initialLoadStatus: MutableLiveData<Resource<List<UserItem>>>,
+    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<UserItem>>>
+) : PageKeyedDataSource<String, UserItem>() {
 
     var retry: (() -> Any)? = null
 
     override fun loadInitial(
         params: LoadInitialParams<String>,
-        callback: LoadInitialCallback<String, UserGraphQL>
+        callback: LoadInitialCallback<String, UserItem>
     ) {
         Timber.d("loadInitial")
 
@@ -40,26 +41,24 @@ class FollowingDataSource(
                     .execute()
             }
 
-            val list = mutableListOf<UserGraphQL>()
+            val list = mutableListOf<UserItem>()
             val user = response.data()?.user()
 
             user?.following()?.nodes()?.forEach { node ->
-                node?.let {
-                    list.add(UserGraphQL.createFromFollowingRaw(node) ?: return@let)
-                }
+                list.add(node.fragments().userListItemFragment().toNonNullUserItem())
             }
 
-            val pageInfo = user?.following()?.pageInfo()
+            val pageInfo = user?.following()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
                 if (pageInfo?.hasPreviousPage() == true) {
-                    user.following().pageInfo().startCursor()
+                    pageInfo.startCursor()
                 } else {
                     null
                 },
                 if (pageInfo?.hasNextPage() == true) {
-                    user.following().pageInfo().endCursor()
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -81,7 +80,7 @@ class FollowingDataSource(
 
     override fun loadAfter(
         params: LoadParams<String>,
-        callback: LoadCallback<String, UserGraphQL>
+        callback: LoadCallback<String, UserItem>
     ) {
         Timber.d("loadAfter")
 
@@ -102,19 +101,19 @@ class FollowingDataSource(
                     .execute()
             }
 
-            val list = mutableListOf<UserGraphQL>()
+            val list = mutableListOf<UserItem>()
             val user = response.data()?.user()
 
             user?.following()?.nodes()?.forEach { node ->
-                node?.let {
-                    list.add(UserGraphQL.createFromFollowingRaw(it) ?: return@let)
-                }
+                list.add(node.fragments().userListItemFragment().toNonNullUserItem())
             }
+
+            val pageInfo = user?.following()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
-                if (user?.following()?.pageInfo()?.hasNextPage() == true) {
-                    user.following().pageInfo().endCursor()
+                if (pageInfo?.hasNextPage() == true) {
+                    pageInfo.endCursor()
                 } else {
                     null
                 }
@@ -140,7 +139,7 @@ class FollowingDataSource(
 
     override fun loadBefore(
         params: LoadParams<String>,
-        callback: LoadCallback<String, UserGraphQL>
+        callback: LoadCallback<String, UserItem>
     ) {
         Timber.d("loadBefore")
 
@@ -161,19 +160,19 @@ class FollowingDataSource(
                     .execute()
             }
 
-            val list = mutableListOf<UserGraphQL>()
+            val list = mutableListOf<UserItem>()
             val user = response.data()?.user()
 
             user?.following()?.nodes()?.forEach { node ->
-                node?.let {
-                    list.add(UserGraphQL.createFromFollowingRaw(it) ?: return@let)
-                }
+                list.add(node.fragments().userListItemFragment().toNonNullUserItem())
             }
+
+            val pageInfo = user?.following()?.pageInfo()?.fragments()?.pageInfo()
 
             callback.onResult(
                 list,
-                if (user?.following()?.pageInfo()?.hasPreviousPage() == true) {
-                    user.following().pageInfo().startCursor()
+                if (pageInfo?.hasPreviousPage() == true) {
+                    pageInfo.startCursor()
                 } else {
                     null
                 }

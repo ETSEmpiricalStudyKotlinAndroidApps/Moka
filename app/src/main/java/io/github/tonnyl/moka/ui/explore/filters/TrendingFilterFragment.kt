@@ -102,7 +102,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), FilterActions {
         val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         bottomSheetDialog.setOnShowListener { dialogInterface ->
             val d = dialogInterface as BottomSheetDialog
-            d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet).run {
+            d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.run {
                 BottomSheetBehavior.from(this).apply {
                     state = BottomSheetBehavior.STATE_EXPANDED
                     skipCollapsed = true

@@ -43,7 +43,7 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
                         else -> R.string.issue_pr_status_open
                     }
                 ),
-                getString(R.string.issue_pr_by, args.pullRequestItem.login),
+                getString(R.string.issue_pr_by, args.pullRequestItem.actor?.login),
                 DateUtils.getRelativeTimeSpanString(
                     args.pullRequestItem.createdAt.time,
                     System.currentTimeMillis(),

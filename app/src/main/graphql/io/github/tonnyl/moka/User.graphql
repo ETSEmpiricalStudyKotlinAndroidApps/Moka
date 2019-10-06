@@ -1,214 +1,46 @@
 query User($login: String!) {
-  user(login: $login) {
-   avatarUrl
-     bio
-     bioHTML
-     company
-     companyHTML
-     createdAt
-     databaseId
-     email
-     id
-     isBountyHunter
-     isCampusExpert
-     isDeveloperProgramMember
-     isHireable
-     isEmployee
-     isSiteAdmin
-     isViewer
-     location
-     login
-     name
-     resourcePath
-     updatedAt
-     url
-     viewerCanFollow
-     viewerIsFollowing
-     websiteUrl
-     repositories {
-       totalCount
-     }
-     followers {
-       totalCount
-     }
-      following {
-       totalCount
-     }
-     starredRepositories {
-       totalCount
-     }
-     organizations(first: 20) {
-        nodes {
-            avatarUrl
-        }
-     }
-     projects {
-       totalCount
-     }
-  }
+    user(login: $login) {
+        ... User
+    }
 }
 
 # The currently authenticated user.
-query viewer {
-  viewer {
-    avatarUrl
-    bio
-    bioHTML
-    company
-    companyHTML
-    createdAt
-    databaseId
-    email
-    id
-    isBountyHunter
-    isCampusExpert
-    isDeveloperProgramMember
-    isHireable
-    isEmployee
-    isSiteAdmin
-    isViewer
-    location
-    login
-    name
-    resourcePath
-    updatedAt
-    url
-    viewerCanFollow
-    viewerIsFollowing
-    websiteUrl
-    repositories {
-      totalCount
+query Viewer {
+    viewer {
+        ... User
     }
-    followers {
-      totalCount
-    }
-    following {
-      totalCount
-    }
-    starredRepositories {
-      totalCount
-    }
-    organizations(first: 20) {
-      nodes {
-        avatarUrl
-      }
-    }
-    projects {
-      totalCount
-    }
-  }
 }
 
 # A list of users the given user is following.
-query following($login:String!, $perPage: Int!, $before: String, $after: String) {
-  user(login: $login){
-    following(first: $perPage, before: $before, after: $after) {
-      nodes {
-        avatarUrl
-        bio
-        bioHTML
-        company
-        companyHTML
-        createdAt
-        databaseId
-        email
-        id
-        isBountyHunter
-        isCampusExpert
-        isDeveloperProgramMember
-        isHireable
-        isEmployee
-        isSiteAdmin
-        isViewer
-        location
-        login
-        name
-        resourcePath
-        updatedAt
-        url
-        viewerCanFollow
-        viewerIsFollowing
-        websiteUrl
-        repositories {
-          totalCount
+query Following($login:String!, $perPage: Int!, $before: String, $after: String) {
+    user(login: $login){
+        following(first: $perPage, before: $before, after: $after) {
+            nodes {
+                ... UserListItemFragment
+            }
+            # Information to aid in pagination.
+            pageInfo {
+                ... PageInfo
+            }
+            # Identifies the total count of items in the connection.
+            totalCount
         }
-        followers {
-          totalCount
-        }
-        following {
-          totalCount
-        }
-        starredRepositories {
-          totalCount
-        }
-        projects {
-          totalCount
-        }
-      }
-      pageInfo {
-        endCursor
-        startCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      totalCount
     }
-  }
 }
 
 # A list of users the given user is followed by.
-query followers($login:String!, $perPage: Int!, $before: String, $after: String) {
-  user(login: $login){
-    followers(first: $perPage, before: $before, after: $after) {
-      nodes {
-        avatarUrl
-        bio
-        bioHTML
-        company
-        companyHTML
-        createdAt
-        databaseId
-        email
-        id
-        isBountyHunter
-        isCampusExpert
-        isDeveloperProgramMember
-        isHireable
-        isEmployee
-        isSiteAdmin
-        isViewer
-        location
-        login
-        name
-        resourcePath
-        updatedAt
-        url
-        viewerCanFollow
-        viewerIsFollowing
-        websiteUrl
-        repositories {
-          totalCount
+query Followers($login:String!, $perPage: Int!, $before: String, $after: String) {
+    user(login: $login){
+        followers(first: $perPage, before: $before, after: $after) {
+            nodes {
+                ... UserListItemFragment
+            }
+            # Information to aid in pagination.
+            pageInfo {
+                ... PageInfo
+            }
+            # Identifies the total count of items in the connection.
+            totalCount
         }
-        followers {
-          totalCount
-        }
-        following {
-          totalCount
-        }
-        starredRepositories {
-          totalCount
-        }
-        projects {
-          totalCount
-        }
-      }
-      pageInfo {
-        endCursor
-        startCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      totalCount
     }
-  }
 }

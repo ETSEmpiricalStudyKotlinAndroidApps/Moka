@@ -14,8 +14,8 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.CommentAuthorAssociation
 import io.github.tonnyl.moka.network.GlideLoader
+import io.github.tonnyl.moka.type.CommentAuthorAssociation
 
 // ===== View start =====
 @BindingAdapter("invisibleUnless")

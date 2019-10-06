@@ -7,7 +7,8 @@ import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.CurrentLevelTreeViewQuery
 import io.github.tonnyl.moka.FileContentQuery
 import io.github.tonnyl.moka.RepositoryQuery
-import io.github.tonnyl.moka.data.RepositoryGraphQL
+import io.github.tonnyl.moka.data.Repository
+import io.github.tonnyl.moka.data.toNullableRepository
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
@@ -30,8 +31,8 @@ class RepositoryViewModel(
     private val repositoryName: String
 ) : ViewModel() {
 
-    private val _repositoryResult = MutableLiveData<Resource<RepositoryGraphQL>>()
-    val repositoryResult: LiveData<Resource<RepositoryGraphQL>>
+    private val _repositoryResult = MutableLiveData<Resource<Repository>>()
+    val repositoryResult: LiveData<Resource<Repository>>
         get() = _repositoryResult
 
     private val _readmeFile = MutableLiveData<Resource<String>>()
@@ -63,7 +64,7 @@ class RepositoryViewModel(
                 }
 
                 _repositoryResult.postValue(
-                    Resource.success(RepositoryGraphQL.createFromRaw(response.data()))
+                    Resource.success(response.data().toNullableRepository())
                 )
             } catch (e: Exception) {
                 Timber.e(e)
@@ -144,7 +145,7 @@ class RepositoryViewModel(
                     ?.repository()
                     ?.`object`()
                     ?.fragments()
-                    ?.treeAbstract()
+                    ?.tree()
                     ?.entries()
                     ?.filter {
                         it.name().toLowerCase().contains("readme")

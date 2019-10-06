@@ -1,307 +1,240 @@
-# An abstract info of repository. Suggested using for a repository card.
-fragment abstractRepository on Repository {
-  createdAt
-  databaseId
-  description
-  descriptionHTML
-  homepageUrl
-  id
-  name
-  nameWithOwner
-  pushedAt
-  resourcePath
-  shortDescriptionHTML
-  updatedAt
-  url
-  viewerHasStarred
-  issues {
-    totalCount
-  }
-  pullRequests {
-    totalCount
-  }
-  watchers {
-    totalCount
-  }
-  forks {
-    totalCount
-  }
-  stargazers {
-    totalCount
-  }
-  primaryLanguage {
-    color
-    name
-  }
-  owner {
-    avatarUrl
-    id
-    login
-    resourcePath
-    url
-  }
-}
-
 # Repositories that the user has starred.
-query starredRepositories(
-  $login: String!,
-  $perPage: Int!
-  $after: String,
-  $before: String
-) {
-  user(login: $login) {
-    avatarUrl
-    id
-    starredRepositories(
-      first: $perPage,
-      after: $after,
-      before: $before
-    ) {
-      nodes {
-        ...abstractRepository
-      }
-      pageInfo {
-        endCursor
-        startCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      totalCount
+query StarredRepositories($login: String!,$perPage: Int!$after: String,$before: String) {
+    user(login: $login) {
+        # A URL pointing to the user's public avatar.
+        avatarUrl
+        id
+        # Repositories the user has starred.
+        starredRepositories(first: $perPage,after: $after,before: $before) {
+            # A list of nodes.
+            nodes {
+                ... RepositoryListItemFragment
+            }
+            # Information to aid in pagination.
+            pageInfo {
+                ... PageInfo
+            }
+            # Identifies the total count of items in the connection.
+            totalCount
+        }
     }
-  }
 }
 
 
 # A list of repositories that the user owns.
-query ownedRepositories(
-  $login: String!,
-  $perPage: Int!
-  $after: String,
-  $before: String
-) {
-  user(login: $login) {
-    avatarUrl
-    id
-    repositories(
-      first: $perPage,
-      after: $after,
-      before: $before
-    ) {
-      nodes {
-        ...abstractRepository
-      }
-      pageInfo {
-        endCursor
-        startCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      totalCount
+query OwnedRepositories($login: String!,$perPage: Int!$after: String,$before: String) {
+    user(login: $login) {
+        # A URL pointing to the user's public avatar.
+        avatarUrl
+        id
+        # A list of repositories that the user owns.
+        repositories(first: $perPage,after: $after,before: $before) {
+            # A list of nodes.
+            nodes {
+                ... RepositoryListItemFragment
+            }
+            # Information to aid in pagination.
+            pageInfo {
+                ... PageInfo
+            }
+            # Identifies the total count of items in the connection.
+            totalCount
+        }
     }
-  }
 }
 
 # A repository contains the content for a project.
-query repository($login: String!, $repoName:String!) {
-  user(login: $login){
-    id
-    avatarUrl
-    name
-    login
-    viewerIsFollowing
-    viewerCanFollow
-    repository(name: $repoName) {
-      codeOfConduct {
-        body
-        key
-        name
-        url
-      }
-      createdAt
-      databaseId
-      defaultBranchRef {
+query Repository($login: String!, $repoName:String!) {
+    user(login: $login){
         id
-        name
-        prefix
-        target {
-          abbreviatedOid
-          commitResourcePath
-          commitUrl
-          id
-          oid
-        }
-      }
-      description
-      descriptionHTML
-      diskUsage
-      forkCount
-      hasIssuesEnabled
-      hasWikiEnabled
-      homepageUrl
-      id
-      isArchived
-      isFork
-      isLocked
-      isMirror
-      isPrivate
-      licenseInfo {
-        body
-        conditions {
-          description
-          key
-          label
-        }
-        description
-        featured
-        hidden
-        id
-        implementation
-        key
-        limitations {
-          description
-          key
-          label
-        }
-        name
-        nickname
-        permissions {
-          description
-          key
-          label
-        }
-        pseudoLicense
-        spdxId
-        url
-      }
-      lockReason
-      mergeCommitAllowed
-      mirrorUrl
-      name
-      nameWithOwner
-      owner {
-        id
+        # A URL pointing to the user's public avatar.
         avatarUrl
+        # The user's public profile name.
+        name
+        # The username used to login.
         login
-        resourcePath
-        url
-      }
-      parent {
-        url
-        name
-        nameWithOwner
-      }
-      primaryLanguage {
-        color
-        id
-        name
-      }
-      projectsResourcePath
-      projectsUrl
-      pushedAt
-      rebaseMergeAllowed
-      resourcePath
-      shortDescriptionHTML
-      squashMergeAllowed
-      sshUrl
-      updatedAt
-      url
-      viewerCanAdminister
-      viewerCanCreateProjects
-      viewerCanSubscribe
-      viewerCanUpdateTopics
-      viewerHasStarred
-      viewerPermission
-      viewerSubscription
-      forks {
-        totalCount
-      }
-      stargazers {
-        totalCount
-      }
-      issues {
-        totalCount
-      }
-      pullRequests {
-        totalCount
-      }
-      watchers {
-        totalCount
-      }
-      projects {
-        totalCount
-      }
-      releases {
-        totalCount
-      }
-      refs(first: 20, refPrefix: "refs/heads/") {
-        totalCount
-      }
-      repositoryTopics(first: 20) {
-        nodes {
-          topic {
-            id
-            name
-          }
-        }
-        totalCount
-      }
-    }
-  }
-}
-
-query branches($owner: String!, $reposName: String!) {
-  repository(owner: $owner, name: $reposName) {
-    refs(refPrefix: "refs/heads/", first: 100) {
-      nodes {
-        id
-        prefix
-        name
-        target {
-          ... on Commit {
-            author {
-              name
+        # Whether or not this user is followed by the viewer.
+        viewerIsFollowing
+        # Whether or not the viewer is able to follow the user.
+        viewerCanFollow
+        # Whether or not this user is the viewing user.
+        isViewer
+        repository(name: $repoName) {
+            # Returns the code of conduct for this repository
+            codeOfConduct {
+                ... CodeOfConduct
             }
-            message
-          }
+            # Identifies the date and time when the object was created.
+            createdAt
+            # The Ref associated with the repository's default branch.
+            defaultBranchRef {
+                ... Ref
+            }
+            # The description of the repository.
+            description
+            # The description of the repository rendered to HTML.
+            descriptionHTML
+            # The number of kilobytes this repository occupies on disk.
+            diskUsage
+            # Returns how many forks there are of this repository in the whole network.
+            forkCount
+            # Indicates if the repository has issues feature enabled.
+            hasIssuesEnabled
+            # Indicates if the repository has wiki feature enabled.
+            hasWikiEnabled
+            # The repository's URL.
+            homepageUrl
+            id
+            # Indicates if the repository is unmaintained.
+            isArchived
+            # Returns whether or not this repository disabled.
+            isDisabled
+            # Identifies if the repository is a fork.
+            isFork
+            # Indicates if the repository has been locked or not.
+            isLocked
+            # Identifies if the repository is a mirror.
+            isMirror
+            # Identifies if the repository is private.
+            isPrivate
+            # Identifies if the repository is a template that can be used to generate new repositories.
+            isTemplate
+            # The license associated with the repository
+            licenseInfo {
+                ... License
+            }
+            # The reason the repository has been locked.
+            lockReason
+            # Whether or not PRs are merged with a merge commit on this repository.
+            mergeCommitAllowed
+            # The repository's original mirror URL.
+            mirrorUrl
+            # The name of the repository.
+            name
+            # The repository's name with owner.
+            nameWithOwner
+            # The image used to represent this repository in Open Graph data.
+            openGraphImageUrl
+            # The User owner of the repository.
+            owner {
+                ... RepositoryOwner
+            }
+            # The repository parent, if this is a fork.
+            parent {
+                ... ParentOfForkedRepository
+            }
+            # The primary language of the repository's code.
+            primaryLanguage {
+                ... Language
+            }
+            # The HTTP path listing the repository's projects
+            projectsResourcePath
+            # The HTTP URL listing the repository's projects
+            projectsUrl
+            # Identifies when the repository was last pushed to.
+            pushedAt
+            # Whether or not rebase-merging is enabled on this repository.
+            rebaseMergeAllowed
+            # The HTTP path for this repository
+            resourcePath
+            # A description of the repository, rendered to HTML without any links in it.
+            shortDescriptionHTML
+            # Whether or not squash-merging is enabled on this repository.
+            squashMergeAllowed
+            # The SSH URL to clone this repository
+            sshUrl
+            # The repository from which this repository was generated, if any.
+            templateRepository {
+                ... ParentOfForkedRepository
+            }
+            # Identifies the date and time when the object was last updated.
+            updatedAt
+            # The HTTP URL for this repository
+            url
+            # Whether this repository has a custom image to use with Open Graph as opposed
+            # to being represented by the owner's avatar.
+            usesCustomOpenGraphImage
+            # Indicates whether the viewer has admin permissions on this repository.
+            viewerCanAdminister
+            # Can the current viewer create new projects on this owner.
+            viewerCanCreateProjects
+            # Check if the viewer is able to change their subscription status for the repository.
+            viewerCanSubscribe
+            # Indicates whether the viewer can update the topics of this repository.
+            viewerCanUpdateTopics
+            # Returns a boolean indicating whether the viewing user has starred this starrable.
+            viewerHasStarred
+            # The users permission level on the repository. Will return null if authenticated as an GitHub App.
+            viewerPermission
+            # Identifies if the viewer is watching, not watching, or ignoring the subscribable entity.
+            viewerSubscription
+            forks {
+                totalCount
+            }
+            stargazers {
+                totalCount
+            }
+            issues {
+                totalCount
+            }
+            pullRequests {
+                totalCount
+            }
+            watchers {
+                totalCount
+            }
+            projects {
+                totalCount
+            }
+            releases {
+                totalCount
+            }
+            refs(first: 20, refPrefix: "refs/heads/") {
+                totalCount
+            }
+            repositoryTopics(first: 20) {
+                nodes {
+                    ... RepositoryTopic
+                }
+                totalCount
+            }
         }
-      }
     }
-  }
 }
 
-fragment BlobAbstract on Blob {
-  byteSize
-  isBinary
-  id
+fragment Blob on Blob {
+    byteSize
+    isBinary
+    id
 }
 
-fragment TreeAbstract on Tree {
-  id
-  entries {
-    name
-    mode
-    type
-  }
-}
-
-query currentLevelTreeView($login: String!, $repoName: String!, $expression: String!) {
-  repository(owner: $login, name: $repoName) {
-    object(expression: $expression) {
-      ... BlobAbstract
-      ... TreeAbstract
+fragment Tree on Tree {
+    id
+    entries {
+        name
+        mode
+        type
     }
-  }
+}
+
+query CurrentLevelTreeView($login: String!, $repoName: String!, $expression: String!) {
+    repository(owner: $login, name: $repoName) {
+        object(expression: $expression) {
+            ... Blob
+            ... Tree
+        }
+    }
 }
 
 fragment FileTextAbstract on Blob {
-  text
+    text
 }
 
-query fileContent($login: String!, $repoName: String!, $expression: String!) {
-  repository(owner: $login, name: $repoName) {
-    object(expression: $expression) {
-      id
-      ... FileTextAbstract
+query FileContent($login: String!, $repoName: String!, $expression: String!) {
+    repository(owner: $login, name: $repoName) {
+        object(expression: $expression) {
+            id
+            ... FileTextAbstract
+        }
     }
-  }
 }

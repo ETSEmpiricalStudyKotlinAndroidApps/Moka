@@ -1704,6 +1704,11 @@
           },
           {
             "kind": "OBJECT",
+            "name": "OrgCreateAuditEntry",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "OrgDisableOauthAppRestrictionsAuditEntry",
             "ofType": null
           },
@@ -5245,6 +5250,150 @@
             "deprecationReason": null
           },
           {
+            "name": "sponsorshipsAsMaintainer",
+            "description": "This object's sponsorships as the maintainer.",
+            "args": [
+              {
+                "name": "after",
+                "description": "Returns the elements in the list that come after the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "before",
+                "description": "Returns the elements in the list that come before the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "first",
+                "description": "Returns the first _n_ elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "last",
+                "description": "Returns the last _n_ elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "includePrivate",
+                "description": "Whether or not to include private sponsorships in the result set",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": "false"
+              },
+              {
+                "name": "orderBy",
+                "description": "Ordering options for sponsorships returned from this connection. If left\nblank, the sponsorships will be ordered based on relevancy to the viewer.",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "SponsorshipOrder",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SponsorshipConnection",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sponsorshipsAsSponsor",
+            "description": "This object's sponsorships as the sponsor.",
+            "args": [
+              {
+                "name": "after",
+                "description": "Returns the elements in the list that come after the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "before",
+                "description": "Returns the elements in the list that come before the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "first",
+                "description": "Returns the first _n_ elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "last",
+                "description": "Returns the last _n_ elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "orderBy",
+                "description": "Ordering options for sponsorships returned from this connection. If left\nblank, the sponsorships will be ordered based on relevancy to the viewer.",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "SponsorshipOrder",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SponsorshipConnection",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "team",
             "description": "Find an organization's team by its slug.",
             "args": [
@@ -5624,6 +5773,11 @@
           {
             "kind": "INTERFACE",
             "name": "ProfileOwner",
+            "ofType": null
+          },
+          {
+            "kind": "INTERFACE",
+            "name": "Sponsorable",
             "ofType": null
           }
         ],
@@ -10862,6 +11016,11 @@
           {
             "kind": "OBJECT",
             "name": "User",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "Repository",
             "ofType": null
           }
         ]
@@ -18263,6 +18422,16 @@
             "description": "A list of users that can be assigned to issues in this repository.",
             "args": [
               {
+                "name": "query",
+                "description": "Filters users with query on user name and login",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "after",
                 "description": "Returns the elements in the list that come after the specified cursor.",
                 "type": {
@@ -18394,6 +18563,16 @@
                 "type": {
                   "kind": "ENUM",
                   "name": "CollaboratorAffiliation",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "query",
+                "description": "Filters users with query on user name and login",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -20255,6 +20434,83 @@
             "deprecationReason": null
           },
           {
+            "name": "registryPackagesForQuery",
+            "description": "A list of registry packages for a particular search query.",
+            "args": [
+              {
+                "name": "after",
+                "description": "Returns the elements in the list that come after the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "before",
+                "description": "Returns the elements in the list that come before the specified cursor.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "first",
+                "description": "Returns the first _n_ elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "last",
+                "description": "Returns the last _n_ elements from the list.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "query",
+                "description": "Find registry package by search query.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "packageType",
+                "description": "Filter registry package by type.",
+                "type": {
+                  "kind": "ENUM",
+                  "name": "RegistryPackageType",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "RegistryPackageConnection",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "release",
             "description": "Lookup a single release given various criteria.",
             "args": [
@@ -20784,6 +21040,11 @@
           {
             "kind": "INTERFACE",
             "name": "RegistryPackageOwner",
+            "ofType": null
+          },
+          {
+            "kind": "INTERFACE",
+            "name": "RegistryPackageSearch",
             "ofType": null
           },
           {
@@ -33944,6 +34205,18 @@
             "deprecationReason": null
           },
           {
+            "name": "email",
+            "description": "The mannequin's email on the source instance.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": null,
             "args": [],
@@ -44308,6 +44581,11 @@
         "possibleTypes": [
           {
             "kind": "OBJECT",
+            "name": "Organization",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "User",
             "ofType": null
           }
@@ -50160,6 +50438,11 @@
           },
           {
             "kind": "OBJECT",
+            "name": "OrgCreateAuditEntry",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "OrgDisableOauthAppRestrictionsAuditEntry",
             "ofType": null
           },
@@ -50917,6 +51200,11 @@
           },
           {
             "kind": "OBJECT",
+            "name": "OrgCreateAuditEntry",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
             "name": "OrgDisableOauthAppRestrictionsAuditEntry",
             "ofType": null
           },
@@ -51506,6 +51794,11 @@
           {
             "kind": "OBJECT",
             "name": "OrgConfigEnableCollaboratorsOnlyAuditEntry",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "OrgCreateAuditEntry",
             "ofType": null
           },
           {
@@ -54156,6 +54449,314 @@
           }
         ],
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "OrgCreateAuditEntry",
+        "description": "Audit log entry for a org.create event.",
+        "fields": [
+          {
+            "name": "action",
+            "description": "The action name",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "actor",
+            "description": "The user who initiated the action",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "AuditEntryActor",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "actorIp",
+            "description": "The IP address of the actor",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "actorLocation",
+            "description": "A readable representation of the actor's location",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ActorLocation",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "actorLogin",
+            "description": "The username of the user who initiated the action",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "actorResourcePath",
+            "description": "The HTTP path for the actor.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "URI",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "actorUrl",
+            "description": "The HTTP URL for the actor.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "URI",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "billingPlan",
+            "description": "The billing plan for the Organization.",
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "OrgCreateAuditEntryBillingPlan",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt",
+            "description": "The time the action was initiated",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "PreciseDateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "operationType",
+            "description": "The corresponding operation type for the action",
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "OperationType",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "organization",
+            "description": "The Organization associated with the Audit Entry.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Organization",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "organizationName",
+            "description": "The name of the Organization.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "organizationResourcePath",
+            "description": "The HTTP path for the organization",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "URI",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "organizationUrl",
+            "description": "The HTTP URL for the organization",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "URI",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user",
+            "description": "The user affected by the action",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "User",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "userLogin",
+            "description": "For actions involving two users, the actor is the initiator and the user is the affected user.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "userResourcePath",
+            "description": "The HTTP path for the user.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "URI",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "userUrl",
+            "description": "The HTTP URL for the user.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "URI",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Node",
+            "ofType": null
+          },
+          {
+            "kind": "INTERFACE",
+            "name": "AuditEntry",
+            "ofType": null
+          },
+          {
+            "kind": "INTERFACE",
+            "name": "OrganizationAuditEntryData",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "OrgCreateAuditEntryBillingPlan",
+        "description": "The billing plans available for organizations.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "FREE",
+            "description": "Free Plan",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "BUSINESS",
+            "description": "Team Plan",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "BUSINESS_PLUS",
+            "description": "Enterprise Cloud Plan",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UNLIMITED",
+            "description": "Legacy Unlimited Plan",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TIERED_PER_SEAT",
+            "description": "Tiered Per Seat Plan",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
@@ -71793,6 +72394,12 @@
             "description": ".NET packages hosted at the NuGet Gallery",
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "COMPOSER",
+            "description": "PHP packages hosted at packagist.org",
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -73089,6 +73696,33 @@
             "deprecationReason": null
           },
           {
+            "name": "followUser",
+            "description": "Follow a user.",
+            "args": [
+              {
+                "name": "input",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "FollowUserInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "FollowUserPayload",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "linkRepositoryToProject",
             "description": "Creates a repository link for a project.",
             "args": [
@@ -73542,6 +74176,33 @@
             "type": {
               "kind": "OBJECT",
               "name": "TransferIssuePayload",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unfollowUser",
+            "description": "Unfollow a user.",
+            "args": [
+              {
+                "name": "input",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "UnfollowUserInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "UnfollowUserPayload",
               "ofType": null
             },
             "isDeprecated": false,
@@ -77591,6 +78252,76 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "FollowUserInput",
+        "description": "Autogenerated input type of FollowUser",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "userId",
+            "description": "ID of the user to follow.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "clientMutationId",
+            "description": "A unique identifier for the client performing the mutation.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "FollowUserPayload",
+        "description": "Autogenerated return type of FollowUser",
+        "fields": [
+          {
+            "name": "clientMutationId",
+            "description": "A unique identifier for the client performing the mutation.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user",
+            "description": "The user that was followed.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "User",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "LinkRepositoryToProjectInput",
         "description": "Autogenerated input type of LinkRepositoryToProject",
         "fields": null,
@@ -79125,6 +79856,76 @@
             "type": {
               "kind": "OBJECT",
               "name": "Issue",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UnfollowUserInput",
+        "description": "Autogenerated input type of UnfollowUser",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "userId",
+            "description": "ID of the user to unfollow.",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "clientMutationId",
+            "description": "A unique identifier for the client performing the mutation.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "UnfollowUserPayload",
+        "description": "Autogenerated return type of UnfollowUser",
+        "fields": [
+          {
+            "name": "clientMutationId",
+            "description": "A unique identifier for the client performing the mutation.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user",
+            "description": "The user that was unfollowed.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "User",
               "ofType": null
             },
             "isDeprecated": false,

@@ -1,7 +1,7 @@
 package io.github.tonnyl.moka.db.converter
 
 import androidx.room.TypeConverter
-import io.github.tonnyl.moka.data.item.ProjectState
+import io.github.tonnyl.moka.type.ProjectState
 
 object ProjectStateConverters {
 

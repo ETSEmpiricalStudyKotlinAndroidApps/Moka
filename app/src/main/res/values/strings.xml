@@ -245,12 +245,20 @@
     <string name="issue_pr_status_merged">merged</string>
 
     <string name="issue">Issue</string>
+    <string name="issue_timeline_no_description_provided">No description provided.</string>
+    <string name="issue_timeline_added_to_project">added this to project</string>
     <string name="issue_timeline_assigned_event_self_assigned">self-assigned this</string>
     <string name="issue_timeline_assigned_event_assigned_someone">assigned <![CDATA[<b>%1$s</b>]]></string> <!--assigned username-->
     <string name="issue_timeline_unassigned_event_self_unassigned">removed their assignment</string>
     <string name="issue_timeline_unassigned_event_unassigned_someone">unassigned <![CDATA[<b>%1$s</b>]]></string> <!--unassigned username-->
     <string name="issue_timeline_closed_event_closed">closed this</string>
+    <string name="issue_timeline_converted_note_to_issue">converted note to issue</string>
     <string name="issue_timeline_reopened_event_reopened">reopened this</string>
+    <string name="issue_timeline_marked_as_duplicate">marked as duplicate</string>
+    <string name="issue_timeline_moved_columns_in_project">moved columns in project</string>
+    <string name="issue_timeline_pinned">pinned this</string>
+    <string name="issue_timeline_unpinned">unpinned this</string>
+    <string name="issue_timeline_removed_from_project">removed this from project</string>
     <string name="issue_timeline_locked_event_locked_as">locked as <![CDATA[<b>%1$s</b>]]> and limited conversation to collaborators</string>
     <string name="issue_timeline_unlocked_event_unlocked">unlocked this conversation</string>
     <string name="issue_timeline_renamed_title_event_change_title">changed the title from <![CDATA[<b>%1$s</b>]]> to <![CDATA[<b>%2$s</b>]]></string>
@@ -262,6 +270,7 @@
     <string name="issue_timeline_labeled_event_labeled">added the&#160;</string>
     <string name="issue_timeline_unlabeled_event_unlabeled">removed the&#160;</string>
     <string name="issue_timeline_label">&#160;label</string>
+    <string name="issue_timeline_user_blocked">%1$s was blocked</string>
 
     <string name="issue_lock_reason_off_topic">off-topic</string>
     <string name="issue_lock_reason_resolved">resolved</string>
@@ -276,6 +285,9 @@
     <string name="author_association_owner">Owner</string>
 
     <string name="pull_request">Pull Request</string>
+    <string name="pull_request_base_ref_changed">changed branch</string>
+    <string name="pull_request_marked_as_ready_for_review">marked this pull request as ready for review</string>
+    <string name="pull_request_removed_from_project">removed this from project</string>
     <string name="pull_request_force_pushed_branch">force-pushed the %1$s branch from %2$s to %3$s</string> <!-- force-pushed the tonny_dev  branch from 0aa5747 to 9ca837e -->
     <string name="pull_request_merged_commit">merged commit %1$s into %2$s</string> <!-- merged commit 5288812 into TonnyL:master -->
     <string name="pull_request_deleted_branch">deleted the %1$s branch</string>

@@ -95,7 +95,9 @@ class PullRequestTimelineAdapter(
             R.layout.item_pr_timeline_head
         } else {
             when (getItem(position - 1)) {
-                is IssueComment,
+                is IssueComment -> {
+                    R.layout.item_pr_timeline_comment
+                }
                 is PullRequestReviewThread,
                 is PullRequestCommitCommentThread -> {
                     R.layout.item_pr_timeline_thread
@@ -170,8 +172,8 @@ class PullRequestTimelineAdapter(
             binding.run {
                 this.title = title
                 this.info = info
-                this.viewModel = viewModel
                 this.lifecycleOwner = lifecycleOwner
+                this.viewModel = viewModel
                 executePendingBindings()
             }
         }

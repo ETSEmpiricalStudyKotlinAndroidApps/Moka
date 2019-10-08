@@ -21,6 +21,7 @@ import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
 import io.github.tonnyl.moka.ui.prs.PullRequestsFragmentArgs
 import io.github.tonnyl.moka.util.formatNumberWithSuffix
+import io.github.tonnyl.moka.util.toColor
 
 class RepositoryFragment : Fragment() {
 
@@ -68,7 +69,7 @@ class RepositoryFragment : Fragment() {
                     if (resources.data?.primaryLanguage != null) {
                         binding.repositoryLanguageContent.text = resources.data.primaryLanguage.name
                         (binding.repositoryLanguageContent.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(
-                            Color.parseColor(resources.data.primaryLanguage.color)
+                            resources.data.primaryLanguage.color?.toColor() ?: Color.BLACK
                         )
                     } else {
                         binding.repositoryLanguageContent.text =

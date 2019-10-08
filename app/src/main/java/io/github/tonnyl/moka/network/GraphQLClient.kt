@@ -34,8 +34,9 @@ object GraphQLClient {
 
     private val dateCustomTypeAdapter = object : CustomTypeAdapter<Date> {
 
-        override fun encode(value: Date): CustomTypeValue<*> =
-            CustomTypeValue.GraphQLString(DATE_FORMAT.format(value))
+        override fun encode(value: Date): CustomTypeValue<*> {
+            return CustomTypeValue.GraphQLString(DATE_FORMAT.format(value))
+        }
 
         override fun decode(value: CustomTypeValue<*>): Date {
             try {
@@ -49,8 +50,9 @@ object GraphQLClient {
 
     private val uriCustomTypeAdapter = object : CustomTypeAdapter<Uri> {
 
-        override fun encode(value: Uri): CustomTypeValue<*> =
-            CustomTypeValue.GraphQLString(value.toString())
+        override fun encode(value: Uri): CustomTypeValue<*> {
+            return CustomTypeValue.GraphQLString(value.toString())
+        }
 
         override fun decode(value: CustomTypeValue<*>): Uri {
             try {
@@ -64,37 +66,49 @@ object GraphQLClient {
 
     private val htmlCustomTypeAdapter = object : CustomTypeAdapter<String> {
 
-        override fun encode(value: String): CustomTypeValue<*> =
-            CustomTypeValue.GraphQLString(value)
+        override fun encode(value: String): CustomTypeValue<*> {
+            return CustomTypeValue.GraphQLString(value)
+        }
 
-        override fun decode(value: CustomTypeValue<*>): String = value.value.toString()
+        override fun decode(value: CustomTypeValue<*>): String {
+            return value.value.toString()
+        }
 
     }
 
     private val idCustomTypeAdapter = object : CustomTypeAdapter<String> {
 
-        override fun encode(value: String): CustomTypeValue<*> =
-            CustomTypeValue.GraphQLString(value)
+        override fun encode(value: String): CustomTypeValue<*> {
+            return CustomTypeValue.GraphQLString(value)
+        }
 
-        override fun decode(value: CustomTypeValue<*>): String = value.value.toString()
+        override fun decode(value: CustomTypeValue<*>): String {
+            return value.value.toString()
+        }
 
     }
 
     private val gitObjectIDTypeAdapter = object : CustomTypeAdapter<String> {
 
-        override fun encode(value: String): CustomTypeValue<*> =
-            CustomTypeValue.GraphQLString(value)
+        override fun encode(value: String): CustomTypeValue<*> {
+            return CustomTypeValue.GraphQLString(value)
+        }
 
-        override fun decode(value: CustomTypeValue<*>): String = value.value.toString()
+        override fun decode(value: CustomTypeValue<*>): String {
+            return value.value.toString()
+        }
 
     }
 
     private val gitSSHRemoteTypeAdapter = object : CustomTypeAdapter<String> {
 
-        override fun encode(value: String): CustomTypeValue<*> =
-            CustomTypeValue.GraphQLString(value)
+        override fun encode(value: String): CustomTypeValue<*> {
+            return CustomTypeValue.GraphQLString(value)
+        }
 
-        override fun decode(value: CustomTypeValue<*>): String = value.value.toString()
+        override fun decode(value: CustomTypeValue<*>): String {
+            return value.value.toString()
+        }
 
     }
 

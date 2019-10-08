@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.issue
 
 import android.graphics.Color
+import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.format.DateUtils
@@ -9,52 +10,70 @@ import android.text.style.ForegroundColorSpan
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.text.HtmlCompat
 import androidx.databinding.BindingAdapter
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.type.LockReason
-import io.github.tonnyl.moka.util.avatarUrl
-import io.github.tonnyl.moka.util.backgroundResId
-import io.github.tonnyl.moka.util.imageResId
-import io.github.tonnyl.moka.util.textFuture
+import io.github.tonnyl.moka.util.*
 
 @BindingAdapter("issueTimelineEventContentTextFuture")
 fun AppCompatTextView.issueTimelineEventContentTextFuture(
-    event: IssueTimelineItem
+    event: IssueTimelineItem?
 ) {
     val content = when (event) {
+        is AddedToProjectEvent -> {
+            context.getString(R.string.issue_timeline_added_to_project)
+        }
         is AssignedEvent -> {
             if (event.assigneeLogin == event.assigneeLogin) {
                 context.getString(R.string.issue_timeline_assigned_event_self_assigned)
             } else {
-                HtmlCompat.fromHtml(
-                    context.getString(
-                        R.string.issue_timeline_assigned_event_assigned_someone,
-                        event.assigneeLogin
-                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
+                context.getString(
+                    R.string.issue_timeline_assigned_event_assigned_someone,
+                    event.assigneeLogin
+                ).toHtmlInLegacyMode()
             }
         }
         is ClosedEvent -> {
             context.getString(R.string.issue_timeline_closed_event_closed)
         }
+        is ConvertedNoteToIssueEvent -> {
+            context.getString(R.string.issue_timeline_converted_note_to_issue)
+        }
         is CrossReferencedEvent -> {
-            HtmlCompat.fromHtml(
-                context.getString(
-                    R.string.issue_timeline_cross_referenced_event_cross_referenced,
-                    event.issue?.title ?: event.pullRequest?.title,
-                    event.issue?.number ?: event.pullRequest?.number
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
+            context.getString(
+                R.string.issue_timeline_cross_referenced_event_cross_referenced,
+                event.issue?.title ?: event.pullRequest?.title,
+                event.issue?.number ?: event.pullRequest?.number
+            ).toHtmlInLegacyMode()
         }
         is DemilestonedEvent -> {
-            HtmlCompat.fromHtml(
-                context.getString(
-                    R.string.issue_timeline_demilestoned_event_demilestoned,
-                    event.milestoneTitle
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
+            context.getString(
+                R.string.issue_timeline_demilestoned_event_demilestoned,
+                event.milestoneTitle
+            ).toHtmlInLegacyMode()
+        }
+        is IssueComment -> {
+            if (event.body.isEmpty()) {
+                val text = context.getString(R.string.issue_timeline_no_description_provided)
+                val spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(
+                        ResourcesCompat.getColor(
+                            resources,
+                            R.color.colorTextSecondary,
+                            null
+                        )
+                    ),
+                    0,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                spannable
+            } else {
+                event.body
+            }
         }
         is LabeledEvent -> {
             val first = context.getString(R.string.issue_timeline_labeled_event_labeled)
@@ -62,7 +81,7 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
             val all = "$first ${event.label.name} $second"
             val spannable = SpannableString(all)
             spannable.setSpan(
-                BackgroundColorSpan(Color.parseColor("#${event.label.color}")),
+                BackgroundColorSpan(event.label.color.toColor() ?: Color.WHITE),
                 first.length,
                 first.length + event.label.name.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -83,46 +102,50 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
             spannable
         }
         is LockedEvent -> {
-            HtmlCompat.fromHtml(
+            context.getString(
+                R.string.issue_timeline_locked_event_locked_as,
                 context.getString(
-                    R.string.issue_timeline_locked_event_locked_as,
-                    context.getString(
-                        when (event.lockReason) {
-                            LockReason.OFF_TOPIC -> R.string.issue_lock_reason_off_topic
-                            LockReason.RESOLVED -> R.string.issue_lock_reason_resolved
-                            LockReason.SPAM -> R.string.issue_lock_reason_spam
-                            LockReason.TOO_HEATED -> R.string.issue_lock_reason_too_heated
-                            else -> R.string.issue_lock_reason_too_heated
-                        }
-                    )
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
+                    when (event.lockReason) {
+                        LockReason.OFF_TOPIC -> R.string.issue_lock_reason_off_topic
+                        LockReason.RESOLVED -> R.string.issue_lock_reason_resolved
+                        LockReason.SPAM -> R.string.issue_lock_reason_spam
+                        LockReason.TOO_HEATED -> R.string.issue_lock_reason_too_heated
+                        else -> R.string.issue_lock_reason_too_heated
+                    }
+                )
+            ).toHtmlInLegacyMode()
+        }
+        is MarkedAsDuplicateEvent -> {
+            context.getString(R.string.issue_timeline_marked_as_duplicate)
         }
         is MilestonedEvent -> {
-            HtmlCompat.fromHtml(
-                context.getString(
-                    R.string.issue_timeline_milestoned_event_milestoned,
-                    event.milestoneTitle
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
+            context.getString(
+                R.string.issue_timeline_milestoned_event_milestoned,
+                event.milestoneTitle
+            ).toHtmlInLegacyMode()
+        }
+        is MovedColumnsInProjectEvent -> {
+            context.getString(R.string.issue_timeline_moved_columns_in_project)
+        }
+        is PinnedEvent -> {
+            context.getString(R.string.issue_timeline_pinned)
         }
         is ReferencedEvent -> {
-            HtmlCompat.fromHtml(
-                context.getString(
-                    R.string.issue_timeline_referenced_event_referenced,
-                    event.issue?.title ?: event.pullRequest?.title,
-                    event.issue?.number ?: event.pullRequest?.number
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
+            context.getString(
+                R.string.issue_timeline_referenced_event_referenced,
+                event.issue?.title ?: event.pullRequest?.title,
+                event.issue?.number ?: event.pullRequest?.number
+            ).toHtmlInLegacyMode()
+        }
+        is RemovedFromProjectEvent -> {
+            context.getString(R.string.issue_timeline_removed_from_project)
         }
         is RenamedTitleEvent -> {
-            HtmlCompat.fromHtml(
-                context.getString(
-                    R.string.issue_timeline_renamed_title_event_change_title,
-                    event.previousTitle,
-                    event.currentTitle
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
+            context.getString(
+                R.string.issue_timeline_renamed_title_event_change_title,
+                event.previousTitle,
+                event.currentTitle
+            ).toHtmlInLegacyMode()
         }
         is ReopenedEvent -> {
             context.getString(R.string.issue_timeline_reopened_event_reopened)
@@ -138,13 +161,10 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
             if (event.actor?.login == assigneeLogin) {
                 context.getString(R.string.issue_timeline_unassigned_event_self_unassigned)
             } else {
-                HtmlCompat.fromHtml(
-                    context.getString(
-                        R.string.issue_timeline_assigned_event_assigned_someone,
-                        assigneeLogin
-                    ),
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
+                context.getString(
+                    R.string.issue_timeline_assigned_event_assigned_someone,
+                    assigneeLogin
+                ).toHtmlInLegacyMode()
             }
         }
         is UnlabeledEvent -> {
@@ -153,7 +173,7 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
             val all = "$first ${event.label.name} $second"
             val spannable = SpannableString(all)
             spannable.setSpan(
-                BackgroundColorSpan(Color.parseColor("#${event.label.color}")),
+                BackgroundColorSpan(event.label.color.toColor() ?: Color.WHITE),
                 first.length,
                 first.length + event.label.name.length + 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -176,6 +196,9 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
         is UnlockedEvent -> {
             context.getString(R.string.issue_timeline_unlocked_event_unlocked)
         }
+        is UnpinnedEvent -> {
+            context.getString(R.string.issue_timeline_unpinned)
+        }
         else -> {
             ""
         }
@@ -186,50 +209,74 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
 
 @BindingAdapter("issueTimelineEventAvatar")
 fun AppCompatImageView.issueTimelineEventAvatar(
-    event: IssueTimelineItem
+    event: IssueTimelineItem?
 ) {
-    val avatarUrl = when (event) {
+    val avatarUrl: Uri? = when (event) {
+        is AddedToProjectEvent -> {
+            event.actor?.avatarUrl
+        }
         is AssignedEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
         }
         is ClosedEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
+        }
+        is ConvertedNoteToIssueEvent -> {
+            event.actor?.avatarUrl
         }
         is CrossReferencedEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
         }
         is DemilestonedEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
+        }
+        is IssueComment -> {
+            event.author?.avatarUrl
         }
         is LabeledEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
         }
         is LockedEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
+        }
+        is MarkedAsDuplicateEvent -> {
+            event.actor?.avatarUrl
         }
         is MilestonedEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
+        }
+        is MovedColumnsInProjectEvent -> {
+            event.actor?.avatarUrl
+        }
+        is PinnedEvent -> {
+            event.actor?.avatarUrl
         }
         is ReferencedEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
+        }
+        is RemovedFromProjectEvent -> {
+            event.actor?.avatarUrl
         }
         is RenamedTitleEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
         }
         is ReopenedEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
         }
         is TransferredEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
         }
         is UnassignedEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
         }
         is UnlabeledEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
         }
         is UnlockedEvent -> {
-            event.actor?.avatarUrl?.toString()
+            event.actor?.avatarUrl
+        }
+        is UnpinnedEvent -> {
+            event.actor?.avatarUrl
         }
         else -> {
             null
@@ -241,13 +288,19 @@ fun AppCompatImageView.issueTimelineEventAvatar(
 
 @BindingAdapter("issueTimelineEventLogin")
 fun AppCompatTextView.issueTimelineEventLogin(
-    event: IssueTimelineItem
+    event: IssueTimelineItem?
 ) {
     val login = when (event) {
+        is AddedToProjectEvent -> {
+            event.actor?.login
+        }
         is AssignedEvent -> {
             event.actor?.login
         }
         is ClosedEvent -> {
+            event.actor?.login
+        }
+        is ConvertedNoteToIssueEvent -> {
             event.actor?.login
         }
         is CrossReferencedEvent -> {
@@ -256,16 +309,31 @@ fun AppCompatTextView.issueTimelineEventLogin(
         is DemilestonedEvent -> {
             event.actor?.login
         }
+        is IssueComment -> {
+            event.author?.login
+        }
         is LabeledEvent -> {
             event.actor?.login
         }
         is LockedEvent -> {
             event.actor?.login
         }
+        is MarkedAsDuplicateEvent -> {
+            event.actor?.login
+        }
         is MilestonedEvent -> {
             event.actor?.login
         }
+        is MovedColumnsInProjectEvent -> {
+            event.actor?.login
+        }
+        is PinnedEvent -> {
+            event.actor?.login
+        }
         is ReferencedEvent -> {
+            event.actor?.login
+        }
+        is RemovedFromProjectEvent -> {
             event.actor?.login
         }
         is RenamedTitleEvent -> {
@@ -284,6 +352,9 @@ fun AppCompatTextView.issueTimelineEventLogin(
             event.actor?.login
         }
         is UnlockedEvent -> {
+            event.actor?.login
+        }
+        is UnpinnedEvent -> {
             event.actor?.login
         }
         else -> {
@@ -296,13 +367,19 @@ fun AppCompatTextView.issueTimelineEventLogin(
 
 @BindingAdapter("issueTimelineEventCreatedAt")
 fun AppCompatTextView.issueTimelineEventCreatedAt(
-    event: IssueTimelineItem
+    event: IssueTimelineItem?
 ) {
     val createdAt = when (event) {
+        is AddedToProjectEvent -> {
+            event.createdAt
+        }
         is AssignedEvent -> {
             event.createdAt
         }
         is ClosedEvent -> {
+            event.createdAt
+        }
+        is ConvertedNoteToIssueEvent -> {
             event.createdAt
         }
         is CrossReferencedEvent -> {
@@ -311,16 +388,31 @@ fun AppCompatTextView.issueTimelineEventCreatedAt(
         is DemilestonedEvent -> {
             event.createdAt
         }
+        is IssueComment -> {
+            event.createdAt
+        }
         is LabeledEvent -> {
             event.createdAt
         }
         is LockedEvent -> {
             event.createdAt
         }
+        is MarkedAsDuplicateEvent -> {
+            event.createdAt
+        }
         is MilestonedEvent -> {
             event.createdAt
         }
+        is MovedColumnsInProjectEvent -> {
+            event.createdAt
+        }
+        is PinnedEvent -> {
+            event.createdAt
+        }
         is ReferencedEvent -> {
+            event.createdAt
+        }
+        is RemovedFromProjectEvent -> {
             event.createdAt
         }
         is RenamedTitleEvent -> {
@@ -339,6 +431,9 @@ fun AppCompatTextView.issueTimelineEventCreatedAt(
             event.createdAt
         }
         is UnlockedEvent -> {
+            event.createdAt
+        }
+        is UnpinnedEvent -> {
             event.createdAt
         }
         else -> {
@@ -357,11 +452,15 @@ fun AppCompatTextView.issueTimelineEventCreatedAt(
 
 @BindingAdapter("issueTimelineEventBgAndIconResId")
 fun AppCompatImageView.issueTimelineEventBgAndIconResId(
-    event: IssueTimelineItem
+    event: IssueTimelineItem?
 ) {
     val iconResId: Int?
     val backgroundResId: Int?
     when (event) {
+        is AddedToProjectEvent -> {
+            iconResId = R.drawable.ic_dashboard_outline
+            backgroundResId = R.drawable.bg_issue_timeline_event_1
+        }
         is AssignedEvent -> {
             iconResId = R.drawable.ic_person_24
             backgroundResId = R.drawable.bg_issue_timeline_event_1
@@ -369,6 +468,10 @@ fun AppCompatImageView.issueTimelineEventBgAndIconResId(
         is ClosedEvent -> {
             iconResId = R.drawable.ic_pr_issue_close_24
             backgroundResId = R.drawable.bg_issue_timeline_event_2
+        }
+        is ConvertedNoteToIssueEvent -> {
+            iconResId = R.drawable.ic_issue_open_24
+            backgroundResId = R.drawable.bg_issue_timeline_event_1
         }
         is CrossReferencedEvent -> {
             iconResId = R.drawable.ic_bookmark_24
@@ -386,12 +489,28 @@ fun AppCompatImageView.issueTimelineEventBgAndIconResId(
             iconResId = R.drawable.ic_lock_outline_24dp
             backgroundResId = R.drawable.bg_issue_timeline_event_2
         }
+        is MarkedAsDuplicateEvent -> {
+            iconResId = R.drawable.ic_copy_24dp
+            backgroundResId = R.drawable.bg_issue_timeline_event_1
+        }
         is MilestonedEvent -> {
             iconResId = R.drawable.ic_milestone_24
             backgroundResId = R.drawable.bg_issue_timeline_event_1
         }
+        is MovedColumnsInProjectEvent -> {
+            iconResId = R.drawable.ic_dashboard_outline
+            backgroundResId = R.drawable.bg_issue_timeline_event_1
+        }
+        is PinnedEvent -> {
+            iconResId = R.drawable.ic_pin_24
+            backgroundResId = R.drawable.bg_issue_timeline_event_1
+        }
         is ReferencedEvent -> {
             iconResId = R.drawable.ic_bookmark_24
+            backgroundResId = R.drawable.bg_issue_timeline_event_1
+        }
+        is RemovedFromProjectEvent -> {
+            iconResId = R.drawable.ic_dashboard_outline
             backgroundResId = R.drawable.bg_issue_timeline_event_1
         }
         is RenamedTitleEvent -> {
@@ -417,6 +536,10 @@ fun AppCompatImageView.issueTimelineEventBgAndIconResId(
         is UnlockedEvent -> {
             iconResId = R.drawable.ic_key_24
             backgroundResId = R.drawable.bg_issue_timeline_event_2
+        }
+        is UnpinnedEvent -> {
+            iconResId = R.drawable.ic_pin_24
+            backgroundResId = R.drawable.bg_issue_timeline_event_1
         }
         else -> {
             iconResId = null

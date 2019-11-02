@@ -1,0 +1,13 @@
+# Represents a Git object.
+# https://developer.github.com/v4/interface/gitobject/
+fragment GitObject on GitObject {
+    # An abbreviated version of the Git object ID
+    abbreviatedOid
+    # The HTTP path for this Git object
+    commitResourcePath
+    # The HTTP URL for this Git object
+    commitUrl
+    id
+    # The Git object ID
+    oid
+}

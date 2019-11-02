@@ -1,0 +1,8 @@
+# Removes a reaction from a subject.
+# https://developer.github.com/v4/mutation/removereaction/
+mutation RemoveReaction($input: RemoveReactionInput!) {
+    removeReaction(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

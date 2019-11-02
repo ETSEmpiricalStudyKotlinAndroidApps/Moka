@@ -1,0 +1,8 @@
+# Moves a project column to another place.
+# https://developer.github.com/v4/mutation/moveprojectcolumn/
+mutation MoveProjectColumn($input: MoveProjectColumnInput!) {
+    moveProjectColumn(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

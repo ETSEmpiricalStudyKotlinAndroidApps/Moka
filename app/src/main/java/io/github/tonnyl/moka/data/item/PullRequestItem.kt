@@ -46,12 +46,12 @@ data class PullRequestItem(
 
 fun PullRequestsQuery.Node.toNonNullPullRequestItem(): PullRequestItem {
     return PullRequestItem(
-        author()?.fragments()?.actor()?.toNonNullActor(),
-        closed(),
-        createdAt(),
-        id(),
-        merged(),
-        number(),
-        title()
+        author?.fragments?.actor?.toNonNullActor(),
+        closed,
+        createdAt,
+        id,
+        merged,
+        number,
+        title
     )
 }

@@ -1,0 +1,16 @@
+# Represents a Git tree entry.
+# https://developer.github.com/v4/object/treeentry/
+fragment TreeEntry on TreeEntry {
+    # Entry file mode.
+    mode
+    # Entry file name.
+    name
+    # Entry file object.
+    object {
+        ... GitObject
+    }
+    # Entry file Git object ID.
+    oid
+    # Entry file type.
+    type
+}

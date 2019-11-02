@@ -1,0 +1,17 @@
+# Represents a mention made by one issue or pull request to another.
+fragment CrossReferencedEventFragment on CrossReferencedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    # Reference originated in a different repository.
+    isCrossRepository
+    id
+    # Issue or pull request that made the reference.
+    source {
+        ... ReferencedEventIssueFragment
+        ... ReferencedEventPullRequestFragment
+    }
+}

@@ -1,0 +1,12 @@
+# Updates an IssueComment object.
+# https://developer.github.com/v4/mutation/updateissuecomment/
+mutation UpdateIssueComment($input: UpdateIssueCommentInput!) {
+    updateIssueComment(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+        # The updated comment.
+        issueComment {
+            ... IssueCommentFragment
+        }
+    }
+}

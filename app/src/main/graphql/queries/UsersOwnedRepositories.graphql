@@ -1,0 +1,21 @@
+# A list of repositories that the user owns.
+query OwnedRepositories($login: String!, $perPage: Int!, $after: String, $before: String) {
+    user(login: $login) {
+        # A URL pointing to the user's public avatar.
+        avatarUrl
+        id
+        # A list of repositories that the user owns.
+        repositories(first: $perPage,after: $after,before: $before) {
+            # A list of nodes.
+            nodes {
+                ... RepositoryListItemFragment
+            }
+            # Information to aid in pagination.
+            pageInfo {
+                ... PageInfo
+            }
+            # Identifies the total count of items in the connection.
+            totalCount
+        }
+    }
+}

@@ -1,0 +1,17 @@
+# Represents a 'demilestoned' event on a given issue or pull request.
+fragment DemilestonedEventFragment on DemilestonedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # Identifies the milestone title associated with the 'demilestoned' event.
+    milestoneTitle
+    # Object referenced by event.
+    subject {
+        ... MilestoneItemIssueFragment
+        ... MilestoneItemPullRequestFragment
+    }
+}

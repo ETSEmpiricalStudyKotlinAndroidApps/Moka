@@ -25,5 +25,5 @@ data class Language(
 ) : Parcelable
 
 fun RawLanguage.toNonNullLanguage(): Language {
-    return Language(color(), id(), name())
+    return Language(color, id, name)
 }

@@ -1,0 +1,8 @@
+# Represents a Git reference.
+fragment PullRequestTimelineItemRefFragment on Ref {
+    id
+    # The ref name.
+    name
+    # The ref's prefix, such as refs/heads/ or refs/tags/.
+    prefix
+}

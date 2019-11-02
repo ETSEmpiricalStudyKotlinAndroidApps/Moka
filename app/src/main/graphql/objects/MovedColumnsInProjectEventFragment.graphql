@@ -1,0 +1,16 @@
+# Represents a 'moved_columns_in_project' event on a given issue or pull request.
+fragment MovedColumnsInProjectEventFragment on MovedColumnsInProjectEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # Column name the issue or pull request was moved from.
+    # Under preview
+    # previousProjectColumnName
+    # Column name the issue or pull request was moved to.
+    # Under preview
+    # projectColumnName
+}

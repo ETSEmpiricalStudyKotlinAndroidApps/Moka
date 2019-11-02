@@ -1,0 +1,10 @@
+# Represents a 'pinned' event on a given issue or pull request.
+fragment PinnedEventFragment on PinnedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+}

@@ -1,0 +1,20 @@
+# Represents a 'referenced' event on a given `ReferencedSubject`.
+fragment ReferencedEventFragment on ReferencedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # Reference originated in a different repository.
+    isCrossRepository
+    # Checks if the commit message itself references the subject.
+    # Can be false in the case of a commit comment reference.
+    isDirectReference
+    # Object referenced by event.
+    subject {
+        ... ReferencedEventIssueFragment
+        ... ReferencedEventPullRequestFragment
+    }
+}

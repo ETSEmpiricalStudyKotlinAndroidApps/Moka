@@ -36,8 +36,9 @@ data class ReactionGroup(
 
 fun RawReactionGroup.toNonNullReactionGroup(): ReactionGroup {
     return ReactionGroup(
-        content(), createdAt(),
-        subject().fragments().reactable().toNonNullReactable(),
-        viewerHasReacted()
+        content,
+        createdAt,
+        subject.fragments.reactable.toNonNullReactable(),
+        viewerHasReacted
     )
 }

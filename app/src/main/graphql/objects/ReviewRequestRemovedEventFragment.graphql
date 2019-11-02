@@ -1,0 +1,20 @@
+# Represents an 'review_request_removed' event on a given pull request.
+fragment ReviewRequestRemovedEventFragment on ReviewRequestRemovedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # PullRequest referenced by event.
+    pullRequest {
+        ... PullRequestTimelineItemPullRequest
+    }
+    # Identifies the reviewer whose review request was removed.
+    requestedReviewer {
+        ... IssuePullRequestTimelineItemTeamFragment
+        ... IssuePullRequestTimelineItemUserFragment
+        ... IssuePullRequestTimelineItemMannequinFragment
+    }
+}

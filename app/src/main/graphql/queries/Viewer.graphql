@@ -1,0 +1,6 @@
+# The currently authenticated user.
+query Viewer {
+    viewer {
+        ... User
+    }
+}

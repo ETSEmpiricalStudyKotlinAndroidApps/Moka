@@ -1,0 +1,9 @@
+fragment IssuePullRequestTimelineItemBotFragment on Bot {
+    # A URL pointing to the GitHub App's public avatar.
+    avatarUrl
+    # The username of the actor.
+    login
+    # The HTTP URL for this bot
+    url
+    id
+}

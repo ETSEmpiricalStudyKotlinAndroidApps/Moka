@@ -29,5 +29,5 @@ data class Actor(
 ) : Parcelable
 
 fun RawActor.toNonNullActor(): Actor {
-    return Actor(avatarUrl(), login(), url())
+    return Actor(avatarUrl, login, url)
 }

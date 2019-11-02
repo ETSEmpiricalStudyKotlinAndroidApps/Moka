@@ -28,5 +28,5 @@ data class LicenseRule(
 ) : Parcelable
 
 fun RawLicenseRule.toNonNullLicenseRule(): LicenseRule {
-    return LicenseRule(description(), key(), label())
+    return LicenseRule(description, key, label)
 }

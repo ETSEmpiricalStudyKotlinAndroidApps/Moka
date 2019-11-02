@@ -1,0 +1,5 @@
+query Organization($login: String!) {
+    organization(login: $login){
+        ... Organization
+    }
+}

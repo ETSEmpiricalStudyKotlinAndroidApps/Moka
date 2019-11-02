@@ -1,0 +1,8 @@
+# Close an issue.
+# https://developer.github.com/v4/mutation/closeissue/
+mutation CloseIssue($input: CloseIssueInput!) {
+    closeIssue(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

@@ -1,0 +1,8 @@
+# Marks a review thread as resolved.
+# https://developer.github.com/v4/mutation/resolvereviewthread/
+mutation ResolveReviewThread($input: ResolveReviewThreadInput!) {
+    resolveReviewThread(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

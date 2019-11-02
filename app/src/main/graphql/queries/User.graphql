@@ -1,0 +1,7 @@
+# A user is an individual's account on GitHub that owns repositories and can make new content.
+# https://developer.github.com/v4/object/user/
+query User($login: String!) {
+    user(login: $login) {
+        ... User
+    }
+}

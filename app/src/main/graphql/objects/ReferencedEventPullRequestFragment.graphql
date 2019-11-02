@@ -1,0 +1,8 @@
+# Pull request that made the reference.
+fragment ReferencedEventPullRequestFragment on PullRequest {
+    # Identifies the pull request title.
+    title
+    # Identifies the pull request number.
+    number
+    id
+}

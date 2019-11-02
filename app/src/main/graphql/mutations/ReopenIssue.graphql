@@ -1,0 +1,8 @@
+# Reopen a issue.
+# https://developer.github.com/v4/mutation/reopenissue/
+mutation ReopenIssue($input: ReopenIssueInput!) {
+    reopenIssue(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

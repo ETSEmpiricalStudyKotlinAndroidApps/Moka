@@ -1,0 +1,8 @@
+# Set review requests on a pull request.
+# https://developer.github.com/v4/mutation/requestreviews/
+mutation RequestReviews($input: RequestReviewsInput!) {
+    requestReviews(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

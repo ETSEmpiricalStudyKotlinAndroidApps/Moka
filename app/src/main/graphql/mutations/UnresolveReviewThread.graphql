@@ -1,0 +1,8 @@
+# Marks a review thread as unresolved.
+# https://developer.github.com/v4/mutation/unresolvereviewthread/
+mutation UnresolveReviewThread($input: UnresolveReviewThreadInput!) {
+    unresolveReviewThread(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

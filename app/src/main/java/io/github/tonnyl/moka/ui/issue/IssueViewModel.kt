@@ -74,15 +74,11 @@ class IssueViewModel(
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient.query(
-                        IssueQuery.builder()
-                            .owner(owner)
-                            .name(name)
-                            .number(number)
-                            .build()
+                        IssueQuery(owner, name, number)
                     ).execute()
                 }
 
-                val data = response.data()?.repository()?.issue()?.toNonNullIssue()
+                val data = response.data()?.repository?.issue?.toNonNullIssue()
 
                 _issueLiveData.postValue(Resource.success(data?.transformToIssueCommentEvent()))
             } catch (e: Exception) {

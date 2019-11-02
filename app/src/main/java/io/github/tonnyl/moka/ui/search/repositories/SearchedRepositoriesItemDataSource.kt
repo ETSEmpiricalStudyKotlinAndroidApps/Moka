@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.search.repositories
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.SearchRepositoriesQuery
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedRepositoryItem
@@ -34,10 +35,13 @@ class SearchedRepositoriesItemDataSource(
         initialLoadStatus.postValue(Resource.loading(null))
 
         try {
-            val userQuery = SearchRepositoriesQuery.builder()
-                .queryWords(keywords)
-                .first(params.requestedLoadSize)
-                .build()
+            val userQuery = SearchRepositoriesQuery(
+                keywords,
+                Input.fromNullable(params.requestedLoadSize),
+                Input.absent(),
+                Input.absent(),
+                Input.absent()
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -46,25 +50,27 @@ class SearchedRepositoriesItemDataSource(
             }
 
             val list = mutableListOf<SearchedRepositoryItem>()
-            val search = response.data()?.search()
+            val search = response.data()?.search
 
-            search?.nodes()?.forEach { node ->
-                convertRawDataToSearchedRepositoryItem(node)?.let {
-                    list.add(it)
+            search?.nodes?.forEach { node ->
+                node?.let {
+                    convertRawDataToSearchedRepositoryItem(node)?.let {
+                        list.add(it)
+                    }
                 }
             }
 
-            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = search?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 },
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -95,11 +101,13 @@ class SearchedRepositoriesItemDataSource(
         )
 
         try {
-            val searchUserQuery = SearchRepositoriesQuery.builder()
-                .queryWords(keywords)
-                .first(params.requestedLoadSize)
-                .after(params.key)
-                .build()
+            val searchUserQuery = SearchRepositoriesQuery(
+                keywords,
+                Input.fromNullable(params.requestedLoadSize),
+                Input.absent(),
+                Input.fromNullable(params.key),
+                Input.absent()
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -108,22 +116,24 @@ class SearchedRepositoriesItemDataSource(
             }
 
             val list = mutableListOf<SearchedRepositoryItem>()
-            val search = response.data()?.search()
+            val search = response.data()?.search
 
-            search?.nodes()?.forEach { node ->
-                convertRawDataToSearchedRepositoryItem(node)?.let {
-                    list.add(it)
+            search?.nodes?.forEach { node ->
+                node?.let {
+                    convertRawDataToSearchedRepositoryItem(node)?.let {
+                        list.add(it)
+                    }
                 }
             }
 
             retry = null
 
-            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = search?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -156,11 +166,13 @@ class SearchedRepositoriesItemDataSource(
         )
 
         try {
-            val searchUserQuery = SearchRepositoriesQuery.builder()
-                .queryWords(keywords)
-                .first(params.requestedLoadSize)
-                .before(params.key)
-                .build()
+            val searchUserQuery = SearchRepositoriesQuery(
+                keywords,
+                Input.fromNullable(params.requestedLoadSize),
+                Input.absent(),
+                Input.absent(),
+                Input.fromNullable(params.key)
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -169,22 +181,24 @@ class SearchedRepositoriesItemDataSource(
             }
 
             val list = mutableListOf<SearchedRepositoryItem>()
-            val search = response.data()?.search()
+            val search = response.data()?.search
 
-            search?.nodes()?.forEach { node ->
-                convertRawDataToSearchedRepositoryItem(node)?.let {
-                    list.add(it)
+            search?.nodes?.forEach { node ->
+                node?.let {
+                    convertRawDataToSearchedRepositoryItem(node)?.let {
+                        list.add(it)
+                    }
                 }
             }
 
             retry = null
 
-            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = search?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 }
@@ -207,7 +221,7 @@ class SearchedRepositoriesItemDataSource(
     }
 
     private fun convertRawDataToSearchedRepositoryItem(node: SearchRepositoriesQuery.Node): SearchedRepositoryItem? {
-        return node.fragments().repositoryListItemFragment()?.toNonNullSearchedRepositoryItem()
+        return node.fragments.repositoryListItemFragment?.toNonNullSearchedRepositoryItem()
     }
 
 }

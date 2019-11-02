@@ -59,15 +59,15 @@ data class UserItem(
 
 fun UserListItemFragment.toNonNullUserItem(): UserItem {
     return UserItem(
-        avatarUrl(),
-        bio(),
-        bioHTML(),
-        id(),
+        avatarUrl,
+        bio,
+        bioHTML,
+        id,
         isViewer,
-        login(),
-        name(),
-        url(),
-        viewerCanFollow(),
-        viewerIsFollowing()
+        login,
+        name,
+        url,
+        viewerCanFollow,
+        viewerIsFollowing
     )
 }

@@ -1,0 +1,21 @@
+fragment OrganizationListItemFragment on Organization {
+    # A URL pointing to the organization's public avatar.
+    avatarUrl
+    # The organization's public profile description.
+    description
+    # The organization's public profile description rendered to HTML.
+    descriptionHTML
+    id
+    # Whether the organization has verified its profile email and website.
+    isVerified
+    # The organization's login name.
+    login
+    # The organization's public profile name.
+    name
+    # The HTTP URL for this organization.
+    url
+    # Viewer is an active member of this organization.
+    viewerIsAMember
+    # The organization's public profile URL.
+    websiteUrl
+}

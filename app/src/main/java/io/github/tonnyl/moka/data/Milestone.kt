@@ -79,18 +79,18 @@ data class Milestone(
 
 fun RawMilestone.toNonNullMilestone(): Milestone {
     return Milestone(
-        closed(),
-        closedAt(),
-        createdAt(),
-        creator()?.fragments()?.actor()?.toNonNullActor(),
-        description(),
-        dueOn(),
-        id(),
-        number(),
-        resourcePath(),
-        state(),
-        title(),
-        updatedAt(),
-        url()
+        closed,
+        closedAt,
+        createdAt,
+        creator?.fragments?.actor?.toNonNullActor(),
+        description,
+        dueOn,
+        id,
+        number,
+        resourcePath,
+        state,
+        title,
+        updatedAt,
+        url
     )
 }

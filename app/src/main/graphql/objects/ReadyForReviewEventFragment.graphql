@@ -1,0 +1,16 @@
+# Represents a 'ready_for_review' event on a given pull request.
+fragment ReadyForReviewEventFragment on ReadyForReviewEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # PullRequest referenced by event.
+    pullRequest {
+        ... PullRequestTimelineItemPullRequest
+    }
+    # The HTTP URL for this ready for review event.
+    url
+}

@@ -1,0 +1,10 @@
+# Object referenced by event.
+fragment MilestoneItemPullRequestFragment on PullRequest {
+    # Identifies the pull request title.
+    title
+    # Identifies the pull request number.
+    number
+    id
+    # The HTTP URL for this pull request
+    url
+}

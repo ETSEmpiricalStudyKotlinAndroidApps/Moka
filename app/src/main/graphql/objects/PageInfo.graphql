@@ -1,0 +1,12 @@
+# Information about pagination in a connection.
+# https://developer.github.com/v4/object/pageinfo/
+fragment PageInfo on PageInfo {
+    # When paginating forwards, the cursor to continue.
+    endCursor
+    # When paginating forwards, are there more items?
+    hasNextPage
+    # When paginating backwards, are there more items?
+    hasPreviousPage
+    # When paginating backwards, the cursor to continue.
+    startCursor
+}

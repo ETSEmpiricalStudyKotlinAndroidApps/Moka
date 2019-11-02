@@ -1,0 +1,28 @@
+query PullRequests($owner: String!, $name: String!, $after: String, $before: String, $perPage: Int!) {
+    repository(owner: $owner, name: $name) {
+        pullRequests(last: $perPage, after: $after, before: $before) {
+            nodes {
+                # The actor who authored the comment.
+                author {
+                    ... Actor
+                }
+                # `true` if the pull request is closed
+                closed
+                # Identifies the date and time when the object was created.
+                createdAt
+                id
+                # Whether or not the pull request was merged.
+                merged
+                # Identifies the pull request number.
+                number
+                # Identifies the pull request title.
+                title
+            }
+            # Information to aid in pagination.
+            pageInfo {
+                ... PageInfo
+            }
+            totalCount
+        }
+    }
+}

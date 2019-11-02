@@ -2,7 +2,7 @@ package io.github.tonnyl.moka.data
 
 import android.net.Uri
 import android.os.Parcelable
-import io.github.tonnyl.moka.RepositoryQuery
+import io.github.tonnyl.moka.UsersRepositoryQuery
 import io.github.tonnyl.moka.type.RepositoryLockReason
 import io.github.tonnyl.moka.type.RepositoryPermission
 import io.github.tonnyl.moka.type.SubscriptionState
@@ -261,73 +261,73 @@ data class Repository(
 
     val branchCount: Int,
 
-    val topics: List<RepositoryTopic>?
+    val topics: List<RepositoryTopic?>?
 
 ) : Parcelable
 
-fun RepositoryQuery.Data?.toNullableRepository(): Repository? {
-    val user = this?.user() ?: return null
-    val repository = user.repository() ?: return null
+fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
+    val user = this?.user ?: return null
+    val repository = user.repository?.fragments?.repository ?: return null
 
     return Repository(
-        repository.codeOfConduct()?.fragments()?.codeOfConduct()?.toNonNullCodeOfConduct(),
-        repository.createdAt(),
-        repository.defaultBranchRef()?.fragments()?.ref()?.toNonNullRef(),
-        repository.description(),
-        repository.descriptionHTML(),
-        repository.diskUsage(),
-        repository.forkCount(),
-        repository.hasIssuesEnabled(),
-        repository.hasWikiEnabled(),
-        repository.homepageUrl(),
-        user.id(),
+        repository.codeOfConduct?.fragments?.codeOfConduct?.toNonNullCodeOfConduct(),
+        repository.createdAt,
+        repository.defaultBranchRef?.fragments?.ref?.toNonNullRef(),
+        repository.description,
+        repository.descriptionHTML,
+        repository.diskUsage,
+        repository.forkCount,
+        repository.hasIssuesEnabled,
+        repository.hasWikiEnabled,
+        repository.homepageUrl,
+        user.id,
         repository.isArchived,
         repository.isFork,
         repository.isLocked,
         repository.isMirror,
         repository.isPrivate,
         repository.isTemplate,
-        repository.licenseInfo()?.fragments()?.license()?.toNonNullLicense(),
-        repository.lockReason(),
-        repository.mergeCommitAllowed(),
-        repository.mirrorUrl(),
-        repository.name(),
-        repository.nameWithOwner(),
-        repository.openGraphImageUrl(),
-        repository.owner().fragments().repositoryOwner().toNonNullRepositoryOwner(),
-        repository.primaryLanguage()?.fragments()?.language()?.toNonNullLanguage(),
-        repository.projectsResourcePath(),
-        repository.projectsUrl(),
-        repository.pushedAt(),
-        repository.rebaseMergeAllowed(),
-        repository.resourcePath(),
-        repository.shortDescriptionHTML(),
-        repository.squashMergeAllowed(),
-        repository.sshUrl(),
-        repository.updatedAt(),
-        repository.url(),
-        repository.usesCustomOpenGraphImage(),
-        repository.viewerCanAdminister(),
-        repository.viewerCanCreateProjects(),
-        repository.viewerCanSubscribe(),
-        repository.viewerCanUpdateTopics(),
-        repository.viewerHasStarred(),
-        repository.viewerPermission(),
-        repository.viewerSubscription(),
-        user.name(),
+        repository.licenseInfo?.fragments?.license?.toNonNullLicense(),
+        repository.lockReason,
+        repository.mergeCommitAllowed,
+        repository.mirrorUrl,
+        repository.name,
+        repository.nameWithOwner,
+        repository.openGraphImageUrl,
+        repository.owner.fragments.repositoryOwner.toNonNullRepositoryOwner(),
+        repository.primaryLanguage?.fragments?.language?.toNonNullLanguage(),
+        repository.projectsResourcePath,
+        repository.projectsUrl,
+        repository.pushedAt,
+        repository.rebaseMergeAllowed,
+        repository.resourcePath,
+        repository.shortDescriptionHTML,
+        repository.squashMergeAllowed,
+        repository.sshUrl,
+        repository.updatedAt,
+        repository.url,
+        repository.usesCustomOpenGraphImage,
+        repository.viewerCanAdminister,
+        repository.viewerCanCreateProjects,
+        repository.viewerCanSubscribe,
+        repository.viewerCanUpdateTopics,
+        repository.viewerHasStarred,
+        repository.viewerPermission,
+        repository.viewerSubscription,
+        user.name,
         user.isViewer,
-        user.viewerIsFollowing(),
-        user.viewerCanFollow(),
-        repository.forks().totalCount(),
-        repository.stargazers().totalCount(),
-        repository.issues().totalCount(),
-        repository.pullRequests().totalCount(),
-        repository.watchers().totalCount(),
-        repository.projects().totalCount(),
-        repository.releases().totalCount(),
-        repository.refs()?.totalCount() ?: 0,
-        repository.repositoryTopics().nodes()?.map {
-            it.fragments().repositoryTopic().toNonNullRepositoryTopic()
+        user.viewerIsFollowing,
+        user.viewerCanFollow,
+        repository.forks.totalCount,
+        repository.stargazers.totalCount,
+        repository.issues.totalCount,
+        repository.pullRequests.totalCount,
+        repository.watchers.totalCount,
+        repository.projects.totalCount,
+        repository.releases.totalCount,
+        repository.refs?.totalCount ?: 0,
+        repository.repositoryTopics.nodes?.map {
+            it?.fragments?.repositoryTopic?.toNonNullRepositoryTopic()
         }
     )
 }

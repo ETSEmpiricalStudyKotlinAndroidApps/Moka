@@ -1,0 +1,33 @@
+# Represents a Milestone object on a given repository.
+# https://developer.github.com/v4/object/milestone
+fragment Milestone on Milestone {
+    # `true` if the object is closed (definition of closed may depend on type)
+    closed
+    # Identifies the date and time when the object was closed.
+    closedAt
+    # Identifies the date and time when the object was created.
+    createdAt
+    # Identifies the actor who created the milestone.
+    creator {
+        ... Actor
+    }
+    # Identifies the description of the milestone.
+    description
+    # Identifies the due date of the milestone.
+    dueOn
+    id
+    # Just for debugging on review-lab
+    issuePrioritiesDebug
+    # Identifies the number of the milestone.
+    number
+    # The HTTP path for this milestone
+    resourcePath
+    # Identifies the state of the milestone.
+    state
+    # Identifies the title of the milestone.
+    title
+    # Identifies the date and time when the object was last updated.
+    updatedAt
+    # The HTTP URL for this milestone
+    url
+}

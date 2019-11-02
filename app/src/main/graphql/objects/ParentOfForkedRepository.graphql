@@ -1,0 +1,10 @@
+# The repository parent, if this is a fork.
+# https://developer.github.com/v4/object/repository/
+fragment ParentOfForkedRepository on Repository {
+    # The HTTP URL for this repository
+    url
+    # The name of the repository.
+    name
+    # The repository's name with owner.
+    nameWithOwner
+}

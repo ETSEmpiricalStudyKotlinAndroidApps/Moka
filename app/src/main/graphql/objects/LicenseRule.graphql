@@ -1,0 +1,10 @@
+# Describes a License's conditions, permissions, and limitations
+# https://developer.github.com/v4/object/licenserule/
+fragment LicenseRule on LicenseRule {
+    # A description of the rule
+    description
+    # The machine-readable rule key
+    key
+    # The human-readable rule label
+    label
+}

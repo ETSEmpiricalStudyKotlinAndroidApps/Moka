@@ -45,11 +45,11 @@ data class UserStatus(
 
 fun RawUserStatus.toNonNullUserStatus(): UserStatus {
     return UserStatus(
-        createdAt(),
-        emoji(),
-        id(),
-        indicatesLimitedAvailability(),
-        message(),
-        updatedAt()
+        createdAt,
+        emoji,
+        id,
+        indicatesLimitedAvailability,
+        message,
+        updatedAt
     )
 }

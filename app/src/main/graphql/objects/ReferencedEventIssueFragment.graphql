@@ -1,0 +1,8 @@
+# Issue that made the reference.
+fragment ReferencedEventIssueFragment on Issue {
+    # Identifies the issue title.
+    title
+    # Identifies the issue number.
+    number
+    id
+}

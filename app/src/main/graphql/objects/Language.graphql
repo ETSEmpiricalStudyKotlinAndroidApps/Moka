@@ -1,0 +1,9 @@
+# Represents a given language found in repositories.
+# https://developer.github.com/v4/object/language/
+fragment Language on Language {
+    # The color defined for the current language.
+    color
+    id
+    # The name of the current language.
+    name
+}

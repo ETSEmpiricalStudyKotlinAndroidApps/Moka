@@ -1,0 +1,13 @@
+# A repository-topic connects a repository to a topic.
+# https://developer.github.com/v4/object/repositorytopic/
+fragment RepositoryTopic on RepositoryTopic {
+    id
+    # The HTTP path for this repository-topic.
+    resourcePath
+    # The topic.
+    topic {
+        ... Topic
+    }
+    # The HTTP URL for this repository-topic.
+    url
+}

@@ -1,0 +1,14 @@
+# Represents an 'unassigned' event on any assignable object.
+fragment UnassignedEventFragment on UnassignedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # Identifies the user or mannequin that was assigned.
+    assignee {
+        ... IssuePullRequestTimelineItemAssigneeFragment
+    }
+}

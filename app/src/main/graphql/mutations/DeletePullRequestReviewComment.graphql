@@ -1,0 +1,8 @@
+# Deletes a pull request review comment.
+# https://developer.github.com/v4/mutation/deletepullrequestreviewcomment/
+mutation DeletePullRequestReviewComment($input: DeletePullRequestReviewCommentInput!) {
+    deletePullRequestReviewComment(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

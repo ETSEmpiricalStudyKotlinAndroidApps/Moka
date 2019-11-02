@@ -41,11 +41,11 @@ data class IssueItem(
 
 fun IssuesQuery.Node.toNonNullIssueItem(): IssueItem {
     return IssueItem(
-        author()?.fragments()?.actor()?.toNonNullActor(),
-        id(),
-        number(),
-        createdAt(),
-        title(),
-        closed()
+        author?.fragments?.actor?.toNonNullActor(),
+        id,
+        number,
+        createdAt,
+        title,
+        closed
     )
 }

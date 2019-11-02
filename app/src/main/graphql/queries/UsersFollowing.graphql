@@ -1,0 +1,16 @@
+# A list of users the given user is following.
+query Following($login:String!, $perPage: Int!, $before: String, $after: String) {
+    user(login: $login){
+        following(first: $perPage, before: $before, after: $after) {
+            nodes {
+                ... UserListItemFragment
+            }
+            # Information to aid in pagination.
+            pageInfo {
+                ... PageInfo
+            }
+            # Identifies the total count of items in the connection.
+            totalCount
+        }
+    }
+}

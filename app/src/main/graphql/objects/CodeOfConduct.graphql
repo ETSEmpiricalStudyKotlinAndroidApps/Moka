@@ -1,0 +1,15 @@
+# The Code of Conduct for a repository
+# https://developer.github.com/v4/object/codeofconduct/
+fragment CodeOfConduct on CodeOfConduct {
+    # The body of the Code of Conduct
+    body
+    id
+    # The key for the Code of Conduct
+    key
+    # The formal name of the Code of Conduct
+    name
+    # The HTTP path for this Code of Conduct
+    resourcePath
+    # The HTTP URL for this Code of Conduct
+    url
+}

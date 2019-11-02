@@ -80,16 +80,16 @@ data class SearchedUserItem(
 
 fun UserListItemFragment.toNonNullSearchedUserItem(): SearchedUserItem {
     return SearchedUserItem(
-        avatarUrl(),
-        bio(),
-        bioHTML(),
-        id(),
+        avatarUrl,
+        bio,
+        bioHTML,
+        id,
         isViewer,
-        login(),
-        name(),
-        url(),
-        viewerCanFollow(),
-        viewerIsFollowing()
+        login,
+        name,
+        url,
+        viewerCanFollow,
+        viewerIsFollowing
     )
 }
 
@@ -147,16 +147,16 @@ data class SearchedOrganizationItem(
 
 fun OrganizationListItemFragment.toNonNullSearchedOrganizationItem(): SearchedOrganizationItem {
     return SearchedOrganizationItem(
-        avatarUrl(),
-        description(),
-        descriptionHTML(),
-        id(),
+        avatarUrl,
+        description,
+        descriptionHTML,
+        id,
         isVerified,
-        login(),
-        name(),
-        url(),
-        viewerIsAMember(),
-        websiteUrl()
+        login,
+        name,
+        url,
+        viewerIsAMember,
+        websiteUrl
     )
 }
 
@@ -255,25 +255,25 @@ data class SearchedRepositoryItem(
 
 fun RepositoryListItemFragment.toNonNullSearchedRepositoryItem(): SearchedRepositoryItem {
     return SearchedRepositoryItem(
-        description(),
-        descriptionHTML(),
-        homepageUrl(),
-        id(),
+        description,
+        descriptionHTML,
+        homepageUrl,
+        id,
         isArchived,
         isFork,
         isLocked,
         isMirror,
         isPrivate,
-        mirrorUrl(),
-        name(),
-        nameWithOwner(),
-        owner().fragments().repositoryOwner().toNonNullRepositoryOwner(),
-        parent()?.fragments()?.parentOfForkedRepository()?.toNonNullParentOfForkedRepository(),
-        primaryLanguage()?.fragments()?.language()?.toNonNullLanguage(),
-        shortDescriptionHTML(),
-        url(),
-        viewerHasStarred(),
-        forks().totalCount(),
-        stargazers().totalCount()
+        mirrorUrl,
+        name,
+        nameWithOwner,
+        owner.fragments.repositoryOwner.toNonNullRepositoryOwner(),
+        parent?.fragments?.parentOfForkedRepository?.toNonNullParentOfForkedRepository(),
+        primaryLanguage?.fragments?.language?.toNonNullLanguage(),
+        shortDescriptionHTML,
+        url,
+        viewerHasStarred,
+        forks.totalCount,
+        stargazers.totalCount
     )
 }

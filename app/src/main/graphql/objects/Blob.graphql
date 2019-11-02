@@ -1,0 +1,10 @@
+# Represents a Git blob.
+fragment Blob on Blob {
+    # Byte size of Blob object
+    byteSize
+    # Indicates whether the Blob is binary or text
+    isBinary
+    id
+    # UTF8 text data or null if the Blob is binary
+    text
+}

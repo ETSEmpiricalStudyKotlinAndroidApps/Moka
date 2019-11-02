@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.users
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.FollowersQuery
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.data.toNonNullUserItem
@@ -30,10 +31,12 @@ class FollowersDataSource(
         initialLoadStatus.postValue(Resource.loading(initialLoadStatus.value?.data))
 
         try {
-            val followerQuery = FollowersQuery.builder()
-                .login(login)
-                .perPage(params.requestedLoadSize)
-                .build()
+            val followerQuery = FollowersQuery(
+                login,
+                params.requestedLoadSize,
+                Input.absent(),
+                Input.absent()
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -42,23 +45,25 @@ class FollowersDataSource(
             }
 
             val list = mutableListOf<UserItem>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.followers()?.nodes()?.forEach { node ->
-                list.add(node.fragments().userListItemFragment().toNonNullUserItem())
+            user?.followers?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.userListItemFragment.toNonNullUserItem())
+                }
             }
 
-            val pageInfo = user?.followers()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.followers?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 },
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -89,11 +94,12 @@ class FollowersDataSource(
         )
 
         try {
-            val followersQuery = FollowersQuery.builder()
-                .login(login)
-                .perPage(params.requestedLoadSize)
-                .after(params.key)
-                .build()
+            val followersQuery = FollowersQuery(
+                login,
+                params.requestedLoadSize,
+                Input.absent(),
+                Input.fromNullable(params.key)
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -102,18 +108,20 @@ class FollowersDataSource(
             }
 
             val list = mutableListOf<UserItem>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.followers()?.nodes()?.forEach { node ->
-                list.add(node.fragments().userListItemFragment().toNonNullUserItem())
+            user?.followers?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.userListItemFragment.toNonNullUserItem())
+                }
             }
 
-            val pageInfo = user?.followers()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.followers?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -148,11 +156,12 @@ class FollowersDataSource(
         )
 
         try {
-            val followersQuery = FollowersQuery.builder()
-                .login(login)
-                .perPage(params.requestedLoadSize)
-                .before(params.key)
-                .build()
+            val followersQuery = FollowersQuery(
+                login,
+                params.requestedLoadSize,
+                Input.optional(params.key),
+                Input.absent()
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -161,18 +170,20 @@ class FollowersDataSource(
             }
 
             val list = mutableListOf<UserItem>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.followers()?.nodes()?.forEach { node ->
-                list.add(node.fragments().userListItemFragment().toNonNullUserItem())
+            user?.followers?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.userListItemFragment.toNonNullUserItem())
+                }
             }
 
-            val pageInfo = user?.followers()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.followers?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 }

@@ -60,15 +60,11 @@ class ProfileViewModel(
 
             try {
                 val response = GraphQLClient.apolloClient
-                    .query(
-                        UserQuery.builder()
-                            .login(login)
-                            .build()
-                    )
+                    .query(UserQuery(login))
                     .execute()
 
                 _loadStatus.postValue(Resource.success(Unit))
-                _userProfile.postValue(response.data()?.user()?.fragments()?.user()?.toNonNullUser())
+                _userProfile.postValue(response.data()?.user?.fragments?.user?.toNonNullUser())
             } catch (e: Exception) {
                 Timber.e(e)
 
@@ -85,17 +81,13 @@ class ProfileViewModel(
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient
-                        .query(
-                            OrganizationQuery.builder()
-                                .login(login)
-                                .build()
-                        )
+                        .query(OrganizationQuery(login))
                         .execute()
                 }
 
                 _loadStatus.postValue(Resource.success(Unit))
                 _organizationProfile.postValue(
-                    response.data()?.organization().toNullableOrganization()
+                    response.data()?.organization.toNullableOrganization()
                 )
             } catch (e: Exception) {
                 Timber.e(e)

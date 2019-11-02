@@ -1,0 +1,7 @@
+# Represents a subject that can be reacted on.
+# https://developer.github.com/v4/interface/reactable/
+fragment Reactable on Reactable {
+    id
+    # Can user react to this subject
+    viewerCanReact
+}

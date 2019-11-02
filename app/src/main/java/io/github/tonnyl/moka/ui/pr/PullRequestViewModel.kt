@@ -74,17 +74,11 @@ class PullRequestViewModel(
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient
-                        .query(
-                            PullRequestQuery.builder()
-                                .owner(owner)
-                                .name(name)
-                                .number(number)
-                                .build()
-                        )
+                        .query(PullRequestQuery(owner, name, number))
                         .execute()
                 }
 
-                val data = response.data()?.repository()?.pullRequest().toNullablePullRequest()
+                val data = response.data()?.repository?.pullRequest.toNullablePullRequest()
 
                 _pullRequest.postValue(Resource.success(data?.transformToPullRequestIssueComment()))
             } catch (e: Exception) {

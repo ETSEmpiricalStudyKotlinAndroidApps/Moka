@@ -87,26 +87,26 @@ data class License(
 
 fun RawLicense.toNonNullLicense(): License {
     return License(
-        body(),
-        conditions().map {
-            it.fragments().licenseRule().toNonNullLicenseRule()
+        body,
+        conditions.filterNotNull().map {
+            it.fragments.licenseRule.toNonNullLicenseRule()
         },
-        description(),
-        featured(),
-        hidden(),
-        id(),
-        implementation(),
-        key(),
-        limitations().map {
-            it.fragments().licenseRule().toNonNullLicenseRule()
+        description,
+        featured,
+        hidden,
+        id,
+        implementation,
+        key,
+        limitations.filterNotNull().map {
+            it.fragments.licenseRule.toNonNullLicenseRule()
         },
-        name(),
-        nickname(),
-        permissions().map {
-            it.fragments().licenseRule().toNonNullLicenseRule()
+        name,
+        nickname,
+        permissions.filterNotNull().map {
+            it.fragments.licenseRule.toNonNullLicenseRule()
         },
-        pseudoLicense(),
-        spdxId(),
-        url()
+        pseudoLicense,
+        spdxId,
+        url
     )
 }

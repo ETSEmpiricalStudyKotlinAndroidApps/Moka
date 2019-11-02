@@ -1,0 +1,8 @@
+# Unfollow a user.
+# https://developer.github.com/v4/mutation/unfollowuser/
+mutation UnfollowUser($input: UnfollowUserInput!) {
+    unfollowUser(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

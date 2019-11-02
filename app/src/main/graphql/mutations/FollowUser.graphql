@@ -1,0 +1,8 @@
+# Follow a user.
+# https://developer.github.com/v4/mutation/followuser/
+mutation FollowUser($input: FollowUserInput!) {
+    followUser(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

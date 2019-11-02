@@ -1,0 +1,8 @@
+# Updates the body of a pull request review.
+# https://developer.github.com/v4/mutation/updatepullrequestreview/
+mutation UpdatePullRequestReview($input: UpdatePullRequestReviewInput!) {
+    updatePullRequestReview(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

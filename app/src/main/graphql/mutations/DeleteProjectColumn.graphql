@@ -1,0 +1,8 @@
+# Deletes a project column.
+# https://developer.github.com/v4/mutation/deleteprojectcolumn/
+mutation DeleteProjectColumn($input: DeleteProjectColumnInput!) {
+    deleteProjectColumn(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

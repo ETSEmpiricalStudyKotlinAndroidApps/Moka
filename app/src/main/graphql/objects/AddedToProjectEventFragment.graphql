@@ -1,0 +1,11 @@
+fragment AddedToProjectEventFragment on AddedToProjectEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # Project referenced by event.
+    # ... IssuePrProjectFragment
+}

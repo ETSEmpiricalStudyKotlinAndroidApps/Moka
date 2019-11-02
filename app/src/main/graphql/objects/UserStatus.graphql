@@ -1,0 +1,19 @@
+# The user's description of what they're currently doing.
+# https://developer.github.com/v4/object/userstatus/
+fragment UserStatus on UserStatus {
+    # Identifies the date and time when the object was created.
+    createdAt
+    # An emoji summarizing the user's status.
+    emoji
+    # The status emoji as HTML.
+    emojiHTML
+    # If set, the status will not be shown after this date.
+    expiresAt
+    id
+    # Whether this status indicates the user is not fully available on GitHub.
+    indicatesLimitedAvailability
+    # A brief message describing what the user is doing.
+    message
+    # Identifies the date and time when the object was last updated.
+    updatedAt
+}

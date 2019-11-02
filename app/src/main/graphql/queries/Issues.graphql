@@ -1,0 +1,27 @@
+query Issues($owner: String!, $name: String!, $after: String, $before: String, $perPage: Int!) {
+    repository(owner: $owner, name: $name) {
+        issues(last: $perPage, after: $after, before: $before) {
+            nodes {
+                # The actor who authored the comment.
+                author {
+                    ... Actor
+                }
+                id
+                # Identifies the issue number.
+                number
+                # Identifies the date and time when the object was created.
+                createdAt
+                # Identifies the issue title.
+                title
+                # Identifies the date and time when the object was closed.
+                closed
+            }
+            # Information to aid in pagination.
+            pageInfo {
+                ... PageInfo
+            }
+            # Identifies the total count of items in the connection.
+            totalCount
+        }
+    }
+}

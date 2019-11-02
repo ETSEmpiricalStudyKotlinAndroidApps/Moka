@@ -100,25 +100,25 @@ data class RepositoryItem(
 
 fun RepositoryListItemFragment.toNonNullRepositoryItem(): RepositoryItem {
     return RepositoryItem(
-        description(),
-        descriptionHTML(),
-        homepageUrl(),
-        id(),
+        description,
+        descriptionHTML,
+        homepageUrl,
+        id,
         isArchived,
         isFork,
         isLocked,
         isMirror,
         isPrivate,
-        mirrorUrl(),
-        name(),
-        nameWithOwner(),
-        owner().fragments().repositoryOwner().toNonNullRepositoryOwner(),
-        parent()?.fragments()?.parentOfForkedRepository()?.toNonNullParentOfForkedRepository(),
-        primaryLanguage()?.fragments()?.language()?.toNonNullLanguage(),
-        shortDescriptionHTML(),
-        url(),
-        viewerHasStarred(),
-        forks().totalCount(),
-        stargazers().totalCount()
+        mirrorUrl,
+        name,
+        nameWithOwner,
+        owner.fragments.repositoryOwner.toNonNullRepositoryOwner(),
+        parent?.fragments?.parentOfForkedRepository?.toNonNullParentOfForkedRepository(),
+        primaryLanguage?.fragments?.language?.toNonNullLanguage(),
+        shortDescriptionHTML,
+        url,
+        viewerHasStarred,
+        forks.totalCount,
+        stargazers.totalCount
     )
 }

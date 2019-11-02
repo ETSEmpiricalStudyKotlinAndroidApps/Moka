@@ -26,5 +26,5 @@ data class ParentOrMirrorRepository(
 ) : Parcelable
 
 fun RawParentOfForkedRepository.toNonNullParentOfForkedRepository(): ParentOrMirrorRepository {
-    return ParentOrMirrorRepository(url(), name(), nameWithOwner())
+    return ParentOrMirrorRepository(url, name, nameWithOwner)
 }

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.CurrentLevelTreeViewQuery
 import io.github.tonnyl.moka.FileContentQuery
-import io.github.tonnyl.moka.RepositoryQuery
+import io.github.tonnyl.moka.UsersRepositoryQuery
 import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.data.toNullableRepository
 import io.github.tonnyl.moka.network.GraphQLClient
@@ -55,10 +55,10 @@ class RepositoryViewModel(
                 val response = runBlocking {
                     GraphQLClient.apolloClient
                         .query(
-                            RepositoryQuery.builder()
-                                .login(login)
-                                .repoName(repositoryName)
-                                .build()
+                            UsersRepositoryQuery(
+                                login,
+                                repositoryName
+                            )
                         )
                         .execute()
                 }
@@ -83,11 +83,11 @@ class RepositoryViewModel(
                 val response = runBlocking {
                     GraphQLClient.apolloClient
                         .query(
-                            FileContentQuery.builder()
-                                .login(login)
-                                .repoName(repositoryName)
-                                .expression(expression)
-                                .build()
+                            FileContentQuery(
+                                login,
+                                repositoryName,
+                                expression
+                            )
                         )
                         .execute()
                 }
@@ -103,7 +103,7 @@ class RepositoryViewModel(
                     .extensions(extensions)
                     .build()
                 val document =
-                    parser.parse(response.data()?.repository()?.`object`()?.fragments()?.fileTextAbstract()?.text())
+                    parser.parse(response.data()?.repository?.object_?.fragments?.blob?.text)
                 val renderer = HtmlRenderer.builder()
                     .extensions(extensions)
                     .escapeHtml(false)
@@ -132,41 +132,60 @@ class RepositoryViewModel(
                 val response = runBlocking {
                     GraphQLClient.apolloClient
                         .query(
-                            CurrentLevelTreeViewQuery.builder()
-                                .login(login)
-                                .repoName(repositoryName)
-                                .expression("$branchName:")
-                                .build()
+                            CurrentLevelTreeViewQuery(
+                                login,
+                                repositoryName,
+                                "$branchName:"
+                            )
                         )
                         .execute()
                 }
 
                 val readmeFiles = response.data()
-                    ?.repository()
-                    ?.`object`()
-                    ?.fragments()
-                    ?.tree()
-                    ?.entries()
+                    ?.repository
+                    ?.object_
+                    ?.fragments
+                    ?.tree
+                    ?.entries
                     ?.filter {
-                        it.name().toLowerCase().contains("readme")
+                        it.fragments.treeEntry.name.toLowerCase().contains("readme")
                     }
 
                 if (readmeFiles.isNullOrEmpty()) {
                     Resource(Status.SUCCESS, null, null)
                 } else {
-                    val mdIndex = readmeFiles.indexOfFirst { it.name().endsWith(".md") }
+                    val mdIndex = readmeFiles.indexOfFirst {
+                        it.fragments.treeEntry.name.toLowerCase().endsWith(".md")
+                    }
                     _readmeFileName.postValue(
                         if (mdIndex >= 0) {
-                            Resource.success(Pair("md", readmeFiles[mdIndex].name()))
+                            Resource.success(
+                                Pair(
+                                    "md",
+                                    readmeFiles[mdIndex].fragments.treeEntry.name.toLowerCase()
+                                )
+                            )
                         } else {
-                            val htmlIndex = readmeFiles.indexOfFirst { it.name().endsWith(".html") }
+                            val htmlIndex = readmeFiles.indexOfFirst {
+                                it.fragments.treeEntry.name.toLowerCase().endsWith(".html")
+                            }
                             if (htmlIndex >= 0) {
-                                Resource.success(Pair("html", readmeFiles[htmlIndex].name()))
+                                Resource.success(
+                                    Pair(
+                                        "html",
+                                        readmeFiles[htmlIndex].fragments.treeEntry.name.toLowerCase()
+                                    )
+                                )
                             } else {
                                 val plainIndex =
-                                    readmeFiles.indexOfFirst { it.name().toLowerCase() == "readme" }
+                                    readmeFiles.indexOfFirst { it.fragments.treeEntry.name.toLowerCase().toLowerCase() == "readme" }
                                 if (plainIndex >= 0) {
-                                    Resource.success(Pair("plain", readmeFiles[plainIndex].name()))
+                                    Resource.success(
+                                        Pair(
+                                            "plain",
+                                            readmeFiles[plainIndex].fragments.treeEntry.name.toLowerCase()
+                                        )
+                                    )
                                 } else {
                                     Resource.success(null)
                                 }

@@ -1,0 +1,14 @@
+# Represents a Git commit part of a pull request.
+fragment PullRequestCommitFragment on PullRequestCommit {
+    # The Git commit object
+    commit {
+        ... PullRequestTimelineItemCommitFragment
+    }
+    id
+    # The pull request this commit belongs to
+    pullRequest {
+        ... PullRequestTimelineItemPullRequest
+    }
+    # The HTTP URL for this pull request commit
+    url
+}

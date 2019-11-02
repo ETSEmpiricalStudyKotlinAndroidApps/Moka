@@ -1,0 +1,13 @@
+query UsersProjects($owner: String!, $after: String, $before: String, $perPage: Int!) {
+    user(login: $owner) {
+        projects(last: $perPage, after: $after, before: $before) {
+            nodes {
+                ...Project
+            }
+            pageInfo {
+                ... PageInfo
+            }
+            totalCount
+        }
+    }
+}

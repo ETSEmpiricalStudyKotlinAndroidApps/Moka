@@ -1,0 +1,11 @@
+fragment IssuePullRequestTimelineItemTeamFragment on Team {
+    # A URL pointing to the team's avatar.
+    avatarUrl
+    # The slug corresponding to the organization and team.
+    combinedSlug
+    # The name of the team.
+    name
+    # The HTTP URL for this team
+    url
+    id
+}

@@ -1,0 +1,21 @@
+# Repositories that the user has starred.
+query StarredRepositories($login: String!, $perPage: Int!, $after: String, $before: String) {
+    user(login: $login) {
+        # A URL pointing to the user's public avatar.
+        avatarUrl
+        id
+        # Repositories the user has starred.
+        starredRepositories(first: $perPage,after: $after,before: $before) {
+            # A list of nodes.
+            nodes {
+                ... RepositoryListItemFragment
+            }
+            # Information to aid in pagination.
+            pageInfo {
+                ... PageInfo
+            }
+            # Identifies the total count of items in the connection.
+            totalCount
+        }
+    }
+}

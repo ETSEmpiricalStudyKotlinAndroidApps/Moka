@@ -1,0 +1,26 @@
+# Represents a 'head_ref_force_pushed' event on a given pull request.
+fragment HeadRefForcePushedEventFragment on HeadRefForcePushedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the after commit SHA for the 'head_ref_force_pushed' event.
+    afterCommit {
+        ... PullRequestTimelineItemCommitFragment
+    }
+    # Identifies the before commit SHA for the 'head_ref_force_pushed' event.
+    beforeCommit {
+        ... PullRequestTimelineItemCommitFragment
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # PullRequest referenced by event.
+    pullRequest {
+        ... PullRequestTimelineItemPullRequest
+    }
+    # Identifies the fully qualified ref name for the 'head_ref_force_pushed' event.
+    ref {
+        ... PullRequestTimelineItemRefFragment
+    }
+}

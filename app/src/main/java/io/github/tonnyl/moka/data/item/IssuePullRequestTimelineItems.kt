@@ -70,7 +70,7 @@ data class Bot(
 ) : Parcelable
 
 fun IssuePullRequestTimelineItemBotFragment.toNonNullBot(): Bot {
-    return Bot(avatarUrl(), login(), url())
+    return Bot(avatarUrl, login, url)
 }
 
 @Parcelize
@@ -96,7 +96,7 @@ data class Mannequin(
 ) : Parcelable
 
 fun IssuePullRequestTimelineItemMannequinFragment.toNonNullMannequin(): Mannequin {
-    return Mannequin(avatarUrl(), id(), login(), url())
+    return Mannequin(avatarUrl, id, login, url)
 }
 
 @Parcelize
@@ -127,7 +127,7 @@ data class Organization(
 ) : Parcelable
 
 fun IssuePullRequestTimelineItemOrganizationFragment.toNonNullOrganization(): Organization {
-    return Organization(avatarUrl(), id(), login(), name(), url())
+    return Organization(avatarUrl, id, login, name, url)
 }
 
 @Parcelize
@@ -157,7 +157,7 @@ data class User(
 ) : Parcelable
 
 fun IssuePullRequestTimelineItemUserFragment.toNonNullUser(): User {
-    return User(avatarUrl(), id(), login(), name(), url())
+    return User(avatarUrl, id, login, name, url)
 }
 
 @Parcelize
@@ -188,7 +188,7 @@ data class Team(
 ) : Parcelable
 
 fun IssuePullRequestTimelineItemTeamFragment.toNonNullTeam(): Team {
-    return Team(avatarUrl(), combinedSlug(), name(), url(), id())
+    return Team(avatarUrl, combinedSlug, name, url, id)
 }
 
 @Parcelize
@@ -214,7 +214,7 @@ data class MilestoneItemIssue(
 ) : Parcelable
 
 fun MilestoneItemIssueFragment.toNonNullMilestoneItemIssue(): MilestoneItemIssue {
-    return MilestoneItemIssue(title(), number(), id(), url())
+    return MilestoneItemIssue(title, number, id, url)
 }
 
 /**
@@ -243,12 +243,7 @@ data class MilestoneItemPullRequest(
 ) : Parcelable
 
 fun MilestoneItemPullRequestFragment.toNonNullMilestoneItemPullRequest(): MilestoneItemPullRequest {
-    return MilestoneItemPullRequest(
-        title(),
-        number(),
-        id(),
-        url()
-    )
+    return MilestoneItemPullRequest(title, number, id, url)
 }
 
 /**
@@ -277,7 +272,7 @@ data class Label(
 ) : Parcelable
 
 fun IssuePrLabelFragment.toNonNullLabel(): Label {
-    return Label(color(), id(), name(), url())
+    return Label(color, id, name, url)
 }
 
 @Parcelize
@@ -311,12 +306,12 @@ data class Assignee(
 }
 
 fun IssuePullRequestTimelineItemAssigneeFragment?.toNonNullAssignee(): Assignee {
-    val assignee = this?.fragments()
+    val assignee = this?.fragments
     return Assignee(
-        assignee?.issuePullRequestTimelineItemBotFragment()?.toNonNullBot(),
-        assignee?.issuePullRequestTimelineItemMannequinFragment()?.toNonNullMannequin(),
-        assignee?.issuePullRequestTimelineItemOrganizationFragment()?.toNonNullOrganization(),
-        assignee?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser()
+        assignee?.issuePullRequestTimelineItemBotFragment?.toNonNullBot(),
+        assignee?.issuePullRequestTimelineItemMannequinFragment?.toNonNullMannequin(),
+        assignee?.issuePullRequestTimelineItemOrganizationFragment?.toNonNullOrganization(),
+        assignee?.issuePullRequestTimelineItemUserFragment?.toNonNullUser()
     )
 }
 
@@ -379,17 +374,17 @@ data class PullRequestTimelineItemDeployment(
 
 fun PullRequestTimelineItemDeploymentFragment.toNonNullPullRequestTimelineItemDeployment(): PullRequestTimelineItemDeployment {
     return PullRequestTimelineItemDeployment(
-        commit()?.fragments()?.pullRequestTimelineItemCommitFragment()?.toNonNullPullRequestTimelineItemCommit(),
-        commitOid(),
-        createdAt(),
-        creator()?.fragments()?.actor()?.toNonNullActor(),
-        description(),
-        description(),
-        id(),
-        ref()?.fragments()?.pullRequestTimelineItemRefFragment()?.toNonNullPullRequestTimelineItemRef(),
-        state(),
-        task(),
-        updatedAt()
+        commit?.fragments?.pullRequestTimelineItemCommitFragment?.toNonNullPullRequestTimelineItemCommit(),
+        commitOid,
+        createdAt,
+        creator?.fragments?.actor?.toNonNullActor(),
+        description,
+        description,
+        id,
+        ref?.fragments?.pullRequestTimelineItemRefFragment?.toNonNullPullRequestTimelineItemRef(),
+        state,
+        task,
+        updatedAt
     )
 }
 
@@ -428,11 +423,11 @@ data class PullRequestTimelineItemCommit(
 
 fun PullRequestTimelineItemCommitFragment.toNonNullPullRequestTimelineItemCommit(): PullRequestTimelineItemCommit {
     return PullRequestTimelineItemCommit(
-        author()?.fragments()?.gitActorFragment()?.toNonNullPullRequestTimelineItemGitActor(),
-        committer()?.fragments()?.gitActorFragment()?.toNonNullPullRequestTimelineItemGitActor(),
-        message(),
-        oid(),
-        url()
+        author?.fragments?.gitActorFragment?.toNonNullPullRequestTimelineItemGitActor(),
+        committer?.fragments?.gitActorFragment?.toNonNullPullRequestTimelineItemGitActor(),
+        message,
+        oid,
+        url
     )
 }
 
@@ -469,14 +464,7 @@ data class PullRequestTimelineItemPullRequest(
 ) : Parcelable
 
 fun RawPullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(): PullRequestTimelineItemPullRequest {
-    return PullRequestTimelineItemPullRequest(
-        closed(),
-        number(),
-        id(),
-        state(),
-        title(),
-        url()
-    )
+    return PullRequestTimelineItemPullRequest(closed, number, id, state, title, url)
 }
 
 /**
@@ -500,7 +488,7 @@ data class PullRequestTimelineItemRef(
 ) : Parcelable
 
 fun PullRequestTimelineItemRefFragment.toNonNullPullRequestTimelineItemRef(): PullRequestTimelineItemRef {
-    return PullRequestTimelineItemRef(id(), name(), prefix())
+    return PullRequestTimelineItemRef(id, name, prefix)
 }
 
 @Parcelize
@@ -522,9 +510,9 @@ data class PullRequestTimelineItemPullRequestReview(
 
 fun PullRequestReviewFragment.toNonNullPullRequestTimelineItemPullRequestReview(): PullRequestTimelineItemPullRequestReview {
     return PullRequestTimelineItemPullRequestReview(
-        id(),
-        author()?.fragments()?.actor()?.toNonNullActor(),
-        url()
+        id,
+        author?.fragments?.actor?.toNonNullActor(),
+        url
     )
 }
 
@@ -555,10 +543,10 @@ data class PullRequestTimelineItemGitActor(
 
 fun GitActorFragment.toNonNullPullRequestTimelineItemGitActor(): PullRequestTimelineItemGitActor {
     return PullRequestTimelineItemGitActor(
-        avatarUrl(),
-        email(),
-        name(),
-        user()?.fragments()?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser()
+        avatarUrl,
+        email,
+        name,
+        user?.fragments?.issuePullRequestTimelineItemUserFragment?.toNonNullUser()
     )
 }
 
@@ -585,11 +573,7 @@ data class AddedToProjectEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun AddedToProjectEventFragment.toNonNullAddedToProjectEvent(): AddedToProjectEvent {
-    return AddedToProjectEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id()
-    )
+    return AddedToProjectEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -622,32 +606,32 @@ data class AssignedEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun AssignedEventFragment.toNonNullAssignedEvent(): AssignedEvent {
-    val assignee = assignee()
-        ?.fragments()
-        ?.issuePullRequestTimelineItemAssigneeFragment()
-        ?.fragments()
+    val assignee = assignee
+        ?.fragments
+        ?.issuePullRequestTimelineItemAssigneeFragment
+        ?.fragments
 
     var assigneeLogin: String? = null
     var assigneeName: String? = null
 
-    assignee?.issuePullRequestTimelineItemBotFragment()?.let {
-        assigneeLogin = it.login()
+    assignee?.issuePullRequestTimelineItemBotFragment?.let {
+        assigneeLogin = it.login
         assigneeName = null
-    } ?: assignee?.issuePullRequestTimelineItemMannequinFragment()?.let {
-        assigneeLogin = it.login()
+    } ?: assignee?.issuePullRequestTimelineItemMannequinFragment?.let {
+        assigneeLogin = it.login
         assigneeName = null
-    } ?: assignee?.issuePullRequestTimelineItemOrganizationFragment()?.let {
-        assigneeLogin = it.login()
-        assigneeName = it.name()
-    } ?: assignee?.issuePullRequestTimelineItemUserFragment()?.let {
-        assigneeLogin = it.login()
-        assigneeName = it.name()
+    } ?: assignee?.issuePullRequestTimelineItemOrganizationFragment?.let {
+        assigneeLogin = it.login
+        assigneeName = it.name
+    } ?: assignee?.issuePullRequestTimelineItemUserFragment?.let {
+        assigneeLogin = it.login
+        assigneeName = it.name
     }
 
     return AssignedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
         assigneeLogin,
         assigneeName
     )
@@ -678,9 +662,7 @@ data class ClosedEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun ClosedEventFragment.toNonNullClosedEvent(): ClosedEvent {
-    return ClosedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(), createdAt(), id(), url()
-    )
+    return ClosedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id, url)
 }
 
 /**
@@ -728,11 +710,7 @@ data class ConvertedNoteToIssueEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun ConvertedNoteToIssueEventFragment.toNonNullConvertedNoteToIssueEvent(): ConvertedNoteToIssueEvent {
-    return ConvertedNoteToIssueEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id()
-    )
+    return ConvertedNoteToIssueEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -772,12 +750,12 @@ data class CrossReferencedEvent(
 
 fun CrossReferencedEventFragment.toNonNullCrossReferencedEvent(): CrossReferencedEvent {
     return CrossReferencedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
         isCrossRepository,
-        id(),
-        source().fragments().referencedEventIssueFragment()?.toNonNullReferencedEventIssueFragmentItem(),
-        source().fragments().referencedEventPullRequestFragment()?.toNonNullReferencedEventPullRequestFragmentItem()
+        id,
+        source.fragments.referencedEventIssueFragment?.toNonNullReferencedEventIssueFragmentItem(),
+        source.fragments.referencedEventPullRequestFragment?.toNonNullReferencedEventPullRequestFragmentItem()
     )
 }
 
@@ -812,12 +790,12 @@ data class DemilestonedEvent(
 
 fun DemilestonedEventFragment.toNonNullDemilestonedEvent(): DemilestonedEvent {
     return DemilestonedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        milestoneTitle(),
-        subject().fragments().milestoneItemIssueFragment()?.toNonNullMilestoneItemIssue(),
-        subject().fragments().milestoneItemPullRequestFragment()?.toNonNullMilestoneItemPullRequest()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        milestoneTitle,
+        subject.fragments.milestoneItemIssueFragment?.toNonNullMilestoneItemIssue(),
+        subject.fragments.milestoneItemPullRequestFragment?.toNonNullMilestoneItemPullRequest()
     )
 }
 
@@ -885,18 +863,18 @@ data class IssueComment(
 
 fun IssueCommentFragment.toNonNullIssueComment(): IssueComment {
     return IssueComment(
-        author()?.fragments()?.actor()?.toNonNullActor(),
-        authorAssociation(),
-        createdAt(),
-        body(),
-        id(),
-        editor()?.fragments()?.actor()?.toNonNullActor(),
-        viewerCanDelete(),
-        viewerCanReact(),
-        viewerDidAuthor(),
-        viewerCanUpdate(),
-        viewerCanMinimize(),
-        viewerCannotUpdateReasons()
+        author?.fragments?.actor?.toNonNullActor(),
+        authorAssociation,
+        createdAt,
+        body,
+        id,
+        editor?.fragments?.actor?.toNonNullActor(),
+        viewerCanDelete,
+        viewerCanReact,
+        viewerDidAuthor,
+        viewerCanUpdate,
+        viewerCanMinimize,
+        viewerCannotUpdateReasons
     )
 }
 
@@ -927,10 +905,10 @@ data class LabeledEvent(
 
 fun LabeledEventFragment.toNonNullLabeledEvent(): LabeledEvent {
     return LabeledEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        label().fragments().issuePrLabelFragment().toNonNullLabel()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        label.fragments.issuePrLabelFragment.toNonNullLabel()
     )
 }
 
@@ -961,10 +939,10 @@ data class LockedEvent(
 
 fun LockedEventFragment.toNonNullLockedEvent(): LockedEvent {
     return LockedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        lockReason()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        lockReason
     )
 }
 
@@ -989,11 +967,7 @@ data class MarkedAsDuplicateEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun MarkedAsDuplicateEventFragment.toNonNullMarkedAsDuplicateEvent(): MarkedAsDuplicateEvent {
-    return MarkedAsDuplicateEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id()
-    )
+    return MarkedAsDuplicateEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1050,12 +1024,7 @@ data class MilestonedEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun MilestonedEventFragment.toNonNullMilestonedEvent(): MilestonedEvent {
-    return MilestonedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        milestoneTitle()
-    )
+    return MilestonedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id, milestoneTitle)
 }
 
 /**
@@ -1079,11 +1048,7 @@ data class MovedColumnsInProjectEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun MovedColumnsInProjectEventFragment.toNonNullMovedColumnsInProjectEvent(): MovedColumnsInProjectEvent {
-    return MovedColumnsInProjectEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id()
-    )
+    return MovedColumnsInProjectEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1107,11 +1072,7 @@ data class PinnedEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun PinnedEventFragment.toNonNullPinnedEvent(): PinnedEvent {
-    return PinnedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id()
-    )
+    return PinnedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1151,13 +1112,13 @@ data class ReferencedEvent(
 
 fun ReferencedEventFragment.toNonNullReferencedEvent(): ReferencedEvent {
     return ReferencedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
         isCrossRepository,
         isDirectReference,
-        subject().fragments().referencedEventIssueFragment()?.toNonNullReferencedEventIssueFragmentItem(),
-        subject().fragments().referencedEventPullRequestFragment()?.toNonNullReferencedEventPullRequestFragmentItem()
+        subject.fragments.referencedEventIssueFragment?.toNonNullReferencedEventIssueFragmentItem(),
+        subject.fragments.referencedEventPullRequestFragment?.toNonNullReferencedEventPullRequestFragmentItem()
     )
 }
 
@@ -1182,11 +1143,7 @@ data class RemovedFromProjectEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun RemovedFromProjectEventFragment.toNonNullRemovedFromProjectEvent(): RemovedFromProjectEvent {
-    return RemovedFromProjectEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id()
-    )
+    return RemovedFromProjectEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1218,11 +1175,11 @@ data class RenamedTitleEvent(
 
 fun RenamedTitleEventFragment.toNonNullRenamedTitleEvent(): RenamedTitleEvent {
     return RenamedTitleEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        currentTitle(),
-        id(),
-        previousTitle()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        currentTitle,
+        id,
+        previousTitle
     )
 }
 
@@ -1247,11 +1204,7 @@ data class ReopenedEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun ReopenedEventFragment.toNonNullReopenedEvent(): ReopenedEvent {
-    return ReopenedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id()
-    )
+    return ReopenedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1312,14 +1265,14 @@ data class TransferredEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun TransferredEventFragment.toNonNullTransferredEvent(): TransferredEvent {
-    val owner = fromRepository()?.owner()?.fragments()
+    val owner = fromRepository?.owner?.fragments
     return TransferredEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        fromRepository()?.nameWithOwner(),
-        owner?.issuePullRequestTimelineItemOrganizationFragment()?.toNonNullOrganization(),
-        owner?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        fromRepository?.nameWithOwner,
+        owner?.issuePullRequestTimelineItemOrganizationFragment?.toNonNullOrganization(),
+        owner?.issuePullRequestTimelineItemUserFragment?.toNonNullUser()
     )
 }
 
@@ -1347,10 +1300,10 @@ data class UnassignedEvent(
 
 fun UnassignedEventFragment.toNonNullUnassignedEvent(): UnassignedEvent {
     return UnassignedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        assignee()?.fragments()?.issuePullRequestTimelineItemAssigneeFragment().toNonNullAssignee()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        assignee?.fragments?.issuePullRequestTimelineItemAssigneeFragment.toNonNullAssignee()
     )
 }
 
@@ -1381,10 +1334,10 @@ data class UnlabeledEvent(
 
 fun UnlabeledEventFragment.toNonNullUnlabeledEvent(): UnlabeledEvent {
     return UnlabeledEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        label().fragments().issuePrLabelFragment().toNonNullLabel()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        label.fragments.issuePrLabelFragment.toNonNullLabel()
     )
 }
 
@@ -1412,11 +1365,7 @@ data class UnlockedEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun UnlockedEventFragment.toNonNullUnlockedEvent(): UnlockedEvent {
-    return UnlockedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id()
-    )
+    return UnlockedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1440,11 +1389,7 @@ data class UnpinnedEvent(
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
 fun UnpinnedEventFragment.toNonNullUnpinnedEvent(): UnpinnedEvent {
-    return UnpinnedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id()
-    )
+    return UnpinnedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1527,7 +1472,7 @@ data class ReferencedEventIssueFragmentItem(
 ) : Parcelable
 
 fun ReferencedEventIssueFragment.toNonNullReferencedEventIssueFragmentItem(): ReferencedEventIssueFragmentItem {
-    return ReferencedEventIssueFragmentItem(title(), number(), id())
+    return ReferencedEventIssueFragmentItem(title, number, id)
 }
 
 @Parcelize
@@ -1542,7 +1487,7 @@ data class ReferencedEventPullRequestFragmentItem(
 ) : Parcelable
 
 fun ReferencedEventPullRequestFragment.toNonNullReferencedEventPullRequestFragmentItem(): ReferencedEventPullRequestFragmentItem {
-    return ReferencedEventPullRequestFragmentItem(title(), number(), id())
+    return ReferencedEventPullRequestFragmentItem(title, number, id)
 }
 
 @Parcelize
@@ -1563,11 +1508,7 @@ data class BaseRefChangedEvent(
 ) : Parcelable, PullRequestTimelineItem
 
 fun BaseRefChangedEventFragment.toNonNullBaseRefChangedEvent(): BaseRefChangedEvent {
-    return BaseRefChangedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id()
-    )
+    return BaseRefChangedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 @Parcelize
@@ -1604,12 +1545,12 @@ data class BaseRefForcePushedEvent(
 
 fun BaseRefForcePushedEventFragment.toNonNullBaseRefForcePushedEvent(): BaseRefForcePushedEvent {
     return BaseRefForcePushedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        afterCommit()?.fragments()?.pullRequestTimelineItemCommitFragment()?.toNonNullPullRequestTimelineItemCommit(),
-        beforeCommit()?.fragments()?.pullRequestTimelineItemCommitFragment()?.toNonNullPullRequestTimelineItemCommit(),
-        createdAt(),
-        id(),
-        ref()?.fragments()?.pullRequestTimelineItemRefFragment()?.toNonNullPullRequestTimelineItemRef()
+        actor?.fragments?.actor?.toNonNullActor(),
+        afterCommit?.fragments?.pullRequestTimelineItemCommitFragment?.toNonNullPullRequestTimelineItemCommit(),
+        beforeCommit?.fragments?.pullRequestTimelineItemCommitFragment?.toNonNullPullRequestTimelineItemCommit(),
+        createdAt,
+        id,
+        ref?.fragments?.pullRequestTimelineItemRefFragment?.toNonNullPullRequestTimelineItemRef()
     )
 }
 
@@ -1637,10 +1578,10 @@ data class PullRequestCommit(
 
 fun PullRequestCommitFragment.toNonNullPullRequestCommit(): PullRequestCommit {
     return PullRequestCommit(
-        commit().fragments().pullRequestTimelineItemCommitFragment().toNonNullPullRequestTimelineItemCommit(),
-        id(),
-        pullRequest().fragments().pullRequestTimelineItemPullRequest().toNonNullPullRequestTimelineItemPullRequest(),
-        url()
+        commit.fragments.pullRequestTimelineItemCommitFragment.toNonNullPullRequestTimelineItemCommit(),
+        id,
+        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        url
     )
 }
 
@@ -1673,11 +1614,11 @@ data class PullRequestCommitCommentThread(
 
 fun PullRequestCommitCommentThreadFragment.toNonNullPullRequestCommitCommentThread(): PullRequestCommitCommentThread {
     return PullRequestCommitCommentThread(
-        commit().fragments().pullRequestTimelineItemCommitFragment().toNonNullPullRequestTimelineItemCommit(),
-        id(),
-        path(),
-        position(),
-        pullRequest().fragments().pullRequestTimelineItemPullRequest().toNonNullPullRequestTimelineItemPullRequest()
+        commit.fragments.pullRequestTimelineItemCommitFragment.toNonNullPullRequestTimelineItemCommit(),
+        id,
+        path,
+        position,
+        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest()
     )
 }
 
@@ -1702,10 +1643,10 @@ data class DeployedEvent(
 
 fun DeployedEventFragment.toNonNullDeployedEvent(): DeployedEvent {
     return DeployedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        deployment().fragments().pullRequestTimelineItemDeploymentFragment().environment()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        deployment.fragments.pullRequestTimelineItemDeploymentFragment.environment
     )
 }
 
@@ -1736,14 +1677,14 @@ data class DeploymentEnvironmentChangedEvent(
 
 fun DeploymentEnvironmentChangedEventFragment.toNonNullDeploymentEnvironmentChangedEvent(): DeploymentEnvironmentChangedEvent {
     return DeploymentEnvironmentChangedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        deploymentStatus()
-            .deployment()
-            .fragments()
-            .pullRequestTimelineItemDeploymentFragment()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        deploymentStatus
+            .deployment
+            .fragments
+            .pullRequestTimelineItemDeploymentFragment
             .toNonNullPullRequestTimelineItemDeployment(),
-        id()
+        id
     )
 }
 
@@ -1774,10 +1715,10 @@ data class HeadRefDeletedEvent(
 
 fun HeadRefDeletedEventFragment.toNonNullHeadRefDeletedEvent(): HeadRefDeletedEvent {
     return HeadRefDeletedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        headRefName()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        headRefName
     )
 }
 
@@ -1823,13 +1764,13 @@ data class HeadRefForcePushedEvent(
 
 fun HeadRefForcePushedEventFragment.toNonNullHeadRefForcePushedEvent(): HeadRefForcePushedEvent {
     return HeadRefForcePushedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        afterCommit()?.fragments()?.pullRequestTimelineItemCommitFragment()?.oid(),
-        beforeCommit()?.fragments()?.pullRequestTimelineItemCommitFragment()?.oid(),
-        createdAt(),
-        id(),
-        pullRequest().fragments().pullRequestTimelineItemPullRequest().toNonNullPullRequestTimelineItemPullRequest(),
-        ref()?.fragments()?.pullRequestTimelineItemRefFragment()?.toNonNullPullRequestTimelineItemRef()
+        actor?.fragments?.actor?.toNonNullActor(),
+        afterCommit?.fragments?.pullRequestTimelineItemCommitFragment?.oid,
+        beforeCommit?.fragments?.pullRequestTimelineItemCommitFragment?.oid,
+        createdAt,
+        id,
+        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        ref?.fragments?.pullRequestTimelineItemRefFragment?.toNonNullPullRequestTimelineItemRef()
     )
 }
 
@@ -1867,12 +1808,12 @@ data class HeadRefRestoredEvent(
 
 fun HeadRefRestoredEventFragment.toNonNullHeadRefRestoredEvent(): HeadRefRestoredEvent {
     return HeadRefRestoredEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        pullRequest().baseRefName(),
-        pullRequest().headRefName(),
-        pullRequest().fragments().pullRequestTimelineItemPullRequest().toNonNullPullRequestTimelineItemPullRequest()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        pullRequest.baseRefName,
+        pullRequest.headRefName,
+        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest()
     )
 }
 
@@ -1904,11 +1845,11 @@ data class MergedEvent(
 
 fun MergedEventFragment.toNonNullMergedEvent(): MergedEvent {
     return MergedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        mergeRefName(),
-        commit()?.fragments()?.pullRequestTimelineItemCommitFragment()?.oid()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        mergeRefName,
+        commit?.fragments?.pullRequestTimelineItemCommitFragment?.oid
     )
 }
 
@@ -2028,29 +1969,29 @@ data class PullRequestReview(
 
 fun PullRequestReviewFragment.toNonNullPullRequestReview(): PullRequestReview {
     return PullRequestReview(
-        author()?.fragments()?.actor()?.toNonNullActor(),
-        authorAssociation(),
-        body(),
-        bodyHTML(),
-        commit()?.fragments()?.pullRequestTimelineItemCommitFragment()?.toNonNullPullRequestTimelineItemCommit(),
-        createdAt(),
-        createdViaEmail(),
-        editor()?.fragments()?.actor()?.toNonNullActor(),
-        id(),
-        includesCreatedEdit(),
-        lastEditedAt(),
-        publishedAt(),
-        pullRequest().fragments().pullRequestTimelineItemPullRequest().toNonNullPullRequestTimelineItemPullRequest(),
-        state(),
-        submittedAt(),
-        updatedAt(),
-        url(),
-        viewerCanDelete(),
-        viewerCanReact(),
-        viewerCanUpdate(),
-        viewerCannotUpdateReasons(),
-        viewerDidAuthor(),
-        comments().totalCount()
+        author?.fragments?.actor?.toNonNullActor(),
+        authorAssociation,
+        body,
+        bodyHTML,
+        commit?.fragments?.pullRequestTimelineItemCommitFragment?.toNonNullPullRequestTimelineItemCommit(),
+        createdAt,
+        createdViaEmail,
+        editor?.fragments?.actor?.toNonNullActor(),
+        id,
+        includesCreatedEdit,
+        lastEditedAt,
+        publishedAt,
+        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        state,
+        submittedAt,
+        updatedAt,
+        url,
+        viewerCanDelete,
+        viewerCanReact,
+        viewerCanUpdate,
+        viewerCannotUpdateReasons,
+        viewerDidAuthor,
+        comments.totalCount
     )
 }
 
@@ -2088,12 +2029,12 @@ data class PullRequestReviewThread(
 
 fun PullRequestReviewThreadFragment.toNonNullPullRequestReviewThread(): PullRequestReviewThread {
     return PullRequestReviewThread(
-        id(),
+        id,
         isResolved,
-        resolvedBy()?.fragments()?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser(),
-        pullRequest().fragments().pullRequestTimelineItemPullRequest().toNonNullPullRequestTimelineItemPullRequest(),
-        viewerCanResolve(),
-        viewerCanUnresolve()
+        resolvedBy?.fragments?.issuePullRequestTimelineItemUserFragment?.toNonNullUser(),
+        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        viewerCanResolve,
+        viewerCanUnresolve
     )
 }
 
@@ -2168,11 +2109,11 @@ data class ReadyForReviewEvent(
 
 fun ReadyForReviewEventFragment.toNonNullReadyForReviewEvent(): ReadyForReviewEvent {
     return ReadyForReviewEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        pullRequest().fragments().pullRequestTimelineItemPullRequest().toNonNullPullRequestTimelineItemPullRequest(),
-        url()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        url
     )
 }
 
@@ -2216,14 +2157,14 @@ data class ReviewDismissedEvent(
 
 fun ReviewDismissedEventFragment.toNonNullReviewDismissedEvent(): ReviewDismissedEvent {
     return ReviewDismissedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        dismissalMessage(),
-        dismissalMessageHTML(),
-        id(),
-        previousReviewState(),
-        review()?.fragments()?.pullRequestReviewFragment()?.toNonNullPullRequestTimelineItemPullRequestReview(),
-        url()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        dismissalMessage,
+        dismissalMessageHTML,
+        id,
+        previousReviewState,
+        review?.fragments?.pullRequestReviewFragment?.toNonNullPullRequestTimelineItemPullRequestReview(),
+        url
     )
 }
 
@@ -2260,13 +2201,13 @@ data class ReviewRequestRemovedEvent(
 
 fun ReviewRequestRemovedEventFragment.toNonNullReviewRequestRemovedEvent(): ReviewRequestRemovedEvent {
     return ReviewRequestRemovedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        pullRequest().fragments().pullRequestTimelineItemPullRequest().toNonNullPullRequestTimelineItemPullRequest(),
-        requestedReviewer()?.fragments()?.issuePullRequestTimelineItemTeamFragment()?.toNonNullTeam(),
-        requestedReviewer()?.fragments()?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser(),
-        requestedReviewer()?.fragments()?.issuePullRequestTimelineItemMannequinFragment()?.toNonNullMannequin()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        requestedReviewer?.fragments?.issuePullRequestTimelineItemTeamFragment?.toNonNullTeam(),
+        requestedReviewer?.fragments?.issuePullRequestTimelineItemUserFragment?.toNonNullUser(),
+        requestedReviewer?.fragments?.issuePullRequestTimelineItemMannequinFragment?.toNonNullMannequin()
     )
 }
 
@@ -2310,12 +2251,12 @@ data class ReviewRequestedEvent(
 
 fun ReviewRequestedEventFragment.toNonNullReviewRequestedEvent(): ReviewRequestedEvent {
     return ReviewRequestedEvent(
-        actor()?.fragments()?.actor()?.toNonNullActor(),
-        createdAt(),
-        id(),
-        pullRequest().fragments().pullRequestTimelineItemPullRequest().toNonNullPullRequestTimelineItemPullRequest(),
-        requestedReviewer()?.fragments()?.issuePullRequestTimelineItemTeamFragment()?.toNonNullTeam(),
-        requestedReviewer()?.fragments()?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser(),
-        requestedReviewer()?.fragments()?.issuePullRequestTimelineItemMannequinFragment()?.toNonNullMannequin()
+        actor?.fragments?.actor?.toNonNullActor(),
+        createdAt,
+        id,
+        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        requestedReviewer?.fragments?.issuePullRequestTimelineItemTeamFragment?.toNonNullTeam(),
+        requestedReviewer?.fragments?.issuePullRequestTimelineItemUserFragment?.toNonNullUser(),
+        requestedReviewer?.fragments?.issuePullRequestTimelineItemMannequinFragment?.toNonNullMannequin()
     )
 }

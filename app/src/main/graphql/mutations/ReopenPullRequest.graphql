@@ -1,0 +1,8 @@
+# Reopen a pull request.
+# https://developer.github.com/v4/mutation/reopenpullrequest/
+mutation ReopenPullRequest($input: ReopenPullRequestInput!) {
+    reopenPullRequest(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

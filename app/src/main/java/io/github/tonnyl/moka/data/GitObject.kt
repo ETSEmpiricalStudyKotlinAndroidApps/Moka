@@ -36,5 +36,5 @@ data class GitObject(
 ) : Parcelable
 
 fun RawGitObject.toNonNullGitObject(): GitObject {
-    return GitObject(abbreviatedOid(), commitResourcePath(), commitUrl(), id(), oid())
+    return GitObject(abbreviatedOid, commitResourcePath, commitUrl, id, oid)
 }

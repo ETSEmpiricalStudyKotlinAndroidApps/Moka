@@ -1,0 +1,11 @@
+fragment GitActorFragment on GitActor {
+    # A URL pointing to the author's public avatar.
+    avatarUrl
+    # The email in the Git commit.
+    email
+    # The name in the Git commit.
+    name
+    user {
+        ... IssuePullRequestTimelineItemUserFragment
+    }
+}

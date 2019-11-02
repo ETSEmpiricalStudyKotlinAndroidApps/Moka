@@ -1,0 +1,23 @@
+# Represents a 'deployed' event on a given pull request.
+fragment DeployedEventFragment on DeployedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    # The deployment associated with the 'deployed' event.
+    deployment {
+        # The environment to which this deployment was made.
+        ... PullRequestTimelineItemDeploymentFragment
+    }
+    id
+    # PullRequest referenced by event.
+    pullRequest {
+        ... PullRequestTimelineItemPullRequest
+    }
+    # The ref associated with the 'deployed' event.
+    ref {
+        ... PullRequestTimelineItemRefFragment
+    }
+}

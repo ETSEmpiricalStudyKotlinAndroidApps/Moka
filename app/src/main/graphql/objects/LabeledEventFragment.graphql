@@ -1,0 +1,14 @@
+# Represents a 'labeled' event on a given issue or pull request.
+fragment LabeledEventFragment on LabeledEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # Identifies the label associated with the 'labeled' event.
+    label {
+        ... IssuePrLabelFragment
+    }
+}

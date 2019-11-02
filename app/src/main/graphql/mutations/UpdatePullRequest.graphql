@@ -1,0 +1,8 @@
+# Update a pull request
+# https://developer.github.com/v4/mutation/updatepullrequest/
+mutation UpdatePullRequest($input: UpdatePullRequestInput!) {
+    updatePullRequest(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

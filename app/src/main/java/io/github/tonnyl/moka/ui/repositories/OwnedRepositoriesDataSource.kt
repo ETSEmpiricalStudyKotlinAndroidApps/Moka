@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.repositories
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.OwnedRepositoriesQuery
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.toNonNullRepositoryItem
@@ -30,10 +31,12 @@ class OwnedRepositoriesDataSource(
         loadStatusLiveData.postValue(Resource.loading(null))
 
         try {
-            val repositoriesQuery = OwnedRepositoriesQuery.builder()
-                .login(login)
-                .perPage(params.requestedLoadSize)
-                .build()
+            val repositoriesQuery = OwnedRepositoriesQuery(
+                login,
+                params.requestedLoadSize,
+                Input.absent(),
+                Input.absent()
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -42,23 +45,25 @@ class OwnedRepositoriesDataSource(
             }
 
             val list = mutableListOf<RepositoryItem>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.repositories()?.nodes()?.forEach { node ->
-                list.add(node.fragments().repositoryListItemFragment().toNonNullRepositoryItem())
+            user?.repositories?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.repositoryListItemFragment.toNonNullRepositoryItem())
+                }
             }
 
-            val pageInfo = user?.repositories()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.repositories?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 },
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -89,11 +94,12 @@ class OwnedRepositoriesDataSource(
         )
 
         try {
-            val repositoriesQuery = OwnedRepositoriesQuery.builder()
-                .login(login)
-                .perPage(params.requestedLoadSize)
-                .after(params.key)
-                .build()
+            val repositoriesQuery = OwnedRepositoriesQuery(
+                login,
+                params.requestedLoadSize,
+                Input.fromNullable(params.key),
+                Input.absent()
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -102,18 +108,20 @@ class OwnedRepositoriesDataSource(
             }
 
             val list = mutableListOf<RepositoryItem>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.repositories()?.nodes()?.forEach { node ->
-                list.add(node.fragments().repositoryListItemFragment().toNonNullRepositoryItem())
+            user?.repositories?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.repositoryListItemFragment.toNonNullRepositoryItem())
+                }
             }
 
-            val pageInfo = user?.repositories()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.repositories?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -148,11 +156,12 @@ class OwnedRepositoriesDataSource(
         )
 
         try {
-            val repositoriesQuery = OwnedRepositoriesQuery.builder()
-                .login(login)
-                .perPage(params.requestedLoadSize)
-                .before(params.key)
-                .build()
+            val repositoriesQuery = OwnedRepositoriesQuery(
+                login,
+                params.requestedLoadSize,
+                Input.absent(),
+                Input.fromNullable(params.key)
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -161,18 +170,20 @@ class OwnedRepositoriesDataSource(
             }
 
             val list = mutableListOf<RepositoryItem>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.repositories()?.nodes()?.forEach { node ->
-                list.add(node.fragments().repositoryListItemFragment().toNonNullRepositoryItem())
+            user?.repositories?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.repositoryListItemFragment.toNonNullRepositoryItem())
+                }
             }
 
-            val pageInfo = user?.repositories()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.repositories?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 }

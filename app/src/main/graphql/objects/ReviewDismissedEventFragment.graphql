@@ -1,0 +1,22 @@
+# Represents a 'review_dismissed' event on a given issue or pull request.
+fragment ReviewDismissedEventFragment on ReviewDismissedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    # Identifies the optional message associated with the 'review_dismissed' event.
+    dismissalMessage
+    # Identifies the optional message associated with the event, rendered to HTML.
+    dismissalMessageHTML
+    id
+    # Identifies the previous state of the review with the 'review_dismissed' event.
+    previousReviewState
+    # Identifies the review associated with the 'review_dismissed' event.
+    review {
+        ... PullRequestReviewFragment
+    }
+    # The HTTP URL for this review dismissed event.
+    url
+}

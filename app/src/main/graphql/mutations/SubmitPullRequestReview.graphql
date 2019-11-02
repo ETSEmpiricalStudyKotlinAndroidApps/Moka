@@ -1,0 +1,8 @@
+# Submits a pending pull request review.
+# https://developer.github.com/v4/mutation/submitpullrequestreview/
+mutation SubmitPullRequestReview($input: SubmitPullRequestReviewInput!) {
+    submitPullRequestReview(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

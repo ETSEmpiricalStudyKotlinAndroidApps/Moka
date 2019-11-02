@@ -1,0 +1,11 @@
+# A review object for a given pull request.
+# https://developer.github.com/v4/object/pullrequestreview/
+fragment PullRequestTimelineItemPullRequestReview on PullRequestReview {
+    id
+    # The actor who authored the comment.
+    author {
+        ... Actor
+    }
+    # The HTTP URL permalink for this PullRequestReview.
+    url
+}

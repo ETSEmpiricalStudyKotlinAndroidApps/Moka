@@ -1,0 +1,8 @@
+# Adds a reaction to a subject.
+# https://developer.github.com/v4/mutation/addreaction/
+mutation AddReaction($input: AddReactionInput!) {
+    addReaction(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

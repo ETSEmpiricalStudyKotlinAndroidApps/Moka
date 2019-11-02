@@ -1,0 +1,30 @@
+# Represents a comment on an Issue.
+fragment IssueCommentFragment on IssueComment {
+    # The actor who authored the comment.
+    author {
+        ... Actor
+    }
+    # Author's association with the subject of the comment.
+    authorAssociation
+    # The body as Markdown.
+    body
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # The actor who edited the comment.
+    editor {
+        ... Actor
+    }
+    # Check if the current viewer can delete this object.
+    viewerCanDelete
+    # Can user react to this subject
+    viewerCanReact
+    # Did the viewer author this comment.
+    viewerDidAuthor
+    # Check if the current viewer can update this object.
+    viewerCanUpdate
+    # Check if the current viewer can minimize this object.
+    viewerCanMinimize
+    # Reasons why the current viewer can not update this comment.
+    viewerCannotUpdateReasons
+}

@@ -1,0 +1,17 @@
+# Represents a 'deployment_environment_changed' event on a given pull request.
+fragment DeploymentEnvironmentChangedEventFragment on DeploymentEnvironmentChangedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    # The deployment status that updated the deployment environment.
+    deploymentStatus {
+        # Identifies the deployment associated with status.
+        deployment {
+            ... PullRequestTimelineItemDeploymentFragment
+        }
+    }
+    id
+}

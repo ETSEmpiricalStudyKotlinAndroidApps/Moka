@@ -1,0 +1,8 @@
+# Transfer an issue to a different repository
+# https://developer.github.com/v4/mutation/transferissue/
+mutation TransferIssue($input: TransferIssueInput!) {
+    transferIssue(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

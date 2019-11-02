@@ -1,0 +1,9 @@
+fragment IssuePullRequestTimelineItemMannequinFragment on Mannequin {
+    # A URL pointing to the GitHub App's public avatar.
+    avatarUrl
+    # The username of the actor.
+    login
+    # The URL to this resource.
+    url
+    id
+}

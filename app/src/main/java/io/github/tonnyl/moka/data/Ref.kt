@@ -31,9 +31,9 @@ data class Ref(
 
 fun RawRef.toNonNullRef(): Ref {
     return Ref(
-        id(),
-        name(),
-        prefix(),
-        target().fragments().gitObject().toNonNullGitObject()
+        id,
+        name,
+        prefix,
+        target.fragments.gitObject.toNonNullGitObject()
     )
 }

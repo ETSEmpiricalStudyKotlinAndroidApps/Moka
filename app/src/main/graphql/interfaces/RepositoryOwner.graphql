@@ -1,0 +1,13 @@
+# Represents an owner of a Repository.
+# https://developer.github.com/v4/interface/repositoryowner
+fragment RepositoryOwner on RepositoryOwner {
+    # A URL pointing to the owner's public avatar.
+    avatarUrl
+    id
+    # The username used to login.
+    login
+    # The HTTP URL for the owner.
+    resourcePath
+    # The HTTP URL for the owner.
+    url
+}

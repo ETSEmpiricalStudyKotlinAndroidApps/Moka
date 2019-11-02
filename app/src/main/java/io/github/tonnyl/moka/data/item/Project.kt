@@ -105,20 +105,20 @@ data class Project(
 
 fun RawProject.toNonNullProject(): Project {
     return Project(
-        body(),
-        bodyHTML(),
-        closed(),
-        closedAt(),
-        createdAt(),
-        creator()?.fragments()?.actor()?.toNonNullProjectActor(),
-        id(),
-        name(),
-        number(),
-        resourcePath(),
-        state(),
-        updatedAt(),
-        url(),
-        viewerCanUpdate()
+        body,
+        bodyHTML,
+        closed,
+        closedAt,
+        createdAt,
+        creator?.fragments?.actor?.toNonNullProjectActor(),
+        id,
+        name,
+        number,
+        resourcePath,
+        state,
+        updatedAt,
+        url,
+        viewerCanUpdate
     )
 }
 
@@ -149,5 +149,5 @@ data class ProjectActor(
 ) : Parcelable
 
 fun RawActor.toNonNullProjectActor(): ProjectActor {
-    return ProjectActor(avatarUrl(), login(), url())
+    return ProjectActor(avatarUrl, login, url)
 }

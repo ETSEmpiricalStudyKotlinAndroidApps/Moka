@@ -1,0 +1,14 @@
+# Represents a 'renamed' event on a given issue or pull request
+fragment RenamedTitleEventFragment on RenamedTitleEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    # Identifies the current title of the issue or pull request.
+    currentTitle
+    id
+    # Identifies the previous title of the issue or pull request.
+    previousTitle
+}

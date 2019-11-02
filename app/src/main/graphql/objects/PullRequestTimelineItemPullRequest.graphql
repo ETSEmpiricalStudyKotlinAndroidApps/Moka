@@ -1,0 +1,14 @@
+# A repository pull request.
+fragment PullRequestTimelineItemPullRequest on PullRequest {
+    # true if the pull request is closed
+    closed
+    # Identifies the pull request number.
+    number
+    id
+    # Identifies the state of the pull request.
+    state
+    # Identifies the pull request title.
+    title
+    # The HTTP URL for this pull request.
+    url
+}

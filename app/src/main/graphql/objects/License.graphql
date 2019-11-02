@@ -1,0 +1,38 @@
+# A repository's open source license
+fragment License on License {
+    # The full text of the license
+    body
+    # The conditions set by the license
+    conditions {
+        ... LicenseRule
+    }
+    # A human-readable description of the license
+    description
+    # Whether the license should be featured
+    featured
+    # Whether the license should be displayed in license pickers
+    hidden
+    id
+    # Instructions on how to implement the license
+    implementation
+    # The lowercased SPDX ID of the license
+    key
+    # The limitations set by the license
+    limitations {
+        ... LicenseRule
+    }
+    # The license full name specified by https://spdx.org/licenses
+    name
+    # Customary short name if applicable (e.g, GPLv3)
+    nickname
+    # The permissions set by the license
+    permissions {
+        ... LicenseRule
+    }
+    # Whether the license is a pseudo-license placeholder (e.g., other, no-license)
+    pseudoLicense
+    # Short identifier specified by https://spdx.org/licenses
+    spdxId
+    # URL to the license on https://choosealicense.com
+    url
+}

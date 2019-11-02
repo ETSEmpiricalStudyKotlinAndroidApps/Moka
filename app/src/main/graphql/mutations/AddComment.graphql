@@ -1,0 +1,8 @@
+# Adds a comment to an Issue or Pull Request.
+# https://developer.github.com/v4/mutation/addcomment/
+mutation AddComment($input: AddCommentInput!) {
+    addComment(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

@@ -1,0 +1,16 @@
+# Represents a commit comment thread part of a pull request.
+fragment PullRequestCommitCommentThreadFragment on PullRequestCommitCommentThread {
+    # The commit the comments were made on.
+    commit {
+        ... PullRequestTimelineItemCommitFragment
+    }
+    id
+    # The file the comments were made on.
+    path
+    # The position in the diff for the commit that the comment was made on.
+    position
+    # The pull request this commit comment thread belongs to
+    pullRequest {
+        ... PullRequestTimelineItemPullRequest
+    }
+}

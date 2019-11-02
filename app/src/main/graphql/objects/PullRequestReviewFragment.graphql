@@ -1,0 +1,57 @@
+# A review object for a given pull request.
+fragment PullRequestReviewFragment on PullRequestReview {
+    # The actor who authored the comment.
+    author {
+        ... Actor
+    }
+    # Author's association with the subject of the comment.
+    authorAssociation
+    # Identifies the pull request review body.
+    body
+    # The body of this review rendered to HTML.
+    bodyHTML
+    # Identifies the commit associated with this pull request review.
+    commit {
+        ... PullRequestTimelineItemCommitFragment
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    # Check if this comment was created via an email reply.
+    createdViaEmail
+    # The actor who edited the comment.
+    editor {
+        ... Actor
+    }
+    id
+    # Check if this comment was edited and includes an edit with the creation data
+    includesCreatedEdit
+    # The moment the editor made the last edit
+    lastEditedAt
+    # Identifies when the comment was published at.
+    publishedAt
+    # Identifies the pull request associated with this pull request review.
+    pullRequest {
+        ... PullRequestTimelineItemPullRequest
+    }
+    # Identifies the current state of the pull request review.
+    state
+    # Identifies when the Pull Request Review was submitted
+    submittedAt
+    # Identifies the date and time when the object was last updated.
+    updatedAt
+    # The HTTP URL permalink for this PullRequestReview.
+    url
+    # Check if the current viewer can delete this object.
+    viewerCanDelete
+    # Can user react to this subject
+    viewerCanReact
+    # Check if the current viewer can update this object.
+    viewerCanUpdate
+    # Reasons why the current viewer can not update this comment.
+    viewerCannotUpdateReasons
+    # Did the viewer author this comment.
+    viewerDidAuthor
+    comments {
+        totalCount
+    }
+}

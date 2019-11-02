@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.issue
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.IssueTimelineItemsQuery
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.fragment.*
@@ -32,12 +33,14 @@ class IssueTimelineDataSource(
         initialLoadStatus.postValue(Resource.loading(null))
 
         try {
-            val issueTimelineQuery = IssueTimelineItemsQuery.builder()
-                .owner(owner)
-                .name(name)
-                .number(number)
-                .perPage(params.requestedLoadSize)
-                .build()
+            val issueTimelineQuery = IssueTimelineItemsQuery(
+                owner,
+                name,
+                number,
+                Input.absent(),
+                Input.absent(),
+                params.requestedLoadSize
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -46,25 +49,27 @@ class IssueTimelineDataSource(
             }
 
             val list = mutableListOf<IssueTimelineItem>()
-            val timeline = response.data()?.repository()?.issue()?.timelineItems()
+            val timeline = response.data()?.repository?.issue?.timelineItems
 
-            timeline?.nodes()?.forEach { node ->
-                initTimelineItemWithRawData(node)?.let {
-                    list.add(it)
+            timeline?.nodes?.forEach { node ->
+                node?.let {
+                    initTimelineItemWithRawData(node)?.let {
+                        list.add(it)
+                    }
                 }
             }
 
-            val pageInfo = timeline?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 },
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -95,13 +100,14 @@ class IssueTimelineDataSource(
         )
 
         try {
-            val timelineQuery = IssueTimelineItemsQuery.builder()
-                .owner(owner)
-                .name(name)
-                .number(number)
-                .perPage(params.requestedLoadSize)
-                .after(params.key)
-                .build()
+            val timelineQuery = IssueTimelineItemsQuery(
+                owner,
+                name,
+                number,
+                Input.fromNullable(params.key),
+                Input.absent(),
+                params.requestedLoadSize
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -110,20 +116,22 @@ class IssueTimelineDataSource(
             }
 
             val list = mutableListOf<IssueTimelineItem>()
-            val timeline = response.data()?.repository()?.issue()?.timelineItems()
+            val timeline = response.data()?.repository?.issue?.timelineItems
 
-            timeline?.nodes()?.forEach { node ->
-                initTimelineItemWithRawData(node)?.let {
-                    list.add(it)
+            timeline?.nodes?.forEach { node ->
+                node?.let {
+                    initTimelineItemWithRawData(node)?.let {
+                        list.add(it)
+                    }
                 }
             }
 
-            val pageInfo = timeline?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -158,13 +166,14 @@ class IssueTimelineDataSource(
         )
 
         try {
-            val timelineQuery = IssueTimelineItemsQuery.builder()
-                .owner(owner)
-                .name(name)
-                .number(number)
-                .perPage(params.requestedLoadSize)
-                .before(params.key)
-                .build()
+            val timelineQuery = IssueTimelineItemsQuery(
+                owner,
+                name,
+                number,
+                Input.absent(),
+                Input.fromNullable(params.key),
+                params.requestedLoadSize
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -173,20 +182,22 @@ class IssueTimelineDataSource(
             }
 
             val list = mutableListOf<IssueTimelineItem>()
-            val timeline = response.data()?.repository()?.issue()?.timelineItems()
+            val timeline = response.data()?.repository?.issue?.timelineItems
 
-            timeline?.nodes()?.forEach { node ->
-                initTimelineItemWithRawData(node)?.let {
-                    list.add(it)
+            timeline?.nodes?.forEach { node ->
+                node?.let {
+                    initTimelineItemWithRawData(node)?.let {
+                        list.add(it)
+                    }
                 }
             }
 
-            val pageInfo = timeline?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 }
@@ -211,93 +222,87 @@ class IssueTimelineDataSource(
     }
 
     private fun initTimelineItemWithRawData(node: IssueTimelineItemsQuery.Node): IssueTimelineItem? {
-        return when (node.__typename()) {
+        return when (node.__typename) {
             AddedToProjectEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().addedToProjectEventFragment()?.toNonNullAddedToProjectEvent()
+                node.fragments.addedToProjectEventFragment?.toNonNullAddedToProjectEvent()
             }
             AssignedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().assignedEventFragment()?.toNonNullAssignedEvent()
+                node.fragments.assignedEventFragment?.toNonNullAssignedEvent()
             }
             ClosedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().closedEventFragment()?.toNonNullClosedEvent()
+                node.fragments.closedEventFragment?.toNonNullClosedEvent()
             }
             // CommentDeletedEventFragment.POSSIBLE_TYPES.first() -> {
-            //     node.fragments().commentDeletedEventFragment()?.toNonNullCommentDeletedEvent()
+            //     node.fragments.commentDeletedEventFragment?.toNonNullCommentDeletedEvent()
             // }
             ConvertedNoteToIssueEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments()
-                    .convertedNoteToIssueEventFragment()
-                    ?.toNonNullConvertedNoteToIssueEvent()
+                node.fragments.convertedNoteToIssueEventFragment?.toNonNullConvertedNoteToIssueEvent()
             }
             CrossReferencedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().crossReferencedEventFragment()?.toNonNullCrossReferencedEvent()
+                node.fragments.crossReferencedEventFragment?.toNonNullCrossReferencedEvent()
             }
             DemilestonedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().demilestonedEventFragment()?.toNonNullDemilestonedEvent()
+                node.fragments.demilestonedEventFragment?.toNonNullDemilestonedEvent()
             }
             IssueCommentFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().issueCommentFragment()?.toNonNullIssueComment()
+                node.fragments.issueCommentFragment?.toNonNullIssueComment()
             }
             LabeledEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().labeledEventFragment()?.toNonNullLabeledEvent()
+                node.fragments.labeledEventFragment?.toNonNullLabeledEvent()
             }
             LockedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().lockedEventFragment()?.toNonNullLockedEvent()
+                node.fragments.lockedEventFragment?.toNonNullLockedEvent()
             }
             MarkedAsDuplicateEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().markedAsDuplicateEventFragment()?.toNonNullMarkedAsDuplicateEvent()
+                node.fragments.markedAsDuplicateEventFragment?.toNonNullMarkedAsDuplicateEvent()
             }
             // MentionedEventFragment.POSSIBLE_TYPES.first() -> {
-            //     node.fragments().mentionedEventFragment()?.toNonNullMentionedEvent()
+            //     node.fragments.mentionedEventFragment?.toNonNullMentionedEvent()
             // }
             MilestonedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().milestonedEventFragment()?.toNonNullMilestonedEvent()
+                node.fragments.milestonedEventFragment?.toNonNullMilestonedEvent()
             }
             MovedColumnsInProjectEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments()
-                    .movedColumnsInProjectEventFragment()
-                    ?.toNonNullMovedColumnsInProjectEvent()
+                node.fragments.movedColumnsInProjectEventFragment?.toNonNullMovedColumnsInProjectEvent()
             }
             PinnedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().pinnedEventFragment()?.toNonNullPinnedEvent()
+                node.fragments.pinnedEventFragment?.toNonNullPinnedEvent()
             }
             ReferencedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().referencedEventFragment()?.toNonNullReferencedEvent()
+                node.fragments.referencedEventFragment?.toNonNullReferencedEvent()
             }
             RemovedFromProjectEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments()
-                    .removedFromProjectEventFragment()
-                    ?.toNonNullRemovedFromProjectEvent()
+                node.fragments.removedFromProjectEventFragment?.toNonNullRemovedFromProjectEvent()
             }
             RenamedTitleEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().renamedTitleEventFragment()?.toNonNullRenamedTitleEvent()
+                node.fragments.renamedTitleEventFragment?.toNonNullRenamedTitleEvent()
             }
             ReopenedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().reopenedEventFragment()?.toNonNullReopenedEvent()
+                node.fragments.reopenedEventFragment?.toNonNullReopenedEvent()
             }
             // SubscribedEventFragment.POSSIBLE_TYPES.first() -> {
-            //     node.fragments().subscribedEventFragment()?.toNonNullSubscribedEvent()
+            //     node.fragments.subscribedEventFragment?.toNonNullSubscribedEvent()
             // }
             TransferredEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().transferredEventFragment()?.toNonNullTransferredEvent()
+                node.fragments.transferredEventFragment?.toNonNullTransferredEvent()
             }
             UnassignedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().unassignedEventFragment()?.toNonNullUnassignedEvent()
+                node.fragments.unassignedEventFragment?.toNonNullUnassignedEvent()
             }
             UnlabeledEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().unlabeledEventFragment()?.toNonNullUnlabeledEvent()
+                node.fragments.unlabeledEventFragment?.toNonNullUnlabeledEvent()
             }
             UnlockedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().unlockedEventFragment()?.toNonNullUnlockedEvent()
+                node.fragments.unlockedEventFragment?.toNonNullUnlockedEvent()
             }
             UnpinnedEventFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().unpinnedEventFragment()?.toNonNullUnpinnedEvent()
+                node.fragments.unpinnedEventFragment?.toNonNullUnpinnedEvent()
             }
             // UnsubscribedEventFragment.POSSIBLE_TYPES.first() -> {
-            //     node.fragments().unsubscribedEventFragment()?.toNonNullUnsubscribedEvent()
+            //     node.fragments.unsubscribedEventFragment?.toNonNullUnsubscribedEvent()
             // }
             // UserBlockedEventFragment.POSSIBLE_TYPES.first() -> {
-            //     node.fragments().userBlockedEventFragment()?.toNonNullUserBlockedEvent()
+            //     node.fragments.userBlockedEventFragment?.toNonNullUserBlockedEvent()
             // }
             else -> {
                 // unsupported type, just ignore it.

@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.repositories
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.StarredRepositoriesQuery
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.toNonNullRepositoryItem
@@ -30,10 +31,12 @@ class StarredRepositoriesDataSource(
         initialLoadStatus.postValue(Resource.loading(null))
 
         try {
-            val repositoriesQuery = StarredRepositoriesQuery.builder()
-                .login(login)
-                .perPage(params.requestedLoadSize)
-                .build()
+            val repositoriesQuery = StarredRepositoriesQuery(
+                login,
+                params.requestedLoadSize,
+                Input.absent(),
+                Input.absent()
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -42,23 +45,25 @@ class StarredRepositoriesDataSource(
             }
 
             val list = mutableListOf<RepositoryItem>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.starredRepositories()?.nodes()?.forEach { node ->
-                list.add(node.fragments().repositoryListItemFragment().toNonNullRepositoryItem())
+            user?.starredRepositories?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.repositoryListItemFragment.toNonNullRepositoryItem())
+                }
             }
 
-            val pageInfo = user?.starredRepositories()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.starredRepositories?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 },
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -89,11 +94,12 @@ class StarredRepositoriesDataSource(
         )
 
         try {
-            val repositoriesQuery = StarredRepositoriesQuery.builder()
-                .login(login)
-                .perPage(params.requestedLoadSize)
-                .after(params.key)
-                .build()
+            val repositoriesQuery = StarredRepositoriesQuery(
+                login,
+                params.requestedLoadSize,
+                Input.fromNullable(params.key),
+                Input.absent()
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -102,18 +108,20 @@ class StarredRepositoriesDataSource(
             }
 
             val list = mutableListOf<RepositoryItem>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.starredRepositories()?.nodes()?.forEach { node ->
-                list.add(node.fragments().repositoryListItemFragment().toNonNullRepositoryItem())
+            user?.starredRepositories?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.repositoryListItemFragment.toNonNullRepositoryItem())
+                }
             }
 
-            val pageInfo = user?.starredRepositories()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.starredRepositories?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -147,11 +155,12 @@ class StarredRepositoriesDataSource(
             PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
         )
         try {
-            val repositoriesQuery = StarredRepositoriesQuery.builder()
-                .login(login)
-                .perPage(params.requestedLoadSize)
-                .before(params.key)
-                .build()
+            val repositoriesQuery = StarredRepositoriesQuery(
+                login,
+                params.requestedLoadSize,
+                Input.absent(),
+                Input.fromNullable(params.key)
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -160,18 +169,20 @@ class StarredRepositoriesDataSource(
             }
 
             val list = mutableListOf<RepositoryItem>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.starredRepositories()?.nodes()?.forEach { node ->
-                list.add(node.fragments().repositoryListItemFragment().toNonNullRepositoryItem())
+            user?.starredRepositories?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.repositoryListItemFragment.toNonNullRepositoryItem())
+                }
             }
 
-            val pageInfo = user?.starredRepositories()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.starredRepositories?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 }

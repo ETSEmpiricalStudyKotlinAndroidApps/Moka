@@ -1,0 +1,10 @@
+# Represents a 'marked_as_duplicate' event on a given issue or pull request.
+fragment MarkedAsDuplicateEventFragment on MarkedAsDuplicateEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+}

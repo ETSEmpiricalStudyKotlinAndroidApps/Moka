@@ -1,0 +1,18 @@
+# Represents a 'removed_from_project' event on a given issue or pull request.
+fragment RemovedFromProjectEventFragment on RemovedFromProjectEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # Project referenced by event.
+    # Under preview
+    # project {
+    #   ... IssuePrProjectFragment
+    # }
+    # Column name referenced by this project event.
+    # Under preview
+    # projectColumnName
+}

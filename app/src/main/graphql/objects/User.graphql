@@ -1,0 +1,75 @@
+# A user is an individual's account on GitHub that owns repositories and can make new content.
+# https://developer.github.com/v4/object/user/
+fragment User on User {
+    # A URL pointing to the user's public avatar.
+    avatarUrl
+    # The user's public profile bio.
+    bio
+    # The user's public profile bio as HTML.
+    bioHTML
+    # The user's public profile company.
+    company
+    # The user's public profile company as HTML.
+    companyHTML
+    # Identifies the date and time when the object was created.
+    createdAt
+    # The user's publicly visible profile email.
+    email
+    id
+    # Whether or not this user is a participant in the GitHub Security Bug Bounty.
+    isBountyHunter
+    # Whether or not this user is a participant in the GitHub Campus Experts Program.
+    isCampusExpert
+    # Whether or not this user is a GitHub Developer Program member.
+    isDeveloperProgramMember
+    # Whether or not this user is a GitHub employee.
+    isEmployee
+    # Whether or not the user has marked themselves as for hire.
+    isHireable
+    # Whether or not this user is a site administrator.
+    isSiteAdmin
+    # Whether or not this user is the viewing user.
+    isViewer
+    # The user's public profile location.
+    location
+    # The username used to login.
+    login
+    # The user's public profile name.
+    name
+    # The HTTP path for this user
+    resourcePath
+    # The user's description of what they're currently doing.
+    status {
+        ... UserStatus
+    }
+    # Identifies the date and time when the object was last updated.
+    updatedAt
+    # The HTTP URL for this user
+    url
+    # Whether or not the viewer is able to follow the user.
+    viewerCanFollow
+    # Whether or not this user is followed by the viewer.
+    viewerIsFollowing
+    # A URL pointing to the user's public website/blog.
+    websiteUrl
+    repositories {
+        totalCount
+    }
+    followers {
+        totalCount
+    }
+    following {
+        totalCount
+    }
+    starredRepositories {
+        totalCount
+    }
+    organizations(first: 20) {
+        nodes {
+            avatarUrl
+        }
+    }
+    projects {
+        totalCount
+    }
+}

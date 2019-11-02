@@ -1,0 +1,10 @@
+# Represents a 'reopened' event on any `Closable`.
+fragment ReopenedEventFragment on ReopenedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+}

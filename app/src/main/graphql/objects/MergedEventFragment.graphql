@@ -1,0 +1,26 @@
+# Represents a 'merged' event on a given pull request.
+fragment MergedEventFragment on MergedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the commit associated with the merge event.
+    commit {
+        ... PullRequestTimelineItemCommitFragment
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # Identifies the Ref associated with the merge event.
+    mergeRef {
+        ... PullRequestTimelineItemRefFragment
+    }
+    # Identifies the name of the Ref associated with the merge event.
+    mergeRefName
+    # PullRequest referenced by event.
+    pullRequest {
+        ... PullRequestTimelineItemPullRequest
+    }
+    # The HTTP URL for this merged event.
+    url
+}

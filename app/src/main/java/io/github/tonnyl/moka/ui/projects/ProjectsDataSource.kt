@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.projects
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.UsersProjectsQuery
 import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.data.item.toNonNullProject
@@ -38,10 +39,12 @@ class ProjectsDataSource(
         initialLoadStatusLiveData.postValue(Resource.loading(null))
 
         try {
-            val projectsQuery = UsersProjectsQuery.builder()
-                .owner(login)
-                .perPage(params.requestedLoadSize)
-                .build()
+            val projectsQuery = UsersProjectsQuery(
+                login,
+                Input.absent(),
+                Input.absent(),
+                params.requestedLoadSize
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -50,10 +53,12 @@ class ProjectsDataSource(
             }
 
             val list = mutableListOf<Project>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.projects()?.nodes()?.forEach { node ->
-                list.add(node.fragments().project().toNonNullProject())
+            user?.projects?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.project.toNonNullProject())
+                }
             }
 
             if (isMyself && list.isNotEmpty()) {
@@ -64,17 +69,17 @@ class ProjectsDataSource(
 
             initialLoadStatusLiveData.postValue(Resource.success(list))
 
-            val pageInfo = user?.projects()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.projects?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 },
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -99,11 +104,12 @@ class ProjectsDataSource(
 
         try {
             val response = runBlocking {
-                val projectsQuery = UsersProjectsQuery.builder()
-                    .owner(login)
-                    .after(params.key)
-                    .perPage(params.requestedLoadSize)
-                    .build()
+                val projectsQuery = UsersProjectsQuery(
+                    login,
+                    Input.fromNullable(params.key),
+                    Input.absent(),
+                    params.requestedLoadSize
+                )
 
                 GraphQLClient.apolloClient
                     .query(projectsQuery)
@@ -111,10 +117,12 @@ class ProjectsDataSource(
             }
 
             val list = mutableListOf<Project>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.projects()?.nodes()?.forEach { node ->
-                list.add(node.fragments().project().toNonNullProject())
+            user?.projects?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.project.toNonNullProject())
+                }
             }
 
             if (isMyself && list.isNotEmpty()) {
@@ -127,12 +135,12 @@ class ProjectsDataSource(
                 PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
             )
 
-            val pageInfo = user?.projects()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.projects?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -159,11 +167,12 @@ class ProjectsDataSource(
 
         try {
             val response = runBlocking {
-                val projectsQuery = UsersProjectsQuery.builder()
-                    .owner(login)
-                    .before(params.key)
-                    .perPage(params.requestedLoadSize)
-                    .build()
+                val projectsQuery = UsersProjectsQuery(
+                    login,
+                    Input.absent(),
+                    Input.fromNullable(params.key),
+                    params.requestedLoadSize
+                )
 
                 GraphQLClient.apolloClient
                     .query(projectsQuery)
@@ -171,10 +180,12 @@ class ProjectsDataSource(
             }
 
             val list = mutableListOf<Project>()
-            val user = response.data()?.user()
+            val user = response.data()?.user
 
-            user?.projects()?.nodes()?.forEach { node ->
-                list.add(node.fragments().project().toNonNullProject())
+            user?.projects?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.fragments.project.toNonNullProject())
+                }
             }
 
             if (isMyself && list.isNotEmpty()) {
@@ -187,12 +198,12 @@ class ProjectsDataSource(
                 PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
             )
 
-            val pageInfo = user?.projects()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = user?.projects?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 }

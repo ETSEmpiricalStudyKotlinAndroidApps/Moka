@@ -22,5 +22,5 @@ data class Topic(
 ) : Parcelable
 
 fun RawTopic.toNonNullTopic(): Topic {
-    return Topic(id(), name(), viewerHasStarred())
+    return Topic(id, name, viewerHasStarred)
 }

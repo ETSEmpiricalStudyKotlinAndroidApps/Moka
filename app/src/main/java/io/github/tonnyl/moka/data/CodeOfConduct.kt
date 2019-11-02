@@ -34,5 +34,5 @@ data class CodeOfConduct(
 ) : Parcelable
 
 fun RawCodeOfConduct.toNonNullCodeOfConduct(): CodeOfConduct {
-    return CodeOfConduct(body(), key(), name(), url())
+    return CodeOfConduct(body, key, name, url)
 }

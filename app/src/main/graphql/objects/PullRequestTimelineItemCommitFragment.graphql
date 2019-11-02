@@ -1,0 +1,17 @@
+# Represents a Git commit.
+fragment PullRequestTimelineItemCommitFragment on Commit {
+    # Authorship details of the commit.
+    author {
+        ... GitActorFragment
+    }
+    # Committership details of the commit.
+    committer {
+        ... GitActorFragment
+    }
+    # The Git commit message
+    message
+    # The Git object ID
+    oid
+    # The HTTP URL for this commit
+    url
+}

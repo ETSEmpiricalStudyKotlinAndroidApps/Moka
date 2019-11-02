@@ -1,0 +1,14 @@
+# Represents an 'unlabeled' event on a given issue or pull request.
+fragment UnlabeledEventFragment on UnlabeledEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # Identifies the label associated with the 'unlabeled' event.
+    label {
+        ... IssuePrLabelFragment
+    }
+}

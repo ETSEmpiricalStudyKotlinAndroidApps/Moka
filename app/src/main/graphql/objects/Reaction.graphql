@@ -1,0 +1,12 @@
+# An emoji reaction to a particular piece of content.
+# https://developer.github.com/v4/object/reaction/
+fragment Reaction on Reaction {
+    # Identifies the emoji reaction.
+    content
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    reactable {
+        ... Reactable
+    }
+}

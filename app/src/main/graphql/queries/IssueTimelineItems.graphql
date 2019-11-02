@@ -1,0 +1,73 @@
+# Items in an issue timeline
+query IssueTimelineItems($owner: String!, $name: String!, $number: Int!, $after: String, $before: String, $perPage: Int!) {
+    repository(owner: $owner, name: $name) {
+        issue(number: $number) {
+            timelineItems(first: $perPage, after: $after, before: $before) {
+                nodes {
+                    # Represents a 'added_to_project' event on a given issue or pull request.
+                    ... AddedToProjectEventFragment
+                    # Represents an 'assigned' event on any assignable object.
+                    ... AssignedEventFragment
+                    # Represents a 'closed' event on any `Closable`.
+                    ... ClosedEventFragment
+                    # Represents a 'comment_deleted' event on a given issue or pull request.
+                    # ... CommentDeletedEventFragment
+                    # Represents a 'converted_note_to_issue' event on a given issue or pull request.
+                    ... ConvertedNoteToIssueEventFragment
+                    # Represents a mention made by one issue or pull request to another.
+                    ... CrossReferencedEventFragment
+                    # Represents a 'demilestoned' event on a given issue or pull request.
+                    ... DemilestonedEventFragment
+                    # Represents a comment on an Issue.
+                    ... IssueCommentFragment
+                    # Represents a 'labeled' event on a given issue or pull request.
+                    ... LabeledEventFragment
+                    # Represents a 'locked' event on a given issue or pull request.
+                    ... LockedEventFragment
+                    # Represents a 'marked_as_duplicate' event on a given issue or pull request.
+                    ... MarkedAsDuplicateEventFragment
+                    # Represents a 'mentioned' event on a given issue or pull request.
+                    # ignore
+                    # ... MentionedEventFragment
+                    # Represents a 'milestoned' event on a given issue or pull request.
+                    ... MilestonedEventFragment
+                    # Represents a 'moved_columns_in_project' event on a given issue or pull request.
+                    ... MovedColumnsInProjectEventFragment
+                    # Represents a 'pinned' event on a given issue or pull request.
+                    ... PinnedEventFragment
+                    # Represents a 'referenced' event on a given `ReferencedSubject`.
+                    ... ReferencedEventFragment
+                    # Represents a 'removed_from_project' event on a given issue or pull request.
+                    ... RemovedFromProjectEventFragment
+                    # Represents a 'renamed' event on a given issue or pull request
+                    ... RenamedTitleEventFragment
+                    # Represents a 'reopened' event on any `Closable`.
+                    ... ReopenedEventFragment
+                    # Represents a 'subscribed' event on a given `Subscribable`.
+                    # ignore
+                    # ... SubscribedEventFragment
+                    # Represents a 'transferred' event on a given issue or pull request.
+                    ... TransferredEventFragment
+                    # Represents an 'unassigned' event on any assignable object.
+                    ... UnassignedEventFragment
+                    # Represents an 'unlabeled' event on a given issue or pull request.
+                    ... UnlabeledEventFragment
+                    # Represents an 'unlocked' event on a given issue or pull request.
+                    ... UnlockedEventFragment
+                    # Represents an 'unpinned' event on a given issue or pull request.
+                    ... UnpinnedEventFragment
+                    # Represents an 'unsubscribed' event on a given `Subscribable`.
+                    # ignore
+                    # ... UnsubscribedEventFragment
+                    # Represents a 'user_blocked' event on a given user.
+                    # ignore
+                    # ... UserBlockedEventFragment
+                }
+                # Information to aid in pagination.
+                pageInfo {
+                    ... PageInfo
+                }
+            }
+        }
+    }
+}

@@ -29,9 +29,9 @@ data class RepositoryTopic(
 
 fun RawRepositoryTopic.toNonNullRepositoryTopic(): RepositoryTopic {
     return RepositoryTopic(
-        id(),
-        topic().fragments().topic().toNonNullTopic(),
-        resourcePath(),
-        url()
+        id,
+        topic.fragments.topic.toNonNullTopic(),
+        resourcePath,
+        url
     )
 }

@@ -1,0 +1,10 @@
+# A label for categorizing Issues or Milestones with a given Repository.
+fragment IssuePrLabelFragment on Label {
+    # Identifies the label color.
+    color
+    id
+    # Identifies the label name.
+    name
+    # The HTTP URL for this label.
+    url
+}

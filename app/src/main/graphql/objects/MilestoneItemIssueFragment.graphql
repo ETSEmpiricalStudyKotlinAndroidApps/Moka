@@ -1,0 +1,10 @@
+# Object referenced by event.
+fragment MilestoneItemIssueFragment on Issue {
+    # Identifies the issue title.
+    title
+    # Identifies the issue number.
+    number
+    id
+    # The HTTP URL for this issue
+    url
+}

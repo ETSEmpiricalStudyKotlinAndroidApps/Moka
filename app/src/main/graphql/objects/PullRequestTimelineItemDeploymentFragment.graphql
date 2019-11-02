@@ -1,0 +1,30 @@
+# Represents triggered deployment instance.
+fragment PullRequestTimelineItemDeploymentFragment on Deployment {
+    # Identifies the commit sha of the deployment.
+    commit {
+        ... PullRequestTimelineItemCommitFragment
+    }
+    # Identifies the oid of the deployment commit, even if the commit has been deleted.
+    commitOid
+    # Identifies the date and time when the object was created.
+    createdAt
+    # Identifies the actor who triggered the deployment.
+    creator {
+        ... Actor
+    }
+    # The deployment description.
+    description
+    # The environment to which this deployment was made.
+    environment
+    id
+    # Identifies the Ref of the deployment, if the deployment was created by ref.
+    ref {
+        ... PullRequestTimelineItemRefFragment
+    }
+    # The current state of the deployment.
+    state
+    # The deployment task.
+    task
+    # Identifies the date and time when the object was last updated.
+    updatedAt
+}

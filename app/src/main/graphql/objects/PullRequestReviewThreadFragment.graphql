@@ -1,0 +1,18 @@
+# A threaded list of comments for a given pull request.
+fragment PullRequestReviewThreadFragment on PullRequestReviewThread {
+    id
+    # Whether this thread has been resolved
+    isResolved
+    # The user who resolved this thread
+    resolvedBy {
+        ... IssuePullRequestTimelineItemUserFragment
+    }
+    # Identifies the pull request associated with this thread.
+    pullRequest {
+        ... PullRequestTimelineItemPullRequest
+    }
+    # Whether or not the viewer can resolve this thread
+    viewerCanResolve
+    # Whether or not the viewer can unresolve this thread
+    viewerCanUnresolve
+}

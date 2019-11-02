@@ -1,0 +1,8 @@
+# Updates an existing project card.
+# https://developer.github.com/v4/mutation/updateprojectcard/
+mutation UpdateProjectCard($input: UpdateProjectCardInput!) {
+    updateProjectCard(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

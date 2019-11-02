@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.issues
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.IssuesQuery
 import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.data.item.toNonNullIssueItem
@@ -30,11 +31,13 @@ class IssuesDataSource(
 
         initialLoadStatus.postValue(Resource.loading(null))
         try {
-            val issuesQuery = IssuesQuery.builder()
-                .owner(owner)
-                .name(name)
-                .perPage(params.requestedLoadSize)
-                .build()
+            val issuesQuery = IssuesQuery(
+                owner,
+                name,
+                Input.absent(),
+                Input.absent(),
+                params.requestedLoadSize
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -43,23 +46,25 @@ class IssuesDataSource(
             }
 
             val list = mutableListOf<IssueItem>()
-            val repository = response.data()?.repository()
+            val repository = response.data()?.repository
 
-            repository?.issues()?.nodes()?.forEach { node ->
-                list.add(node.toNonNullIssueItem())
+            repository?.issues?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.toNonNullIssueItem())
+                }
             }
 
-            val pageInfo = repository?.issues()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = repository?.issues?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 },
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -87,12 +92,13 @@ class IssuesDataSource(
         )
 
         try {
-            val issuesQuery = IssuesQuery.builder()
-                .owner(owner)
-                .name(name)
-                .perPage(params.requestedLoadSize)
-                .after(params.key)
-                .build()
+            val issuesQuery = IssuesQuery(
+                owner,
+                name,
+                Input.fromNullable(params.key),
+                Input.absent(),
+                params.requestedLoadSize
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -101,18 +107,20 @@ class IssuesDataSource(
             }
 
             val list = mutableListOf<IssueItem>()
-            val repository = response.data()?.repository()
+            val repository = response.data()?.repository
 
-            repository?.issues()?.nodes()?.forEach { node ->
-                list.add(node.toNonNullIssueItem())
+            repository?.issues?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.toNonNullIssueItem())
+                }
             }
 
-            val pageInfo = repository?.issues()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = repository?.issues?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -144,12 +152,13 @@ class IssuesDataSource(
         )
 
         try {
-            val issuesQuery = IssuesQuery.builder()
-                .owner(owner)
-                .name(name)
-                .perPage(params.requestedLoadSize)
-                .before(params.key)
-                .build()
+            val issuesQuery = IssuesQuery(
+                owner,
+                name,
+                Input.absent(),
+                Input.fromNullable(params.key),
+                params.requestedLoadSize
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -158,18 +167,20 @@ class IssuesDataSource(
             }
 
             val list = mutableListOf<IssueItem>()
-            val repository = response.data()?.repository()
+            val repository = response.data()?.repository
 
-            repository?.issues()?.nodes()?.forEach { node ->
-                list.add(node.toNonNullIssueItem())
+            repository?.issues?.nodes?.forEach { node ->
+                node?.let {
+                    list.add(node.toNonNullIssueItem())
+                }
             }
 
-            val pageInfo = repository?.issues()?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = repository?.issues?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 }

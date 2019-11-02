@@ -83,26 +83,23 @@ apollo {
     val map = LinkedHashMap<String, String>().apply {
         put("GitTimestamp", "java.util.Date")
         put("DateTime", "java.util.Date")
-        put("HTML", "String")
+        put("HTML", "kotlin.String")
         put("URI", "android.net.Uri")
-        put("ID", "String")
-        put("GitObjectID", "String")
-        put("GitSSHRemote", "String")
-        put("X509Certificate", "String")
+        put("ID", "kotlin.String")
+        put("GitObjectID", "kotlin.String")
+        put("GitSSHRemote", "kotlin.String")
+        put("X509Certificate", "kotlin.String")
     }
     customTypeMapping.set(map)
 
-    // Java Beans Semantic Naming will result in those methods being pre-pended with get or is
-//    setUseJavaBeansSemanticNaming(true)
-
     // Explicitly provide GraphQL schema file location and package name for generated models
     sourceSet {
-        setSchemaFile("/src/main/graphql/io/github/tonnyl/moka/schema.json")
+        setSchemaFile("/src/main/graphql/schema.json")
     }
 
     setOutputPackageName("io.github.tonnyl.moka")
 
-//    setGenerateKotlinModels(true)
+    setGenerateKotlinModels(true)
 }
 
 dependencies {

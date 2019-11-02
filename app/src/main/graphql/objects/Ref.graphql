@@ -1,0 +1,10 @@
+# Represents a Git reference.
+# https://developer.github.com/v4/object/ref/
+fragment Ref on Ref {
+    id
+    name
+    prefix
+    target {
+        ... GitObject
+    }
+}

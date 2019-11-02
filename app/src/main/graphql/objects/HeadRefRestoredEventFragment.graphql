@@ -1,0 +1,18 @@
+# Represents a 'head_ref_restored' event on a given pull request.
+fragment HeadRefRestoredEventFragment on HeadRefRestoredEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # PullRequest referenced by event.
+    pullRequest {
+        # Identifies the name of the base Ref associated with the pull request, even if the ref has been deleted.
+        baseRefName
+        # Identifies the name of the head Ref associated with the pull request, even if the ref has been deleted.
+        headRefName
+        ... PullRequestTimelineItemPullRequest
+    }
+}

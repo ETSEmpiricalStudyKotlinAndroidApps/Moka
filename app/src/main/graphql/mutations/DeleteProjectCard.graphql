@@ -1,0 +1,8 @@
+# Deletes a project card.
+# https://developer.github.com/v4/mutation/deleteprojectcard/
+mutation DeleteProjectCard($input: DeleteProjectCardInput!) {
+    deleteProjectCard(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

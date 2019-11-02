@@ -17,5 +17,5 @@ data class Reactable(
 ) : Parcelable
 
 fun RawReactable.toNonNullReactable(): Reactable {
-    return Reactable(id(), viewerCanReact())
+    return Reactable(id, viewerCanReact)
 }

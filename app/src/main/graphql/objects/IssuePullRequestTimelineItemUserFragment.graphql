@@ -1,0 +1,11 @@
+fragment IssuePullRequestTimelineItemUserFragment on User {
+    # A URL pointing to the user's public avatar.
+    avatarUrl
+    # The username used to login.
+    login
+    # The user's public profile name.
+    name
+    # The HTTP URL for this user
+    url
+    id
+}

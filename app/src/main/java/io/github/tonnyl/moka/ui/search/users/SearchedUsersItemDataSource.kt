@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.search.users
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.SearchUserQuery
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedOrganizationItem
@@ -37,10 +38,13 @@ class SearchedUsersItemDataSource(
         initialLoadStatus.postValue(Resource.loading(null))
 
         try {
-            val userQuery = SearchUserQuery.builder()
-                .queryWords(keywords)
-                .first(params.requestedLoadSize)
-                .build()
+            val userQuery = SearchUserQuery(
+                keywords,
+                Input.fromNullable(params.requestedLoadSize),
+                Input.absent(),
+                Input.absent(),
+                Input.absent()
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -49,25 +53,27 @@ class SearchedUsersItemDataSource(
             }
 
             val list = mutableListOf<SearchedUserOrOrgItem>()
-            val search = response.data()?.search()
+            val search = response.data()?.search
 
-            search?.nodes()?.forEach { node ->
-                initSearchedUserOrOrgItemWithRawData(node)?.let {
-                    list.add(it)
+            search?.nodes?.forEach { node ->
+                node?.let {
+                    initSearchedUserOrOrgItemWithRawData(node)?.let {
+                        list.add(it)
+                    }
                 }
             }
 
-            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = search?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 },
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -98,11 +104,13 @@ class SearchedUsersItemDataSource(
         )
 
         try {
-            val searchUserQuery = SearchUserQuery.builder()
-                .queryWords(keywords)
-                .first(params.requestedLoadSize)
-                .after(params.key)
-                .build()
+            val searchUserQuery = SearchUserQuery(
+                keywords,
+                Input.fromNullable(params.requestedLoadSize),
+                Input.absent(),
+                Input.fromNullable(params.key),
+                Input.absent()
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -111,20 +119,22 @@ class SearchedUsersItemDataSource(
             }
 
             val list = mutableListOf<SearchedUserOrOrgItem>()
-            val search = response.data()?.search()
+            val search = response.data()?.search
 
-            search?.nodes()?.forEach { node ->
-                initSearchedUserOrOrgItemWithRawData(node)?.let {
-                    list.add(it)
+            search?.nodes?.forEach { node ->
+                node?.let {
+                    initSearchedUserOrOrgItemWithRawData(node)?.let {
+                        list.add(it)
+                    }
                 }
             }
 
-            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = search?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage() == true) {
-                    pageInfo.endCursor()
+                if (pageInfo?.hasNextPage == true) {
+                    pageInfo.endCursor
                 } else {
                     null
                 }
@@ -159,11 +169,13 @@ class SearchedUsersItemDataSource(
         )
 
         try {
-            val searchUserQuery = SearchUserQuery.builder()
-                .queryWords(keywords)
-                .first(params.requestedLoadSize)
-                .before(params.key)
-                .build()
+            val searchUserQuery = SearchUserQuery(
+                keywords,
+                Input.fromNullable(params.requestedLoadSize),
+                Input.absent(),
+                Input.absent(),
+                Input.fromNullable(params.key)
+            )
 
             val response = runBlocking {
                 GraphQLClient.apolloClient
@@ -172,20 +184,22 @@ class SearchedUsersItemDataSource(
             }
 
             val list = mutableListOf<SearchedUserOrOrgItem>()
-            val search = response.data()?.search()
+            val search = response.data()?.search
 
-            search?.nodes()?.forEach { node ->
-                initSearchedUserOrOrgItemWithRawData(node)?.let {
-                    list.add(it)
+            search?.nodes?.forEach { node ->
+                node?.let {
+                    initSearchedUserOrOrgItemWithRawData(node)?.let {
+                        list.add(it)
+                    }
                 }
             }
 
-            val pageInfo = search?.pageInfo()?.fragments()?.pageInfo()
+            val pageInfo = search?.pageInfo?.fragments?.pageInfo
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage() == true) {
-                    pageInfo.startCursor()
+                if (pageInfo?.hasPreviousPage == true) {
+                    pageInfo.startCursor
                 } else {
                     null
                 }
@@ -210,12 +224,12 @@ class SearchedUsersItemDataSource(
     }
 
     private fun initSearchedUserOrOrgItemWithRawData(node: SearchUserQuery.Node): SearchedUserOrOrgItem? {
-        return when (node.__typename()) {
+        return when (node.__typename) {
             UserListItemFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().userListItemFragment()?.toNonNullSearchedUserItem()
+                node.fragments.userListItemFragment?.toNonNullSearchedUserItem()
             }
             OrganizationListItemFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments().organizationListItemFragment()?.toNonNullSearchedOrganizationItem()
+                node.fragments.organizationListItemFragment?.toNonNullSearchedOrganizationItem()
             }
             else -> {
                 null

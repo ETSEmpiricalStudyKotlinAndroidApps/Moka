@@ -1,0 +1,12 @@
+# Represents a 'closed' event on any `Closable`.
+fragment ClosedEventFragment on ClosedEvent {
+    # Identifies the actor who performed the event.
+    actor {
+        ... Actor
+    }
+    # Identifies the date and time when the object was created.
+    createdAt
+    id
+    # The HTTP URL for this closed event.
+    url
+}

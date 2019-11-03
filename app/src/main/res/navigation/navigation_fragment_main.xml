@@ -105,6 +105,11 @@
             android:name="name"
             app:argType="string" />
 
+        <argument
+            android:name="profileType"
+            android:defaultValue="NOT_SPECIFIED"
+            app:argType="io.github.tonnyl.moka.ui.profile.ProfileType" />
+
     </fragment>
 
     <fragment

@@ -1,9 +1,6 @@
 package io.github.tonnyl.moka.ui.repository
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,20 +12,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.databinding.FragmentRepositoryBinding
-import io.github.tonnyl.moka.network.GlideLoader
+import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
 import io.github.tonnyl.moka.ui.prs.PullRequestsFragmentArgs
-import io.github.tonnyl.moka.util.formatNumberWithSuffix
-import io.github.tonnyl.moka.util.toColor
 
 class RepositoryFragment : Fragment() {
 
     private val args by navArgs<RepositoryFragmentArgs>()
 
     private val viewModel by viewModels<RepositoryViewModel> {
-        ViewModelFactory(args.login, args.name)
+        ViewModelFactory(args.login, args.name, args.profileType)
     }
 
     private lateinit var binding: FragmentRepositoryBinding
@@ -45,131 +42,38 @@ class RepositoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginArg = args.login
-        val nameArg = args.name
 
         binding.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
         }
 
+        binding.apply {
+            viewModel = this@RepositoryFragment.viewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
+
         binding.repositoryBottomAppBar.replaceMenu(R.menu.fragment_repository_menu)
 
-        viewModel.repositoryResult.observe(this, Observer { resources ->
-            when (resources.status) {
-                Status.SUCCESS -> {
-                    GlideLoader.loadAvatar(
-                        resources.data?.owner?.avatarUrl?.toString(),
-                        binding.repositoryOwnerAvatar
+        val repoObserver: Observer<Resource<Repository>> = Observer { repository ->
+            repository.data?.topics?.let { topicList ->
+                binding.repositoryTopics.apply {
+                    setHasFixedSize(true)
+                    layoutManager = LinearLayoutManager(
+                        requireContext(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false
                     )
-                    binding.repositoryOwnerName.text = resources.data?.ownerName
-                    binding.repositoryOwnerLogin.text = resources.data?.owner?.login
-                    binding.repositoryName.text = nameArg
-                    binding.repositoryDescription.text = resources.data?.description
-
-                    if (resources.data?.primaryLanguage != null) {
-                        binding.repositoryLanguageContent.text = resources.data.primaryLanguage.name
-                        (binding.repositoryLanguageContent.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(
-                            resources.data.primaryLanguage.color?.toColor() ?: Color.BLACK
-                        )
-                    } else {
-                        binding.repositoryLanguageContent.text =
-                            context?.getString(R.string.programming_language_unknown)
-                        (binding.repositoryLanguageContent.compoundDrawablesRelative[0] as? GradientDrawable)?.setColor(
-                            Color.BLACK
-                        )
-                    }
-                    binding.repositoryLicenseContent.text = resources.data?.licenseInfo?.name
-
-                    val flags =
-                        DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_MONTH
-                    resources.data?.updatedAt?.let {
-                        binding.repositoryUpdatedOnContent.text =
-                            DateUtils.formatDateTime(requireContext(), it.time, flags)
-                    }
-                    resources.data?.createdAt?.let {
-                        binding.repositoryCreatedOnContent.text =
-                            DateUtils.formatDateTime(requireContext(), it.time, flags)
-                    }
-
-                    binding.repositoryBranchContent.text = resources.data?.branchCount.toString()
-                    binding.repositoryReleasesContent.text =
-                        resources.data?.releasesCount.toString()
-
-                    val watchersCount = resources.data?.watchersCount ?: 0
-                    binding.repositoryWatchersCountText.text = formatNumberWithSuffix(watchersCount)
-                    val stargazersCount = resources.data?.stargazersCount ?: 0
-                    binding.repositoryStargazersCountText.text =
-                        formatNumberWithSuffix(stargazersCount)
-                    val forksCount = resources.data?.forksCount ?: 0
-                    binding.repositoryForksCountText.text = formatNumberWithSuffix(forksCount)
-                    val issuesCount = resources.data?.issuesCount ?: 0
-                    binding.repositoryIssuesCountText.text = formatNumberWithSuffix(issuesCount)
-
-                    binding.repositoryIssuesTextLayout.setOnClickListener {
-                        val args = IssuesFragmentArgs(loginArg, nameArg)
-                        parentFragment?.findNavController()
-                            ?.navigate(R.id.issues_fragment, args.toBundle())
-                    }
-
-                    val pullRequestsCount = resources.data?.pullRequestsCount ?: 0
-                    binding.repositoryPullRequestsCountText.text =
-                        formatNumberWithSuffix(pullRequestsCount)
-
-                    binding.repositoryPullRequestsTextLayout.setOnClickListener {
-                        val args = PullRequestsFragmentArgs(loginArg, nameArg)
-                        parentFragment?.findNavController()
-                            ?.navigate(R.id.prs_fragment, args.toBundle())
-                    }
-
-                    val projectsCount = resources.data?.projectsCount ?: 0
-                    binding.repositoryProjectsCountText.text = formatNumberWithSuffix(projectsCount)
-
-                    resources.data?.defaultBranchRef?.let {
-                        viewModel.updateBranchName(it.name)
-                    }
-
-                    resources.data?.topics?.let { topicList ->
-                        binding.repositoryTopics.apply {
-                            setHasFixedSize(true)
-                            layoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.HORIZONTAL,
-                                false
-                            )
-                            val adapter = RepositoryTopicAdapter()
-                            this.adapter = adapter
-                            adapter.submitList(topicList)
-                        }
-                    }
-                }
-                Status.ERROR -> {
-
-                }
-                Status.LOADING -> {
-
+                    val adapter = RepositoryTopicAdapter()
+                    this.adapter = adapter
+                    adapter.submitList(topicList)
                 }
             }
-        })
+        }
 
-        viewModel.readmeFileName.observe(this, Observer { resources ->
-            when (resources.status) {
-                Status.SUCCESS -> {
-                    if (resources.data != null) {
-                        val branchName =
-                            viewModel.repositoryResult.value?.data?.defaultBranchRef?.name
-                        viewModel.updateExpression("$branchName:${resources.data.second}")
-                    }
-                }
-                Status.ERROR -> {
+        viewModel.userRepository.observe(viewLifecycleOwner, repoObserver)
+        viewModel.organizationsRepository.observe(viewLifecycleOwner, repoObserver)
 
-                }
-                Status.LOADING -> {
-
-                }
-            }
-        })
-
-        viewModel.readmeFile.observe(this, Observer { resources ->
+        viewModel.readmeFile.observe(viewLifecycleOwner, Observer { resources ->
             when (resources.status) {
                 Status.SUCCESS -> {
                     binding.repositoryReadmeContent.apply {
@@ -199,6 +103,39 @@ class RepositoryFragment : Fragment() {
 
                 }
                 Status.LOADING -> {
+
+                }
+            }
+        })
+
+        viewModel.userEvent.observe(viewLifecycleOwner, EventObserver {
+            when (it) {
+                RepositoryEvent.VIEW_OWNERS_PROFILE -> {
+
+                }
+                RepositoryEvent.VIEW_WATCHERS -> {
+
+                }
+                RepositoryEvent.VIEW_STARGAZERS -> {
+
+                }
+                RepositoryEvent.VIEW_FORKS -> {
+
+                }
+                RepositoryEvent.VIEW_ISSUES -> {
+                    val args = IssuesFragmentArgs(args.login, args.name)
+                    parentFragment?.findNavController()
+                        ?.navigate(R.id.issues_fragment, args.toBundle())
+                }
+                RepositoryEvent.VIEW_PULL_REQUESTS -> {
+                    val args = PullRequestsFragmentArgs(args.login, args.name)
+                    parentFragment?.findNavController()
+                        ?.navigate(R.id.prs_fragment, args.toBundle())
+                }
+                RepositoryEvent.VIEW_PROJECTS -> {
+
+                }
+                RepositoryEvent.VIEW_LICENSE -> {
 
                 }
             }

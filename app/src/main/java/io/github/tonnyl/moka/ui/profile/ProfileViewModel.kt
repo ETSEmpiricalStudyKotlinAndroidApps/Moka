@@ -1,10 +1,13 @@
 package io.github.tonnyl.moka.ui.profile
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.tonnyl.moka.FollowUserMutation
 import io.github.tonnyl.moka.OrganizationQuery
+import io.github.tonnyl.moka.UnfollowUserMutation
 import io.github.tonnyl.moka.UserQuery
 import io.github.tonnyl.moka.data.Organization
 import io.github.tonnyl.moka.data.User
@@ -12,6 +15,10 @@ import io.github.tonnyl.moka.data.toNonNullUser
 import io.github.tonnyl.moka.data.toNullableOrganization
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.type.FollowUserInput
+import io.github.tonnyl.moka.type.UnfollowUserInput
+import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,31 +30,35 @@ class ProfileViewModel(
     private val profileType: ProfileType
 ) : ViewModel() {
 
-    private val _userProfile = MutableLiveData<User?>()
-    val userProfile: LiveData<User?>
+    private val _userProfile = MutableLiveData<Resource<User>>()
+    val userProfile: LiveData<Resource<User>>
         get() = _userProfile
 
-    private val _organizationProfile = MutableLiveData<Organization?>()
-    val organizationProfile: LiveData<Organization?>
+    private val _organizationProfile = MutableLiveData<Resource<Organization>>()
+    val organizationProfile: LiveData<Resource<Organization>>
         get() = _organizationProfile
 
-    private val _loadStatus = MutableLiveData<Resource<Unit>>()
-    val loadStatus: LiveData<Resource<Unit>>
-        get() = _loadStatus
+    private val _followState = MutableLiveData<Resource<Boolean?>>(null)
+    val followState: LiveData<Resource<Boolean?>>
+        get() = _followState
+
+    private val _userEvent = MutableLiveData<Event<ProfileEvent>>()
+    val userEvent: LiveData<Event<ProfileEvent>>
+        get() = _userEvent
 
     init {
         refreshData()
     }
 
     fun refreshData() {
-        when (profileType) {
-            ProfileType.USER -> {
+        when {
+            profileType == ProfileType.USER || _userProfile.value?.data != null -> {
                 refreshUserProfile()
             }
-            ProfileType.ORGANIZATION -> {
+            profileType == ProfileType.ORGANIZATION || _organizationProfile.value?.data != null -> {
                 refreshOrganization()
             }
-            ProfileType.NOT_SPECIFIED -> {
+            else -> {
                 refreshUserProfile()
                 refreshOrganization()
             }
@@ -56,27 +67,41 @@ class ProfileViewModel(
 
     private fun refreshUserProfile() {
         viewModelScope.launch(Dispatchers.IO) {
-            _loadStatus.postValue(Resource.loading(null))
+            _userProfile.postValue(Resource.loading(null))
 
             try {
-                val response = GraphQLClient.apolloClient
-                    .query(UserQuery(login))
-                    .execute()
+                val response = runBlocking {
+                    GraphQLClient.apolloClient
+                        .query(UserQuery(login))
+                        .execute()
+                }
 
-                _loadStatus.postValue(Resource.success(Unit))
-                _userProfile.postValue(response.data()?.user?.fragments?.user?.toNonNullUser())
+                val user = response.data()?.user?.fragments?.user?.toNonNullUser()
+
+                if (user == null) {
+                    _userProfile.postValue(
+                        Resource.error(response.errors().firstOrNull()?.message(), null)
+                    )
+                } else {
+                    _userProfile.postValue(Resource.success(user))
+
+                    if (user.viewerCanFollow) {
+                        _followState.postValue(Resource.success(user.viewerIsFollowing))
+                    } else {
+                        _followState.postValue(Resource.success(null))
+                    }
+                }
             } catch (e: Exception) {
                 Timber.e(e)
 
-                _loadStatus.postValue(Resource.error(e.message, null))
-                // don't send null value to keep data shown in the screen.
+                _userProfile.postValue(Resource.error(e.message, null))
             }
         }
     }
 
     private fun refreshOrganization() {
         viewModelScope.launch(Dispatchers.IO) {
-            _loadStatus.postValue(Resource.loading(null))
+            _organizationProfile.postValue(Resource.loading(null))
 
             try {
                 val response = runBlocking {
@@ -85,17 +110,66 @@ class ProfileViewModel(
                         .execute()
                 }
 
-                _loadStatus.postValue(Resource.success(Unit))
-                _organizationProfile.postValue(
-                    response.data()?.organization.toNullableOrganization()
-                )
+                val org = response.data()?.organization.toNullableOrganization()
+                if (org == null) {
+                    _organizationProfile.postValue(
+                        Resource.error(response.errors().firstOrNull()?.message(), null)
+                    )
+                } else {
+                    _organizationProfile.postValue(Resource.success(org))
+
+                    _followState.postValue(Resource.success(null))
+                }
             } catch (e: Exception) {
                 Timber.e(e)
 
-                _loadStatus.postValue(Resource.error(e.message, null))
-                // don't send null value to keep data shown in the screen.
+                _organizationProfile.postValue(Resource.error(e.message, null))
             }
         }
+    }
+
+    fun toggleFollow() {
+        if (_followState.value?.status == Status.LOADING) {
+            return
+        }
+
+        val user = _userProfile.value?.data ?: return
+        val isFollowing = _followState.value?.data ?: return
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _followState.postValue(Resource.loading(isFollowing))
+
+            try {
+                val mutation = if (isFollowing) {
+                    UnfollowUserMutation(UnfollowUserInput(user.id))
+                } else {
+                    FollowUserMutation(FollowUserInput(user.id))
+                }
+                val response = runBlocking {
+                    GraphQLClient.apolloClient
+                        .mutate(mutation)
+                        .execute()
+                }
+
+                if (response.hasErrors()) {
+                    _followState.postValue(
+                        Resource.error(response.errors().firstOrNull()?.message(), isFollowing)
+                    )
+                } else {
+                    _followState.postValue(Resource.success(!isFollowing))
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "toggleFollow failed")
+
+                _followState.postValue(Resource.error(e.message, isFollowing))
+            }
+        }
+
+    }
+
+    @MainThread
+    fun userEvent(event: ProfileEvent) {
+        _userEvent.value = Event(event)
     }
 
 }

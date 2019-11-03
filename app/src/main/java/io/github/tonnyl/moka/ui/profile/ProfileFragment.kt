@@ -6,20 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentProfileBinding
-import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.users.UsersFragmentArgs
 import io.github.tonnyl.moka.ui.users.UsersType
 
-class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
+class ProfileFragment : Fragment(), EmptyViewActions {
 
     private val args by navArgs<ProfileFragmentArgs>()
     private val viewModel by viewModels<ProfileViewModel> {
@@ -61,37 +60,51 @@ class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
         binding.apply {
             emptyViewActions = this@ProfileFragment
             viewModel = this@ProfileFragment.viewModel
-            actions = this@ProfileFragment
             lifecycleOwner = this@ProfileFragment
         }
 
-        viewModel.loadStatus.observe(this, Observer { resource ->
-            when (resource.status) {
-                Status.SUCCESS -> {
-                    binding.swipeRefresh.isRefreshing = false
+        viewModel.userEvent.observe(viewLifecycleOwner, EventObserver {
+            when (it) {
+                ProfileEvent.EDIT_PROFILE -> {
+                    editProfile()
                 }
-                Status.ERROR -> {
-                    binding.swipeRefresh.isRefreshing = false
-
-                    binding.snackbar.show(
-                        messageId = R.string.common_error_requesting_data,
-                        actionId = R.string.common_retry
-                    )
+                ProfileEvent.VIEW_REPOSITORIES -> {
+                    openRepositories()
                 }
-                Status.LOADING -> {
-
+                ProfileEvent.VIEW_STARS -> {
+                    openStars()
+                }
+                ProfileEvent.VIEW_FOLLOWERS -> {
+                    openFollowers()
+                }
+                ProfileEvent.VIEW_FOLLOWINGS -> {
+                    openFollowings()
+                }
+                ProfileEvent.VIEW_PROJECTS -> {
+                    openProjects()
+                }
+                ProfileEvent.VIEW_AVATAR -> {
+                    openAvatar()
+                }
+                ProfileEvent.CLICK_EMAIL -> {
+                    openEmail()
+                }
+                ProfileEvent.CLICK_WEBSITE -> {
+                    openWebsite()
+                }
+                ProfileEvent.CLICK_LOCATION -> {
+                    openLocation()
+                }
+                ProfileEvent.CLICK_COMPANY -> {
+                    openCompany()
                 }
             }
         })
 
     }
 
-    override fun toggleFollow() {
-
-    }
-
-    override fun editProfile() {
-        viewModel.userProfile.value?.let {
+    private fun editProfile() {
+        viewModel.userProfile.value?.data?.let {
             val bundle = EditProfileFragmentArgs(
                 it.login,
                 it.name,
@@ -106,7 +119,7 @@ class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
         }
     }
 
-    override fun openRepositories() {
+    private fun openRepositories() {
         val builder = RepositoriesFragmentArgs(
             args.login,
             RepositoryType.OWNED,
@@ -116,7 +129,7 @@ class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
             ?.navigate(R.id.repositories_fragment, builder.toBundle())
     }
 
-    override fun openStars() {
+    private fun openStars() {
         val builder = RepositoriesFragmentArgs(
             args.login,
             RepositoryType.STARRED,
@@ -126,7 +139,7 @@ class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
             ?.navigate(R.id.repositories_fragment, builder.toBundle())
     }
 
-    override fun openFollowers() {
+    private fun openFollowers() {
         val args = UsersFragmentArgs(
             args.login,
             UsersType.FOLLOWER
@@ -135,7 +148,7 @@ class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
             ?.navigate(R.id.action_user_profile_to_users, args)
     }
 
-    override fun openFollowings() {
+    private fun openFollowings() {
         val args = UsersFragmentArgs(
             args.login,
             UsersType.FOLLOWING
@@ -144,27 +157,27 @@ class ProfileFragment : Fragment(), ProfileActions, EmptyViewActions {
             ?.navigate(R.id.action_user_profile_to_users, args)
     }
 
-    override fun openProjects() {
+    private fun openProjects() {
 
     }
 
-    override fun openEmail() {
+    private fun openEmail() {
 
     }
 
-    override fun openWebsite() {
+    private fun openWebsite() {
 
     }
 
-    override fun openLocation() {
+    private fun openLocation() {
 
     }
 
-    override fun openCompany() {
+    private fun openCompany() {
 
     }
 
-    override fun openAvatar() {
+    private fun openAvatar() {
 
     }
 

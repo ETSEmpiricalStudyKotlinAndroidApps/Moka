@@ -1,17 +1,23 @@
 package io.github.tonnyl.moka.ui.repository
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.tonnyl.moka.CurrentLevelTreeViewQuery
-import io.github.tonnyl.moka.FileContentQuery
-import io.github.tonnyl.moka.UsersRepositoryQuery
+import io.github.tonnyl.moka.*
 import io.github.tonnyl.moka.data.Repository
+import io.github.tonnyl.moka.data.toNonNullTreeEntry
 import io.github.tonnyl.moka.data.toNullableRepository
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.type.AddStarInput
+import io.github.tonnyl.moka.type.FollowUserInput
+import io.github.tonnyl.moka.type.RemoveStarInput
+import io.github.tonnyl.moka.type.UnfollowUserInput
+import io.github.tonnyl.moka.ui.Event
+import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.util.execute
 import io.github.tonnyl.moka.util.wrapWithHtmlTemplate
 import kotlinx.coroutines.Dispatchers
@@ -25,97 +31,140 @@ import org.commonmark.ext.ins.InsExtension
 import org.commonmark.parser.Parser
 import org.commonmark.renderer.html.HtmlRenderer
 import timber.log.Timber
+import java.util.*
 
 class RepositoryViewModel(
     private val login: String,
-    private val repositoryName: String
+    private val repositoryName: String,
+    private val profileType: ProfileType
 ) : ViewModel() {
 
-    private val _repositoryResult = MutableLiveData<Resource<Repository>>()
-    val repositoryResult: LiveData<Resource<Repository>>
-        get() = _repositoryResult
+    private val _usersRepository = MutableLiveData<Resource<Repository>>()
+    val userRepository: LiveData<Resource<Repository>>
+        get() = _usersRepository
+
+    private val _organizationsRepository = MutableLiveData<Resource<Repository>>()
+    val organizationsRepository: LiveData<Resource<Repository>>
+        get() = _organizationsRepository
 
     private val _readmeFile = MutableLiveData<Resource<String>>()
     val readmeFile: LiveData<Resource<String>>
         get() = _readmeFile
 
-    private val _readmeFileName = MutableLiveData<Resource<Pair<String, String>>>()
-    val readmeFileName: LiveData<Resource<Pair<String, String>>>
-        get() = _readmeFileName
+    private val _starState = MutableLiveData<Resource<Boolean?>>()
+    val starState: LiveData<Resource<Boolean?>>
+        get() = _starState
+
+    private val _followState = MutableLiveData<Resource<Boolean?>>()
+    val followState: LiveData<Resource<Boolean?>>
+        get() = _followState
+
+    private val _userEvent = MutableLiveData<Event<RepositoryEvent>>()
+    val userEvent: LiveData<Event<RepositoryEvent>>
+        get() = _userEvent
 
     init {
         refresh()
     }
 
-    fun refresh() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _repositoryResult.postValue(Resource.loading(null))
-
-            try {
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .query(
-                            UsersRepositoryQuery(
-                                login,
-                                repositoryName
-                            )
-                        )
-                        .execute()
-                }
-
-                _repositoryResult.postValue(
-                    Resource.success(response.data().toNullableRepository())
-                )
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                _repositoryResult.postValue(Resource.error(e.message, null))
+    @MainThread
+    private fun refresh() {
+        when {
+            profileType == ProfileType.USER || _usersRepository.value?.data != null -> {
+                refreshUsersRepository()
             }
-
+            profileType == ProfileType.ORGANIZATION || _organizationsRepository.value?.data != null -> {
+                refreshOrganizationsRepository()
+            }
+            // including ProfileType.NOT_SPECIFIED
+            else -> {
+                refreshUsersRepository()
+                refreshOrganizationsRepository()
+            }
         }
     }
 
-    fun updateExpression(expression: String) {
+    private fun updateBranchName(branchName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _readmeFile.postValue(Resource.loading(null))
 
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient
-                        .query(
-                            FileContentQuery(
-                                login,
-                                repositoryName,
-                                expression
-                            )
-                        )
+                        .query(CurrentLevelTreeViewQuery(login, repositoryName, "$branchName:"))
                         .execute()
                 }
 
-                val extensions = listOf(
-                    TablesExtension.create(),
-                    AutolinkExtension.create(),
-                    StrikethroughExtension.create(),
-                    InsExtension.create(),
-                    YamlFrontMatterExtension.create()
-                )
-                val parser = Parser.builder()
-                    .extensions(extensions)
-                    .build()
-                val document =
-                    parser.parse(response.data()?.repository?.object_?.fragments?.blob?.text)
-                val renderer = HtmlRenderer.builder()
-                    .extensions(extensions)
-                    .escapeHtml(false)
-                    .build()
-                val html = wrapWithHtmlTemplate(
-                    renderer.render(document),
-                    login,
-                    repositoryName,
-                    expression
+                val readmeFileNames = mapOf(
+                    "readme.md" to "md",
+                    "readme.html" to "html",
+                    "readme.htm" to "html",
+                    "readme" to "plain"
                 )
 
-                _readmeFile.postValue(Resource.success(html))
+                val readmeFile = response.data()
+                    ?.repository
+                    ?.object_
+                    ?.fragments
+                    ?.tree
+                    ?.entries
+                    ?.firstOrNull {
+                        readmeFileNames.contains(
+                            it.fragments.treeEntry.name.toLowerCase(
+                                Locale.US
+                            )
+                        )
+                    }
+
+                val fileEntry = readmeFile?.fragments
+                    ?.treeEntry
+                    ?.toNonNullTreeEntry()
+
+                if (fileEntry != null) {
+                    val expression = "$branchName:${fileEntry.name}"
+                    val fileContentResponse = runBlocking {
+                        GraphQLClient.apolloClient
+                            .query(FileContentQuery(login, repositoryName, expression))
+                            .execute()
+                    }
+
+                    if (fileContentResponse.hasErrors()) {
+                        _readmeFile.postValue(
+                            Resource.error(
+                                fileContentResponse.errors().firstOrNull()?.message(),
+                                null
+                            )
+                        )
+                    } else {
+                        val extensions = listOf(
+                            TablesExtension.create(),
+                            AutolinkExtension.create(),
+                            StrikethroughExtension.create(),
+                            InsExtension.create(),
+                            YamlFrontMatterExtension.create()
+                        )
+                        val parser = Parser.builder()
+                            .extensions(extensions)
+                            .build()
+                        val document = parser.parse(
+                            fileContentResponse.data()?.repository?.object_?.fragments?.blob?.text
+                        )
+                        val renderer = HtmlRenderer.builder()
+                            .extensions(extensions)
+                            .escapeHtml(false)
+                            .build()
+                        val html = wrapWithHtmlTemplate(
+                            renderer.render(document),
+                            login,
+                            repositoryName,
+                            expression
+                        )
+
+                        _readmeFile.postValue(Resource.success(html))
+                    }
+                } else {
+                    _readmeFile.postValue(Resource.success(null))
+                }
             } catch (e: Exception) {
                 Timber.e(e)
 
@@ -124,78 +173,163 @@ class RepositoryViewModel(
         }
     }
 
-    fun updateBranchName(branchName: String) {
+    fun toggleStar() {
+        if (_starState.value?.status == Status.LOADING) {
+            return
+        }
+
+        val repositoryId = _usersRepository.value?.data?.id ?: return
+        val hasStarred = _starState.value?.data ?: return
+
         viewModelScope.launch(Dispatchers.IO) {
-            _readmeFileName.postValue(Resource.loading(null))
+            _starState.postValue(Resource.loading(hasStarred))
+
+            try {
+                val mutation = if (hasStarred) {
+                    RemoveStarMutation(RemoveStarInput(repositoryId))
+                } else {
+                    AddStarMutation(AddStarInput(repositoryId))
+                }
+
+                val response = runBlocking {
+                    GraphQLClient.apolloClient
+                        .mutate(mutation)
+                        .execute()
+                }
+
+                if (response.hasErrors()) {
+                    _starState.postValue(
+                        Resource.error(response.errors().firstOrNull()?.message(), hasStarred)
+                    )
+                } else {
+                    _starState.postValue(Resource.success(!hasStarred))
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "toggleStar error")
+
+                _starState.postValue(Resource.error(e.message, hasStarred))
+            }
+        }
+    }
+
+    fun toggleFollow() {
+        if (profileType == ProfileType.ORGANIZATION
+            || _usersRepository.value?.data?.viewerCanFollow != true
+            || _followState.value?.status == Status.LOADING
+        ) {
+            return
+        }
+
+        val userId = _usersRepository.value?.data?.id ?: return
+        val isFollowing = _followState.value?.data ?: return
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _followState.postValue(Resource.loading(isFollowing))
+
+            try {
+                val mutation = if (isFollowing) {
+                    UnfollowUserMutation(UnfollowUserInput(userId))
+                } else {
+                    FollowUserMutation(FollowUserInput(userId))
+                }
+                val response = runBlocking {
+                    GraphQLClient.apolloClient
+                        .mutate(mutation)
+                        .execute()
+                }
+
+                if (response.hasErrors()) {
+                    _followState.postValue(
+                        Resource.error(response.errors().firstOrNull()?.message(), isFollowing)
+                    )
+                } else {
+                    _followState.postValue(Resource.success(!isFollowing))
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "toggleFollow error")
+
+                _followState.postValue(Resource.error(e.message, isFollowing))
+            }
+        }
+    }
+
+    @MainThread
+    fun userEvent(event: RepositoryEvent) {
+        _userEvent.value = Event(event)
+    }
+
+    private fun refreshUsersRepository() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _usersRepository.postValue(Resource.loading(null))
 
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient
-                        .query(
-                            CurrentLevelTreeViewQuery(
-                                login,
-                                repositoryName,
-                                "$branchName:"
-                            )
-                        )
+                        .query(UsersRepositoryQuery(login, repositoryName))
                         .execute()
                 }
 
-                val readmeFiles = response.data()
-                    ?.repository
-                    ?.object_
-                    ?.fragments
-                    ?.tree
-                    ?.entries
-                    ?.filter {
-                        it.fragments.treeEntry.name.toLowerCase().contains("readme")
+                val repo = response.data().toNullableRepository()
+
+                if (repo == null) {
+                    _usersRepository.postValue(
+                        Resource.error(response.errors().firstOrNull()?.message(), null)
+                    )
+                } else {
+                    _usersRepository.postValue(Resource.success(repo))
+
+                    repo.defaultBranchRef?.let { ref ->
+                        updateBranchName(ref.name)
                     }
 
-                if (readmeFiles.isNullOrEmpty()) {
-                    Resource(Status.SUCCESS, null, null)
-                } else {
-                    val mdIndex = readmeFiles.indexOfFirst {
-                        it.fragments.treeEntry.name.toLowerCase().endsWith(".md")
-                    }
-                    _readmeFileName.postValue(
-                        if (mdIndex >= 0) {
-                            Resource.success(
-                                Pair(
-                                    "md",
-                                    readmeFiles[mdIndex].fragments.treeEntry.name.toLowerCase()
-                                )
-                            )
-                        } else {
-                            val htmlIndex = readmeFiles.indexOfFirst {
-                                it.fragments.treeEntry.name.toLowerCase().endsWith(".html")
-                            }
-                            if (htmlIndex >= 0) {
-                                Resource.success(
-                                    Pair(
-                                        "html",
-                                        readmeFiles[htmlIndex].fragments.treeEntry.name.toLowerCase()
-                                    )
-                                )
+                    _followState.postValue(
+                        Resource.success(
+                            if (repo.viewerCanFollow) {
+                                repo.viewerIsFollowing
                             } else {
-                                val plainIndex =
-                                    readmeFiles.indexOfFirst { it.fragments.treeEntry.name.toLowerCase().toLowerCase() == "readme" }
-                                if (plainIndex >= 0) {
-                                    Resource.success(
-                                        Pair(
-                                            "plain",
-                                            readmeFiles[plainIndex].fragments.treeEntry.name.toLowerCase()
-                                        )
-                                    )
-                                } else {
-                                    Resource.success(null)
-                                }
+                                null
                             }
-                        })
+                        )
+                    )
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.e(e, "refreshUsersRepositoryData error")
 
-                _readmeFileName.postValue(Resource.error(e.message, null))
+                _usersRepository.postValue(Resource.error(e.message, null))
+            }
+        }
+    }
+
+    private fun refreshOrganizationsRepository() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _organizationsRepository.postValue(Resource.loading(null))
+
+            try {
+                val response = runBlocking {
+                    GraphQLClient.apolloClient
+                        .query(OrganizationsRepositoryQuery(login, repositoryName))
+                        .execute()
+                }
+
+                val repo = response.data().toNullableRepository()
+
+                if (repo == null) {
+                    _organizationsRepository.postValue(
+                        Resource.error(response.errors().firstOrNull()?.message(), null)
+                    )
+                } else {
+                    _organizationsRepository.postValue(Resource.success(repo))
+
+                    repo.defaultBranchRef?.let {
+                        updateBranchName(it.name)
+                    }
+
+                    _followState.postValue(Resource.success(null))
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "refreshOrganizationsRepository error")
+
+                _organizationsRepository.postValue(Resource.error(e.message, null))
             }
         }
     }

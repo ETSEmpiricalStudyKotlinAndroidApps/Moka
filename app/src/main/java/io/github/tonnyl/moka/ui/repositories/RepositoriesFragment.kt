@@ -101,7 +101,8 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions
     }
 
     override fun openRepository(login: String, repositoryName: String) {
-        val repositoryArgs = RepositoryFragmentArgs(login, repositoryName).toBundle()
+        val repositoryArgs =
+            RepositoryFragmentArgs(login, repositoryName, args.profileType).toBundle()
         findNavController().navigate(R.id.repository_fragment, repositoryArgs)
     }
 

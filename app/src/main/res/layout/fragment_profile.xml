@@ -10,6 +10,8 @@
 
         <import type="io.github.tonnyl.moka.network.Status" />
 
+        <import type="io.github.tonnyl.moka.ui.profile.ProfileEvent" />
+
         <variable
             name="viewModel"
             type="io.github.tonnyl.moka.ui.profile.ProfileViewModel" />
@@ -17,10 +19,6 @@
         <variable
             name="mainViewModel"
             type="io.github.tonnyl.moka.ui.MainViewModel" />
-
-        <variable
-            name="actions"
-            type="io.github.tonnyl.moka.ui.profile.ProfileActions" />
 
         <variable
             name="emptyViewActions"
@@ -85,10 +83,10 @@
                         android:layout_gravity="end|center_vertical"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/main_menu_search"
-                        android:onClick="@{() -> actions.editProfile()}"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.EDIT_PROFILE)}"
                         android:src="@drawable/ic_edit_white_24"
                         android:tint="@color/colorControlNormal"
-                        app:goneUnless="@{(mainViewModel.currentUser.login == viewModel.userProfile.login) || (mainViewModel.currentUser.login == viewModel.organizationProfile.login)}" />
+                        app:goneUnless="@{(mainViewModel.currentUser.login == viewModel.userProfile.data.login) || (mainViewModel.currentUser.login == viewModel.organizationProfile.data.login)}" />
 
                 </LinearLayout>
 
@@ -96,14 +94,24 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refresh"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:colorSchemaColors="@{@intArray/swipe_refresh}"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:onRefresh="@{() -> emptyViewActions.retryInitial()}"
-            app:stopRefreshing="@{viewModel.loadStatus != null &amp;&amp; viewModel.loadStatus.status != Status.LOADING}">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <include
+                android:id="@+id/layout_empty_content"
+                layout="@layout/layout_empty_content"
+                bind:actionString="@{@string/user_profile_content_empty_action}"
+                bind:actions="@{emptyViewActions}"
+                bind:goneUnless="@{viewModel.userProfile != null &amp;&amp; viewModel.organizationProfile != null &amp;&amp; viewModel.userProfile.data == null &amp;&amp; viewModel.organizationProfile.data == null &amp;&amp; viewModel.userProfile.status != Status.LOADING &amp;&amp; viewModel.organizationProfile.status != Status.LOADING}"
+                bind:iconDrawable="@{@drawable/ic_person_outline_24}"
+                bind:titleString="@{(viewModel.userProfile.status == Status.ERROR &amp;&amp; viewModel.organizationProfile.status == Status.ERROR) ? @string/common_error_requesting_data : @string/user_profile_content_empty_title}" />
+
+            <include
+                android:id="@+id/layout_loading"
+                layout="@layout/layout_loading"
+                app:goneUnless="@{viewModel.userProfile.status == Status.LOADING || viewModel.organizationProfile.status == Status.LOADING}" />
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/scroll_view"
@@ -111,475 +119,336 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:fillViewport="true"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                app:goneUnless="@{viewModel.userProfile.data != null || viewModel.organizationProfile.data != null}">
 
-                <FrameLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:paddingTop="@dimen/fragment_content_padding"
+                    android:paddingBottom="@dimen/fragment_content_padding"
+                    app:goneUnless="@{viewModel.userProfile != null || viewModel.organizationProfile != null}">
 
-                    <include
-                        android:id="@+id/layout_empty_content"
-                        layout="@layout/layout_empty_content"
-                        bind:actionString="@{@string/user_profile_content_empty_action}"
-                        bind:actions="@{emptyViewActions}"
-                        bind:goneUnless="@{viewModel.loadStatus != null &amp;&amp; viewModel.loadStatus.status != Status.LOADING &amp;&amp; (viewModel.userProfile != null &amp;&amp; viewModel.organizationProfile != null)}"
-                        bind:iconDrawable="@{@drawable/ic_person_outline_24}"
-                        bind:titleString="@{viewModel.loadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/user_profile_content_empty_title}" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/profile_avatar"
+                        android:layout_width="@dimen/profile_avatar_width"
+                        android:layout_height="@dimen/profile_avatar_height"
+                        android:layout_marginStart="@dimen/fragment_content_padding"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_AVATAR)}"
+                        app:avatarUrl="@{(viewModel.userProfile.data.avatarUrl ?? viewModel.organizationProfile.data.avatarUrl)}"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@tools:sample/avatars" />
 
-                    <include
-                        android:id="@+id/layout_loading"
-                        layout="@layout/layout_loading"
-                        bind:goneUnless="@{viewModel.userProfile == null &amp;&amp; viewModel.organizationProfile == null &amp;&amp; viewModel.loadStatus.status == Status.LOADING}" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/profile_username"
+                        style="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/fragment_content_padding"
+                        android:layout_marginEnd="@dimen/fragment_content_padding"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{viewModel.userProfile.data.name ?? viewModel.organizationProfile.data.name}"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textIsSelectable="true"
+                        app:layout_constraintBottom_toTopOf="@id/profile_login_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/profile_avatar"
+                        app:layout_constraintTop_toTopOf="@id/profile_avatar"
+                        app:layout_constraintVertical_chainStyle="spread"
+                        tools:text="@sample/user.json/users/name" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/profile_login_name"
+                        style="@style/TextAppearance.MaterialComponents.Body1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/user_profile_content_padding"
+                        android:layout_marginEnd="@dimen/fragment_content_padding"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{viewModel.userProfile.data.login ?? viewModel.organizationProfile.data.login}"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textIsSelectable="true"
+                        app:layout_constraintBottom_toTopOf="@id/profile_follow_unfollow"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/profile_avatar"
+                        app:layout_constraintTop_toBottomOf="@id/profile_username"
+                        tools:text="@sample/user.json/users/login" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/profile_follow_unfollow"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/user_profile_content_padding"
+                        android:onClick="@{() -> viewModel.toggleFollow()}"
+                        android:text="@{viewModel.followState.data == true ? @string/user_profile_unfollow : @string/user_profile_follow}"
+                        android:textColor="@color/colorAccent"
+                        app:goneUnless="@{viewModel.followState.data != null}"
+                        app:layout_constraintBottom_toBottomOf="@id/profile_avatar"
+                        app:layout_constraintStart_toEndOf="@id/profile_avatar"
+                        app:layout_constraintTop_toBottomOf="@id/profile_login_name"
+                        app:rippleColor="@color/colorAccent"
+                        tools:text="@string/user_profile_unfollow" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/profile_bio"
+                        style="@style/TextAppearance.MaterialComponents.Body2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/fragment_content_padding"
+                        android:text="@{viewModel.userProfile.data.bio ?? viewModel.organizationProfile.data.description}"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textIsSelectable="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_avatar"
+                        tools:text="@sample/user.json/users/bio" />
+
+                    <View
+                        android:id="@+id/profile_divider_between_bio_and_tabs"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/divider_size"
+                        android:background="@color/colorDivider"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_bio" />
+
+                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                        android:id="@+id/profile_repositories_text_group"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_REPOSITORIES)}"
+                        app:category="@string/profile_repositories"
+                        app:numberText="@{String.valueOf(viewModel.userProfile == null ? (viewModel.organizationProfile == null ? 0 : viewModel.organizationProfile.data.repositoriesTotalCount) : viewModel.userProfile.data.repositoriesTotalCount)}"
+                        tools:ignore="MissingConstraints" />
+
+                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                        android:id="@+id/profile_stars_text_group"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_STARS)}"
+                        app:category="@string/profile_stars"
+                        app:numberText="@{String.valueOf(viewModel.userProfile.data.starredRepositoriesTotalCount)}"
+                        tools:ignore="MissingConstraints" />
+
+                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                        android:id="@+id/profile_followers_text_group"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_FOLLOWERS)}"
+                        app:category="@string/profile_followers"
+                        app:numberText="@{String.valueOf(viewModel.userProfile.data.followersTotalCount)}"
+                        tools:ignore="MissingConstraints" />
+
+                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                        android:id="@+id/profile_following_text_group"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_FOLLOWINGS)}"
+                        app:category="@string/profile_following"
+                        app:numberText="@{String.valueOf(viewModel.userProfile.data.followingTotalCount)}"
+                        tools:ignore="MissingConstraints" />
+
+                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                        android:id="@+id/profile_projects_text_group"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_PROJECTS)}"
+                        app:category="@string/repository_projects"
+                        app:numberText="@{String.valueOf(viewModel.userProfile == null ? (viewModel.organizationProfile == null ? 0 : viewModel.organizationProfile.data.projectsTotalCount) : viewModel.userProfile.data.projectsTotalCount)}"
+                        tools:ignore="MissingConstraints" />
+
+                    <androidx.constraintlayout.helper.widget.Flow
+                        android:id="@+id/profile_numbers_flow"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:paddingTop="@dimen/fragment_content_padding"
                         android:paddingBottom="@dimen/fragment_content_padding"
-                        app:goneUnless="@{viewModel.userProfile != null || viewModel.organizationProfile != null}">
+                        app:constraint_referenced_ids="profile_repositories_text_group,profile_stars_text_group,profile_followers_text_group,profile_following_text_group,profile_projects_text_group"
+                        app:flow_horizontalStyle="spread"
+                        app:flow_maxElementsWrap="3"
+                        app:flow_verticalGap="@dimen/fragment_content_padding"
+                        app:flow_wrapMode="chain"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_bio" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/profile_avatar"
-                            android:layout_width="@dimen/profile_avatar_width"
-                            android:layout_height="@dimen/profile_avatar_height"
-                            android:layout_marginStart="@dimen/fragment_content_padding"
-                            android:onClick="@{() -> actions.openAvatar()}"
-                            app:avatarUrl="@{(viewModel.userProfile.avatarUrl ?? viewModel.organizationProfile.avatarUrl)}"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:src="@tools:sample/avatars" />
+                    <View
+                        android:id="@+id/profile_divider_between_tabs_and_contact"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/divider_size"
+                        android:background="@color/colorDivider"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_numbers_flow" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/profile_username"
-                            style="@style/TextAppearance.MaterialComponents.Headline6"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/fragment_content_padding"
-                            android:layout_marginEnd="@dimen/fragment_content_padding"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:text="@{viewModel.userProfile.name ?? viewModel.organizationProfile.name}"
-                            android:textColor="@color/colorTextPrimary"
-                            android:textIsSelectable="true"
-                            app:layout_constraintBottom_toTopOf="@id/profile_login_name"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/profile_avatar"
-                            app:layout_constraintTop_toTopOf="@id/profile_avatar"
-                            app:layout_constraintVertical_chainStyle="spread"
-                            tools:text="@sample/user.json/users/name" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/profile_contact_category_title"
+                        style="@style/CategoryStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_contact"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_divider_between_tabs_and_contact" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/profile_login_name"
-                            style="@style/TextAppearance.MaterialComponents.Body1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/user_profile_content_padding"
-                            android:layout_marginEnd="@dimen/fragment_content_padding"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:text="@{viewModel.userProfile.login ?? viewModel.organizationProfile.login}"
-                            android:textColor="@color/colorTextSecondary"
-                            android:textIsSelectable="true"
-                            app:layout_constraintBottom_toTopOf="@id/profile_follow_unfollow"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/profile_avatar"
-                            app:layout_constraintTop_toBottomOf="@id/profile_username"
-                            tools:text="@sample/user.json/users/login" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/profile_follow_unfollow"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/user_profile_content_padding"
-                            android:onClick="@{() -> actions.toggleFollow()}"
-                            android:text="@{viewModel.userProfile.viewerIsFollowing == true ? @string/user_profile_unfollow : @string/user_profile_follow}"
-                            android:textColor="@color/colorAccent"
-                            app:layout_constraintBottom_toBottomOf="@id/profile_avatar"
-                            app:layout_constraintStart_toEndOf="@id/profile_avatar"
-                            app:layout_constraintTop_toBottomOf="@id/profile_login_name"
-                            app:visibleUnless="@{viewModel.userProfile.viewerCanFollow == true}"
-                            tools:text="@string/user_profile_unfollow" />
+                    <LinearLayout
+                        android:id="@+id/profile_company_layout"
+                        style="@style/LinearLayoutTitleContentStyle"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.CLICK_COMPANY)}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_contact_category_title">
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/profile_bio"
-                            style="@style/TextAppearance.MaterialComponents.Body2"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/fragment_content_padding"
-                            android:text="@{viewModel.userProfile.bio ?? viewModel.organizationProfile.description}"
-                            android:textColor="@color/colorTextSecondary"
-                            android:textIsSelectable="true"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_avatar"
-                            tools:text="@sample/user.json/users/bio" />
-
-                        <View
-                            android:id="@+id/profile_divider_between_bio_and_tabs"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/divider_size"
-                            android:background="@color/colorDivider"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_bio" />
-
-                        <Space
-                            android:id="@+id/profile_space_tab_left"
-                            android:layout_width="@dimen/fragment_content_padding"
-                            android:layout_height="0dp"
-                            app:layout_constraintBottom_toBottomOf="@id/profile_following_text_layout"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_divider_between_bio_and_tabs" />
-
-                        <Space
-                            android:id="@+id/profile_space_tab_right"
-                            android:layout_width="@dimen/fragment_content_padding"
-                            android:layout_height="0dp"
-                            app:layout_constraintBottom_toBottomOf="@id/profile_following_text_layout"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_divider_between_bio_and_tabs" />
-
-                        <LinearLayout
-                            android:id="@+id/profile_repositories_text_layout"
-                            style="@style/LinearLayoutCountTypeStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:onClick="@{() -> actions.openRepositories()}"
-                            app:layout_constraintEnd_toStartOf="@id/profile_stars_text_layout"
-                            app:layout_constraintHorizontal_weight="1"
-                            app:layout_constraintStart_toEndOf="@id/profile_space_tab_left"
-                            app:layout_constraintTop_toBottomOf="@id/profile_bio">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_repositories_count_text"
-                                style="@style/TextAppearance.Moka.Count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:intOrZero="@{viewModel.userProfile == null ? (viewModel.organizationProfile == null ? 0 : viewModel.organizationProfile.repositoriesTotalCount) : viewModel.userProfile.repositoriesTotalCount}"
-                                tools:text="@sample/user.json/users/repositoryCount" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/fragment_content_padding_half" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                style="@style/TextAppearance.Moka.ContentCategory"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/profile_repositories" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/profile_stars_text_layout"
-                            style="@style/LinearLayoutCountTypeStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:onClick="@{() -> actions.openStars()}"
-                            app:layout_constraintEnd_toStartOf="@id/profile_followers_text_layout"
-                            app:layout_constraintHorizontal_weight="1"
-                            app:layout_constraintStart_toEndOf="@id/profile_repositories_text_layout"
-                            app:layout_constraintTop_toBottomOf="@id/profile_bio">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_stars_count_text"
-                                style="@style/TextAppearance.Moka.Count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:intOrZero="@{(Integer)viewModel.userProfile.starredRepositoriesTotalCount}"
-                                tools:text="@sample/user.json/users/starCount" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/fragment_content_padding_half" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                style="@style/TextAppearance.Moka.ContentCategory"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/profile_stars" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/profile_followers_text_layout"
-                            style="@style/LinearLayoutCountTypeStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:onClick="@{() -> actions.openFollowers()}"
-                            app:layout_constraintEnd_toStartOf="@id/profile_space_tab_right"
-                            app:layout_constraintHorizontal_weight="1"
-                            app:layout_constraintStart_toEndOf="@id/profile_stars_text_layout"
-                            app:layout_constraintTop_toBottomOf="@id/profile_bio">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_followers_count_text"
-                                style="@style/TextAppearance.Moka.Count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:intOrZero="@{(Integer)viewModel.userProfile.followersTotalCount}"
-                                tools:text="@sample/user.json/users/followerCount" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/fragment_content_padding_half" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                style="@style/TextAppearance.Moka.ContentCategory"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/profile_followers" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/profile_following_text_layout"
-                            style="@style/LinearLayoutCountTypeStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:onClick="@{() -> actions.openFollowings()}"
-                            app:layout_constraintEnd_toStartOf="@id/profile_projects_text_layout"
-                            app:layout_constraintHorizontal_weight="1"
-                            app:layout_constraintStart_toEndOf="@id/profile_space_tab_left"
-                            app:layout_constraintTop_toBottomOf="@id/profile_repositories_text_layout">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_following_count_text"
-                                style="@style/TextAppearance.Moka.Count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:intOrZero="@{(Integer)viewModel.userProfile.followingTotalCount}"
-                                tools:text="@sample/user.json/users/followingCount" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/fragment_content_padding_half" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                style="@style/TextAppearance.Moka.ContentCategory"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/profile_following" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/profile_projects_text_layout"
-                            style="@style/LinearLayoutCountTypeStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:onClick="@{() -> actions.openProjects()}"
-                            app:layout_constraintEnd_toStartOf="@id/profile_space_tab_right"
-                            app:layout_constraintHorizontal_weight="1"
-                            app:layout_constraintStart_toEndOf="@id/profile_following_text_layout"
-                            app:layout_constraintTop_toBottomOf="@id/profile_repositories_text_layout">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_projects_count_text"
-                                style="@style/TextAppearance.Moka.Count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:intOrZero="@{viewModel.userProfile == null ? (viewModel.organizationProfile == null ? 0 : viewModel.organizationProfile.projectsTotalCount) : viewModel.userProfile.projectsTotalCount}"
-                                tools:text="@sample/user.json/users/followingCount" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/fragment_content_padding_half" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                style="@style/TextAppearance.Moka.ContentCategory"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/repository_projects" />
-
-                        </LinearLayout>
-
-                        <View
-                            android:id="@+id/profile_divider_between_tabs_and_contact"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/divider_size"
-                            android:background="@color/colorDivider"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_projects_text_layout" />
+                            android:id="@+id/profile_company_title"
+                            style="@style/LinearLayoutTitleStyle"
+                            android:drawableStart="@drawable/ic_group_24"
+                            android:text="@string/profile_company" />
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/profile_contact_category_title"
-                            style="@style/CategoryStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/profile_contact"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_divider_between_tabs_and_contact" />
+                            android:id="@+id/profile_company_content"
+                            style="@style/LinearLayoutContentStyle"
+                            android:text='@{viewModel.userProfile.data.company ?? ""}'
+                            tools:text="@sample/user.json/users/company" />
 
-                        <LinearLayout
-                            android:id="@+id/profile_company_layout"
-                            style="@style/LinearLayoutTitleContentStyle"
-                            android:onClick="@{() -> actions.openCompany()}"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_contact_category_title">
+                    </LinearLayout>
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_company_title"
-                                style="@style/LinearLayoutTitleStyle"
-                                android:drawableStart="@drawable/ic_group_24"
-                                android:text="@string/profile_company" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_company_content"
-                                style="@style/LinearLayoutContentStyle"
-                                android:text='@{viewModel.userProfile.company ?? ""}'
-                                tools:text="@sample/user.json/users/company" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/profile_email_layout"
-                            style="@style/LinearLayoutTitleContentStyle"
-                            android:onClick="@{() -> actions.openEmail()}"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_company_layout">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_email_title"
-                                style="@style/LinearLayoutTitleStyle"
-                                android:drawableStart="@drawable/ic_email_24"
-                                android:text="@string/profile_email" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_email_content"
-                                style="@style/LinearLayoutContentStyle"
-                                android:text="@{viewModel.userProfile.email ?? viewModel.organizationProfile.email}"
-                                tools:text="@sample/user.json/users/email" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/profile_location_layout"
-                            style="@style/LinearLayoutTitleContentStyle"
-                            android:onClick="@{() -> actions.openLocation()}"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_email_layout">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_location_title"
-                                style="@style/LinearLayoutTitleStyle"
-                                android:drawableStart="@drawable/ic_location_on_24"
-                                android:text="@string/profile_location" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_location_content"
-                                style="@style/LinearLayoutContentStyle"
-                                android:text="@{viewModel.userProfile.location ?? viewModel.organizationProfile.location}"
-                                tools:text="@sample/user.json/users/location" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/profile_website_layout"
-                            style="@style/LinearLayoutTitleContentStyle"
-                            android:onClick="@{() -> actions.openWebsite()}"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_location_layout">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_website_title"
-                                style="@style/LinearLayoutTitleStyle"
-                                android:drawableStart="@drawable/ic_link_24"
-                                android:text="@string/profile_website" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_website_content"
-                                style="@style/LinearLayoutContentStyle"
-                                android:text="@{viewModel.userProfile.websiteUrl.toString() ?? viewModel.organizationProfile.websiteUrl.toString()}"
-                                tools:text="@sample/user.json/users/site" />
-
-                        </LinearLayout>
-
-                        <Space
-                            android:id="@+id/profile_space_between_contact_and_info"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/fragment_content_padding_half"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_website_layout" />
-
-                        <View
-                            android:id="@+id/profile_divider_between_contact_and_info"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/divider_size"
-                            android:background="@color/colorDivider"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_space_between_contact_and_info" />
+                    <LinearLayout
+                        android:id="@+id/profile_email_layout"
+                        style="@style/LinearLayoutTitleContentStyle"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.CLICK_EMAIL)}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_company_layout">
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/profile_info_category_title"
-                            style="@style/CategoryStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/profile_info"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_divider_between_contact_and_info" />
+                            android:id="@+id/profile_email_title"
+                            style="@style/LinearLayoutTitleStyle"
+                            android:drawableStart="@drawable/ic_email_24"
+                            android:text="@string/profile_email" />
 
-                        <LinearLayout
-                            android:id="@+id/profile_joined_on_layout"
-                            style="@style/LinearLayoutKeyValueStyle"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_info_category_title">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/profile_email_content"
+                            style="@style/LinearLayoutContentStyle"
+                            android:text="@{viewModel.userProfile.data.email ?? viewModel.organizationProfile.data.email}"
+                            tools:text="@sample/user.json/users/email" />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_joined_on"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/profile_joined_on" />
+                    </LinearLayout>
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_joined_on_content"
-                                style="@style/LinearLayoutValueStyle"
-                                android:text='@{viewModel.userProfile == null ? "--" : (DateUtils.getRelativeTimeSpanString(viewModel.userProfile.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS))}'
-                                tools:text="@sample/user.json/users/createdAt" />
+                    <LinearLayout
+                        android:id="@+id/profile_location_layout"
+                        style="@style/LinearLayoutTitleContentStyle"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.CLICK_LOCATION)}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_email_layout">
 
-                        </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/profile_location_title"
+                            style="@style/LinearLayoutTitleStyle"
+                            android:drawableStart="@drawable/ic_location_on_24"
+                            android:text="@string/profile_location" />
 
-                        <LinearLayout
-                            android:id="@+id/profile_updated_on_layout"
-                            style="@style/LinearLayoutKeyValueStyle"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profile_joined_on_layout">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/profile_location_content"
+                            style="@style/LinearLayoutContentStyle"
+                            android:text="@{viewModel.userProfile.data.location ?? viewModel.organizationProfile.data.location}"
+                            tools:text="@sample/user.json/users/location" />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_updated_on"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/profile_updated_on" />
+                    </LinearLayout>
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/profile_updated_on_content"
-                                style="@style/LinearLayoutValueStyle"
-                                android:text='@{viewModel.userProfile == null ? "--" : (DateUtils.getRelativeTimeSpanString(viewModel.userProfile.updatedAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS))}'
-                                tools:text="@sample/user.json/users/createdAt" />
+                    <LinearLayout
+                        android:id="@+id/profile_website_layout"
+                        style="@style/LinearLayoutTitleContentStyle"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.CLICK_WEBSITE)}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_location_layout">
 
-                        </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/profile_website_title"
+                            style="@style/LinearLayoutTitleStyle"
+                            android:drawableStart="@drawable/ic_link_24"
+                            android:text="@string/profile_website" />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/profile_website_content"
+                            style="@style/LinearLayoutContentStyle"
+                            android:text="@{viewModel.userProfile.data.websiteUrl.toString() ?? viewModel.organizationProfile.data.websiteUrl.toString()}"
+                            tools:text="@sample/user.json/users/site" />
 
-                </FrameLayout>
+                    </LinearLayout>
+
+                    <Space
+                        android:id="@+id/profile_space_between_contact_and_info"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/fragment_content_padding_half"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_website_layout" />
+
+                    <View
+                        android:id="@+id/profile_divider_between_contact_and_info"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/divider_size"
+                        android:background="@color/colorDivider"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_space_between_contact_and_info" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/profile_info_category_title"
+                        style="@style/CategoryStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_info"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_divider_between_contact_and_info" />
+
+                    <io.github.tonnyl.moka.widget.HorizontalInfoGroup
+                        android:id="@+id/profile_joined_on_group"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/fragment_content_padding"
+                        app:infoText='@{viewModel.userProfile == null ? "--" : (DateUtils.getRelativeTimeSpanString(viewModel.userProfile.data.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS))}'
+                        app:label="@string/profile_joined_on"
+                        tools:ignore="MissingConstraints" />
+
+                    <io.github.tonnyl.moka.widget.HorizontalInfoGroup
+                        android:id="@+id/profile_updated_on_group"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/fragment_content_padding"
+                        app:infoText='@{viewModel.userProfile == null ? "--" : (DateUtils.getRelativeTimeSpanString(viewModel.userProfile.data.updatedAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS))}'
+                        app:label="@string/profile_updated_on"
+                        tools:ignore="MissingConstraints" />
+
+                    <androidx.constraintlayout.helper.widget.Flow
+                        android:id="@+id/profile_time_info_flow"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:constraint_referenced_ids="profile_info_category_title,profile_joined_on_group,profile_updated_on_group"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/profile_divider_between_contact_and_info" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.core.widget.NestedScrollView>
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </FrameLayout>
 
         <io.github.tonnyl.moka.widget.FadingSnackBar
             android:id="@+id/snackbar"

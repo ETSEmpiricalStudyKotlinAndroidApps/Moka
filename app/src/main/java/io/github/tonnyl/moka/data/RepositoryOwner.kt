@@ -40,8 +40,5 @@ data class RepositoryOwner(
 ) : Parcelable
 
 fun RawRepositoryOwner.toNonNullRepositoryOwner(): RepositoryOwner {
-    return RepositoryOwner(
-        avatarUrl, id, login, resourcePath,
-        url
-    )
+    return RepositoryOwner(avatarUrl, id, login, resourcePath, url)
 }

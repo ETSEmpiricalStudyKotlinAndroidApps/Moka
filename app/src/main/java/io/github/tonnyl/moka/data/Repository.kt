@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.data
 
 import android.net.Uri
 import android.os.Parcelable
+import io.github.tonnyl.moka.OrganizationsRepositoryQuery
 import io.github.tonnyl.moka.UsersRepositoryQuery
 import io.github.tonnyl.moka.type.RepositoryLockReason
 import io.github.tonnyl.moka.type.RepositoryPermission
@@ -280,7 +281,7 @@ fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
         repository.hasIssuesEnabled,
         repository.hasWikiEnabled,
         repository.homepageUrl,
-        user.id,
+        repository.id,
         repository.isArchived,
         repository.isFork,
         repository.isLocked,
@@ -327,6 +328,73 @@ fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
         repository.releases.totalCount,
         repository.refs?.totalCount ?: 0,
         repository.repositoryTopics.nodes?.map {
+            it?.fragments?.repositoryTopic?.toNonNullRepositoryTopic()
+        }
+    )
+}
+
+fun OrganizationsRepositoryQuery.Data?.toNullableRepository(): Repository? {
+    val organization = this?.organization ?: return null
+    val repository = organization.repository?.fragments?.repository ?: return null
+
+    return Repository(
+        repository.codeOfConduct?.fragments?.codeOfConduct?.toNonNullCodeOfConduct(),
+        repository.createdAt,
+        repository.defaultBranchRef?.fragments?.ref?.toNonNullRef(),
+        repository.description,
+        repository.descriptionHTML,
+        repository.diskUsage,
+        repository.forkCount,
+        repository.hasIssuesEnabled,
+        repository.hasWikiEnabled,
+        repository.homepageUrl,
+        repository.id,
+        repository.isArchived,
+        repository.isFork,
+        repository.isLocked,
+        repository.isMirror,
+        repository.isPrivate,
+        repository.isTemplate,
+        repository.licenseInfo?.fragments?.license?.toNonNullLicense(),
+        repository.lockReason,
+        repository.mergeCommitAllowed,
+        repository.mirrorUrl,
+        repository.name,
+        repository.nameWithOwner,
+        repository.openGraphImageUrl,
+        repository.owner.fragments.repositoryOwner.toNonNullRepositoryOwner(),
+        repository.primaryLanguage?.fragments?.language?.toNonNullLanguage(),
+        repository.projectsResourcePath,
+        repository.projectsUrl,
+        repository.pushedAt,
+        repository.rebaseMergeAllowed,
+        repository.resourcePath,
+        repository.shortDescriptionHTML,
+        repository.squashMergeAllowed,
+        repository.sshUrl,
+        repository.updatedAt,
+        repository.url,
+        repository.usesCustomOpenGraphImage,
+        repository.viewerCanAdminister,
+        repository.viewerCanCreateProjects,
+        repository.viewerCanSubscribe,
+        repository.viewerCanUpdateTopics,
+        repository.viewerHasStarred,
+        repository.viewerPermission,
+        repository.viewerSubscription,
+        organization.name,
+        isViewer = false,
+        viewerIsFollowing = false,
+        viewerCanFollow = false,
+        forksCount = repository.forks.totalCount,
+        stargazersCount = repository.stargazers.totalCount,
+        issuesCount = repository.issues.totalCount,
+        pullRequestsCount = repository.pullRequests.totalCount,
+        watchersCount = repository.watchers.totalCount,
+        projectsCount = repository.projects.totalCount,
+        releasesCount = repository.releases.totalCount,
+        branchCount = repository.refs?.totalCount ?: 0,
+        topics = repository.repositoryTopics.nodes?.map {
             it?.fragments?.repositoryTopic?.toNonNullRepositoryTopic()
         }
     )

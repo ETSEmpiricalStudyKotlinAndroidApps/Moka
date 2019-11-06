@@ -82,7 +82,7 @@ data class NotificationRepository(
 
     @SerializedName("description")
     @ColumnInfo(name = "description")
-    var description: String,
+    var description: String?,
 
     @SerializedName("fork")
     @ColumnInfo(name = "fork")

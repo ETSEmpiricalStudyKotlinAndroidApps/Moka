@@ -4,8 +4,8 @@ import io.github.tonnyl.moka.data.TrendingDeveloper
 
 interface TrendingDeveloperAction {
 
-    fun openProfile(developer: TrendingDeveloper)
+    fun viewProfile(developer: TrendingDeveloper)
 
-    fun openRepository(developer: TrendingDeveloper)
+    fun viewRepository(developer: TrendingDeveloper)
 
 }

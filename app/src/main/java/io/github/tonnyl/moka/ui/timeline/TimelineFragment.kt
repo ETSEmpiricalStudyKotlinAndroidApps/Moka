@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Event
+import io.github.tonnyl.moka.data.EventOrg
 import io.github.tonnyl.moka.databinding.FragmentTimelineBinding
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.NetworkState
@@ -23,6 +24,7 @@ import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.SearchBarActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
 class TimelineFragment : Fragment(), SearchBarActions,
@@ -70,7 +72,7 @@ class TimelineFragment : Fragment(), SearchBarActions,
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.previousNextLoadStatusLiveData.observe(this, Observer {
+        viewModel.previousNextLoadStatusLiveData.observe(viewLifecycleOwner, Observer {
             when (it.resource?.status) {
                 Status.SUCCESS -> {
                     timelineAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADED))
@@ -91,7 +93,7 @@ class TimelineFragment : Fragment(), SearchBarActions,
             }
         })
 
-        viewModel.data.observe(this, Observer {
+        viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     addItemDecoration(
@@ -108,7 +110,7 @@ class TimelineFragment : Fragment(), SearchBarActions,
             }
         })
 
-        mainViewModel.currentUser.observe(this, Observer {
+        mainViewModel.currentUser.observe(viewLifecycleOwner, Observer {
             viewModel.refreshData(it.login, false)
         })
 
@@ -175,8 +177,126 @@ class TimelineFragment : Fragment(), SearchBarActions,
         findNavController().navigate(R.id.profile_fragment, args)
     }
 
-    override fun openEventDetails(event: Event) {
+    override fun viewRepository(fullName: String, org: EventOrg?) {
+        val loginAndRepoName = fullName.split("/")
+        if (loginAndRepoName.size < 2) {
+            return
+        }
+        val repositoryArgs = RepositoryFragmentArgs(
+            loginAndRepoName[0],
+            loginAndRepoName[1],
+            getUserProfileType(org, loginAndRepoName[0])
+        ).toBundle()
+        findNavController().navigate(R.id.repository_fragment, repositoryArgs)
+    }
 
+    override fun openEventDetails(event: Event) {
+        when (event.type) {
+            Event.WATCH_EVENT,
+            Event.PUBLIC_EVENT,
+            Event.CREATE_EVENT,
+            Event.TEAM_ADD_EVENT,
+            Event.DELETE_EVENT -> {
+                viewRepository(
+                    event.repo?.name ?: return,
+                    event.org
+                )
+            }
+            Event.COMMIT_COMMENT_EVENT -> {
+
+            }
+            Event.FORK_EVENT -> {
+                viewRepository(
+                    event.payload?.forkee?.fullName ?: return,
+                    event.org
+                )
+            }
+            Event.GOLLUM_EVENT -> {
+
+            }
+            Event.ISSUE_COMMENT_EVENT -> {
+
+            }
+            Event.ISSUES_EVENT -> {
+
+            }
+            Event.MEMBER_EVENT -> {
+                openProfile(
+                    event.payload?.member?.login ?: return,
+                    ProfileType.USER
+                )
+            }
+            Event.PULL_REQUEST_EVENT -> {
+
+            }
+            Event.PULL_REQUEST_REVIEW_COMMENT_EVENT -> {
+
+            }
+            Event.PULL_REQUEST_REVIEW_EVENT -> {
+
+            }
+            Event.REPOSITORY_EVENT -> {
+                when (event.payload?.action) {
+                    "created",
+                    "archived",
+                    "publicized",
+                    "unarchived" -> {
+                        viewRepository(
+                            event.repo?.name ?: return,
+                            event.org
+                        )
+                    }
+                    "privatized",
+                    "deleted" -> {
+                        // ignore
+                    }
+                    else -> {
+                        // do nothing
+                    }
+                }
+            }
+            Event.PUSH_EVENT -> {
+
+            }
+            Event.RELEASE_EVENT -> {
+
+            }
+            Event.ORG_BLOCK_EVENT -> {
+                openProfile(
+                    event.payload?.blockedUser?.login ?: return,
+                    ProfileType.USER
+                )
+            }
+            Event.PROJECT_CARD_EVENT -> {
+
+            }
+            Event.PROJECT_COLUMN_EVENT -> {
+
+            }
+            Event.ORGANIZATION_EVENT -> {
+                openProfile(
+                    event.payload?.organization?.login ?: return,
+                    ProfileType.ORGANIZATION
+                )
+            }
+            Event.PROJECT_EVENT -> {
+
+            }
+            Event.DOWNLOAD_EVENT,
+            Event.FOLLOW_EVENT,
+            Event.GIST_EVENT,
+            Event.FORK_APPLY_EVENT -> {
+                // Events of these types are no longer delivered, just ignore them.
+            }
+        }
+    }
+
+    private fun getUserProfileType(org: EventOrg?, login: String): ProfileType {
+        if (org?.login == login) {
+            return ProfileType.ORGANIZATION
+        }
+
+        return ProfileType.USER
     }
 
 }

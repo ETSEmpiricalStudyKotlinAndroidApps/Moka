@@ -4,6 +4,8 @@ import io.github.tonnyl.moka.data.TrendingRepository
 
 interface TrendingRepositoryAction {
 
-    fun openRepository(repository: TrendingRepository)
+    fun viewRepository(repository: TrendingRepository)
+
+    fun viewProfile(repository: TrendingRepository)
 
 }

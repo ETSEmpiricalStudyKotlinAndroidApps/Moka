@@ -5,15 +5,13 @@
 
     <data>
 
-        <import type="io.github.tonnyl.moka.data.Event" />
-
         <import type="android.text.format.DateUtils" />
 
         <import type="io.github.tonnyl.moka.ui.profile.ProfileType" />
 
         <variable
             name="event"
-            type="Event" />
+            type="io.github.tonnyl.moka.data.Event" />
 
         <variable
             name="eventActions"

@@ -4,12 +4,12 @@ object Versions {
     val targetSdk = 29
     val minSdk = 23
 
-    val androidGradle = "4.0.0-alpha01"
+    val androidGradle = "4.0.0-alpha02"
     val gmsGoogleServiceGradle = "4.3.2"
     val fabricToolsGradle = "1.31.1"
     val kotlin = "1.3.60-eap-25"
     val coroutines = "1.3.2"
-    val fragment = "1.2.0-rc01"
+    val fragment = "1.2.0-rc02"
     val constraintLayout = "2.0.0-beta3"
     val coordinatorLayout = "1.1.0-rc01"
     val appcompat = "1.1.0"
@@ -20,7 +20,7 @@ object Versions {
     val browser = "1.2.0-alpha09"
     val recyclerView = "1.1.0-rc01"
     val lifecycle = "2.2.0-rc01"
-    val navigation = "2.2.0-rc01"
+    val navigation = "2.2.0-rc02"
     val navigationTesting = "1.0.0-alpha08"
     val paging = "2.1.0"
     val workManager = "2.3.0-alpha03"

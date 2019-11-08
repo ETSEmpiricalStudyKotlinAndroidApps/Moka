@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingRepository
 import io.github.tonnyl.moka.databinding.FragmentExploreRepositoriesBinding
@@ -17,6 +18,9 @@ import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
+import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
 class TrendingRepositoriesFragment : Fragment(), TrendingRepositoryAction,
@@ -70,7 +74,7 @@ class TrendingRepositoriesFragment : Fragment(), TrendingRepositoryAction,
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.repositoriesLocalData.observe(this, Observer {
+        viewModel.repositoriesLocalData.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     addItemDecoration(
@@ -110,8 +114,18 @@ class TrendingRepositoriesFragment : Fragment(), TrendingRepositoryAction,
         }
     }
 
-    override fun openRepository(repository: TrendingRepository) {
+    override fun viewProfile(repository: TrendingRepository) {
+        val args = ProfileFragmentArgs(repository.author, ProfileType.NOT_SPECIFIED).toBundle()
+        findNavController().navigate(R.id.profile_fragment, args)
+    }
 
+    override fun viewRepository(repository: TrendingRepository) {
+        val args = RepositoryFragmentArgs(
+            repository.author,
+            repository.name,
+            ProfileType.NOT_SPECIFIED
+        ).toBundle()
+        findNavController().navigate(R.id.repository_fragment, args)
     }
 
     override fun retryInitial() {

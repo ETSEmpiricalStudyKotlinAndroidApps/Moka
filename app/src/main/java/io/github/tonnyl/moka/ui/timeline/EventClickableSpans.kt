@@ -41,13 +41,14 @@ class ActorClickableSpan(
 }
 
 class RepositoryClickableSpan(
-    val repository: EventRepository,
+    private val fullName: String,
+    private val org: EventOrg?,
     resources: Resources,
     actions: EventActions?
 ) : EventClickableSpans(resources, actions) {
 
     override fun onClick(v: View) {
-
+        actions?.viewRepository(fullName, org)
     }
 
 }

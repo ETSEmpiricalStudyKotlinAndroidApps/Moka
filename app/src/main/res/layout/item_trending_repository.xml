@@ -30,13 +30,14 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> actions.openRepository(repository)}"
+        android:onClick="@{() -> actions.viewRepository(repository)}"
         android:padding="@dimen/fragment_content_padding">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_trending_repository_avatar"
             android:layout_width="@dimen/repository_list_avatar_width"
             android:layout_height="@dimen/repository_list_avatar_height"
+            android:onClick="@{() -> actions.viewProfile(repository)}"
             app:avatarUrl="@{repository.avatar}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

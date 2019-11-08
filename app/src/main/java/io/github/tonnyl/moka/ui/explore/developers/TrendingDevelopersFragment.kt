@@ -20,6 +20,7 @@ import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
 class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
@@ -73,7 +74,7 @@ class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.developersLocalData.observe(this, Observer {
+        viewModel.developersLocalData.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     addItemDecoration(
@@ -113,13 +114,21 @@ class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
         }
     }
 
-    override fun openProfile(developer: TrendingDeveloper) {
-        val args = ProfileFragmentArgs(developer.username, ProfileType.USER).toBundle()
+    override fun viewProfile(developer: TrendingDeveloper) {
+        val args = ProfileFragmentArgs(
+            developer.username,
+            getProfileTypeByDeveloper(developer)
+        ).toBundle()
         findNavController().navigate(R.id.profile_fragment, args)
     }
 
-    override fun openRepository(developer: TrendingDeveloper) {
-
+    override fun viewRepository(developer: TrendingDeveloper) {
+        val args = RepositoryFragmentArgs(
+            developer.username,
+            developer.repository.name,
+            getProfileTypeByDeveloper(developer)
+        ).toBundle()
+        findNavController().navigate(R.id.repository_fragment, args)
     }
 
     override fun retryInitial() {
@@ -128,6 +137,14 @@ class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
 
     override fun doAction() {
 
+    }
+
+    private fun getProfileTypeByDeveloper(developer: TrendingDeveloper): ProfileType {
+        return when (developer.type) {
+            "user" -> ProfileType.USER
+            "organization" -> ProfileType.ORGANIZATION
+            else -> ProfileType.NOT_SPECIFIED
+        }
     }
 
 }

@@ -49,7 +49,7 @@ object RetrofitClient {
                     // Custom the request header.
                     val requestBuilder = original.newBuilder()
                         .header("Authorization", "Bearer ${accessToken.get()}")
-                        .method(original.method(), original.body())
+                        .method(original.method, original.body)
                     val request = requestBuilder.build()
                     chain.proceed(request)
                 }

@@ -2,8 +2,8 @@ package io.github.tonnyl.moka.data
 
 import android.net.Uri
 import android.os.Parcelable
-import io.github.tonnyl.moka.OrganizationsRepositoryQuery
-import io.github.tonnyl.moka.UsersRepositoryQuery
+import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery
+import io.github.tonnyl.moka.queries.UsersRepositoryQuery
 import io.github.tonnyl.moka.type.RepositoryLockReason
 import io.github.tonnyl.moka.type.RepositoryPermission
 import io.github.tonnyl.moka.type.SubscriptionState

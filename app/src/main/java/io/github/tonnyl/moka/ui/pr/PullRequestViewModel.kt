@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import io.github.tonnyl.moka.PullRequestQuery
 import io.github.tonnyl.moka.data.extension.transformToPullRequestIssueComment
 import io.github.tonnyl.moka.data.item.PullRequestTimelineItem
 import io.github.tonnyl.moka.data.toNullablePullRequest
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.queries.PullRequestQuery
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
 import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers

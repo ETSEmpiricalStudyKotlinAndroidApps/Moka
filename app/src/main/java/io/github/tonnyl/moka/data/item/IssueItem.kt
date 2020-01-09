@@ -1,9 +1,9 @@
 package io.github.tonnyl.moka.data.item
 
 import android.os.Parcelable
-import io.github.tonnyl.moka.IssuesQuery
 import io.github.tonnyl.moka.data.Actor
 import io.github.tonnyl.moka.data.toNonNullActor
+import io.github.tonnyl.moka.queries.IssuesQuery
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 

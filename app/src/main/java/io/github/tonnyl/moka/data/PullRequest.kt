@@ -2,7 +2,7 @@ package io.github.tonnyl.moka.data
 
 import android.net.Uri
 import android.os.Parcelable
-import io.github.tonnyl.moka.PullRequestQuery
+import io.github.tonnyl.moka.queries.PullRequestQuery
 import io.github.tonnyl.moka.type.*
 import kotlinx.android.parcel.Parcelize
 import java.util.*

@@ -1,10 +1,8 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import java.util.*
-import kotlin.collections.LinkedHashMap
 
 plugins {
     id("com.android.application")
-    id("com.apollographql.android")
+    id("com.apollographql.apollo")
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("kotlin-kapt")
@@ -50,7 +48,10 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         getByName("debug") {
             isMinifyEnabled = false
@@ -66,12 +67,11 @@ android {
     }
 
     kotlinOptions {
-        this as KotlinJvmOptions
         jvmTarget = "1.8"
     }
 
-    dataBinding {
-        isEnabled = true
+    buildFeatures {
+        dataBinding = true
     }
 }
 
@@ -80,30 +80,31 @@ androidExtensions {
 }
 
 apollo {
-    val map = LinkedHashMap<String, String>().apply {
-        put("GitTimestamp", "java.util.Date")
-        put("DateTime", "java.util.Date")
-        put("HTML", "kotlin.String")
-        put("URI", "android.net.Uri")
-        put("ID", "kotlin.String")
-        put("GitObjectID", "kotlin.String")
-        put("GitSSHRemote", "kotlin.String")
-        put("X509Certificate", "kotlin.String")
+    onCompilationUnits {
+        schemaFile.set(File("/graphql/schema.json"))
+        rootPackageName.set("io.github.tonnyl.moka")
+        suppressRawTypesWarning.set(true)
+        useSemanticNaming.set(true)
+        graphqlSourceDirectorySet.setSrcDirs(listOf("/graphql/*"))
+        customTypeMapping.set(
+            mutableMapOf(
+                "GitTimestamp" to "java.util.Date",
+                "DateTime" to "java.util.Date",
+                "HTML" to "kotlin.String",
+                "URI" to "android.net.Uri",
+                "ID" to "kotlin.String",
+                "GitObjectID" to "kotlin.String",
+                "GitSSHRemote" to "kotlin.String",
+                "X509Certificate" to "kotlin.String"
+            )
+        )
     }
-    customTypeMapping.set(map)
 
-    // Explicitly provide GraphQL schema file location and package name for generated models
-    sourceSet {
-        setSchemaFile("/src/main/graphql/schema.json")
-    }
-
-    setOutputPackageName("io.github.tonnyl.moka")
-
-    setGenerateKotlinModels(true)
+    generateKotlinModels.set(true)
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(fileTree(Pair("dir", "libs"), Pair("include", listOf("*.jar"))))
 
     // Kotlin
     implementation(Deps.Kotlin.stdlib)
@@ -121,6 +122,7 @@ dependencies {
     implementation(Deps.AndroidX.viewpager2)
     implementation(Deps.AndroidX.drawerLayout)
     implementation(Deps.AndroidX.recyclerView)
+    implementation(Deps.AndroidX.recyclerViewSelection)
     implementation(Deps.AndroidX.Lifecycle.lifecycleExtensions)
     implementation(Deps.AndroidX.Navigation.navigationFragmentKtx)
     implementation(Deps.AndroidX.Navigation.navigationUIKtx)
@@ -131,7 +133,6 @@ dependencies {
     implementation(Deps.AndroidX.Room.runtime)
     implementation(Deps.AndroidX.Room.migration)
     kapt(Deps.AndroidX.Room.compiler)
-    kapt(Deps.AndroidX.DataBinding.compiler)
 
     // Google
     implementation(Deps.Google.material)
@@ -166,7 +167,6 @@ dependencies {
     implementation(Deps.CommonMark.headingAnchor)
     implementation(Deps.CommonMark.yamlFrontMatter)
 
-    implementation(Deps.matisse)
     implementation(Deps.jsoup)
     implementation(Deps.timber)
 
@@ -182,9 +182,9 @@ dependencies {
     androidTestImplementation(Deps.AndroidTest.espressoCore)
     androidTestImplementation(Deps.AndroidTest.espressoContrib)
     androidTestImplementation(Deps.AndroidTest.espressoIntents)
+    androidTestImplementation(Deps.AndroidTest.espressoAccessibility)
     androidTestImplementation(Deps.AndroidTest.mockito)
     androidTestImplementation(Deps.AndroidTest.work)
-    androidTestImplementation(Deps.AndroidTest.navigation)
     androidTestImplementation(Deps.AndroidTest.room)
     androidTestImplementation(Deps.AndroidTest.fragment)
 }

@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import io.github.tonnyl.moka.IssueQuery
 import io.github.tonnyl.moka.data.extension.transformToIssueCommentEvent
 import io.github.tonnyl.moka.data.item.IssueComment
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
@@ -13,6 +12,7 @@ import io.github.tonnyl.moka.data.toNonNullIssue
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.queries.IssueQuery
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
 import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers

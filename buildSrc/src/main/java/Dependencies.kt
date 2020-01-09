@@ -4,54 +4,51 @@ object Versions {
     val targetSdk = 29
     val minSdk = 23
 
-    val androidGradle = "4.0.0-alpha02"
-    val gmsGoogleServiceGradle = "4.3.2"
+    val androidGradle = "4.0.0-alpha08"
+    val gmsGoogleServiceGradle = "4.3.3"
     val fabricToolsGradle = "1.31.1"
-    val kotlin = "1.3.60-eap-25"
-    val coroutines = "1.3.2"
-    val fragment = "1.2.0-rc02"
-    val constraintLayout = "2.0.0-beta3"
-    val coordinatorLayout = "1.1.0-rc01"
-    val appcompat = "1.1.0"
-    val databinding = "3.2.0-alpha11"
+    val kotlin = "1.3.61"
+    val coroutines = "1.3.3"
+    val fragment = "1.2.0-rc04"
+    val constraintLayout = "2.0.0-beta4"
+    val coordinatorLayout = "1.1.0"
+    val appcompat = "1.2.0-alpha01"
     val drawerLayout = "1.1.0-alpha03"
-    val material = "1.2.0-alpha01"
-    val viewpager2 = "1.0.0-rc01"
-    val browser = "1.2.0-alpha09"
-    val recyclerView = "1.1.0-rc01"
-    val lifecycle = "2.2.0-rc01"
-    val navigation = "2.2.0-rc02"
-    val navigationTesting = "1.0.0-alpha08"
-    val paging = "2.1.0"
-    val workManager = "2.3.0-alpha03"
-    val room = "2.2.1"
-    val matisse = "0.5.3-beta1"
+    val material = "1.2.0-alpha03"
+    val viewpager2 = "1.0.0"
+    val browser = "1.3.0-alpha01"
+    val recyclerView = "1.2.0-alpha01"
+    val recyclerViewSelection = "1.1.0-beta01"
+    val lifecycle = "2.2.0-rc03"
+    val navigation = "2.2.0-rc04"
+    val paging = "2.1.1"
+    val workManager = "2.3.0-rc01"
+    val room = "2.2.3"
     val preference = "1.1.0"
     val swipeRefreshLayout = "1.1.0-alpha03"
-    val glide = "4.10.0"
-    val lottie = "3.0.7"
-    val retrofit = "2.6.2"
-    val okhttpLoggingInterceptor = "3.14.2"
-    val apollo = "1.2.1"
-    val commonMark = "0.12.1"
-    val jsoup = "1.11.3"
+    val glide = "4.11.0"
+    val lottie = "3.3.1"
+    val retrofit = "2.7.1"
+    val okhttpLoggingInterceptor = "4.3.1"
+    val apollo = "1.2.3-SNAPSHOT"
+    val commonMark = "0.13.1"
+    val jsoup = "1.12.1"
     val timber = "4.7.1"
-    val firebaseCore = "17.2.0"
+    val firebaseCore = "17.2.1"
     val crashlytics = "2.10.1"
     val junit = "4.12"
-    val androidJunit = "1.1.2-alpha02"
-    val androidTestCore = "1.2.1-alpha02"
-    val androidTestRunner = "1.3.0-alpha02"
-    val androidTestRules = "1.3.0-alpha02"
-    val espresso = "3.3.0-alpha02"
-    val mockito = "2.8.47"
+    val androidJunit = "1.1.2-alpha03"
+    val androidTestCore = "1.3.0-alpha03"
+    val androidTestRunner = "1.3.0-alpha03"
+    val androidTestRules = "1.3.0-alpha03"
+    val espresso = "3.3.0-alpha03"
+    val mockito = "3.2.4"
     val hamcrest = "1.3"
 
 }
 
 object Deps {
 
-    val matisse = "com.zhihu.android:matisse:${Versions.matisse}"
     val jsoup = "org.jsoup:jsoup:${Versions.jsoup}"
     val timber = "com.jakewharton.timber:timber:${Versions.timber}"
 
@@ -59,7 +56,7 @@ object Deps {
 
         val android = "com.android.tools.build:gradle:${Versions.androidGradle}"
         val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
-        val apollo = "com.apollographql.apollo:apollo-gradle-plugin:${Versions.apollo}"
+        val apollo = "com.apollographql.apollo:apollo-gradle-plugin-incubating:${Versions.apollo}"
         val navigationSafeArgs =
             "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.navigation}"
         val googleServices = "com.google.gms:google-services:${Versions.gmsGoogleServiceGradle}"
@@ -91,6 +88,8 @@ object Deps {
         val preference = "androidx.preference:preference-ktx:${Versions.preference}"
         val drawerLayout = "androidx.drawerlayout:drawerlayout:${Versions.drawerLayout}"
         val recyclerView = "androidx.recyclerview:recyclerview:${Versions.recyclerView}"
+        val recyclerViewSelection =
+            "androidx.recyclerview:recyclerview-selection:${Versions.recyclerViewSelection}"
 
         object Lifecycle {
 
@@ -126,12 +125,6 @@ object Deps {
         object WorkManager {
 
             val runtime = "androidx.work:work-runtime-ktx:${Versions.workManager}"
-
-        }
-
-        object DataBinding {
-
-            val compiler = "androidx.databinding:compiler:${Versions.databinding}"
 
         }
 
@@ -206,16 +199,17 @@ object Deps {
 
     object AndroidTest {
 
-        val testCore = "androidx.test:core:${Versions.androidTestCore}"
+        val testCore = "androidx.test:core-ktx:${Versions.androidTestCore}"
         val testRunner = "androidx.test:runner:${Versions.androidTestRunner}"
         val testRules = "androidx.test:rules:${Versions.androidTestRules}"
-        val testExtJunit = "androidx.test.ext:junit:${Versions.androidJunit}"
+        val testExtJunit = "androidx.test.ext:junit-ktx:${Versions.androidJunit}"
         val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espresso}"
         val espressoContrib = "androidx.test.espresso:espresso-contrib:${Versions.espresso}"
         val espressoIntents = "androidx.test.espresso:espresso-intents:${Versions.espresso}"
+        val espressoAccessibility =
+            "androidx.test.espresso:espresso-accessibility:${Versions.espresso}"
         val mockito = "org.mockito:mockito-android:${Versions.mockito}"
         val work = "androidx.work:work-testing:${Versions.workManager}"
-        val navigation = "android.arch.navigation:navigation-testing:${Versions.navigationTesting}"
         val room = "androidx.room:room-testing:${Versions.room}"
         val fragment = "androidx.fragment:fragment-testing:${Versions.fragment}"
 

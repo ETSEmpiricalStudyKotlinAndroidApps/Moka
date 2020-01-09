@@ -3,13 +3,13 @@ package io.github.tonnyl.moka.ui.search.repositories
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.apollographql.apollo.api.Input
-import io.github.tonnyl.moka.SearchRepositoriesQuery
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedRepositoryItem
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.queries.SearchRepositoriesQuery
 import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber

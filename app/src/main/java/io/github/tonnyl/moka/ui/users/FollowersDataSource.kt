@@ -3,13 +3,13 @@ package io.github.tonnyl.moka.ui.users
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.apollographql.apollo.api.Input
-import io.github.tonnyl.moka.FollowersQuery
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.data.toNonNullUserItem
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.queries.FollowersQuery
 import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber

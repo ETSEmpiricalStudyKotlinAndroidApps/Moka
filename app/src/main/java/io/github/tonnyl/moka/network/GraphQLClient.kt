@@ -5,7 +5,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.response.CustomTypeAdapter
 import com.apollographql.apollo.response.CustomTypeValue
 import io.github.tonnyl.moka.type.CustomType
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -23,12 +23,16 @@ object GraphQLClient {
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .authenticator { _, response ->
-                response.request()
-                    .newBuilder()
-                    .addHeader("Authorization", "Bearer ${accessToken.get()}")
-                    .build()
-            }
+            .authenticator(object : Authenticator {
+
+                override fun authenticate(route: Route?, response: Response): Request? {
+                    return response.request
+                        .newBuilder()
+                        .addHeader("Authorization", "Bearer ${accessToken.get()}")
+                        .build()
+                }
+
+            })
             .build()
     }
 

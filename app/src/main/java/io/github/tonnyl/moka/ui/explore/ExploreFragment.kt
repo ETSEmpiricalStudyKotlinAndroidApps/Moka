@@ -4,24 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentExploreBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.MainNavigationFragment
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.SearchBarActions
 import io.github.tonnyl.moka.ui.explore.filters.TrendingFilterFragment
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 
-class ExploreFragment : Fragment(), SearchBarActions,
+class ExploreFragment : MainNavigationFragment(), SearchBarActions,
     EmptyViewActions, ExploreActions {
-
-    private lateinit var drawer: DrawerLayout
-    private lateinit var toggle: ActionBarDrawerToggle
 
     private val mainViewModel by activityViewModels<MainViewModel>()
 
@@ -50,30 +45,6 @@ class ExploreFragment : Fragment(), SearchBarActions,
         binding.viewPager.adapter = adapter
 
         binding.tabLayout.setupWithViewPager(binding.viewPager)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!::drawer.isInitialized) {
-            drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
-                ?: return
-        }
-        toggle = ActionBarDrawerToggle(
-            parentFragment?.activity,
-            drawer,
-            binding.mainSearchBar.mainSearchBarToolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-
-        drawer.addDrawerListener(toggle)
-        toggle.syncState()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        drawer.removeDrawerListener(toggle)
     }
 
     override fun openSearch() {

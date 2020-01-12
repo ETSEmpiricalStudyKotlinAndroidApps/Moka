@@ -4,9 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -18,20 +15,14 @@ import io.github.tonnyl.moka.databinding.FragmentTimelineBinding
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.EmptyViewActions
-import io.github.tonnyl.moka.ui.MainViewModel
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
-import io.github.tonnyl.moka.ui.SearchBarActions
+import io.github.tonnyl.moka.ui.*
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
-class TimelineFragment : Fragment(), SearchBarActions,
+class TimelineFragment : MainNavigationFragment(), SearchBarActions,
     EmptyViewActions, EventActions, PagingNetworkStateActions {
-
-    private lateinit var drawer: DrawerLayout
-    private lateinit var toggle: ActionBarDrawerToggle
 
     private val mainViewModel by activityViewModels<MainViewModel>()
     private val viewModel by viewModels<TimelineViewModel> {
@@ -126,30 +117,6 @@ class TimelineFragment : Fragment(), SearchBarActions,
             emptyContentActionText.text = getString(R.string.timeline_content_empty_action)
         }
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!::drawer.isInitialized) {
-            drawer = parentFragment?.parentFragment?.view?.findViewById(R.id.drawer_layout)
-                ?: return
-        }
-        toggle = ActionBarDrawerToggle(
-            parentFragment?.activity,
-            drawer,
-            binding.mainSearchBar.mainSearchBarToolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-
-        drawer.addDrawerListener(toggle)
-        toggle.syncState()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        drawer.removeDrawerListener(toggle)
     }
 
     override fun openAccountDialog() {

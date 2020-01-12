@@ -34,7 +34,10 @@ class NotificationsDataSource(
             val response = notificationsService.listNotifications(true, 1, params.requestedLoadSize)
                 .execute()
 
-            val list = response.body() ?: Collections.emptyList()
+            val list = (response.body() ?: Collections.emptyList()).map {
+                it.hasDisplayed = true
+                it
+            }
             if (list.isNotEmpty()) {
                 notificationDao.deleteAll()
                 notificationDao.insert(list)
@@ -75,7 +78,10 @@ class NotificationsDataSource(
             val response = notificationsService.listNotificationsByUrl(params.key)
                 .execute()
 
-            val list = response.body() ?: Collections.emptyList()
+            val list = (response.body() ?: Collections.emptyList()).map {
+                it.hasDisplayed = true
+                it
+            }
             if (list.isNotEmpty()) {
                 notificationDao.insert(list)
             }
@@ -115,7 +121,10 @@ class NotificationsDataSource(
             val response = notificationsService.listNotificationsByUrl(params.key)
                 .execute()
 
-            val list = response.body() ?: Collections.emptyList()
+            val list = (response.body() ?: Collections.emptyList()).map {
+                it.hasDisplayed = true
+                it
+            }
             if (list.isNotEmpty()) {
                 notificationDao.insert(list)
             }

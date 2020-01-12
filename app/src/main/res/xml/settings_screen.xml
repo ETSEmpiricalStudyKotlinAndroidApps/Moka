@@ -102,7 +102,6 @@
         <Preference
             app:iconSpaceReserved="false"
             app:key="key_clear_local_data"
-            app:summary="%s"
             app:title="@string/settings_clear_local_data_title" />
 
         <ListPreference
@@ -117,7 +116,6 @@
         <Preference
             app:iconSpaceReserved="false"
             app:key="key_clear_image_cache"
-            app:summary="%s"
             app:title="@string/settings_clear_image_cache_title" />
 
     </PreferenceCategory>

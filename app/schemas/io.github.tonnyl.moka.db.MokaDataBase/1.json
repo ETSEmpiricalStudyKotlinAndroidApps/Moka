@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e2e98c7e803b6548cbc44a4d100b9984",
+    "identityHash": "03655589360232b7b5727771ecb378d7",
     "entities": [
       {
         "tableName": "event",
@@ -1220,7 +1220,7 @@
       },
       {
         "tableName": "notification",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `reason` TEXT NOT NULL, `unread` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `last_read_at` INTEGER NOT NULL, `url` TEXT NOT NULL, `repository_id` INTEGER NOT NULL, `repository_node_id` TEXT NOT NULL, `repository_name` TEXT NOT NULL, `repository_full_name` TEXT NOT NULL, `repository_is_private` INTEGER NOT NULL, `repository_html_url` TEXT NOT NULL, `repository_description` TEXT, `repository_fork` INTEGER NOT NULL, `repository_url` TEXT NOT NULL, `repository_owner_login` TEXT NOT NULL, `repository_owner_id` INTEGER NOT NULL, `repository_owner_node_id` TEXT NOT NULL, `repository_owner_avatar_url` TEXT NOT NULL, `repository_owner_gravatar_id` TEXT NOT NULL, `repository_owner_url` TEXT NOT NULL, `repository_owner_html_url` TEXT NOT NULL, `repository_owner_followers_url` TEXT NOT NULL, `repository_owner_following_url` TEXT NOT NULL, `repository_owner_gists_url` TEXT NOT NULL, `repository_owner_starred_url` TEXT NOT NULL, `repository_owner_subscriptions_url` TEXT NOT NULL, `repository_owner_organizations_url` TEXT NOT NULL, `repository_owner_repos_url` TEXT NOT NULL, `repository_owner_events_url` TEXT NOT NULL, `repository_owner_received_events_url` TEXT NOT NULL, `repository_owner_type` TEXT NOT NULL, `repository_owner_site_admin` INTEGER NOT NULL, `subject_title` TEXT NOT NULL, `subject_url` TEXT NOT NULL, `subject_latest_comment_url` TEXT NOT NULL, `subject_type` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `reason` TEXT NOT NULL, `unread` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `last_read_at` INTEGER NOT NULL, `url` TEXT NOT NULL, `has_displayed` INTEGER NOT NULL, `repository_id` INTEGER NOT NULL, `repository_node_id` TEXT NOT NULL, `repository_name` TEXT NOT NULL, `repository_full_name` TEXT NOT NULL, `repository_is_private` INTEGER NOT NULL, `repository_html_url` TEXT NOT NULL, `repository_description` TEXT, `repository_fork` INTEGER NOT NULL, `repository_url` TEXT NOT NULL, `repository_owner_login` TEXT NOT NULL, `repository_owner_id` INTEGER NOT NULL, `repository_owner_node_id` TEXT NOT NULL, `repository_owner_avatar_url` TEXT NOT NULL, `repository_owner_gravatar_id` TEXT NOT NULL, `repository_owner_url` TEXT NOT NULL, `repository_owner_html_url` TEXT NOT NULL, `repository_owner_followers_url` TEXT NOT NULL, `repository_owner_following_url` TEXT NOT NULL, `repository_owner_gists_url` TEXT NOT NULL, `repository_owner_starred_url` TEXT NOT NULL, `repository_owner_subscriptions_url` TEXT NOT NULL, `repository_owner_organizations_url` TEXT NOT NULL, `repository_owner_repos_url` TEXT NOT NULL, `repository_owner_events_url` TEXT NOT NULL, `repository_owner_received_events_url` TEXT NOT NULL, `repository_owner_type` TEXT NOT NULL, `repository_owner_site_admin` INTEGER NOT NULL, `subject_title` TEXT NOT NULL, `subject_url` TEXT NOT NULL, `subject_latest_comment_url` TEXT NOT NULL, `subject_type` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -1256,6 +1256,12 @@
             "fieldPath": "url",
             "columnName": "url",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasDisplayed",
+            "columnName": "has_displayed",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -1722,7 +1728,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e2e98c7e803b6548cbc44a4d100b9984')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '03655589360232b7b5727771ecb378d7')"
     ]
   }
 }

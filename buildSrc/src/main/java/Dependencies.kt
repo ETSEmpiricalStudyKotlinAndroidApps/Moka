@@ -23,7 +23,7 @@ object Versions {
     val navigation = "2.2.0-rc04"
     val paging = "2.1.1"
     val workManager = "2.3.0-rc01"
-    val room = "2.2.3"
+    val room = "2.1.0-alpha04"
     val preference = "1.1.0"
     val swipeRefreshLayout = "1.1.0-alpha03"
     val glide = "4.11.0"
@@ -113,12 +113,16 @@ object Deps {
 
         }
 
+        /**
+         * All room libraries should have the same version.
+         */
         object Room {
 
             val common = "androidx.room:room-common:${Versions.room}"
             val compiler = "androidx.room:room-compiler:${Versions.room}"
             val runtime = "androidx.room:room-runtime:${Versions.room}"
             val migration = "androidx.room:room-migration:${Versions.room}"
+            val coroutines = "androidx.room:room-coroutines:${Versions.room}"
 
         }
 

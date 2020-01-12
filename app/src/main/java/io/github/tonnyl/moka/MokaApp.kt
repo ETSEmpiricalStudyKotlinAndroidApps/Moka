@@ -4,13 +4,17 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceManager
+import androidx.work.*
 import com.google.gson.Gson
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.util.mapToAccountTokenUserTriple
+import io.github.tonnyl.moka.work.NotificationWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class MokaApp : Application() {
 
@@ -44,10 +48,47 @@ class MokaApp : Application() {
                         }.toMutableList()
                     )
                 }
+
+                if (accounts.isNotEmpty()) {
+                    triggerNotificationWorker(true)
+                }
             },
             null,
             true
         )
+    }
+
+    fun triggerNotificationWorker(start: Boolean) {
+        if (start) {
+            if (!PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                    .getBoolean("key_enable_notifications", true)
+            ) {
+                return
+            }
+
+            val interval = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                .getString("key_sync_interval", "15")
+                ?.toLong() ?: 15L
+
+            WorkManager.getInstance(applicationContext)
+                .enqueueUniquePeriodicWork(
+                    NotificationWorker::class.java.simpleName,
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    PeriodicWorkRequestBuilder<NotificationWorker>(
+                        interval,
+                        TimeUnit.MINUTES
+                    ).setConstraints(
+                        Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .setRequiresBatteryNotLow(true)
+                            .build()
+                    ).addTag(NotificationWorker.WORKER_TAG)
+                        .build()
+                )
+        } else {
+            WorkManager.getInstance(applicationContext)
+                .cancelAllWorkByTag(NotificationWorker.WORKER_TAG)
+        }
     }
 
 }

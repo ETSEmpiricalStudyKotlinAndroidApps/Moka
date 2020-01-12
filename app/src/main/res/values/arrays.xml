@@ -8,12 +8,13 @@
     </string-array>
 
     <string-array name="sync_interval_entry_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
+        <item>15</item><!-- 15 minutes -->
+        <item>30</item><!-- 30 minutes -->
+        <item>60</item><!-- 1 hour -->
+        <item>120</item><!-- 2 hours -->
+        <item>360</item><!-- 6 hours -->
+        <item>720</item><!-- 12 hours -->
+        <item>1440</item><!-- 24 hours -->
     </string-array>
 
     <string-array name="keep_data_entry_values">

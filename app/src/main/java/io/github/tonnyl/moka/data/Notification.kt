@@ -1,11 +1,17 @@
 package io.github.tonnyl.moka.data
 
+import android.content.Context
 import android.os.Parcelable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import androidx.core.content.res.ResourcesCompat
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import io.github.tonnyl.moka.R
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -44,7 +50,12 @@ data class Notification(
 
     @SerializedName("url")
     @ColumnInfo(name = "url")
-    var url: String
+    var url: String,
+
+    // local only
+    // indicates if the notification has been displayed to user.
+    @ColumnInfo(name = "has_displayed")
+    var hasDisplayed: Boolean = false
 
 ) : Parcelable
 
@@ -229,6 +240,11 @@ enum class NotificationReasons(var value: String) {
     MENTION("mention"),
 
     /**
+     * You, or a team you're a member of, were requested to review a pull request.
+     */
+    REVIEW_REQUESTED("review_requested"),
+
+    /**
      * You changed the thread state (for example, closing an Issue or merging a Pull Request).
      */
     STATE_CHANGE("state_change"),
@@ -243,4 +259,66 @@ enum class NotificationReasons(var value: String) {
      */
     TEAM_MENTION("team_mention"),
 
+}
+
+fun Notification.toDisplayContentText(context: Context): CharSequence {
+    val notificationReasons = try {
+        NotificationReasons.valueOf(reason.toUpperCase(Locale.US))
+    } catch (e: Exception) {
+        null
+    }
+
+    val typeRes = when (notificationReasons) {
+        NotificationReasons.ASSIGN -> {
+            R.string.notification_reason_assign
+        }
+        NotificationReasons.AUTHOR -> {
+            R.string.notification_reason_author
+        }
+        NotificationReasons.COMMENT -> {
+            R.string.notification_reason_comment
+        }
+        NotificationReasons.INVITATION -> {
+            R.string.notification_reason_invitation
+        }
+        NotificationReasons.MANUAL -> {
+            R.string.notification_reason_manual
+        }
+        NotificationReasons.MENTION -> {
+            R.string.notification_reason_mention
+        }
+        NotificationReasons.REVIEW_REQUESTED -> {
+            R.string.notification_reason_review_requested
+        }
+        NotificationReasons.STATE_CHANGE -> {
+            R.string.notification_reason_state_change
+        }
+        NotificationReasons.SUBSCRIBED -> {
+            R.string.notification_reason_subscribed
+        }
+        NotificationReasons.TEAM_MENTION -> {
+            R.string.notification_reason_team_mention
+        }
+        else -> {
+            R.string.notification_reason_other
+        }
+    }
+    val notificationReasonContent = context.getString(typeRes)
+    val notificationReasonPlusHyphen = context.getString(
+        R.string.notification_caption_notification_type,
+        notificationReasonContent
+    )
+    val spannable = SpannableString(notificationReasonPlusHyphen + subject.title)
+
+    val span = ForegroundColorSpan(
+        ResourcesCompat.getColor(context.resources, R.color.colorTextPrimary, null)
+    )
+    spannable.setSpan(
+        span,
+        0,
+        notificationReasonPlusHyphen.length,
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+
+    return spannable
 }

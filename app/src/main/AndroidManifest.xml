@@ -64,6 +64,10 @@
 
         </service>
 
+        <receiver android:name=".notifications.NotificationDismissReceiver" />
+
+        <receiver android:name=".notifications.NotificationCallbackReceiver" />
+
     </application>
 
 </manifest>

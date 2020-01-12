@@ -132,6 +132,7 @@ dependencies {
     implementation(Deps.AndroidX.Room.common)
     implementation(Deps.AndroidX.Room.runtime)
     implementation(Deps.AndroidX.Room.migration)
+    implementation(Deps.AndroidX.Room.coroutines)
     kapt(Deps.AndroidX.Room.compiler)
 
     // Google

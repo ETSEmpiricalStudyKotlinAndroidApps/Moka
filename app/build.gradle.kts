@@ -80,7 +80,7 @@ androidExtensions {
 }
 
 apollo {
-    onCompilationUnits {
+    onCompilationUnit {
         schemaFile.set(File("/graphql/schema.json"))
         rootPackageName.set("io.github.tonnyl.moka")
         suppressRawTypesWarning.set(true)
@@ -154,7 +154,6 @@ dependencies {
 
     // Apollo
     implementation(Deps.Apollo.runtime)
-    implementation(Deps.Apollo.androidSupport)
 
     // Airbnb
     implementation(Deps.Airbnb.lottie)

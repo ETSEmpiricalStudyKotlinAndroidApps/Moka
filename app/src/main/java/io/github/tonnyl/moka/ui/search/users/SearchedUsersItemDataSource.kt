@@ -6,8 +6,6 @@ import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedOrganizationItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedUserItem
-import io.github.tonnyl.moka.fragment.OrganizationListItemFragment
-import io.github.tonnyl.moka.fragment.UserListItemFragment
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.PagedResourceDirection
@@ -224,12 +222,12 @@ class SearchedUsersItemDataSource(
     }
 
     private fun initSearchedUserOrOrgItemWithRawData(node: SearchUserQuery.Node): SearchedUserOrOrgItem? {
-        return when (node.__typename) {
-            UserListItemFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments.userListItemFragment?.toNonNullSearchedUserItem()
+        return when {
+            node.fragments.userListItemFragment != null -> {
+                node.fragments.userListItemFragment.toNonNullSearchedUserItem()
             }
-            OrganizationListItemFragment.POSSIBLE_TYPES.first() -> {
-                node.fragments.organizationListItemFragment?.toNonNullSearchedOrganizationItem()
+            node.fragments.organizationListItemFragment != null -> {
+                node.fragments.organizationListItemFragment.toNonNullSearchedOrganizationItem()
             }
             else -> {
                 null

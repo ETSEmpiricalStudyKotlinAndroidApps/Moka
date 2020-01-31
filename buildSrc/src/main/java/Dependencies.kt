@@ -4,25 +4,25 @@ object Versions {
     val targetSdk = 29
     val minSdk = 23
 
-    val androidGradle = "4.0.0-alpha08"
+    val androidGradle = "4.0.0-alpha09"
     val gmsGoogleServiceGradle = "4.3.3"
-    val fabricToolsGradle = "1.31.1"
+    val fabricToolsGradle = "1.31.2"
     val kotlin = "1.3.61"
     val coroutines = "1.3.3"
-    val fragment = "1.2.0-rc04"
+    val fragment = "1.2.1"
     val constraintLayout = "2.0.0-beta4"
     val coordinatorLayout = "1.1.0"
-    val appcompat = "1.2.0-alpha01"
+    val appcompat = "1.2.0-alpha02"
     val drawerLayout = "1.1.0-alpha03"
-    val material = "1.2.0-alpha03"
+    val material = "1.2.0-alpha04"
     val viewpager2 = "1.0.0"
     val browser = "1.3.0-alpha01"
     val recyclerView = "1.2.0-alpha01"
-    val recyclerViewSelection = "1.1.0-beta01"
-    val lifecycle = "2.2.0-rc03"
-    val navigation = "2.2.0-rc04"
+    val recyclerViewSelection = "1.1.0-rc01"
+    val lifecycle = "2.2.0"
+    val navigation = "2.3.0-alpha01"
     val paging = "2.1.1"
-    val workManager = "2.3.0-rc01"
+    val workManager = "2.3.1"
     val room = "2.1.0-alpha04"
     val preference = "1.1.0"
     val swipeRefreshLayout = "1.1.0-alpha03"
@@ -30,13 +30,13 @@ object Versions {
     val lottie = "3.3.1"
     val retrofit = "2.7.1"
     val okhttpLoggingInterceptor = "4.3.1"
-    val apollo = "1.2.3-SNAPSHOT"
+    val apollo = "1.3.2"
     val commonMark = "0.13.1"
     val jsoup = "1.12.1"
     val timber = "4.7.1"
-    val firebaseCore = "17.2.1"
+    val firebaseCore = "17.2.2"
     val crashlytics = "2.10.1"
-    val junit = "4.12"
+    val junit = "4.13"
     val androidJunit = "1.1.2-alpha03"
     val androidTestCore = "1.3.0-alpha03"
     val androidTestRunner = "1.3.0-alpha03"
@@ -56,7 +56,7 @@ object Deps {
 
         val android = "com.android.tools.build:gradle:${Versions.androidGradle}"
         val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
-        val apollo = "com.apollographql.apollo:apollo-gradle-plugin-incubating:${Versions.apollo}"
+        val apollo = "com.apollographql.apollo:apollo-gradle-plugin:${Versions.apollo}"
         val navigationSafeArgs =
             "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.navigation}"
         val googleServices = "com.google.gms:google-services:${Versions.gmsGoogleServiceGradle}"
@@ -167,7 +167,6 @@ object Deps {
     object Apollo {
 
         val runtime = "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
-        val androidSupport = "com.apollographql.apollo:apollo-android-support:${Versions.apollo}"
 
     }
 

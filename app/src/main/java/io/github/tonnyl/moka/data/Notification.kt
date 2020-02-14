@@ -46,7 +46,7 @@ data class Notification(
 
     @SerializedName("last_read_at")
     @ColumnInfo(name = "last_read_at")
-    var lastReadAt: Date,
+    var lastReadAt: Date?,
 
     @SerializedName("url")
     @ColumnInfo(name = "url")

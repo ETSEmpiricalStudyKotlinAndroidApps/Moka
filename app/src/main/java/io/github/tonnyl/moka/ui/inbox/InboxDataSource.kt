@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.notifications
+package io.github.tonnyl.moka.ui.inbox
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
@@ -12,7 +12,7 @@ import io.github.tonnyl.moka.util.PageLinks
 import timber.log.Timber
 import java.util.*
 
-class NotificationsDataSource(
+class InboxDataSource(
     private val notificationsService: NotificationsService,
     private val notificationDao: NotificationDao,
     private val initialLoadStatus: MutableLiveData<Resource<List<Notification>>>,

@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), NavigationHost {
         private val TOP_LEVEL_DESTINATIONS = setOf(
             R.id.nav_timeline,
             R.id.nav_explore,
-            R.id.nav_notifications,
+            R.id.nav_inbox,
             R.id.nav_projects,
             R.id.nav_settings,
             R.id.nav_about,

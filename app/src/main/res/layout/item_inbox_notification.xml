@@ -19,7 +19,7 @@
 
         <variable
             name="notificationActions"
-            type="io.github.tonnyl.moka.ui.notifications.NotificationActions" />
+            type="io.github.tonnyl.moka.ui.inbox.InboxActions" />
 
     </data>
 

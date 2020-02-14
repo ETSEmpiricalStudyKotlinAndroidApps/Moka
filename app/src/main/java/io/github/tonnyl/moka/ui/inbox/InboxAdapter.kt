@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.notifications
+package io.github.tonnyl.moka.ui.inbox
 
 import android.text.style.ForegroundColorSpan
 import android.view.*
@@ -7,15 +7,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Notification
-import io.github.tonnyl.moka.databinding.ItemNotificationBinding
+import io.github.tonnyl.moka.databinding.ItemInboxNotificationBinding
 import io.github.tonnyl.moka.ui.PagedResourceAdapter
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
-class NotificationAdapter(
+class InboxAdapter(
     override val retryActions: PagingNetworkStateActions
 ) : PagedResourceAdapter<Notification>(DIFF_CALLBACK, retryActions) {
 
-    var notificationActions: NotificationActions? = null
+    var inboxActions: InboxActions? = null
 
     companion object {
 
@@ -31,13 +31,13 @@ class NotificationAdapter(
 
         }
 
-        const val VIEW_TYPE_NOTIFICATION = R.layout.item_notification
+        const val VIEW_TYPE_NOTIFICATION = R.layout.item_inbox_notification
 
     }
 
     override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return NotificationViewHolder(
-            ItemNotificationBinding.inflate(
+            ItemInboxNotificationBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -48,7 +48,7 @@ class NotificationAdapter(
     override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position) ?: return
         with(holder as NotificationViewHolder) {
-            bindTo(item, notificationActions)
+            bindTo(item, inboxActions)
             this.itemView.tag = item
         }
     }
@@ -56,7 +56,7 @@ class NotificationAdapter(
     override fun getViewType(position: Int): Int = VIEW_TYPE_NOTIFICATION
 
     class NotificationViewHolder(
-        private val binding: ItemNotificationBinding
+        private val binding: ItemInboxNotificationBinding
     ) : RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
 
         private val reasonSpan = ForegroundColorSpan(
@@ -93,7 +93,7 @@ class NotificationAdapter(
             }
         }
 
-        fun bindTo(data: Notification, actions: NotificationActions?) {
+        fun bindTo(data: Notification, actions: InboxActions?) {
             binding.apply {
                 this.notification = data
                 notificationActions = actions

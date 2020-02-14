@@ -15,9 +15,9 @@
             android:icon="@drawable/ic_menu_explore_24"
             android:title="@string/navigation_menu_explore" />
         <item
-            android:id="@+id/nav_notifications"
-            android:icon="@drawable/ic_menu_notifications_24"
-            android:title="@string/navigation_menu_notifications" />
+            android:id="@+id/nav_inbox"
+            android:icon="@drawable/ic_menu_inbox_24"
+            android:title="@string/navigation_menu_inbox" />
         <item
             android:id="@+id/nav_projects"
             android:icon="@drawable/ic_dashboard_outline"

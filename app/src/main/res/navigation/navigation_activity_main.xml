@@ -30,10 +30,10 @@
         tools:layout="@layout/fragment_explore" />
 
     <fragment
-        android:id="@id/nav_notifications"
-        android:name="io.github.tonnyl.moka.ui.notifications.NotificationsFragment"
-        android:label="Notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@id/nav_inbox"
+        android:name="io.github.tonnyl.moka.ui.inbox.InboxFragment"
+        android:label="Inbox"
+        tools:layout="@layout/fragment_inbox" />
 
     <fragment
         android:id="@id/nav_projects"

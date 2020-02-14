@@ -115,7 +115,7 @@ object NotificationsCenter {
         val contentPendingIntent = NavDeepLinkBuilder(context)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.navigation_activity_main)
-            .setDestination(R.id.nav_notifications)
+            .setDestination(R.id.nav_inbox)
             .setArguments(null)
             .createPendingIntent()
         // build intents end

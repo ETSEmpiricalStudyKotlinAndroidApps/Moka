@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.notifications
+package io.github.tonnyl.moka.ui.inbox
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Notification
-import io.github.tonnyl.moka.databinding.FragmentNotificationsBinding
+import io.github.tonnyl.moka.databinding.FragmentInboxBinding
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
@@ -20,11 +20,11 @@ import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
-class NotificationsFragment : MainNavigationFragment(), SearchBarActions,
-    EmptyViewActions, NotificationActions,
+class InboxFragment : MainNavigationFragment(), SearchBarActions,
+    EmptyViewActions, InboxActions,
     PagingNetworkStateActions {
 
-    private val viewModel by viewModels<NotificationsViewModel> {
+    private val viewModel by viewModels<InboxViewModel> {
         ViewModelFactory(
             MokaDataBase.getInstance(
                 requireContext(),
@@ -34,11 +34,11 @@ class NotificationsFragment : MainNavigationFragment(), SearchBarActions,
     }
     private val mainViewModel by activityViewModels<MainViewModel>()
 
-    private lateinit var binding: FragmentNotificationsBinding
+    private lateinit var binding: FragmentInboxBinding
 
     private val notificationAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        NotificationAdapter(this@NotificationsFragment).apply {
-            notificationActions = this@NotificationsFragment
+        InboxAdapter(this@InboxFragment).apply {
+            inboxActions = this@InboxFragment
         }
     }
 
@@ -47,7 +47,7 @@ class NotificationsFragment : MainNavigationFragment(), SearchBarActions,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        binding = FragmentInboxBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -56,10 +56,10 @@ class NotificationsFragment : MainNavigationFragment(), SearchBarActions,
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            emptyViewActions = this@NotificationsFragment
-            searchBarActions = this@NotificationsFragment
-            viewModel = this@NotificationsFragment.viewModel
-            mainViewModel = this@NotificationsFragment.mainViewModel
+            emptyViewActions = this@InboxFragment
+            searchBarActions = this@InboxFragment
+            viewModel = this@InboxFragment.viewModel
+            mainViewModel = this@InboxFragment.mainViewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
@@ -69,7 +69,7 @@ class NotificationsFragment : MainNavigationFragment(), SearchBarActions,
                     addItemDecoration(
                         ListCategoryDecoration(
                             this,
-                            getString(R.string.navigation_menu_notifications)
+                            getString(R.string.navigation_menu_inbox)
                         )
                     )
 

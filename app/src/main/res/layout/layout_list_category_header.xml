@@ -9,4 +9,4 @@
     android:paddingEnd="@dimen/fragment_content_padding"
     android:paddingBottom="@dimen/fragment_content_padding_half"
     android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-    tools:text="@string/navigation_menu_notifications" />
+    tools:text="@string/navigation_menu_inbox" />

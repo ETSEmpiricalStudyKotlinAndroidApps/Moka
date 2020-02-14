@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.notifications
+package io.github.tonnyl.moka.ui.inbox
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,7 +10,7 @@ class ViewModelFactory(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return NotificationsViewModel(notificationDao) as T
+        return InboxViewModel(notificationDao) as T
     }
 
 }

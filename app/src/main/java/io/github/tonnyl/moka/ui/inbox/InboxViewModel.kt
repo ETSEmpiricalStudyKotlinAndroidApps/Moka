@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.notifications
+package io.github.tonnyl.moka.ui.inbox
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +12,7 @@ import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.service.NotificationsService
 import io.github.tonnyl.moka.ui.NetworkDatabaseSourceViewModel
 
-class NotificationsViewModel(
+class InboxViewModel(
     private val localSource: NotificationDao
 ) : NetworkDatabaseSourceViewModel<Notification>() {
 
@@ -25,7 +25,7 @@ class NotificationsViewModel(
     val previousNextLoadStatusLiveData: LiveData<PagedResource2<List<Notification>>>
         get() = _previousNextLoadStatusLiveData
 
-    private lateinit var sourceFactory: NotificationsDataSourceFactory
+    private lateinit var sourceFactory: InboxDataSourceFactory
 
     override fun initLocalSource(): LiveData<PagedList<Notification>> {
         return LivePagedListBuilder(
@@ -35,7 +35,7 @@ class NotificationsViewModel(
     }
 
     override fun initRemoteSource(): LiveData<PagedList<Notification>> {
-        sourceFactory = NotificationsDataSourceFactory(
+        sourceFactory = InboxDataSourceFactory(
             RetrofitClient.createService(NotificationsService::class.java),
             localSource,
             _initialLoadStatusLiveData,

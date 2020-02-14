@@ -1,8 +1,8 @@
-package io.github.tonnyl.moka.ui.notifications
+package io.github.tonnyl.moka.ui.inbox
 
 import io.github.tonnyl.moka.data.Notification
 
-interface NotificationActions {
+interface InboxActions {
 
     fun openNotification(notification: Notification)
 

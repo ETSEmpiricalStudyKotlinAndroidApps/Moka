@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:onClick="@{() -> actions.retryLoadPreviousNext()}"
             android:text="@string/common_retry"
-            android:textColor="@color/colorTextAccent"
+            android:textColor="@color/colorOnPrimary"
             app:invisibleUnless="@{state.status == Status.ERROR}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

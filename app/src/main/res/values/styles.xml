@@ -1,66 +1,33 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents">
-        <item name="colorPrimary">#6200EE</item>
-        <item name="colorSecondary">#03DAC6</item>
-        <item name="android:colorBackground">#FFFFFF</item>
-        <item name="colorError">#C51162</item>
+    <!-- For titles, e.g. Repository Detail, Profile Detail -->
+    <style name="TextAppearance.Moka.H1" parent="TextAppearance.MaterialComponents.Headline5" />
 
-        <item name="colorPrimaryVariant">#3700B3</item>
-        <item name="colorSecondaryVariant">#018786</item>
-        <item name="colorSurface">#FFFFFF</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorOnSecondary">#000000</item>
-        <item name="colorOnBackground">#000000</item>
-        <item name="colorOnError">#FFFFFF</item>
-        <item name="colorOnSurface">#000000</item>
-        <item name="scrimBackground">@color/mtrl_scrim_color</item>
-        <item name="textAppearanceHeadline1">@style/TextAppearance.MaterialComponents.Headline1
-        </item>
-        <item name="textAppearanceHeadline2">@style/TextAppearance.MaterialComponents.Headline2
-        </item>
-        <item name="textAppearanceHeadline3">@style/TextAppearance.MaterialComponents.Headline3
-        </item>
-        <item name="textAppearanceHeadline4">@style/TextAppearance.MaterialComponents.Headline4
-        </item>
-        <item name="textAppearanceHeadline5">@style/TextAppearance.MaterialComponents.Headline5
-        </item>
-        <item name="textAppearanceHeadline6">@style/TextAppearance.MaterialComponents.Headline6
-        </item>
-        <item name="textAppearanceSubtitle1">@style/TextAppearance.MaterialComponents.Subtitle1
-        </item>
-        <item name="textAppearanceSubtitle2">@style/TextAppearance.MaterialComponents.Subtitle2
-        </item>
-        <item name="textAppearanceBody1">@style/TextAppearance.MaterialComponents.Body1</item>
-        <item name="textAppearanceBody2">@style/TextAppearance.MaterialComponents.Body2</item>
-        <item name="textAppearanceCaption">@style/TextAppearance.MaterialComponents.Caption</item>
-        <item name="textAppearanceButton">@style/TextAppearance.MaterialComponents.Button</item>
-        <item name="textAppearanceOverline">@style/TextAppearance.MaterialComponents.Overline</item>
+    <!-- List item primary text, e.g. timeline event titles, notification titles -->
+    <style name="TextAppearance.Moka.ListPrimary" parent="TextAppearance.MaterialComponents.Body1" />
+
+    <!-- List item primary text, e.g. trending repository titles, issue titles -->
+    <style name="TextAppearance.Moka.ListPrimary.Colored" parent="TextAppearance.Moka.ListPrimary">
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
-    <style name="ToolbarTheme" parent="ThemeOverlay.MaterialComponents.ActionBar">
-        <item name="android:textColorSecondary">@color/colorControlNormal</item>
-        <item name="colorControlNormal">@color/colorControlNormal</item>
-
+    <!-- List item secondary text, e.g. timeline event descriptions, notification descriptions -->
+    <style name="TextAppearance.Moka.ListSecondary" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="colorControlNormal">@color/colorControlNormal</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
-
-    <style name="AppTheme.Splash">
-        <item name="android:windowBackground">@drawable/splash_screen</item>
-    </style>
-
-    <style name="TextAppearance.Moka.FadingSnackbarAction" parent="@style/TextAppearance.AppCompat.Button">
-        <item name="android:textColor">@color/colorAccent</item>
+    <!-- List headers -->
+    <style name="TextAppearance.Moka.Overline" parent="TextAppearance.MaterialComponents.Overline">
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Widget.Moka.AccountDialog.ViewProfileButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="shapeAppearanceOverlay">
+            @style/ShapeAppearanceOverlay.MaterialComponents.Chip
+        </item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
 
     <style name="TextAppearance.Moka.Count" parent="TextAppearance.MaterialComponents.Subtitle1">
@@ -71,6 +38,8 @@
         <item name="autoSizeMinTextSize">10sp</item>
         <item name="autoSizeStepGranularity">1sp</item>
         <item name="autoSizeTextType">uniform</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body1
+        </item>
     </style>
 
     <style name="TextAppearance.Moka.ContentCategory" parent="Base.TextAppearance.AppCompat.Caption">
@@ -101,7 +70,7 @@
     <style name="LinearLayoutCountTypeStyle">
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
-        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:orientation">vertical</item>
         <item name="android:paddingTop">@dimen/fragment_content_padding</item>
@@ -109,7 +78,7 @@
     </style>
 
     <style name="LinearLayoutTitleContentStyle">
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
         <item name="android:clickable">true</item>
@@ -122,20 +91,20 @@
     </style>
 
     <style name="LinearLayoutTitleStyle">
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:drawablePadding">@dimen/fragment_content_padding</item>
-        <item name="android:drawableTint">@color/colorTextSecondary</item>
+        <item name="android:paddingStart">@dimen/fragment_content_padding</item>
+        <item name="android:paddingEnd">0dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body1</item>
     </style>
 
     <style name="LinearLayoutContentStyle">
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingStart">40dp</item>
+        <item name="android:paddingStart">@dimen/fragment_content_padding</item>
         <item name="android:paddingEnd">0dp</item>
-        <item name="android:textColor">@color/colorTextSecondary</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
         <item name="android:textIsSelectable">true</item>
     </style>
@@ -154,7 +123,7 @@
         <item name="android:paddingStart">@dimen/fragment_content_padding</item>
         <item name="android:paddingEnd">0dp</item>
         <item name="android:textAlignment">viewEnd</item>
-        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textColor">@color/colorOnBackground</item>
     </style>
 
     <style name="RecyclerViewStyle">

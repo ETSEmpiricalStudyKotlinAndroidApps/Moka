@@ -45,7 +45,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            app:tint="@color/colorTextSecondary"
+            app:tint="?android:textColorSecondary"
             tools:src="@drawable/ic_menu_timeline_24" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -57,16 +57,16 @@
             android:paddingTop="@dimen/fragment_content_padding_half"
             android:paddingBottom="@dimen/fragment_content_padding_half"
             android:text="@{titleString}"
-            android:textColor="@color/colorTextSecondary"
+            android:textColor="?android:textColorSecondary"
             app:layout_constraintBottom_toTopOf="@id/empty_content_retry_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/empty_content_icon"
             tools:text="@string/timeline_content_empty_title" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/empty_content_retry_button"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="@{() -> actions.retryInitial()}"
@@ -86,7 +86,7 @@
             android:paddingTop="@dimen/fragment_content_padding_half"
             android:paddingBottom="@dimen/fragment_content_padding_half"
             android:text="@{actionString}"
-            android:textColor="@color/colorTextAccent"
+            android:textColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -28,7 +28,7 @@ data class TrendingDeveloper(
      */
     @SerializedName("type")
     @ColumnInfo(name = "type")
-    var type: String,
+    var type: String?,
 
     @SerializedName("url")
     @ColumnInfo(name = "url")

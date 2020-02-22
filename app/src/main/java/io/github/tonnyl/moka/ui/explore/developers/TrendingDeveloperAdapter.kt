@@ -60,7 +60,7 @@ class TrendingDeveloperAdapter : ListAdapter<TrendingDeveloper, RecyclerView.Vie
         private val foregroundColorSpan = ForegroundColorSpan(
             ResourcesCompat.getColor(
                 binding.root.resources,
-                R.color.colorTextPrimary,
+                R.color.colorPrimary,
                 null
             )
         )

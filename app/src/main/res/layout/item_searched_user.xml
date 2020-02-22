@@ -19,9 +19,9 @@
         android:id="@+id/item_user_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         android:padding="@dimen/fragment_content_padding">
 
         <Space
@@ -51,14 +51,11 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_user_name"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            style="@style/TextAppearance.Moka.ListPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
             android:maxLines="1"
-            android:textColor="@color/list_item_text_title"
-            android:textSize="@dimen/list_item_title_text"
             app:goneUnless="@{!TextUtils.isEmpty(data.name)}"
             app:layout_constraintEnd_toStartOf="@id/item_user_space_2"
             app:layout_constraintStart_toEndOf="@id/item_user_space_1"
@@ -68,13 +65,12 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_user_login"
-            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:maxLines="1"
-            android:textColor="@color/list_item_text_caption"
+            android:textAppearance="@style/TextAppearance.Moka.ListSecondary"
             android:textSize="@dimen/list_item_caption_text"
             app:layout_constraintEnd_toStartOf="@id/item_user_space_2"
             app:layout_constraintStart_toEndOf="@id/item_user_space_1"
@@ -84,11 +80,10 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_user_description"
-            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:textColor="@color/list_item_text_caption"
+            android:textAppearance="@style/TextAppearance.Moka.ListSecondary"
             android:textSize="@dimen/list_item_caption_text"
             app:goneUnless="@{!TextUtils.isEmpty(data.bio)}"
             app:layout_constraintEnd_toEndOf="parent"
@@ -109,8 +104,8 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{(data.viewerCanFollow &amp;&amp; !data.viewerIsFollowing) ? @string/user_profile_follow : @string/user_profile_unfollow}"
             android:textAllCaps="false"
-            android:textColor="@color/colorTextAccent"
             app:layout_constraintBottom_toBottomOf="@id/item_user_avatar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/item_user_avatar"

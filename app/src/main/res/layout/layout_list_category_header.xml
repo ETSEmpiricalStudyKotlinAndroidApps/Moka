@@ -8,5 +8,5 @@
     android:paddingTop="@dimen/fragment_content_padding_half"
     android:paddingEnd="@dimen/fragment_content_padding"
     android:paddingBottom="@dimen/fragment_content_padding_half"
-    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+    android:textAppearance="@style/TextAppearance.Moka.ListSecondary"
     tools:text="@string/navigation_menu_inbox" />

@@ -7,10 +7,10 @@
     android:paddingEnd="@dimen/fragment_content_padding">
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/TextAppearance.MaterialComponents.Body2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:text="@string/explore_trending_filter_languages" />
+        android:text="@string/explore_trending_filter_languages"
+        android:textAppearance="@style/TextAppearance.Moka.ListPrimary" />
 
 </LinearLayout>

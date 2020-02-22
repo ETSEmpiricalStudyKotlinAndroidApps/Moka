@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.search.users
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,7 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
         return binding.root
     }
 
+    @SuppressLint("FragmentLiveDataObserve")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -58,7 +60,7 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
             searchedUsersViewModel.refresh(it)
         })
 
-        searchedUsersViewModel.pagedLoadStatus.observe(this, Observer {
+        searchedUsersViewModel.pagedLoadStatus.observe(viewLifecycleOwner, Observer {
             when (it.resource?.status) {
                 Status.SUCCESS -> {
                     searchedUserAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADED))
@@ -79,7 +81,7 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
             }
         })
 
-        searchedUsersViewModel.data.observe(this, Observer {
+        searchedUsersViewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = searchedUserAdapter

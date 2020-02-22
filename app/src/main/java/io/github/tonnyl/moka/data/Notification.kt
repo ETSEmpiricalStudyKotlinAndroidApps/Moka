@@ -311,7 +311,7 @@ fun Notification.toDisplayContentText(context: Context): CharSequence {
     val spannable = SpannableString(notificationReasonPlusHyphen + subject.title)
 
     val span = ForegroundColorSpan(
-        ResourcesCompat.getColor(context.resources, R.color.colorTextPrimary, null)
+        ResourcesCompat.getColor(context.resources, R.color.colorPrimary, null)
     )
     spannable.setSpan(
         span,

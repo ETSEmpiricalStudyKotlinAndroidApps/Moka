@@ -17,7 +17,7 @@ abstract class EventClickableSpans(
     override fun updateDrawState(ds: TextPaint) {
         super.updateDrawState(ds)
         ds.run {
-            color = ResourcesCompat.getColor(resources, R.color.colorTextAccent, null)
+            color = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
             isUnderlineText = false
         }
     }

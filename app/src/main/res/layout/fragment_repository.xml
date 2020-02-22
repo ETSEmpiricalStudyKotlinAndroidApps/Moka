@@ -36,13 +36,10 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ToolbarTheme"
+                android:theme="@style/AppTheme.Toolbar"
                 app:navigationIcon="@drawable/ic_arrow_back_24"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="@string/repository"
-                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                app:titleTextColor="@color/colorControlNormal" />
+                app:title="@string/repository" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -68,314 +65,279 @@
                 android:id="@+id/repository_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="?actionBarSize"
                 android:clipToPadding="false"
-                android:paddingBottom="?actionBarSize"
                 app:goneUnless="@{viewModel.userRepository.data != null || viewModel.organizationsRepository.data != null}">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="?actionBarSize">
+                    android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/repository_owner_avatar"
-                        android:layout_width="@dimen/repository_avatar_size"
-                        android:layout_height="@dimen/repository_avatar_size"
-                        android:layout_marginStart="@dimen/fragment_content_padding"
-                        android:layout_marginTop="@dimen/fragment_content_padding"
-                        android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_OWNERS_PROFILE)}"
-                        app:avatarUrl="@{viewModel.userRepository.data.owner.avatarUrl ?? viewModel.organizationsRepository.data.owner.avatarUrl}"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:src="@tools:sample/avatars" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/repository_owner_name"
-                        style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif-medium"
-                        android:maxLines="1"
-                        android:paddingStart="@dimen/repository_spacing"
-                        android:paddingEnd="@dimen/repository_spacing"
-                        android:text="@{viewModel.userRepository.data.ownerName ?? viewModel.organizationsRepository.data.ownerName}"
-                        android:textColor="@color/list_item_text_title"
-                        android:textSize="@dimen/list_item_title_text"
-                        app:goneUnless="@{!TextUtils.isEmpty(viewModel.userRepository.data.ownerName) &amp;&amp; !TextUtils.isEmpty(viewModel.organizationsRepository.data.name)}"
-                        app:layout_constraintBottom_toTopOf="@id/repository_owner_login"
-                        app:layout_constraintEnd_toStartOf="@id/repository_owner_follow_unfollow"
-                        app:layout_constraintStart_toEndOf="@id/repository_owner_avatar"
-                        app:layout_constraintTop_toTopOf="@id/repository_owner_avatar"
-                        app:layout_constraintVertical_chainStyle="packed"
-                        tools:text="@sample/user.json/users/name" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/repository_owner_avatar"
+                            android:layout_width="@dimen/repository_avatar_size"
+                            android:layout_height="@dimen/repository_avatar_size"
+                            android:layout_marginStart="@dimen/fragment_content_padding"
+                            android:layout_marginTop="@dimen/fragment_content_padding"
+                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_OWNERS_PROFILE)}"
+                            app:avatarUrl="@{viewModel.userRepository.data.owner.avatarUrl ?? viewModel.organizationsRepository.data.owner.avatarUrl}"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:src="@tools:sample/avatars" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/repository_owner_login"
-                        style="@style/TextAppearance.MaterialComponents.Caption"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:maxLines="1"
-                        android:paddingStart="@dimen/repository_spacing"
-                        android:paddingEnd="@dimen/repository_spacing"
-                        android:text="@{viewModel.userRepository.data.owner.login ?? viewModel.organizationsRepository.data.owner.login}"
-                        android:textColor="@color/list_item_text_caption"
-                        android:textSize="@dimen/list_item_caption_text"
-                        app:layout_constraintBottom_toBottomOf="@id/repository_owner_avatar"
-                        app:layout_constraintEnd_toStartOf="@id/repository_owner_follow_unfollow"
-                        app:layout_constraintStart_toEndOf="@id/repository_owner_avatar"
-                        app:layout_constraintTop_toBottomOf="@id/repository_owner_name"
-                        tools:text="@sample/user.json/users/login" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/repository_owner_name"
+                            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif-medium"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/repository_spacing"
+                            android:paddingEnd="@dimen/repository_spacing"
+                            android:text="@{viewModel.userRepository.data.ownerName ?? viewModel.organizationsRepository.data.ownerName}"
+                            android:textSize="@dimen/list_item_title_text"
+                            app:goneUnless="@{!TextUtils.isEmpty(viewModel.userRepository.data.ownerName) &amp;&amp; !TextUtils.isEmpty(viewModel.organizationsRepository.data.name)}"
+                            app:layout_constraintBottom_toTopOf="@id/repository_owner_login"
+                            app:layout_constraintEnd_toStartOf="@id/repository_owner_follow_unfollow"
+                            app:layout_constraintStart_toEndOf="@id/repository_owner_avatar"
+                            app:layout_constraintTop_toTopOf="@id/repository_owner_avatar"
+                            app:layout_constraintVertical_chainStyle="packed"
+                            tools:text="@sample/user.json/users/name" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/repository_owner_follow_unfollow"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/fragment_content_padding"
-                        android:onClick="@{() -> viewModel.toggleFollow()}"
-                        android:text="@{viewModel.followState.data == true ? @string/user_profile_unfollow : @string/user_profile_follow}"
-                        android:textAllCaps="false"
-                        android:textColor="@color/colorAccent"
-                        app:goneUnless="@{viewModel.followState.data != null}"
-                        app:layout_constraintBottom_toBottomOf="@id/repository_owner_avatar"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/repository_owner_avatar"
-                        tools:text="@string/user_profile_follow" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/repository_owner_login"
+                            style="@style/TextAppearance.MaterialComponents.Caption"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/repository_spacing"
+                            android:paddingEnd="@dimen/repository_spacing"
+                            android:text="@{viewModel.userRepository.data.owner.login ?? viewModel.organizationsRepository.data.owner.login}"
+                            android:textSize="@dimen/list_item_caption_text"
+                            app:layout_constraintBottom_toBottomOf="@id/repository_owner_avatar"
+                            app:layout_constraintEnd_toStartOf="@id/repository_owner_follow_unfollow"
+                            app:layout_constraintStart_toEndOf="@id/repository_owner_avatar"
+                            app:layout_constraintTop_toBottomOf="@id/repository_owner_name"
+                            tools:text="@sample/user.json/users/login" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/repository_name"
-                        style="@style/TextAppearance.MaterialComponents.Headline6"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/fragment_content_padding"
-                        android:gravity="start"
-                        android:paddingStart="@dimen/fragment_content_padding"
-                        android:paddingEnd="@dimen/fragment_content_padding"
-                        android:text="@{viewModel.userRepository.data.name ?? viewModel.organizationsRepository.data.name}"
-                        android:textColor="@color/colorTextPrimary"
-                        app:layout_constraintBottom_toTopOf="@id/repository_description"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_owner_avatar"
-                        tools:text="@sample/repository.json/repositories/name" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/repository_owner_follow_unfollow"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/fragment_content_padding"
+                            android:onClick="@{() -> viewModel.toggleFollow()}"
+                            android:text="@{viewModel.followState.data == true ? @string/user_profile_unfollow : @string/user_profile_follow}"
+                            android:textAllCaps="false"
+                            app:goneUnless="@{viewModel.followState.data != null}"
+                            app:layout_constraintBottom_toBottomOf="@id/repository_owner_avatar"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/repository_owner_avatar"
+                            tools:text="@string/user_profile_follow" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/repository_description"
-                        style="@style/TextAppearance.MaterialComponents.Body2"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/fragment_content_padding"
-                        android:text="@{viewModel.userRepository.data.description ?? viewModel.organizationsRepository.data.description}"
-                        android:textColor="@color/colorTextSecondary"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_name"
-                        tools:text="@sample/repository.json/repositories/description" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/repository_name"
+                            style="@style/TextAppearance.MaterialComponents.Headline6"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/fragment_content_padding"
+                            android:gravity="start"
+                            android:paddingStart="@dimen/fragment_content_padding"
+                            android:paddingEnd="@dimen/fragment_content_padding"
+                            android:text="@{viewModel.userRepository.data.name ?? viewModel.organizationsRepository.data.name}"
+                            android:textColor="@color/colorOnBackground"
+                            app:layout_constraintBottom_toTopOf="@id/repository_description"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/repository_owner_avatar"
+                            tools:text="@sample/repository.json/repositories/name" />
 
-                    <View
-                        android:id="@+id/repository_divider_between_tabs_and_description"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/divider_size"
-                        android:background="@color/colorDivider"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_description" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/repository_description"
+                            style="@style/TextAppearance.MaterialComponents.Body2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/fragment_content_padding"
+                            android:text="@{viewModel.userRepository.data.description ?? viewModel.organizationsRepository.data.description}"
+                            android:textColor="?android:textColorSecondary"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/repository_name"
+                            tools:text="@sample/repository.json/repositories/description" />
 
-                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
-                        android:id="@+id/repository_watchers_number"
-                        style="@style/LinearLayoutCountTypeStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_WATCHERS)}"
-                        app:category="@string/repository_watchers"
-                        app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.watchersCount : viewModel.userRepository.data.watchersCount)}"
-                        tools:ignore="MissingConstraints"
-                        tools:numberText="@sample/repository.json/repositories/watcherCount" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
-                        android:id="@+id/repository_stargazers_number"
-                        style="@style/LinearLayoutCountTypeStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_STARGAZERS)}"
-                        app:category="@string/repository_stargazers"
-                        app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.stargazersCount : viewModel.userRepository.data.stargazersCount)}"
-                        tools:ignore="MissingConstraints"
-                        tools:numberText="@sample/repository.json/repositories/stargazerCount" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
-                        android:id="@+id/repository_forks_number"
-                        style="@style/LinearLayoutCountTypeStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_FORKS)}"
-                        app:category="@string/repository_forks"
-                        app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.forksCount : viewModel.userRepository.data.forksCount)}"
-                        tools:ignore="MissingConstraints"
-                        tools:numberText="@sample/repository.json/repositories/forkCount" />
+                        <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                            android:id="@+id/repository_watchers_number"
+                            style="@style/LinearLayoutCountTypeStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_WATCHERS)}"
+                            app:category="@string/repository_watchers"
+                            app:layout_constraintEnd_toStartOf="@id/repository_stargazers_number"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.watchersCount : viewModel.userRepository.data.watchersCount)}"
+                            tools:numberText="@sample/repository.json/repositories/watcherCount" />
 
-                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
-                        android:id="@+id/repository_issues_number"
-                        style="@style/LinearLayoutCountTypeStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_ISSUES)}"
-                        app:category="@string/repository_issues"
-                        app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.issuesCount : viewModel.userRepository.data.issuesCount)}"
-                        tools:ignore="MissingConstraints"
-                        tools:numberText="@sample/repository.json/repositories/issueCount" />
+                        <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                            android:id="@+id/repository_stargazers_number"
+                            style="@style/LinearLayoutCountTypeStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_STARGAZERS)}"
+                            app:category="@string/repository_stargazers"
+                            app:layout_constraintEnd_toStartOf="@id/repository_forks_number"
+                            app:layout_constraintStart_toEndOf="@id/repository_watchers_number"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.stargazersCount : viewModel.userRepository.data.stargazersCount)}"
+                            tools:numberText="@sample/repository.json/repositories/stargazerCount" />
 
-                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
-                        android:id="@+id/repository_pull_requests_number"
-                        style="@style/LinearLayoutCountTypeStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_PULL_REQUESTS)}"
-                        app:category="@string/repository_pull_requests"
-                        app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.pullRequestsCount : viewModel.userRepository.data.pullRequestsCount)}"
-                        tools:ignore="MissingConstraints"
-                        tools:numberText="@sample/repository.json/repositories/pullRequestCount" />
+                        <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                            android:id="@+id/repository_forks_number"
+                            style="@style/LinearLayoutCountTypeStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_FORKS)}"
+                            app:category="@string/repository_forks"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/repository_stargazers_number"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.forksCount : viewModel.userRepository.data.forksCount)}"
+                            tools:numberText="@sample/repository.json/repositories/forkCount" />
 
-                    <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
-                        android:id="@+id/repository_projects_number"
-                        style="@style/LinearLayoutCountTypeStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_PROJECTS)}"
-                        app:category="@string/repository_projects"
-                        app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.projectsCount : viewModel.userRepository.data.projectsCount)}"
-                        tools:ignore="MissingConstraints"
-                        tools:numberText="@sample/repository.json/repositories/projectCount" />
+                        <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                            android:id="@+id/repository_issues_number"
+                            style="@style/LinearLayoutCountTypeStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_ISSUES)}"
+                            app:category="@string/repository_issues"
+                            app:layout_constraintEnd_toStartOf="@id/repository_pull_requests_number"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/repository_watchers_number"
+                            app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.issuesCount : viewModel.userRepository.data.issuesCount)}"
+                            tools:numberText="@sample/repository.json/repositories/issueCount" />
 
-                    <androidx.constraintlayout.helper.widget.Flow
-                        android:id="@+id/repository_numbers_flow"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/fragment_content_padding"
-                        android:paddingBottom="@dimen/fragment_content_padding"
-                        app:constraint_referenced_ids="repository_watchers_number,repository_stargazers_number,repository_forks_number,repository_issues_number,repository_pull_requests_number,repository_projects_number"
-                        app:flow_horizontalStyle="spread"
-                        app:flow_maxElementsWrap="3"
-                        app:flow_verticalGap="@dimen/fragment_content_padding"
-                        app:flow_wrapMode="chain"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_description" />
+                        <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                            android:id="@+id/repository_pull_requests_number"
+                            style="@style/LinearLayoutCountTypeStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_PULL_REQUESTS)}"
+                            app:category="@string/repository_pull_requests"
+                            app:layout_constraintEnd_toStartOf="@id/repository_projects_number"
+                            app:layout_constraintStart_toEndOf="@id/repository_issues_number"
+                            app:layout_constraintTop_toTopOf="@id/repository_issues_number"
+                            app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.pullRequestsCount : viewModel.userRepository.data.pullRequestsCount)}"
+                            tools:numberText="@sample/repository.json/repositories/pullRequestCount" />
 
-                    <View
-                        android:id="@+id/repository_divider_between_tabs_and_basic_info"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/divider_size"
-                        android:background="@color/colorDivider"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_numbers_flow" />
+                        <io.github.tonnyl.moka.widget.NumberCategoryTextGroup
+                            android:id="@+id/repository_projects_number"
+                            style="@style/LinearLayoutCountTypeStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_PROJECTS)}"
+                            app:category="@string/repository_projects"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/repository_pull_requests_number"
+                            app:layout_constraintTop_toTopOf="@id/repository_issues_number"
+                            app:numberText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.projectsCount : viewModel.userRepository.data.projectsCount)}"
+                            tools:numberText="@sample/repository.json/repositories/projectCount" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/repository_basic_info_category_title"
                         style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/fragment_content_padding"
                         android:text="@string/repository_basic_info"
-                        app:fontFamily="sans-serif-medium"
-                        tools:ignore="MissingConstraints" />
+                        app:fontFamily="sans-serif-medium" />
 
                     <io.github.tonnyl.moka.widget.HorizontalInfoGroup
                         android:id="@+id/repository_branches_group"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="?android:attr/selectableItemBackground"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:padding="@dimen/fragment_content_padding"
                         app:infoText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.branchCount : viewModel.userRepository.data.branchCount)}"
                         app:label="@string/repository_branches"
-                        tools:ignore="MissingConstraints"
                         tools:infoText="@sample/repository.json/repositories/branch" />
 
                     <io.github.tonnyl.moka.widget.HorizontalInfoGroup
                         android:id="@+id/repository_releases_group"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="?android:attr/selectableItemBackground"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:padding="@dimen/fragment_content_padding"
                         app:infoText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.releasesCount : viewModel.userRepository.data.releasesCount)}"
                         app:label="@string/repository_releases"
-                        tools:ignore="MissingConstraints"
                         tools:infoText="@sample/repository.json/repositories/releases" />
 
                     <io.github.tonnyl.moka.widget.HorizontalInfoGroup
                         android:id="@+id/repository_language_group"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="?android:attr/selectableItemBackground"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:padding="@dimen/fragment_content_padding"
                         app:infoText="@{viewModel.userRepository.data.primaryLanguage == null ? @string/programming_language_unknown : String.valueOf(viewModel.organizationsRepository.data.primaryLanguage.name)}"
                         app:label="@string/repository_language"
-                        tools:ignore="MissingConstraints"
                         tools:infoText="@sample/repository.json/repositories/primaryLanguage/name" />
 
                     <io.github.tonnyl.moka.widget.HorizontalInfoGroup
                         android:id="@+id/repository_license_group"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="?android:attr/selectableItemBackground"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_LICENSE)}"
                         android:padding="@dimen/fragment_content_padding"
                         app:infoText="@{viewModel.userRepository.data.licenseInfo == null ? @string/programming_language_unknown : String.valueOf(viewModel.organizationsRepository.data.licenseInfo.nickname)}"
                         app:label="@string/repository_license"
-                        tools:ignore="MissingConstraints"
                         tools:infoText="@sample/repository.json/repositories/license" />
 
-                    <androidx.constraintlayout.helper.widget.Flow
-                        android:id="@+id/repository_info_flow"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:constraint_referenced_ids="repository_basic_info_category_title,repository_branches_group,repository_releases_group,repository_language_group,repository_license_group"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_divider_between_tabs_and_basic_info" />
+                        android:orientation="horizontal">
 
-                    <View
-                        android:id="@+id/repository_divider_between_basic_info_and_topics"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/divider_size"
-                        android:background="@color/colorDivider"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_info_flow" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/repository_topics_category_title"
+                            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="@dimen/fragment_content_padding"
+                            android:text="@string/repository_topics"
+                            app:fontFamily="sans-serif-medium"
+                            app:goneUnless="@{(viewModel.userRepository.data.topics != null &amp;&amp; !viewModel.userRepository.data.topics.empty) || (viewModel.organizationsRepository.data != null &amp;&amp; !viewModel.organizationsRepository.data.topics.empty)}" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/repository_topics_category_title"
-                        style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/fragment_content_padding"
-                        android:text="@string/repository_topics"
-                        app:fontFamily="sans-serif-medium"
-                        app:goneUnless="@{(viewModel.userRepository.data.topics != null &amp;&amp; !viewModel.userRepository.data.topics.empty) || (viewModel.organizationsRepository.data != null &amp;&amp; !viewModel.organizationsRepository.data.topics.empty)}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_divider_between_basic_info_and_topics" />
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/repository_topics_category_see_all"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/see_all"
+                            app:goneUnless="@{(viewModel.userRepository.data.topics != null &amp;&amp; !viewModel.userRepository.data.topics.empty) || (viewModel.organizationsRepository.data != null &amp;&amp; !viewModel.organizationsRepository.data.topics.empty)}" />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/repository_topics_category_see_all"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/see_all"
-                        android:textColor="@color/colorTextAccent"
-                        app:goneUnless="@{(viewModel.userRepository.data.topics != null &amp;&amp; !viewModel.userRepository.data.topics.empty) || (viewModel.organizationsRepository.data != null &amp;&amp; !viewModel.organizationsRepository.data.topics.empty)}"
-                        app:layout_constraintBottom_toBottomOf="@id/repository_topics_category_title"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/repository_topics_category_title" />
+                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/repository_topics"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clipChildren="false"
                         android:clipToPadding="false"
@@ -383,99 +345,56 @@
                         android:paddingStart="@dimen/fragment_content_padding_half"
                         android:paddingEnd="@dimen/fragment_content_padding_half"
                         app:goneUnless="@{(viewModel.userRepository.data.topics != null &amp;&amp; !viewModel.userRepository.data.topics.empty) || (viewModel.organizationsRepository.data != null &amp;&amp; !viewModel.organizationsRepository.data.topics.empty)}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_topics_category_title"
                         tools:itemCount="10"
                         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/item_repository_topic" />
 
-                    <View
-                        android:id="@+id/repository_divider_between_topics_and_readme"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/divider_size"
-                        android:layout_marginTop="@dimen/fragment_content_padding"
-                        android:background="@color/colorDivider"
-                        app:goneUnless="@{(viewModel.userRepository.data.topics != null &amp;&amp; !viewModel.userRepository.data.topics.empty) || (viewModel.organizationsRepository.data != null &amp;&amp; !viewModel.organizationsRepository.data.topics.empty)}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_topics" />
-
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/repository_readme_category_title"
                         style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/fragment_content_padding"
                         android:text="@string/repository_readme"
                         app:fontFamily="sans-serif-medium"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_divider_between_topics_and_readme"
                         app:textAllCaps="true" />
 
                     <WebView
                         android:id="@+id/repository_readme_content"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/fragment_content_padding"
                         android:layout_marginEnd="@dimen/fragment_content_padding"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_readme_category_title"
                         tools:ignore="WebViewLayout" />
-
-                    <View
-                        android:id="@+id/repository_divider_between_readme_and_more_info"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/divider_size"
-                        android:layout_marginTop="@dimen/fragment_content_padding"
-                        android:background="@color/colorDivider"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_readme_content" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/repository_more_info_category_title"
                         style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/fragment_content_padding"
                         android:text="@string/repository_more_info"
-                        app:fontFamily="sans-serif-medium"
-                        tools:ignore="MissingConstraints" />
+                        app:fontFamily="sans-serif-medium" />
 
                     <io.github.tonnyl.moka.widget.HorizontalInfoGroup
                         android:id="@+id/repository_created_on_group"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/fragment_content_padding"
                         app:infoText="@{DateUtils.getRelativeTimeSpanString(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.createdAt.time : viewModel.userRepository.data.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
                         app:label="@string/repository_created_on"
-                        tools:ignore="MissingConstraints"
                         tools:infoText="@sample/repository.json/repositories/updateAt" />
 
                     <io.github.tonnyl.moka.widget.HorizontalInfoGroup
                         android:id="@+id/repository_updated_on_group"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/fragment_content_padding"
                         app:infoText="@{DateUtils.getRelativeTimeSpanString(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.updatedAt.time : viewModel.userRepository.data.updatedAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
                         app:label="@string/repository_updated_on"
-                        tools:ignore="MissingConstraints"
                         tools:infoText="@sample/repository.json/repositories/updateAt" />
 
-                    <androidx.constraintlayout.helper.widget.Flow
-                        android:id="@+id/repository_time_info_flow"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:constraint_referenced_ids="repository_more_info_category_title,repository_created_on_group,repository_updated_on_group"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/repository_divider_between_readme_and_more_info" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
             </androidx.core.widget.NestedScrollView>
 
@@ -483,10 +402,10 @@
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/repository_bottom_app_bar"
-            style="@style/Widget.MaterialComponents.BottomAppBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?actionBarSize"
             android:layout_gravity="bottom"
+            app:contentInsetStart="@dimen/fragment_content_padding"
             app:fabAlignmentMode="end"
             app:fabAnimationMode="slide"
             app:fabCradleMargin="0dp"

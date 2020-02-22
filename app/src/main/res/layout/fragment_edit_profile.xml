@@ -19,23 +19,20 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ToolbarTheme"
+                android:theme="@style/AppTheme.Toolbar"
                 app:navigationIcon="@drawable/ic_close_24"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="@string/edit_profile_title"
-                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                app:titleTextColor="@color/colorControlNormal">
+                app:title="@string/edit_profile_title">
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/toolbar_done"
                     android:layout_width="@dimen/repository_list_star_button_width"
                     android:layout_height="@dimen/repository_list_star_button_height"
                     android:layout_gravity="end|center_vertical"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:background="@null"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/main_menu_search"
-                    android:src="@drawable/ic_done_24"
-                    android:tint="@color/colorControlNormal" />
+                    android:src="@drawable/ic_done_24" />
 
             </androidx.appcompat.widget.Toolbar>
 
@@ -286,7 +283,7 @@
                     app:boxCornerRadiusBottomStart="@dimen/edit_profile_input_corner_radius"
                     app:boxCornerRadiusTopEnd="@dimen/edit_profile_input_corner_radius"
                     app:boxCornerRadiusTopStart="@dimen/edit_profile_input_corner_radius"
-                    app:boxStrokeColor="@color/colorAccent"
+                    app:boxStrokeColor="@color/colorPrimary"
                     app:hintEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/fragment_edit_profile_location_icon"

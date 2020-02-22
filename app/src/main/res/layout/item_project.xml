@@ -19,7 +19,7 @@
         android:id="@+id/item_project_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
+        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:padding="@dimen/fragment_content_padding">
@@ -71,7 +71,7 @@
             android:paddingStart="0dp"
             android:paddingEnd="@dimen/fragment_content_padding"
             app:drawableStartCompat="@drawable/ic_access_time_black_18"
-            app:drawableTint="@color/colorTextSecondary"
+            app:drawableTint="?android:textColorSecondary"
             app:layout_constraintEnd_toStartOf="@id/item_project_created_by_avatar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_project_body_updated_at_space"

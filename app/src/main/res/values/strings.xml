@@ -411,10 +411,15 @@
     <string name="settings_maximum_size_of_image_cache_title">Maximum size of image cache</string>
     <string name="settings_clear_image_cache_title">Clear image cache</string>
 
+    <string name="settings_choose_theme_follow_system">Follow system</string>
+    <string name="settings_choose_theme_auto_battery">Set by Battery Saver</string>
+    <string name="settings_choose_theme_light">Light</string>
+    <string name="settings_choose_theme_dark">Dark</string>
+
     <string-array name="choose_theme_entries">
-        <item>Follow system</item>
-        <item>Light</item>
-        <item>Dark</item>
+        <item>@string/settings_choose_theme_auto_battery</item>
+        <item>@string/settings_choose_theme_light</item>
+        <item>@string/settings_choose_theme_dark</item>
     </string-array>
 
     <string-array name="sync_interval_entries">

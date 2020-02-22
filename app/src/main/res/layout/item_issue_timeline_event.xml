@@ -73,11 +73,11 @@
             style="@style/TextAppearance.MaterialComponents.Body2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_item_spacing"
+            android:paddingTop="@dimen/list_item_spacing"
             app:issueTimelineEventContentTextFuture="@{issueTimelineEvent}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/issue_timeline_event_author_avatar"
+            app:layout_constraintTop_toBottomOf="@id/issue_timeline_event_icon"
             tools:text="@sample/issue_timeline.json/event/body" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

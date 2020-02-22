@@ -27,7 +27,7 @@
         android:id="@+id/item_notification_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
+        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:onClick="@{() -> notificationActions.openNotification(notification)}"
@@ -52,11 +52,11 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_notification_repository_name"
-            style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.Moka.ListPrimary.Colored"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_notification_space_to_end_of_avatar"
             app:layout_constraintTop_toTopOf="parent"
@@ -65,9 +65,9 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_notification_caption"
-            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Moka.ListSecondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_notification_space_to_end_of_avatar"
             app:layout_constraintTop_toBottomOf="@id/item_notification_repository_name"
@@ -76,10 +76,9 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_notification_time"
-            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.Moka.ListSecondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_notification_space_to_end_of_avatar"
             app:layout_constraintTop_toBottomOf="@id/item_notification_caption"

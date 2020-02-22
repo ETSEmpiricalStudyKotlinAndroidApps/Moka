@@ -32,11 +32,9 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:theme="@style/ToolbarTheme"
+                android:theme="@style/AppTheme.Toolbar"
                 app:navigationIcon="@drawable/ic_close_24"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                app:titleTextColor="@color/colorTextPrimary"
                 tools:title="Filters">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -51,7 +49,7 @@
                     android:paddingStart="@dimen/regular_icon_padding"
                     android:paddingEnd="@dimen/regular_icon_padding"
                     android:text="@string/explore_filter_done"
-                    android:textColor="@color/colorTextPrimary" />
+                    android:textColor="@color/colorPrimary" />
 
             </androidx.appcompat.widget.Toolbar>
 

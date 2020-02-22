@@ -25,7 +25,7 @@
         android:id="@+id/item_language_layout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:onClick="@{() -> filterActions.actionSelect(language)}"
@@ -42,7 +42,6 @@
             android:drawableStart="@drawable/language_dot"
             android:drawablePadding="@dimen/fragment_content_padding"
             android:gravity="center_vertical"
-            android:textColor="@color/list_item_text_caption"
             app:repositoryLanguageDrawableColor="@{language.color}"
             app:textFuture="@{language.name}"
             tools:text="@sample/language.json/languages/name" />
@@ -55,7 +54,6 @@
             android:padding="8dp"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_done_24"
-            app:tint="@color/colorControlNormal"
             tools:visibility="visible" />
 
     </LinearLayout>

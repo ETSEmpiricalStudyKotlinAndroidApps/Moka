@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.repository
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -52,7 +53,7 @@ class RepositoryFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        binding.repositoryBottomAppBar.replaceMenu(R.menu.fragment_repository_menu)
+        binding.repositoryBottomAppBar.inflateMenu(R.menu.fragment_repository_menu)
 
         val repoObserver: Observer<Resource<Repository>> = Observer { repository ->
             repository.data?.topics?.let { topicList ->
@@ -90,7 +91,22 @@ class RepositoryFragment : Fragment() {
                         settings.setAppCacheEnabled(false)
                     }
 
-                    val html = resources.data ?: return@Observer
+                    val html =
+                        when (getResources().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                            Configuration.UI_MODE_NIGHT_YES -> {
+                                (resources.data ?: return@Observer).replaceFirst(
+                                    "github_light.css",
+                                    "github_dark.css"
+                                )
+                            }
+                            Configuration.UI_MODE_NIGHT_NO -> {
+                                resources.data ?: return@Observer
+                            }
+                            else -> {
+                                return@Observer
+                            }
+                        }
+
                     binding.repositoryReadmeContent.loadDataWithBaseURL(
                         "file:///android_asset/",
                         html,

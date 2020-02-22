@@ -16,6 +16,7 @@ import io.github.tonnyl.moka.databinding.ActivityMainBinding
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.ui.auth.AuthActivity
+import io.github.tonnyl.moka.util.updateForTheme
 
 class MainActivity : AppCompatActivity(), NavigationHost {
 
@@ -27,6 +28,8 @@ class MainActivity : AppCompatActivity(), NavigationHost {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        updateForTheme()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 

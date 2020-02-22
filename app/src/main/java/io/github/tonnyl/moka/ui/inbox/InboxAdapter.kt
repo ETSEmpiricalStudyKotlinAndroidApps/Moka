@@ -62,7 +62,7 @@ class InboxAdapter(
         private val reasonSpan = ForegroundColorSpan(
             ResourcesCompat.getColor(
                 binding.root.resources,
-                R.color.colorTextPrimary,
+                R.color.colorOnBackground,
                 null
             )
         )

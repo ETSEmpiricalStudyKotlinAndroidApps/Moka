@@ -34,13 +34,10 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ToolbarTheme"
+                android:theme="@style/AppTheme.Toolbar"
                 app:navigationIcon="@drawable/ic_arrow_back_24"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="@string/repository_projects"
-                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                app:titleTextColor="@color/colorControlNormal" />
+                app:title="@string/repository_projects" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

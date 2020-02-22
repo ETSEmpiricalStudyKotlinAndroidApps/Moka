@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.search.repositories
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +44,7 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
         return binding.root
     }
 
+    @SuppressLint("FragmentLiveDataObserve")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -56,11 +58,7 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
             viewModel.refresh(it)
         })
 
-        viewModel.initialLoadStatus.observe(this, Observer {
-
-        })
-
-        viewModel.data.observe(this, Observer {
+        viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = searchedRepositoryAdapter

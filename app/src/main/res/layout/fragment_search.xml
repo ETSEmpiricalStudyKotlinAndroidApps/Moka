@@ -23,8 +23,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ToolbarTheme"
+                android:theme="@style/AppTheme.Toolbar"
                 app:navigationIcon="@drawable/ic_arrow_back_24"
                 app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -45,19 +44,18 @@
                         android:inputType="text"
                         android:maxLines="1"
                         android:scrollHorizontally="true"
-                        android:textColor="@color/colorTextPrimary"
-                        android:textColorHint="@color/colorTextSecondary" />
+                        android:textColorHint="?android:textColorSecondary" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/toolbar_clear_input"
                         android:layout_width="@dimen/regular_icon_size"
                         android:layout_height="@dimen/regular_icon_size"
                         android:layout_gravity="center"
-                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:background="@null"
                         android:contentDescription="@string/main_menu_search"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
                         android:onClick="@{() -> toolbarInput.getText().clear()}"
                         android:src="@drawable/ic_close_24"
-                        android:tint="@color/colorControlNormal"
                         app:goneUnless="@{!TextUtils.isEmpty(toolbarInput.text)}" />
 
                 </LinearLayout>
@@ -66,18 +64,11 @@
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
-                style="@style/Widget.MaterialComponents.TabLayout.Colored"
+                style="@style/Widget.MaterialComponents.TabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:tabIndicator="@color/colorAccent"
-                app:tabIndicatorColor="@color/colorAccent"
-                app:tabIndicatorFullWidth="false"
-                app:tabIndicatorHeight="2dp"
-                app:tabInlineLabel="true"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/colorAccent"
-                app:tabTextAppearance="@style/SearchTabLabelTextAppearance"
-                app:tabTextColor="@color/colorControlNormal" />
+                app:tabTextAppearance="@style/SearchTabLabelTextAppearance" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

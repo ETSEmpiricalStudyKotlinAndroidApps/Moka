@@ -210,7 +210,7 @@ object NotificationsCenter {
             .setShowWhen(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_SOCIAL)
-            .setColor(ResourcesCompat.getColor(context.resources, R.color.colorAccent, null))
+            .setColor(ResourcesCompat.getColor(context.resources, R.color.colorPrimary, null))
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setGroup(NOTIFICATION_GROUP)
     }

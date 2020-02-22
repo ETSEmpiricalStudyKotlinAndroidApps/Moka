@@ -32,7 +32,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textColor="@color/colorTextPrimary"
+            android:textColor="@color/colorOnBackground"
             app:textFuture="@{@string/explore_trending_filter_time_span}"
             tools:text="@string/explore_trending_filter_time_span" />
 

@@ -1,0 +1,735 @@
+/*!
+ * @primer/css/product
+ * http://primer.style/css
+ *
+ * Released under MIT license. Copyright (c) 2019 GitHub Inc.
+ */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+    color: #ccc;
+    background-color: #121212
+}
+
+a {
+    color: #fce548 !important;
+}
+
+body::after, body::before {
+    content: ""
+    display: table;
+}
+
+body::after {
+    clear: both;
+}
+
+body > :first-child {
+    margin-top: 0 !important
+}
+
+body:last-child {
+    margin-bottom: 0px !important
+}
+
+body a:not([href]) {
+    color: inherit;
+    text-decoration: none
+}
+
+body .absent {
+    color: #c0392b
+}
+
+body .anchor {
+    float: left;
+    line-height: 1;
+    margin-left: -20px;
+    padding-right: 4px
+}
+
+body .anchor:focus {
+    outline: none
+}
+
+body blockquote, body dl, body ol, body p, body pre, body table, body ul {
+    margin-bottom: 16px;
+    margin-top: 0
+}
+
+body hr {
+    background-color: #c0c0c0;
+    border: 0;
+    height: .25em;
+    margin: 24px 0;
+    padding: 0
+}
+
+body blockquote {
+    border-left: .25em solid #a9abb6;
+    color: #a9abb6;
+    padding: 0 1em
+}
+
+body blockquote > :first-child {
+    margin-top: 0
+}
+
+body blockquote > :last-child {
+    margin-bottom: 0
+}
+
+body kbd {
+    background-color: #242528;
+    border: solid 1px #656d78;
+    border-bottom-color: #bbb;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 #656d78
+    color: #fff;
+    display: inline-block;
+    font-size: 11px;
+    line-height: 10px;
+    padding: 3px 5px;
+    vertical-align: middle
+}
+
+body .loweralpha {
+    list-style-type: lower-alpha
+}
+
+body h1, body h2, body h3, body h4, body h5, body h6 {
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    margin-top: 24px;
+    color: #fff
+}
+
+body h1 .octicon-link, body h2 .octicon-link, body h3 .octicon-link, body h4 .octicon-link, body h5 .octicon-link, body h6 .octicon-link {
+    color: #fff;
+    vertical-align: middle;
+    visibility: hidden
+}
+
+body h1:hover .anchor, body h2:hover .anchor, body h3:hover .anchor, body h4:hover .anchor, body h5:hover .anchor, body h6:hover .anchor {
+    text-decoration: none
+}
+
+body h1:hover .anchor .octicon-link, body h2:hover .anchor .octicon-link, body h3:hover .anchor .octicon-link, body h4:hover .anchor .octicon-link, body h5:hover .anchor .octicon-link, body h6:hover .anchor .octicon-link {
+    visibility: visible
+}
+
+body h1 tt, body h1 code, body h2 tt, body h2 code, body h3 tt, body h3 code, body h4 tt, body h4 code, body h5 tt, body h5 code, body h6 tt, body h6 code {
+    font-size: inherit
+}
+
+body h1 {
+    font-size: 2em
+}
+
+body h2 {
+    font-size: 1.5em
+}
+
+body h1, body h2 {
+    border-bottom: 1px solid #323336;
+    padding-bottom: .3em
+}
+
+.gh-header-meta {
+    padding-bottom: .3em;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #656d78
+}
+
+body h3 {
+    font-size: 1.25em
+}
+
+body h4 {
+    font-size: 1em
+}
+
+body h5 {
+    font-size: .875em
+}
+
+body h6 {
+    color: #a9abb6;
+    font-size: .85em
+}
+
+body ul, body ol {
+    padding-left: 2em
+}
+
+body ul.no-list, body ol.no-list {
+    list-style-type: none;
+    padding: 0
+}
+
+body ul ul, body ul ol, body ol ol, body ol ul {
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+body li {
+    word-wrap: break-all
+}
+
+body li > p {
+    margin-top: 16px
+}
+
+body li + li {
+    margin-top: .25em
+}
+
+body dl {
+    padding: 0
+}
+
+body dl dt {
+    font-size: 1em;
+    font-style: italic;
+    font-weight: 600;
+    margin-top: 16px;
+    padding: 0
+}
+
+body dl dd {
+    margin-bottom: 16px;
+    padding: 0 16px
+}
+
+body table {
+    display: block;
+    overflow: auto;
+    width: 100%
+}
+
+body table th {
+    font-weight: 600
+}
+
+body table td, body table th {
+    border: 1px solid #a9abb6;
+    padding: 6px 13px
+}
+
+body table tr {
+    background-color: #121212;
+    border-top: 1px solid #656d78
+}
+
+body table tr:nth-child(2n) {
+    background-color: #242528
+}
+
+body table img {
+    background-color: initial
+}
+
+body img {
+    background-color: #121212;
+    box-sizing: content-box;
+    max-width: 100%;
+}
+
+body img[align=right] {
+    padding-left: 20px
+}
+
+body img[align=left] {
+    padding-right: 20px
+}
+
+body .emoji {
+    background-color: initial;
+    max-width: none;
+    vertical-align: text-top
+}
+
+body span.frame {
+    display: block;
+    overflow: hidden
+}
+
+body span.frame > span {
+    border: 1px solid #a9abb6;
+    display: block;
+    float: left;
+    margin: 13px 0 0;
+    overflow: hidden;
+    padding: 7px;
+    width: auto
+}
+
+body span.frame span img {
+    display: block;
+    float: left
+}
+
+body span.frame span span {
+    clear: both;
+    color: #fbfbfc;
+    display: block;
+    padding: 5px 0 0
+}
+
+body span.align-center {
+    clear: both;
+    display: block;
+    overflow: hidden
+}
+
+body span.align-center > span {
+    display: block;
+    margin: 13px auto 0;
+    overflow: hidden;
+    text-align: center
+}
+
+body span.align-center span img {
+    margin: 0 auto;
+    text-align: center
+}
+
+body span.align-right {
+    clear: both;
+    display: block;
+    overflow: hidden
+}
+
+body span.align-right > span {
+    display: block;
+    margin: 13px 0 0;
+    overflow: hidden;
+    text-align: right
+}
+
+body span.align-right span img {
+    margin: 0;
+    text-align: right
+}
+
+body span.float-left {
+    display: block;
+    float: left;
+    margin-right: 13px;
+    overflow: hidden
+}
+
+body span.float-left span {
+    margin: 13px 0 0
+}
+
+body span.float-right {
+    display: block;
+    float: right;
+    margin-left: 13px;
+    overflow: hidden
+}
+
+body span.float-right > span {
+    display: block;
+    margin: 13px auto 0;
+    overflow: hidden;
+    text-align: right
+}
+
+body code, body tt {
+    background-color: rgba(36, 37, 40, 0.4);
+    border-radius: 3px;
+    font-size: 85%;
+    margin: 0;
+    padding: .2em .4em
+}
+
+body code br, body tt br {
+    display: none
+}
+
+body del code {
+    text-decoration: inherit
+}
+
+body pre {
+    word-wrap: normal
+}
+
+body pre > code {
+    background: transparent;
+    border: 0;
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+    white-space: pre;
+    word-break: normal
+}
+
+body .highlight {
+    margin-bottom: 16px
+}
+
+body .highlight pre {
+    margin-bottom: 0;
+    word-break: normal
+}
+
+body .highlight pre, body pre {
+    background-color: #242528;
+    border-radius: 3px;
+    font-size: 85%;
+    line-height: 1.45;
+    overflow: auto;
+    padding: 16px
+}
+
+body pre code, body pre tt {
+    background-color: transparent;
+    border: 0;
+    display: inline;
+    line-height: inherit;
+    margin: 0;
+    max-width: auto;
+    overflow: visible;
+    padding: 0;
+    word-wrap: normal
+}
+
+body .csv-data td, body .csv-data th {
+    font-size: 12px;
+    line-height: 1;
+    overflow: hidden;
+    padding: 5px;
+    text-align: left;
+    white-space: nowrap
+}
+
+body .csv-data .blob-num {
+    background: #656d78;
+    border: 0;
+    padding: 10px 8px 9px;
+    text-align: right
+}
+
+body .csv-data tr {
+    border-top: 0
+}
+
+body .csv-data th {
+    background: #242528;
+    border-top: 0;
+    font-weight: 600
+}
+
+body {
+    font-size: 15px
+}
+
+body blockquote {
+    margin-right: 0;
+    margin-left: 0
+}
+
+body code {
+    white-space: normal
+}
+
+body.email-format {
+    line-height: 1.5em !important
+}
+
+body.email-format div {
+    white-space: pre-wrap
+}
+
+body .email-hidden-reply {
+    display: none;
+    white-space: pre-wrap
+}
+
+body .email-hidden-reply.expanded {
+    display: block
+}
+
+body .email-quoted-reply, body .email-signature-reply {
+    border-left: 4px solid #a9abb6;
+    color: #c0c0c0;
+    margin-bottom: 10px;
+    padding: 0 10px
+}
+
+/*!
+ * GitHub Dark v0.3.0
+ * Copyright (c) 2012 - 2016 GitHub, Inc.
+ * Licensed under MIT (https://github.com/primer/github-syntax-theme-generator/blob/master/LICENSE)
+ */
+
+.pl-c /* comment, punctuation.definition.comment, string.comment */ {
+    color: #a9abb6
+}
+
+.pl-c1 /* constant, entity.name.constant, variable.other.constant, variable.language, support, meta.property-name, support.constant, support.variable, meta.module-reference, markup.raw, meta.diff.header */,
+.pl-s .pl-v /* string variable */ {
+    color: #0086b3
+}
+
+.pl-e /* entity */,
+.pl-en /* entity.name */ {
+    color: #795da3
+}
+
+.pl-smi /* variable.parameter.function, storage.modifier.package, storage.modifier.import, storage.type.java, variable.other *//* variable.parameter.function, storage.modifier.package, storage.modifier.import, storage.type.java, variable.other */,
+.pl-s .pl-s1 /* string source */ {
+    color: #fbfbfc
+}
+
+.pl-ent /* entity.name.tag *//* entity.name.tag */  {
+    color: #388E3C
+}
+
+.pl-k /* keyword, storage, storage.type *//* keyword, storage, storage.type */ {
+    color: #a71d5d
+}
+
+.pl-s /* string */,
+.pl-pds /* punctuation.definition.string, source.regexp, string.regexp.character-class */,
+.pl-s .pl-pse .pl-s1 /* string punctuation.section.embedded source */,
+.pl-sr /* string.regexp */,
+.pl-sr .pl-cce /* string.regexp constant.character.escape */,
+.pl-sr .pl-sre /* string.regexp source.ruby.embedded */,
+.pl-sr .pl-sra /* string.regexp string.regexp.arbitrary-repitition */ {
+    color: #1976D2
+}
+
+.pl-v /* variable */,
+.pl-smw /* sublimelinter.mark.warning */ {
+    color: #ed6a43
+}
+
+.pl-id {
+    color: #b52a1d
+}
+
+.pl-bu /* invalid.broken, invalid.deprecated, invalid.unimplemented, message.error, brackethighlighter.unmatched, sublimelinter.mark.error */ {
+    color: #e63525
+}
+
+.pl-ii /* invalid.illegal */ {
+    background-color: #b52a1d;
+    color: #242528
+}
+
+.pl-c2 /* carriage-return */ {
+    background-color: #d73a49;
+    color: #242528
+}
+
+.pl-c2:before /* carriage-return */                 {
+    content: "^M"
+}
+
+.pl-sr .pl-cce /* string.regexp constant.character.escape */ {
+    color: #388E3C;
+    font-weight: 700
+}
+
+.pl-ml /* markup.list */ {
+    color: #7f8c8d
+}
+
+.pl-mh /* markup.heading */,
+.pl-mh .pl-en /* markup.heading entity.name */,
+.pl-ms /* meta.separator */ {
+    color: #1976D2;
+    font-weight: 700
+}
+
+.pl-mq /* markup.quote */ {
+    color: #0097A7
+}
+
+.pl-mi /* markup.italic */ {
+    color: #fbfbfc;
+    font-style: italic
+}
+
+.pl-mb /* markup.bold */ {
+    color: #fbfbfc;
+    font-weight: 700
+}
+
+.pl-md /* markup.deleted, meta.diff.header.from-file */  {
+    background-color: #ffecec;
+    color: #bd2c00
+}
+
+.pl-mi1 /* markup.inserted, meta.diff.header.to-file */ {
+    background-color: #eaffea;
+    color: #55a532
+}
+
+.pl-mc /* markup.changed, punctuation.definition.changed */ {
+    color: #ef9700;
+    background-color: #ffe3b4
+}
+
+.pl-mi2 /* markup.ignored, markup.untracked */ {
+    background-color: #808080;
+    color: #242528
+}
+
+.pl-mdr /* meta.diff.range */ {
+    font-weight: 700;
+    color: #795da3
+}
+
+.pl-ba /* brackethighlighter.tag, brackethighlighter.curly, brackethighlighter.round, brackethighlighter.square, brackethighlighter.angle, brackethighlighter.quote */ {
+    color: #e1e1e1
+}
+
+.pl-sg /* sublimelinter.gutter-mark */ {
+    color: #6e7880
+}
+
+.pl-corl /* constant.other.reference.link, string.other.link */ {
+    color: #3c66e2;
+    text-decoration: underline
+}
+
+.pl-mo /* meta.output */ {
+    color: #1976D2
+}
+
+kbd {
+    background-color: #242528;
+    border: solid 1px #586b78;
+    border-bottom-color: #556578;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 #656d78;
+    color: #555;
+    display: inline-block;
+    font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+    line-height: 10px;
+    padding: 3px 5px;
+    vertical-align: middle
+}
+
+.badmono {
+    font-family: sans-serif;
+    font-weight: 600
+}
+
+.task-list-item {
+    list-style-type: none
+}
+
+.task-list-item label {
+    font-weight: 400
+}
+
+.task-list-item.enabled label {
+    cursor: pointer
+}
+
+.task-list-item+.task-list-item {
+    margin-top: 3px
+}
+
+.task-list-item .handle {
+    display: none
+}
+
+.task-list-item-checkbox {
+    margin: 0 .2em .25em -1.6em;
+    vertical-align: middle
+}
+
+.reorderable-task-lists .markdown-body .contains-task-list {
+    padding: 0
+}
+
+.reorderable-task-lists .markdown-body li:not(.task-list-item) {
+    margin-left: 26px
+}
+
+.reorderable-task-lists .markdown-body ol:not(.contains-task-list) li, .reorderable-task-lists .markdown-body ul:not(.contains-task-list) li {
+    margin-left: 0
+}
+
+.reorderable-task-lists .markdown-body li p {
+    margin-top: 0
+}
+
+.reorderable-task-lists .markdown-body .task-list-item {
+    border: 1px solid transparent;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 42px;
+    padding-right: 15px
+}
+
+.reorderable-task-lists .markdown-body .task-list-item+.task-list-item {
+    margin-top: 0
+}
+
+.reorderable-task-lists .markdown-body .task-list-item .contains-task-list {
+    padding-top: 4px
+}
+
+.reorderable-task-lists .markdown-body .task-list-item .handle {
+    display: block;
+    float: left;
+    margin-left: -43px;
+    opacity: 0;
+    padding: 2px 0 0 2px;
+    width: 20px
+}
+
+.reorderable-task-lists .markdown-body .task-list-item .drag-handle {
+    fill: #333
+}
+
+.reorderable-task-lists .markdown-body .task-list-item.hovered > .handle {
+    opacity: 1
+}
+
+.reorderable-task-lists .markdown-body .task-list-item.is-dragging {
+    opacity: 0
+}
+
+.reorderable-task-lists .markdown-body .task-list-item.hovered {
+    background: #fafafa;
+    border-top-color: #ededed;
+    border-bottom-color: #ededed
+}
+
+.reorderable-task-lists .markdown-body .task-list-item.hovered>.handle {
+    opacity: 1
+}
+
+.reorderable-task-lists .markdown-body .task-list-item.is-dragging {
+    opacity: 0
+}
+
+.reorderable-task-lists .markdown-body .task-list-item.is-ghost {
+    border-right-color: #ededed;
+    border-left-color: #ededed
+}
+
+.review-comment-contents .markdown-body .task-list-item {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 42px
+}
+
+.review-comment-contents .markdown-body .task-list-item.hovered {
+    border-left-color: #ededed
+}

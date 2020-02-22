@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="AlwaysShowAction,AppCompatResource">
 
     <item
         android:id="@+id/repository_menu_code"
         android:icon="@drawable/ic_code_24"
-        android:orderInCategory="98"
         android:title="Code"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/repository_menu_watch"
         android:icon="@drawable/ic_eye_24"
-        android:orderInCategory="99"
         android:title="Watch"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/repository_menu_fork"
         android:icon="@drawable/ic_code_fork_24"
-        android:orderInCategory="100"
         android:title="Fork"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>

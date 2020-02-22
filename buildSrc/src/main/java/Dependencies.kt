@@ -4,7 +4,7 @@ object Versions {
     val targetSdk = 29
     val minSdk = 23
 
-    val androidGradle = "4.0.0-alpha09"
+    val androidGradle = "4.0.0-beta01"
     val gmsGoogleServiceGradle = "4.3.3"
     val fabricToolsGradle = "1.31.2"
     val kotlin = "1.3.61"
@@ -14,7 +14,7 @@ object Versions {
     val coordinatorLayout = "1.1.0"
     val appcompat = "1.2.0-alpha02"
     val drawerLayout = "1.1.0-alpha03"
-    val material = "1.2.0-alpha04"
+    val material = "1.2.0-alpha05"
     val viewpager2 = "1.0.0"
     val browser = "1.3.0-alpha01"
     val recyclerView = "1.2.0-alpha01"

@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.settings
 
 import android.os.Bundle
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.tonnyl.moka.MokaApp
@@ -13,6 +14,10 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat(),
         addPreferencesFromResource(R.xml.settings_screen)
 
         findPreference<Preference>("key_enable_notifications")?.onPreferenceChangeListener = this
+        findPreference<ListPreference>("key_choose_theme")?.let { preference ->
+            preference.onPreferenceChangeListener = this@SettingsPreferenceFragment
+            preference.value = (requireContext().applicationContext as MokaApp).theme.value
+        }
     }
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
@@ -25,6 +30,11 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat(),
                         newValue
                     )
                 }
+            }
+            "key_choose_theme" -> {
+                (requireContext().applicationContext as MokaApp).theme.postValue(
+                    newValue as String
+                )
             }
         }
 

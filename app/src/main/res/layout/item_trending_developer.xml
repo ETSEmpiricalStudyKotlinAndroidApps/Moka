@@ -28,7 +28,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
+        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:onClick="@{() -> actions.viewRepository(developer)}"
@@ -55,15 +55,12 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_trending_developer_name"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/fragment_content_padding"
             android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
             android:maxLines="1"
-            android:textColor="@color/colorTextAccent"
-            android:textSize="@dimen/list_item_title_text"
+            android:textAppearance="@style/TextAppearance.Moka.ListPrimary.Colored"
             app:foregroundColorSpan="@{span}"
             app:layout_constraintEnd_toStartOf="@id/item_trending_developer_rank"
             app:layout_constraintStart_toEndOf="@id/item_trending_developer_space"
@@ -74,12 +71,12 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_trending_developer_rank"
-            style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@drawable/bg_trending_rank"
             android:gravity="center"
-            android:textColor="@android:color/white"
+            android:textAppearance="@style/TextAppearance.Moka.ListSecondary"
+            android:textColor="@color/colorOnPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/item_trending_developer_avatar"
             app:trendingRank="@{rank}"
@@ -87,13 +84,10 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_trending_developer_name_description"
-            style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/fragment_content_padding_half"
-            android:gravity="center_vertical"
-            android:textColor="@color/colorTextSecondary"
-            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.Moka.ListSecondary"
             app:foregroundColorSpan="@{span}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_trending_developer_space"

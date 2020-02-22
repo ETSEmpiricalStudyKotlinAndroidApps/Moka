@@ -92,22 +92,7 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
         }
         is IssueComment -> {
             if (data.body.isEmpty()) {
-                val text = context.getString(R.string.issue_timeline_no_description_provided)
-                val spannable = SpannableString(text)
-                spannable.setSpan(
-                    ForegroundColorSpan(
-                        ResourcesCompat.getColor(
-                            resources,
-                            R.color.colorTextSecondary,
-                            null
-                        )
-                    ),
-                    0,
-                    text.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-
-                spannable
+                context.getString(R.string.issue_timeline_no_description_provided)
             } else {
                 data.body
             }

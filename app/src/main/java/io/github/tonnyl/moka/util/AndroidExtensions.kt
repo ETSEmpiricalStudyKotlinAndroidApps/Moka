@@ -2,8 +2,13 @@ package io.github.tonnyl.moka.util
 
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.os.Build
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.Observer
 import com.google.gson.Gson
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.ui.auth.Authenticator
 
@@ -45,4 +50,27 @@ suspend fun AccountManager.moveAccountToFirstPosition(account: Account) {
     removeAccountExplicitly(account)
 
     insertNewAccount(token, Gson().fromJson(userString, AuthenticatedUser::class.java))
+}
+
+fun AppCompatActivity.updateForTheme() {
+    (applicationContext as MokaApp).theme.observe(this, Observer { value ->
+        delegate.localNightMode = when (value) {
+            "0" -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                } else {
+                    AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                }
+            }
+            "1" -> {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+            "2" -> {
+                AppCompatDelegate.MODE_NIGHT_YES
+            }
+            else -> {
+                throw IllegalArgumentException("invalid theme value: $value")
+            }
+        }
+    })
 }

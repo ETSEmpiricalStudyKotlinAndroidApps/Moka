@@ -23,6 +23,12 @@ class MokaApp : Application() {
     }
 
     val loginAccounts = MutableLiveData<List<Triple<Account, String, AuthenticatedUser>>>()
+    val theme by lazy(LazyThreadSafetyMode.NONE) {
+        MutableLiveData<String>(
+            PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                .getString("key_choose_theme", "0")
+        )
+    }
 
     companion object {
         const val PER_PAGE = 16

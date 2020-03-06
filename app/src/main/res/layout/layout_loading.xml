@@ -13,7 +13,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:goneUnless="@{goneUnless}">
+        app:goneUnless="@{goneUnless}"
+        app:paddingBottomSystemWindowInsets="@{true}">
 
         <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/loading_progress"

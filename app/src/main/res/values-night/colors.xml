@@ -18,4 +18,11 @@
     <color name="colorError">#CF6679</color>
     <color name="colorOnError">#000000</color>
 
+    <!-- Scrim colors -->
+    <color name="system_ui_scrim_light">#2EFFFFFF</color> <!-- 18% white -->
+    <color name="system_ui_scrim_black">#B3000000</color> <!-- 70% black -->
+
+    <!-- In dark mode without light status bar we can use transparent -->
+    <color name="status_bar_scrim">@android:color/transparent</color>
+
 </resources>

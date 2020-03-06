@@ -24,7 +24,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/about_preference_fragment"
             android:name="io.github.tonnyl.moka.ui.settings.SettingsPreferenceFragment"
             android:layout_width="match_parent"

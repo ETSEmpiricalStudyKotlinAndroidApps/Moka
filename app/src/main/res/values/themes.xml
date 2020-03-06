@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--The color displayed most frequently across your app’s screens and components.-->
         <item name="colorPrimary">@color/colorPrimary</item>
+        <!--The default color of status bar.-->
+        <item name="colorPrimaryDark">@color/colorBackground</item>
         <!--A tonal variation of the primary color.-->
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
         <!--A color that passes accessibility guidelines for text/iconography when drawn on top of the primary color.-->
@@ -31,11 +33,14 @@
         <!--A color that passes accessibility guidelines for text/iconography when drawn on top of the error color.-->
         <item name="colorOnError">@color/colorOnError</item>
 
-    </style>
+        <!-- Window decor -->
+        <item name="android:windowLightStatusBar">@bool/use_light_status</item>
+        <item name="android:statusBarColor">@color/status_bar_scrim</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">
+            @bool/use_light_navigation
+        </item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.Toolbar" parent="ThemeOverlay.MaterialComponents.ActionBar.Surface">

@@ -15,7 +15,6 @@
         android:id="@+id/fragment_explore_filter_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_trending_filter"
         android:orientation="vertical"
         android:theme="@style/AppTheme">
 

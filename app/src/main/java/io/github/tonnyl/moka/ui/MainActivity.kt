@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,6 +17,8 @@ import io.github.tonnyl.moka.databinding.ActivityMainBinding
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.ui.auth.AuthActivity
+import io.github.tonnyl.moka.util.HeightTopWindowInsetsListener
+import io.github.tonnyl.moka.util.NoopWindowInsetsListener
 import io.github.tonnyl.moka.util.updateForTheme
 
 class MainActivity : AppCompatActivity(), NavigationHost {
@@ -34,6 +37,12 @@ class MainActivity : AppCompatActivity(), NavigationHost {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+
+        binding.contentContainer.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        binding.contentContainer.setOnApplyWindowInsetsListener(NoopWindowInsetsListener)
+
+        binding.statusBarScrim.setOnApplyWindowInsetsListener(HeightTopWindowInsetsListener)
 
         // add a default argument to nav controller.
         val navHostFragment = supportFragmentManager

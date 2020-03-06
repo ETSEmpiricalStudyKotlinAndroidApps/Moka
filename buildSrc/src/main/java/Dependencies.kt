@@ -7,9 +7,9 @@ object Versions {
     val androidGradle = "4.0.0-beta01"
     val gmsGoogleServiceGradle = "4.3.3"
     val fabricToolsGradle = "1.31.2"
-    val kotlin = "1.3.61"
+    val kotlin = "1.3.70"
     val coroutines = "1.3.3"
-    val fragment = "1.2.1"
+    val fragment = "1.2.2"
     val constraintLayout = "2.0.0-beta4"
     val coordinatorLayout = "1.1.0"
     val appcompat = "1.2.0-alpha02"
@@ -20,28 +20,29 @@ object Versions {
     val recyclerView = "1.2.0-alpha01"
     val recyclerViewSelection = "1.1.0-rc01"
     val lifecycle = "2.2.0"
-    val navigation = "2.3.0-alpha01"
+    val navigation = "2.3.0-alpha02"
     val paging = "2.1.1"
-    val workManager = "2.3.1"
+    val workManager = "2.3.2"
     val room = "2.1.0-alpha04"
     val preference = "1.1.0"
     val swipeRefreshLayout = "1.1.0-alpha03"
     val glide = "4.11.0"
-    val lottie = "3.3.1"
-    val retrofit = "2.7.1"
-    val okhttpLoggingInterceptor = "4.3.1"
+    val lottie = "3.4.0"
+    val retrofit = "2.7.2"
+    val okhttpLoggingInterceptor = "4.4.0"
     val apollo = "1.3.2"
     val commonMark = "0.13.1"
     val jsoup = "1.12.1"
     val timber = "4.7.1"
     val firebaseCore = "17.2.2"
     val crashlytics = "2.10.1"
+    val insetter = "0.2.1"
     val junit = "4.13"
-    val androidJunit = "1.1.2-alpha03"
-    val androidTestCore = "1.3.0-alpha03"
-    val androidTestRunner = "1.3.0-alpha03"
-    val androidTestRules = "1.3.0-alpha03"
-    val espresso = "3.3.0-alpha03"
+    val androidJunit = "1.1.2-alpha04"
+    val androidTestCore = "1.3.0-alpha04"
+    val androidTestRunner = "1.3.0-alpha04"
+    val androidTestRules = "1.3.0-alpha04"
+    val espresso = "3.3.0-alpha04"
     val mockito = "3.2.4"
     val hamcrest = "1.3"
 
@@ -188,6 +189,13 @@ object Deps {
             "com.atlassian.commonmark:commonmark-ext-heading-anchor:${Versions.commonMark}"
         val yamlFrontMatter =
             "com.atlassian.commonmark:commonmark-ext-yaml-front-matter:${Versions.commonMark}"
+
+    }
+
+    object Insetter {
+
+        val dbx = "dev.chrisbanes:insetter-dbx:${Versions.insetter}"
+        val ktx = "dev.chrisbanes:insetter-ktx:${Versions.insetter}"
 
     }
 

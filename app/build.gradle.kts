@@ -167,6 +167,9 @@ dependencies {
     implementation(Deps.CommonMark.headingAnchor)
     implementation(Deps.CommonMark.yamlFrontMatter)
 
+    implementation(Deps.Insetter.dbx)
+    implementation(Deps.Insetter.ktx)
+
     implementation(Deps.jsoup)
     implementation(Deps.timber)
 

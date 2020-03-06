@@ -19,6 +19,12 @@
 
     <color name="colorAccentScrim">#1F661FFF</color>
 
+    <!-- Scrim colors -->
+    <color name="system_ui_scrim_light">#B3FFFFFF</color> <!-- 70% white -->
+    <color name="system_ui_scrim_black">#40000000</color> <!-- 25% black -->
+
+    <color name="status_bar_scrim">@color/system_ui_scrim_light</color>
+
     <color name="indigo">#4768FD</color>
     <color name="teal">#31E7B6</color>
     <color name="lightBlue">#27E5FD</color>

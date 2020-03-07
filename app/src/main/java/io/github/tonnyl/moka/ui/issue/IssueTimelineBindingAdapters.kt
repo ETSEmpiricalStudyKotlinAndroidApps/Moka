@@ -53,13 +53,6 @@ fun AppCompatTextView.issueTimelineEventContentTextFuture(
                 event.milestoneTitle
             ).toHtmlInLegacyMode()
         }
-        is IssueComment -> {
-            if (event.body.isEmpty()) {
-                context.getString(R.string.issue_timeline_no_description_provided)
-            } else {
-                event.body
-            }
-        }
         is LabeledEvent -> {
             val first = context.getString(R.string.issue_timeline_labeled_event_labeled)
             val second = context.getString(R.string.issue_timeline_label)

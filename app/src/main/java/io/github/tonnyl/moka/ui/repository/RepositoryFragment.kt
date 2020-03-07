@@ -1,11 +1,9 @@
 package io.github.tonnyl.moka.ui.repository
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebSettings
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -74,46 +72,10 @@ class RepositoryFragment : Fragment() {
         viewModel.userRepository.observe(viewLifecycleOwner, repoObserver)
         viewModel.organizationsRepository.observe(viewLifecycleOwner, repoObserver)
 
-        viewModel.readmeFile.observe(viewLifecycleOwner, Observer { resources ->
+        viewModel.readmeHtml.observe(viewLifecycleOwner, Observer { resources ->
             when (resources.status) {
                 Status.SUCCESS -> {
-                    binding.repositoryReadmeContent.apply {
-                        isScrollbarFadingEnabled = true
-                        settings.javaScriptEnabled = false
-                        settings.builtInZoomControls = false
-                        settings.cacheMode = WebSettings.LOAD_NO_CACHE
-                        settings.domStorageEnabled = true
-                        settings.setSupportZoom(false)
-                        settings.builtInZoomControls = false
-                        settings.displayZoomControls = false
-                        isVerticalScrollBarEnabled = false
-                        isHorizontalScrollBarEnabled = false
-                        settings.setAppCacheEnabled(false)
-                    }
-
-                    val html =
-                        when (getResources().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                            Configuration.UI_MODE_NIGHT_YES -> {
-                                (resources.data ?: return@Observer).replaceFirst(
-                                    "github_light.css",
-                                    "github_dark.css"
-                                )
-                            }
-                            Configuration.UI_MODE_NIGHT_NO -> {
-                                resources.data ?: return@Observer
-                            }
-                            else -> {
-                                return@Observer
-                            }
-                        }
-
-                    binding.repositoryReadmeContent.loadDataWithBaseURL(
-                        "file:///android_asset/",
-                        html,
-                        "text/html",
-                        "UTF-8",
-                        null
-                    )
+                    binding.repositoryReadmeContent.loadData(resources.data ?: return@Observer)
                 }
                 Status.ERROR -> {
 

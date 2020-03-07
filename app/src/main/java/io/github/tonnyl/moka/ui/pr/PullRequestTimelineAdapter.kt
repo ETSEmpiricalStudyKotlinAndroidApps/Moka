@@ -76,13 +76,13 @@ class PullRequestTimelineAdapter(
         val item = getItem(position - 1) ?: return
         when (viewType) {
             R.layout.item_pr_timeline_comment -> {
-                (holder as CommentViewHolder).bindTo(item)
+                (holder as CommentViewHolder).bindTo(item, lifecycleOwner)
             }
             R.layout.item_pr_timeline_thread -> {
                 (holder as ThreadViewHolder).bindTo(item)
             }
             R.layout.item_pr_timeline_event -> {
-                (holder as EventViewHolder).bindTo(item)
+                (holder as EventViewHolder).bindTo(item, lifecycleOwner)
             }
             else -> {
                 throw IllegalArgumentException("unsupported view type: $viewType")
@@ -115,9 +115,13 @@ class PullRequestTimelineAdapter(
         private val binding: ItemPrTimelineCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: PullRequestTimelineItem) {
+        fun bindTo(
+            data: PullRequestTimelineItem,
+            lifecycleOwner: LifecycleOwner
+        ) {
             binding.run {
                 comment = data
+                this.lifecycleOwner = lifecycleOwner
                 executePendingBindings()
             }
         }
@@ -128,9 +132,13 @@ class PullRequestTimelineAdapter(
         private val binding: ItemPrTimelineEventBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: PullRequestTimelineItem) {
+        fun bindTo(
+            data: PullRequestTimelineItem,
+            lifecycleOwner: LifecycleOwner
+        ) {
             binding.run {
                 prTimelineEvent = data
+                this.lifecycleOwner = lifecycleOwner
                 executePendingBindings()
             }
         }

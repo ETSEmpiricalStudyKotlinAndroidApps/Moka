@@ -80,7 +80,9 @@ class IssueViewModel(
 
                 val data = response.data()?.repository?.issue?.toNonNullIssue()
 
-                _issueLiveData.postValue(Resource.success(data?.transformToIssueCommentEvent()))
+                _issueLiveData.postValue(
+                    Resource.success(data?.transformToIssueCommentEvent(owner, name))
+                )
             } catch (e: Exception) {
                 Timber.e(e)
 

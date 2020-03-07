@@ -1,16 +1,22 @@
 package io.github.tonnyl.moka.data.extension
 
+import androidx.annotation.WorkerThread
 import io.github.tonnyl.moka.data.Issue
 import io.github.tonnyl.moka.data.PullRequest
 import io.github.tonnyl.moka.data.item.IssueComment
+import io.github.tonnyl.moka.util.HtmlHandler
 import java.util.*
 
-fun Issue.transformToIssueCommentEvent(): IssueComment {
+@WorkerThread
+fun Issue.transformToIssueCommentEvent(
+    login: String,
+    repoName: String
+): IssueComment {
     return IssueComment(
         author,
         authorAssociation,
         createdAt,
-        body,
+        HtmlHandler.toHtml(body, login, repoName),
         UUID.randomUUID().toString(),
         editor,
         false,
@@ -22,12 +28,16 @@ fun Issue.transformToIssueCommentEvent(): IssueComment {
     )
 }
 
-fun PullRequest.transformToPullRequestIssueComment(): IssueComment {
+@WorkerThread
+fun PullRequest.transformToPullRequestIssueComment(
+    login: String,
+    repoName: String
+): IssueComment {
     return IssueComment(
         author,
         authorAssociation,
         createdAt,
-        body,
+        HtmlHandler.toHtml(body, login, repoName),
         UUID.randomUUID().toString(),
         editor,
         false,

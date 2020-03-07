@@ -244,7 +244,7 @@ class IssueTimelineDataSource(
                 node.fragments.demilestonedEventFragment.toNonNullDemilestonedEvent()
             }
             node.fragments.issueCommentFragment != null -> {
-                node.fragments.issueCommentFragment.toNonNullIssueComment()
+                node.fragments.issueCommentFragment.toNonNullIssueComment(owner, name)
             }
             node.fragments.labeledEventFragment != null -> {
                 node.fragments.labeledEventFragment.toNonNullLabeledEvent()

@@ -76,10 +76,10 @@ class IssueTimelineAdapter(
         val item = getItem(position - 1) ?: return
         when (viewType) {
             R.layout.item_issue_timeline_comment -> {
-                (holder as CommentViewHolder).bindTo(item as IssueComment)
+                (holder as CommentViewHolder).bindTo(item as IssueComment, lifecycleOwner)
             }
             R.layout.item_issue_timeline_event -> {
-                (holder as EventViewHolder).bindTo(item)
+                (holder as EventViewHolder).bindTo(item, lifecycleOwner)
             }
         }
     }
@@ -105,9 +105,13 @@ class IssueTimelineAdapter(
         private val binding: ItemIssueTimelineEventBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: IssueTimelineItem) {
+        fun bindTo(
+            data: IssueTimelineItem,
+            lifecycleOwner: LifecycleOwner
+        ) {
             binding.run {
                 issueTimelineEvent = data
+                this.lifecycleOwner = lifecycleOwner
                 executePendingBindings()
             }
         }
@@ -118,9 +122,13 @@ class IssueTimelineAdapter(
         private val binding: ItemIssueTimelineCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: IssueComment) {
+        fun bindTo(
+            data: IssueComment,
+            lifecycleOwner: LifecycleOwner
+        ) {
             binding.run {
                 comment = data
+                this.lifecycleOwner = lifecycleOwner
                 executePendingBindings()
             }
         }

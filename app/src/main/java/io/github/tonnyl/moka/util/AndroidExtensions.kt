@@ -2,6 +2,8 @@ package io.github.tonnyl.moka.util
 
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -74,3 +76,6 @@ fun AppCompatActivity.updateForTheme() {
         }
     })
 }
+
+val Resources.isDarkModeOn: Boolean
+    get() = (configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) == Configuration.UI_MODE_NIGHT_YES

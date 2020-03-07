@@ -265,7 +265,7 @@ class PullRequestTimelineDataSource(
                 node.fragments.headRefRestoredEventFragment.toNonNullHeadRefRestoredEvent()
             }
             node.fragments.issueCommentFragment != null -> {
-                node.fragments.issueCommentFragment.toNonNullIssueComment()
+                node.fragments.issueCommentFragment.toNonNullIssueComment(owner, name)
             }
             node.fragments.labeledEventFragment != null -> {
                 node.fragments.labeledEventFragment.toNonNullLabeledEvent()
@@ -288,7 +288,7 @@ class PullRequestTimelineDataSource(
             node.fragments.movedColumnsInProjectEventFragment != null -> {
                 node.fragments.movedColumnsInProjectEventFragment.toNonNullMovedColumnsInProjectEvent()
             }
-            node.fragments.pinnedEventFragment != null ->{
+            node.fragments.pinnedEventFragment != null -> {
                 node.fragments.pinnedEventFragment.toNonNullPinnedEvent()
             }
             node.fragments.pullRequestCommitFragment != null -> {
@@ -300,7 +300,7 @@ class PullRequestTimelineDataSource(
             node.fragments.pullRequestReviewFragment != null -> {
                 node.fragments.pullRequestReviewFragment.toNonNullPullRequestReview()
             }
-            node.fragments.pullRequestReviewThreadFragment != null ->{
+            node.fragments.pullRequestReviewThreadFragment != null -> {
                 node.fragments.pullRequestReviewThreadFragment.toNonNullPullRequestReviewThread()
             }
             // node.fragments.pullRequestRevisionMarkerFragment != null -> {

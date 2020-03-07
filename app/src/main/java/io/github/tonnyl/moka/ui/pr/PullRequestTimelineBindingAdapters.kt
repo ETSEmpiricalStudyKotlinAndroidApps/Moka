@@ -90,13 +90,6 @@ fun AppCompatTextView.prTimelineItemContentTextFuture(
         is HeadRefRestoredEvent -> {
             context.getString(R.string.pull_request_restore_branch, data.pullRequestHeadRefName)
         }
-        is IssueComment -> {
-            if (data.body.isEmpty()) {
-                context.getString(R.string.issue_timeline_no_description_provided)
-            } else {
-                data.body
-            }
-        }
         is LockedEvent -> {
             context.getString(
                 R.string.issue_timeline_locked_event_locked_as,

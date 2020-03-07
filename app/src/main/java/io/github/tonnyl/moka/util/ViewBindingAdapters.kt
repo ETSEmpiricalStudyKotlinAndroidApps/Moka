@@ -16,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.GlideLoader
 import io.github.tonnyl.moka.type.CommentAuthorAssociation
+import io.github.tonnyl.moka.widget.ThemedWebView
 
 // ===== View start =====
 @BindingAdapter("invisibleUnless")
@@ -163,4 +164,11 @@ fun SwipeRefreshLayout.onRefresh(action: (() -> Unit)?) {
 fun RecyclerView.itemHasFixedSize(hasFixedSize: Boolean) {
     setHasFixedSize(hasFixedSize)
 }
+
 // ===== RecyclerView end =====
+@BindingAdapter("htmlContent")
+fun ThemedWebView.htmlContent(
+    htmlContent: String?
+) {
+    loadData(htmlContent ?: "")
+}

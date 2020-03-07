@@ -25,18 +25,11 @@ import io.github.tonnyl.moka.type.RemoveStarInput
 import io.github.tonnyl.moka.type.UnfollowUserInput
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.util.HtmlHandler
 import io.github.tonnyl.moka.util.execute
-import io.github.tonnyl.moka.util.wrapWithHtmlTemplate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.commonmark.ext.autolink.AutolinkExtension
-import org.commonmark.ext.front.matter.YamlFrontMatterExtension
-import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
-import org.commonmark.ext.gfm.tables.TablesExtension
-import org.commonmark.ext.ins.InsExtension
-import org.commonmark.parser.Parser
-import org.commonmark.renderer.html.HtmlRenderer
 import timber.log.Timber
 import java.util.*
 
@@ -54,9 +47,9 @@ class RepositoryViewModel(
     val organizationsRepository: LiveData<Resource<Repository>>
         get() = _organizationsRepository
 
-    private val _readmeFile = MutableLiveData<Resource<String>>()
-    val readmeFile: LiveData<Resource<String>>
-        get() = _readmeFile
+    private val _readmeHtml = MutableLiveData<Resource<String>>()
+    val readmeHtml: LiveData<Resource<String>>
+        get() = _readmeHtml
 
     private val _starState = MutableLiveData<Resource<Boolean?>>()
     val starState: LiveData<Resource<Boolean?>>
@@ -93,7 +86,7 @@ class RepositoryViewModel(
 
     private fun updateBranchName(branchName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _readmeFile.postValue(Resource.loading(null))
+            _readmeHtml.postValue(Resource.loading(null))
 
             try {
                 val response = runBlocking {
@@ -136,46 +129,32 @@ class RepositoryViewModel(
                     }
 
                     if (fileContentResponse.hasErrors()) {
-                        _readmeFile.postValue(
+                        _readmeHtml.postValue(
                             Resource.error(
                                 fileContentResponse.errors().firstOrNull()?.message(),
                                 null
                             )
                         )
                     } else {
-                        val extensions = listOf(
-                            TablesExtension.create(),
-                            AutolinkExtension.create(),
-                            StrikethroughExtension.create(),
-                            InsExtension.create(),
-                            YamlFrontMatterExtension.create()
-                        )
-                        val parser = Parser.builder()
-                            .extensions(extensions)
-                            .build()
-                        val document = parser.parse(
+                        val html =
                             fileContentResponse.data()?.repository?.object_?.fragments?.blob?.text
-                        )
-                        val renderer = HtmlRenderer.builder()
-                            .extensions(extensions)
-                            .escapeHtml(false)
-                            .build()
-                        val html = wrapWithHtmlTemplate(
-                            renderer.render(document),
-                            login,
-                            repositoryName,
-                            expression
-                        )
-
-                        _readmeFile.postValue(Resource.success(html))
+                        if (html.isNullOrEmpty()) {
+                            _readmeHtml.postValue(Resource.success(""))
+                        } else {
+                            _readmeHtml.postValue(
+                                Resource.success(
+                                    HtmlHandler.toHtml(html, login, repositoryName, branchName)
+                                )
+                            )
+                        }
                     }
                 } else {
-                    _readmeFile.postValue(Resource.success(null))
+                    _readmeHtml.postValue(Resource.success(null))
                 }
             } catch (e: Exception) {
                 Timber.e(e)
 
-                _readmeFile.postValue(Resource.error(e.message, null))
+                _readmeHtml.postValue(Resource.error(e.message, null))
             }
         }
     }

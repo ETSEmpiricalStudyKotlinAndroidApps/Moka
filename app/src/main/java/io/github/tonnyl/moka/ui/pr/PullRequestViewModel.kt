@@ -80,7 +80,11 @@ class PullRequestViewModel(
 
                 val data = response.data()?.repository?.pullRequest.toNullablePullRequest()
 
-                _pullRequest.postValue(Resource.success(data?.transformToPullRequestIssueComment()))
+                _pullRequest.postValue(
+                    Resource.success(
+                        data?.transformToPullRequestIssueComment(owner, name)
+                    )
+                )
             } catch (e: Exception) {
                 Timber.e(e)
 

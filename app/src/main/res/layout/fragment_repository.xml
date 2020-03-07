@@ -359,12 +359,13 @@
                         app:fontFamily="sans-serif-medium"
                         app:textAllCaps="true" />
 
-                    <WebView
+                    <io.github.tonnyl.moka.widget.ThemedWebView
                         android:id="@+id/repository_readme_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/fragment_content_padding"
                         android:layout_marginEnd="@dimen/fragment_content_padding"
+                        app:htmlContent='@{viewModel.readmeHtml.status == Status.SUCCESS ? String.valueOf(viewModel.readmeHtml.data) : ""}'
                         tools:ignore="WebViewLayout" />
 
                     <androidx.appcompat.widget.AppCompatTextView

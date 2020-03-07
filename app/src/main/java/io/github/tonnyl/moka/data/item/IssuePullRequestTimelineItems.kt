@@ -2,10 +2,12 @@ package io.github.tonnyl.moka.data.item
 
 import android.net.Uri
 import android.os.Parcelable
+import androidx.annotation.WorkerThread
 import io.github.tonnyl.moka.data.Actor
 import io.github.tonnyl.moka.data.toNonNullActor
 import io.github.tonnyl.moka.fragment.*
 import io.github.tonnyl.moka.type.*
+import io.github.tonnyl.moka.util.HtmlHandler
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.*
@@ -817,10 +819,7 @@ data class IssueComment(
      */
     val createdAt: Date,
 
-    /**
-     * The body as Markdown.
-     */
-    val body: String,
+    val displayHtml: String,
 
     override val id: String,
 
@@ -861,12 +860,16 @@ data class IssueComment(
 
 ) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
 
-fun IssueCommentFragment.toNonNullIssueComment(): IssueComment {
+@WorkerThread
+fun IssueCommentFragment.toNonNullIssueComment(
+    login: String,
+    repoName: String
+): IssueComment {
     return IssueComment(
         author?.fragments?.actor?.toNonNullActor(),
         authorAssociation,
         createdAt,
-        body,
+        HtmlHandler.toHtml(body, login, repoName),
         id,
         editor?.fragments?.actor?.toNonNullActor(),
         viewerCanDelete,

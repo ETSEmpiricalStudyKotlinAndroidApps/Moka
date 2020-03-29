@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.repositories
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -11,10 +12,10 @@ import io.github.tonnyl.moka.ui.PagedResourceAdapter
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class RepositoryAdapter(
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: RepositoriesViewModel,
     override val retryActions: PagingNetworkStateActions
 ) : PagedResourceAdapter<RepositoryItem>(DIFF_CALLBACK, retryActions) {
-
-    var repositoryActions: ItemRepositoryActions? = null
 
     companion object {
 
@@ -40,6 +41,8 @@ class RepositoryAdapter(
 
     override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return RepositoryViewHolder(
+            lifecycleOwner,
+            viewModel,
             ItemRepositoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
@@ -48,23 +51,26 @@ class RepositoryAdapter(
         val item = getItem(position) ?: return
 
         if (holder is RepositoryViewHolder) {
-            holder.bindTo(item, repositoryActions)
+            holder.bindTo(item)
         }
     }
 
     override fun getViewType(position: Int): Int = R.layout.item_repository
 
     class RepositoryViewHolder(
+        private val owner: LifecycleOwner,
+        private val model: RepositoriesViewModel,
         private val binding: ItemRepositoryBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: RepositoryItem, repositoryActions: ItemRepositoryActions?) {
-            binding.apply {
-                repository = data
-                actions = repositoryActions
-            }
+        fun bindTo(repo: RepositoryItem) {
+            with(binding) {
+                lifecycleOwner = owner
+                viewModel = model
+                repository = repo
 
-            binding.executePendingBindings()
+                executePendingBindings()
+            }
         }
 
     }

@@ -19,16 +19,15 @@ import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
+import io.github.tonnyl.moka.ui.explore.filters.FilterEvent.*
 
-class TrendingFilterFragment : BottomSheetDialogFragment(), FilterActions {
+class TrendingFilterFragment : BottomSheetDialogFragment() {
 
     private val filterAdapter: FilterAdapter by lazy {
-        FilterAdapter().apply {
-            filterActions = this@TrendingFilterFragment
-        }
+        FilterAdapter(viewLifecycleOwner, exploreViewModel)
     }
 
-    private val viewModel by viewModels<ExploreViewModel>(
+    private val exploreViewModel by viewModels<ExploreViewModel>(
         ownerProducer = {
             requireParentFragment()
         },
@@ -44,8 +43,6 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), FilterActions {
     private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var binding: FragmentExploreFilterBinding
-
-    private var queryData: Pair<ExploreTimeSpanType, LocalLanguage?>? = null
 
     companion object {
 
@@ -66,9 +63,9 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), FilterActions {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
-            filterActions = this@TrendingFilterFragment
-            lifecycleOwner = this@TrendingFilterFragment.viewLifecycleOwner
+        with(binding) {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = exploreViewModel
         }
 
         binding.toolbar.setNavigationOnClickListener {
@@ -77,7 +74,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), FilterActions {
 
         updateToolbarTitle()
 
-        viewModel.languages.observe(this, Observer {
+        exploreViewModel.languages.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = filterAdapter
@@ -87,11 +84,23 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), FilterActions {
             }
         })
 
-        viewModel.queryData.observe(this, Observer {
-            queryData = it
+        exploreViewModel.filterEvent.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is SelectLanguage -> {
+                    updateToolbarTitle()
+                }
+                is ConfirmSelection -> {
+                    // viewModel.refreshAll(queryData ?: return)
+
+                    dismiss()
+                }
+                is SelectTimeSpan -> {
+
+                }
+            }
         })
 
-        viewModel.loadLanguagesData(requireContext().assets.open("languages.json"))
+        exploreViewModel.loadLanguagesData(requireContext().assets.open("languages.json"))
 
         binding.toolbar.setNavigationOnClickListener {
             dismiss()
@@ -114,41 +123,13 @@ class TrendingFilterFragment : BottomSheetDialogFragment(), FilterActions {
         return bottomSheetDialog
     }
 
-    override fun actionSelect(language: LocalLanguage) {
-        queryData = queryData?.copy(second = language)
-
-        updateToolbarTitle()
-    }
-
-    override fun actionSelectDone() {
-        // viewModel.refreshAll(queryData ?: return)
-
-        dismiss()
-    }
-
-    override fun timeSpanSelect(id: Int) {
-        queryData = queryData?.copy(
-            first = when (id) {
-                R.id.item_trending_filter_time_span_daily -> {
-                    ExploreTimeSpanType.DAILY
-                }
-                R.id.item_trending_filter_time_span_weekly -> {
-                    ExploreTimeSpanType.WEEKLY
-                }
-                // including R.id.item_trending_filter_time_span_monthly
-                else -> {
-                    ExploreTimeSpanType.MONTHLY
-                }
-            }
-        )
-    }
-
     private fun updateToolbarTitle() {
         binding.toolbar.title = getString(
             R.string.explore_filter_info,
-            queryData?.second?.name ?: getString(R.string.explore_trending_filter_all_languages),
+            exploreViewModel.queryData.value?.second?.name
+                ?: getString(R.string.explore_trending_filter_all_languages),
             getString(
-                when (queryData?.first) {
+                when (exploreViewModel.queryData.value?.first) {
                     ExploreTimeSpanType.WEEKLY -> R.string.explore_trending_filter_time_span_weekly
                     ExploreTimeSpanType.MONTHLY -> R.string.explore_trending_filter_time_span_monthly
                     // including ExploreTimeSpanType.DAILY

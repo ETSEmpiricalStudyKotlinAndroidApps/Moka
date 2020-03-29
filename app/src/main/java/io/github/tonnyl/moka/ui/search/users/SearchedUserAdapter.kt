@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.search.users
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -14,6 +15,8 @@ import io.github.tonnyl.moka.ui.PagedResourceAdapter
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class SearchedUserAdapter(
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: SearchedUsersViewModel,
     override val retryActions: PagingNetworkStateActions
 ) : PagedResourceAdapter<SearchedUserOrOrgItem>(DIFF_CALLBACK, retryActions) {
 
@@ -39,15 +42,17 @@ class SearchedUserAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             R.layout.item_searched_user -> {
-                UserViewHolder(ItemSearchedUserBinding.inflate(inflater, parent, false))
+                UserViewHolder(
+                    lifecycleOwner,
+                    viewModel,
+                    ItemSearchedUserBinding.inflate(inflater, parent, false)
+                )
             }
             R.layout.item_searched_organization -> {
                 OrganizationViewHolder(
-                    ItemSearchedOrganizationBinding.inflate(
-                        inflater,
-                        parent,
-                        false
-                    )
+                    lifecycleOwner,
+                    viewModel,
+                    ItemSearchedOrganizationBinding.inflate(inflater, parent, false)
                 )
             }
             else -> {
@@ -82,23 +87,37 @@ class SearchedUserAdapter(
     }
 
     class UserViewHolder(
+        private val owner: LifecycleOwner,
+        private val model: SearchedUsersViewModel,
         private val binding: ItemSearchedUserBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: SearchedUserItem) {
-            binding.data = data
-            binding.executePendingBindings()
+        fun bindTo(user: SearchedUserItem) {
+            with(binding) {
+                lifecycleOwner = owner
+                data = user
+                viewModel = model
+
+                executePendingBindings()
+            }
         }
 
     }
 
     class OrganizationViewHolder(
+        private val owner: LifecycleOwner,
+        private val model: SearchedUsersViewModel,
         private val binding: ItemSearchedOrganizationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: SearchedOrganizationItem) {
-            binding.data = data
-            binding.executePendingBindings()
+        fun bindTo(org: SearchedOrganizationItem) {
+            with(binding) {
+                lifecycleOwner = owner
+                data = org
+                viewModel = model
+
+                executePendingBindings()
+            }
         }
 
     }

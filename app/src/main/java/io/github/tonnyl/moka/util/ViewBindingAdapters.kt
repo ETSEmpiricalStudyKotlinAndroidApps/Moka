@@ -1,6 +1,8 @@
 package io.github.tonnyl.moka.util
 
 import android.net.Uri
+import android.text.format.DateUtils
+import android.text.method.MovementMethod
 import android.view.View
 import android.view.View.*
 import androidx.annotation.DrawableRes
@@ -14,6 +16,8 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.Issue
+import io.github.tonnyl.moka.data.PullRequest
 import io.github.tonnyl.moka.network.GlideLoader
 import io.github.tonnyl.moka.type.CommentAuthorAssociation
 import io.github.tonnyl.moka.widget.ThemedWebView
@@ -92,13 +96,6 @@ fun AppCompatTextView.intOrZero(
     text = value?.toString() ?: "0"
 }
 
-@BindingAdapter("stringResId")
-fun AppCompatTextView.stringResId(
-    @StringRes id: Int
-) {
-    text = context.getString(id)
-}
-
 @BindingAdapter("authorAssociation")
 fun AppCompatTextView.authorAssociation(
     association: CommentAuthorAssociation?
@@ -115,6 +112,52 @@ fun AppCompatTextView.authorAssociation(
     }
 
     textFuture(if (stringResId != -1) resources.getString(stringResId) else "")
+}
+
+@BindingAdapter("issueInfo")
+fun AppCompatTextView.issueInfo(issue: Issue?) {
+    issue ?: return
+    val status = context.getString(
+        if (issue.closed) {
+            R.string.issue_pr_status_closed
+        } else {
+            R.string.issue_pr_status_open
+        }
+    )
+    val author = context.getString(R.string.issue_pr_created_by, issue.author?.login)
+    val time = DateUtils.getRelativeTimeSpanString(
+        issue.createdAt.time,
+        System.currentTimeMillis(),
+        DateUtils.MINUTE_IN_MILLIS
+    )
+
+    text = context.getString(R.string.issue_pr_info_format, status, author, time)
+}
+
+@BindingAdapter("prInfo")
+fun AppCompatTextView.prInfo(pr: PullRequest?) {
+    pr ?: return
+
+    val status = context.getString(
+        when {
+            pr.closed -> R.string.issue_pr_status_closed
+            pr.merged -> R.string.issue_pr_status_merged
+            else -> R.string.issue_pr_status_open
+        }
+    )
+    val author = context.getString(R.string.issue_pr_created_by, pr.author?.login)
+    val time = DateUtils.getRelativeTimeSpanString(
+        pr.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS
+    )
+
+    text = context.getString(R.string.issue_pr_info_format, status, author, time)
+}
+
+@BindingAdapter("movementMethod")
+fun AppCompatTextView.movementMethod(
+    movement: MovementMethod
+) {
+    movementMethod = movement
 }
 // ===== AppCompatTextView end =====
 

@@ -8,13 +8,15 @@
 
         <import type="io.github.tonnyl.moka.network.Status" />
 
+        <import type="io.github.tonnyl.moka.ui.PagingNetworkStateActions" />
+
         <variable
             name="state"
             type="NetworkState" />
 
         <variable
             name="actions"
-            type="io.github.tonnyl.moka.ui.PagingNetworkStateActions" />
+            type="PagingNetworkStateActions" />
 
     </data>
 

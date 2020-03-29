@@ -5,9 +5,11 @@
 
     <data>
 
+        <import type="io.github.tonnyl.moka.ui.account.AccountViewModel" />
+
         <variable
             name="viewModel"
-            type="io.github.tonnyl.moka.ui.account.AccountViewModel" />
+            type="AccountViewModel" />
 
         <variable
             name="accountSize"

@@ -7,13 +7,17 @@
 
         <import type="android.text.TextUtils" />
 
-        <variable
-            name="user"
-            type="io.github.tonnyl.moka.data.UserItem" />
+        <import type="io.github.tonnyl.moka.data.UserItem" />
+
+        <import type="io.github.tonnyl.moka.ui.users.UsersViewModel" />
 
         <variable
-            name="actions"
-            type="io.github.tonnyl.moka.ui.users.ItemUserActions" />
+            name="user"
+            type="UserItem" />
+
+        <variable
+            name="viewModel"
+            type="UsersViewModel" />
 
     </data>
 
@@ -21,10 +25,10 @@
         android:id="@+id/item_user_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> actions.openProfile(user.login)}"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> viewModel.viewProfile(user.login)}"
         android:padding="@dimen/fragment_content_padding">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -41,7 +45,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> actions.followUserClicked(user.login, false)}"
+            android:onClick="@{() -> viewModel.followUser(user.login)}"
             android:text="@{user.viewerIsFollowing ? @string/user_profile_unfollow : @string/user_profile_follow}"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="@id/item_user_avatar"

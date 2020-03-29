@@ -26,8 +26,7 @@ import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class ProfileViewModel(
-    private val login: String,
-    private val profileType: ProfileType
+    private val args: ProfileFragmentArgs
 ) : ViewModel() {
 
     private val _userProfile = MutableLiveData<Resource<User>>()
@@ -52,10 +51,12 @@ class ProfileViewModel(
 
     fun refreshData() {
         when {
-            profileType == ProfileType.USER || _userProfile.value?.data != null -> {
+            args.profileType == ProfileType.USER
+                    || _userProfile.value?.data != null -> {
                 refreshUserProfile()
             }
-            profileType == ProfileType.ORGANIZATION || _organizationProfile.value?.data != null -> {
+            args.profileType == ProfileType.ORGANIZATION
+                    || _organizationProfile.value?.data != null -> {
                 refreshOrganization()
             }
             else -> {
@@ -72,7 +73,7 @@ class ProfileViewModel(
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient
-                        .query(UserQuery(login))
+                        .query(UserQuery(args.login))
                         .execute()
                 }
 
@@ -106,7 +107,7 @@ class ProfileViewModel(
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient
-                        .query(OrganizationQuery(login))
+                        .query(OrganizationQuery(args.login))
                         .execute()
                 }
 

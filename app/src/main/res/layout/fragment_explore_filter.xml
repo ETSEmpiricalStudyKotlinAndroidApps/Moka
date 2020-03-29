@@ -5,9 +5,11 @@
 
     <data>
 
+        <import type="io.github.tonnyl.moka.ui.explore.ExploreViewModel" />
+
         <variable
-            name="filterActions"
-            type="io.github.tonnyl.moka.ui.explore.filters.FilterActions" />
+            name="viewModel"
+            type="ExploreViewModel" />
 
     </data>
 
@@ -44,7 +46,7 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="@dimen/fragment_content_padding_half"
                     android:gravity="center"
-                    android:onClick="@{() -> filterActions.actionSelectDone()}"
+                    android:onClick="@{() -> viewModel.confirmSelection()}"
                     android:paddingStart="@dimen/regular_icon_padding"
                     android:paddingEnd="@dimen/regular_icon_padding"
                     android:text="@string/explore_filter_done"

@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.github.tonnyl.moka.data.AuthenticatedUser
@@ -7,6 +8,10 @@ import io.github.tonnyl.moka.data.AuthenticatedUser
 class MainViewModel : ViewModel() {
 
     val currentUser = MutableLiveData<AuthenticatedUser>()
+
+    private val _event = MutableLiveData<Event<SearchBarEvent>>()
+    val event: LiveData<Event<SearchBarEvent>>
+        get() = _event
 
     fun getUserProfile() {
 //        viewModelScope.launch(Dispatchers.IO) {
@@ -28,6 +33,10 @@ class MainViewModel : ViewModel() {
 //
 //            }
 //        }
+    }
+
+    fun showUI(type: SearchBarEvent) {
+        _event.value = Event(type)
     }
 
 }

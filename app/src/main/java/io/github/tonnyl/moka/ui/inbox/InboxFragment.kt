@@ -10,19 +10,21 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.databinding.FragmentInboxBinding
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.*
+import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.MainNavigationFragment
+import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
+import io.github.tonnyl.moka.ui.inbox.NotificationItemEvent.*
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
-import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
-class InboxFragment : MainNavigationFragment(), SearchBarActions,
-    EmptyViewActions, InboxActions,
-    PagingNetworkStateActions {
+class InboxFragment : MainNavigationFragment(),
+    EmptyViewActions, PagingNetworkStateActions {
 
     private val viewModel by viewModels<InboxViewModel> {
         ViewModelFactory(
@@ -37,9 +39,7 @@ class InboxFragment : MainNavigationFragment(), SearchBarActions,
     private lateinit var binding: FragmentInboxBinding
 
     private val notificationAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        InboxAdapter(this@InboxFragment).apply {
-            inboxActions = this@InboxFragment
-        }
+        InboxAdapter(viewLifecycleOwner, viewModel, this@InboxFragment)
     }
 
     override fun onCreateView(
@@ -57,13 +57,12 @@ class InboxFragment : MainNavigationFragment(), SearchBarActions,
 
         binding.apply {
             emptyViewActions = this@InboxFragment
-            searchBarActions = this@InboxFragment
             viewModel = this@InboxFragment.viewModel
             mainViewModel = this@InboxFragment.mainViewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.data.observe(this, Observer {
+        viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     addItemDecoration(
@@ -80,7 +79,7 @@ class InboxFragment : MainNavigationFragment(), SearchBarActions,
             }
         })
 
-        viewModel.previousNextLoadStatusLiveData.observe(this, Observer {
+        viewModel.previousNextLoadStatusLiveData.observe(viewLifecycleOwner, Observer {
             when (it.resource?.status) {
                 Status.SUCCESS -> {
                     notificationAdapter.setNetworkState(
@@ -112,8 +111,28 @@ class InboxFragment : MainNavigationFragment(), SearchBarActions,
             }
         })
 
-        mainViewModel.currentUser.observe(this, Observer {
+        mainViewModel.currentUser.observe(viewLifecycleOwner, Observer {
             viewModel.refreshData(it.login, false)
+        })
+
+        viewModel.event.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is ViewNotification -> {
+
+                }
+                is ViewProfile -> {
+                    findNavController().navigate(
+                        R.id.profile_fragment,
+                        ProfileFragmentArgs(event.login, event.type).toBundle()
+                    )
+                }
+                is ViewRepository -> {
+                    findNavController().navigate(
+                        R.id.repository_fragment,
+                        RepositoryFragmentArgs(event.login, event.name, event.type).toBundle()
+                    )
+                }
+            }
         })
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -146,17 +165,6 @@ class InboxFragment : MainNavigationFragment(), SearchBarActions,
         return true
     }
 
-    override fun openSearch() {
-        findNavController().navigate(R.id.search_fragment)
-    }
-
-    override fun openAccountDialog() {
-        mainViewModel.currentUser.value?.login?.let {
-            val args = ProfileFragmentArgs(it, ProfileType.USER).toBundle()
-            findNavController().navigate(R.id.profile_fragment, args)
-        }
-    }
-
     override fun retryInitial() {
         mainViewModel.currentUser.value?.login?.let {
             viewModel.refreshData(it, true)
@@ -164,10 +172,6 @@ class InboxFragment : MainNavigationFragment(), SearchBarActions,
     }
 
     override fun doAction() {
-
-    }
-
-    override fun openNotification(notification: Notification) {
 
     }
 

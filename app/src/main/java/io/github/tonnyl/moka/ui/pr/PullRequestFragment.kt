@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.pr
 
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,34 +21,13 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
     private val args by navArgs<PullRequestFragmentArgs>()
 
     private val viewModel by viewModels<PullRequestViewModel> {
-        ViewModelFactory(args.repositoryOwner, args.repositoryName, args.pullRequestItem.number)
+        ViewModelFactory(args)
     }
 
     private lateinit var binding: FragmentPrBinding
 
-    private val pullRequestTimelineAdapter by lazy {
+    private val pullRequestTimelineAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PullRequestTimelineAdapter(
-            getString(
-                R.string.issue_pr_title_format,
-                args.pullRequestItem.number,
-                args.pullRequestItem.title
-            ),
-            getString(
-                R.string.issue_pr_info_format,
-                getString(
-                    when {
-                        args.pullRequestItem.closed -> R.string.issue_pr_status_closed
-                        args.pullRequestItem.merged -> R.string.issue_pr_status_merged
-                        else -> R.string.issue_pr_status_open
-                    }
-                ),
-                getString(R.string.issue_pr_by, args.pullRequestItem.actor?.login),
-                DateUtils.getRelativeTimeSpanString(
-                    args.pullRequestItem.createdAt.time,
-                    System.currentTimeMillis(),
-                    DateUtils.MINUTE_IN_MILLIS
-                )
-            ),
             viewLifecycleOwner,
             viewModel,
             this@PullRequestFragment
@@ -82,7 +60,7 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.data.observe(this, Observer {
+        viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = pullRequestTimelineAdapter
@@ -92,7 +70,7 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
             pullRequestTimelineAdapter.submitList(it)
         })
 
-        viewModel.pagedLoadStatus.observe(this, Observer {
+        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, Observer {
             when (it.resource?.status) {
                 Status.SUCCESS -> {
                     pullRequestTimelineAdapter.setNetworkState(

@@ -4,18 +4,21 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.databinding.ItemTrendingDeveloperBinding
+import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 
-class TrendingDeveloperAdapter : ListAdapter<TrendingDeveloper, RecyclerView.ViewHolder>(
+class TrendingDeveloperAdapter(
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: ExploreViewModel
+) : ListAdapter<TrendingDeveloper, RecyclerView.ViewHolder>(
     DIFF_CALLBACK
 ) {
-
-    var actions: TrendingDeveloperAction? = null
 
     companion object {
 
@@ -37,10 +40,10 @@ class TrendingDeveloperAdapter : ListAdapter<TrendingDeveloper, RecyclerView.Vie
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return TrendingDeveloperViewHolder(
+            lifecycleOwner,
+            viewModel,
             ItemTrendingDeveloperBinding.inflate(
-                LayoutInflater.from(
-                    parent.context
-                ), parent, false
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }
@@ -49,11 +52,13 @@ class TrendingDeveloperAdapter : ListAdapter<TrendingDeveloper, RecyclerView.Vie
         val data = getItem(position) ?: return
 
         if (holder is TrendingDeveloperViewHolder) {
-            holder.bindTo(data, position, actions)
+            holder.bindTo(data, position)
         }
     }
 
     class TrendingDeveloperViewHolder(
+        private val owner: LifecycleOwner,
+        private val model: ExploreViewModel,
         private val binding: ItemTrendingDeveloperBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -67,17 +72,17 @@ class TrendingDeveloperAdapter : ListAdapter<TrendingDeveloper, RecyclerView.Vie
 
         fun bindTo(
             data: TrendingDeveloper,
-            position: Int,
-            repositoryActions: TrendingDeveloperAction?
+            position: Int
         ) {
-            binding.apply {
+            with(binding) {
+                lifecycleOwner = owner
                 rank = position + 1
                 span = foregroundColorSpan
                 developer = data
-                actions = repositoryActions
-            }
+                viewModel = model
 
-            binding.executePendingBindings()
+                executePendingBindings()
+            }
         }
 
     }

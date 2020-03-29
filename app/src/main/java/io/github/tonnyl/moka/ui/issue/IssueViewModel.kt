@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import io.github.tonnyl.moka.data.Issue
 import io.github.tonnyl.moka.data.extension.transformToIssueCommentEvent
 import io.github.tonnyl.moka.data.item.IssueComment
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
@@ -21,9 +22,7 @@ import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class IssueViewModel(
-    private val owner: String,
-    private val name: String,
-    private val number: Int
+    val args: IssueFragmentArgs
 ) : NetworkCacheSourceViewModel<IssueTimelineItem>() {
 
     private val _initialLoadStatus = MutableLiveData<Resource<List<IssueTimelineItem>>>()
@@ -34,22 +33,25 @@ class IssueViewModel(
     val pagedLoadStatus: LiveData<PagedResource2<List<IssueTimelineItem>>>
         get() = _pagedLoadStatus
 
-    private val _issueLiveData = MutableLiveData<Resource<IssueComment?>>()
-    val issueLiveData: LiveData<Resource<IssueComment?>>
+    private val _issueToCommentLiveData = MutableLiveData<Resource<IssueComment?>>()
+    val issueToCommentLiveData: LiveData<Resource<IssueComment?>>
+        get() = _issueToCommentLiveData
+
+    private val _issueLiveData = MutableLiveData<Issue>()
+    val issueLiveData: LiveData<Issue>
         get() = _issueLiveData
 
     private lateinit var sourceFactory: IssueTimelineSourceFactory
 
     init {
-        refreshIssueData()
         refresh()
     }
 
     override fun initRemoteSource(): LiveData<PagedList<IssueTimelineItem>> {
         sourceFactory = IssueTimelineSourceFactory(
-            owner,
-            name,
-            number,
+            args.repositoryOwner,
+            args.repositoryName,
+            args.number,
             _initialLoadStatus,
             _pagedLoadStatus
         )
@@ -70,23 +72,31 @@ class IssueViewModel(
 
     private fun refreshIssueData() {
         viewModelScope.launch(Dispatchers.IO) {
-            _issueLiveData.postValue(Resource.loading(null))
+            _issueToCommentLiveData.postValue(Resource.loading(null))
             try {
                 val response = runBlocking {
-                    GraphQLClient.apolloClient.query(
-                        IssueQuery(owner, name, number)
-                    ).execute()
+                    GraphQLClient.apolloClient
+                        .query(
+                            IssueQuery(args.repositoryOwner, args.repositoryName, args.number)
+                        ).execute()
                 }
 
                 val data = response.data()?.repository?.issue?.toNonNullIssue()
 
-                _issueLiveData.postValue(
-                    Resource.success(data?.transformToIssueCommentEvent(owner, name))
+                _issueToCommentLiveData.postValue(
+                    Resource.success(
+                        data?.transformToIssueCommentEvent(
+                            args.repositoryOwner,
+                            args.repositoryName
+                        )
+                    )
                 )
+
+                _issueLiveData.postValue(data)
             } catch (e: Exception) {
                 Timber.e(e)
 
-                _issueLiveData.postValue(Resource.error(e.message, null))
+                _issueToCommentLiveData.postValue(Resource.error(e.message, null))
             }
         }
     }

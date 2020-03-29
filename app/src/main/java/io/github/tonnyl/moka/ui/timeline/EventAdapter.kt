@@ -1,20 +1,21 @@
 package io.github.tonnyl.moka.ui.timeline
 
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.databinding.ItemEventBinding
 import io.github.tonnyl.moka.ui.PagedResourceAdapter
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
-class TimelineAdapter(
+class EventAdapter(
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: TimelineViewModel,
     override val retryActions: PagingNetworkStateActions
 ) : PagedResourceAdapter<Event>(DIFF_CALLBACK, retryActions) {
-
-    var eventActions: EventActions? = null
 
     companion object {
 
@@ -30,17 +31,13 @@ class TimelineAdapter(
 
         }
 
-        const val VIEW_TYPE_EVENT = 0x00
-
     }
 
     override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return EventViewHolder(
-            ItemEventBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
+            lifecycleOwner,
+            viewModel,
+            ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -48,25 +45,28 @@ class TimelineAdapter(
         val item = getItem(position) ?: return
 
         if (holder is EventViewHolder) {
-            holder.bind(item, eventActions)
+            holder.bind(item)
         }
     }
 
-    override fun getViewType(position: Int): Int = VIEW_TYPE_EVENT
+    override fun getViewType(position: Int): Int {
+        return R.layout.item_event
+    }
 
     class EventViewHolder(
+        private val owner: LifecycleOwner,
+        private val model: TimelineViewModel,
         private val binding: ItemEventBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(data: Event, actions: EventActions?) {
-            binding.apply {
+        fun bind(data: Event) {
+            with(binding) {
+                lifecycleOwner = owner
+                viewModel = model
                 event = data
-                eventActions = actions
 
-                eventAction.movementMethod = LinkMovementMethod.getInstance()
+                executePendingBindings()
             }
-
-            binding.executePendingBindings()
         }
 
     }

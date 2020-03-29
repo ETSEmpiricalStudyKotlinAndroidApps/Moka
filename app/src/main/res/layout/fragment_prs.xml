@@ -8,13 +8,17 @@
 
         <import type="io.github.tonnyl.moka.network.Status" />
 
+        <import type="io.github.tonnyl.moka.ui.prs.PullRequestsViewModel" />
+
+        <import type="io.github.tonnyl.moka.ui.EmptyViewActions" />
+
         <variable
             name="viewModel"
-            type="io.github.tonnyl.moka.ui.prs.PullRequestsViewModel" />
+            type="PullRequestsViewModel" />
 
         <variable
             name="emptyViewActions"
-            type="io.github.tonnyl.moka.ui.EmptyViewActions" />
+            type="EmptyViewActions" />
 
     </data>
 

@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.issues
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -11,7 +12,8 @@ import io.github.tonnyl.moka.ui.PagedResourceAdapter
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class IssueAdapter(
-    private val actions: IssueItemActions,
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: IssuesViewModel,
     override val retryActions: PagingNetworkStateActions
 ) : PagedResourceAdapter<IssueItem>(DIFF_CALLBACK, retryActions) {
 
@@ -37,7 +39,7 @@ class IssueAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), actions
+            )
         )
     }
 
@@ -45,21 +47,25 @@ class IssueAdapter(
         val item = getItem(position) ?: return
 
         if (holder is IssueViewHolder) {
-            holder.bindTo(item)
+            holder.bindTo(item, lifecycleOwner, viewModel)
         }
     }
 
     override fun getViewType(position: Int): Int = R.layout.item_pull_request
 
     class IssueViewHolder(
-        private val binding: ItemIssueBinding,
-        private val issueItemActions: IssueItemActions?
+        private val binding: ItemIssueBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: IssueItem) {
+        fun bindTo(
+            data: IssueItem,
+            owner: LifecycleOwner,
+            model: IssuesViewModel
+        ) {
             binding.run {
                 issue = data
-                actions = issueItemActions
+                lifecycleOwner = owner
+                viewModel = model
                 executePendingBindings()
             }
         }

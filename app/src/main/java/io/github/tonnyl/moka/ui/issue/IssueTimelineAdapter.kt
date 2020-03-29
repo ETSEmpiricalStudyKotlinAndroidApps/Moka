@@ -15,8 +15,6 @@ import io.github.tonnyl.moka.ui.PagedResourceAdapter
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class IssueTimelineAdapter(
-    private val title: String,
-    private val info: String,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: IssueViewModel,
     override val retryActions: PagingNetworkStateActions
@@ -46,16 +44,20 @@ class IssueTimelineAdapter(
         return when (viewType) {
             R.layout.item_issue_timeline_head -> {
                 HeadViewHolder(
+                    lifecycleOwner,
+                    viewModel,
                     ItemIssueTimelineHeadBinding.inflate(inflater, parent, false)
                 )
             }
             R.layout.item_issue_timeline_comment -> {
                 CommentViewHolder(
+                    lifecycleOwner,
                     ItemIssueTimelineCommentBinding.inflate(inflater, parent, false)
                 )
             }
             R.layout.item_issue_timeline_event -> {
                 EventViewHolder(
+                    lifecycleOwner,
                     ItemIssueTimelineEventBinding.inflate(inflater, parent, false)
                 )
             }
@@ -68,7 +70,7 @@ class IssueTimelineAdapter(
     override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getViewType(position)
         if (viewType == R.layout.item_issue_timeline_head) {
-            (holder as HeadViewHolder).bindTo(title, info, lifecycleOwner, viewModel)
+            (holder as HeadViewHolder).bindTo()
 
             return
         }
@@ -76,10 +78,10 @@ class IssueTimelineAdapter(
         val item = getItem(position - 1) ?: return
         when (viewType) {
             R.layout.item_issue_timeline_comment -> {
-                (holder as CommentViewHolder).bindTo(item as IssueComment, lifecycleOwner)
+                (holder as CommentViewHolder).bindTo(item as IssueComment)
             }
             R.layout.item_issue_timeline_event -> {
-                (holder as EventViewHolder).bindTo(item, lifecycleOwner)
+                (holder as EventViewHolder).bindTo(item)
             }
         }
     }
@@ -102,16 +104,15 @@ class IssueTimelineAdapter(
     override fun getItemCount(): Int = super.getItemCount() + 1
 
     class EventViewHolder(
+        private val owner: LifecycleOwner,
         private val binding: ItemIssueTimelineEventBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(
-            data: IssueTimelineItem,
-            lifecycleOwner: LifecycleOwner
-        ) {
-            binding.run {
+        fun bindTo(data: IssueTimelineItem) {
+            with(binding) {
+                lifecycleOwner = owner
                 issueTimelineEvent = data
-                this.lifecycleOwner = lifecycleOwner
+
                 executePendingBindings()
             }
         }
@@ -119,16 +120,15 @@ class IssueTimelineAdapter(
     }
 
     class CommentViewHolder(
+        private val owner: LifecycleOwner,
         private val binding: ItemIssueTimelineCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(
-            data: IssueComment,
-            lifecycleOwner: LifecycleOwner
-        ) {
-            binding.run {
+        fun bindTo(data: IssueComment) {
+            with(binding) {
+                lifecycleOwner = owner
                 comment = data
-                this.lifecycleOwner = lifecycleOwner
+
                 executePendingBindings()
             }
         }
@@ -136,20 +136,16 @@ class IssueTimelineAdapter(
     }
 
     class HeadViewHolder(
+        private val owner: LifecycleOwner,
+        private val model: IssueViewModel,
         private val binding: ItemIssueTimelineHeadBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(
-            title: String,
-            info: String,
-            lifecycleOwner: LifecycleOwner,
-            viewModel: IssueViewModel
-        ) {
-            binding.run {
-                this.title = title
-                this.info = info
-                this.lifecycleOwner = lifecycleOwner
-                this.viewModel = viewModel
+        fun bindTo() {
+            with(binding) {
+                lifecycleOwner = owner
+                viewModel = model
+
                 executePendingBindings()
             }
         }

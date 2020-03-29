@@ -27,7 +27,7 @@ class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions
                 requireContext(),
                 mainViewModel.currentUser.value?.id ?: 0L
             ).projectsDao(),
-            args.repositoryName
+            args
         )
     }
 
@@ -68,7 +68,7 @@ class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions
             viewModel.refreshData(it.login, true)
         })
 
-        viewModel.previousNextLoadStatusLiveData.observe(this, Observer {
+        viewModel.previousNextLoadStatusLiveData.observe(viewLifecycleOwner, Observer {
             when (it.resource?.status) {
                 Status.SUCCESS -> {
                     projectAdapter.setNetworkState(
@@ -100,7 +100,7 @@ class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions
             }
         })
 
-        viewModel.data.observe(this, Observer {
+        viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = projectAdapter

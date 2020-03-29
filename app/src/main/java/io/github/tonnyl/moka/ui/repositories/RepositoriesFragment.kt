@@ -16,23 +16,21 @@ import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
+import io.github.tonnyl.moka.ui.repositories.RepositoryItemEvent.*
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 
-class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions,
-    PagingNetworkStateActions {
+class RepositoriesFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
     private val args by navArgs<RepositoriesFragmentArgs>()
 
-    private val viewModel by viewModels<RepositoriesViewModel> {
-        ViewModelFactory(args.login, args.repositoriesType)
+    private val repositoriesViewModel by viewModels<RepositoriesViewModel> {
+        ViewModelFactory(args)
     }
 
     private lateinit var binding: FragmentRepositoriesBinding
 
     private val repositoryAdapter by lazy {
-        RepositoryAdapter(this@RepositoriesFragment).apply {
-            repositoryActions = this@RepositoriesFragment
-        }
+        RepositoryAdapter(viewLifecycleOwner, repositoriesViewModel, this@RepositoriesFragment)
     }
 
     override fun onCreateView(
@@ -66,11 +64,11 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions
             )
 
             emptyViewActions = this@RepositoriesFragment
-            viewModel = this@RepositoriesFragment.viewModel
+            viewModel = this@RepositoriesFragment.repositoriesViewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.data.observe(this, Observer { list ->
+        repositoriesViewModel.data.observe(viewLifecycleOwner, Observer { list ->
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = repositoryAdapter
@@ -79,7 +77,7 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions
             repositoryAdapter.submitList(list)
         })
 
-        viewModel.pagedLoadStatus.observe(this, Observer {
+        repositoriesViewModel.pagedLoadStatus.observe(viewLifecycleOwner, Observer {
             when (it.resource?.status) {
                 Status.SUCCESS -> {
                     repositoryAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADED))
@@ -98,25 +96,34 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions
             }
         })
 
-    }
+        repositoriesViewModel.event.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is ViewRepository -> {
+                    findNavController().navigate(
+                        R.id.repository_fragment,
+                        RepositoryFragmentArgs(
+                            event.login,
+                            event.repoName,
+                            args.profileType
+                        ).toBundle()
+                    )
+                }
+                is ViewProfile -> {
+                    findNavController().navigate(
+                        R.id.profile_fragment,
+                        ProfileFragmentArgs(event.login).toBundle()
+                    )
+                }
+                is StarRepository -> {
 
-    override fun openRepository(login: String, repositoryName: String) {
-        val repositoryArgs =
-            RepositoryFragmentArgs(login, repositoryName, args.profileType).toBundle()
-        findNavController().navigate(R.id.repository_fragment, repositoryArgs)
-    }
-
-    override fun openProfile(login: String) {
-        val profileArgs = ProfileFragmentArgs(login).toBundle()
-        findNavController().navigate(R.id.profile_fragment, profileArgs)
-    }
-
-    override fun starRepositoryClicked(repositoryNameWithOwner: String, star: Boolean) {
+                }
+            }
+        })
 
     }
 
     override fun retryInitial() {
-        viewModel.refresh()
+        repositoriesViewModel.refresh()
     }
 
     override fun doAction() {
@@ -124,7 +131,7 @@ class RepositoriesFragment : Fragment(), ItemRepositoryActions, EmptyViewActions
     }
 
     override fun retryLoadPreviousNext() {
-        viewModel.retryLoadPreviousNext()
+        repositoriesViewModel.retryLoadPreviousNext()
     }
 
 }

@@ -16,6 +16,8 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.ActivityMainBinding
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.RetrofitClient
+import io.github.tonnyl.moka.ui.SearchBarEvent.ShowAccounts
+import io.github.tonnyl.moka.ui.SearchBarEvent.ShowSearch
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.util.HeightTopWindowInsetsListener
 import io.github.tonnyl.moka.util.NoopWindowInsetsListener
@@ -73,7 +75,23 @@ class MainActivity : AppCompatActivity(), NavigationHost {
         viewModel.currentUser.observe(this, Observer {
             viewModel.getUserProfile()
         })
+
+        viewModel.event.observe(this, Observer {
+            when (it.getContentIfNotHandled()) {
+                ShowSearch -> {
+                    navController.navigate(R.id.search_fragment)
+                }
+                ShowAccounts -> {
+                    navController.navigate(R.id.account_dialog)
+                }
+                null -> {
+
+                }
+            }
+        })
     }
+
+    override fun onSupportNavigateUp(): Boolean = navController.navigateUp()
 
     companion object {
 

@@ -71,7 +71,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             binding.fragmentEditProfileLocationInputEdit.setText(it)
         }
 
-        viewModel.loadingStatus.observe(this, Observer { data ->
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer { data ->
             when (data.status) {
                 Status.SUCCESS -> {
                     parentFragment?.findNavController()?.navigateUp()

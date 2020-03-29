@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.TrendingRepository
 import io.github.tonnyl.moka.databinding.FragmentExploreRepositoriesBinding
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.ui.EmptyViewActions
@@ -18,13 +17,14 @@ import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
+import io.github.tonnyl.moka.ui.explore.repositories.TrendingRepositoryItemEvent.ViewProfile
+import io.github.tonnyl.moka.ui.explore.repositories.TrendingRepositoryItemEvent.ViewRepository
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
-class TrendingRepositoriesFragment : Fragment(), TrendingRepositoryAction,
-    EmptyViewActions {
+class TrendingRepositoriesFragment : Fragment(), EmptyViewActions {
 
     private val mainViewModel by activityViewModels<MainViewModel>()
     private val viewModel by viewModels<ExploreViewModel>(
@@ -44,9 +44,7 @@ class TrendingRepositoriesFragment : Fragment(), TrendingRepositoryAction,
     private lateinit var binding: FragmentExploreRepositoriesBinding
 
     private val repositoryAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        TrendingRepositoryAdapter().apply {
-            actions = this@TrendingRepositoriesFragment
-        }
+        TrendingRepositoryAdapter(viewLifecycleOwner, viewModel)
     }
 
     companion object {
@@ -109,23 +107,33 @@ class TrendingRepositoriesFragment : Fragment(), TrendingRepositoryAction,
             }
         })
 
+        viewModel.repositoryEvent.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is ViewProfile -> {
+                    findNavController().navigate(
+                        R.id.profile_fragment,
+                        ProfileFragmentArgs(
+                            event.repository.author,
+                            ProfileType.NOT_SPECIFIED
+                        ).toBundle()
+                    )
+                }
+                is ViewRepository -> {
+                    findNavController().navigate(
+                        R.id.repository_fragment,
+                        RepositoryFragmentArgs(
+                            event.repository.author,
+                            event.repository.name,
+                            ProfileType.NOT_SPECIFIED
+                        ).toBundle()
+                    )
+                }
+            }
+        })
+
         binding.swipeRefresh.setOnRefreshListener {
             retryInitial()
         }
-    }
-
-    override fun viewProfile(repository: TrendingRepository) {
-        val args = ProfileFragmentArgs(repository.author, ProfileType.NOT_SPECIFIED).toBundle()
-        findNavController().navigate(R.id.profile_fragment, args)
-    }
-
-    override fun viewRepository(repository: TrendingRepository) {
-        val args = RepositoryFragmentArgs(
-            repository.author,
-            repository.name,
-            ProfileType.NOT_SPECIFIED
-        ).toBundle()
-        findNavController().navigate(R.id.repository_fragment, args)
     }
 
     override fun retryInitial() {

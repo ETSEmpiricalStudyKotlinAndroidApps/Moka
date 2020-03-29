@@ -11,14 +11,17 @@ import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.util.textFuture
 
-@BindingAdapter(value = ["eventActionTextFuture", "eventActions"], requireAll = true)
+@BindingAdapter(value = ["event", "viewModel"], requireAll = true)
 fun AppCompatTextView.eventActionTextFuture(
-    event: Event,
-    actions: EventActions
+    event: Event?,
+    viewModel: TimelineViewModel?
 ) {
+    event ?: return
+    viewModel ?: return
+
     val actionBuilder = SpannableStringBuilder()
 
-    appendActorSpan(event.actor, ProfileType.NOT_SPECIFIED, actionBuilder, resources, actions)
+    appendActorSpan(event.actor, ProfileType.NOT_SPECIFIED, actionBuilder, resources, viewModel)
 
     when (event.type) {
         Event.WATCH_EVENT -> {
@@ -27,7 +30,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_star))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github starred github/github
@@ -51,7 +54,7 @@ fun AppCompatTextView.eventActionTextFuture(
             }
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github created repository github/github
@@ -66,7 +69,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github commented on commit ec7a2824 at github/github
@@ -79,7 +82,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github downloaded logo.jpe at github/github
@@ -88,7 +91,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_follow))
 
             event.payload?.target?.let {
-                appendActorSpan(it, ProfileType.USER, actionBuilder, resources, actions)
+                appendActorSpan(it, ProfileType.USER, actionBuilder, resources, viewModel)
             }
 
             // final string example: github followed octocat
@@ -97,14 +100,14 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_fork))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             actionBuilder.append(context.getString(R.string.event_to))
 
             // event.payload.forkee -> The created repository.
             event.payload?.forkee?.let {
-                appendRepositorySpan(it, true, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, true, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github forked actocat/Hello-World to github/Hello-World
@@ -122,7 +125,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_gist, action))
 
             event.payload?.gist?.let {
-                appendGistSpan(it, actionBuilder, resources, actions)
+                appendGistSpan(it, actionBuilder, resources, viewModel)
             }
 
             // final string example: github created Gist Hello World Examples
@@ -140,7 +143,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_gollum_event, action))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github edit a wiki page at github/github
@@ -159,13 +162,13 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_issue_comment, action))
 
             event.payload?.issue?.let {
-                appendIssueNumberSpan(it, actionBuilder, resources, actions)
+                appendIssueNumberSpan(it, actionBuilder, resources, viewModel)
             }
 
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github commented on issue #1 at github/github
@@ -197,13 +200,13 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_issue, action))
 
             event.payload?.issue?.let {
-                appendIssueNumberSpan(it, actionBuilder, resources, actions)
+                appendIssueNumberSpan(it, actionBuilder, resources, viewModel)
             }
 
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github created issue #1 at github/github
@@ -231,13 +234,13 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(actionStringResId))
 
             event.payload?.member?.let {
-                appendActorSpan(it, ProfileType.USER, actionBuilder, resources, actions)
+                appendActorSpan(it, ProfileType.USER, actionBuilder, resources, viewModel)
             }
 
             actionBuilder.append(context.getString(toOrFromStringResId))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github added octocat at github/github
@@ -246,7 +249,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_publicized))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github open-sourced github/github
@@ -275,13 +278,13 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_pull_request, action))
 
             event.payload?.pullRequest?.let {
-                appendPullRequestNumberSpan(it, actionBuilder, resources, actions)
+                appendPullRequestNumberSpan(it, actionBuilder, resources, viewModel)
             }
 
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github opened a pull request #1 at github/github
@@ -306,13 +309,13 @@ fun AppCompatTextView.eventActionTextFuture(
             )
 
             event.payload?.pullRequest?.let {
-                appendPullRequestNumberSpan(it, actionBuilder, resources, actions)
+                appendPullRequestNumberSpan(it, actionBuilder, resources, viewModel)
             }
 
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github commented on pull request #1 at github/github
@@ -337,13 +340,13 @@ fun AppCompatTextView.eventActionTextFuture(
             )
 
             event.payload?.pullRequest?.let {
-                appendPullRequestNumberSpan(it, actionBuilder, resources, actions)
+                appendPullRequestNumberSpan(it, actionBuilder, resources, viewModel)
             }
 
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github reviewed pull request #1 at github/github
@@ -365,7 +368,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_repository, action))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github created repository github/github
@@ -392,7 +395,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github pushed 1 commit(s) to github/github
@@ -401,7 +404,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_team_add))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github added repository github/github
@@ -423,7 +426,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github deleted branch dev at github/github
@@ -434,13 +437,13 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_release))
 
             event.payload?.release?.let {
-                appendReleaseSpan(it, actionBuilder, resources, actions)
+                appendReleaseSpan(it, actionBuilder, resources, viewModel)
             }
 
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github released v1.1 at github/github
@@ -449,7 +452,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_fork_apply))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github applied a patch at github/github
@@ -465,7 +468,7 @@ fun AppCompatTextView.eventActionTextFuture(
 
             // event.payload.blockedUser -> Information about the user that was blocked or unblocked.
             event.payload?.blockedUser?.let {
-                appendActorSpan(it, ProfileType.USER, actionBuilder, resources, actions)
+                appendActorSpan(it, ProfileType.USER, actionBuilder, resources, viewModel)
             }
 
             // final string example: github blocked octocat
@@ -490,7 +493,7 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github created a project card to-do at github/github
@@ -510,13 +513,13 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(context.getString(R.string.event_project_column, action))
 
             event.payload?.projectColumn?.let {
-                appendProjectColumnSpan(it, actionBuilder, resources, actions)
+                appendProjectColumnSpan(it, actionBuilder, resources, viewModel)
             }
 
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github created a project column Small bugfixes at github/github
@@ -547,14 +550,14 @@ fun AppCompatTextView.eventActionTextFuture(
             // event.payload.membership -> The membership between the user and the organization.
             // Not present when the action is "member_invited".
             event.payload?.membership?.user?.let {
-                appendActorSpan(it, ProfileType.USER, actionBuilder, resources, actions)
+                appendActorSpan(it, ProfileType.USER, actionBuilder, resources, viewModel)
             }
 
             actionBuilder.append(context.getString(toOrFromId))
 
             // event.payload.organization -> The organization in question.
             event.payload?.organization?.let {
-                appendActorSpan(it, ProfileType.ORGANIZATION, actionBuilder, resources, actions)
+                appendActorSpan(it, ProfileType.ORGANIZATION, actionBuilder, resources, viewModel)
             }
 
             // final string example: octocat invited tonnyl to github
@@ -576,13 +579,13 @@ fun AppCompatTextView.eventActionTextFuture(
             actionBuilder.append(action)
 
             event.payload?.project?.let {
-                appendProjectSpan(it, actionBuilder, resources, actions)
+                appendProjectSpan(it, actionBuilder, resources, viewModel)
             }
 
             actionBuilder.append(context.getString(R.string.event_at))
 
             event.repo?.let {
-                appendRepositorySpan(it, false, actionBuilder, resources, actions, event.org)
+                appendRepositorySpan(it, false, actionBuilder, resources, viewModel, event.org)
             }
 
             // final string example: github created a project Space 2.0 at github/github
@@ -593,8 +596,8 @@ fun AppCompatTextView.eventActionTextFuture(
 }
 
 @BindingAdapter("eventContentVisibilityOrTextFuture")
-fun AppCompatTextView.eventContentVisibilityOrTextFuture(event: Event) {
-    val content: String? = when (event.type) {
+fun AppCompatTextView.eventContentVisibilityOrTextFuture(event: Event?) {
+    val content: String? = when (event?.type) {
         Event.COMMIT_COMMENT_EVENT -> {
             event.payload?.commitComment?.body
         }
@@ -631,12 +634,12 @@ private fun appendActorSpan(
     type: ProfileType,
     actionBuilder: SpannableStringBuilder,
     resources: Resources,
-    actions: EventActions
+    viewModel: TimelineViewModel
 ) {
     actionBuilder.run {
         append(actor.login)
         setSpan(
-            ActorClickableSpan(actor, type, resources, actions),
+            ActorClickableSpan(actor, type, resources, viewModel),
             length - actor.login.length,
             length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -649,7 +652,7 @@ private fun appendRepositorySpan(
     fullName: Boolean = false,
     actionBuilder: SpannableStringBuilder,
     resources: Resources,
-    actions: EventActions,
+    viewModel: TimelineViewModel,
     org: EventOrg?
 ) {
     actionBuilder.run {
@@ -657,9 +660,12 @@ private fun appendRepositorySpan(
         repoFullName?.let {
             append(it)
             setSpan(
-                RepositoryClickableSpan(it, org, resources, actions),
-                length - (if (fullName) (repository.fullName?.length
-                    ?: 0) else repository.name.length),
+                RepositoryClickableSpan(it, org, resources, viewModel),
+                length - (if (fullName) {
+                    repository.fullName?.length ?: 0
+                } else {
+                    repository.name.length
+                }),
                 length,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
@@ -671,13 +677,13 @@ private fun appendIssueNumberSpan(
     issue: EventIssue,
     actionBuilder: SpannableStringBuilder,
     resources: Resources,
-    actions: EventActions
+    viewModel: TimelineViewModel
 ) {
     val text = "#${issue.number}"
     actionBuilder.run {
         append(text)
         setSpan(
-            IssueNumberClickableSpan(issue, resources, actions),
+            IssueNumberClickableSpan(issue, resources, viewModel),
             length - text.length,
             length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -689,13 +695,13 @@ private fun appendPullRequestNumberSpan(
     pullRequest: EventPullRequest,
     actionBuilder: SpannableStringBuilder,
     resources: Resources,
-    actions: EventActions
+    viewModel: TimelineViewModel
 ) {
     val text = "#${pullRequest.number}"
     actionBuilder.run {
         append(text)
         setSpan(
-            PullRequestNumberClickableSpan(pullRequest, resources, actions),
+            PullRequestNumberClickableSpan(pullRequest, resources, viewModel),
             length - text.length,
             length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -707,12 +713,12 @@ private fun appendProjectSpan(
     project: EventProject,
     actionBuilder: SpannableStringBuilder,
     resources: Resources,
-    actions: EventActions
+    viewModel: TimelineViewModel
 ) {
     actionBuilder.run {
         append(project.name)
         setSpan(
-            ProjectClickableSpan(project, resources, actions),
+            ProjectClickableSpan(project, resources, viewModel),
             length - project.name.length,
             length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -724,12 +730,12 @@ private fun appendProjectColumnSpan(
     projectColumn: EventProjectColumn,
     actionBuilder: SpannableStringBuilder,
     resources: Resources,
-    actions: EventActions
+    viewModel: TimelineViewModel
 ) {
     actionBuilder.run {
         append(projectColumn.name)
         setSpan(
-            ProjectColumnClickableSpan(projectColumn, resources, actions),
+            ProjectColumnClickableSpan(projectColumn, resources, viewModel),
             length - projectColumn.name.length,
             length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -741,12 +747,12 @@ private fun appendReleaseSpan(
     release: EventRelease,
     actionBuilder: SpannableStringBuilder,
     resources: Resources,
-    actions: EventActions
+    viewModel: TimelineViewModel
 ) {
     actionBuilder.run {
         append(release.tagName)
         setSpan(
-            ReleaseClickableSpan(release, resources, actions),
+            ReleaseClickableSpan(release, resources, viewModel),
             length - release.tagName.length,
             length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -758,12 +764,12 @@ private fun appendGistSpan(
     gist: Gist,
     actionBuilder: SpannableStringBuilder,
     resources: Resources,
-    actions: EventActions
+    viewModel: TimelineViewModel
 ) {
     actionBuilder.run {
         append(gist.description)
         setSpan(
-            GistClickableSpan(gist, resources, actions),
+            GistClickableSpan(gist, resources, viewModel),
             length - gist.description.length,
             length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE

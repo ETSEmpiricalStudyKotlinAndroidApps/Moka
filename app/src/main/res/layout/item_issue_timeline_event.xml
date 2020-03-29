@@ -5,9 +5,11 @@
 
     <data>
 
+        <import type="io.github.tonnyl.moka.data.item.IssueTimelineItem" />
+
         <variable
             name="issueTimelineEvent"
-            type="io.github.tonnyl.moka.data.item.IssueTimelineItem" />
+            type="IssueTimelineItem" />
 
     </data>
 

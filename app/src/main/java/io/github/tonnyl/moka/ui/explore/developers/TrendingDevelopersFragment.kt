@@ -18,13 +18,14 @@ import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import io.github.tonnyl.moka.ui.explore.ViewModelFactory
+import io.github.tonnyl.moka.ui.explore.developers.TrendingDeveloperItemEvent.ViewProfile
+import io.github.tonnyl.moka.ui.explore.developers.TrendingDeveloperItemEvent.ViewRepository
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
-class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
-    EmptyViewActions {
+class TrendingDevelopersFragment : Fragment(), EmptyViewActions {
 
     private val mainViewModel by activityViewModels<MainViewModel>()
     private val viewModel by viewModels<ExploreViewModel>(
@@ -44,9 +45,7 @@ class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
     private lateinit var binding: FragmentExploreDevelopersBinding
 
     private val developerAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        TrendingDeveloperAdapter().apply {
-            actions = this@TrendingDevelopersFragment
-        }
+        TrendingDeveloperAdapter(viewLifecycleOwner, viewModel)
     }
 
     companion object {
@@ -109,26 +108,33 @@ class TrendingDevelopersFragment : Fragment(), TrendingDeveloperAction,
             }
         })
 
+        viewModel.developerEvent.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is ViewProfile -> {
+                    findNavController().navigate(
+                        R.id.profile_fragment,
+                        ProfileFragmentArgs(
+                            event.developer.username,
+                            getProfileTypeByDeveloper(event.developer)
+                        ).toBundle()
+                    )
+                }
+                is ViewRepository -> {
+                    findNavController().navigate(
+                        R.id.repository_fragment,
+                        RepositoryFragmentArgs(
+                            event.developer.username,
+                            event.developer.repository.name,
+                            getProfileTypeByDeveloper(event.developer)
+                        ).toBundle()
+                    )
+                }
+            }
+        })
+
         binding.swipeRefresh.setOnRefreshListener {
             retryInitial()
         }
-    }
-
-    override fun viewProfile(developer: TrendingDeveloper) {
-        val args = ProfileFragmentArgs(
-            developer.username,
-            getProfileTypeByDeveloper(developer)
-        ).toBundle()
-        findNavController().navigate(R.id.profile_fragment, args)
-    }
-
-    override fun viewRepository(developer: TrendingDeveloper) {
-        val args = RepositoryFragmentArgs(
-            developer.username,
-            developer.repository.name,
-            getProfileTypeByDeveloper(developer)
-        ).toBundle()
-        findNavController().navigate(R.id.repository_fragment, args)
     }
 
     override fun retryInitial() {

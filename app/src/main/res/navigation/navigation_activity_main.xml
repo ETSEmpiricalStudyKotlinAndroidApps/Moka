@@ -211,8 +211,9 @@
             app:argType="string" />
 
         <argument
-            android:name="issueItem"
-            app:argType="io.github.tonnyl.moka.data.item.IssueItem" />
+            android:name="number"
+            app:argType="integer"
+            app:nullable="false" />
 
     </fragment>
 
@@ -223,8 +224,8 @@
         tools:layout="@layout/fragment_pr">
 
         <argument
-            android:name="pullRequestItem"
-            app:argType="io.github.tonnyl.moka.data.item.PullRequestItem" />
+            android:name="number"
+            app:argType="integer" />
 
         <argument
             android:name="repositoryOwner"

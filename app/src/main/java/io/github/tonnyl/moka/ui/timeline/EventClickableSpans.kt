@@ -11,7 +11,7 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 
 abstract class EventClickableSpans(
     val resources: Resources,
-    val actions: EventActions?
+    val viewModel: TimelineViewModel
 ) : ClickableSpan() {
 
     override fun updateDrawState(ds: TextPaint) {
@@ -28,14 +28,11 @@ class ActorClickableSpan(
     val actor: EventActor,
     val type: ProfileType,
     resources: Resources,
-    actions: EventActions?
-) : EventClickableSpans(resources, actions) {
+    viewModel: TimelineViewModel
+) : EventClickableSpans(resources, viewModel) {
 
     override fun onClick(v: View) {
-        actions?.openProfile(
-            actor.login,
-            type
-        )
+        viewModel.viewProfile(actor.login, type)
     }
 
 }
@@ -44,11 +41,11 @@ class RepositoryClickableSpan(
     private val fullName: String,
     private val org: EventOrg?,
     resources: Resources,
-    actions: EventActions?
-) : EventClickableSpans(resources, actions) {
+    viewModel: TimelineViewModel
+) : EventClickableSpans(resources, viewModel) {
 
     override fun onClick(v: View) {
-        actions?.viewRepository(fullName, org)
+        viewModel.viewRepository(fullName, org)
     }
 
 }
@@ -56,8 +53,8 @@ class RepositoryClickableSpan(
 class IssueNumberClickableSpan(
     val issue: EventIssue,
     resources: Resources,
-    actions: EventActions?
-) : EventClickableSpans(resources, actions) {
+    viewModel: TimelineViewModel
+) : EventClickableSpans(resources, viewModel) {
 
     override fun onClick(v: View) {
 
@@ -68,8 +65,8 @@ class IssueNumberClickableSpan(
 class PullRequestNumberClickableSpan(
     val pullRequest: EventPullRequest,
     resources: Resources,
-    actions: EventActions?
-) : EventClickableSpans(resources, actions) {
+    viewModel: TimelineViewModel
+) : EventClickableSpans(resources, viewModel) {
 
     override fun onClick(v: View) {
 
@@ -80,8 +77,8 @@ class PullRequestNumberClickableSpan(
 class ProjectClickableSpan(
     val project: EventProject,
     resources: Resources,
-    actions: EventActions?
-) : EventClickableSpans(resources, actions) {
+    viewModel: TimelineViewModel
+) : EventClickableSpans(resources, viewModel) {
 
     override fun onClick(v: View) {
 
@@ -92,8 +89,8 @@ class ProjectClickableSpan(
 class ProjectColumnClickableSpan(
     val projectColumn: EventProjectColumn,
     resources: Resources,
-    actions: EventActions?
-) : EventClickableSpans(resources, actions) {
+    viewModel: TimelineViewModel
+) : EventClickableSpans(resources, viewModel) {
 
     override fun onClick(v: View) {
 
@@ -104,8 +101,8 @@ class ProjectColumnClickableSpan(
 class ProjectCardClickableSpan(
     val projectCard: EventProjectCard,
     resources: Resources,
-    actions: EventActions?
-) : EventClickableSpans(resources, actions) {
+    viewModel: TimelineViewModel
+) : EventClickableSpans(resources, viewModel) {
 
     override fun onClick(v: View) {
 
@@ -116,8 +113,8 @@ class ProjectCardClickableSpan(
 class ReleaseClickableSpan(
     val release: EventRelease,
     resources: Resources,
-    actions: EventActions?
-) : EventClickableSpans(resources, actions) {
+    viewModel: TimelineViewModel
+) : EventClickableSpans(resources, viewModel) {
 
     override fun onClick(v: View) {
 
@@ -128,8 +125,8 @@ class ReleaseClickableSpan(
 class TeamClickableSpan(
     val team: EventTeam,
     resources: Resources,
-    actions: EventActions?
-) : EventClickableSpans(resources, actions) {
+    viewModel: TimelineViewModel
+) : EventClickableSpans(resources, viewModel) {
 
     override fun onClick(v: View) {
 
@@ -140,8 +137,8 @@ class TeamClickableSpan(
 class GistClickableSpan(
     val gist: Gist,
     resources: Resources,
-    actions: EventActions?
-) : EventClickableSpans(resources, actions) {
+    viewModel: TimelineViewModel
+) : EventClickableSpans(resources, viewModel) {
 
     override fun onClick(v: View) {
 

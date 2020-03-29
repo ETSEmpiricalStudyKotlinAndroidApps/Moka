@@ -7,13 +7,15 @@
 
         <import type="io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType" />
 
+        <import type="io.github.tonnyl.moka.ui.explore.ExploreViewModel" />
+
         <variable
             name="selectedType"
             type="ExploreTimeSpanType" />
 
         <variable
-            name="filterActions"
-            type="io.github.tonnyl.moka.ui.explore.filters.FilterActions" />
+            name="viewModel"
+            type="ExploreViewModel" />
 
     </data>
 
@@ -49,7 +51,7 @@
                 style="@style/Widget.AppCompat.CompoundButton.RadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:onClick="@{() -> filterActions.timeSpanSelect(@id/item_trending_filter_time_span_daily)}"
+                android:onClick="@{() -> viewModel.selectTimeSpan(ExploreTimeSpanType.DAILY)}"
                 android:paddingStart="@dimen/fragment_content_padding"
                 android:paddingEnd="@dimen/fragment_content_padding"
                 android:text="@string/explore_trending_filter_time_span_daily" />
@@ -59,7 +61,7 @@
                 style="@style/Widget.AppCompat.CompoundButton.RadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:onClick="@{() -> filterActions.timeSpanSelect(@id/item_trending_filter_time_span_weekly)}"
+                android:onClick="@{() -> viewModel.selectTimeSpan(ExploreTimeSpanType.WEEKLY)}"
                 android:paddingStart="@dimen/fragment_content_padding"
                 android:paddingEnd="@dimen/fragment_content_padding"
                 android:text="@string/explore_trending_filter_time_span_weekly"
@@ -70,7 +72,7 @@
                 style="@style/Widget.AppCompat.CompoundButton.RadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:onClick="@{() -> filterActions.timeSpanSelect(@id/item_trending_filter_time_span_monthly)}"
+                android:onClick="@{() -> viewModel.selectTimeSpan(ExploreTimeSpanType.MONTHLY)}"
                 android:paddingStart="@dimen/fragment_content_padding"
                 android:paddingEnd="@dimen/fragment_content_padding"
                 android:text="@string/explore_trending_filter_time_span_monthly"

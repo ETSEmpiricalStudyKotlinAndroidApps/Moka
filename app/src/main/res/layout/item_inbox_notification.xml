@@ -9,17 +9,17 @@
 
         <import type="io.github.tonnyl.moka.data.NotificationKt" />
 
+        <import type="io.github.tonnyl.moka.data.Notification" />
+
+        <import type="io.github.tonnyl.moka.ui.inbox.InboxViewModel" />
+
         <variable
             name="notification"
-            type="io.github.tonnyl.moka.data.Notification" />
+            type="Notification" />
 
         <variable
-            name="span"
-            type="android.text.style.ForegroundColorSpan" />
-
-        <variable
-            name="notificationActions"
-            type="io.github.tonnyl.moka.ui.inbox.InboxActions" />
+            name="viewModel"
+            type="InboxViewModel" />
 
     </data>
 
@@ -27,16 +27,17 @@
         android:id="@+id/item_notification_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> notificationActions.openNotification(notification)}"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> viewModel.viewNotification(notification)}"
         android:padding="@dimen/fragment_content_padding">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_notification_repository_avatar"
             android:layout_width="@dimen/regular_icon_size"
             android:layout_height="@dimen/regular_icon_size"
+            android:onClick="@{() -> viewModel.viewProfile(notification.repository.owner)}"
             app:avatarUrl="@{notification.repository.owner.avatarUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,11 +57,13 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
+            android:onClick="@{() -> viewModel.viewRepository(notification.repository)}"
             android:textAppearance="@style/TextAppearance.Moka.ListPrimary.Colored"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_notification_space_to_end_of_avatar"
             app:layout_constraintTop_toTopOf="parent"
             app:textFuture="@{notification.repository.fullName}"
+            app:unread="@{notification.unread}"
             tools:text="@sample/notification.json/notification/repo_full_name" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -72,6 +75,7 @@
             app:layout_constraintStart_toEndOf="@id/item_notification_space_to_end_of_avatar"
             app:layout_constraintTop_toBottomOf="@id/item_notification_repository_name"
             app:textFuture="@{NotificationKt.toDisplayContentText(notification, context)}"
+            app:unread="@{notification.unread}"
             tools:text="@sample/notification.json/notification/subject/title" />
 
         <androidx.appcompat.widget.AppCompatTextView

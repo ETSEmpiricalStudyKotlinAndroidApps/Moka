@@ -251,8 +251,8 @@
     <string name="pull_requests">Pull requests</string>
     <string name="issue_pr_title_format">#%1$d %2$s</string><!-- #234 CoroutineExceptionHandler is invoked from a random thread -->
     <string name="issue_pr_number">#%1$d</string>
-    <string name="issue_pr_by">by %1$s</string>
-    <string name="issue_pr_info_format">%1$s · %2$s · %3$s</string><!-- open · by tonny · 3 days ago -->
+    <string name="issue_pr_created_by">created by %1$s</string>
+    <string name="issue_pr_info_format">%1$s · %2$s · %3$s</string><!-- open · created by tonny · 3 days ago -->
     <string name="issue_pr_status_open">open</string>
     <string name="issue_pr_status_closed">closed</string>
     <string name="issue_pr_status_merged">merged</string>

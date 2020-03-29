@@ -9,6 +9,8 @@
 
         <import type="io.github.tonnyl.moka.util.NumberUtilsKt" />
 
+        <import type="io.github.tonnyl.moka.ui.explore.ExploreViewModel" />
+
         <variable
             name="repository"
             type="TrendingRepository" />
@@ -18,8 +20,8 @@
             type="java.lang.Integer" />
 
         <variable
-            name="actions"
-            type="io.github.tonnyl.moka.ui.explore.repositories.TrendingRepositoryAction" />
+            name="viewModel"
+            type="ExploreViewModel" />
 
     </data>
 
@@ -27,17 +29,17 @@
         android:id="@+id/item_trending_repository_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> actions.viewRepository(repository)}"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> viewModel.viewRepository(repository)}"
         android:padding="@dimen/fragment_content_padding">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_trending_repository_avatar"
             android:layout_width="@dimen/repository_list_avatar_width"
             android:layout_height="@dimen/repository_list_avatar_height"
-            android:onClick="@{() -> actions.viewProfile(repository)}"
+            android:onClick="@{() -> viewModel.viewProfile(repository)}"
             app:avatarUrl="@{repository.avatar}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

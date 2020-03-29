@@ -8,13 +8,17 @@
 
         <import type="io.github.tonnyl.moka.network.Status" />
 
+        <import type="io.github.tonnyl.moka.ui.search.users.SearchedUsersViewModel" />
+
+        <import type="io.github.tonnyl.moka.ui.EmptyViewActions" />
+
         <variable
             name="viewModel"
-            type="io.github.tonnyl.moka.ui.search.users.SearchedUsersViewModel" />
+            type="SearchedUsersViewModel" />
 
         <variable
             name="emptyViewActions"
-            type="io.github.tonnyl.moka.ui.EmptyViewActions" />
+            type="EmptyViewActions" />
 
     </data>
 

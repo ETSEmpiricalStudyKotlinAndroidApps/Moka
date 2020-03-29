@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import io.github.tonnyl.moka.data.PullRequest
 import io.github.tonnyl.moka.data.extension.transformToPullRequestIssueComment
+import io.github.tonnyl.moka.data.item.IssueComment
 import io.github.tonnyl.moka.data.item.PullRequestTimelineItem
 import io.github.tonnyl.moka.data.toNullablePullRequest
 import io.github.tonnyl.moka.network.GraphQLClient
@@ -20,9 +22,7 @@ import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class PullRequestViewModel(
-    private val owner: String,
-    private val name: String,
-    private val number: Int
+    private val args: PullRequestFragmentArgs
 ) : NetworkCacheSourceViewModel<PullRequestTimelineItem>() {
 
     private val _initialLoadStatus = MutableLiveData<Resource<List<PullRequestTimelineItem>>>()
@@ -33,9 +33,13 @@ class PullRequestViewModel(
     val pagedLoadStatus: LiveData<PagedResource2<List<PullRequestTimelineItem>>>
         get() = _pagedLoadStatus
 
-    private val _pullRequest = MutableLiveData<Resource<PullRequestTimelineItem?>>()
-    val pullRequest: LiveData<Resource<PullRequestTimelineItem?>>
+    private val _pullRequest = MutableLiveData<PullRequest?>()
+    val pullRequest: LiveData<PullRequest?>
         get() = _pullRequest
+
+    private val _pullRequestToCommentLiveData = MutableLiveData<Resource<IssueComment?>>()
+    val pullRequestToCommentLiveData: LiveData<Resource<IssueComment?>>
+        get() = _pullRequestToCommentLiveData
 
     private lateinit var sourceFactory: PullRequestTimelineSourceFactory
 
@@ -46,9 +50,9 @@ class PullRequestViewModel(
 
     override fun initRemoteSource(): LiveData<PagedList<PullRequestTimelineItem>> {
         sourceFactory = PullRequestTimelineSourceFactory(
-            owner,
-            name,
-            number,
+            args.repositoryOwner,
+            args.repositoryName,
+            args.number,
             _initialLoadStatus,
             _pagedLoadStatus
         )
@@ -69,26 +73,32 @@ class PullRequestViewModel(
 
     private fun refreshPullRequestData() {
         viewModelScope.launch(Dispatchers.IO) {
-            _pullRequest.postValue(Resource.loading(null))
+            _pullRequestToCommentLiveData.postValue(Resource.loading(null))
 
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient
-                        .query(PullRequestQuery(owner, name, number))
+                        .query(
+                            PullRequestQuery(args.repositoryOwner, args.repositoryName, args.number)
+                        )
                         .execute()
                 }
 
                 val data = response.data()?.repository?.pullRequest.toNullablePullRequest()
 
-                _pullRequest.postValue(
+                _pullRequestToCommentLiveData.postValue(
                     Resource.success(
-                        data?.transformToPullRequestIssueComment(owner, name)
+                        data?.transformToPullRequestIssueComment(
+                            args.repositoryOwner, args.repositoryName
+                        )
                     )
                 )
+
+                _pullRequest.postValue(data)
             } catch (e: Exception) {
                 Timber.e(e)
 
-                _pullRequest.postValue(Resource.error(e.message, null))
+                _pullRequestToCommentLiveData.postValue(Resource.error(e.message, null))
             }
         }
     }

@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.search.repositories
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
@@ -7,7 +8,9 @@ import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
+import io.github.tonnyl.moka.ui.search.repositories.SearchedRepositoryItemEvent.*
 
 class SearchedRepositoriesViewModel : NetworkCacheSourceViewModel<SearchedRepositoryItem>() {
 
@@ -22,6 +25,10 @@ class SearchedRepositoriesViewModel : NetworkCacheSourceViewModel<SearchedReposi
         get() = _pagedLoadStatus
 
     private lateinit var sourceFactory: SearchedRepositoriesDataSourceFactory
+
+    private val _event = MutableLiveData<Event<SearchedRepositoryItemEvent>>()
+    val event: LiveData<Event<SearchedRepositoryItemEvent>>
+        get() = _event
 
     override fun initRemoteSource(): LiveData<PagedList<SearchedRepositoryItem>> {
         sourceFactory = SearchedRepositoriesDataSourceFactory(
@@ -45,4 +52,24 @@ class SearchedRepositoriesViewModel : NetworkCacheSourceViewModel<SearchedReposi
             refresh()
         }
     }
+
+    @MainThread
+    fun viewProfile(login: String) {
+        _event.value = Event(ViewProfile(login))
+    }
+
+    @MainThread
+    fun viewRepository(
+        login: String,
+        repoName: String
+    ) {
+        _event.value = Event(ViewRepository(login, repoName))
+    }
+
+    @MainThread
+    fun starRepository(repo: SearchedRepositoryItem) {
+
+        _event.value = Event(StarRepository(repo))
+    }
+
 }

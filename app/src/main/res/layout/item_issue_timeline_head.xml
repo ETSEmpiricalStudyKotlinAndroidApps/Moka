@@ -6,17 +6,11 @@
 
     <data>
 
-        <variable
-            name="title"
-            type="String" />
-
-        <variable
-            name="info"
-            type="String" />
+        <import type="io.github.tonnyl.moka.ui.issue.IssueViewModel" />
 
         <variable
             name="viewModel"
-            type="io.github.tonnyl.moka.ui.issue.IssueViewModel" />
+            type="IssueViewModel" />
 
     </data>
 
@@ -31,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/list_item_spacing"
-            app:textFuture="@{title}"
+            app:textFuture="@{viewModel.issueLiveData.title}"
             tools:text="@sample/issue.json/issues/title" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -41,12 +35,12 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/list_item_spacing"
             android:paddingEnd="@dimen/list_item_spacing"
-            app:textFuture="@{info}"
-            tools:text="#234 · created by tonny 3 days ago" />
+            app:issueInfo="@{viewModel.issueLiveData}"
+            tools:text="#234 · created by tonny · 3 days ago" />
 
         <include
             layout="@layout/item_issue_timeline_comment"
-            bind:comment="@{viewModel.issueLiveData.data}" />
+            bind:comment="@{viewModel.issueToCommentLiveData.data}" />
 
     </LinearLayout>
 

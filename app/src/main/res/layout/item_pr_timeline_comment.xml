@@ -5,9 +5,11 @@
 
     <data>
 
+        <import type="io.github.tonnyl.moka.data.item.PullRequestTimelineItem" />
+
         <variable
             name="comment"
-            type="io.github.tonnyl.moka.data.item.PullRequestTimelineItem" />
+            type="PullRequestTimelineItem" />
 
     </data>
 

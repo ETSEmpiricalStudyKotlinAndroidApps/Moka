@@ -7,9 +7,11 @@
 
         <import type="io.github.tonnyl.moka.data.AuthenticatedUser" />
 
+        <import type="io.github.tonnyl.moka.ui.account.AccountViewModel" />
+
         <variable
             name="viewModel"
-            type="io.github.tonnyl.moka.ui.account.AccountViewModel" />
+            type="AccountViewModel" />
 
         <variable
             name="account"
@@ -25,9 +27,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foreground="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             android:onClick="@{() -> viewModel.onSelectNewAccount(account.id)}"
             android:padding="8dp">
 

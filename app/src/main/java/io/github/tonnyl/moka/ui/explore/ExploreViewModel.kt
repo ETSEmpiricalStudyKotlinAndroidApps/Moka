@@ -14,7 +14,12 @@ import io.github.tonnyl.moka.db.dao.TrendingRepositoryDao
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.service.TrendingService
+import io.github.tonnyl.moka.ui.Event
+import io.github.tonnyl.moka.ui.explore.developers.TrendingDeveloperItemEvent
+import io.github.tonnyl.moka.ui.explore.filters.FilterEvent
+import io.github.tonnyl.moka.ui.explore.filters.FilterEvent.*
 import io.github.tonnyl.moka.ui.explore.filters.LocalLanguage
+import io.github.tonnyl.moka.ui.explore.repositories.TrendingRepositoryItemEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -45,6 +50,18 @@ class ExploreViewModel(
 
     val repositoriesLocalData = localRepositoriesSource.trendingRepositories()
     val developersLocalData = localDevelopersSource.trendingDevelopers()
+
+    private val _developerEvent = MutableLiveData<Event<TrendingDeveloperItemEvent>>()
+    val developerEvent: LiveData<Event<TrendingDeveloperItemEvent>>
+        get() = _developerEvent
+
+    private val _repositoryEvent = MutableLiveData<Event<TrendingRepositoryItemEvent>>()
+    val repositoryEvent: LiveData<Event<TrendingRepositoryItemEvent>>
+        get() = _repositoryEvent
+
+    private val _filterEvent = MutableLiveData<Event<FilterEvent>>()
+    val filterEvent: LiveData<Event<FilterEvent>>
+        get() = _filterEvent
 
     init {
         // todo store/restore value from sp.
@@ -140,6 +157,50 @@ class ExploreViewModel(
                 _repositoriesRemoteStatus.value = Resource.error(e.message, null)
             }
         }
+    }
+
+    @MainThread
+    fun viewProfile(repository: TrendingRepository) {
+
+    }
+
+    @MainThread
+    fun viewProfile(developer: TrendingDeveloper) {
+
+    }
+
+    @MainThread
+    fun viewRepository(repository: TrendingRepository) {
+
+    }
+
+    @MainThread
+    fun viewRepository(developer: TrendingDeveloper) {
+
+    }
+
+    @MainThread
+    fun selectLanguage(lang: LocalLanguage) {
+        _queryData.value = _queryData.value?.copy(second = lang)
+
+        _filterEvent.value = Event(SelectLanguage(lang))
+    }
+
+    @MainThread
+    fun confirmSelection() {
+        _filterEvent.value = Event(ConfirmSelection)
+    }
+
+    @MainThread
+    fun selectTimeSpan(type: ExploreTimeSpanType) {
+        _queryData.value = _queryData.value?.copy(first = type)
+
+        _filterEvent.value = Event(SelectTimeSpan(type))
+    }
+
+    @MainThread
+    fun showFilters() {
+        _filterEvent.value = Event(ShowFilters)
     }
 
 }

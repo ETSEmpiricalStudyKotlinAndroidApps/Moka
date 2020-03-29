@@ -34,9 +34,7 @@ import timber.log.Timber
 import java.util.*
 
 class RepositoryViewModel(
-    private val login: String,
-    private val repositoryName: String,
-    private val profileType: ProfileType
+    private val args: RepositoryFragmentArgs
 ) : ViewModel() {
 
     private val _usersRepository = MutableLiveData<Resource<Repository>>()
@@ -70,10 +68,12 @@ class RepositoryViewModel(
     @MainThread
     private fun refresh() {
         when {
-            profileType == ProfileType.USER || _usersRepository.value?.data != null -> {
+            args.profileType == ProfileType.USER
+                    || _usersRepository.value?.data != null -> {
                 refreshUsersRepository()
             }
-            profileType == ProfileType.ORGANIZATION || _organizationsRepository.value?.data != null -> {
+            args.profileType == ProfileType.ORGANIZATION
+                    || _organizationsRepository.value?.data != null -> {
                 refreshOrganizationsRepository()
             }
             // including ProfileType.NOT_SPECIFIED
@@ -91,7 +91,7 @@ class RepositoryViewModel(
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient
-                        .query(CurrentLevelTreeViewQuery(login, repositoryName, "$branchName:"))
+                        .query(CurrentLevelTreeViewQuery(args.login, args.name, "$branchName:"))
                         .execute()
                 }
 
@@ -124,7 +124,7 @@ class RepositoryViewModel(
                     val expression = "$branchName:${fileEntry.name}"
                     val fileContentResponse = runBlocking {
                         GraphQLClient.apolloClient
-                            .query(FileContentQuery(login, repositoryName, expression))
+                            .query(FileContentQuery(args.login, args.name, expression))
                             .execute()
                     }
 
@@ -143,7 +143,7 @@ class RepositoryViewModel(
                         } else {
                             _readmeHtml.postValue(
                                 Resource.success(
-                                    HtmlHandler.toHtml(html, login, repositoryName, branchName)
+                                    HtmlHandler.toHtml(html, args.login, args.name, branchName)
                                 )
                             )
                         }
@@ -199,7 +199,7 @@ class RepositoryViewModel(
     }
 
     fun toggleFollow() {
-        if (profileType == ProfileType.ORGANIZATION
+        if (args.profileType == ProfileType.ORGANIZATION
             || _usersRepository.value?.data?.viewerCanFollow != true
             || _followState.value?.status == Status.LOADING
         ) {
@@ -251,7 +251,7 @@ class RepositoryViewModel(
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient
-                        .query(UsersRepositoryQuery(login, repositoryName))
+                        .query(UsersRepositoryQuery(args.login, args.name))
                         .execute()
                 }
 
@@ -293,7 +293,7 @@ class RepositoryViewModel(
             try {
                 val response = runBlocking {
                     GraphQLClient.apolloClient
-                        .query(OrganizationsRepositoryQuery(login, repositoryName))
+                        .query(OrganizationsRepositoryQuery(args.login, args.name))
                         .execute()
                 }
 

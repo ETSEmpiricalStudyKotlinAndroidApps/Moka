@@ -8,10 +8,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchedRepositoriesBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
+import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.ui.search.SearchViewModel
+import io.github.tonnyl.moka.ui.search.repositories.SearchedRepositoryItemEvent.*
 
 class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
 
@@ -22,10 +28,14 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
             requireParentFragment()
         }
     )
-    private val viewModel by viewModels<SearchedRepositoriesViewModel>()
+    private val searchedRepositoriesViewModel by viewModels<SearchedRepositoriesViewModel>()
 
     private val searchedRepositoryAdapter: SearchedRepositoryAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        SearchedRepositoryAdapter(this@SearchedRepositoriesFragment)
+        SearchedRepositoryAdapter(
+            viewLifecycleOwner,
+            searchedRepositoriesViewModel,
+            this@SearchedRepositoriesFragment
+        )
     }
 
     companion object {
@@ -50,15 +60,15 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
 
         binding.apply {
             emptyViewActions = this@SearchedRepositoriesFragment
-            this.viewModel = viewModel
+            viewModel = searchedRepositoriesViewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
         parentViewModel.input.observe(requireParentFragment(), Observer {
-            viewModel.refresh(it)
+            searchedRepositoriesViewModel.refresh(it)
         })
 
-        viewModel.data.observe(viewLifecycleOwner, Observer {
+        searchedRepositoriesViewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = searchedRepositoryAdapter
@@ -71,14 +81,39 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
         binding.swipeRefresh.setOnRefreshListener {
             triggerRefresh()
         }
+
+        searchedRepositoriesViewModel.event.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is ViewProfile -> {
+                    findNavController().navigate(
+                        R.id.profile_fragment,
+                        ProfileFragmentArgs(event.login, ProfileType.NOT_SPECIFIED).toBundle()
+                    )
+                }
+                is ViewRepository -> {
+                    findNavController().navigate(
+                        R.id.repository_fragment,
+                        RepositoryFragmentArgs(
+                            event.login,
+                            event.repoName,
+                            ProfileType.NOT_SPECIFIED
+                        ).toBundle()
+                    )
+                }
+                is StarRepository -> {
+                    searchedRepositoryAdapter.notifyDataSetChanged()
+                }
+            }
+        })
+
     }
 
     override fun retryLoadPreviousNext() {
-        viewModel.retryLoadPreviousNext()
+        searchedRepositoriesViewModel.retryLoadPreviousNext()
     }
 
     override fun retryInitial() {
-        viewModel.refresh()
+        searchedRepositoriesViewModel.refresh()
     }
 
     override fun doAction() {
@@ -86,7 +121,7 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
     }
 
     private fun triggerRefresh() {
-        viewModel.refresh(parentViewModel.input.value ?: "")
+        searchedRepositoriesViewModel.refresh(parentViewModel.input.value ?: "")
     }
 
 }

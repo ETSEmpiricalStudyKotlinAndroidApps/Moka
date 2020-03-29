@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.users
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -11,10 +12,10 @@ import io.github.tonnyl.moka.ui.PagedResourceAdapter
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class UserAdapter(
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: UsersViewModel,
     override val retryActions: PagingNetworkStateActions
 ) : PagedResourceAdapter<UserItem>(DIFF_CALLBACK, retryActions) {
-
-    var actions: ItemUserActions? = null
 
     companion object {
 
@@ -36,6 +37,8 @@ class UserAdapter(
 
     override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return UserViewHolder(
+            lifecycleOwner,
+            viewModel,
             ItemUserBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -48,23 +51,26 @@ class UserAdapter(
         val item = getItem(position) ?: return
 
         if (holder is UserViewHolder) {
-            holder.bindTo(item, actions)
+            holder.bindTo(item)
         }
     }
 
     override fun getViewType(position: Int): Int = VIEW_TYPE_USER
 
     class UserViewHolder(
+        private val owner: LifecycleOwner,
+        private val model: UsersViewModel,
         private val binding: ItemUserBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: UserItem, userActions: ItemUserActions?) {
-            binding.apply {
+        fun bindTo(data: UserItem) {
+            with(binding) {
+                lifecycleOwner = owner
+                viewModel = model
                 user = data
-                actions = userActions
-            }
 
-            binding.executePendingBindings()
+                executePendingBindings()
+            }
         }
 
     }

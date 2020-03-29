@@ -8,13 +8,17 @@
 
         <import type="io.github.tonnyl.moka.network.Status" />
 
+        <import type="io.github.tonnyl.moka.ui.issue.IssueViewModel" />
+
+        <import type="io.github.tonnyl.moka.ui.EmptyViewActions" />
+
         <variable
             name="viewModel"
-            type="io.github.tonnyl.moka.ui.issue.IssueViewModel" />
+            type="IssueViewModel" />
 
         <variable
             name="emptyViewActions"
-            type="io.github.tonnyl.moka.ui.EmptyViewActions" />
+            type="EmptyViewActions" />
 
     </data>
 
@@ -49,11 +53,12 @@
                 <include
                     android:id="@+id/layout_loading"
                     layout="@layout/layout_loading"
-                    bind:goneUnless="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatus.status == Status.LOADING}" />
+                    bind:goneUnless="@{viewModel.initialLoadStatus.status == Status.LOADING || viewModel.issueToCommentLiveData.status == Status.LOADING}" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     style="@style/RecyclerViewStyle"
+                    app:visibleUnless="@{viewModel.initialLoadStatus.data != null &amp;&amp; viewModel.issueToCommentLiveData.data != null}"
                     tools:listitem="@layout/item_issue_timeline_comment" />
 
             </FrameLayout>

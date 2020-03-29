@@ -8,12 +8,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchedUsersBinding
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
+import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.search.SearchViewModel
+import io.github.tonnyl.moka.ui.search.users.SearchedUserItemEvent.*
 
 class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
 
@@ -27,7 +32,7 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
     private val searchedUsersViewModel by viewModels<SearchedUsersViewModel>()
 
     private val searchedUserAdapter: SearchedUserAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        SearchedUserAdapter(this@SearchedUsersFragment)
+        SearchedUserAdapter(viewLifecycleOwner, searchedUsersViewModel, this@SearchedUsersFragment)
     }
 
     companion object {
@@ -95,6 +100,20 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
             triggerRefresh()
         }
 
+        searchedUsersViewModel.event.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is ViewUserProfile -> {
+                    gotoProfile(event.login, ProfileType.USER)
+                }
+                is ViewOrganizationProfile -> {
+                    gotoProfile(event.login, ProfileType.ORGANIZATION)
+                }
+                is FollowUserEvent -> {
+                    searchedUserAdapter.notifyDataSetChanged()
+                }
+            }
+        })
+
     }
 
     override fun retryLoadPreviousNext() {
@@ -111,6 +130,16 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
 
     private fun triggerRefresh() {
         searchedUsersViewModel.refresh(parentViewModel.input.value ?: "")
+    }
+
+    private fun gotoProfile(
+        login: String,
+        type: ProfileType
+    ) {
+        findNavController().navigate(
+            R.id.profile_fragment,
+            ProfileFragmentArgs(login, type).toBundle()
+        )
     }
 
 }

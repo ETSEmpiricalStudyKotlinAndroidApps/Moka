@@ -62,7 +62,7 @@ class AuthFragment : Fragment() {
             startActivity(intent)
         }
 
-        viewModel.authTokenAndUserResult.observe(this, Observer { resource ->
+        viewModel.authTokenAndUserResult.observe(viewLifecycleOwner, Observer { resource ->
             when (resource.status) {
                 Status.SUCCESS -> {
                     resource.data?.let {

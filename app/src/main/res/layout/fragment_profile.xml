@@ -12,17 +12,23 @@
 
         <import type="io.github.tonnyl.moka.ui.profile.ProfileEvent" />
 
+        <import type="io.github.tonnyl.moka.ui.profile.ProfileViewModel" />
+
+        <import type="io.github.tonnyl.moka.ui.MainViewModel" />
+
+        <import type="io.github.tonnyl.moka.ui.EmptyViewActions" />
+
         <variable
             name="viewModel"
-            type="io.github.tonnyl.moka.ui.profile.ProfileViewModel" />
+            type="ProfileViewModel" />
 
         <variable
             name="mainViewModel"
-            type="io.github.tonnyl.moka.ui.MainViewModel" />
+            type="MainViewModel" />
 
         <variable
             name="emptyViewActions"
-            type="io.github.tonnyl.moka.ui.EmptyViewActions" />
+            type="EmptyViewActions" />
 
     </data>
 

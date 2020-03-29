@@ -24,7 +24,7 @@ class RepositoryFragment : Fragment() {
     private val args by navArgs<RepositoryFragmentArgs>()
 
     private val viewModel by viewModels<RepositoryViewModel> {
-        ViewModelFactory(args.login, args.name, args.profileType)
+        ViewModelFactory(args)
     }
 
     private lateinit var binding: FragmentRepositoryBinding

@@ -9,6 +9,12 @@
 
         <import type="io.github.tonnyl.moka.data.item.SearchedOrganizationItem" />
 
+        <import type="io.github.tonnyl.moka.ui.search.users.SearchedUsersViewModel" />
+
+        <variable
+            name="viewModel"
+            type="SearchedUsersViewModel" />
+
         <variable
             name="data"
             type="SearchedOrganizationItem" />
@@ -22,6 +28,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> viewModel.viewOrganizationProfile(data.login)}"
         android:padding="@dimen/fragment_content_padding">
 
         <Space

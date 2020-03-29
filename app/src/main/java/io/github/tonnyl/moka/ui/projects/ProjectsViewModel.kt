@@ -13,7 +13,7 @@ import io.github.tonnyl.moka.ui.NetworkDatabaseSourceViewModel
 class ProjectsViewModel(
     private val isMyself: Boolean,
     private val localSource: ProjectsDao,
-    private val repositoryName: String?
+    private val args: ProjectsFragmentArgs
 ) : NetworkDatabaseSourceViewModel<Project>() {
 
     private var sourceFactory: ProjectsDataSourceFactory? = null
@@ -38,7 +38,7 @@ class ProjectsViewModel(
             login,
             isMyself,
             localSource,
-            repositoryName,
+            args.repositoryName,
             _initialLoadStatusLiveData,
             _previousNextLoadStatusLiveData
         )

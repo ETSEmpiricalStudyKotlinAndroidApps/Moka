@@ -9,20 +9,24 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.data.EventOrg
 import io.github.tonnyl.moka.databinding.FragmentTimelineBinding
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.NetworkState
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.*
+import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.MainNavigationFragment
+import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.PagingNetworkStateActions
+import io.github.tonnyl.moka.ui.issue.IssueFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
+import io.github.tonnyl.moka.ui.timeline.EventItemEvent.*
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
-class TimelineFragment : MainNavigationFragment(), SearchBarActions,
-    EmptyViewActions, EventActions, PagingNetworkStateActions {
+class TimelineFragment : MainNavigationFragment(),
+    EmptyViewActions, PagingNetworkStateActions {
 
     private val mainViewModel by activityViewModels<MainViewModel>()
     private val viewModel by viewModels<TimelineViewModel> {
@@ -35,9 +39,7 @@ class TimelineFragment : MainNavigationFragment(), SearchBarActions,
     }
 
     private val timelineAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        TimelineAdapter(this@TimelineFragment).apply {
-            eventActions = this@TimelineFragment
-        }
+        EventAdapter(viewLifecycleOwner, viewModel, this@TimelineFragment)
     }
 
     private lateinit var binding: FragmentTimelineBinding
@@ -57,7 +59,6 @@ class TimelineFragment : MainNavigationFragment(), SearchBarActions,
 
         binding.apply {
             emptyViewActions = this@TimelineFragment
-            searchBarActions = this@TimelineFragment
             mainViewModel = this@TimelineFragment.mainViewModel
             viewModel = this@TimelineFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
@@ -101,6 +102,37 @@ class TimelineFragment : MainNavigationFragment(), SearchBarActions,
             }
         })
 
+        viewModel.event.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is ViewProfile -> {
+                    findNavController().navigate(
+                        R.id.profile_fragment,
+                        ProfileFragmentArgs(event.login, event.type).toBundle()
+                    )
+                }
+                is ViewRepository -> {
+                    val loginAndRepoName = event.fullName.split("/")
+                    if (loginAndRepoName.size < 2) {
+                        return@Observer
+                    }
+                    findNavController().navigate(
+                        R.id.repository_fragment,
+                        RepositoryFragmentArgs(
+                            loginAndRepoName[0],
+                            loginAndRepoName[1],
+                            getUserProfileType(event.org, loginAndRepoName[0])
+                        ).toBundle()
+                    )
+                }
+                is ViewIssueDetail -> {
+                    findNavController().navigate(
+                        R.id.issue_fragment,
+                        IssueFragmentArgs(event.repoOwner, event.repoName, event.number).toBundle()
+                    )
+                }
+            }
+        })
+
         mainViewModel.currentUser.observe(viewLifecycleOwner, Observer {
             viewModel.refreshData(it.login, false)
         })
@@ -119,14 +151,6 @@ class TimelineFragment : MainNavigationFragment(), SearchBarActions,
 
     }
 
-    override fun openAccountDialog() {
-        findNavController().navigate(R.id.account_dialog)
-    }
-
-    override fun openSearch() {
-        findNavController().navigate(R.id.search_fragment)
-    }
-
     override fun doAction() {
         parentFragment?.findNavController()?.navigate(R.id.nav_explore)
     }
@@ -137,125 +161,6 @@ class TimelineFragment : MainNavigationFragment(), SearchBarActions,
 
     override fun retryLoadPreviousNext() {
         viewModel.retryLoadPreviousNext()
-    }
-
-    override fun openProfile(login: String, profileType: ProfileType) {
-        val args = ProfileFragmentArgs(login, profileType).toBundle()
-        findNavController().navigate(R.id.profile_fragment, args)
-    }
-
-    override fun viewRepository(fullName: String, org: EventOrg?) {
-        val loginAndRepoName = fullName.split("/")
-        if (loginAndRepoName.size < 2) {
-            return
-        }
-        val repositoryArgs = RepositoryFragmentArgs(
-            loginAndRepoName[0],
-            loginAndRepoName[1],
-            getUserProfileType(org, loginAndRepoName[0])
-        ).toBundle()
-        findNavController().navigate(R.id.repository_fragment, repositoryArgs)
-    }
-
-    override fun openEventDetails(event: Event) {
-        when (event.type) {
-            Event.WATCH_EVENT,
-            Event.PUBLIC_EVENT,
-            Event.CREATE_EVENT,
-            Event.TEAM_ADD_EVENT,
-            Event.DELETE_EVENT -> {
-                viewRepository(
-                    event.repo?.name ?: return,
-                    event.org
-                )
-            }
-            Event.COMMIT_COMMENT_EVENT -> {
-
-            }
-            Event.FORK_EVENT -> {
-                viewRepository(
-                    event.payload?.forkee?.fullName ?: return,
-                    event.org
-                )
-            }
-            Event.GOLLUM_EVENT -> {
-
-            }
-            Event.ISSUE_COMMENT_EVENT -> {
-
-            }
-            Event.ISSUES_EVENT -> {
-
-            }
-            Event.MEMBER_EVENT -> {
-                openProfile(
-                    event.payload?.member?.login ?: return,
-                    ProfileType.USER
-                )
-            }
-            Event.PULL_REQUEST_EVENT -> {
-
-            }
-            Event.PULL_REQUEST_REVIEW_COMMENT_EVENT -> {
-
-            }
-            Event.PULL_REQUEST_REVIEW_EVENT -> {
-
-            }
-            Event.REPOSITORY_EVENT -> {
-                when (event.payload?.action) {
-                    "created",
-                    "archived",
-                    "publicized",
-                    "unarchived" -> {
-                        viewRepository(
-                            event.repo?.name ?: return,
-                            event.org
-                        )
-                    }
-                    "privatized",
-                    "deleted" -> {
-                        // ignore
-                    }
-                    else -> {
-                        // do nothing
-                    }
-                }
-            }
-            Event.PUSH_EVENT -> {
-
-            }
-            Event.RELEASE_EVENT -> {
-
-            }
-            Event.ORG_BLOCK_EVENT -> {
-                openProfile(
-                    event.payload?.blockedUser?.login ?: return,
-                    ProfileType.USER
-                )
-            }
-            Event.PROJECT_CARD_EVENT -> {
-
-            }
-            Event.PROJECT_COLUMN_EVENT -> {
-
-            }
-            Event.ORGANIZATION_EVENT -> {
-                openProfile(
-                    event.payload?.organization?.login ?: return,
-                    ProfileType.ORGANIZATION
-                )
-            }
-            Event.PROJECT_EVENT -> {
-
-            }
-            Event.DOWNLOAD_EVENT,
-            Event.FOLLOW_EVENT,
-            Event.GIST_EVENT,
-            Event.FORK_APPLY_EVENT -> {
-                // Events of these types are no longer delivered, just ignore them.
-            }
-        }
     }
 
     private fun getUserProfileType(org: EventOrg?, login: String): ProfileType {

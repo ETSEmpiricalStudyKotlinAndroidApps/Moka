@@ -77,7 +77,7 @@ class AccountDialogFragment : AppCompatDialogFragment() {
             executePendingBindings()
         }
 
-        accounts?.observe(this, Observer {
+        accounts?.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = accountAdapter
@@ -91,7 +91,7 @@ class AccountDialogFragment : AppCompatDialogFragment() {
             viewModel.currentId.value = it.firstOrNull()?.third?.id
         })
 
-        viewModel.event.observe(this, Observer {
+        viewModel.event.observe(viewLifecycleOwner, Observer {
             when (val event = it.getContentIfNotHandled()) {
                 AccountEvent.VIEW_PROFILE -> {
                     val args = ProfileFragmentArgs(currentAccount.login, ProfileType.USER)
@@ -115,7 +115,7 @@ class AccountDialogFragment : AppCompatDialogFragment() {
             }
         })
 
-        viewModel.newSelectedAccount.observe(this, Observer { event ->
+        viewModel.newSelectedAccount.observe(viewLifecycleOwner, Observer { event ->
             val current = accounts?.value
                 ?.firstOrNull()
                 ?.third

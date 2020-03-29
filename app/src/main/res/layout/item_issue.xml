@@ -7,13 +7,17 @@
 
         <import type="android.text.format.DateUtils" />
 
-        <variable
-            name="issue"
-            type="io.github.tonnyl.moka.data.item.IssueItem" />
+        <import type="io.github.tonnyl.moka.data.item.IssueItem" />
+
+        <import type="io.github.tonnyl.moka.ui.issues.IssuesViewModel" />
 
         <variable
-            name="actions"
-            type="io.github.tonnyl.moka.ui.issues.IssueItemActions" />
+            name="issue"
+            type="IssueItem" />
+
+        <variable
+            name="viewModel"
+            type="IssuesViewModel" />
 
     </data>
 
@@ -22,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?android:attr/selectableItemBackground"
-        android:onClick="@{() -> actions.openPullRequestItem(issue)}"
+        android:onClick="@{() -> viewModel.viewIssueTimeline(issue.number)}"
         android:orientation="vertical"
         android:padding="@dimen/list_item_spacing">
 
@@ -65,7 +69,7 @@
             android:layout_width="@dimen/issue_item_author_avatar_size"
             android:layout_height="@dimen/issue_item_author_avatar_size"
             android:layout_marginTop="@dimen/list_item_spacing"
-            android:onClick="@{() -> actions.openProfile(issue.actor.login)}"
+            android:onClick="@{() -> viewModel.viewUserProfile(issue.actor.login)}"
             app:avatarUrl="@{issue.actor.avatarUrl.toString()}"
             app:layout_constraintStart_toStartOf="@id/issue_pr_item_title"
             app:layout_constraintTop_toBottomOf="@id/issue_pr_item_title"

@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.users
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
@@ -7,11 +8,13 @@ import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
+import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.users.ItemUserEvent.ViewProfile
 
 class UsersViewModel(
-    private val login: String,
-    private val usersType: UsersType
+    private val args: UsersFragmentArgs
 ) : NetworkCacheSourceViewModel<UserItem>() {
 
     private val _initialLoadStatus = MutableLiveData<Resource<List<UserItem>>>()
@@ -22,6 +25,10 @@ class UsersViewModel(
     val pagedLoadStatus: LiveData<PagedResource2<List<UserItem>>>
         get() = _pagedLoadStatus
 
+    private val _event = MutableLiveData<Event<ItemUserEvent>>()
+    val event: LiveData<Event<ItemUserEvent>>
+        get() = _event
+
     private lateinit var sourceFactory: UsersDataSourceFactory
 
     init {
@@ -30,8 +37,8 @@ class UsersViewModel(
 
     override fun initRemoteSource(): LiveData<PagedList<UserItem>> {
         sourceFactory = UsersDataSourceFactory(
-            login,
-            usersType,
+            args.login,
+            args.usersType,
             _initialLoadStatus,
             _pagedLoadStatus
         )
@@ -42,6 +49,16 @@ class UsersViewModel(
 
     override fun retryLoadPreviousNext() {
         sourceFactory.retryLoadPreviousNext()
+    }
+
+    @MainThread
+    fun viewProfile(login: String) {
+        _event.value = Event(ViewProfile(login, ProfileType.USER))
+    }
+
+    @MainThread
+    fun followUser(login: String) {
+
     }
 
 }

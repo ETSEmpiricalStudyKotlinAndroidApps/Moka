@@ -6,17 +6,11 @@
 
     <data>
 
-        <variable
-            name="title"
-            type="String" />
-
-        <variable
-            name="info"
-            type="String" />
+        <import type="io.github.tonnyl.moka.ui.pr.PullRequestViewModel" />
 
         <variable
             name="viewModel"
-            type="io.github.tonnyl.moka.ui.pr.PullRequestViewModel" />
+            type="PullRequestViewModel" />
 
     </data>
 
@@ -31,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/list_item_spacing"
-            app:textFuture="@{title}"
+            app:textFuture="@{viewModel.pullRequest.title}"
             tools:text="@sample/issue.json/issues/title" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -41,12 +35,12 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/list_item_spacing"
             android:paddingEnd="@dimen/list_item_spacing"
-            app:textFuture="@{info}"
+            app:prInfo="@{viewModel.pullRequest}"
             tools:text="#234 · created by tonny 3 days ago" />
 
         <include
             layout="@layout/item_pr_timeline_comment"
-            bind:comment="@{viewModel.pullRequest.data}" />
+            bind:comment="@{viewModel.pullRequestToCommentLiveData.data}" />
 
     </LinearLayout>
 

@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.prs
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -11,7 +12,8 @@ import io.github.tonnyl.moka.ui.PagedResourceAdapter
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class PullRequestAdapter(
-    private val actions: PullRequestItemActions,
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: PullRequestsViewModel,
     override val retryActions: PagingNetworkStateActions
 ) : PagedResourceAdapter<PullRequestItem>(DIFF_CALLBACK, retryActions) {
 
@@ -35,11 +37,13 @@ class PullRequestAdapter(
 
     override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return PullRequestViewHolder(
+            lifecycleOwner,
+            viewModel,
             ItemPullRequestBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), actions
+            )
         )
     }
 
@@ -54,17 +58,19 @@ class PullRequestAdapter(
     override fun getViewType(position: Int): Int = R.layout.item_pull_request
 
     class PullRequestViewHolder(
-        private val binding: ItemPullRequestBinding,
-        private val pullRequestItemActions: PullRequestItemActions?
+        private val owner: LifecycleOwner,
+        private val model: PullRequestsViewModel,
+        private val binding: ItemPullRequestBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: PullRequestItem) {
-            binding.apply {
-                pullRequest = data
-                actions = pullRequestItemActions
-            }
+        fun bindTo(pr: PullRequestItem) {
+            with(binding) {
+                lifecycleOwner = owner
+                viewModel = model
+                pullRequest = pr
 
-            binding.executePendingBindings()
+                executePendingBindings()
+            }
         }
 
     }

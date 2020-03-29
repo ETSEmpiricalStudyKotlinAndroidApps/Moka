@@ -9,6 +9,12 @@
 
         <import type="io.github.tonnyl.moka.data.item.SearchedUserItem" />
 
+        <import type="io.github.tonnyl.moka.ui.search.users.SearchedUsersViewModel" />
+
+        <variable
+            name="viewModel"
+            type="SearchedUsersViewModel" />
+
         <variable
             name="data"
             type="SearchedUserItem" />
@@ -22,6 +28,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> viewModel.viewUserProfile(data.login)}"
         android:padding="@dimen/fragment_content_padding">
 
         <Space
@@ -104,6 +111,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> viewModel.followUser(data)}"
             android:text="@{(data.viewerCanFollow &amp;&amp; !data.viewerIsFollowing) ? @string/user_profile_follow : @string/user_profile_unfollow}"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="@id/item_user_avatar"

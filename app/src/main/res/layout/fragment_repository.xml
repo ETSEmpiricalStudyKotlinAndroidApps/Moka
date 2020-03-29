@@ -14,9 +14,11 @@
 
         <import type="io.github.tonnyl.moka.network.Status" />
 
+        <import type="io.github.tonnyl.moka.ui.repository.RepositoryViewModel" />
+
         <variable
             name="viewModel"
-            type="io.github.tonnyl.moka.ui.repository.RepositoryViewModel" />
+            type="RepositoryViewModel" />
 
     </data>
 

@@ -10,24 +10,24 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.item.PullRequestItem
 import io.github.tonnyl.moka.databinding.FragmentPrsBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.pr.PullRequestFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
+import io.github.tonnyl.moka.ui.prs.PullRequestItemEvent.ViewProfile
+import io.github.tonnyl.moka.ui.prs.PullRequestItemEvent.ViewPullRequest
 
-class PullRequestsFragment : Fragment(), PullRequestItemActions, PagingNetworkStateActions,
-    EmptyViewActions {
+class PullRequestsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
 
     private val args by navArgs<PullRequestsFragmentArgs>()
 
-    private val viewModel by viewModels<PullRequestsViewModel> {
-        ViewModelFactory(args.owner, args.name)
+    private val pullRequestsViewModel by viewModels<PullRequestsViewModel> {
+        ViewModelFactory(args)
     }
 
     private val pullRequestAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PullRequestAdapter(this@PullRequestsFragment, this@PullRequestsFragment)
+        PullRequestAdapter(viewLifecycleOwner, pullRequestsViewModel, this@PullRequestsFragment)
     }
 
     private lateinit var binding: FragmentPrsBinding
@@ -53,13 +53,13 @@ class PullRequestsFragment : Fragment(), PullRequestItemActions, PagingNetworkSt
                 }
             }
 
-            viewModel = this@PullRequestsFragment.viewModel
+            viewModel = this@PullRequestsFragment.pullRequestsViewModel
             emptyViewActions = this@PullRequestsFragment
             lifecycleOwner = viewLifecycleOwner
         }
 
 
-        viewModel.data.observe(this, Observer {
+        pullRequestsViewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = pullRequestAdapter
@@ -68,19 +68,23 @@ class PullRequestsFragment : Fragment(), PullRequestItemActions, PagingNetworkSt
 
             pullRequestAdapter.submitList(it)
         })
-    }
 
-    override fun openPullRequestItem(data: PullRequestItem) {
-        parentFragment?.findNavController()
-            ?.navigate(
-                R.id.pr_fragment,
-                PullRequestFragmentArgs(data, args.owner, args.name).toBundle()
-            )
-    }
-
-    override fun openProfile(login: String) {
-        val profileFragmentArgs = ProfileFragmentArgs(login)
-        findNavController().navigate(R.id.profile_fragment, profileFragmentArgs.toBundle())
+        pullRequestsViewModel.event.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is ViewPullRequest -> {
+                    findNavController().navigate(
+                        R.id.pr_fragment,
+                        PullRequestFragmentArgs(event.number, args.owner, args.name).toBundle()
+                    )
+                }
+                is ViewProfile -> {
+                    findNavController().navigate(
+                        R.id.profile_fragment,
+                        ProfileFragmentArgs(event.login).toBundle()
+                    )
+                }
+            }
+        })
     }
 
     override fun retryLoadPreviousNext() {

@@ -18,8 +18,6 @@ import io.github.tonnyl.moka.ui.PagedResourceAdapter
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class PullRequestTimelineAdapter(
-    private val title: String,
-    private val info: String,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: PullRequestViewModel,
     override val retryActions: PagingNetworkStateActions
@@ -48,16 +46,26 @@ class PullRequestTimelineAdapter(
 
         return when (viewType) {
             R.layout.item_pr_timeline_head -> {
-                HeadViewHolder(ItemPrTimelineHeadBinding.inflate(inflater, parent, false))
+                HeadViewHolder(
+                    lifecycleOwner,
+                    viewModel,
+                    ItemPrTimelineHeadBinding.inflate(inflater, parent, false)
+                )
             }
             R.layout.item_pr_timeline_comment -> {
-                CommentViewHolder(ItemPrTimelineCommentBinding.inflate(inflater, parent, false))
+                CommentViewHolder(
+                    lifecycleOwner,
+                    ItemPrTimelineCommentBinding.inflate(inflater, parent, false)
+                )
             }
             R.layout.item_pr_timeline_thread -> {
                 ThreadViewHolder(ItemPrTimelineThreadBinding.inflate(inflater, parent, false))
             }
             R.layout.item_pr_timeline_event -> {
-                EventViewHolder(ItemPrTimelineEventBinding.inflate(inflater, parent, false))
+                EventViewHolder(
+                    lifecycleOwner,
+                    ItemPrTimelineEventBinding.inflate(inflater, parent, false)
+                )
             }
             else -> {
                 throw IllegalArgumentException("unsupported view type: $viewType")
@@ -68,7 +76,7 @@ class PullRequestTimelineAdapter(
     override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getViewType(position)
         if (viewType == R.layout.item_pr_timeline_head) {
-            (holder as HeadViewHolder).bindTo(title, info, lifecycleOwner, viewModel)
+            (holder as HeadViewHolder).bindTo()
 
             return
         }
@@ -76,13 +84,13 @@ class PullRequestTimelineAdapter(
         val item = getItem(position - 1) ?: return
         when (viewType) {
             R.layout.item_pr_timeline_comment -> {
-                (holder as CommentViewHolder).bindTo(item, lifecycleOwner)
+                (holder as CommentViewHolder).bindTo(item)
             }
             R.layout.item_pr_timeline_thread -> {
                 (holder as ThreadViewHolder).bindTo(item)
             }
             R.layout.item_pr_timeline_event -> {
-                (holder as EventViewHolder).bindTo(item, lifecycleOwner)
+                (holder as EventViewHolder).bindTo(item)
             }
             else -> {
                 throw IllegalArgumentException("unsupported view type: $viewType")
@@ -112,16 +120,15 @@ class PullRequestTimelineAdapter(
     override fun getItemCount(): Int = super.getItemCount() + 1
 
     class CommentViewHolder(
+        private val owner: LifecycleOwner,
         private val binding: ItemPrTimelineCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(
-            data: PullRequestTimelineItem,
-            lifecycleOwner: LifecycleOwner
-        ) {
-            binding.run {
+        fun bindTo(data: PullRequestTimelineItem) {
+            with(binding) {
+                lifecycleOwner = owner
                 comment = data
-                this.lifecycleOwner = lifecycleOwner
+
                 executePendingBindings()
             }
         }
@@ -129,16 +136,15 @@ class PullRequestTimelineAdapter(
     }
 
     class EventViewHolder(
+        private val owner: LifecycleOwner,
         private val binding: ItemPrTimelineEventBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(
-            data: PullRequestTimelineItem,
-            lifecycleOwner: LifecycleOwner
-        ) {
-            binding.run {
+        fun bindTo(data: PullRequestTimelineItem) {
+            with(binding) {
+                lifecycleOwner = owner
                 prTimelineEvent = data
-                this.lifecycleOwner = lifecycleOwner
+
                 executePendingBindings()
             }
         }
@@ -168,20 +174,16 @@ class PullRequestTimelineAdapter(
     }
 
     class HeadViewHolder(
+        private val owner: LifecycleOwner,
+        private val model: PullRequestViewModel,
         private val binding: ItemPrTimelineHeadBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(
-            title: String,
-            info: String,
-            lifecycleOwner: LifecycleOwner,
-            viewModel: PullRequestViewModel
-        ) {
-            binding.run {
-                this.title = title
-                this.info = info
-                this.lifecycleOwner = lifecycleOwner
-                this.viewModel = viewModel
+        fun bindTo() {
+            with(binding) {
+                lifecycleOwner = owner
+                viewModel = model
+
                 executePendingBindings()
             }
         }

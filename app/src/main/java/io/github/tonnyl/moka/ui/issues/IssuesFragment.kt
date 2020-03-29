@@ -10,23 +10,25 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.databinding.FragmentIssuesBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.issue.IssueFragmentArgs
+import io.github.tonnyl.moka.ui.issues.IssueItemEvent.ViewIssueTimeline
+import io.github.tonnyl.moka.ui.issues.IssueItemEvent.ViewUserProfile
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileType
 
-class IssuesFragment : Fragment(), IssueItemActions, EmptyViewActions, PagingNetworkStateActions {
+class IssuesFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
     private val args by navArgs<IssuesFragmentArgs>()
 
     private val issueAdapter: IssueAdapter by lazy {
-        IssueAdapter(this@IssuesFragment, this@IssuesFragment)
+        IssueAdapter(viewLifecycleOwner, viewModel, this)
     }
 
     private val viewModel by viewModels<IssuesViewModel> {
-        ViewModelFactory(args.owner, args.name)
+        ViewModelFactory(args)
     }
     private lateinit var binding: FragmentIssuesBinding
 
@@ -57,7 +59,7 @@ class IssuesFragment : Fragment(), IssueItemActions, EmptyViewActions, PagingNet
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.data.observe(this, Observer {
+        viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = issueAdapter
@@ -66,19 +68,25 @@ class IssuesFragment : Fragment(), IssueItemActions, EmptyViewActions, PagingNet
 
             issueAdapter.submitList(it)
         })
-    }
 
-    override fun openPullRequestItem(data: IssueItem) {
-        parentFragment?.findNavController()
-            ?.navigate(
-                R.id.issue_fragment,
-                IssueFragmentArgs(args.owner, args.name, data).toBundle()
-            )
-    }
-
-    override fun openProfile(login: String) {
-        val profileFragmentArgs = ProfileFragmentArgs(login)
-        findNavController().navigate(R.id.profile_fragment, profileFragmentArgs.toBundle())
+        viewModel.event.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is ViewUserProfile -> {
+                    val profileFragmentArgs = ProfileFragmentArgs(event.login, ProfileType.USER)
+                    findNavController().navigate(
+                        R.id.profile_fragment,
+                        profileFragmentArgs.toBundle()
+                    )
+                }
+                is ViewIssueTimeline -> {
+                    parentFragment?.findNavController()
+                        ?.navigate(
+                            R.id.issue_fragment,
+                            IssueFragmentArgs(args.owner, args.name, event.number).toBundle()
+                        )
+                }
+            }
+        })
     }
 
     override fun retryInitial() {

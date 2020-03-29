@@ -16,19 +16,19 @@ import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
+import io.github.tonnyl.moka.ui.users.ItemUserEvent.FollowUser
+import io.github.tonnyl.moka.ui.users.ItemUserEvent.ViewProfile
 
-class UsersFragment : Fragment(), ItemUserActions, EmptyViewActions, PagingNetworkStateActions {
+class UsersFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
     private val args by navArgs<UsersFragmentArgs>()
 
     private val viewModel by viewModels<UsersViewModel> {
-        ViewModelFactory(args.login, args.usersType)
+        ViewModelFactory(args)
     }
 
-    private val userAdapter: UserAdapter by lazy {
-        UserAdapter(this@UsersFragment).apply {
-            actions = this@UsersFragment
-        }
+    private val userAdapter by lazy {
+        UserAdapter(viewLifecycleOwner, viewModel, this@UsersFragment)
     }
 
     private lateinit var binding: FragmentUsersBinding
@@ -69,7 +69,7 @@ class UsersFragment : Fragment(), ItemUserActions, EmptyViewActions, PagingNetwo
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.pagedLoadStatus.observe(this, Observer {
+        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, Observer {
             when (it.resource?.status) {
                 Status.SUCCESS -> {
                     userAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADED))
@@ -88,7 +88,7 @@ class UsersFragment : Fragment(), ItemUserActions, EmptyViewActions, PagingNetwo
             }
         })
 
-        viewModel.data.observe(this, Observer { list ->
+        viewModel.data.observe(viewLifecycleOwner, Observer { list ->
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = userAdapter
@@ -97,14 +97,19 @@ class UsersFragment : Fragment(), ItemUserActions, EmptyViewActions, PagingNetwo
             userAdapter.submitList(list)
         })
 
-    }
+        viewModel.event.observe(viewLifecycleOwner, Observer {
+            when (val event = it.getContentIfNotHandled()) {
+                is ViewProfile -> {
+                    findNavController().navigate(
+                        R.id.profile_fragment,
+                        ProfileFragmentArgs(event.login, event.type).toBundle()
+                    )
+                }
+                is FollowUser -> {
 
-    override fun openProfile(login: String) {
-        val builder = ProfileFragmentArgs(login)
-        findNavController().navigate(R.id.profile_fragment, builder.toBundle())
-    }
-
-    override fun followUserClicked(login: String, follow: Boolean) {
+                }
+            }
+        })
 
     }
 

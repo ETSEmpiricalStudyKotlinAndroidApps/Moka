@@ -7,17 +7,15 @@
 
         <import type="io.github.tonnyl.moka.ui.explore.filters.LocalLanguage" />
 
+        <import type="io.github.tonnyl.moka.ui.explore.ExploreViewModel" />
+
         <variable
             name="language"
             type="LocalLanguage" />
 
         <variable
-            name="filterActions"
-            type="io.github.tonnyl.moka.ui.explore.filters.FilterActions" />
-
-        <variable
             name="viewModel"
-            type="io.github.tonnyl.moka.ui.explore.ExploreViewModel" />
+            type="ExploreViewModel" />
 
     </data>
 
@@ -25,10 +23,10 @@
         android:id="@+id/item_language_layout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> filterActions.actionSelect(language)}"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> viewModel.selectLanguage(language)}"
         android:orientation="horizontal"
         android:paddingStart="@dimen/fragment_content_padding"
         android:paddingEnd="@dimen/fragment_content_padding">

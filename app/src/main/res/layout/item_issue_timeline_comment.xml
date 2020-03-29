@@ -5,9 +5,11 @@
 
     <data>
 
+        <import type="io.github.tonnyl.moka.data.item.IssueComment" />
+
         <variable
             name="comment"
-            type="io.github.tonnyl.moka.data.item.IssueComment" />
+            type="IssueComment" />
 
     </data>
 

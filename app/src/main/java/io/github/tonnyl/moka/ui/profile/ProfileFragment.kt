@@ -22,7 +22,7 @@ class ProfileFragment : Fragment(), EmptyViewActions {
 
     private val args by navArgs<ProfileFragmentArgs>()
     private val viewModel by viewModels<ProfileViewModel> {
-        ViewModelFactory(args.login, args.profileType)
+        ViewModelFactory(args)
     }
 
     private lateinit var binding: FragmentProfileBinding

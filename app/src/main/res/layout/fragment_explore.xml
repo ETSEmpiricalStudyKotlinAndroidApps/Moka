@@ -5,13 +5,17 @@
 
     <data>
 
-        <variable
-            name="mainViewModel"
-            type="io.github.tonnyl.moka.ui.MainViewModel" />
+        <import type="io.github.tonnyl.moka.ui.MainViewModel" />
+
+        <import type="io.github.tonnyl.moka.ui.explore.ExploreViewModel" />
 
         <variable
-            name="exploreActions"
-            type="io.github.tonnyl.moka.ui.explore.ExploreActions" />
+            name="mainViewModel"
+            type="MainViewModel" />
+
+        <variable
+            name="exploreViewModel"
+            type="ExploreViewModel" />
 
     </data>
 
@@ -54,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            android:onClick="@{() -> exploreActions.openFilters()}"
+            android:onClick="@{() -> exploreViewModel.showFilters()}"
             app:srcCompat="@drawable/ic_filter_24" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

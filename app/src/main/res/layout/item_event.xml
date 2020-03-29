@@ -7,15 +7,21 @@
 
         <import type="android.text.format.DateUtils" />
 
+        <import type="android.text.method.LinkMovementMethod" />
+
         <import type="io.github.tonnyl.moka.ui.profile.ProfileType" />
+
+        <import type="io.github.tonnyl.moka.data.Event" />
+
+        <import type="io.github.tonnyl.moka.ui.timeline.TimelineViewModel" />
 
         <variable
             name="event"
-            type="io.github.tonnyl.moka.data.Event" />
+            type="Event" />
 
         <variable
-            name="eventActions"
-            type="io.github.tonnyl.moka.ui.timeline.EventActions" />
+            name="viewModel"
+            type="TimelineViewModel" />
 
     </data>
 
@@ -26,14 +32,14 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:onClick="@{() -> eventActions.openEventDetails(event)}"
+        android:onClick="@{() -> viewModel.viewEventDetail(event)}"
         android:padding="@dimen/list_item_spacing">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/event_user_avatar"
             android:layout_width="@dimen/repository_list_avatar_width"
             android:layout_height="@dimen/repository_list_avatar_height"
-            android:onClick="@{() -> eventActions.openProfile(event.actor.login, ProfileType.USER)}"
+            android:onClick="@{() -> viewModel.viewProfile(event.actor.login, ProfileType.USER)}"
             app:avatarUrl="@{event.actor.avatarUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -54,12 +60,13 @@
             android:breakStrategy="simple"
             android:hyphenationFrequency="full"
             android:textAppearance="@style/TextAppearance.Moka.ListPrimary"
-            app:eventActionTextFuture="@{event}"
-            app:eventActions="@{eventActions}"
+            app:event="@{event}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/event_space_between_avatar_and_action"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread"
+            app:movementMethod="@{LinkMovementMethod.getInstance()}"
+            app:viewModel="@{viewModel}"
             tools:text="TonnyL starred PaperPlane" />
 
         <androidx.appcompat.widget.AppCompatTextView

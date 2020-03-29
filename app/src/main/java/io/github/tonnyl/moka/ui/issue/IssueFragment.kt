@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.issue
 
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,37 +18,12 @@ import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
-    private val issueTimelineAdapter: IssueTimelineAdapter by lazy {
-        IssueTimelineAdapter(
-            getString(
-                R.string.issue_pr_title_format,
-                args.issueItem.number,
-                args.issueItem.title
-            ),
-            getString(
-                R.string.issue_pr_info_format,
-                getString(
-                    if (args.issueItem.closed) {
-                        R.string.issue_pr_status_closed
-                    } else {
-                        R.string.issue_pr_status_open
-                    }
-                ),
-                getString(R.string.issue_pr_by, args.issueItem.actor?.login),
-                DateUtils.getRelativeTimeSpanString(
-                    args.issueItem.createdAt.time,
-                    System.currentTimeMillis(),
-                    DateUtils.MINUTE_IN_MILLIS
-                )
-            ),
-            viewLifecycleOwner,
-            viewModel,
-            this@IssueFragment
-        )
+    private val issueTimelineAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        IssueTimelineAdapter(viewLifecycleOwner, viewModel, this@IssueFragment)
     }
 
     private val viewModel by viewModels<IssueViewModel> {
-        ViewModelFactory(args.repositoryOwner, args.repositoryName, args.issueItem.number)
+        ViewModelFactory(args)
     }
 
     private val args: IssueFragmentArgs by navArgs()
@@ -82,7 +56,7 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.data.observe(this, Observer {
+        viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = issueTimelineAdapter
@@ -92,7 +66,7 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
             issueTimelineAdapter.submitList(it)
         })
 
-        viewModel.pagedLoadStatus.observe(this, Observer {
+        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, Observer {
             when (it.resource?.status) {
                 Status.SUCCESS -> {
                     issueTimelineAdapter.setNetworkState(

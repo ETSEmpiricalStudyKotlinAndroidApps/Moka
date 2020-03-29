@@ -3,24 +3,29 @@ package io.github.tonnyl.moka.ui.explore.filters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.ItemTrendingFilterTimeSpanBinding
 import io.github.tonnyl.moka.databinding.ItemTrendingLanguageBinding
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
+import io.github.tonnyl.moka.ui.explore.ExploreViewModel
 import java.util.*
 
-class FilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), View.OnClickListener {
+class FilterAdapter(
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: ExploreViewModel
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), View.OnClickListener {
 
     private var languages: List<LocalLanguage>? = Collections.emptyList()
-
-    var filterActions: FilterActions? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
         return when (viewType) {
             R.layout.item_trending_filter_time_span -> TimeSpanViewHolder(
+                lifecycleOwner,
+                viewModel,
                 ItemTrendingFilterTimeSpanBinding.inflate(inflater, parent, false)
             )
             R.layout.item_trending_filter_language_label -> LanguageLabelViewHolder(
@@ -30,14 +35,18 @@ class FilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), View.OnCl
                     false
                 )
             )
-            else -> LanguageViewHolder(ItemTrendingLanguageBinding.inflate(inflater, parent, false))
+            else -> LanguageViewHolder(
+                lifecycleOwner,
+                viewModel,
+                ItemTrendingLanguageBinding.inflate(inflater, parent, false)
+            )
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is TimeSpanViewHolder -> {
-                holder.bindTo(ExploreTimeSpanType.DAILY, filterActions)
+                holder.bindTo(ExploreTimeSpanType.DAILY)
             }
             is LanguageLabelViewHolder -> {
 
@@ -45,7 +54,7 @@ class FilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), View.OnCl
             is LanguageViewHolder -> {
                 val item = languages?.get(position - 2) ?: return
 
-                holder.bindTo(item, filterActions)
+                holder.bindTo(item)
             }
         }
     }
@@ -72,31 +81,37 @@ class FilterAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), View.OnCl
     }
 
     class LanguageViewHolder(
+        private val owner: LifecycleOwner,
+        private val model: ExploreViewModel,
         private val binding: ItemTrendingLanguageBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(language: LocalLanguage, actions: FilterActions?) {
-            binding.apply {
-                this.language = language
-                filterActions = actions
-            }
+        fun bindTo(lang: LocalLanguage) {
+            with(binding) {
+                lifecycleOwner = owner
+                viewModel = model
+                language = lang
 
-            binding.executePendingBindings()
+                executePendingBindings()
+            }
         }
 
     }
 
     class TimeSpanViewHolder(
+        private val owner: LifecycleOwner,
+        private val model: ExploreViewModel,
         private val binding: ItemTrendingFilterTimeSpanBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(selected: ExploreTimeSpanType, actions: FilterActions?) {
-            binding.apply {
+        fun bindTo(selected: ExploreTimeSpanType) {
+            with(binding) {
+                lifecycleOwner = owner
+                viewModel = model
                 selectedType = selected
-                filterActions = actions
-            }
 
-            binding.executePendingBindings()
+                executePendingBindings()
+            }
         }
 
     }

@@ -12,6 +12,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.profile.ProfileType
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -261,7 +262,21 @@ enum class NotificationReasons(var value: String) {
 
 }
 
-fun Notification.toDisplayContentText(context: Context): CharSequence {
+val NotificationRepositoryOwner.profileType: ProfileType
+    get() = when (type) {
+        "Organization" -> {
+            ProfileType.ORGANIZATION
+        }
+        "User" -> {
+            ProfileType.USER
+        }
+        else -> {
+            ProfileType.NOT_SPECIFIED
+        }
+    }
+
+fun Notification?.toDisplayContentText(context: Context): CharSequence {
+    this ?: return ""
     val notificationReasons = try {
         NotificationReasons.valueOf(reason.toUpperCase(Locale.US))
     } catch (e: Exception) {

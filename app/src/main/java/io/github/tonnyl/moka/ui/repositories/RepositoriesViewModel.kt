@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.repositories
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
@@ -7,11 +8,12 @@ import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.network.PagedResource2
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
+import io.github.tonnyl.moka.ui.repositories.RepositoryItemEvent.*
 
 class RepositoriesViewModel(
-    private val login: String,
-    private val repositoryType: RepositoryType
+    private val args: RepositoriesFragmentArgs
 ) : NetworkCacheSourceViewModel<RepositoryItem>() {
 
     private val _initialLoadStatus = MutableLiveData<Resource<List<RepositoryItem>>>()
@@ -22,6 +24,10 @@ class RepositoriesViewModel(
     val pagedLoadStatus: LiveData<PagedResource2<List<RepositoryItem>>>
         get() = _pagedLoadStatus
 
+    private val _event = MutableLiveData<Event<RepositoryItemEvent>>()
+    val event: LiveData<Event<RepositoryItemEvent>>
+        get() = _event
+
     private lateinit var sourceFactory: RepositoriesDataSourceFactory
 
     init {
@@ -30,8 +36,8 @@ class RepositoriesViewModel(
 
     override fun initRemoteSource(): LiveData<PagedList<RepositoryItem>> {
         sourceFactory = RepositoriesDataSourceFactory(
-            login,
-            repositoryType,
+            args.login,
+            args.repositoriesType,
             _initialLoadStatus,
             _pagedLoadStatus
         )
@@ -42,6 +48,27 @@ class RepositoriesViewModel(
 
     override fun retryLoadPreviousNext() {
         sourceFactory.retryLoadPreviousNext()
+    }
+
+    @MainThread
+    fun viewRepository(
+        login: String,
+        repoName: String
+    ) {
+        _event.value = Event(ViewRepository(login, repoName))
+    }
+
+    @MainThread
+    fun viewProfile(login: String) {
+        _event.value = Event(ViewProfile(login))
+    }
+
+    @MainThread
+    fun starRepository(
+        login: String,
+        repoName: String
+    ) {
+        _event.value = Event(StarRepository(login, repoName))
     }
 
 }

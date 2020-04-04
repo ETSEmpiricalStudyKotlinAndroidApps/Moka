@@ -2,20 +2,14 @@ package io.github.tonnyl.moka.ui.projects
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.databinding.ItemProjectBinding
-import io.github.tonnyl.moka.ui.PagedResourceAdapter
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
-class ProjectAdapter(
-    override val retryActions: PagingNetworkStateActions
-) : PagedResourceAdapter<Project>(
-    DIFF_CALLBACK,
-    retryActions
-) {
+class ProjectAdapter : PagedListAdapter<Project, ProjectAdapter.ProjectViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
@@ -31,11 +25,9 @@ class ProjectAdapter(
 
         }
 
-        const val VIEW_TYPE_PROJECT = R.layout.item_project
-
     }
 
-    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectViewHolder {
         return ProjectViewHolder(
             ItemProjectBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -43,29 +35,28 @@ class ProjectAdapter(
                 false
             )
         )
-
     }
 
-    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ProjectViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        if (holder is ProjectViewHolder) {
-            holder.bindTo(item)
-        }
+        holder.bind(item)
     }
 
-    override fun getViewType(position: Int): Int = VIEW_TYPE_PROJECT
+    override fun getItemViewType(position: Int): Int {
+        return R.layout.item_project
+    }
 
     class ProjectViewHolder(
         private val binding: ItemProjectBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: Project) {
-            binding.apply {
+        fun bind(data: Project) {
+            with(binding) {
                 project = data
-            }
 
-            binding.executePendingBindings()
+                executePendingBindings()
+            }
         }
 
     }

@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.RepositoryItem
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
@@ -20,8 +20,8 @@ class RepositoriesViewModel(
     val initialLoadStatus: LiveData<Resource<List<RepositoryItem>>>
         get() = _initialLoadStatus
 
-    private val _pagedLoadStatus = MutableLiveData<PagedResource2<List<RepositoryItem>>>()
-    val pagedLoadStatus: LiveData<PagedResource2<List<RepositoryItem>>>
+    private val _pagedLoadStatus = MutableLiveData<PagedResource<List<RepositoryItem>>>()
+    val pagedLoadStatus: LiveData<PagedResource<List<RepositoryItem>>>
         get() = _pagedLoadStatus
 
     private val _event = MutableLiveData<Event<RepositoryItemEvent>>()

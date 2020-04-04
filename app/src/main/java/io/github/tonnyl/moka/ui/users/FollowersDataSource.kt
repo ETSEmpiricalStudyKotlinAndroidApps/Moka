@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.data.toNonNullUserItem
 import io.github.tonnyl.moka.network.GraphQLClient
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.queries.FollowersQuery
@@ -17,7 +17,7 @@ import timber.log.Timber
 class FollowersDataSource(
     private val login: String,
     private val initialLoadStatus: MutableLiveData<Resource<List<UserItem>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<UserItem>>>
+    private val pagedLoadStatus: MutableLiveData<PagedResource<List<UserItem>>>
 ) : PageKeyedDataSource<String, UserItem>() {
 
     var retry: (() -> Any)? = null
@@ -90,7 +90,7 @@ class FollowersDataSource(
         Timber.d("loadAfter")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
+            PagedResource(PagedResourceDirection.AFTER, Resource.loading(null))
         )
 
         try {
@@ -130,7 +130,7 @@ class FollowersDataSource(
             retry = null
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -140,7 +140,7 @@ class FollowersDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
             )
         }
     }
@@ -152,7 +152,7 @@ class FollowersDataSource(
         Timber.d("loadBefore")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
         )
 
         try {
@@ -192,7 +192,7 @@ class FollowersDataSource(
             retry = null
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -202,7 +202,7 @@ class FollowersDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
             )
         }
     }

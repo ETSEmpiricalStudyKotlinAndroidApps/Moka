@@ -12,12 +12,7 @@ import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentInboxBinding
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.NetworkState
-import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.EmptyViewActions
-import io.github.tonnyl.moka.ui.MainNavigationFragment
-import io.github.tonnyl.moka.ui.MainViewModel
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
+import io.github.tonnyl.moka.ui.*
 import io.github.tonnyl.moka.ui.inbox.NotificationItemEvent.*
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
@@ -38,8 +33,12 @@ class InboxFragment : MainNavigationFragment(),
 
     private lateinit var binding: FragmentInboxBinding
 
-    private val notificationAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        InboxAdapter(viewLifecycleOwner, viewModel, this@InboxFragment)
+    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            InboxAdapter(viewLifecycleOwner, viewModel),
+            LoadStateAdapter(this)
+        )
     }
 
     override fun onCreateView(
@@ -72,44 +71,17 @@ class InboxFragment : MainNavigationFragment(),
                         )
                     )
 
-                    adapter = notificationAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
 
-                notificationAdapter.submitList(it)
+                adapterWrapper.pagingAdapter.submitList(it)
             }
         })
 
-        viewModel.previousNextLoadStatusLiveData.observe(viewLifecycleOwner, Observer {
-            when (it.resource?.status) {
-                Status.SUCCESS -> {
-                    notificationAdapter.setNetworkState(
-                        Pair(
-                            it.direction,
-                            NetworkState.LOADED
-                        )
-                    )
-                }
-                Status.ERROR -> {
-                    notificationAdapter.setNetworkState(
-                        Pair(
-                            it.direction,
-                            NetworkState.error(it.resource.message)
-                        )
-                    )
-                }
-                Status.LOADING -> {
-                    notificationAdapter.setNetworkState(
-                        Pair(
-                            it.direction,
-                            NetworkState.LOADING
-                        )
-                    )
-                }
-                null -> {
-
-                }
-            }
-        })
+        viewModel.previousNextLoadStatusLiveData.observe(
+            viewLifecycleOwner,
+            adapterWrapper.observer
+        )
 
         mainViewModel.currentUser.observe(viewLifecycleOwner, Observer {
             viewModel.refreshData(it.login, false)

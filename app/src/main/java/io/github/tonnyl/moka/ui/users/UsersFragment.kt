@@ -11,9 +11,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentUsersBinding
-import io.github.tonnyl.moka.network.NetworkState
-import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.users.ItemUserEvent.FollowUser
@@ -27,8 +27,12 @@ class UsersFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
         ViewModelFactory(args)
     }
 
-    private val userAdapter by lazy {
-        UserAdapter(viewLifecycleOwner, viewModel, this@UsersFragment)
+    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            UserAdapter(viewLifecycleOwner, viewModel),
+            LoadStateAdapter(this)
+        )
     }
 
     private lateinit var binding: FragmentUsersBinding
@@ -69,32 +73,15 @@ class UsersFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, Observer {
-            when (it.resource?.status) {
-                Status.SUCCESS -> {
-                    userAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADED))
-                }
-                Status.ERROR -> {
-                    userAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.error(it.resource.message))
-                    )
-                }
-                Status.LOADING -> {
-                    userAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADING))
-                }
-                null -> {
-
-                }
-            }
-        })
+        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
 
         viewModel.data.observe(viewLifecycleOwner, Observer { list ->
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = userAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
             }
-            userAdapter.submitList(list)
+            adapterWrapper.pagingAdapter.submitList(list)
         })
 
         viewModel.event.observe(viewLifecycleOwner, Observer {

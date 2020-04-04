@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.search.users
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -11,14 +12,11 @@ import io.github.tonnyl.moka.data.item.SearchedUserItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 import io.github.tonnyl.moka.databinding.ItemSearchedOrganizationBinding
 import io.github.tonnyl.moka.databinding.ItemSearchedUserBinding
-import io.github.tonnyl.moka.ui.PagedResourceAdapter
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class SearchedUserAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: SearchedUsersViewModel,
-    override val retryActions: PagingNetworkStateActions
-) : PagedResourceAdapter<SearchedUserOrOrgItem>(DIFF_CALLBACK, retryActions) {
+    private val viewModel: SearchedUsersViewModel
+) : PagedListAdapter<SearchedUserOrOrgItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
@@ -38,7 +36,7 @@ class SearchedUserAdapter(
 
     }
 
-    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             R.layout.item_searched_user -> {
@@ -61,10 +59,10 @@ class SearchedUserAdapter(
         }
     }
 
-    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        when (getViewType(position)) {
+        when (getItemViewType(position)) {
             R.layout.item_searched_user -> {
                 (holder as UserViewHolder).bindTo(item as SearchedUserItem)
             }
@@ -74,15 +72,13 @@ class SearchedUserAdapter(
         }
     }
 
-    override fun getViewType(position: Int): Int {
-        return when (getItem(position)) {
-            is SearchedUserItem -> {
-                R.layout.item_searched_user
-            }
-            // is SearchedOrganizationItem
-            else -> {
-                R.layout.item_searched_organization
-            }
+    override fun getItemViewType(position: Int): Int = when (getItem(position)) {
+        is SearchedUserItem -> {
+            R.layout.item_searched_user
+        }
+        // is SearchedOrganizationItem
+        else -> {
+            R.layout.item_searched_organization
         }
     }
 

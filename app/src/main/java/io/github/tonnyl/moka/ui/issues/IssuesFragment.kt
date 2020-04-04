@@ -12,6 +12,8 @@ import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentIssuesBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.issue.IssueFragmentArgs
 import io.github.tonnyl.moka.ui.issues.IssueItemEvent.ViewIssueTimeline
@@ -23,8 +25,12 @@ class IssuesFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
     private val args by navArgs<IssuesFragmentArgs>()
 
-    private val issueAdapter: IssueAdapter by lazy {
-        IssueAdapter(viewLifecycleOwner, viewModel, this)
+    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            IssueAdapter(viewLifecycleOwner, viewModel),
+            LoadStateAdapter(this)
+        )
     }
 
     private val viewModel by viewModels<IssuesViewModel> {
@@ -62,12 +68,14 @@ class IssuesFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
         viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = issueAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
             }
 
-            issueAdapter.submitList(it)
+            adapterWrapper.pagingAdapter.submitList(it)
         })
+
+        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
 
         viewModel.event.observe(viewLifecycleOwner, Observer {
             when (val event = it.getContentIfNotHandled()) {

@@ -3,19 +3,17 @@ package io.github.tonnyl.moka.ui.issues
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.databinding.ItemIssueBinding
-import io.github.tonnyl.moka.ui.PagedResourceAdapter
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class IssueAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: IssuesViewModel,
-    override val retryActions: PagingNetworkStateActions
-) : PagedResourceAdapter<IssueItem>(DIFF_CALLBACK, retryActions) {
+    private val viewModel: IssuesViewModel
+) : PagedListAdapter<IssueItem, IssueAdapter.IssueViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
@@ -33,7 +31,7 @@ class IssueAdapter(
 
     }
 
-    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IssueViewHolder {
         return IssueViewHolder(
             ItemIssueBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -43,15 +41,15 @@ class IssueAdapter(
         )
     }
 
-    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: IssueViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        if (holder is IssueViewHolder) {
-            holder.bindTo(item, lifecycleOwner, viewModel)
-        }
+        holder.bindTo(item, lifecycleOwner, viewModel)
     }
 
-    override fun getViewType(position: Int): Int = R.layout.item_pull_request
+    override fun getItemViewType(position: Int): Int {
+        return R.layout.item_pull_request
+    }
 
     class IssueViewHolder(
         private val binding: ItemIssueBinding

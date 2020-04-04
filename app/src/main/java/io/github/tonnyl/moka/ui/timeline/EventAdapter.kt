@@ -3,19 +3,17 @@ package io.github.tonnyl.moka.ui.timeline
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.databinding.ItemEventBinding
-import io.github.tonnyl.moka.ui.PagedResourceAdapter
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class EventAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: TimelineViewModel,
-    override val retryActions: PagingNetworkStateActions
-) : PagedResourceAdapter<Event>(DIFF_CALLBACK, retryActions) {
+    private val viewModel: TimelineViewModel
+) : PagedListAdapter<Event, EventAdapter.EventViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
@@ -33,7 +31,7 @@ class EventAdapter(
 
     }
 
-    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         return EventViewHolder(
             lifecycleOwner,
             viewModel,
@@ -41,15 +39,12 @@ class EventAdapter(
         )
     }
 
-    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val item = getItem(position) ?: return
-
-        if (holder is EventViewHolder) {
-            holder.bind(item)
-        }
+        holder.bind(item)
     }
 
-    override fun getViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
         return R.layout.item_event
     }
 

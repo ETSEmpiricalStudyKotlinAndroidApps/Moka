@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.toNonNullRepositoryItem
 import io.github.tonnyl.moka.network.GraphQLClient
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.queries.StarredRepositoriesQuery
@@ -17,7 +17,7 @@ import timber.log.Timber
 class StarredRepositoriesDataSource(
     private val login: String,
     private val initialLoadStatus: MutableLiveData<Resource<List<RepositoryItem>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<RepositoryItem>>>
+    private val pagedLoadStatus: MutableLiveData<PagedResource<List<RepositoryItem>>>
 ) : PageKeyedDataSource<String, RepositoryItem>() {
 
     var retry: (() -> Any)? = null
@@ -90,7 +90,7 @@ class StarredRepositoriesDataSource(
         Timber.d("loadAfter")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
+            PagedResource(PagedResourceDirection.AFTER, Resource.loading(null))
         )
 
         try {
@@ -130,7 +130,7 @@ class StarredRepositoriesDataSource(
             retry = null
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -140,7 +140,7 @@ class StarredRepositoriesDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
             )
         }
     }
@@ -152,7 +152,7 @@ class StarredRepositoriesDataSource(
         Timber.d("loadBefore")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
         )
         try {
             val repositoriesQuery = StarredRepositoriesQuery(
@@ -191,7 +191,7 @@ class StarredRepositoriesDataSource(
             retry = null
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -201,7 +201,7 @@ class StarredRepositoriesDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
             )
         }
     }

@@ -7,7 +7,7 @@ import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedOrganizationItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedUserItem
 import io.github.tonnyl.moka.network.GraphQLClient
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.queries.SearchUserQuery
@@ -18,7 +18,7 @@ import timber.log.Timber
 class SearchedUsersItemDataSource(
     var keywords: String,
     val initialLoadStatus: MutableLiveData<Resource<List<SearchedUserOrOrgItem>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<SearchedUserOrOrgItem>>>
+    private val pagedLoadStatus: MutableLiveData<PagedResource<List<SearchedUserOrOrgItem>>>
 ) : PageKeyedDataSource<String, SearchedUserOrOrgItem>() {
 
     var retry: (() -> Any)? = null
@@ -98,7 +98,7 @@ class SearchedUsersItemDataSource(
         Timber.d("loadAfter keywords: $keywords")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
+            PagedResource(PagedResourceDirection.AFTER, Resource.loading(null))
         )
 
         try {
@@ -141,7 +141,7 @@ class SearchedUsersItemDataSource(
             retry = null
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -151,7 +151,7 @@ class SearchedUsersItemDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
             )
         }
     }
@@ -163,7 +163,7 @@ class SearchedUsersItemDataSource(
         Timber.d("loadBefore keywords: $keywords")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
         )
 
         try {
@@ -206,7 +206,7 @@ class SearchedUsersItemDataSource(
             retry = null
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -216,7 +216,7 @@ class SearchedUsersItemDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
             )
         }
     }

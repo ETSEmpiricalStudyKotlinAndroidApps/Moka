@@ -10,7 +10,7 @@ import io.github.tonnyl.moka.data.NotificationRepository
 import io.github.tonnyl.moka.data.NotificationRepositoryOwner
 import io.github.tonnyl.moka.data.profileType
 import io.github.tonnyl.moka.db.dao.NotificationDao
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.service.NotificationsService
@@ -27,8 +27,8 @@ class InboxViewModel(
         get() = _initialLoadStatusLiveData
 
     private val _previousNextLoadStatusLiveData =
-        MutableLiveData<PagedResource2<List<Notification>>>()
-    val previousNextLoadStatusLiveData: LiveData<PagedResource2<List<Notification>>>
+        MutableLiveData<PagedResource<List<Notification>>>()
+    val previousNextLoadStatusLiveData: LiveData<PagedResource<List<Notification>>>
         get() = _previousNextLoadStatusLiveData
 
     private val _event = MutableLiveData<Event<NotificationItemEvent>>()

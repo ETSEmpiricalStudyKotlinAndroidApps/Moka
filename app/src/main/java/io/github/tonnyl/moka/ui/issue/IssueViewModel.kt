@@ -11,7 +11,7 @@ import io.github.tonnyl.moka.data.item.IssueComment
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
 import io.github.tonnyl.moka.data.toNonNullIssue
 import io.github.tonnyl.moka.network.GraphQLClient
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.queries.IssueQuery
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
@@ -29,8 +29,8 @@ class IssueViewModel(
     val initialLoadStatus: LiveData<Resource<List<IssueTimelineItem>>>
         get() = _initialLoadStatus
 
-    private val _pagedLoadStatus = MutableLiveData<PagedResource2<List<IssueTimelineItem>>>()
-    val pagedLoadStatus: LiveData<PagedResource2<List<IssueTimelineItem>>>
+    private val _pagedLoadStatus = MutableLiveData<PagedResource<List<IssueTimelineItem>>>()
+    val pagedLoadStatus: LiveData<PagedResource<List<IssueTimelineItem>>>
         get() = _pagedLoadStatus
 
     private val _issueToCommentLiveData = MutableLiveData<Resource<IssueComment?>>()

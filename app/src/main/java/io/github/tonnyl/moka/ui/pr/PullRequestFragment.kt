@@ -11,9 +11,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentPrBinding
-import io.github.tonnyl.moka.network.NetworkState
-import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
@@ -26,11 +26,11 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
 
     private lateinit var binding: FragmentPrBinding
 
-    private val pullRequestTimelineAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PullRequestTimelineAdapter(
-            viewLifecycleOwner,
-            viewModel,
-            this@PullRequestFragment
+    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            PullRequestTimelineAdapter(viewLifecycleOwner, viewModel),
+            LoadStateAdapter(this)
         )
     }
 
@@ -63,35 +63,14 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
         viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = pullRequestTimelineAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
             }
 
-            pullRequestTimelineAdapter.submitList(it)
+            adapterWrapper.pagingAdapter.submitList(it)
         })
 
-        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, Observer {
-            when (it.resource?.status) {
-                Status.SUCCESS -> {
-                    pullRequestTimelineAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.LOADED)
-                    )
-                }
-                Status.ERROR -> {
-                    pullRequestTimelineAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.error(it.resource.message))
-                    )
-                }
-                Status.LOADING -> {
-                    pullRequestTimelineAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.LOADING)
-                    )
-                }
-                null -> {
-
-                }
-            }
-        })
+        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
     }
 
     override fun retryInitial() {

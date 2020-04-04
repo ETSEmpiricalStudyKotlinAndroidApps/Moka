@@ -7,7 +7,7 @@ import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.data.item.toNonNullProject
 import io.github.tonnyl.moka.db.dao.ProjectsDao
 import io.github.tonnyl.moka.network.GraphQLClient
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.queries.UsersProjectsQuery
@@ -21,7 +21,7 @@ class ProjectsDataSource(
     private val projectsDao: ProjectsDao,
     private val repositoryName: String?,
     private val initialLoadStatusLiveData: MutableLiveData<Resource<List<Project>>>,
-    private val previousNextStatusLiveData: MutableLiveData<PagedResource2<List<Project>>>
+    private val previousNextStatusLiveData: MutableLiveData<PagedResource<List<Project>>>
 ) : PageKeyedDataSource<String, Project>() {
 
     var retry: (() -> Any)? = null
@@ -99,7 +99,7 @@ class ProjectsDataSource(
         Timber.d("loadAfter")
 
         previousNextStatusLiveData.postValue(
-            PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
+            PagedResource(PagedResourceDirection.AFTER, Resource.loading(null))
         )
 
         try {
@@ -132,7 +132,7 @@ class ProjectsDataSource(
             retry = null
 
             previousNextStatusLiveData.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
             )
 
             val pageInfo = user?.projects?.pageInfo?.fragments?.pageInfo
@@ -153,7 +153,7 @@ class ProjectsDataSource(
             }
 
             previousNextStatusLiveData.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
             )
         }
     }
@@ -162,7 +162,7 @@ class ProjectsDataSource(
         Timber.d("loadBefore")
 
         previousNextStatusLiveData.postValue(
-            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
         )
 
         try {
@@ -195,7 +195,7 @@ class ProjectsDataSource(
             retry = null
 
             previousNextStatusLiveData.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
             )
 
             val pageInfo = user?.projects?.pageInfo?.fragments?.pageInfo
@@ -216,7 +216,7 @@ class ProjectsDataSource(
             }
 
             previousNextStatusLiveData.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
             )
         }
     }

@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.item.PullRequestItem
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
@@ -21,8 +21,8 @@ class PullRequestsViewModel(
     val initialLoadStatus: LiveData<Resource<List<PullRequestItem>>>
         get() = _initialLoadStatus
 
-    private val _pagedLoadStatus = MutableLiveData<PagedResource2<List<PullRequestItem>>>()
-    val pagedLoadStatus: LiveData<PagedResource2<List<PullRequestItem>>>
+    private val _pagedLoadStatus = MutableLiveData<PagedResource<List<PullRequestItem>>>()
+    val pagedLoadStatus: LiveData<PagedResource<List<PullRequestItem>>>
         get() = _pagedLoadStatus
 
     private val _event = MutableLiveData<Event<PullRequestItemEvent>>()

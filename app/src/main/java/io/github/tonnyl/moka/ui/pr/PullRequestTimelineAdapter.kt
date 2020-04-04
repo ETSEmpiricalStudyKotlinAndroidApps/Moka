@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.pr
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -14,14 +15,11 @@ import io.github.tonnyl.moka.databinding.ItemPrTimelineCommentBinding
 import io.github.tonnyl.moka.databinding.ItemPrTimelineEventBinding
 import io.github.tonnyl.moka.databinding.ItemPrTimelineHeadBinding
 import io.github.tonnyl.moka.databinding.ItemPrTimelineThreadBinding
-import io.github.tonnyl.moka.ui.PagedResourceAdapter
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class PullRequestTimelineAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: PullRequestViewModel,
-    override val retryActions: PagingNetworkStateActions
-) : PagedResourceAdapter<PullRequestTimelineItem>(DIFF_CALLBACK, retryActions) {
+    private val viewModel: PullRequestViewModel
+) : PagedListAdapter<PullRequestTimelineItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
@@ -41,7 +39,7 @@ class PullRequestTimelineAdapter(
 
     }
 
-    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
         return when (viewType) {
@@ -73,8 +71,8 @@ class PullRequestTimelineAdapter(
         }
     }
 
-    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val viewType = getViewType(position)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val viewType = getItemViewType(position)
         if (viewType == R.layout.item_pr_timeline_head) {
             (holder as HeadViewHolder).bindTo()
 
@@ -98,7 +96,7 @@ class PullRequestTimelineAdapter(
         }
     }
 
-    override fun getViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
         return if (position == 0) {
             R.layout.item_pr_timeline_head
         } else {

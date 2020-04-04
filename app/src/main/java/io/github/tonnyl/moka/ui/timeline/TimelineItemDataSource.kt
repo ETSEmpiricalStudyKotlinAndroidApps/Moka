@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.db.dao.EventDao
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.EventsService
@@ -17,7 +17,7 @@ class TimelineItemDataSource(
     private val eventDao: EventDao,
     var login: String,
     private val initialLoadStatus: MutableLiveData<Resource<List<Event>>>,
-    private val previousNextStatus: MutableLiveData<PagedResource2<List<Event>>>
+    private val previousNextStatus: MutableLiveData<PagedResource<List<Event>>>
 ) : PageKeyedDataSource<String, Event>() {
 
     var retry: (() -> Any)? = null
@@ -69,7 +69,7 @@ class TimelineItemDataSource(
         Timber.d("loadAfter")
 
         previousNextStatus.postValue(
-            PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
+            PagedResource(PagedResourceDirection.AFTER, Resource.loading(null))
         )
 
         try {
@@ -87,7 +87,7 @@ class TimelineItemDataSource(
             val pl = PageLinks(response)
             callback.onResult(list, pl.next)
             previousNextStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -97,7 +97,7 @@ class TimelineItemDataSource(
             }
 
             previousNextStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
             )
         }
     }
@@ -106,7 +106,7 @@ class TimelineItemDataSource(
         Timber.d("loadBefore")
 
         previousNextStatus.postValue(
-            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
         )
 
         try {
@@ -124,7 +124,7 @@ class TimelineItemDataSource(
             val pl = PageLinks(response)
             callback.onResult(list, pl.prev)
             previousNextStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -134,7 +134,7 @@ class TimelineItemDataSource(
             }
 
             previousNextStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
             )
         }
     }

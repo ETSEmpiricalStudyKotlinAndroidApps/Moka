@@ -3,19 +3,17 @@ package io.github.tonnyl.moka.ui.prs
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.PullRequestItem
 import io.github.tonnyl.moka.databinding.ItemPullRequestBinding
-import io.github.tonnyl.moka.ui.PagedResourceAdapter
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class PullRequestAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: PullRequestsViewModel,
-    override val retryActions: PagingNetworkStateActions
-) : PagedResourceAdapter<PullRequestItem>(DIFF_CALLBACK, retryActions) {
+    private val viewModel: PullRequestsViewModel
+) : PagedListAdapter<PullRequestItem, PullRequestAdapter.PullRequestViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
@@ -35,7 +33,7 @@ class PullRequestAdapter(
 
     }
 
-    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PullRequestViewHolder {
         return PullRequestViewHolder(
             lifecycleOwner,
             viewModel,
@@ -47,15 +45,13 @@ class PullRequestAdapter(
         )
     }
 
-    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PullRequestViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        if (holder is PullRequestViewHolder) {
-            holder.bindTo(item)
-        }
+        holder.bind(item)
     }
 
-    override fun getViewType(position: Int): Int = R.layout.item_pull_request
+    override fun getItemViewType(position: Int): Int = R.layout.item_pull_request
 
     class PullRequestViewHolder(
         private val owner: LifecycleOwner,
@@ -63,7 +59,7 @@ class PullRequestAdapter(
         private val binding: ItemPullRequestBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(pr: PullRequestItem) {
+        fun bind(pr: PullRequestItem) {
             with(binding) {
                 lifecycleOwner = owner
                 viewModel = model

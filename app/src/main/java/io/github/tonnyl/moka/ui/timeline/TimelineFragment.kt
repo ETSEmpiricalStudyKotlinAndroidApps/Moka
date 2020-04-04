@@ -12,12 +12,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.EventOrg
 import io.github.tonnyl.moka.databinding.FragmentTimelineBinding
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.NetworkState
-import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.EmptyViewActions
-import io.github.tonnyl.moka.ui.MainNavigationFragment
-import io.github.tonnyl.moka.ui.MainViewModel
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
+import io.github.tonnyl.moka.ui.*
 import io.github.tonnyl.moka.ui.issue.IssueFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -38,8 +33,12 @@ class TimelineFragment : MainNavigationFragment(),
         )
     }
 
-    private val timelineAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        EventAdapter(viewLifecycleOwner, viewModel, this@TimelineFragment)
+    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            EventAdapter(viewLifecycleOwner, viewModel),
+            LoadStateAdapter(this)
+        )
     }
 
     private lateinit var binding: FragmentTimelineBinding
@@ -64,26 +63,10 @@ class TimelineFragment : MainNavigationFragment(),
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.previousNextLoadStatusLiveData.observe(viewLifecycleOwner, Observer {
-            when (it.resource?.status) {
-                Status.SUCCESS -> {
-                    timelineAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADED))
-                }
-                Status.ERROR -> {
-                    timelineAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.error(it.resource.message))
-                    )
-                }
-                Status.LOADING -> {
-                    timelineAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.LOADING)
-                    )
-                }
-                null -> {
-
-                }
-            }
-        })
+        viewModel.previousNextLoadStatusLiveData.observe(
+            viewLifecycleOwner,
+            adapterWrapper.observer
+        )
 
         viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
@@ -95,10 +78,10 @@ class TimelineFragment : MainNavigationFragment(),
                         )
                     )
 
-                    adapter = timelineAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
 
-                timelineAdapter.submitList(it)
+                adapterWrapper.pagingAdapter.submitList(it)
             }
         })
 

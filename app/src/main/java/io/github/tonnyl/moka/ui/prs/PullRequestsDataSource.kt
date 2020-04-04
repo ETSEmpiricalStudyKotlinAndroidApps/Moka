@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.data.item.PullRequestItem
 import io.github.tonnyl.moka.data.item.toNonNullPullRequestItem
 import io.github.tonnyl.moka.network.GraphQLClient
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.queries.PullRequestsQuery
@@ -18,7 +18,7 @@ class PullRequestsDataSource(
     private val owner: String,
     private val name: String,
     private val loadStatusLiveData: MutableLiveData<Resource<List<PullRequestItem>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<PullRequestItem>>>
+    private val pagedLoadStatus: MutableLiveData<PagedResource<List<PullRequestItem>>>
 ) : PageKeyedDataSource<String, PullRequestItem>() {
 
     var retry: (() -> Any)? = null
@@ -92,7 +92,7 @@ class PullRequestsDataSource(
         Timber.d("loadAfter")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
+            PagedResource(PagedResourceDirection.AFTER, Resource.loading(null))
         )
 
         try {
@@ -133,7 +133,7 @@ class PullRequestsDataSource(
             retry = null
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -143,7 +143,7 @@ class PullRequestsDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
             )
         }
     }
@@ -155,7 +155,7 @@ class PullRequestsDataSource(
         Timber.d("loadBefore")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
         )
 
         try {
@@ -196,7 +196,7 @@ class PullRequestsDataSource(
             retry = null
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -206,7 +206,7 @@ class PullRequestsDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
             )
         }
     }

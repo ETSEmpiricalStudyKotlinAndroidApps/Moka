@@ -8,7 +8,7 @@ import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.data.EventOrg
 import io.github.tonnyl.moka.db.dao.EventDao
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.service.EventsService
@@ -25,8 +25,8 @@ class TimelineViewModel(
     val initialLoadStatusLiveData: LiveData<Resource<List<Event>>>
         get() = _initialLoadStatusLiveData
 
-    private val _previousNextLoadStatusLiveData = MutableLiveData<PagedResource2<List<Event>>>()
-    val previousNextLoadStatusLiveData: LiveData<PagedResource2<List<Event>>>
+    private val _previousNextLoadStatusLiveData = MutableLiveData<PagedResource<List<Event>>>()
+    val previousNextLoadStatusLiveData: LiveData<PagedResource<List<Event>>>
         get() = _previousNextLoadStatusLiveData
 
     private val _event = MutableLiveData<UIEvent<EventItemEvent>>()

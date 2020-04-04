@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.ui.issue
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 
 class IssueTimelineSourceFactory(
@@ -11,7 +11,7 @@ class IssueTimelineSourceFactory(
     private val name: String,
     private val number: Int,
     private val initialLoadStatus: MutableLiveData<Resource<List<IssueTimelineItem>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<IssueTimelineItem>>>
+    private val pagedLoadStatus: MutableLiveData<PagedResource<List<IssueTimelineItem>>>
 ) : DataSource.Factory<String, IssueTimelineItem>() {
 
     private var sourceFactory: IssueTimelineDataSource? = null

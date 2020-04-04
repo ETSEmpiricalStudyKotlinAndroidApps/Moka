@@ -11,11 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.databinding.FragmentProjectsBinding
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.NetworkState
-import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.EmptyViewActions
-import io.github.tonnyl.moka.ui.MainViewModel
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
+import io.github.tonnyl.moka.ui.*
 
 class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
 
@@ -35,8 +31,12 @@ class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions
 
     private val args: ProjectsFragmentArgs by navArgs()
 
-    private val projectAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ProjectAdapter(this@ProjectsFragment)
+    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            ProjectAdapter(),
+            LoadStateAdapter(this)
+        )
     }
 
     private val login: String
@@ -68,46 +68,19 @@ class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions
             viewModel.refreshData(it.login, true)
         })
 
-        viewModel.previousNextLoadStatusLiveData.observe(viewLifecycleOwner, Observer {
-            when (it.resource?.status) {
-                Status.SUCCESS -> {
-                    projectAdapter.setNetworkState(
-                        Pair(
-                            it.direction,
-                            NetworkState.LOADED
-                        )
-                    )
-                }
-                Status.ERROR -> {
-                    projectAdapter.setNetworkState(
-                        Pair(
-                            it.direction,
-                            NetworkState.error(it.resource.message)
-                        )
-                    )
-                }
-                Status.LOADING -> {
-                    projectAdapter.setNetworkState(
-                        Pair(
-                            it.direction,
-                            NetworkState.LOADING
-                        )
-                    )
-                }
-                null -> {
-
-                }
-            }
-        })
+        viewModel.previousNextLoadStatusLiveData.observe(
+            viewLifecycleOwner,
+            adapterWrapper.observer
+        )
 
         viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = projectAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
             }
 
-            projectAdapter.submitList(it)
+            adapterWrapper.pagingAdapter.submitList(it)
         })
 
         binding.swipeRefresh.setOnRefreshListener {

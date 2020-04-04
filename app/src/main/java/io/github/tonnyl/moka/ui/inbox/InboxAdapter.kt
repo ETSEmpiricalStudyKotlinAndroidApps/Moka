@@ -2,19 +2,17 @@ package io.github.tonnyl.moka.ui.inbox
 
 import android.view.*
 import androidx.lifecycle.LifecycleOwner
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.databinding.ItemInboxNotificationBinding
-import io.github.tonnyl.moka.ui.PagedResourceAdapter
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class InboxAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: InboxViewModel,
-    override val retryActions: PagingNetworkStateActions
-) : PagedResourceAdapter<Notification>(DIFF_CALLBACK, retryActions) {
+    private val viewModel: InboxViewModel
+) : PagedListAdapter<Notification, InboxAdapter.NotificationViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
@@ -32,7 +30,7 @@ class InboxAdapter(
 
     }
 
-    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         return NotificationViewHolder(
             lifecycleOwner,
             viewModel,
@@ -40,15 +38,15 @@ class InboxAdapter(
         )
     }
 
-    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         val item = getItem(position) ?: return
-        with(holder as NotificationViewHolder) {
-            bindTo(item)
-            this.itemView.tag = item
-        }
+        holder.bindTo(item)
+        holder.itemView.tag = item
     }
 
-    override fun getViewType(position: Int): Int = R.layout.item_inbox_notification
+    override fun getItemViewType(position: Int): Int {
+        return R.layout.item_inbox_notification
+    }
 
     class NotificationViewHolder(
         private val owner: LifecycleOwner,

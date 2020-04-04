@@ -11,15 +11,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentIssueBinding
-import io.github.tonnyl.moka.network.NetworkState
-import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
-    private val issueTimelineAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        IssueTimelineAdapter(viewLifecycleOwner, viewModel, this@IssueFragment)
+    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            IssueTimelineAdapter(viewLifecycleOwner, viewModel),
+            LoadStateAdapter(this)
+        )
     }
 
     private val viewModel by viewModels<IssueViewModel> {
@@ -59,35 +63,14 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
         viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = issueTimelineAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
             }
 
-            issueTimelineAdapter.submitList(it)
+            adapterWrapper.pagingAdapter.submitList(it)
         })
 
-        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, Observer {
-            when (it.resource?.status) {
-                Status.SUCCESS -> {
-                    issueTimelineAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.LOADED)
-                    )
-                }
-                Status.ERROR -> {
-                    issueTimelineAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.error(it.resource.message))
-                    )
-                }
-                Status.LOADING -> {
-                    issueTimelineAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.LOADING)
-                    )
-                }
-                null -> {
-
-                }
-            }
-        })
+        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
 
     }
 

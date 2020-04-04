@@ -12,6 +12,8 @@ import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentPrsBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.pr.PullRequestFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
@@ -26,8 +28,12 @@ class PullRequestsFragment : Fragment(), PagingNetworkStateActions, EmptyViewAct
         ViewModelFactory(args)
     }
 
-    private val pullRequestAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PullRequestAdapter(viewLifecycleOwner, pullRequestsViewModel, this@PullRequestsFragment)
+    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            PullRequestAdapter(viewLifecycleOwner, pullRequestsViewModel),
+            LoadStateAdapter(this)
+        )
     }
 
     private lateinit var binding: FragmentPrsBinding
@@ -62,11 +68,11 @@ class PullRequestsFragment : Fragment(), PagingNetworkStateActions, EmptyViewAct
         pullRequestsViewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = pullRequestAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
             }
 
-            pullRequestAdapter.submitList(it)
+            adapterWrapper.pagingAdapter.submitList(it)
         })
 
         pullRequestsViewModel.event.observe(viewLifecycleOwner, Observer {

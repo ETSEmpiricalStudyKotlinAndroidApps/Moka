@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchedRepositoriesBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -30,11 +32,11 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
     )
     private val searchedRepositoriesViewModel by viewModels<SearchedRepositoriesViewModel>()
 
-    private val searchedRepositoryAdapter: SearchedRepositoryAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        SearchedRepositoryAdapter(
-            viewLifecycleOwner,
-            searchedRepositoriesViewModel,
-            this@SearchedRepositoriesFragment
+    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            SearchedRepositoryAdapter(viewLifecycleOwner, searchedRepositoriesViewModel),
+            LoadStateAdapter(this)
         )
     }
 
@@ -64,18 +66,18 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
             lifecycleOwner = viewLifecycleOwner
         }
 
-        parentViewModel.input.observe(requireParentFragment(), Observer {
+        parentViewModel.input.observe(requireParentFragment().viewLifecycleOwner, Observer {
             searchedRepositoriesViewModel.refresh(it)
         })
 
         searchedRepositoriesViewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = searchedRepositoryAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
             }
 
-            searchedRepositoryAdapter.submitList(it)
+            adapterWrapper.pagingAdapter.submitList(it)
         })
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -101,7 +103,7 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
                     )
                 }
                 is StarRepository -> {
-                    searchedRepositoryAdapter.notifyDataSetChanged()
+                    adapterWrapper.pagingAdapter.notifyDataSetChanged()
                 }
             }
         })

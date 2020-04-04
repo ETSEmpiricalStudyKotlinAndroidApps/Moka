@@ -3,19 +3,17 @@ package io.github.tonnyl.moka.ui.repositories
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.databinding.ItemRepositoryBinding
-import io.github.tonnyl.moka.ui.PagedResourceAdapter
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class RepositoryAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: RepositoriesViewModel,
-    override val retryActions: PagingNetworkStateActions
-) : PagedResourceAdapter<RepositoryItem>(DIFF_CALLBACK, retryActions) {
+    private val viewModel: RepositoriesViewModel
+) : PagedListAdapter<RepositoryItem, RepositoryAdapter.RepositoryViewHolder>(DIFF_CALLBACK) {
 
     companion object {
 
@@ -39,7 +37,7 @@ class RepositoryAdapter(
 
     }
 
-    override fun initiateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryViewHolder {
         return RepositoryViewHolder(
             lifecycleOwner,
             viewModel,
@@ -47,15 +45,13 @@ class RepositoryAdapter(
         )
     }
 
-    override fun bindHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RepositoryViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        if (holder is RepositoryViewHolder) {
-            holder.bindTo(item)
-        }
+        holder.bindTo(item)
     }
 
-    override fun getViewType(position: Int): Int = R.layout.item_repository
+    override fun getItemViewType(position: Int): Int = R.layout.item_repository
 
     class RepositoryViewHolder(
         private val owner: LifecycleOwner,

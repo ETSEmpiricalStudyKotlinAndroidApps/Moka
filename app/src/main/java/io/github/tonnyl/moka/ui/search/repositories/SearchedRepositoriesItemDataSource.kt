@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedRepositoryItem
 import io.github.tonnyl.moka.network.GraphQLClient
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery
@@ -17,7 +17,7 @@ import timber.log.Timber
 class SearchedRepositoriesItemDataSource(
     var keywords: String,
     private val initialLoadStatus: MutableLiveData<Resource<List<SearchedRepositoryItem>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<SearchedRepositoryItem>>>
+    private val pagedLoadStatus: MutableLiveData<PagedResource<List<SearchedRepositoryItem>>>
 ) : PageKeyedDataSource<String, SearchedRepositoryItem>() {
 
     var retry: (() -> Any)? = null
@@ -97,7 +97,7 @@ class SearchedRepositoriesItemDataSource(
         Timber.d("loadAfter keywords: $keywords")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
+            PagedResource(PagedResourceDirection.AFTER, Resource.loading(null))
         )
 
         try {
@@ -140,7 +140,7 @@ class SearchedRepositoriesItemDataSource(
             )
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -150,7 +150,7 @@ class SearchedRepositoriesItemDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
             )
         }
     }
@@ -162,7 +162,7 @@ class SearchedRepositoriesItemDataSource(
         Timber.d("loadBefore keywords: $keywords")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
         )
 
         try {
@@ -205,7 +205,7 @@ class SearchedRepositoriesItemDataSource(
             )
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -215,7 +215,7 @@ class SearchedRepositoriesItemDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
             )
         }
     }

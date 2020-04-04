@@ -11,9 +11,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentRepositoriesBinding
-import io.github.tonnyl.moka.network.NetworkState
-import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repositories.RepositoryItemEvent.*
@@ -29,8 +29,12 @@ class RepositoriesFragment : Fragment(), EmptyViewActions, PagingNetworkStateAct
 
     private lateinit var binding: FragmentRepositoriesBinding
 
-    private val repositoryAdapter by lazy {
-        RepositoryAdapter(viewLifecycleOwner, repositoriesViewModel, this@RepositoriesFragment)
+    private val adapterWrapper by lazy {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            RepositoryAdapter(viewLifecycleOwner, repositoriesViewModel),
+            LoadStateAdapter(this)
+        )
     }
 
     override fun onCreateView(
@@ -71,30 +75,16 @@ class RepositoriesFragment : Fragment(), EmptyViewActions, PagingNetworkStateAct
         repositoriesViewModel.data.observe(viewLifecycleOwner, Observer { list ->
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = repositoryAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
             }
-            repositoryAdapter.submitList(list)
+            adapterWrapper.pagingAdapter.submitList(list)
         })
 
-        repositoriesViewModel.pagedLoadStatus.observe(viewLifecycleOwner, Observer {
-            when (it.resource?.status) {
-                Status.SUCCESS -> {
-                    repositoryAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADED))
-                }
-                Status.ERROR -> {
-                    repositoryAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.error(it.resource.message))
-                    )
-                }
-                Status.LOADING -> {
-                    repositoryAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADING))
-                }
-                null -> {
-
-                }
-            }
-        })
+        repositoriesViewModel.pagedLoadStatus.observe(
+            viewLifecycleOwner,
+            adapterWrapper.observer
+        )
 
         repositoriesViewModel.event.observe(viewLifecycleOwner, Observer {
             when (val event = it.getContentIfNotHandled()) {

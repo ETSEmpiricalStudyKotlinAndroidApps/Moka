@@ -3,14 +3,14 @@ package io.github.tonnyl.moka.ui.repositories
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import io.github.tonnyl.moka.data.RepositoryItem
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 
 class RepositoriesDataSourceFactory(
     private val login: String,
     private val repositoryType: RepositoryType,
     private val loadStatusLiveData: MutableLiveData<Resource<List<RepositoryItem>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<RepositoryItem>>>
+    private val pagedLoadStatus: MutableLiveData<PagedResource<List<RepositoryItem>>>
 ) : DataSource.Factory<String, RepositoryItem>() {
 
     private var starredDataSource: StarredRepositoriesDataSource? = null

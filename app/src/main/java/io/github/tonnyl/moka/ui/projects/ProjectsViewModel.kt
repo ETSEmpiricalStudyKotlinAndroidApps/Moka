@@ -6,7 +6,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.db.dao.ProjectsDao
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.ui.NetworkDatabaseSourceViewModel
 
@@ -22,8 +22,8 @@ class ProjectsViewModel(
     val initialLoadStatusLiveData: LiveData<Resource<List<Project>>>
         get() = _initialLoadStatusLiveData
 
-    private val _previousNextLoadStatusLiveData = MutableLiveData<PagedResource2<List<Project>>>()
-    val previousNextLoadStatusLiveData: LiveData<PagedResource2<List<Project>>>
+    private val _previousNextLoadStatusLiveData = MutableLiveData<PagedResource<List<Project>>>()
+    val previousNextLoadStatusLiveData: LiveData<PagedResource<List<Project>>>
         get() = _previousNextLoadStatusLiveData
 
     override fun initLocalSource(): LiveData<PagedList<Project>> {

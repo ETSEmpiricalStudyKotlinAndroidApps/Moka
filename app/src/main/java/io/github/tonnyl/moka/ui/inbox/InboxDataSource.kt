@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.db.dao.NotificationDao
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.NotificationsService
@@ -16,7 +16,7 @@ class InboxDataSource(
     private val notificationsService: NotificationsService,
     private val notificationDao: NotificationDao,
     private val initialLoadStatus: MutableLiveData<Resource<List<Notification>>>,
-    private val previousNextStatus: MutableLiveData<PagedResource2<List<Notification>>>
+    private val previousNextStatus: MutableLiveData<PagedResource<List<Notification>>>
 ) : PageKeyedDataSource<String, Notification>() {
 
     var retry: (() -> Any)? = null
@@ -68,7 +68,7 @@ class InboxDataSource(
         Timber.d("loadAfter")
 
         previousNextStatus.postValue(
-            PagedResource2(
+            PagedResource(
                 PagedResourceDirection.AFTER,
                 Resource.loading(null)
             )
@@ -89,7 +89,7 @@ class InboxDataSource(
             retry = null
 
             previousNextStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
             )
 
             val pl = PageLinks(response)
@@ -102,7 +102,7 @@ class InboxDataSource(
             }
 
             previousNextStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
             )
         }
     }
@@ -114,7 +114,7 @@ class InboxDataSource(
         Timber.d("loadBefore")
 
         previousNextStatus.postValue(
-            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
         )
 
         try {
@@ -132,7 +132,7 @@ class InboxDataSource(
             retry = null
 
             previousNextStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
             )
 
             val pl = PageLinks(response)
@@ -145,7 +145,7 @@ class InboxDataSource(
             }
 
             previousNextStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
             )
         }
     }

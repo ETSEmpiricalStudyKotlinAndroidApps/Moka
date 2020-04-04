@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import io.github.tonnyl.moka.data.item.IssueItem
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
@@ -21,8 +21,8 @@ class IssuesViewModel(
     val initialLoadStatus: LiveData<Resource<List<IssueItem>>>
         get() = _initialLoadStatus
 
-    private val _pagedLoadStatus = MutableLiveData<PagedResource2<List<IssueItem>>>()
-    val pagedLoadStatus: LiveData<PagedResource2<List<IssueItem>>>
+    private val _pagedLoadStatus = MutableLiveData<PagedResource<List<IssueItem>>>()
+    val pagedLoadStatus: LiveData<PagedResource<List<IssueItem>>>
         get() = _pagedLoadStatus
 
     private lateinit var sourceFactory: IssuesDataSourceFactory

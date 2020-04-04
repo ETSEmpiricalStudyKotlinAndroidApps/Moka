@@ -11,9 +11,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchedUsersBinding
-import io.github.tonnyl.moka.network.NetworkState
-import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
 import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -31,8 +31,12 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
     )
     private val searchedUsersViewModel by viewModels<SearchedUsersViewModel>()
 
-    private val searchedUserAdapter: SearchedUserAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        SearchedUserAdapter(viewLifecycleOwner, searchedUsersViewModel, this@SearchedUsersFragment)
+    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
+        PagedListAdapterWrapper(
+            LoadStateAdapter(this),
+            SearchedUserAdapter(viewLifecycleOwner, searchedUsersViewModel),
+            LoadStateAdapter(this)
+        )
     }
 
     companion object {
@@ -61,39 +65,23 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
             lifecycleOwner = viewLifecycleOwner
         }
 
-        parentViewModel.input.observe(requireParentFragment(), Observer {
+        parentViewModel.input.observe(requireParentFragment().viewLifecycleOwner, Observer {
             searchedUsersViewModel.refresh(it)
         })
 
-        searchedUsersViewModel.pagedLoadStatus.observe(viewLifecycleOwner, Observer {
-            when (it.resource?.status) {
-                Status.SUCCESS -> {
-                    searchedUserAdapter.setNetworkState(Pair(it.direction, NetworkState.LOADED))
-                }
-                Status.ERROR -> {
-                    searchedUserAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.error(it.resource.message))
-                    )
-                }
-                Status.LOADING -> {
-                    searchedUserAdapter.setNetworkState(
-                        Pair(it.direction, NetworkState.LOADING)
-                    )
-                }
-                null -> {
-
-                }
-            }
-        })
+        searchedUsersViewModel.pagedLoadStatus.observe(
+            viewLifecycleOwner,
+            adapterWrapper.observer
+        )
 
         searchedUsersViewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = searchedUserAdapter
+                    adapter = adapterWrapper.mergeAdapter
                 }
             }
 
-            searchedUserAdapter.submitList(it)
+            adapterWrapper.pagingAdapter.submitList(it)
         })
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -109,7 +97,7 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
                     gotoProfile(event.login, ProfileType.ORGANIZATION)
                 }
                 is FollowUserEvent -> {
-                    searchedUserAdapter.notifyDataSetChanged()
+                    adapterWrapper.pagingAdapter.notifyDataSetChanged()
                 }
             }
         })

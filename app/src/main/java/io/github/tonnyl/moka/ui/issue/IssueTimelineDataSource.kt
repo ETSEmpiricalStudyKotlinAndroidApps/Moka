@@ -5,7 +5,7 @@ import androidx.paging.PageKeyedDataSource
 import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.network.GraphQLClient
-import io.github.tonnyl.moka.network.PagedResource2
+import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.queries.IssueTimelineItemsQuery
@@ -18,7 +18,7 @@ class IssueTimelineDataSource(
     private val name: String,
     private val number: Int,
     private val initialLoadStatus: MutableLiveData<Resource<List<IssueTimelineItem>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource2<List<IssueTimelineItem>>>
+    private val pagedLoadStatus: MutableLiveData<PagedResource<List<IssueTimelineItem>>>
 ) : PageKeyedDataSource<String, IssueTimelineItem>() {
 
     var retry: (() -> Any)? = null
@@ -95,7 +95,7 @@ class IssueTimelineDataSource(
         Timber.d("loadAfter")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.AFTER, Resource.loading(null))
+            PagedResource(PagedResourceDirection.AFTER, Resource.loading(null))
         )
 
         try {
@@ -139,7 +139,7 @@ class IssueTimelineDataSource(
             retry = null
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.success(list))
+                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -149,7 +149,7 @@ class IssueTimelineDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.AFTER, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
             )
         }
     }
@@ -161,7 +161,7 @@ class IssueTimelineDataSource(
         Timber.d("loadBefore")
 
         pagedLoadStatus.postValue(
-            PagedResource2(PagedResourceDirection.BEFORE, Resource.loading(null))
+            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
         )
 
         try {
@@ -205,7 +205,7 @@ class IssueTimelineDataSource(
             retry = null
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.success(list))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -215,7 +215,7 @@ class IssueTimelineDataSource(
             }
 
             pagedLoadStatus.postValue(
-                PagedResource2(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
+                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
             )
         }
     }

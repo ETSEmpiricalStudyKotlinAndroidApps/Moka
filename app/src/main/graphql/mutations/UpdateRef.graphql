@@ -1,8 +1,0 @@
-# Update a Git Ref.
-# https://developer.github.com/v4/mutation/updateref/
-mutation UpdateRef($input: UpdateRefInput!) {
-    updateRef(input: $input) {
-        # A unique identifier for the client performing the mutation.
-        clientMutationId
-    }
-}

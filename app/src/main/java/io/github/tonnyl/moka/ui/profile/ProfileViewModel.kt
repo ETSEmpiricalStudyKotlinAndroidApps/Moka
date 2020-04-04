@@ -9,15 +9,13 @@ import io.github.tonnyl.moka.data.Organization
 import io.github.tonnyl.moka.data.User
 import io.github.tonnyl.moka.data.toNonNullUser
 import io.github.tonnyl.moka.data.toNullableOrganization
-import io.github.tonnyl.moka.mutations.FollowUserMutation
-import io.github.tonnyl.moka.mutations.UnfollowUserMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.network.mutations.followUser
+import io.github.tonnyl.moka.network.mutations.unfollowUser
 import io.github.tonnyl.moka.queries.OrganizationQuery
 import io.github.tonnyl.moka.queries.UserQuery
-import io.github.tonnyl.moka.type.FollowUserInput
-import io.github.tonnyl.moka.type.UnfollowUserInput
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
@@ -79,18 +77,12 @@ class ProfileViewModel(
 
                 val user = response.data()?.user?.fragments?.user?.toNonNullUser()
 
-                if (user == null) {
-                    _userProfile.postValue(
-                        Resource.error(response.errors().firstOrNull()?.message(), null)
-                    )
-                } else {
-                    _userProfile.postValue(Resource.success(user))
+                _userProfile.postValue(Resource.success(user))
 
-                    if (user.viewerCanFollow) {
-                        _followState.postValue(Resource.success(user.viewerIsFollowing))
-                    } else {
-                        _followState.postValue(Resource.success(null))
-                    }
+                if (user?.viewerCanFollow == true) {
+                    _followState.postValue(Resource.success(user.viewerIsFollowing))
+                } else {
+                    _followState.postValue(Resource.success(null))
                 }
             } catch (e: Exception) {
                 Timber.e(e)
@@ -112,15 +104,10 @@ class ProfileViewModel(
                 }
 
                 val org = response.data()?.organization.toNullableOrganization()
-                if (org == null) {
-                    _organizationProfile.postValue(
-                        Resource.error(response.errors().firstOrNull()?.message(), null)
-                    )
-                } else {
-                    _organizationProfile.postValue(Resource.success(org))
 
-                    _followState.postValue(Resource.success(null))
-                }
+                _organizationProfile.postValue(Resource.success(org))
+
+                _followState.postValue(Resource.success(null))
             } catch (e: Exception) {
                 Timber.e(e)
 
@@ -141,24 +128,13 @@ class ProfileViewModel(
             _followState.postValue(Resource.loading(isFollowing))
 
             try {
-                val mutation = if (isFollowing) {
-                    UnfollowUserMutation(UnfollowUserInput(user.id))
+                if (isFollowing) {
+                    unfollowUser(user.id)
                 } else {
-                    FollowUserMutation(FollowUserInput(user.id))
-                }
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .mutate(mutation)
-                        .execute()
+                    followUser(user.id)
                 }
 
-                if (response.hasErrors()) {
-                    _followState.postValue(
-                        Resource.error(response.errors().firstOrNull()?.message(), isFollowing)
-                    )
-                } else {
-                    _followState.postValue(Resource.success(!isFollowing))
-                }
+                _followState.postValue(Resource.success(!isFollowing))
             } catch (e: Exception) {
                 Timber.e(e, "toggleFollow failed")
 

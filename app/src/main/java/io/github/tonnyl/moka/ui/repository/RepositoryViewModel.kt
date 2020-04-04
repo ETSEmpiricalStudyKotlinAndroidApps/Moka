@@ -8,21 +8,17 @@ import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.data.toNonNullTreeEntry
 import io.github.tonnyl.moka.data.toNullableRepository
-import io.github.tonnyl.moka.mutations.AddStarMutation
-import io.github.tonnyl.moka.mutations.FollowUserMutation
-import io.github.tonnyl.moka.mutations.RemoveStarMutation
-import io.github.tonnyl.moka.mutations.UnfollowUserMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.network.mutations.addStar
+import io.github.tonnyl.moka.network.mutations.followUser
+import io.github.tonnyl.moka.network.mutations.removeStar
+import io.github.tonnyl.moka.network.mutations.unfollowUser
 import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery
 import io.github.tonnyl.moka.queries.FileContentQuery
 import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery
 import io.github.tonnyl.moka.queries.UsersRepositoryQuery
-import io.github.tonnyl.moka.type.AddStarInput
-import io.github.tonnyl.moka.type.FollowUserInput
-import io.github.tonnyl.moka.type.RemoveStarInput
-import io.github.tonnyl.moka.type.UnfollowUserInput
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.util.HtmlHandler
@@ -128,25 +124,16 @@ class RepositoryViewModel(
                             .execute()
                     }
 
-                    if (fileContentResponse.hasErrors()) {
+                    val html =
+                        fileContentResponse.data()?.repository?.object_?.fragments?.blob?.text
+                    if (html.isNullOrEmpty()) {
+                        _readmeHtml.postValue(Resource.success(""))
+                    } else {
                         _readmeHtml.postValue(
-                            Resource.error(
-                                fileContentResponse.errors().firstOrNull()?.message(),
-                                null
+                            Resource.success(
+                                HtmlHandler.toHtml(html, args.login, args.name, branchName)
                             )
                         )
-                    } else {
-                        val html =
-                            fileContentResponse.data()?.repository?.object_?.fragments?.blob?.text
-                        if (html.isNullOrEmpty()) {
-                            _readmeHtml.postValue(Resource.success(""))
-                        } else {
-                            _readmeHtml.postValue(
-                                Resource.success(
-                                    HtmlHandler.toHtml(html, args.login, args.name, branchName)
-                                )
-                            )
-                        }
                     }
                 } else {
                     _readmeHtml.postValue(Resource.success(null))
@@ -171,25 +158,13 @@ class RepositoryViewModel(
             _starState.postValue(Resource.loading(hasStarred))
 
             try {
-                val mutation = if (hasStarred) {
-                    RemoveStarMutation(RemoveStarInput(repositoryId))
+                if (hasStarred) {
+                    removeStar(repositoryId)
                 } else {
-                    AddStarMutation(AddStarInput(repositoryId))
+                    addStar(repositoryId)
                 }
 
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .mutate(mutation)
-                        .execute()
-                }
-
-                if (response.hasErrors()) {
-                    _starState.postValue(
-                        Resource.error(response.errors().firstOrNull()?.message(), hasStarred)
-                    )
-                } else {
-                    _starState.postValue(Resource.success(!hasStarred))
-                }
+                _starState.postValue(Resource.success(!hasStarred))
             } catch (e: Exception) {
                 Timber.e(e, "toggleStar error")
 
@@ -213,24 +188,13 @@ class RepositoryViewModel(
             _followState.postValue(Resource.loading(isFollowing))
 
             try {
-                val mutation = if (isFollowing) {
-                    UnfollowUserMutation(UnfollowUserInput(userId))
+                if (isFollowing) {
+                    unfollowUser(userId)
                 } else {
-                    FollowUserMutation(FollowUserInput(userId))
-                }
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .mutate(mutation)
-                        .execute()
+                    followUser(userId)
                 }
 
-                if (response.hasErrors()) {
-                    _followState.postValue(
-                        Resource.error(response.errors().firstOrNull()?.message(), isFollowing)
-                    )
-                } else {
-                    _followState.postValue(Resource.success(!isFollowing))
-                }
+                _followState.postValue(Resource.success(!isFollowing))
             } catch (e: Exception) {
                 Timber.e(e, "toggleFollow error")
 
@@ -257,27 +221,21 @@ class RepositoryViewModel(
 
                 val repo = response.data().toNullableRepository()
 
-                if (repo == null) {
-                    _usersRepository.postValue(
-                        Resource.error(response.errors().firstOrNull()?.message(), null)
-                    )
-                } else {
-                    _usersRepository.postValue(Resource.success(repo))
+                _usersRepository.postValue(Resource.success(repo))
 
-                    repo.defaultBranchRef?.let { ref ->
-                        updateBranchName(ref.name)
-                    }
-
-                    _followState.postValue(
-                        Resource.success(
-                            if (repo.viewerCanFollow) {
-                                repo.viewerIsFollowing
-                            } else {
-                                null
-                            }
-                        )
-                    )
+                repo?.defaultBranchRef?.let { ref ->
+                    updateBranchName(ref.name)
                 }
+
+                _followState.postValue(
+                    Resource.success(
+                        if (repo?.viewerCanFollow == true) {
+                            repo.viewerIsFollowing
+                        } else {
+                            null
+                        }
+                    )
+                )
             } catch (e: Exception) {
                 Timber.e(e, "refreshUsersRepositoryData error")
 
@@ -299,19 +257,13 @@ class RepositoryViewModel(
 
                 val repo = response.data().toNullableRepository()
 
-                if (repo == null) {
-                    _organizationsRepository.postValue(
-                        Resource.error(response.errors().firstOrNull()?.message(), null)
-                    )
-                } else {
-                    _organizationsRepository.postValue(Resource.success(repo))
+                _organizationsRepository.postValue(Resource.success(repo))
 
-                    repo.defaultBranchRef?.let {
-                        updateBranchName(it.name)
-                    }
-
-                    _followState.postValue(Resource.success(null))
+                repo?.defaultBranchRef?.let {
+                    updateBranchName(it.name)
                 }
+
+                _followState.postValue(Resource.success(null))
             } catch (e: Exception) {
                 Timber.e(e, "refreshOrganizationsRepository error")
 

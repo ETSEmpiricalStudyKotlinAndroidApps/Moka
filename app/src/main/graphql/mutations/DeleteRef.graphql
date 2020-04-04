@@ -1,6 +1,6 @@
 # Delete a Git Ref.
 # https://developer.github.com/v4/mutation/deleteref/
-mutation deleteRef($input: DeleteRefInput!) {
+mutation DeleteRef($input: DeleteRefInput!) {
     deleteRef(input: $input) {
         # A unique identifier for the client performing the mutation.
         clientMutationId

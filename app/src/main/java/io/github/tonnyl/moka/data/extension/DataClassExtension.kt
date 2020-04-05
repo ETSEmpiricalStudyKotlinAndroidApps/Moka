@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import io.github.tonnyl.moka.data.Issue
 import io.github.tonnyl.moka.data.PullRequest
 import io.github.tonnyl.moka.data.item.IssueComment
+import io.github.tonnyl.moka.fragment.PageInfo
 import io.github.tonnyl.moka.util.HtmlHandler
 import java.util.*
 
@@ -48,3 +49,21 @@ fun PullRequest.transformToPullRequestIssueComment(
         viewerCannotUpdateReasons
     )
 }
+
+val PageInfo?.checkedStartCursor: String?
+    get() {
+        return if (this?.hasPreviousPage == true) {
+            startCursor
+        } else {
+            null
+        }
+    }
+
+val PageInfo?.checkedEndCursor: String?
+    get() {
+        return if (this?.hasNextPage == true) {
+            endCursor
+        } else {
+            null
+        }
+    }

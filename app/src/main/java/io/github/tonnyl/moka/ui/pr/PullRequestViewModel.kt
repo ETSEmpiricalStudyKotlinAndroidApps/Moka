@@ -10,15 +10,12 @@ import io.github.tonnyl.moka.data.extension.transformToPullRequestIssueComment
 import io.github.tonnyl.moka.data.item.IssueComment
 import io.github.tonnyl.moka.data.item.PullRequestTimelineItem
 import io.github.tonnyl.moka.data.toNullablePullRequest
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.queries.PullRequestQuery
+import io.github.tonnyl.moka.network.queries.queryPullRequest
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class PullRequestViewModel(
@@ -76,15 +73,11 @@ class PullRequestViewModel(
             _pullRequestToCommentLiveData.postValue(Resource.loading(null))
 
             try {
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .query(
-                            PullRequestQuery(args.repositoryOwner, args.repositoryName, args.number)
-                        )
-                        .execute()
-                }
-
-                val data = response.data()?.repository?.pullRequest.toNullablePullRequest()
+                val data = queryPullRequest(args.repositoryOwner, args.repositoryName, args.number)
+                    .data()
+                    ?.repository
+                    ?.pullRequest
+                    .toNullablePullRequest()
 
                 _pullRequestToCommentLiveData.postValue(
                     Resource.success(

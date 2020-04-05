@@ -2,16 +2,14 @@ package io.github.tonnyl.moka.ui.prs
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.apollographql.apollo.api.Input
+import io.github.tonnyl.moka.data.extension.checkedEndCursor
+import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.PullRequestItem
 import io.github.tonnyl.moka.data.item.toNonNullPullRequestItem
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.queries.PullRequestsQuery
-import io.github.tonnyl.moka.util.execute
-import kotlinx.coroutines.runBlocking
+import io.github.tonnyl.moka.network.queries.queryPullRequests
 import timber.log.Timber
 
 class PullRequestsDataSource(
@@ -32,19 +30,11 @@ class PullRequestsDataSource(
         loadStatusLiveData.postValue(Resource.loading(null))
 
         try {
-            val issuesQuery = PullRequestsQuery(
-                owner,
-                name,
-                Input.absent(),
-                Input.absent(),
-                params.requestedLoadSize
+            val response = queryPullRequests(
+                owner = owner,
+                name = name,
+                perPage = params.requestedLoadSize
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(issuesQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<PullRequestItem>()
             val repository = response.data()?.repository
@@ -59,16 +49,8 @@ class PullRequestsDataSource(
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage == true) {
-                    pageInfo.startCursor
-                } else {
-                    null
-                },
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.endCursor
-                } else {
-                    null
-                }
+                pageInfo.checkedStartCursor,
+                pageInfo.checkedEndCursor
             )
 
             retry = null
@@ -96,19 +78,12 @@ class PullRequestsDataSource(
         )
 
         try {
-            val issuesQuery = PullRequestsQuery(
-                owner,
-                name,
-                Input.fromNullable(params.key),
-                Input.absent(),
-                params.requestedLoadSize
+            val response = queryPullRequests(
+                owner = owner,
+                name = name,
+                perPage = params.requestedLoadSize,
+                after = params.key
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(issuesQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<PullRequestItem>()
             val repository = response.data()?.repository
@@ -119,15 +94,9 @@ class PullRequestsDataSource(
                 }
             }
 
-            val pageInfo = repository?.pullRequests?.pageInfo?.fragments?.pageInfo
-
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.endCursor
-                } else {
-                    null
-                }
+                repository?.pullRequests?.pageInfo?.fragments?.pageInfo.checkedEndCursor
             )
 
             retry = null
@@ -159,19 +128,12 @@ class PullRequestsDataSource(
         )
 
         try {
-            val issuesQuery = PullRequestsQuery(
-                owner,
-                name,
-                Input.absent(),
-                Input.fromNullable(params.key),
-                params.requestedLoadSize
+            val response = queryPullRequests(
+                owner = owner,
+                name = name,
+                perPage = params.requestedLoadSize,
+                before = params.key
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(issuesQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<PullRequestItem>()
             val repository = response.data()?.repository
@@ -182,15 +144,9 @@ class PullRequestsDataSource(
                 }
             }
 
-            val pageInfo = repository?.pullRequests?.pageInfo?.fragments?.pageInfo
-
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage == true) {
-                    pageInfo.startCursor
-                } else {
-                    null
-                }
+                repository?.pullRequests?.pageInfo?.fragments?.pageInfo.checkedStartCursor
             )
 
             retry = null

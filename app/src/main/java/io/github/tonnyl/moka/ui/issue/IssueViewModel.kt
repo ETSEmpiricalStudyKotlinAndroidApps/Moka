@@ -10,15 +10,12 @@ import io.github.tonnyl.moka.data.extension.transformToIssueCommentEvent
 import io.github.tonnyl.moka.data.item.IssueComment
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
 import io.github.tonnyl.moka.data.toNonNullIssue
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.queries.IssueQuery
+import io.github.tonnyl.moka.network.queries.queryIssue
 import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class IssueViewModel(
@@ -74,12 +71,7 @@ class IssueViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _issueToCommentLiveData.postValue(Resource.loading(null))
             try {
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .query(
-                            IssueQuery(args.repositoryOwner, args.repositoryName, args.number)
-                        ).execute()
-                }
+                val response = queryIssue(args.repositoryOwner, args.repositoryName, args.number)
 
                 val data = response.data()?.repository?.issue?.toNonNullIssue()
 

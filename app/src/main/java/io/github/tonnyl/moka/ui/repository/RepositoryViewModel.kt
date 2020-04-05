@@ -8,24 +8,21 @@ import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.data.toNonNullTreeEntry
 import io.github.tonnyl.moka.data.toNullableRepository
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.addStar
 import io.github.tonnyl.moka.network.mutations.followUser
 import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.network.mutations.unfollowUser
-import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery
-import io.github.tonnyl.moka.queries.FileContentQuery
-import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery
-import io.github.tonnyl.moka.queries.UsersRepositoryQuery
+import io.github.tonnyl.moka.network.queries.queryCurrentLevelTreeView
+import io.github.tonnyl.moka.network.queries.queryFileContent
+import io.github.tonnyl.moka.network.queries.queryOrganizationsRepository
+import io.github.tonnyl.moka.network.queries.queryUsersRepository
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.util.HtmlHandler
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.util.*
 
@@ -85,11 +82,7 @@ class RepositoryViewModel(
             _readmeHtml.postValue(Resource.loading(null))
 
             try {
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .query(CurrentLevelTreeViewQuery(args.login, args.name, "$branchName:"))
-                        .execute()
-                }
+                val response = queryCurrentLevelTreeView(args.login, args.name, "$branchName:")
 
                 val readmeFileNames = mapOf(
                     "readme.md" to "md",
@@ -118,11 +111,7 @@ class RepositoryViewModel(
 
                 if (fileEntry != null) {
                     val expression = "$branchName:${fileEntry.name}"
-                    val fileContentResponse = runBlocking {
-                        GraphQLClient.apolloClient
-                            .query(FileContentQuery(args.login, args.name, expression))
-                            .execute()
-                    }
+                    val fileContentResponse = queryFileContent(args.login, args.name, expression)
 
                     val html =
                         fileContentResponse.data()?.repository?.object_?.fragments?.blob?.text
@@ -213,13 +202,9 @@ class RepositoryViewModel(
             _usersRepository.postValue(Resource.loading(null))
 
             try {
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .query(UsersRepositoryQuery(args.login, args.name))
-                        .execute()
-                }
-
-                val repo = response.data().toNullableRepository()
+                val repo = queryUsersRepository(args.login, args.name)
+                    .data()
+                    .toNullableRepository()
 
                 _usersRepository.postValue(Resource.success(repo))
 
@@ -249,13 +234,9 @@ class RepositoryViewModel(
             _organizationsRepository.postValue(Resource.loading(null))
 
             try {
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .query(OrganizationsRepositoryQuery(args.login, args.name))
-                        .execute()
-                }
-
-                val repo = response.data().toNullableRepository()
+                val repo = queryOrganizationsRepository(args.login, args.name)
+                    .data()
+                    .toNullableRepository()
 
                 _organizationsRepository.postValue(Resource.success(repo))
 

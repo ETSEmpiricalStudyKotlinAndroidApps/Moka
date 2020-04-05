@@ -2,17 +2,15 @@ package io.github.tonnyl.moka.ui.projects
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.apollographql.apollo.api.Input
+import io.github.tonnyl.moka.data.extension.checkedEndCursor
+import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.data.item.toNonNullProject
 import io.github.tonnyl.moka.db.dao.ProjectsDao
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.queries.UsersProjectsQuery
-import io.github.tonnyl.moka.util.execute
-import kotlinx.coroutines.runBlocking
+import io.github.tonnyl.moka.network.queries.queryUsersProjects
 import timber.log.Timber
 
 class ProjectsDataSource(
@@ -39,18 +37,10 @@ class ProjectsDataSource(
         initialLoadStatusLiveData.postValue(Resource.loading(null))
 
         try {
-            val projectsQuery = UsersProjectsQuery(
-                login,
-                Input.absent(),
-                Input.absent(),
-                params.requestedLoadSize
+            val response = queryUsersProjects(
+                owner = login,
+                perPage = params.requestedLoadSize
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(projectsQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<Project>()
             val user = response.data()?.user
@@ -73,16 +63,8 @@ class ProjectsDataSource(
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage == true) {
-                    pageInfo.startCursor
-                } else {
-                    null
-                },
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.endCursor
-                } else {
-                    null
-                }
+                pageInfo.checkedStartCursor,
+                pageInfo.checkedEndCursor
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -103,18 +85,11 @@ class ProjectsDataSource(
         )
 
         try {
-            val response = runBlocking {
-                val projectsQuery = UsersProjectsQuery(
-                    login,
-                    Input.fromNullable(params.key),
-                    Input.absent(),
-                    params.requestedLoadSize
-                )
-
-                GraphQLClient.apolloClient
-                    .query(projectsQuery)
-                    .execute()
-            }
+            val response = queryUsersProjects(
+                owner = login,
+                after = params.key,
+                perPage = params.requestedLoadSize
+            )
 
             val list = mutableListOf<Project>()
             val user = response.data()?.user
@@ -135,15 +110,9 @@ class ProjectsDataSource(
                 PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
             )
 
-            val pageInfo = user?.projects?.pageInfo?.fragments?.pageInfo
-
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.endCursor
-                } else {
-                    null
-                }
+                user?.projects?.pageInfo?.fragments?.pageInfo.checkedEndCursor
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -166,18 +135,11 @@ class ProjectsDataSource(
         )
 
         try {
-            val response = runBlocking {
-                val projectsQuery = UsersProjectsQuery(
-                    login,
-                    Input.absent(),
-                    Input.fromNullable(params.key),
-                    params.requestedLoadSize
-                )
-
-                GraphQLClient.apolloClient
-                    .query(projectsQuery)
-                    .execute()
-            }
+            val response = queryUsersProjects(
+                owner = login,
+                before = params.key,
+                perPage = params.requestedLoadSize
+            )
 
             val list = mutableListOf<Project>()
             val user = response.data()?.user
@@ -198,15 +160,9 @@ class ProjectsDataSource(
                 PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
             )
 
-            val pageInfo = user?.projects?.pageInfo?.fragments?.pageInfo
-
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.startCursor
-                } else {
-                    null
-                }
+                user?.projects?.pageInfo?.fragments?.pageInfo.checkedStartCursor
             )
         } catch (e: Exception) {
             Timber.e(e)

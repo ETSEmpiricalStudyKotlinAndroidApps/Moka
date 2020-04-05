@@ -2,16 +2,14 @@ package io.github.tonnyl.moka.ui.users
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.apollographql.apollo.api.Input
 import io.github.tonnyl.moka.data.UserItem
+import io.github.tonnyl.moka.data.extension.checkedEndCursor
+import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullUserItem
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.queries.FollowersQuery
-import io.github.tonnyl.moka.util.execute
-import kotlinx.coroutines.runBlocking
+import io.github.tonnyl.moka.network.queries.queryUsersFollowers
 import timber.log.Timber
 
 class FollowersDataSource(
@@ -31,18 +29,10 @@ class FollowersDataSource(
         initialLoadStatus.postValue(Resource.loading(initialLoadStatus.value?.data))
 
         try {
-            val followerQuery = FollowersQuery(
-                login,
-                params.requestedLoadSize,
-                Input.absent(),
-                Input.absent()
+            val response = queryUsersFollowers(
+                login = login,
+                perPage = params.requestedLoadSize
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(followerQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<UserItem>()
             val user = response.data()?.user
@@ -57,16 +47,8 @@ class FollowersDataSource(
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.startCursor
-                } else {
-                    null
-                },
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.endCursor
-                } else {
-                    null
-                }
+                pageInfo.checkedStartCursor,
+                pageInfo.checkedEndCursor
             )
 
             retry = null
@@ -94,18 +76,11 @@ class FollowersDataSource(
         )
 
         try {
-            val followersQuery = FollowersQuery(
-                login,
-                params.requestedLoadSize,
-                Input.absent(),
-                Input.fromNullable(params.key)
+            val response = queryUsersFollowers(
+                login = login,
+                perPage = params.requestedLoadSize,
+                after = params.key
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(followersQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<UserItem>()
             val user = response.data()?.user
@@ -116,15 +91,9 @@ class FollowersDataSource(
                 }
             }
 
-            val pageInfo = user?.followers?.pageInfo?.fragments?.pageInfo
-
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.endCursor
-                } else {
-                    null
-                }
+                user?.followers?.pageInfo?.fragments?.pageInfo.checkedEndCursor
             )
 
             retry = null
@@ -156,18 +125,11 @@ class FollowersDataSource(
         )
 
         try {
-            val followersQuery = FollowersQuery(
-                login,
-                params.requestedLoadSize,
-                Input.optional(params.key),
-                Input.absent()
+            val response = queryUsersFollowers(
+                login = login,
+                perPage = params.requestedLoadSize,
+                before = params.key
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(followersQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<UserItem>()
             val user = response.data()?.user
@@ -178,15 +140,9 @@ class FollowersDataSource(
                 }
             }
 
-            val pageInfo = user?.followers?.pageInfo?.fragments?.pageInfo
-
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage == true) {
-                    pageInfo.startCursor
-                } else {
-                    null
-                }
+                user?.followers?.pageInfo?.fragments?.pageInfo.checkedStartCursor
             )
 
             retry = null

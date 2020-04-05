@@ -9,18 +9,15 @@ import io.github.tonnyl.moka.data.Organization
 import io.github.tonnyl.moka.data.User
 import io.github.tonnyl.moka.data.toNonNullUser
 import io.github.tonnyl.moka.data.toNullableOrganization
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.followUser
 import io.github.tonnyl.moka.network.mutations.unfollowUser
-import io.github.tonnyl.moka.queries.OrganizationQuery
-import io.github.tonnyl.moka.queries.UserQuery
+import io.github.tonnyl.moka.network.queries.queryOrganization
+import io.github.tonnyl.moka.network.queries.queryUser
 import io.github.tonnyl.moka.ui.Event
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class ProfileViewModel(
@@ -69,13 +66,12 @@ class ProfileViewModel(
             _userProfile.postValue(Resource.loading(null))
 
             try {
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .query(UserQuery(args.login))
-                        .execute()
-                }
-
-                val user = response.data()?.user?.fragments?.user?.toNonNullUser()
+                val user = queryUser(args.login)
+                    .data()
+                    ?.user
+                    ?.fragments
+                    ?.user
+                    ?.toNonNullUser()
 
                 _userProfile.postValue(Resource.success(user))
 
@@ -97,11 +93,7 @@ class ProfileViewModel(
             _organizationProfile.postValue(Resource.loading(null))
 
             try {
-                val response = runBlocking {
-                    GraphQLClient.apolloClient
-                        .query(OrganizationQuery(args.login))
-                        .execute()
-                }
+                val response = queryOrganization(args.login)
 
                 val org = response.data()?.organization.toNullableOrganization()
 

@@ -2,15 +2,14 @@ package io.github.tonnyl.moka.ui.issue
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.apollographql.apollo.api.Input
+import io.github.tonnyl.moka.data.extension.checkedEndCursor
+import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.*
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.network.queries.queryIssueTimelineItems
 import io.github.tonnyl.moka.queries.IssueTimelineItemsQuery
-import io.github.tonnyl.moka.util.execute
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class IssueTimelineDataSource(
@@ -32,20 +31,12 @@ class IssueTimelineDataSource(
         initialLoadStatus.postValue(Resource.loading(null))
 
         try {
-            val issueTimelineQuery = IssueTimelineItemsQuery(
-                owner,
-                name,
-                number,
-                Input.absent(),
-                Input.absent(),
-                params.requestedLoadSize
+            val response = queryIssueTimelineItems(
+                owner = owner,
+                name = name,
+                number = number,
+                perPage = params.requestedLoadSize
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(issueTimelineQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<IssueTimelineItem>()
             val timeline = response.data()?.repository?.issue?.timelineItems
@@ -62,16 +53,8 @@ class IssueTimelineDataSource(
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage == true) {
-                    pageInfo.startCursor
-                } else {
-                    null
-                },
-                if (pageInfo?.hasPreviousPage == true) {
-                    pageInfo.endCursor
-                } else {
-                    null
-                }
+                pageInfo.checkedStartCursor,
+                pageInfo.checkedEndCursor
             )
 
             retry = null
@@ -99,20 +82,13 @@ class IssueTimelineDataSource(
         )
 
         try {
-            val timelineQuery = IssueTimelineItemsQuery(
-                owner,
-                name,
-                number,
-                Input.fromNullable(params.key),
-                Input.absent(),
-                params.requestedLoadSize
+            val response = queryIssueTimelineItems(
+                owner = owner,
+                name = name,
+                number = number,
+                perPage = params.requestedLoadSize,
+                after = params.key
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(timelineQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<IssueTimelineItem>()
             val timeline = response.data()?.repository?.issue?.timelineItems
@@ -125,15 +101,9 @@ class IssueTimelineDataSource(
                 }
             }
 
-            val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
-
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.endCursor
-                } else {
-                    null
-                }
+                timeline?.pageInfo?.fragments?.pageInfo.checkedEndCursor
             )
 
             retry = null
@@ -165,20 +135,13 @@ class IssueTimelineDataSource(
         )
 
         try {
-            val timelineQuery = IssueTimelineItemsQuery(
-                owner,
-                name,
-                number,
-                Input.absent(),
-                Input.fromNullable(params.key),
-                params.requestedLoadSize
+            val response = queryIssueTimelineItems(
+                owner = owner,
+                name = name,
+                number = number,
+                perPage = params.requestedLoadSize,
+                before = params.key
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(timelineQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<IssueTimelineItem>()
             val timeline = response.data()?.repository?.issue?.timelineItems
@@ -191,15 +154,9 @@ class IssueTimelineDataSource(
                 }
             }
 
-            val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
-
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage == true) {
-                    pageInfo.startCursor
-                } else {
-                    null
-                }
+                timeline?.pageInfo?.fragments?.pageInfo.checkedStartCursor
             )
 
             retry = null

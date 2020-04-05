@@ -2,16 +2,15 @@ package io.github.tonnyl.moka.ui.search.repositories
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.apollographql.apollo.api.Input
+import io.github.tonnyl.moka.data.extension.checkedEndCursor
+import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedRepositoryItem
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.network.queries.querySearchRepositories
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery
-import io.github.tonnyl.moka.util.execute
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class SearchedRepositoriesItemDataSource(
@@ -35,19 +34,10 @@ class SearchedRepositoriesItemDataSource(
         initialLoadStatus.postValue(Resource.loading(null))
 
         try {
-            val userQuery = SearchRepositoriesQuery(
-                keywords,
-                Input.fromNullable(params.requestedLoadSize),
-                Input.absent(),
-                Input.absent(),
-                Input.absent()
+            val response = querySearchRepositories(
+                queryWords = keywords,
+                first = params.requestedLoadSize
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(userQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<SearchedRepositoryItem>()
             val search = response.data()?.search
@@ -64,16 +54,8 @@ class SearchedRepositoriesItemDataSource(
 
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage == true) {
-                    pageInfo.startCursor
-                } else {
-                    null
-                },
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.endCursor
-                } else {
-                    null
-                }
+                pageInfo.checkedStartCursor,
+                pageInfo.checkedEndCursor
             )
 
             retry = null
@@ -101,19 +83,11 @@ class SearchedRepositoriesItemDataSource(
         )
 
         try {
-            val searchUserQuery = SearchRepositoriesQuery(
-                keywords,
-                Input.fromNullable(params.requestedLoadSize),
-                Input.absent(),
-                Input.fromNullable(params.key),
-                Input.absent()
+            val response = querySearchRepositories(
+                queryWords = keywords,
+                first = params.requestedLoadSize,
+                after = params.key
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(searchUserQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<SearchedRepositoryItem>()
             val search = response.data()?.search
@@ -128,15 +102,9 @@ class SearchedRepositoriesItemDataSource(
 
             retry = null
 
-            val pageInfo = search?.pageInfo?.fragments?.pageInfo
-
             callback.onResult(
                 list,
-                if (pageInfo?.hasNextPage == true) {
-                    pageInfo.endCursor
-                } else {
-                    null
-                }
+                search?.pageInfo?.fragments?.pageInfo.checkedEndCursor
             )
 
             pagedLoadStatus.postValue(
@@ -166,19 +134,11 @@ class SearchedRepositoriesItemDataSource(
         )
 
         try {
-            val searchUserQuery = SearchRepositoriesQuery(
-                keywords,
-                Input.fromNullable(params.requestedLoadSize),
-                Input.absent(),
-                Input.absent(),
-                Input.fromNullable(params.key)
+            val response = querySearchRepositories(
+                queryWords = keywords,
+                first = params.requestedLoadSize,
+                before = params.key
             )
-
-            val response = runBlocking {
-                GraphQLClient.apolloClient
-                    .query(searchUserQuery)
-                    .execute()
-            }
 
             val list = mutableListOf<SearchedRepositoryItem>()
             val search = response.data()?.search
@@ -193,15 +153,9 @@ class SearchedRepositoriesItemDataSource(
 
             retry = null
 
-            val pageInfo = search?.pageInfo?.fragments?.pageInfo
-
             callback.onResult(
                 list,
-                if (pageInfo?.hasPreviousPage == true) {
-                    pageInfo.startCursor
-                } else {
-                    null
-                }
+                search?.pageInfo?.fragments?.pageInfo.checkedStartCursor
             )
 
             pagedLoadStatus.postValue(

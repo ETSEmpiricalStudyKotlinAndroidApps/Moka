@@ -10,7 +10,6 @@ import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.NotificationsService
 import io.github.tonnyl.moka.util.PageLinks
 import timber.log.Timber
-import java.util.*
 
 class InboxDataSource(
     private val notificationsService: NotificationsService,
@@ -34,7 +33,7 @@ class InboxDataSource(
             val response = notificationsService.listNotifications(true, 1, params.requestedLoadSize)
                 .execute()
 
-            val list = (response.body() ?: Collections.emptyList()).map {
+            val list = (response.body() ?: emptyList()).map {
                 it.hasDisplayed = true
                 it
             }
@@ -78,7 +77,7 @@ class InboxDataSource(
             val response = notificationsService.listNotificationsByUrl(params.key)
                 .execute()
 
-            val list = (response.body() ?: Collections.emptyList()).map {
+            val list = (response.body() ?: emptyList()).map {
                 it.hasDisplayed = true
                 it
             }
@@ -121,7 +120,7 @@ class InboxDataSource(
             val response = notificationsService.listNotificationsByUrl(params.key)
                 .execute()
 
-            val list = (response.body() ?: Collections.emptyList()).map {
+            val list = (response.body() ?: emptyList()).map {
                 it.hasDisplayed = true
                 it
             }

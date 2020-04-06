@@ -1,142 +1,72 @@
 package io.github.tonnyl.moka.ui.timeline
 
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.db.dao.EventDao
 import io.github.tonnyl.moka.network.PagedResource
-import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.EventsService
+import io.github.tonnyl.moka.ui.*
 import io.github.tonnyl.moka.util.PageLinks
-import timber.log.Timber
-import java.util.*
 
 class TimelineItemDataSource(
     private val eventsService: EventsService,
     private val eventDao: EventDao,
     var login: String,
-    private val initialLoadStatus: MutableLiveData<Resource<List<Event>>>,
-    private val previousNextStatus: MutableLiveData<PagedResource<List<Event>>>
-) : PageKeyedDataSource<String, Event>() {
+    override val initial: MutableLiveData<Resource<List<Event>>>,
+    override val previousOrNext: MutableLiveData<PagedResource<List<Event>>>
+) : PageKeyedDataSourceWithLoadState<Event>() {
 
-    var retry: (() -> Any)? = null
-
-    override fun loadInitial(
-        params: LoadInitialParams<String>,
-        callback: LoadInitialCallback<String, Event>
-    ) {
-        Timber.d("loadInitial login: $login")
-
-        if (login.isEmpty()) {
-            return
-        }
-
-        initialLoadStatus.postValue(Resource.loading(null))
-
-        // triggered by a refresh, we better execute sync
-        try {
-            val response = eventsService.listPublicEventThatAUserHasReceived(
-                login,
-                page = 1,
-                perPage = params.requestedLoadSize
-            ).execute()
-
-            val list = response.body() ?: emptyList()
-            if (list.isNotEmpty()) {
-                eventDao.deleteAll()
-                eventDao.insertAll(list)
-            }
-
-            retry = null
-
-            initialLoadStatus.postValue(Resource.success(list))
-
-            val pl = PageLinks(response)
-            callback.onResult(list, pl.prev, pl.next)
-        } catch (e: Exception) {
-            Timber.e(e)
-
-            retry = {
-                loadInitial(params, callback)
-            }
-
-            initialLoadStatus.postValue(Resource.error(e.message, null))
-        }
+    init {
+        require(login.isNotEmpty())
     }
 
-    override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Event>) {
-        Timber.d("loadAfter")
+    override fun doLoadInitial(params: LoadInitialParams<String>): InitialLoadResponse<Event> {
+        val response = eventsService.listPublicEventThatAUserHasReceived(
+            login,
+            page = 1,
+            perPage = params.requestedLoadSize
+        ).execute()
 
-        previousNextStatus.postValue(
-            PagedResource(PagedResourceDirection.AFTER, Resource.loading(null))
-        )
-
-        try {
-            val response = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
-                .execute()
-
-            val list = response.body() ?: Collections.emptyList()
-
-            if (list.isNotEmpty()) {
-                eventDao.insertAll(list)
-            }
-
-            retry = null
-
-            val pl = PageLinks(response)
-            callback.onResult(list, pl.next)
-            previousNextStatus.postValue(
-                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
-            )
-        } catch (e: Exception) {
-            Timber.e(e)
-
-            retry = {
-                loadAfter(params, callback)
-            }
-
-            previousNextStatus.postValue(
-                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
-            )
+        val list = response.body() ?: emptyList()
+        if (list.isNotEmpty()) {
+            eventDao.deleteAll()
+            eventDao.insertAll(list)
         }
+
+        val pl = PageLinks(response)
+
+        return InitialLoadResponse(list, PreviousPageKey(pl.prev), NextPageKey(pl.next))
     }
 
-    override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, Event>) {
-        Timber.d("loadBefore")
+    override fun doLoadAfter(params: LoadParams<String>): AfterLoadResponse<Event> {
+        val response = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
+            .execute()
 
-        previousNextStatus.postValue(
-            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
-        )
+        val list = response.body() ?: emptyList()
 
-        try {
-            val response = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
-                .execute()
-
-            val list = response.body() ?: Collections.emptyList()
-
-            if (list.isNotEmpty()) {
-                eventDao.insertAll(list)
-            }
-
-            retry = null
-
-            val pl = PageLinks(response)
-            callback.onResult(list, pl.prev)
-            previousNextStatus.postValue(
-                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
-            )
-        } catch (e: Exception) {
-            Timber.e(e)
-
-            retry = {
-                loadBefore(params, callback)
-            }
-
-            previousNextStatus.postValue(
-                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
-            )
+        if (list.isNotEmpty()) {
+            eventDao.insertAll(list)
         }
+
+        retry = null
+
+        return AfterLoadResponse(list, NextPageKey(PageLinks(response).next))
+    }
+
+    override fun doLoadBefore(params: LoadParams<String>): BeforeLoadResponse<Event> {
+        val response = eventsService.listPublicEventThatAUserHasReceivedByUrl(params.key)
+            .execute()
+
+        val list = response.body() ?: emptyList()
+
+        if (list.isNotEmpty()) {
+            eventDao.insertAll(list)
+        }
+
+        retry = null
+
+        return BeforeLoadResponse(list, PreviousPageKey(PageLinks(response).prev))
     }
 
 }

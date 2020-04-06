@@ -10,14 +10,13 @@ import io.github.tonnyl.moka.databinding.ItemTrendingFilterTimeSpanBinding
 import io.github.tonnyl.moka.databinding.ItemTrendingLanguageBinding
 import io.github.tonnyl.moka.ui.explore.ExploreTimeSpanType
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
-import java.util.*
 
 class FilterAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: ExploreViewModel
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), View.OnClickListener {
 
-    private var languages: List<LocalLanguage>? = Collections.emptyList()
+    private var languages: List<LocalLanguage>? = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)

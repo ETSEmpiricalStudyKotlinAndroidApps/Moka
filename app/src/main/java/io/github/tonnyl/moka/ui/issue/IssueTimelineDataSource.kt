@@ -1,180 +1,101 @@
 package io.github.tonnyl.moka.ui.issue
 
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.PageKeyedDataSource
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.network.PagedResource
-import io.github.tonnyl.moka.network.PagedResourceDirection
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.queries.queryIssueTimelineItems
 import io.github.tonnyl.moka.queries.IssueTimelineItemsQuery
-import timber.log.Timber
+import io.github.tonnyl.moka.ui.*
 
 class IssueTimelineDataSource(
     private val owner: String,
     private val name: String,
     private val number: Int,
-    private val initialLoadStatus: MutableLiveData<Resource<List<IssueTimelineItem>>>,
-    private val pagedLoadStatus: MutableLiveData<PagedResource<List<IssueTimelineItem>>>
-) : PageKeyedDataSource<String, IssueTimelineItem>() {
+    override val initial: MutableLiveData<Resource<List<IssueTimelineItem>>>,
+    override val previousOrNext: MutableLiveData<PagedResource<List<IssueTimelineItem>>>
+) : PageKeyedDataSourceWithLoadState<IssueTimelineItem>() {
 
-    var retry: (() -> Any)? = null
-
-    override fun loadInitial(
-        params: LoadInitialParams<String>,
-        callback: LoadInitialCallback<String, IssueTimelineItem>
-    ) {
-        Timber.d("loadInitial")
-
-        initialLoadStatus.postValue(Resource.loading(null))
-
-        try {
-            val response = queryIssueTimelineItems(
-                owner = owner,
-                name = name,
-                number = number,
-                perPage = params.requestedLoadSize
-            )
-
-            val list = mutableListOf<IssueTimelineItem>()
-            val timeline = response.data()?.repository?.issue?.timelineItems
-
-            timeline?.nodes?.forEach { node ->
-                node?.let {
-                    initTimelineItemWithRawData(node)?.let {
-                        list.add(it)
-                    }
-                }
-            }
-
-            val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
-
-            callback.onResult(
-                list,
-                pageInfo.checkedStartCursor,
-                pageInfo.checkedEndCursor
-            )
-
-            retry = null
-
-            initialLoadStatus.postValue(Resource.success(list))
-        } catch (e: Exception) {
-            Timber.e(e)
-
-            retry = {
-                loadInitial(params, callback)
-            }
-
-            initialLoadStatus.postValue(Resource.error(e.message, null))
-        }
-    }
-
-    override fun loadAfter(
-        params: LoadParams<String>,
-        callback: LoadCallback<String, IssueTimelineItem>
-    ) {
-        Timber.d("loadAfter")
-
-        pagedLoadStatus.postValue(
-            PagedResource(PagedResourceDirection.AFTER, Resource.loading(null))
+    override fun doLoadInitial(params: LoadInitialParams<String>): InitialLoadResponse<IssueTimelineItem> {
+        val response = queryIssueTimelineItems(
+            owner = owner,
+            name = name,
+            number = number,
+            perPage = params.requestedLoadSize
         )
 
-        try {
-            val response = queryIssueTimelineItems(
-                owner = owner,
-                name = name,
-                number = number,
-                perPage = params.requestedLoadSize,
-                after = params.key
-            )
+        val list = mutableListOf<IssueTimelineItem>()
+        val timeline = response.data()?.repository?.issue?.timelineItems
 
-            val list = mutableListOf<IssueTimelineItem>()
-            val timeline = response.data()?.repository?.issue?.timelineItems
-
-            timeline?.nodes?.forEach { node ->
-                node?.let {
-                    initTimelineItemWithRawData(node)?.let {
-                        list.add(it)
-                    }
+        timeline?.nodes?.forEach { node ->
+            node?.let {
+                initTimelineItemWithRawData(node)?.let {
+                    list.add(it)
                 }
             }
-
-            callback.onResult(
-                list,
-                timeline?.pageInfo?.fragments?.pageInfo.checkedEndCursor
-            )
-
-            retry = null
-
-            pagedLoadStatus.postValue(
-                PagedResource(PagedResourceDirection.AFTER, Resource.success(list))
-            )
-        } catch (e: Exception) {
-            Timber.e(e)
-
-            retry = {
-                loadAfter(params, callback)
-            }
-
-            pagedLoadStatus.postValue(
-                PagedResource(PagedResourceDirection.AFTER, Resource.error(e.message, null))
-            )
         }
+
+        val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
+
+        return InitialLoadResponse(
+            list,
+            PreviousPageKey(pageInfo.checkedStartCursor),
+            NextPageKey(pageInfo.checkedEndCursor)
+        )
     }
 
-    override fun loadBefore(
-        params: LoadParams<String>,
-        callback: LoadCallback<String, IssueTimelineItem>
-    ) {
-        Timber.d("loadBefore")
-
-        pagedLoadStatus.postValue(
-            PagedResource(PagedResourceDirection.BEFORE, Resource.loading(null))
+    override fun doLoadAfter(params: LoadParams<String>): AfterLoadResponse<IssueTimelineItem> {
+        val response = queryIssueTimelineItems(
+            owner = owner,
+            name = name,
+            number = number,
+            perPage = params.requestedLoadSize,
+            after = params.key
         )
 
-        try {
-            val response = queryIssueTimelineItems(
-                owner = owner,
-                name = name,
-                number = number,
-                perPage = params.requestedLoadSize,
-                before = params.key
-            )
+        val list = mutableListOf<IssueTimelineItem>()
+        val timeline = response.data()?.repository?.issue?.timelineItems
 
-            val list = mutableListOf<IssueTimelineItem>()
-            val timeline = response.data()?.repository?.issue?.timelineItems
-
-            timeline?.nodes?.forEach { node ->
-                node?.let {
-                    initTimelineItemWithRawData(node)?.let {
-                        list.add(it)
-                    }
+        timeline?.nodes?.forEach { node ->
+            node?.let {
+                initTimelineItemWithRawData(node)?.let {
+                    list.add(it)
                 }
             }
-
-            callback.onResult(
-                list,
-                timeline?.pageInfo?.fragments?.pageInfo.checkedStartCursor
-            )
-
-            retry = null
-
-            pagedLoadStatus.postValue(
-                PagedResource(PagedResourceDirection.BEFORE, Resource.success(list))
-            )
-        } catch (e: Exception) {
-            Timber.e(e)
-
-            retry = {
-                loadBefore(params, callback)
-            }
-
-            pagedLoadStatus.postValue(
-                PagedResource(PagedResourceDirection.BEFORE, Resource.error(e.message, null))
-            )
         }
+
+        return AfterLoadResponse(
+            list,
+            NextPageKey(timeline?.pageInfo?.fragments?.pageInfo.checkedEndCursor)
+        )
+    }
+
+    override fun doLoadBefore(params: LoadParams<String>): BeforeLoadResponse<IssueTimelineItem> {
+        val response = queryIssueTimelineItems(
+            owner = owner,
+            name = name,
+            number = number,
+            perPage = params.requestedLoadSize,
+            before = params.key
+        )
+
+        val list = mutableListOf<IssueTimelineItem>()
+        val timeline = response.data()?.repository?.issue?.timelineItems
+
+        timeline?.nodes?.forEach { node ->
+            node?.let {
+                initTimelineItemWithRawData(node)?.let {
+                    list.add(it)
+                }
+            }
+        }
+
+        return BeforeLoadResponse(
+            list,
+            PreviousPageKey(timeline?.pageInfo?.fragments?.pageInfo.checkedStartCursor)
+        )
     }
 
     private fun initTimelineItemWithRawData(node: IssueTimelineItemsQuery.Node): IssueTimelineItem? {

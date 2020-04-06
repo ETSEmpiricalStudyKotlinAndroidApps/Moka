@@ -1,0 +1,14 @@
+# A list of projects associated with the owner.
+query OrganizationsProjects($owner: String!, $after: String, $before: String, $perPage: Int!) {
+    organization(login: $owner) {
+        projects(last: $perPage, after: $after, before: $before) {
+            nodes {
+                ...Project
+            }
+            pageInfo {
+                ...PageInfo
+            }
+            totalCount
+        }
+    }
+}

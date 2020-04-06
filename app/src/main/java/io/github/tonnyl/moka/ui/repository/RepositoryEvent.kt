@@ -1,21 +1,35 @@
 package io.github.tonnyl.moka.ui.repository
 
-enum class RepositoryEvent {
+import io.github.tonnyl.moka.ui.profile.ProfileType
 
-    VIEW_OWNERS_PROFILE,
+sealed class RepositoryEvent {
 
-    VIEW_WATCHERS,
+    data class ViewOwnersProfile(
+        val type: ProfileType
+    ) : RepositoryEvent()
 
-    VIEW_STARGAZERS,
+    object ViewWatchers : RepositoryEvent()
 
-    VIEW_FORKS,
+    object ViewStargazers : RepositoryEvent()
 
-    VIEW_ISSUES,
+    object ViewForks : RepositoryEvent()
 
-    VIEW_PULL_REQUESTS,
+    object ViewIssues : RepositoryEvent()
 
-    VIEW_PROJECTS,
+    object ViewPullRequests : RepositoryEvent()
 
-    VIEW_LICENSE;
+    object ViewProjects : RepositoryEvent()
+
+    object ViewLicense : RepositoryEvent()
+
+    object ViewBranches : RepositoryEvent()
+
+    object ViewAllTopics : RepositoryEvent()
+
+    object ViewReleases : RepositoryEvent()
+
+    object ViewLanguages : RepositoryEvent()
+
+    object ViewFiles : RepositoryEvent()
 
 }

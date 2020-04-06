@@ -5,38 +5,30 @@ import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.data.item.toNonNullProject
-import io.github.tonnyl.moka.db.dao.ProjectsDao
 import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.network.queries.queryUsersProjects
+import io.github.tonnyl.moka.network.queries.queryOrganizationsProjects
 import io.github.tonnyl.moka.ui.*
 
-class ProjectsDataSource(
+class OrganizationsProjectsDataSource(
     private val login: String,
-    private val isMyself: Boolean,
-    private val projectsDao: ProjectsDao,
-    private val repositoryName: String?,
     override val initial: MutableLiveData<Resource<List<Project>>>,
     override val previousOrNext: MutableLiveData<PagedResource<List<Project>>>
 ) : PageKeyedDataSourceWithLoadState<Project>() {
 
     override fun doLoadInitial(params: LoadInitialParams<String>): InitialLoadResponse<Project> {
-        val response = queryUsersProjects(
+        val response = queryOrganizationsProjects(
             owner = login,
             perPage = params.requestedLoadSize
         )
 
         val list = mutableListOf<Project>()
-        val user = response.data()?.user
+        val user = response.data()?.organization
 
         user?.projects?.nodes?.forEach { node ->
             node?.let {
                 list.add(node.fragments.project.toNonNullProject())
             }
-        }
-
-        if (isMyself && list.isNotEmpty()) {
-            projectsDao.insert(list)
         }
 
         val pageInfo = user?.projects?.pageInfo?.fragments?.pageInfo
@@ -49,23 +41,19 @@ class ProjectsDataSource(
     }
 
     override fun doLoadAfter(params: LoadParams<String>): AfterLoadResponse<Project> {
-        val response = queryUsersProjects(
+        val response = queryOrganizationsProjects(
             owner = login,
             after = params.key,
             perPage = params.requestedLoadSize
         )
 
         val list = mutableListOf<Project>()
-        val user = response.data()?.user
+        val user = response.data()?.organization
 
         user?.projects?.nodes?.forEach { node ->
             node?.let {
                 list.add(node.fragments.project.toNonNullProject())
             }
-        }
-
-        if (isMyself && list.isNotEmpty()) {
-            projectsDao.insert(list)
         }
 
         return AfterLoadResponse(
@@ -75,23 +63,19 @@ class ProjectsDataSource(
     }
 
     override fun doLoadBefore(params: LoadParams<String>): BeforeLoadResponse<Project> {
-        val response = queryUsersProjects(
+        val response = queryOrganizationsProjects(
             owner = login,
             before = params.key,
             perPage = params.requestedLoadSize
         )
 
         val list = mutableListOf<Project>()
-        val user = response.data()?.user
+        val user = response.data()?.organization
 
         user?.projects?.nodes?.forEach { node ->
             node?.let {
                 list.add(node.fragments.project.toNonNullProject())
             }
-        }
-
-        if (isMyself && list.isNotEmpty()) {
-            projectsDao.insert(list)
         }
 
         return BeforeLoadResponse(

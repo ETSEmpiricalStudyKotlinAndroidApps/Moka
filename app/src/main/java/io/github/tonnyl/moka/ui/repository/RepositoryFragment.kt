@@ -17,7 +17,11 @@ import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
+import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
+import io.github.tonnyl.moka.ui.projects.ProjectsFragmentArgs
+import io.github.tonnyl.moka.ui.projects.ProjectsType
 import io.github.tonnyl.moka.ui.prs.PullRequestsFragmentArgs
+import io.github.tonnyl.moka.ui.repository.RepositoryEvent.*
 
 class RepositoryFragment : Fragment() {
 
@@ -88,32 +92,59 @@ class RepositoryFragment : Fragment() {
 
         viewModel.userEvent.observe(viewLifecycleOwner, EventObserver {
             when (it) {
-                RepositoryEvent.VIEW_OWNERS_PROFILE -> {
+                is ViewOwnersProfile -> {
+                    findNavController().navigate(
+                        R.id.profile_fragment,
+                        ProfileFragmentArgs(args.login, it.type).toBundle()
+                    )
+                }
+                is ViewWatchers -> {
 
                 }
-                RepositoryEvent.VIEW_WATCHERS -> {
+                is ViewStargazers -> {
 
                 }
-                RepositoryEvent.VIEW_STARGAZERS -> {
+                is ViewForks -> {
 
                 }
-                RepositoryEvent.VIEW_FORKS -> {
+                is ViewIssues -> {
+                    findNavController().navigate(
+                        R.id.issues_fragment,
+                        IssuesFragmentArgs(args.login, args.name).toBundle()
+                    )
+                }
+                is ViewPullRequests -> {
+                    findNavController().navigate(
+                        R.id.prs_fragment,
+                        PullRequestsFragmentArgs(args.login, args.name).toBundle()
+                    )
+                }
+                is ViewProjects -> {
+                    findNavController().navigate(
+                        R.id.nav_projects,
+                        ProjectsFragmentArgs(
+                            args.login,
+                            args.name,
+                            ProjectsType.RepositoriesProjects
+                        ).toBundle()
+                    )
+                }
+                is ViewLicense -> {
 
                 }
-                RepositoryEvent.VIEW_ISSUES -> {
-                    val args = IssuesFragmentArgs(args.login, args.name)
-                    parentFragment?.findNavController()
-                        ?.navigate(R.id.issues_fragment, args.toBundle())
-                }
-                RepositoryEvent.VIEW_PULL_REQUESTS -> {
-                    val args = PullRequestsFragmentArgs(args.login, args.name)
-                    parentFragment?.findNavController()
-                        ?.navigate(R.id.prs_fragment, args.toBundle())
-                }
-                RepositoryEvent.VIEW_PROJECTS -> {
+                is ViewBranches -> {
 
                 }
-                RepositoryEvent.VIEW_LICENSE -> {
+                is ViewAllTopics -> {
+
+                }
+                is ViewReleases -> {
+
+                }
+                is ViewLanguages -> {
+
+                }
+                is ViewFiles -> {
 
                 }
             }

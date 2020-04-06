@@ -13,6 +13,8 @@ import io.github.tonnyl.moka.databinding.FragmentProfileBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileFragmentArgs
+import io.github.tonnyl.moka.ui.projects.ProjectsFragmentArgs
+import io.github.tonnyl.moka.ui.projects.ProjectsType
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.users.UsersFragmentArgs
@@ -105,60 +107,76 @@ class ProfileFragment : Fragment(), EmptyViewActions {
 
     private fun editProfile() {
         viewModel.userProfile.value?.data?.let {
-            val bundle = EditProfileFragmentArgs(
-                it.login,
-                it.name,
-                it.email,
-                it.bio,
-                it.websiteUrl?.toString(),
-                it.company,
-                it.location
+            findNavController().navigate(
+                R.id.edit_profile_fragment,
+                EditProfileFragmentArgs(
+                    it.login,
+                    it.name,
+                    it.email,
+                    it.bio,
+                    it.websiteUrl?.toString(),
+                    it.company,
+                    it.location
+                ).toBundle()
             )
-            parentFragment?.findNavController()
-                ?.navigate(R.id.edit_profile_fragment, bundle.toBundle())
         }
     }
 
     private fun openRepositories() {
-        val builder = RepositoriesFragmentArgs(
-            args.login,
-            RepositoryType.OWNED,
-            specifiedProfileType
+        findNavController().navigate(
+            R.id.repositories_fragment,
+            RepositoriesFragmentArgs(
+                args.login,
+                RepositoryType.OWNED,
+                specifiedProfileType
+            ).toBundle()
         )
-        parentFragment?.findNavController()
-            ?.navigate(R.id.repositories_fragment, builder.toBundle())
     }
 
     private fun openStars() {
-        val builder = RepositoriesFragmentArgs(
-            args.login,
-            RepositoryType.STARRED,
-            specifiedProfileType
+        findNavController().navigate(
+            R.id.repositories_fragment,
+            RepositoriesFragmentArgs(
+                args.login,
+                RepositoryType.STARRED,
+                specifiedProfileType
+            ).toBundle()
         )
-        parentFragment?.findNavController()
-            ?.navigate(R.id.repositories_fragment, builder.toBundle())
     }
 
     private fun openFollowers() {
-        val args = UsersFragmentArgs(
-            args.login,
-            UsersType.FOLLOWER
-        ).toBundle()
-        parentFragment?.findNavController()
-            ?.navigate(R.id.action_user_profile_to_users, args)
+        findNavController().navigate(
+            R.id.action_user_profile_to_users,
+            UsersFragmentArgs(
+                args.login,
+                UsersType.FOLLOWER
+            ).toBundle()
+        )
     }
 
     private fun openFollowings() {
-        val args = UsersFragmentArgs(
-            args.login,
-            UsersType.FOLLOWING
-        ).toBundle()
-        parentFragment?.findNavController()
-            ?.navigate(R.id.action_user_profile_to_users, args)
+        findNavController().navigate(
+            R.id.action_user_profile_to_users,
+            UsersFragmentArgs(
+                args.login,
+                UsersType.FOLLOWING
+            ).toBundle()
+        )
     }
 
     private fun openProjects() {
-
+        findNavController().navigate(
+            R.id.nav_projects,
+            ProjectsFragmentArgs(
+                args.login,
+                "",
+                if (specifiedProfileType == ProfileType.USER) {
+                    ProjectsType.UsersProjects
+                } else {
+                    ProjectsType.OrganizationsProjects
+                }
+            ).toBundle()
+        )
     }
 
     private fun openEmail() {

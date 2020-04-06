@@ -6,8 +6,6 @@
 
     <data>
 
-        <import type="io.github.tonnyl.moka.ui.repository.RepositoryEvent" />
-
         <import type="android.text.TextUtils" />
 
         <import type="android.text.format.DateUtils" />
@@ -86,7 +84,7 @@
                             android:layout_height="@dimen/repository_avatar_size"
                             android:layout_marginStart="@dimen/fragment_content_padding"
                             android:layout_marginTop="@dimen/fragment_content_padding"
-                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_OWNERS_PROFILE)}"
+                            android:onClick="@{() -> viewModel.viewOwnersProfile()}"
                             app:avatarUrl="@{viewModel.userRepository.data.owner.avatarUrl ?? viewModel.organizationsRepository.data.owner.avatarUrl}"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -186,7 +184,7 @@
                             style="@style/LinearLayoutCountTypeStyle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_WATCHERS)}"
+                            android:onClick="@{() -> viewModel.viewWatchers()}"
                             app:category="@string/repository_watchers"
                             app:layout_constraintEnd_toStartOf="@id/repository_stargazers_number"
                             app:layout_constraintStart_toStartOf="parent"
@@ -199,7 +197,7 @@
                             style="@style/LinearLayoutCountTypeStyle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_STARGAZERS)}"
+                            android:onClick="@{() -> viewModel.viewStargazers()}"
                             app:category="@string/repository_stargazers"
                             app:layout_constraintEnd_toStartOf="@id/repository_forks_number"
                             app:layout_constraintStart_toEndOf="@id/repository_watchers_number"
@@ -212,7 +210,7 @@
                             style="@style/LinearLayoutCountTypeStyle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_FORKS)}"
+                            android:onClick="@{() -> viewModel.viewForks()}"
                             app:category="@string/repository_forks"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/repository_stargazers_number"
@@ -225,7 +223,7 @@
                             style="@style/LinearLayoutCountTypeStyle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_ISSUES)}"
+                            android:onClick="@{() -> viewModel.viewIssues()}"
                             app:category="@string/repository_issues"
                             app:layout_constraintEnd_toStartOf="@id/repository_pull_requests_number"
                             app:layout_constraintStart_toStartOf="parent"
@@ -238,7 +236,7 @@
                             style="@style/LinearLayoutCountTypeStyle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_PULL_REQUESTS)}"
+                            android:onClick="@{() -> viewModel.viewPullRequests()}"
                             app:category="@string/repository_pull_requests"
                             app:layout_constraintEnd_toStartOf="@id/repository_projects_number"
                             app:layout_constraintStart_toEndOf="@id/repository_issues_number"
@@ -251,7 +249,7 @@
                             style="@style/LinearLayoutCountTypeStyle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_PROJECTS)}"
+                            android:onClick="@{() -> viewModel.viewProjects()}"
                             app:category="@string/repository_projects"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/repository_pull_requests_number"
@@ -275,6 +273,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:foreground="?android:attr/selectableItemBackground"
+                        android:onClick="@{() -> viewModel.viewBranches()}"
                         android:padding="@dimen/fragment_content_padding"
                         app:infoText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.branchCount : viewModel.userRepository.data.branchCount)}"
                         app:label="@string/repository_branches"
@@ -285,6 +284,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:foreground="?android:attr/selectableItemBackground"
+                        android:onClick="@{() -> viewModel.viewReleases()}"
                         android:padding="@dimen/fragment_content_padding"
                         app:infoText="@{String.valueOf(viewModel.userRepository.data == null ? viewModel.organizationsRepository.data.releasesCount : viewModel.userRepository.data.releasesCount)}"
                         app:label="@string/repository_releases"
@@ -295,6 +295,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:foreground="?android:attr/selectableItemBackground"
+                        android:onClick="@{() -> viewModel.viewLanguages()}"
                         android:padding="@dimen/fragment_content_padding"
                         app:infoText="@{viewModel.userRepository.data.primaryLanguage == null ? @string/programming_language_unknown : String.valueOf(viewModel.organizationsRepository.data.primaryLanguage.name)}"
                         app:label="@string/repository_language"
@@ -305,7 +306,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:foreground="?android:attr/selectableItemBackground"
-                        android:onClick="@{() -> viewModel.userEvent(RepositoryEvent.VIEW_LICENSE)}"
+                        android:onClick="@{() -> viewModel.viewLicense()}"
                         android:padding="@dimen/fragment_content_padding"
                         app:infoText="@{viewModel.userRepository.data.licenseInfo == null ? @string/programming_language_unknown : String.valueOf(viewModel.organizationsRepository.data.licenseInfo.nickname)}"
                         app:label="@string/repository_license"
@@ -332,6 +333,7 @@
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:onClick="@{() -> viewModel.viewAllTopics()}"
                             android:text="@string/see_all"
                             app:goneUnless="@{(viewModel.userRepository.data.topics != null &amp;&amp; !viewModel.userRepository.data.topics.empty) || (viewModel.organizationsRepository.data != null &amp;&amp; !viewModel.organizationsRepository.data.topics.empty)}" />
 

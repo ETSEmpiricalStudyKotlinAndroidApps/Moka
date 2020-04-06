@@ -20,6 +20,7 @@ import io.github.tonnyl.moka.network.queries.queryOrganizationsRepository
 import io.github.tonnyl.moka.network.queries.queryUsersRepository
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.repository.RepositoryEvent.*
 import io.github.tonnyl.moka.util.HtmlHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -192,11 +193,6 @@ class RepositoryViewModel(
         }
     }
 
-    @MainThread
-    fun userEvent(event: RepositoryEvent) {
-        _userEvent.value = Event(event)
-    }
-
     private fun refreshUsersRepository() {
         viewModelScope.launch(Dispatchers.IO) {
             _usersRepository.postValue(Resource.loading(null))
@@ -251,6 +247,80 @@ class RepositoryViewModel(
                 _organizationsRepository.postValue(Resource.error(e.message, null))
             }
         }
+    }
+
+    @MainThread
+    fun viewOwnersProfile() {
+        val profileType = if (args.profileType == ProfileType.NOT_SPECIFIED) {
+            if (userRepository.value != null) {
+                ProfileType.USER
+            } else {
+                ProfileType.ORGANIZATION
+            }
+        } else {
+            args.profileType
+        }
+        _userEvent.value = Event(ViewOwnersProfile(profileType))
+    }
+
+    @MainThread
+    fun viewWatchers() {
+        _userEvent.value = Event(ViewWatchers)
+    }
+
+    @MainThread
+    fun viewStargazers() {
+        _userEvent.value = Event(ViewStargazers)
+    }
+
+    @MainThread
+    fun viewForks() {
+        _userEvent.value = Event(ViewForks)
+    }
+
+    @MainThread
+    fun viewIssues() {
+        _userEvent.value = Event(ViewIssues)
+    }
+
+    @MainThread
+    fun viewPullRequests() {
+        _userEvent.value = Event(ViewPullRequests)
+    }
+
+    @MainThread
+    fun viewProjects() {
+        _userEvent.value = Event(ViewProjects)
+    }
+
+    @MainThread
+    fun viewLicense() {
+        _userEvent.value = Event(ViewLicense)
+    }
+
+    @MainThread
+    fun viewBranches() {
+        _userEvent.value = Event(ViewBranches)
+    }
+
+    @MainThread
+    fun viewAllTopics() {
+        _userEvent.value = Event(ViewAllTopics)
+    }
+
+    @MainThread
+    fun viewReleases() {
+        _userEvent.value = Event(ViewReleases)
+    }
+
+    @MainThread
+    fun viewLanguages() {
+        _userEvent.value = Event(ViewLanguages)
+    }
+
+    @MainThread
+    fun viewFiles() {
+        _userEvent.value = Event(ViewFiles)
     }
 
 }

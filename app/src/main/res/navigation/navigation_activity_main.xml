@@ -47,11 +47,18 @@
             app:argType="string"
             app:nullable="true" />
 
+        <!--if the projects don't belong to a repository, set this
+        argument an empty string-->
         <argument
             android:name="repository_name"
-            android:defaultValue="@null"
+            android:defaultValue=""
             app:argType="string"
-            app:nullable="true" />
+            app:nullable="false" />
+
+        <argument
+            android:name="projects_type"
+            android:defaultValue="UsersProjects"
+            app:argType="io.github.tonnyl.moka.ui.projects.ProjectsType" />
 
     </fragment>
 

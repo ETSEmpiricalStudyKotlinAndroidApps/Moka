@@ -38,6 +38,7 @@ class ProjectsViewModel(
             login,
             isMyself,
             localSource,
+            args.projectsType,
             args.repositoryName,
             _initialLoadStatusLiveData,
             _previousNextLoadStatusLiveData

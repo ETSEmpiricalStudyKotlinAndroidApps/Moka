@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentIssueBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
@@ -21,7 +22,7 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
     private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
         PagedListAdapterWrapper(
             LoadStateAdapter(this),
-            IssueTimelineAdapter(viewLifecycleOwner, viewModel),
+            IssueTimelineAdapter(viewLifecycleOwner, viewModel, RecyclerView.RecycledViewPool()),
             LoadStateAdapter(this)
         )
     }

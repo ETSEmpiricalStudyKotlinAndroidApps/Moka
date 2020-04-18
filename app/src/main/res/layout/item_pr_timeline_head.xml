@@ -39,6 +39,7 @@
             tools:text="#234 · created by tonny 3 days ago" />
 
         <include
+            android:id="@+id/issue_included_comment_layout"
             layout="@layout/item_pr_timeline_comment"
             bind:comment="@{viewModel.pullRequestToCommentLiveData.data}" />
 

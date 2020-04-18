@@ -3,11 +3,11 @@
 fragment ReactionGroup on ReactionGroup {
     # Identifies the emoji reaction.
     content
-    # Identifies when the reaction was created.
-    createdAt
-    subject {
-        ... Reactable
-    }
     # Whether or not the authenticated user has left a reaction on the subject.
     viewerHasReacted
+    # Users who have reacted to the reaction subject with the emotion represented by this reaction group
+    users {
+        # Identifies the total count of items in the connection.
+        totalCount
+    }
 }

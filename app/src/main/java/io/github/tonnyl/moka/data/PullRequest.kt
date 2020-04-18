@@ -180,7 +180,7 @@ data class PullRequest(
     /**
      * A list of reactions grouped by content left on the subject.
      */
-    val reactionGroups: List<ReactionGroup?>?,
+    val reactionGroups: List<ReactionGroup>?,
 
     /**
      * The HTTP path for this pull request.
@@ -292,7 +292,9 @@ fun PullRequestQuery.PullRequest?.toNullablePullRequest(): PullRequest? {
         number,
         permalink,
         publishedAt,
-        reactionGroups?.map {
+        reactionGroups?.filter {
+            it.fragments.reactionGroup.users.totalCount > 0
+        }?.map {
             it.fragments.reactionGroup.toNonNullReactionGroup()
         },
         resourcePath,

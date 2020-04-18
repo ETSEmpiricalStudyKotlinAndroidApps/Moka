@@ -4,7 +4,9 @@ import android.net.Uri
 import android.os.Parcelable
 import androidx.annotation.WorkerThread
 import io.github.tonnyl.moka.data.Actor
+import io.github.tonnyl.moka.data.ReactionGroup
 import io.github.tonnyl.moka.data.toNonNullActor
+import io.github.tonnyl.moka.data.toNonNullReactionGroup
 import io.github.tonnyl.moka.fragment.*
 import io.github.tonnyl.moka.type.*
 import io.github.tonnyl.moka.util.HtmlHandler
@@ -829,6 +831,11 @@ data class IssueComment(
     val editor: Actor?,
 
     /**
+     * A list of reactions grouped by content left on the subject.
+     */
+    val reactionGroups: List<ReactionGroup>?,
+
+    /**
      * Check if the current viewer can delete this object.
      */
     val viewerCanDelete: Boolean,
@@ -872,6 +879,11 @@ fun IssueCommentFragment.toNonNullIssueComment(
         HtmlHandler.toHtml(body, login, repoName),
         id,
         editor?.fragments?.actor?.toNonNullActor(),
+        reactionGroups?.filter {
+            it.fragments.reactionGroup.users.totalCount > 0
+        }?.map {
+            it.fragments.reactionGroup.toNonNullReactionGroup()
+        },
         viewerCanDelete,
         viewerCanReact,
         viewerDidAuthor,

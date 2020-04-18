@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="io.github.tonnyl.moka.data.ReactionGroup" />
+
+        <variable
+            name="reactionGroup"
+            type="ReactionGroup" />
+
+        <variable
+            name="viewerCanReact"
+            type="java.lang.Boolean" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/fragment_content_padding_half"
+        android:paddingEnd="@dimen/fragment_content_padding_half">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/reactionText"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="@{viewerCanReact}"
+            android:checked="@{reactionGroup.viewerHasReacted}"
+            android:paddingTop="@dimen/fragment_content_padding_half"
+            android:paddingBottom="@dimen/fragment_content_padding_half"
+            app:reactedUsersTotalCount="@{reactionGroup.usersTotalCount}"
+            app:reactionContent="@{reactionGroup.content}"
+            tools:text="up 1" />
+
+    </FrameLayout>
+
+</layout>

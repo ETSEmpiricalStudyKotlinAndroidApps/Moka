@@ -3,7 +3,6 @@ package io.github.tonnyl.moka.data
 import android.os.Parcelable
 import io.github.tonnyl.moka.type.ReactionContent
 import kotlinx.android.parcel.Parcelize
-import java.util.*
 import io.github.tonnyl.moka.fragment.ReactionGroup as RawReactionGroup
 
 /**
@@ -18,27 +17,17 @@ data class ReactionGroup(
     val content: ReactionContent,
 
     /**
-     * Identifies when the reaction was created.
-     */
-    val createdAt: Date?,
-
-    /**
-     * The subject that was reacted to.
-     */
-    val subject: Reactable?,
-
-    /**
      * Whether or not the authenticated user has left a reaction on the subject.
      */
-    val viewerHasReacted: Boolean
+    val viewerHasReacted: Boolean,
+
+    /**
+     * Total count of users who have reacted to the reaction subject with the emotion represented by this reaction group.
+     */
+    val usersTotalCount: Int
 
 ) : Parcelable
 
 fun RawReactionGroup.toNonNullReactionGroup(): ReactionGroup {
-    return ReactionGroup(
-        content,
-        createdAt,
-        subject.fragments.reactable.toNonNullReactable(),
-        viewerHasReacted
-    )
+    return ReactionGroup(content, viewerHasReacted, users.totalCount)
 }

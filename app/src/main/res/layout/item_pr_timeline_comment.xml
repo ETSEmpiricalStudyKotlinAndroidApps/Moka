@@ -5,11 +5,13 @@
 
     <data>
 
-        <import type="io.github.tonnyl.moka.data.item.PullRequestTimelineItem" />
+        <import type="io.github.tonnyl.moka.data.item.IssueComment" />
+
+        <import type="io.github.tonnyl.moka.ui.pr.PullRequestViewModel" />
 
         <variable
             name="comment"
-            type="PullRequestTimelineItem" />
+            type="IssueComment" />
 
     </data>
 
@@ -27,6 +29,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:prTimelineItemAvatar="@{comment}"
             tools:src="@tools:sample/avatars" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/issue_timeline_comment_more"
+            android:layout_width="@dimen/regular_icon_size"
+            android:layout_height="@dimen/regular_icon_size"
+            android:padding="@dimen/fragment_content_padding_half"
+            android:src="@drawable/ic_more_vert_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/issue_timeline_comment_username"
@@ -50,9 +61,10 @@
             style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/issue_timeline_comment_more"
+            app:layout_constraintEnd_toStartOf="@id/issue_timeline_comment_more"
             app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_username"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/issue_timeline_comment_more"
             app:prTimelineCommentAuthorAssociation="@{comment}"
             tools:text="@sample/issue_timeline.json/timeline/commentAuthorAssociation" />
 
@@ -64,7 +76,7 @@
             android:paddingStart="@dimen/list_item_spacing"
             android:paddingEnd="0dp"
             app:layout_constraintBottom_toBottomOf="@id/issue_timeline_comment_avatar"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/issue_timeline_comment_author_association"
             app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_avatar"
             app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_username"
             app:prTimelineItemCreatedAt="@{comment}"
@@ -81,6 +93,36 @@
             app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_created_at"
             app:prTimelineItemContentTextFuture="@{comment}"
             tools:text="@sample/issue_timeline.json/timeline/body" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/issue_timeline_comment_add_reaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_reaction"
+            app:chipIcon="@drawable/ic_emoji_emotions_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_content" />
+
+        <Space
+            android:id="@+id/issue_timeline_comment_space"
+            android:layout_width="@dimen/fragment_content_padding_half"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_add_reaction"
+            app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/issue_timeline_comment_reactions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:overScrollMode="never"
+            app:layoutManager="LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_space"
+            app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_content"
+            app:reactionGroups="@{comment.reactionGroups}"
+            app:viewerCanReact="@{comment.viewerCanReact}"
+            tools:listitem="@layout/item_reaction_group" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

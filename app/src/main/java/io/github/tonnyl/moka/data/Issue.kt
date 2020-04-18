@@ -181,7 +181,9 @@ fun IssueQuery.Issue.toNonNullIssue(): Issue {
         milestone?.fragments?.milestone?.toNonNullMilestone(),
         number,
         publishedAt,
-        reactionGroups?.map {
+        reactionGroups?.filter {
+            it.fragments.reactionGroup.users.totalCount > 0
+        }?.map {
             it.fragments.reactionGroup.toNonNullReactionGroup()
         },
         resourcePath,

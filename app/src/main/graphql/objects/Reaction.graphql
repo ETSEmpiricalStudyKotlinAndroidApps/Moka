@@ -6,7 +6,4 @@ fragment Reaction on Reaction {
     # Identifies the date and time when the object was created.
     createdAt
     id
-    reactable {
-        ... Reactable
-    }
 }

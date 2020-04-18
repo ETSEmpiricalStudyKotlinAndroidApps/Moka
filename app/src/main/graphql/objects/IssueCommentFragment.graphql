@@ -15,6 +15,10 @@ fragment IssueCommentFragment on IssueComment {
     editor {
         ... Actor
     }
+    # A list of reactions grouped by content left on the subject.
+    reactionGroups {
+        ... ReactionGroup
+    }
     # Check if the current viewer can delete this object.
     viewerCanDelete
     # Can user react to this subject

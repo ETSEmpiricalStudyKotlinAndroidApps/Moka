@@ -15,7 +15,8 @@ import io.github.tonnyl.moka.databinding.ItemIssueTimelineHeadBinding
 
 class IssueTimelineAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: IssueViewModel
+    private val viewModel: IssueViewModel,
+    private val reactionViewPool: RecyclerView.RecycledViewPool
 ) : PagedListAdapter<IssueTimelineItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -44,13 +45,21 @@ class IssueTimelineAdapter(
                 HeadViewHolder(
                     lifecycleOwner,
                     viewModel,
-                    ItemIssueTimelineHeadBinding.inflate(inflater, parent, false)
+                    ItemIssueTimelineHeadBinding.inflate(inflater, parent, false).apply {
+                        issueIncludedCommentLayout.issueTimelineCommentReactions.apply {
+                            setRecycledViewPool(reactionViewPool)
+                        }
+                    }
                 )
             }
             R.layout.item_issue_timeline_comment -> {
                 CommentViewHolder(
                     lifecycleOwner,
-                    ItemIssueTimelineCommentBinding.inflate(inflater, parent, false)
+                    ItemIssueTimelineCommentBinding.inflate(inflater, parent, false).apply {
+                        issueTimelineCommentReactions.apply {
+                            setRecycledViewPool(reactionViewPool)
+                        }
+                    }
                 )
             }
             R.layout.item_issue_timeline_event -> {

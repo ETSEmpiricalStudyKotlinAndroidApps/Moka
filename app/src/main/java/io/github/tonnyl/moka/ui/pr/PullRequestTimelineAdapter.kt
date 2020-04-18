@@ -18,7 +18,8 @@ import io.github.tonnyl.moka.databinding.ItemPrTimelineThreadBinding
 
 class PullRequestTimelineAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: PullRequestViewModel
+    private val viewModel: PullRequestViewModel,
+    private val reactionViewPool: RecyclerView.RecycledViewPool
 ) : PagedListAdapter<PullRequestTimelineItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -47,13 +48,21 @@ class PullRequestTimelineAdapter(
                 HeadViewHolder(
                     lifecycleOwner,
                     viewModel,
-                    ItemPrTimelineHeadBinding.inflate(inflater, parent, false)
+                    ItemPrTimelineHeadBinding.inflate(inflater, parent, false).apply {
+                        issueIncludedCommentLayout.issueTimelineCommentReactions.apply {
+                            setRecycledViewPool(reactionViewPool)
+                        }
+                    }
                 )
             }
             R.layout.item_pr_timeline_comment -> {
                 CommentViewHolder(
                     lifecycleOwner,
-                    ItemPrTimelineCommentBinding.inflate(inflater, parent, false)
+                    ItemPrTimelineCommentBinding.inflate(inflater, parent, false).apply {
+                        issueTimelineCommentReactions.apply {
+                            setRecycledViewPool(reactionViewPool)
+                        }
+                    }
                 )
             }
             R.layout.item_pr_timeline_thread -> {
@@ -82,7 +91,7 @@ class PullRequestTimelineAdapter(
         val item = getItem(position - 1) ?: return
         when (viewType) {
             R.layout.item_pr_timeline_comment -> {
-                (holder as CommentViewHolder).bindTo(item)
+                (holder as CommentViewHolder).bindTo(item as IssueComment)
             }
             R.layout.item_pr_timeline_thread -> {
                 (holder as ThreadViewHolder).bindTo(item)
@@ -122,7 +131,7 @@ class PullRequestTimelineAdapter(
         private val binding: ItemPrTimelineCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(data: PullRequestTimelineItem) {
+        fun bindTo(data: IssueComment) {
             with(binding) {
                 lifecycleOwner = owner
                 comment = data

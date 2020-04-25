@@ -17,12 +17,14 @@
         android:id="@+id/issue_timeline_comment_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/list_item_spacing">
+        android:paddingTop="@dimen/list_item_spacing"
+        android:paddingBottom="@dimen/list_item_spacing">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/issue_timeline_comment_avatar"
             android:layout_width="@dimen/issue_timeline_avatar_size"
             android:layout_height="@dimen/issue_timeline_avatar_size"
+            android:layout_marginStart="@dimen/list_item_spacing"
             app:issueTimelineEventAvatar="@{comment}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -37,14 +39,26 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/issue_timeline_comment_add_reaction"
+            android:layout_width="@dimen/regular_icon_size"
+            android:layout_height="@dimen/regular_icon_size"
+            android:layout_marginStart="@dimen/fragment_content_padding_half"
+            android:padding="@dimen/fragment_content_padding_half"
+            android:src="@drawable/ic_emoji_emotions_24"
+            app:layout_constraintBottom_toBottomOf="@id/issue_timeline_comment_more"
+            app:layout_constraintEnd_toStartOf="@id/issue_timeline_comment_more"
+            app:layout_constraintTop_toTopOf="@id/issue_timeline_comment_more" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/issue_timeline_comment_username"
             style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/list_item_spacing"
             android:ellipsize="end"
             android:maxLines="1"
+            android:paddingStart="@dimen/list_item_spacing"
+            android:paddingEnd="@dimen/list_item_spacing"
             app:issueTimelineEventLogin="@{comment}"
             app:layout_constraintBottom_toTopOf="@id/issue_timeline_comment_created_at"
             app:layout_constraintEnd_toStartOf="@id/issue_timeline_comment_author_association"
@@ -58,11 +72,11 @@
             style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/fragment_content_padding_half"
-            android:paddingEnd="0dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="@dimen/fragment_content_padding_half"
             app:authorAssociation="@{comment.authorAssociation}"
             app:layout_constraintBottom_toBottomOf="@id/issue_timeline_comment_more"
-            app:layout_constraintEnd_toStartOf="@id/issue_timeline_comment_more"
+            app:layout_constraintEnd_toStartOf="@id/issue_timeline_comment_add_reaction"
             app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_username"
             app:layout_constraintTop_toTopOf="@id/issue_timeline_comment_more"
             tools:text="@sample/issue_timeline.json/timeline/commentAuthorAssociation" />
@@ -71,8 +85,9 @@
             android:id="@+id/issue_timeline_comment_created_at"
             style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/list_item_spacing"
+            android:layout_height="0dp"
+            android:paddingStart="@dimen/list_item_spacing"
+            android:paddingEnd="@dimen/list_item_spacing"
             app:issueTimelineEventCreatedAt="@{comment}"
             app:layout_constraintBottom_toBottomOf="@id/issue_timeline_comment_avatar"
             app:layout_constraintEnd_toStartOf="@id/issue_timeline_comment_author_association"
@@ -84,37 +99,25 @@
             android:id="@+id/issue_timeline_comment_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_item_spacing"
             android:layout_marginTop="@dimen/list_item_spacing"
+            android:layout_marginEnd="@dimen/list_item_spacing"
             app:htmlContent="@{comment.displayHtml}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_created_at" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/issue_timeline_comment_add_reaction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_reaction"
-            app:chipIcon="@drawable/ic_emoji_emotions_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_content" />
-
-        <Space
-            android:id="@+id/issue_timeline_comment_space"
-            android:layout_width="@dimen/fragment_content_padding_half"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_add_reaction"
-            app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_content" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/issue_timeline_comment_reactions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_item_spacing"
+            android:layout_marginEnd="@dimen/list_item_spacing"
             android:orientation="horizontal"
             android:overScrollMode="never"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/issue_timeline_comment_space"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_content"
             app:reactionGroups="@{comment.reactionGroups}"
             app:viewerCanReact="@{comment.viewerCanReact}"

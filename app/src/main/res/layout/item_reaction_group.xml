@@ -30,8 +30,6 @@
             android:layout_height="wrap_content"
             android:checkable="@{viewerCanReact}"
             android:checked="@{reactionGroup.viewerHasReacted}"
-            android:paddingTop="@dimen/fragment_content_padding_half"
-            android:paddingBottom="@dimen/fragment_content_padding_half"
             app:reactedUsersTotalCount="@{reactionGroup.usersTotalCount}"
             app:reactionContent="@{reactionGroup.content}"
             tools:text="up 1" />

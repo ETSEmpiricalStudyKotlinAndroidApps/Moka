@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.MergeAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentIssueBinding
@@ -19,15 +20,33 @@ import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 
 class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
+    private val reactionsViewPool by lazy(LazyThreadSafetyMode.NONE) {
+        RecyclerView.RecycledViewPool()
+    }
     private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
         PagedListAdapterWrapper(
             LoadStateAdapter(this),
-            IssueTimelineAdapter(viewLifecycleOwner, viewModel, RecyclerView.RecycledViewPool()),
+            IssueTimelineAdapter(
+                viewLifecycleOwner,
+                reactionsViewPool
+            ),
             LoadStateAdapter(this)
         )
     }
+    private val mergeAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        MergeAdapter(
+            adapterWrapper.headerAdapter,
+            IssueDetailsAdapter(
+                viewLifecycleOwner,
+                issueViewModel,
+                reactionsViewPool
+            ),
+            adapterWrapper.pagingAdapter,
+            adapterWrapper.footerAdapter
+        )
+    }
 
-    private val viewModel by viewModels<IssueViewModel> {
+    private val issueViewModel by viewModels<IssueViewModel> {
         ViewModelFactory(args)
     }
 
@@ -57,26 +76,25 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
             }
 
             emptyViewActions = this@IssueFragment
-            viewModel = this@IssueFragment.viewModel
+            viewModel = issueViewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.data.observe(viewLifecycleOwner, Observer {
+        issueViewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = adapterWrapper.mergeAdapter
+                    adapter = mergeAdapter
                 }
             }
 
             adapterWrapper.pagingAdapter.submitList(it)
         })
 
-        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
-
+        issueViewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
     }
 
     override fun retryInitial() {
-        viewModel.refresh()
+        issueViewModel.refresh()
     }
 
     override fun doAction() {
@@ -84,7 +102,7 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
     }
 
     override fun retryLoadPreviousNext() {
-        viewModel.retryLoadPreviousNext()
+        issueViewModel.retryLoadPreviousNext()
     }
 
 }

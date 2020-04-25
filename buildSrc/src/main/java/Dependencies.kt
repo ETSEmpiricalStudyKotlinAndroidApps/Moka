@@ -4,7 +4,7 @@ object Versions {
     val targetSdk = 29
     val minSdk = 23
 
-    val androidGradle = "4.0.0-beta04"
+    val androidGradle = "4.0.0-beta05"
     val gmsGoogleServiceGradle = "4.3.3"
     val fabricToolsGradle = "1.31.2"
     val kotlin = "1.3.72"

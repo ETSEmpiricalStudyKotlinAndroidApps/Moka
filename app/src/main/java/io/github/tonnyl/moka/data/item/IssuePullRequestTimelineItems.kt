@@ -833,7 +833,7 @@ data class IssueComment(
     /**
      * A list of reactions grouped by content left on the subject.
      */
-    val reactionGroups: List<ReactionGroup>?,
+    val reactionGroups: MutableList<ReactionGroup>?,
 
     /**
      * Check if the current viewer can delete this object.
@@ -883,7 +883,7 @@ fun IssueCommentFragment.toNonNullIssueComment(
             it.fragments.reactionGroup.users.totalCount > 0
         }?.map {
             it.fragments.reactionGroup.toNonNullReactionGroup()
-        },
+        }?.toMutableList(),
         viewerCanDelete,
         viewerCanReact,
         viewerDidAuthor,

@@ -11,11 +11,9 @@ import io.github.tonnyl.moka.data.item.IssueComment
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
 import io.github.tonnyl.moka.databinding.ItemIssueTimelineCommentBinding
 import io.github.tonnyl.moka.databinding.ItemIssueTimelineEventBinding
-import io.github.tonnyl.moka.databinding.ItemIssueTimelineHeadBinding
 
 class IssueTimelineAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: IssueViewModel,
     private val reactionViewPool: RecyclerView.RecycledViewPool
 ) : PagedListAdapter<IssueTimelineItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
@@ -41,24 +39,15 @@ class IssueTimelineAdapter(
         val inflater = LayoutInflater.from(parent.context)
 
         return when (viewType) {
-            R.layout.item_issue_timeline_head -> {
-                HeadViewHolder(
-                    lifecycleOwner,
-                    viewModel,
-                    ItemIssueTimelineHeadBinding.inflate(inflater, parent, false).apply {
-                        issueIncludedCommentLayout.issueTimelineCommentReactions.apply {
-                            setRecycledViewPool(reactionViewPool)
-                        }
-                    }
-                )
-            }
             R.layout.item_issue_timeline_comment -> {
                 CommentViewHolder(
                     lifecycleOwner,
-                    ItemIssueTimelineCommentBinding.inflate(inflater, parent, false).apply {
-                        issueTimelineCommentReactions.apply {
-                            setRecycledViewPool(reactionViewPool)
-                        }
+                    ItemIssueTimelineCommentBinding.inflate(
+                        inflater,
+                        parent,
+                        false
+                    ).apply {
+                        issueTimelineCommentReactions.setRecycledViewPool(reactionViewPool)
                     }
                 )
             }
@@ -76,13 +65,8 @@ class IssueTimelineAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
-        if (viewType == R.layout.item_issue_timeline_head) {
-            (holder as HeadViewHolder).bindTo()
+        val item = getItem(position) ?: return
 
-            return
-        }
-
-        val item = getItem(position - 1) ?: return
         when (viewType) {
             R.layout.item_issue_timeline_comment -> {
                 (holder as CommentViewHolder).bindTo(item as IssueComment)
@@ -94,21 +78,15 @@ class IssueTimelineAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) {
-            R.layout.item_issue_timeline_head
-        } else {
-            when (getItem(position - 1)) {
-                is IssueComment -> {
-                    R.layout.item_issue_timeline_comment
-                }
-                else -> {
-                    R.layout.item_issue_timeline_event
-                }
+        return when (getItem(position)) {
+            is IssueComment -> {
+                R.layout.item_issue_timeline_comment
+            }
+            else -> {
+                R.layout.item_issue_timeline_event
             }
         }
     }
-
-    override fun getItemCount(): Int = super.getItemCount() + 1
 
     class EventViewHolder(
         private val owner: LifecycleOwner,
@@ -135,23 +113,6 @@ class IssueTimelineAdapter(
             with(binding) {
                 lifecycleOwner = owner
                 comment = data
-
-                executePendingBindings()
-            }
-        }
-
-    }
-
-    class HeadViewHolder(
-        private val owner: LifecycleOwner,
-        private val model: IssueViewModel,
-        private val binding: ItemIssueTimelineHeadBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bindTo() {
-            with(binding) {
-                lifecycleOwner = owner
-                viewModel = model
 
                 executePendingBindings()
             }

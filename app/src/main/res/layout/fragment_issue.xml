@@ -46,19 +46,19 @@
                     layout="@layout/layout_empty_content"
                     bind:actionString="@{@string/users_content_empty_action}"
                     bind:actions="@{emptyViewActions}"
-                    bind:goneUnless="@{viewModel.initialLoadStatus != null &amp;&amp; viewModel.initialLoadStatus.status != Status.LOADING &amp;&amp; (viewModel.data == null || viewModel.data.size() == 0)}"
+                    bind:goneUnless="@{viewModel.initialLoadStatus != null &amp;&amp; viewModel.initialLoadStatus.status != Status.LOADING &amp;&amp; viewModel.issueLiveData == null}"
                     bind:iconDrawable="@{@drawable/ic_outline_people_24}"
                     bind:titleString="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/users_content_empty_title}" />
 
                 <include
                     android:id="@+id/layout_loading"
                     layout="@layout/layout_loading"
-                    bind:goneUnless="@{viewModel.initialLoadStatus.status == Status.LOADING || viewModel.issueToCommentLiveData.status == Status.LOADING}" />
+                    bind:goneUnless="@{viewModel.initialLoadStatus.status == Status.LOADING}" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     style="@style/RecyclerViewStyle"
-                    app:visibleUnless="@{viewModel.initialLoadStatus.data != null &amp;&amp; viewModel.issueToCommentLiveData.data != null}"
+                    app:visibleUnless="@{viewModel.initialLoadStatus.data != null}"
                     tools:listitem="@layout/item_issue_timeline_comment" />
 
             </FrameLayout>

@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.MergeAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentPrBinding
@@ -21,8 +22,12 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
 
     private val args by navArgs<PullRequestFragmentArgs>()
 
-    private val viewModel by viewModels<PullRequestViewModel> {
+    private val pullRequestViewModel by viewModels<PullRequestViewModel> {
         ViewModelFactory(args)
+    }
+
+    private val reactionsViewPool by lazy(LazyThreadSafetyMode.NONE) {
+        RecyclerView.RecycledViewPool()
     }
 
     private lateinit var binding: FragmentPrBinding
@@ -32,10 +37,21 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
             LoadStateAdapter(this),
             PullRequestTimelineAdapter(
                 viewLifecycleOwner,
-                viewModel,
-                RecyclerView.RecycledViewPool()
+                reactionsViewPool
             ),
             LoadStateAdapter(this)
+        )
+    }
+    private val mergeAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        MergeAdapter(
+            adapterWrapper.headerAdapter,
+            PullRequestDetailsAdapter(
+                viewLifecycleOwner,
+                pullRequestViewModel,
+                reactionsViewPool
+            ),
+            adapterWrapper.pagingAdapter,
+            adapterWrapper.footerAdapter
         )
     }
 
@@ -60,26 +76,26 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
                 }
             }
 
-            viewModel = this@PullRequestFragment.viewModel
+            viewModel = this@PullRequestFragment.pullRequestViewModel
             emptyViewActions = this@PullRequestFragment
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.data.observe(viewLifecycleOwner, Observer {
+        pullRequestViewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = adapterWrapper.mergeAdapter
+                    adapter = mergeAdapter
                 }
             }
 
             adapterWrapper.pagingAdapter.submitList(it)
         })
 
-        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
+        pullRequestViewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
     }
 
     override fun retryInitial() {
-        viewModel.refresh()
+        pullRequestViewModel.refresh()
     }
 
     override fun doAction() {
@@ -87,7 +103,7 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
     }
 
     override fun retryLoadPreviousNext() {
-        viewModel.retryLoadPreviousNext()
+        pullRequestViewModel.retryLoadPreviousNext()
     }
 
 }

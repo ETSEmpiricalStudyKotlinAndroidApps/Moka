@@ -1,4 +1,4 @@
-query PullRequest($owner: String!, $name: String!, $number: Int!) {
+query PullRequest($owner: String!, $name: String!, $number: Int!, $after: String, $before: String, $perPage: Int!) {
     repository(owner: $owner, name: $name) {
         pullRequest(number: $number) {
             # Reason that the conversation was locked.
@@ -119,6 +119,109 @@ query PullRequest($owner: String!, $name: String!, $number: Int!) {
             viewerDidAuthor
             # Identifies if the viewer is watching, not watching, or ignoring the subscribable entity.
             viewerSubscription
+
+            timelineItems(first: $perPage, after: $after, before: $before) {
+                nodes {
+                    # Represents a 'added_to_project' event on a given issue or pull request.
+                    ... AddedToProjectEventFragment
+                    # Represents an 'assigned' event on any assignable object.
+                    ... AssignedEventFragment
+                    # Represents a 'base_ref_changed' event on a given issue or pull request.
+                    ... BaseRefChangedEventFragment
+                    # Represents a 'base_ref_force_pushed' event on a given pull request.
+                    ... BaseRefForcePushedEventFragment
+                    # Represents a 'closed' event on any `Closable`.
+                    ... ClosedEventFragment
+                    # Represents a 'comment_deleted' event on a given issue or pull request.
+                    # ignore
+                    # ... CommentDeletedEventFragment
+                    # Represents a 'converted_note_to_issue' event on a given issue or pull request.
+                    ... ConvertedNoteToIssueEventFragment
+                    # Represents a mention made by one issue or pull request to another.
+                    ... CrossReferencedEventFragment
+                    # Represents a 'demilestoned' event on a given issue or pull request.
+                    ... DemilestonedEventFragment
+                    # Represents a 'deployed' event on a given pull request.
+                    ... DeployedEventFragment
+                    # Represents a 'deployment_environment_changed' event on a given pull request.
+                    ... DeploymentEnvironmentChangedEventFragment
+                    # Represents a 'head_ref_deleted' event on a given pull request.
+                    ... HeadRefDeletedEventFragment
+                    # Represents a 'head_ref_force_pushed' event on a given pull request.
+                    ... HeadRefForcePushedEventFragment
+                    # Represents a 'head_ref_restored' event on a given pull request.
+                    ... HeadRefRestoredEventFragment
+                    # Represents a comment on an Issue.
+                    ... IssueCommentFragment
+                    # Represents a 'labeled' event on a given issue or pull request.
+                    ... LabeledEventFragment
+                    # Represents a 'locked' event on a given issue or pull request.
+                    ... LockedEventFragment
+                    # Represents a 'marked_as_duplicate' event on a given issue or pull request.
+                    ... MarkedAsDuplicateEventFragment
+                    # Represents a 'mentioned' event on a given issue or pull request.
+                    # ignore
+                    # ... MentionedEventFragment
+                    # Represents a 'merged' event on a given pull request.
+                    ... MergedEventFragment
+                    # Represents a 'demilestoned' event on a given issue or pull request.
+                    ... MilestonedEventFragment
+                    # Represents a 'moved_columns_in_project' event on a given issue or pull request.
+                    ... MovedColumnsInProjectEventFragment
+                    # Represents a 'pinned' event on a given issue or pull request.
+                    ... PinnedEventFragment
+                    # Represents a Git commit part of a pull request.
+                    ... PullRequestCommitFragment
+                    # Represents a commit comment thread part of a pull request.
+                    ... PullRequestCommitCommentThreadFragment
+                    # A review object for a given pull request.
+                    ... PullRequestReviewFragment
+                    # A threaded list of comments for a given pull request.
+                    ... PullRequestReviewThreadFragment
+                    # Represents the latest point in the pull request timeline for which the viewer has seen the pull request's commits.
+                    # ignore
+                    # ... PullRequestRevisionMarkerFragment
+                    # Represents a 'ready_for_review' event on a given pull request.
+                    ... ReadyForReviewEventFragment
+                    # Represents a 'referenced' event on a given `ReferencedSubject`.
+                    ... ReferencedEventFragment
+                    # Represents a 'removed_from_project' event on a given issue or pull request.
+                    ... RemovedFromProjectEventFragment
+                    # Represents a 'renamed' event on a given issue or pull request
+                    ... RenamedTitleEventFragment
+                    # Represents a 'reopened' event on any `Closable`.
+                    ... ReopenedEventFragment
+                    # Represents a 'review_dismissed' event on a given issue or pull request.
+                    ... ReviewDismissedEventFragment
+                    # Represents an 'review_request_removed' event on a given pull request.
+                    ... ReviewRequestRemovedEventFragment
+                    # Represents an 'review_requested' event on a given pull request.
+                    ... ReviewRequestedEventFragment
+                    # Represents a 'subscribed' event on a given `Subscribable`.
+                    # ignore
+                    # ... SubscribedEventFragment
+                    # Represents a 'transferred' event on a given issue or pull request.
+                    ... TransferredEventFragment
+                    # Represents an 'unassigned' event on any assignable object.
+                    ... UnassignedEventFragment
+                    # Represents an 'unlabeled' event on a given issue or pull request.
+                    ... UnlabeledEventFragment
+                    # Represents an 'unlocked' event on a given issue or pull request.
+                    ... UnlockedEventFragment
+                    # Represents an 'unpinned' event on a given issue or pull request.
+                    ... UnpinnedEventFragment
+                    # Represents an 'unsubscribed' event on a given `Subscribable`.
+                    # ignore
+                    # ... UnsubscribedEventFragment
+                    # Represents a 'user_blocked' event on a given user.
+                    # ignore
+                    # ... UserBlockedEventFragment
+                }
+                # Information to aid in pagination.
+                pageInfo {
+                    ... PageInfo
+                }
+            }
         }
     }
 }

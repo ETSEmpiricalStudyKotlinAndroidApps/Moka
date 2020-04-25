@@ -13,13 +13,11 @@ import io.github.tonnyl.moka.data.item.PullRequestReviewThread
 import io.github.tonnyl.moka.data.item.PullRequestTimelineItem
 import io.github.tonnyl.moka.databinding.ItemPrTimelineCommentBinding
 import io.github.tonnyl.moka.databinding.ItemPrTimelineEventBinding
-import io.github.tonnyl.moka.databinding.ItemPrTimelineHeadBinding
 import io.github.tonnyl.moka.databinding.ItemPrTimelineThreadBinding
 
 class PullRequestTimelineAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: PullRequestViewModel,
-    private val reactionViewPool: RecyclerView.RecycledViewPool
+    private val reactionsViewPool: RecyclerView.RecycledViewPool
 ) : PagedListAdapter<PullRequestTimelineItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -44,23 +42,12 @@ class PullRequestTimelineAdapter(
         val inflater = LayoutInflater.from(parent.context)
 
         return when (viewType) {
-            R.layout.item_pr_timeline_head -> {
-                HeadViewHolder(
-                    lifecycleOwner,
-                    viewModel,
-                    ItemPrTimelineHeadBinding.inflate(inflater, parent, false).apply {
-                        issueIncludedCommentLayout.issueTimelineCommentReactions.apply {
-                            setRecycledViewPool(reactionViewPool)
-                        }
-                    }
-                )
-            }
             R.layout.item_pr_timeline_comment -> {
                 CommentViewHolder(
                     lifecycleOwner,
                     ItemPrTimelineCommentBinding.inflate(inflater, parent, false).apply {
                         issueTimelineCommentReactions.apply {
-                            setRecycledViewPool(reactionViewPool)
+                            setRecycledViewPool(reactionsViewPool)
                         }
                     }
                 )
@@ -82,13 +69,7 @@ class PullRequestTimelineAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
-        if (viewType == R.layout.item_pr_timeline_head) {
-            (holder as HeadViewHolder).bindTo()
-
-            return
-        }
-
-        val item = getItem(position - 1) ?: return
+        val item = getItem(position) ?: return
         when (viewType) {
             R.layout.item_pr_timeline_comment -> {
                 (holder as CommentViewHolder).bindTo(item as IssueComment)
@@ -106,25 +87,19 @@ class PullRequestTimelineAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) {
-            R.layout.item_pr_timeline_head
-        } else {
-            when (getItem(position - 1)) {
-                is IssueComment -> {
-                    R.layout.item_pr_timeline_comment
-                }
-                is PullRequestReviewThread,
-                is PullRequestCommitCommentThread -> {
-                    R.layout.item_pr_timeline_thread
-                }
-                else -> {
-                    R.layout.item_pr_timeline_event
-                }
+        return when (getItem(position)) {
+            is IssueComment -> {
+                R.layout.item_pr_timeline_comment
+            }
+            is PullRequestReviewThread,
+            is PullRequestCommitCommentThread -> {
+                R.layout.item_pr_timeline_thread
+            }
+            else -> {
+                R.layout.item_pr_timeline_event
             }
         }
     }
-
-    override fun getItemCount(): Int = super.getItemCount() + 1
 
     class CommentViewHolder(
         private val owner: LifecycleOwner,
@@ -175,23 +150,6 @@ class PullRequestTimelineAdapter(
 
                     }
                 }
-            }
-        }
-
-    }
-
-    class HeadViewHolder(
-        private val owner: LifecycleOwner,
-        private val model: PullRequestViewModel,
-        private val binding: ItemPrTimelineHeadBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bindTo() {
-            with(binding) {
-                lifecycleOwner = owner
-                viewModel = model
-
-                executePendingBindings()
             }
         }
 

@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.databinding.ItemIssueTimelineHeadBinding
+import io.github.tonnyl.moka.ui.MainViewModel
 
 class IssueDetailsAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val issueViewModel: IssueViewModel,
+    private val mainViewModel: MainViewModel,
     private val reactionsViewPool: RecyclerView.RecycledViewPool
 ) : RecyclerView.Adapter<IssueDetailsAdapter.IssueDetailsViewHolder>() {
 
@@ -16,6 +18,7 @@ class IssueDetailsAdapter(
         return IssueDetailsViewHolder(
             lifecycleOwner,
             issueViewModel,
+            mainViewModel,
             ItemIssueTimelineHeadBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -36,14 +39,16 @@ class IssueDetailsAdapter(
 
     class IssueDetailsViewHolder(
         private val owner: LifecycleOwner,
-        private val model: IssueViewModel,
+        private val issueModel: IssueViewModel,
+        private val mainModel: MainViewModel,
         private val binding: ItemIssueTimelineHeadBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind() {
             with(binding) {
                 lifecycleOwner = owner
-                viewModel = model
+                issueViewModel = issueModel
+                mainViewModel = mainModel
 
                 executePendingBindings()
             }

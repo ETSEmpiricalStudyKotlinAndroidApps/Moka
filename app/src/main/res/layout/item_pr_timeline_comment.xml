@@ -7,9 +7,17 @@
 
         <import type="io.github.tonnyl.moka.data.item.IssueComment" />
 
+        <import type="io.github.tonnyl.moka.ui.MainViewModel" />
+
+        <import type="io.github.tonnyl.moka.ui.pr.PullRequestViewModel" />
+
         <variable
             name="comment"
             type="IssueComment" />
+
+        <variable
+            name="mainViewModel"
+            type="MainViewModel" />
 
     </data>
 
@@ -44,6 +52,7 @@
             android:layout_width="@dimen/regular_icon_size"
             android:layout_height="@dimen/regular_icon_size"
             android:layout_marginStart="@dimen/fragment_content_padding_half"
+            android:onClick="@{() -> mainViewModel.showReactionDialog(comment.id, comment.reactionGroups)}"
             android:padding="@dimen/fragment_content_padding_half"
             android:src="@drawable/ic_emoji_emotions_24"
             app:layout_constraintBottom_toBottomOf="@id/issue_timeline_comment_more"
@@ -93,18 +102,17 @@
             app:prTimelineItemCreatedAt="@{comment}"
             tools:text="@sample/issue_timeline.json/timeline/createdAt" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <io.github.tonnyl.moka.widget.ThemedWebView
             android:id="@+id/issue_timeline_comment_content"
-            style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/list_item_spacing"
             android:layout_marginTop="@dimen/list_item_spacing"
             android:layout_marginEnd="@dimen/list_item_spacing"
+            app:htmlContent="@{comment.displayHtml}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/issue_timeline_comment_created_at"
-            app:prTimelineItemContentTextFuture="@{comment}"
             tools:text="@sample/issue_timeline.json/timeline/body" />
 
         <Space

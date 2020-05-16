@@ -12,8 +12,6 @@
 
         <import type="io.github.tonnyl.moka.ui.inbox.InboxViewModel" />
 
-        <import type="io.github.tonnyl.moka.ui.SearchBarEvent" />
-
         <import type="io.github.tonnyl.moka.ui.EmptyViewActions" />
 
         <variable

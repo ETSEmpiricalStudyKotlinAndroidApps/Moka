@@ -293,4 +293,23 @@
         tools:label="Account"
         tools:layout="@layout/dialog_fragment_account" />
 
+    <dialog
+        android:id="@+id/add_reaction_dialog"
+        android:name="io.github.tonnyl.moka.ui.reaction.AddReactionDialogFragment"
+        tools:label="Add reaction"
+        tools:layout="@layout/dialog_fragment_add_reaction">
+
+        <argument
+            android:name="viewer_has_reacted_contents"
+            android:defaultValue="@null"
+            app:argType="string[]"
+            app:nullable="true" />
+
+        <argument
+            android:name="reactable_id"
+            app:argType="string"
+            app:nullable="false" />
+
+    </dialog>
+
 </navigation>

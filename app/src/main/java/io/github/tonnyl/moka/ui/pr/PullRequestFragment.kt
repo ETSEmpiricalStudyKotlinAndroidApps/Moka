@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -12,11 +13,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.MergeAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.extension.updateByReactionEventIfNeeded
 import io.github.tonnyl.moka.databinding.FragmentPrBinding
-import io.github.tonnyl.moka.ui.EmptyViewActions
-import io.github.tonnyl.moka.ui.LoadStateAdapter
-import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
+import io.github.tonnyl.moka.ui.*
 
 class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
@@ -29,6 +28,7 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
     private val reactionsViewPool by lazy(LazyThreadSafetyMode.NONE) {
         RecyclerView.RecycledViewPool()
     }
+    private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var binding: FragmentPrBinding
 
@@ -37,6 +37,7 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
             LoadStateAdapter(this),
             PullRequestTimelineAdapter(
                 viewLifecycleOwner,
+                mainViewModel,
                 reactionsViewPool
             ),
             LoadStateAdapter(this)
@@ -47,6 +48,7 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
             adapterWrapper.headerAdapter,
             PullRequestDetailsAdapter(
                 viewLifecycleOwner,
+                mainViewModel,
                 pullRequestViewModel,
                 reactionsViewPool
             ),
@@ -92,6 +94,13 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
         })
 
         pullRequestViewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
+
+        mainViewModel.reactEvent.observe(viewLifecycleOwner, EventObserver { event ->
+            val payload = pullRequestViewModel.data.value?.updateByReactionEventIfNeeded(event)
+            if (payload != null && payload.index >= 0) {
+                adapterWrapper.pagingAdapter.notifyItemChanged(payload.index, payload.change)
+            }
+        })
     }
 
     override fun retryInitial() {

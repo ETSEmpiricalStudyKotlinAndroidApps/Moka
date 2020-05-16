@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -12,11 +13,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.MergeAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.extension.updateByReactionEventIfNeeded
 import io.github.tonnyl.moka.databinding.FragmentIssueBinding
-import io.github.tonnyl.moka.ui.EmptyViewActions
-import io.github.tonnyl.moka.ui.LoadStateAdapter
-import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
+import io.github.tonnyl.moka.ui.*
 
 class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
@@ -28,6 +27,7 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
             LoadStateAdapter(this),
             IssueTimelineAdapter(
                 viewLifecycleOwner,
+                mainViewModel,
                 reactionsViewPool
             ),
             LoadStateAdapter(this)
@@ -39,6 +39,7 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
             IssueDetailsAdapter(
                 viewLifecycleOwner,
                 issueViewModel,
+                mainViewModel,
                 reactionsViewPool
             ),
             adapterWrapper.pagingAdapter,
@@ -49,6 +50,7 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
     private val issueViewModel by viewModels<IssueViewModel> {
         ViewModelFactory(args)
     }
+    private val mainViewModel by activityViewModels<MainViewModel>()
 
     private val args: IssueFragmentArgs by navArgs()
 
@@ -91,6 +93,15 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
         })
 
         issueViewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
+
+        mainViewModel.reactEvent.observe(viewLifecycleOwner, EventObserver { event ->
+            val payload = issueViewModel.data.value?.updateByReactionEventIfNeeded(event)
+            if (payload != null
+                && payload.index >= 0
+            ) {
+                adapterWrapper.pagingAdapter.notifyItemChanged(payload.index, payload.change)
+            }
+        })
     }
 
     override fun retryInitial() {

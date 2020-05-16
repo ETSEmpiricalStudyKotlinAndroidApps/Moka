@@ -16,9 +16,9 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.ActivityMainBinding
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.RetrofitClient
-import io.github.tonnyl.moka.ui.SearchBarEvent.ShowAccounts
-import io.github.tonnyl.moka.ui.SearchBarEvent.ShowSearch
+import io.github.tonnyl.moka.ui.UserEvent.*
 import io.github.tonnyl.moka.ui.auth.AuthActivity
+import io.github.tonnyl.moka.ui.reaction.AddReactionDialogFragmentArgs
 import io.github.tonnyl.moka.util.HeightTopWindowInsetsListener
 import io.github.tonnyl.moka.util.NoopWindowInsetsListener
 import io.github.tonnyl.moka.util.updateForTheme
@@ -76,16 +76,25 @@ class MainActivity : AppCompatActivity(), NavigationHost {
             viewModel.getUserProfile()
         })
 
-        viewModel.event.observe(this, Observer {
-            when (it.getContentIfNotHandled()) {
-                ShowSearch -> {
+        viewModel.event.observe(this, EventObserver {
+            when (it) {
+                is ShowSearch -> {
                     navController.navigate(R.id.search_fragment)
                 }
-                ShowAccounts -> {
+                is ShowAccounts -> {
                     navController.navigate(R.id.account_dialog)
                 }
-                null -> {
-
+                is ShowReactionDialog -> {
+                    navController.navigate(
+                        R.id.add_reaction_dialog,
+                        AddReactionDialogFragmentArgs(
+                            it.userHasReactedContents,
+                            it.reactableId
+                        ).toBundle()
+                    )
+                }
+                is DismissReactionDialog -> {
+                    navController.navigateUp()
                 }
             }
         })

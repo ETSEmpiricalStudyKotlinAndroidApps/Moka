@@ -87,11 +87,10 @@ class IssuesFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
                     )
                 }
                 is ViewIssueTimeline -> {
-                    parentFragment?.findNavController()
-                        ?.navigate(
-                            R.id.issue_fragment,
-                            IssueFragmentArgs(args.owner, args.name, event.number).toBundle()
-                        )
+                    findNavController().navigate(
+                        R.id.issue_fragment,
+                        IssueFragmentArgs(args.owner, args.name, event.number).toBundle()
+                    )
                 }
             }
         })

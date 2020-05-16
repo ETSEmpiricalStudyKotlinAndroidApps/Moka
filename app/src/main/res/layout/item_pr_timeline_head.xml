@@ -7,7 +7,13 @@
 
         <import type="io.github.tonnyl.moka.ui.pr.PullRequestViewModel" />
 
+        <import type="io.github.tonnyl.moka.ui.MainViewModel" />
+
         <import type="android.text.format.DateUtils" />
+
+        <variable
+            name="mainViewModel"
+            type="MainViewModel" />
 
         <variable
             name="pullRequestViewModel"
@@ -86,6 +92,7 @@
             android:layout_width="@dimen/regular_icon_size"
             android:layout_height="@dimen/regular_icon_size"
             android:layout_marginStart="@dimen/fragment_content_padding_half"
+            android:onClick="@{() -> mainViewModel.showReactionDialog(pullRequestViewModel.pullRequest.id, pullRequestViewModel.pullRequest.reactionGroups)}"
             android:padding="@dimen/fragment_content_padding_half"
             android:src="@drawable/ic_emoji_emotions_24"
             app:layout_constraintBottom_toBottomOf="@id/pr_comment_more"

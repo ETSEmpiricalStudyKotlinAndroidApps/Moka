@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.data.ReactionGroup
 import io.github.tonnyl.moka.databinding.ItemReactionGroupBinding
+import io.github.tonnyl.moka.ui.reaction.ReactionChange.*
 
 class ReactionGroupAdapter(
     private val viewerCanReact: Boolean
@@ -46,6 +47,22 @@ class ReactionGroupAdapter(
         getItem(position)?.let {
             holder.bind(it)
         }
+    }
+
+    fun updateUiByReactionChange(reactionChange: ReactionChange) {
+        val position = reactionChange.position
+        when (reactionChange) {
+            is ReactionUpdate -> {
+                notifyItemChanged(position)
+            }
+            is ReactionRemove -> {
+                notifyItemRemoved(position)
+            }
+            is ReactionInsert -> {
+                notifyItemInserted(position)
+            }
+        }
+
     }
 
     class ReactionGroupViewHolder(

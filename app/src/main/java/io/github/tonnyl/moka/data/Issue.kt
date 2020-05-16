@@ -102,7 +102,7 @@ data class Issue(
     /**
      * A list of reactions grouped by content left on the subject.
      */
-    val reactionGroups: List<ReactionGroup>?,
+    var reactionGroups: MutableList<ReactionGroup>?,
 
     /**
      * The HTTP path for this issue.
@@ -185,7 +185,7 @@ fun IssueQuery.Issue.toNonNullIssue(): Issue {
             it.fragments.reactionGroup.users.totalCount > 0
         }?.map {
             it.fragments.reactionGroup.toNonNullReactionGroup()
-        },
+        }?.toMutableList(),
         resourcePath,
         state,
         title,

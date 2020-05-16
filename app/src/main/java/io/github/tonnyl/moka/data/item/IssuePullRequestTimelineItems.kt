@@ -16,9 +16,13 @@ import java.util.*
 import io.github.tonnyl.moka.fragment.PullRequestTimelineItemPullRequest as RawPullRequestTimelineItemPullRequest
 
 // ===== base issue/pull request timeline item definition =====
-interface IssueTimelineItem {
+interface TimelineItem {
 
     val id: String
+
+}
+
+interface IssueTimelineItem : TimelineItem {
 
     fun areItemsTheSame(other: IssueTimelineItem): Boolean {
         if (this::class != other::class) {
@@ -33,9 +37,7 @@ interface IssueTimelineItem {
 
 }
 
-interface PullRequestTimelineItem {
-
-    val id: String
+interface PullRequestTimelineItem : TimelineItem {
 
     fun areItemsTheSame(other: PullRequestTimelineItem): Boolean {
         if (this::class != other::class) {
@@ -833,7 +835,7 @@ data class IssueComment(
     /**
      * A list of reactions grouped by content left on the subject.
      */
-    val reactionGroups: MutableList<ReactionGroup>?,
+    var reactionGroups: MutableList<ReactionGroup>?,
 
     /**
      * Check if the current viewer can delete this object.

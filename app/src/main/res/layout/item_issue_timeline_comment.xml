@@ -7,9 +7,15 @@
 
         <import type="io.github.tonnyl.moka.data.item.IssueComment" />
 
+        <import type="io.github.tonnyl.moka.ui.MainViewModel" />
+
         <variable
             name="comment"
             type="IssueComment" />
+
+        <variable
+            name="mainViewModel"
+            type="MainViewModel" />
 
     </data>
 
@@ -44,6 +50,7 @@
             android:layout_width="@dimen/regular_icon_size"
             android:layout_height="@dimen/regular_icon_size"
             android:layout_marginStart="@dimen/fragment_content_padding_half"
+            android:onClick="@{() -> mainViewModel.showReactionDialog(comment.id, comment.reactionGroups)}"
             android:padding="@dimen/fragment_content_padding_half"
             android:src="@drawable/ic_emoji_emotions_24"
             app:layout_constraintBottom_toBottomOf="@id/issue_timeline_comment_more"

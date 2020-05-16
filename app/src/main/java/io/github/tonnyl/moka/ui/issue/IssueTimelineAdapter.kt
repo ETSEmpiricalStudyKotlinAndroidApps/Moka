@@ -11,9 +11,13 @@ import io.github.tonnyl.moka.data.item.IssueComment
 import io.github.tonnyl.moka.data.item.IssueTimelineItem
 import io.github.tonnyl.moka.databinding.ItemIssueTimelineCommentBinding
 import io.github.tonnyl.moka.databinding.ItemIssueTimelineEventBinding
+import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.reaction.ReactionChange
+import io.github.tonnyl.moka.ui.reaction.ReactionGroupAdapter
 
 class IssueTimelineAdapter(
     private val lifecycleOwner: LifecycleOwner,
+    private val mainViewModel: MainViewModel,
     private val reactionViewPool: RecyclerView.RecycledViewPool
 ) : PagedListAdapter<IssueTimelineItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
@@ -42,6 +46,7 @@ class IssueTimelineAdapter(
             R.layout.item_issue_timeline_comment -> {
                 CommentViewHolder(
                     lifecycleOwner,
+                    mainViewModel,
                     ItemIssueTimelineCommentBinding.inflate(
                         inflater,
                         parent,
@@ -77,6 +82,24 @@ class IssueTimelineAdapter(
         }
     }
 
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        val payload = payloads.firstOrNull()
+        if (payload == null) {
+            onBindViewHolder(holder, position)
+        } else if (payload is ReactionChange
+            && holder is CommentViewHolder
+        ) {
+            val recyclerView = holder.binding.issueTimelineCommentReactions
+            val adapter = recyclerView.adapter as? ReactionGroupAdapter
+            adapter?.updateUiByReactionChange(payload)
+            recyclerView.smoothScrollToPosition(payload.position)
+        }
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is IssueComment -> {
@@ -106,13 +129,15 @@ class IssueTimelineAdapter(
 
     class CommentViewHolder(
         private val owner: LifecycleOwner,
-        private val binding: ItemIssueTimelineCommentBinding
+        private val model: MainViewModel,
+        val binding: ItemIssueTimelineCommentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(data: IssueComment) {
             with(binding) {
                 lifecycleOwner = owner
                 comment = data
+                mainViewModel = model
 
                 executePendingBindings()
             }

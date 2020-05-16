@@ -19,12 +19,12 @@ data class ReactionGroup(
     /**
      * Whether or not the authenticated user has left a reaction on the subject.
      */
-    val viewerHasReacted: Boolean,
+    var viewerHasReacted: Boolean,
 
     /**
      * Total count of users who have reacted to the reaction subject with the emotion represented by this reaction group.
      */
-    val usersTotalCount: Int
+    var usersTotalCount: Int
 
 ) : Parcelable
 

@@ -7,7 +7,9 @@
 
         <import type="io.github.tonnyl.moka.ui.MainViewModel" />
 
-        <import type="io.github.tonnyl.moka.ui.SearchBarEvent" />
+        <import type="io.github.tonnyl.moka.ui.UserEvent.ShowAccounts" />
+
+        <import type="io.github.tonnyl.moka.ui.UserEvent.ShowSearch" />
 
         <variable
             name="mainViewModel"
@@ -59,7 +61,7 @@
                             android:imeOptions="flagNoExtractUi"
                             android:inputType="textFilter"
                             android:maxLines="1"
-                            android:onClick="@{() -> mainViewModel.showUI(SearchBarEvent.ShowSearch)}"
+                            android:onClick="@{() -> mainViewModel.showSearch()}"
                             android:text="@string/search_input_hint"
                             android:textColor="?android:textColorSecondary"
                             android:textColorHint="?android:textColorSecondary" />
@@ -68,7 +70,7 @@
                             android:id="@+id/main_search_bar_avatar"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:onClick="@{() -> mainViewModel.showUI(SearchBarEvent.ShowAccounts)}"
+                            android:onClick="@{() -> mainViewModel.showAccounts()}"
                             android:padding="8dp"
                             android:scaleType="centerCrop"
                             app:avatarUrl="@{mainViewModel.currentUser.avatarUrl}"

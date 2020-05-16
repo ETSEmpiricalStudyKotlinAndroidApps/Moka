@@ -5,9 +5,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.databinding.ItemPrTimelineHeadBinding
+import io.github.tonnyl.moka.ui.MainViewModel
 
 class PullRequestDetailsAdapter(
     private val lifecycleOwner: LifecycleOwner,
+    private val mainViewModel: MainViewModel,
     private val pullRequestViewModel: PullRequestViewModel,
     private val reactionsViewPool: RecyclerView.RecycledViewPool
 ) : RecyclerView.Adapter<PullRequestDetailsAdapter.PullRequestDetailsViewHolder>() {
@@ -18,6 +20,7 @@ class PullRequestDetailsAdapter(
     ): PullRequestDetailsViewHolder {
         return PullRequestDetailsViewHolder(
             lifecycleOwner,
+            mainViewModel,
             pullRequestViewModel,
             ItemPrTimelineHeadBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -39,14 +42,16 @@ class PullRequestDetailsAdapter(
 
     class PullRequestDetailsViewHolder(
         private val owner: LifecycleOwner,
-        private val model: PullRequestViewModel,
+        private val mainModel: MainViewModel,
+        private val prModel: PullRequestViewModel,
         private val binding: ItemPrTimelineHeadBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind() {
             with(binding) {
                 lifecycleOwner = owner
-                pullRequestViewModel = model
+                pullRequestViewModel = prModel
+                mainViewModel = mainModel
 
                 executePendingBindings()
             }

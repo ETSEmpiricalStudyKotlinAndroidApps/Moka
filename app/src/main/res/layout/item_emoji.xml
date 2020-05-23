@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="io.github.tonnyl.moka.data.Emoji" />
+
+        <import type="io.github.tonnyl.moka.ui.emojis.EmojisViewModel" />
+
+        <variable
+            name="emoji"
+            type="Emoji" />
+
+        <variable
+            name="emojisViewModel"
+            type="EmojisViewModel" />
+
+    </data>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/Widget.Moka.EmojiText"
+        android:layout_width="@dimen/emoji_width"
+        android:layout_height="@dimen/emoji_height"
+        android:onClick="@{() -> emojisViewModel.selectEmoji(emoji)}"
+        app:emoji="@{emoji.emoji}"
+        tools:text="😀" />
+
+</layout>

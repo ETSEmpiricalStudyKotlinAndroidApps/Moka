@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="io.github.tonnyl.moka.ui.emojis.EmojisViewModel" />
+
+        <import type="io.github.tonnyl.moka.data.EmojiCategory" />
+
+        <import type="io.github.tonnyl.moka.ui.MainViewModel" />
+
+        <variable
+            name="viewModel"
+            type="EmojisViewModel" />
+
+        <variable
+            name="mainViewModel"
+            type="MainViewModel" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/appbar_layout"
+            layout="@layout/appbar_layout"
+            bind:liftOnScrollTargetViewId="@{@id/emoji_recycler_view}" />
+
+        <!--
+            The reason why fast-scroll is disabled:
+            https://issuetracker.google.com/issues/64729576
+        -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/emoji_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorBackground"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/emojis_list_padding_bottom"
+            app:layoutManager="GridLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:spanCount="7"
+            tools:itemCount="100"
+            tools:listitem="@layout/item_emoji" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/emojis_categories_toggle_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/fragment_content_padding"
+            app:checkedButtonId="@{!mainViewModel.emojis.empty &amp;&amp; mainViewModel.emojis.get(0) == EmojiCategory.RecentlyUsed ? @id/emojis_category_recently_used : @id/emojis_category_smileys_and_emotion}"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            tools:checkedButton="@id/emojis_category_recently_used">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_recently_used"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.RecentlyUsed)}"
+                app:goneUnless="@{!mainViewModel.emojis.empty &amp;&amp; mainViewModel.emojis.get(0) == EmojiCategory.RecentlyUsed}"
+                app:icon="@drawable/ic_emoji_recent_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_smileys_and_emotion"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.SmileysAndEmotion)}"
+                app:icon="@drawable/ic_emoji_emotions_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_people_and_body"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.PeopleAndBody)}"
+                app:icon="@drawable/ic_emoji_people_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_animals_and_nature"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.AnimalsAndNature)}"
+                app:icon="@drawable/ic_emoji_nature_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_food_and_drink"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.FoodAndDrink)}"
+                app:icon="@drawable/ic_emoji_food_beverage_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_travel_and_places"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.TravelAndPlaces)}"
+                app:icon="@drawable/ic_emoji_transportation_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_activities"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.Activities)}"
+                app:icon="@drawable/ic_emoji_events_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_objects"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.Objects)}"
+                app:icon="@drawable/ic_emoji_objects_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_symbols"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.Symbols)}"
+                app:icon="@drawable/ic_emoji_symbols_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_flags"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.Flags)}"
+                app:icon="@drawable/ic_emoji_flags_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/emojis_category_github_custom_emoji"
+                style="@style/Widget.Moka.IconOnlyOutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.scrollToCategoryStart(EmojiCategory.GitHubCustomEmoji)}"
+                app:icon="@drawable/ic_code_24" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

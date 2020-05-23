@@ -287,6 +287,18 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/emojis_fragment"
+        android:name="io.github.tonnyl.moka.ui.emojis.EmojisFragment"
+        android:label="EmojisFragment"
+        tools:layout="@layout/fragment_emojis">
+
+        <argument
+            android:name="from_screen_id"
+            app:argType="integer" />
+
+    </fragment>
+
     <dialog
         android:id="@+id/account_dialog"
         android:name="io.github.tonnyl.moka.ui.account.AccountDialogFragment"

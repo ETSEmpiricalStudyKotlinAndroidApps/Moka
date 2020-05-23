@@ -124,6 +124,7 @@ dependencies {
     implementation(Deps.AndroidX.recyclerView)
     implementation(Deps.AndroidX.recyclerViewSelection)
     implementation(Deps.AndroidX.Lifecycle.lifecycleExtensions)
+    implementation(Deps.AndroidX.Lifecycle.liveDataKtx)
     implementation(Deps.AndroidX.Navigation.navigationFragmentKtx)
     implementation(Deps.AndroidX.Navigation.navigationUIKtx)
     implementation(Deps.AndroidX.WorkManager.runtime)

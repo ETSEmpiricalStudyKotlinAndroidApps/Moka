@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.util
 
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
@@ -13,6 +14,8 @@ import com.google.gson.Gson
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.ui.auth.Authenticator
+import java.lang.reflect.Type
+import java.nio.charset.Charset
 
 fun Account.mapToAccountTokenUserTriple(
     gson: Gson,
@@ -79,3 +82,12 @@ fun AppCompatActivity.updateForTheme() {
 
 val Resources.isDarkModeOn: Boolean
     get() = (configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) == Configuration.UI_MODE_NIGHT_YES
+
+fun <T> Context.readFromAssets(gson: Gson, type: Type, fileName: String): T {
+    return assets.open(fileName).use { inputStream ->
+        val buffer = ByteArray(inputStream.available())
+        inputStream.read(buffer)
+        val json = String(buffer, Charset.forName("UTF-8"))
+        gson.fromJson(json, type)
+    }
+}

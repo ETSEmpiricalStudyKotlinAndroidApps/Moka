@@ -4,32 +4,33 @@ object Versions {
     val targetSdk = 29
     val minSdk = 23
 
-    val androidGradle = "4.0.0-rc01"
+    val androidGradle = "4.0.0"
     val gmsGoogleServiceGradle = "4.3.3"
     val fabricToolsGradle = "1.31.2"
     val kotlin = "1.3.72"
-    val coroutines = "1.3.6"
-    val fragment = "1.3.0-alpha04"
+    val coroutines = "1.3.7"
+    val fragment = "1.3.0-alpha05"
     val constraintLayout = "2.0.0-beta6"
     val coordinatorLayout = "1.1.0"
-    val appcompat = "1.2.0-rc01"
-    val drawerLayout = "1.1.0-beta01"
-    val material = "1.2.0-alpha06"
+    val appcompat = "1.3.0-alpha01"
+    val drawerLayout = "1.1.0-rc01"
+    val material = "1.3.0-alpha01"
     val viewpager2 = "1.1.0-alpha01"
     val browser = "1.3.0-alpha01"
     val recyclerView = "1.2.0-alpha03"
     val recyclerViewSelection = "1.1.0-rc01"
     val lifecycle = "2.2.0"
-    val navigation = "2.3.0-alpha06"
+    val liveDataKtx = "2.3.0-alpha03"
+    val navigation = "2.3.0-beta01"
     val paging = "2.1.2"
-    val workManager = "2.4.0-alpha03"
+    val workManager = "2.4.0-beta01"
     val room = "2.1.0-alpha04"
     val preference = "1.1.1"
     val swipeRefreshLayout = "1.1.0-rc01"
     val glide = "4.11.0"
-    val lottie = "3.4.0"
-    val retrofit = "2.8.1"
-    val okhttpLoggingInterceptor = "4.4.0"
+    val lottie = "3.4.1"
+    val retrofit = "2.9.0"
+    val okhttpLoggingInterceptor = "4.7.2"
     val apollo = "1.3.2"
     val commonMark = "0.13.1"
     val jsoup = "1.12.1"
@@ -96,6 +97,7 @@ object Deps {
 
             val lifecycleExtensions =
                 "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
+            val liveDataKtx = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.liveDataKtx}"
 
         }
 

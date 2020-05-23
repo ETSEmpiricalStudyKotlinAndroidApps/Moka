@@ -23,4 +23,8 @@ sealed class UserEvent {
         val isSelected: Boolean
     ) : UserEvent()
 
+    class SelectEmoji(
+        val emojiName: String
+    ) : UserEvent()
+
 }

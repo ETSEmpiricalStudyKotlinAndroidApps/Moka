@@ -1,21 +1,24 @@
 package io.github.tonnyl.moka.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import io.github.tonnyl.moka.data.AuthenticatedUser
-import io.github.tonnyl.moka.data.ReactionGroup
+import androidx.lifecycle.*
+import androidx.preference.PreferenceManager
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.github.tonnyl.moka.MokaApp
+import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.mutations.addReaction
 import io.github.tonnyl.moka.network.mutations.removeReaction
 import io.github.tonnyl.moka.type.ReactionContent
 import io.github.tonnyl.moka.ui.UserEvent.*
+import io.github.tonnyl.moka.util.readFromAssets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    app: MokaApp
+) : AndroidViewModel(app) {
 
     val currentUser = MutableLiveData<AuthenticatedUser>()
 
@@ -26,6 +29,57 @@ class MainViewModel : ViewModel() {
     private val _reactEvent = MutableLiveData<Event<React>>()
     val reactEvent: LiveData<Event<React>>
         get() = _reactEvent
+
+    private val _selectEmojiEvent = MutableLiveData<Event<SelectEmoji>>()
+    val selectEmojiEvent: LiveData<Event<SelectEmoji>>
+        get() = _selectEmojiEvent
+
+    val emojis: LiveData<List<EmojiType>> = liveData(
+        context = viewModelScope.coroutineContext + Dispatchers.IO
+    ) {
+        try {
+            val gson = Gson()
+            val emojiListTypeToken = object : TypeToken<List<Emoji>>() {}.type
+            val result = app.readFromAssets<List<Emoji>>(gson, emojiListTypeToken, "emojis.json")
+
+            val emojis = mutableListOf<EmojiType>()
+
+            // read recent emojis string from sp and convert it.
+            val sp = PreferenceManager.getDefaultSharedPreferences(app.applicationContext)
+            val recentEmojisString = sp.getString("recent_used_emojis", null)
+            if (!recentEmojisString.isNullOrEmpty()) {
+                val recentEmojis = gson.fromJson<List<Emoji>>(
+                    recentEmojisString,
+                    emojiListTypeToken
+                )
+
+                if (recentEmojis.isNotEmpty()) {
+                    emojis.add(EmojiCategory.RecentlyUsed)
+                    emojis.addAll(recentEmojis)
+                }
+            }
+
+            emojis.add(EmojiCategory.SmileysAndEmotion)
+            result.forEachIndexed { index, current ->
+                emojis.add(current)
+
+                val next = result.getOrNull(index + 1)
+                if (next != null && next.category != current.category) {
+                    emojis.add(
+                        EmojiCategory.values().first {
+                            it.categoryValue == next.category
+                        }
+                    )
+                }
+            }
+
+            emit(emojis)
+        } catch (e: Exception) {
+            Timber.e(e)
+
+            emit(emptyList<EmojiType>())
+        }
+    }
 
     fun getUserProfile() {
 //        viewModelScope.launch(Dispatchers.IO) {
@@ -120,6 +174,10 @@ class MainViewModel : ViewModel() {
                 )
             }
         }
+    }
+
+    fun selectEmoji(emojiName: String) {
+        _selectEmojiEvent.value = Event(SelectEmoji(emojiName))
     }
 
 }

@@ -71,4 +71,9 @@
     <dimen name="edit_profile_icon_top_margin">12dp</dimen>
     <dimen name="edit_profile_input_corner_radius">4dp</dimen>
 
+    <dimen name="emojis_list_padding_bottom">60dp</dimen>
+    <dimen name="emoji_height">64dp</dimen>
+    <dimen name="emoji_width">@dimen/emoji_height</dimen>
+    <dimen name="emoji_text_size">32sp</dimen>
+
 </resources>

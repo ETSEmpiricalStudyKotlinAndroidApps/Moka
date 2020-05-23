@@ -25,7 +25,9 @@ import io.github.tonnyl.moka.util.updateForTheme
 
 class MainActivity : AppCompatActivity(), NavigationHost {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel by viewModels<MainViewModel> {
+        MainViewModelFactory(applicationContext as MokaApp)
+    }
 
     private lateinit var binding: ActivityMainBinding
 

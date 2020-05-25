@@ -458,4 +458,6 @@
     <string name="accounts_add_another_account">Add another account</string>
     <string name="accounts_manage_your_github_account">Manage your Github account</string>
 
+    <string name="search_emoji">Search emoji…</string>
+
 </resources>

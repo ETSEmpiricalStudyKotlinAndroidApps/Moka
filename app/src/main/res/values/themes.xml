@@ -45,6 +45,7 @@
 
     <style name="AppTheme.Toolbar" parent="ThemeOverlay.MaterialComponents.ActionBar.Surface">
         <item name="android:background">@color/colorBackground</item>
+        <item name="android:textColorHint">?android:textColorSecondary</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="io.github.tonnyl.moka.data.SearchableEmoji" />
+
+        <import type="io.github.tonnyl.moka.ui.emojis.search.SearchEmojiViewModel" />
+
+        <variable
+            name="emoji"
+            type="SearchableEmoji" />
+
+        <variable
+            name="searchEmojiViewModel"
+            type="SearchEmojiViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/searched_emoji_size"
+        android:onClick="@{() -> searchEmojiViewModel.selectEmoji(emoji)}"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Widget.Moka.EmojiText"
+            android:layout_width="@dimen/searched_emoji_size"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/searched_emoji_text_size"
+            app:emoji="@{emoji.emoji}"
+            tools:text="😀" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/fragment_content_padding_half"
+            android:paddingEnd="@dimen/fragment_content_padding_half"
+            android:textAppearance="@style/TextAppearance.Moka.ListPrimary"
+            app:textFuture="@{emoji.name}"
+            tools:text=":+1:" />
+
+    </LinearLayout>
+
+</layout>

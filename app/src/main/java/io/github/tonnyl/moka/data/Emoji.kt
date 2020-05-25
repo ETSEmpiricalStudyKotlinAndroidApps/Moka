@@ -38,3 +38,9 @@ enum class EmojiCategory(val categoryValue: String) : EmojiType {
     GitHubCustomEmoji("GitHub Custom Emoji"),
 
 }
+
+data class SearchableEmoji(
+    val emoji: String,
+    val name: String,
+    val category: String
+)

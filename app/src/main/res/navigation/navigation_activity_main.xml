@@ -299,6 +299,18 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/search_emoji_fragment"
+        android:name="io.github.tonnyl.moka.ui.emojis.search.SearchEmojiFragment"
+        android:label="SearchEmojiFragment"
+        tools:layout="@layout/fragment_search_emoji">
+
+        <argument
+            android:name="from_screen_id"
+            app:argType="integer" />
+
+    </fragment>
+
     <dialog
         android:id="@+id/account_dialog"
         android:name="io.github.tonnyl.moka.ui.account.AccountDialogFragment"

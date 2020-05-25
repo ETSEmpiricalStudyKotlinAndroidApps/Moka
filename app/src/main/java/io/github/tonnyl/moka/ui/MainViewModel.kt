@@ -34,9 +34,13 @@ class MainViewModel(
     val selectEmojiEvent: LiveData<Event<SelectEmoji>>
         get() = _selectEmojiEvent
 
-    val emojis: LiveData<List<EmojiType>> = liveData(
-        context = viewModelScope.coroutineContext + Dispatchers.IO
-    ) {
+    private var allSearchableEmojis = mutableListOf<SearchableEmoji>()
+
+    private val _searchableEmojis = MutableLiveData<List<SearchableEmoji>>()
+    val searchableEmojis: LiveData<List<SearchableEmoji>>
+        get() = _searchableEmojis
+
+    val emojis = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
         try {
             val gson = Gson()
             val emojiListTypeToken = object : TypeToken<List<Emoji>>() {}.type
@@ -78,6 +82,33 @@ class MainViewModel(
             Timber.e(e)
 
             emit(emptyList<EmojiType>())
+        }
+    }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val gson = Gson()
+                val emojiListTypeToken = object : TypeToken<List<Emoji>>() {}.type
+                val result =
+                    app.readFromAssets<List<Emoji>>(gson, emojiListTypeToken, "emojis.json")
+
+                result.forEach { e ->
+                    e.names.forEach { name ->
+                        allSearchableEmojis.add(
+                            SearchableEmoji(e.emoji, name, e.category)
+                        )
+                    }
+                }
+
+                allSearchableEmojis.sortBy { it.name }
+
+                _searchableEmojis.postValue(allSearchableEmojis)
+            } catch (e: Exception) {
+                Timber.e(e)
+
+                _searchableEmojis.postValue(emptyList())
+            }
         }
     }
 
@@ -178,6 +209,26 @@ class MainViewModel(
 
     fun selectEmoji(emojiName: String) {
         _selectEmojiEvent.value = Event(SelectEmoji(emojiName))
+    }
+
+    fun filterSearchable(text: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if (text.isNullOrEmpty()) {
+                    if (emojis.value != allSearchableEmojis) {
+                        _searchableEmojis.postValue(allSearchableEmojis)
+                    }
+                } else {
+                    _searchableEmojis.postValue(
+                        allSearchableEmojis.filter {
+                            it.name.contains(text, ignoreCase = true)
+                        }
+                    )
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
     }
 
 }

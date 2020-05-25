@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.databinding.FragmentSearchBinding
-import io.github.tonnyl.moka.util.hideKeyboard
+import io.github.tonnyl.moka.util.dismissKeyboard
 import io.github.tonnyl.moka.util.showKeyboard
 
 class SearchFragment : Fragment() {
@@ -31,35 +31,50 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.setNavigationOnClickListener {
-            parentFragment?.findNavController()?.navigateUp()
-        }
-
-        binding.toolbarInput.setOnEditorActionListener { v, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                hideKeyboard(v)
-
-                val input = v.text?.trim()
-                if (!input.isNullOrEmpty()) {
-                    viewModel.input.value = input.toString()
-                }
+        with(binding) {
+            toolbarWithSearchView.toolbar.setNavigationOnClickListener {
+                parentFragment?.findNavController()?.navigateUp()
             }
 
-            false
+            toolbarWithSearchView.searchView.apply {
+                setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        this@apply.dismissKeyboard()
+
+                        val input = query?.trim()
+                        if (!input.isNullOrEmpty()) {
+                            viewModel.input.value = input.toString()
+                        }
+
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        return false
+                    }
+
+                })
+
+                setOnQueryTextFocusChangeListener { view, hasFocus ->
+                    if (hasFocus) {
+                        view.findFocus().showKeyboard()
+                    }
+                }
+
+                requestFocus()
+            }
         }
 
         val pagerAdapter = SearchPagerAdapter(requireContext(), childFragmentManager)
         binding.viewPager.adapter = pagerAdapter
 
         binding.tabLayout.setupWithViewPager(binding.viewPager)
-
-        showKeyboard(binding.toolbarInput)
     }
 
-    override fun onDestroyView() {
-        hideKeyboard(binding.toolbarInput)
-
-        super.onDestroyView()
+    override fun onPause() {
+        binding.toolbarWithSearchView.searchView.dismissKeyboard()
+        super.onPause()
     }
 
 }

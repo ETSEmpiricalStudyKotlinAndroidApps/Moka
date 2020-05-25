@@ -19,6 +19,7 @@ import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.emojis.EmojiEvent.EmojiSelected
 import io.github.tonnyl.moka.ui.emojis.EmojiEvent.ScrollToPosition
+import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiFragmentArgs
 
 class EmojisFragment : Fragment() {
 
@@ -49,6 +50,19 @@ class EmojisFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
 
             with(appbarLayout.toolbar) {
+                inflateMenu(R.menu.fragment_emojis_menu)
+                setOnMenuItemClickListener { item ->
+                    if (item.itemId == R.id.action_search_emoji) {
+                        findNavController().navigate(
+                            R.id.search_emoji_fragment,
+                            SearchEmojiFragmentArgs(args.fromScreenId).toBundle()
+                        )
+
+                        return@setOnMenuItemClickListener true
+                    }
+
+                    false
+                }
                 setNavigationOnClickListener {
                     findNavController().navigateUp()
                 }

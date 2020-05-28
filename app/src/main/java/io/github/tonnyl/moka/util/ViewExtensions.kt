@@ -1,6 +1,9 @@
 package io.github.tonnyl.moka.util
 
 import android.os.Build
+import android.view.View
+import androidx.annotation.MenuRes
+import androidx.appcompat.widget.PopupMenu
 import androidx.drawerlayout.widget.DrawerLayout
 
 fun DrawerLayout.shouldCloseDrawerFromBackPress(): Boolean {
@@ -15,4 +18,11 @@ fun DrawerLayout.shouldCloseDrawerFromBackPress(): Boolean {
     }
     // On P and earlier, always close the drawer
     return true
+}
+
+fun View.showOverflowMenu(@MenuRes menuId: Int, listener: PopupMenu.OnMenuItemClickListener) {
+    val popup = PopupMenu(context, this)
+    popup.setOnMenuItemClickListener(listener)
+    popup.menuInflater.inflate(menuId, popup.menu)
+    popup.show()
 }

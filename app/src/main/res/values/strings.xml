@@ -460,4 +460,32 @@
 
     <string name="search_emoji">Search emoji…</string>
 
+    <string name="edit_status">Edit Status</string>
+    <string name="edit_status_hint_whats_happening">What\'s happening?</string>
+    <string name="edit_status_set_status">Set status</string>
+    <string name="edit_status_clear_status">Clear status</string>
+    <string name="edit_status_suggestions">Suggestions</string>
+    <string name="edit_status_do_not_disturb">Do not disturb</string>
+    <string name="edit_status_busy_info">When others mention you, assign you, or request your review, GitHub will let them know that you have limited availability.</string>
+    <string name="edit_status_busy_message">I may be slow to respond.</string>
+    <string name="edit_status_suggestion_format">%1$s %2$s</string>
+    <string name="edit_status_suggestion_on_vacation_emoji">🌴</string>
+    <string name="edit_status_suggestion_on_vacation_message">On vacation</string>
+    <string name="edit_status_suggestion_working_remotely_emoji">🏠</string>
+    <string name="edit_status_suggestion_working_remotely_message">Working remotely</string>
+    <string name="edit_status_suggestion_out_sick_emoji">🤒</string>
+    <string name="edit_status_suggestion_out_sick_message">Out sick</string>
+    <string name="edit_status_suggestion_commuting_emoji">🚌</string>
+    <string name="edit_status_suggestion_commuting_message">Commuting</string>
+    <string name="edit_status_suggestion_in_a_meeting_emoji">📅</string>
+    <string name="edit_status_suggestion_in_a_meeting_message">In a meeting</string>
+    <string name="edit_status_suggestion_focusing_emoji">🎯</string>
+    <string name="edit_status_suggestion_focusing_message">Focusing</string>
+
+    <string name="edit_status_clear_status_never">Never</string>
+    <string name="edit_status_clear_status_in_30_minutes">In 30 minutes</string>
+    <string name="edit_status_clear_status_in_1_hour">In 1 hour</string>
+    <string name="edit_status_clear_status_in_2_hours">In 2 hours</string>
+    <string name="edit_status_clear_status_today">Today</string>
+
 </resources>

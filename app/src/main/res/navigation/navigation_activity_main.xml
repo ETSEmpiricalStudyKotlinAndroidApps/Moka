@@ -311,6 +311,19 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/edit_status_fragment"
+        android:name="io.github.tonnyl.moka.ui.profile.status.EditStatusFragment"
+        android:label="EditStatusFragment"
+        tools:layout="@layout/fragment_edit_status">
+
+        <argument
+            android:name="user_status"
+            app:argType="io.github.tonnyl.moka.data.UserStatus"
+            app:nullable="true" />
+
+    </fragment>
+
     <dialog
         android:id="@+id/account_dialog"
         android:name="io.github.tonnyl.moka.ui.account.AccountDialogFragment"

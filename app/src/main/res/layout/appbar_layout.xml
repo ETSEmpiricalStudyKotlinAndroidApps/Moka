@@ -9,6 +9,10 @@
             name="liftOnScrollTargetViewId"
             type="Integer" />
 
+        <variable
+            name="titleString"
+            type="String" />
+
     </data>
 
     <com.google.android.material.appbar.AppBarLayout
@@ -26,6 +30,7 @@
             android:theme="@style/AppTheme.Toolbar"
             app:navigationIcon="@drawable/ic_arrow_back_24"
             app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="@{titleString}"
             tools:title="@string/app_name" />
 
     </com.google.android.material.appbar.AppBarLayout>

@@ -79,4 +79,6 @@
     <dimen name="searched_emoji_size">48dp</dimen>
     <dimen name="searched_emoji_text_size">27sp</dimen>
 
+    <dimen name="edit_status_bottom_bar_height">64dp</dimen>
+
 </resources>

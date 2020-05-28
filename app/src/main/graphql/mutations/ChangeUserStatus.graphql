@@ -1,0 +1,8 @@
+# Update your status on GitHub.
+# https://developer.github.com/v4/mutation/changeuserstatus/
+mutation changeUserStatus($input: ChangeUserStatusInput!) {
+    changeUserStatus(input: $input) {
+        # A unique identifier for the client performing the mutation.
+        clientMutationId
+    }
+}

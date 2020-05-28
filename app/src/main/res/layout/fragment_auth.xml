@@ -55,7 +55,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline"
             app:lottie_autoPlay="true"
-            app:lottie_fileName="loading_animation.json"
+            app:lottie_rawRes="@raw/loading_animation"
             app:lottie_loop="true"
             tools:visibility="visible" />
 

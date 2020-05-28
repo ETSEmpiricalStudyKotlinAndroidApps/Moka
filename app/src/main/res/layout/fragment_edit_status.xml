@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="io.github.tonnyl.moka.ui.profile.status.EditStatusViewModel" />
+
+        <import type="io.github.tonnyl.moka.ui.MainViewModel" />
+
+        <import type="io.github.tonnyl.moka.network.Status" />
+
+        <variable
+            name="viewModel"
+            type="EditStatusViewModel" />
+
+        <variable
+            name="mainViewModel"
+            type="MainViewModel" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:outlineProvider="bounds">
+
+        <include
+            android:id="@+id/appbar_layout"
+            layout="@layout/appbar_layout"
+            bind:liftOnScrollTargetViewId="@{@id/edit_status_scroll_view}"
+            bind:titleString="@{@string/edit_status}" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/edit_status_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/edit_status_bottom_bar_height"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/fragment_content_padding">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/set_status_emoji"
+                    style="@style/Widget.Moka.EmojiText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.showEmojis()}"
+                    app:emoji="@{mainViewModel.getEmojiByName(viewModel.emojiName).emoji}"
+                    app:emojiPlaceholder="@{@drawable/ic_emoji_emotions_24}"
+                    app:emojiTextSize="@{@dimen/emoji_text_size}"
+                    app:layout_constraintBottom_toBottomOf="@id/set_status_message_input_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="🌴" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/set_status_message_input_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/fragment_content_padding"
+                    android:hint="@string/edit_status_hint_whats_happening"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/set_status_emoji"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/set_status_message_input_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:text="@{viewModel.message}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/set_status_suggestions_label"
+                    style="@style/TextAppearance.Moka.ListSecondary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/fragment_content_padding"
+                    android:paddingTop="@dimen/fragment_content_padding_half"
+                    android:paddingBottom="@dimen/fragment_content_padding_half"
+                    android:text="@string/edit_status_suggestions"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/set_status_message_input_layout" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/set_status_suggestion_on_vacation"
+                    style="@style/TextAppearance.Moka.ListPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:onClick='@{() -> viewModel.updateEmojiAndMessage(":palm_tree:", @string/edit_status_suggestion_on_vacation_message)}'
+                    android:paddingTop="@dimen/fragment_content_padding"
+                    android:paddingBottom="@dimen/fragment_content_padding"
+                    android:text="@{@string/edit_status_suggestion_format(@string/edit_status_suggestion_on_vacation_emoji, @string/edit_status_suggestion_on_vacation_message)}"
+                    app:layout_constraintEnd_toStartOf="@id/set_status_suggestion_working_remotely"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/set_status_suggestions_label"
+                    tools:text="@string/edit_status_suggestion_on_vacation_message" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/set_status_suggestion_working_remotely"
+                    style="@style/TextAppearance.Moka.ListPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:onClick='@{() -> viewModel.updateEmojiAndMessage(":house:", @string/edit_status_suggestion_working_remotely_message)}'
+                    android:paddingTop="@dimen/fragment_content_padding"
+                    android:paddingBottom="@dimen/fragment_content_padding"
+                    android:text="@{@string/edit_status_suggestion_format(@string/edit_status_suggestion_working_remotely_emoji, @string/edit_status_suggestion_working_remotely_message)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@id/set_status_suggestion_on_vacation"
+                    app:layout_constraintTop_toBottomOf="@id/set_status_suggestions_label"
+                    tools:text="@string/edit_status_suggestion_working_remotely_message" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/set_status_suggestion_out_sick"
+                    style="@style/TextAppearance.Moka.ListPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:onClick='@{() -> viewModel.updateEmojiAndMessage(":face_with_thermometer:", @string/edit_status_suggestion_out_sick_message)}'
+                    android:paddingTop="@dimen/fragment_content_padding"
+                    android:paddingBottom="@dimen/fragment_content_padding"
+                    android:text="@{@string/edit_status_suggestion_format(@string/edit_status_suggestion_out_sick_emoji, @string/edit_status_suggestion_out_sick_message)}"
+                    app:layout_constraintEnd_toStartOf="@id/set_status_suggestion_commuting"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/set_status_suggestion_on_vacation"
+                    tools:text="@string/edit_status_suggestion_out_sick_message" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/set_status_suggestion_commuting"
+                    style="@style/TextAppearance.Moka.ListPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:onClick='@{() -> viewModel.updateEmojiAndMessage(":bus:", @string/edit_status_suggestion_out_sick_message)}'
+                    android:paddingTop="@dimen/fragment_content_padding"
+                    android:paddingBottom="@dimen/fragment_content_padding"
+                    android:text="@{@string/edit_status_suggestion_format(@string/edit_status_suggestion_commuting_emoji, @string/edit_status_suggestion_commuting_message)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@id/set_status_suggestion_on_vacation"
+                    app:layout_constraintTop_toBottomOf="@id/set_status_suggestion_on_vacation"
+                    tools:text="@string/edit_status_suggestion_commuting_message" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/set_status_suggestion_in_a_meeting"
+                    style="@style/TextAppearance.Moka.ListPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:onClick='@{() -> viewModel.updateEmojiAndMessage(":date:", @string/edit_status_suggestion_in_a_meeting_message)}'
+                    android:paddingTop="@dimen/fragment_content_padding"
+                    android:paddingBottom="@dimen/fragment_content_padding"
+                    android:text="@{@string/edit_status_suggestion_format(@string/edit_status_suggestion_in_a_meeting_emoji, @string/edit_status_suggestion_in_a_meeting_message)}"
+                    app:layout_constraintEnd_toStartOf="@id/set_status_suggestion_focusing"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/set_status_suggestion_out_sick"
+                    tools:text="@string/edit_status_suggestion_in_a_meeting_message" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/set_status_suggestion_focusing"
+                    style="@style/TextAppearance.Moka.ListPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:onClick='@{() -> viewModel.updateEmojiAndMessage(":dart:", @string/edit_status_suggestion_focusing_message)}'
+                    android:paddingTop="@dimen/fragment_content_padding"
+                    android:paddingBottom="@dimen/fragment_content_padding"
+                    android:text="@{@string/edit_status_suggestion_format(@string/edit_status_suggestion_focusing_emoji, @string/edit_status_suggestion_focusing_message)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@id/set_status_suggestion_on_vacation"
+                    app:layout_constraintTop_toBottomOf="@id/set_status_suggestion_out_sick"
+                    tools:text="@string/edit_status_suggestion_focusing_message" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/edit_status_dnd_check_box"
+                    style="@style/TextAppearance.Moka.ListPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@{viewModel.limitedAvailability}"
+                    android:text="@string/edit_status_do_not_disturb"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/set_status_suggestion_in_a_meeting" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/edit_status_dnd_info_text"
+                    style="@style/TextAppearance.Moka.ListSecondary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/fragment_content_padding_half"
+                    android:text="@string/edit_status_busy_info"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/edit_status_dnd_check_box"
+                    app:layout_constraintTop_toBottomOf="@id/edit_status_dnd_check_box" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/edit_status_clear_status"
+                    style="@style/TextAppearance.Moka.ListSecondary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/fragment_content_padding"
+                    android:text="@string/edit_status_clear_status"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/edit_status_dnd_info_text" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/edit_status_clear_status_when"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/ic_arrow_drop_down_24"
+                    android:gravity="start|center_vertical"
+                    android:onClick="@{() -> viewModel.showClearStatusMenu()}"
+                    android:paddingTop="@dimen/fragment_content_padding"
+                    android:paddingBottom="@dimen/fragment_content_padding"
+                    android:text="@string/edit_status_clear_status_never"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorOnBackground"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/edit_status_clear_status"
+                    app:strokeColor="@color/color_divider" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_status_bottom_bar_height"
+            android:layout_gravity="bottom"
+            android:background="@color/colorBackground"
+            android:elevation="@dimen/fragment_content_padding"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/fragment_content_padding"
+            android:paddingEnd="@dimen/fragment_content_padding">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/edit_status_set_status_button"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.emojiName != viewModel.args.userStatus.emoji || viewModel.message != viewModel.args.userStatus.message || viewModel.limitedAvailability != viewModel.args.userStatus.indicatesLimitedAvailability || viewModel.expiresAt != null}"
+                android:onClick="@{() -> viewModel.updateStatus()}"
+                android:text="@string/edit_status_set_status"
+                android:textAllCaps="false"
+                app:invisibleUnless="@{viewModel.updateStatusState.status != Status.LOADING}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Space
+                android:id="@+id/edit_status_space"
+                android:layout_width="@dimen/fragment_content_padding"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/edit_status_set_status_button"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/edit_status_clear_status_button"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.args.userStatus != null}"
+                android:onClick="@{() -> viewModel.clearStatus()}"
+                android:text="@string/edit_status_clear_status"
+                android:textAllCaps="false"
+                app:invisibleUnless="@{viewModel.clearStatusState.status != Status.LOADING}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/edit_status_space"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/edit_status_set_status_loading_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:goneUnless="@{viewModel.updateStatusState.status == Status.LOADING}"
+                app:layout_constraintBottom_toBottomOf="@id/edit_status_set_status_button"
+                app:layout_constraintEnd_toEndOf="@id/edit_status_set_status_button"
+                app:layout_constraintStart_toStartOf="@id/edit_status_set_status_button"
+                app:layout_constraintTop_toTopOf="@id/edit_status_set_status_button"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/loading_animation"
+                tools:visibility="visible" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/edit_status_clear_status_loading_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:goneUnless="@{viewModel.clearStatusState.status == Status.LOADING}"
+                app:layout_constraintBottom_toBottomOf="@id/edit_status_clear_status_button"
+                app:layout_constraintEnd_toEndOf="@id/edit_status_clear_status_button"
+                app:layout_constraintStart_toStartOf="@id/edit_status_clear_status_button"
+                app:layout_constraintTop_toTopOf="@id/edit_status_clear_status_button"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/loading_animation"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

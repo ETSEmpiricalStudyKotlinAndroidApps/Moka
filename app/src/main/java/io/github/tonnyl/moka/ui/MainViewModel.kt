@@ -26,9 +26,9 @@ class MainViewModel(
     val event: LiveData<Event<UserEvent>>
         get() = _event
 
-    private val _reactEvent = MutableLiveData<Event<React>>()
-    val reactEvent: LiveData<Event<React>>
-        get() = _reactEvent
+    private val _fragmentScopedEvent = MutableLiveData<Event<UserEvent>>()
+    val fragmentScopedEvent: LiveData<Event<UserEvent>>
+        get() = _fragmentScopedEvent
 
     private val _selectEmojiEvent = MutableLiveData<Event<SelectEmoji>>()
     val selectEmojiEvent: LiveData<Event<SelectEmoji>>
@@ -162,7 +162,7 @@ class MainViewModel(
         _event.value = Event(DismissReactionDialog)
 
         viewModelScope.launch(Dispatchers.IO) {
-            _reactEvent.postValue(
+            _fragmentScopedEvent.postValue(
                 Event(
                     React(
                         Resource.loading(null),
@@ -180,7 +180,7 @@ class MainViewModel(
                     removeReaction(reactableId, content)
                 }
 
-                _reactEvent.postValue(
+                _fragmentScopedEvent.postValue(
                     Event(
                         React(
                             Resource.success(null),
@@ -193,7 +193,7 @@ class MainViewModel(
             } catch (e: Exception) {
                 Timber.e(e)
 
-                _reactEvent.postValue(
+                _fragmentScopedEvent.postValue(
                     Event(
                         React(
                             Resource.error(e.message, null),
@@ -229,6 +229,20 @@ class MainViewModel(
                 Timber.e(e)
             }
         }
+    }
+
+    fun getEmojiByName(name: String?): SearchableEmoji? {
+        if (name.isNullOrEmpty()) {
+            return null
+        }
+
+        return allSearchableEmojis.firstOrNull {
+            it.name == name
+        }
+    }
+
+    fun updateUserStatus(status: UserStatus?) {
+        _fragmentScopedEvent.value = Event(UpdateUserState(status))
     }
 
 }

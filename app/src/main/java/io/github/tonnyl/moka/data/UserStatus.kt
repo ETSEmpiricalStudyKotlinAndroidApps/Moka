@@ -22,6 +22,11 @@ data class UserStatus(
     val emoji: String?,
 
     /**
+     * If set, the status will not be shown after this date.
+     */
+    val expiresAt: Date?,
+
+    /**
      * ID of the object.
      */
     val id: String,
@@ -47,6 +52,7 @@ fun RawUserStatus.toNonNullUserStatus(): UserStatus {
     return UserStatus(
         createdAt,
         emoji,
+        expiresAt,
         id,
         indicatesLimitedAvailability,
         message,

@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui
 
+import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.type.ReactionContent
 
@@ -25,6 +26,10 @@ sealed class UserEvent {
 
     class SelectEmoji(
         val emojiName: String
+    ) : UserEvent()
+
+    class UpdateUserState(
+        val userStatus: UserStatus?
     ) : UserEvent()
 
 }

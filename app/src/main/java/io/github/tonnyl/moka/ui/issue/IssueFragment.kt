@@ -16,6 +16,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.extension.updateByReactionEventIfNeeded
 import io.github.tonnyl.moka.databinding.FragmentIssueBinding
 import io.github.tonnyl.moka.ui.*
+import io.github.tonnyl.moka.ui.UserEvent.React
 
 class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
@@ -94,12 +95,14 @@ class IssueFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
 
         issueViewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
 
-        mainViewModel.reactEvent.observe(viewLifecycleOwner, EventObserver { event ->
-            val payload = issueViewModel.data.value?.updateByReactionEventIfNeeded(event)
-            if (payload != null
-                && payload.index >= 0
-            ) {
-                adapterWrapper.pagingAdapter.notifyItemChanged(payload.index, payload.change)
+        mainViewModel.fragmentScopedEvent.observe(viewLifecycleOwner, EventObserver { event ->
+            if (event is React) {
+                val payload = issueViewModel.data.value?.updateByReactionEventIfNeeded(event)
+                if (payload != null
+                    && payload.index >= 0
+                ) {
+                    adapterWrapper.pagingAdapter.notifyItemChanged(payload.index, payload.change)
+                }
             }
         })
     }

@@ -6,7 +6,11 @@
 
     <data>
 
+        <import type="io.github.tonnyl.moka.R" />
+
         <import type="android.text.format.DateUtils" />
+
+        <import type="android.text.TextUtils" />
 
         <import type="io.github.tonnyl.moka.network.Status" />
 
@@ -159,6 +163,48 @@
                             app:layout_constraintTop_toBottomOf="@id/profile_login_name"
                             app:rippleColor="@color/colorPrimary"
                             tools:text="@string/user_profile_unfollow" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/profile_status_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="@dimen/fragment_content_padding"
+                        android:layout_marginEnd="@dimen/fragment_content_padding"
+                        android:background="@{viewModel.userProfile.data.status.indicatesLimitedAvailability ? @drawable/bg_user_status_busy : @drawable/bg_user_status}"
+                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.EDIT_STATUS)}"
+                        app:goneUnless="@{viewModel.userProfile.data != null}">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/profile_status_emoji"
+                            style="@style/Widget.Moka.EmojiText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:paddingStart="@dimen/fragment_content_padding"
+                            android:paddingEnd="@dimen/fragment_content_padding"
+                            android:textSize="@dimen/profile_emoji_text_size"
+                            app:emoji="@{mainViewModel.getEmojiByName(viewModel.userProfile.data.status.emoji).emoji}"
+                            app:emojiPlaceholder="@{@drawable/ic_emoji_emotions_24}"
+                            app:emojiTextSize="@{@dimen/profile_emoji_text_size}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="🌴" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/profile_status_message"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:gravity="start|center_vertical"
+                            android:text="@{TextUtils.isEmpty(viewModel.userProfile.data.status.message) ? @string/edit_status_set_status : viewModel.userProfile.data.status.message}"
+                            android:textAppearance="@{TextUtils.isEmpty(viewModel.userProfile.data.status.message) ? R.style.TextAppearance_Moka_ListSecondary  : R.style.TextAppearance_Moka_ListPrimary}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/profile_status_emoji"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Away" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 

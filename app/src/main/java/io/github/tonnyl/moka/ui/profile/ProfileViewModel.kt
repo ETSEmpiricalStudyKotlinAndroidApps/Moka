@@ -5,10 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.tonnyl.moka.data.Organization
-import io.github.tonnyl.moka.data.User
-import io.github.tonnyl.moka.data.toNonNullUser
-import io.github.tonnyl.moka.data.toNullableOrganization
+import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.followUser
@@ -139,6 +136,13 @@ class ProfileViewModel(
     @MainThread
     fun userEvent(event: ProfileEvent) {
         _userEvent.value = Event(event)
+    }
+
+    @MainThread
+    fun updateUserStatus(status: UserStatus?) {
+        _userProfile.value?.data?.let { user ->
+            _userProfile.value = Resource.success(user.copy(status = status))
+        }
     }
 
 }

@@ -22,6 +22,8 @@ enum class ProfileEvent {
 
     CLICK_LOCATION,
 
-    CLICK_COMPANY
+    CLICK_COMPANY,
+
+    EDIT_STATUS,
 
 }

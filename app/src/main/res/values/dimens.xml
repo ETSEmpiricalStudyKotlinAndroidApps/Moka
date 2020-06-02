@@ -81,4 +81,6 @@
 
     <dimen name="edit_status_bottom_bar_height">64dp</dimen>
 
+    <dimen name="profile_emoji_text_size">18sp</dimen>
+
 </resources>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -12,7 +13,10 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentProfileBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.EventObserver
+import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.UserEvent
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.status.EditStatusFragmentArgs
 import io.github.tonnyl.moka.ui.projects.ProjectsFragmentArgs
 import io.github.tonnyl.moka.ui.projects.ProjectsType
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs
@@ -26,6 +30,7 @@ class ProfileFragment : Fragment(), EmptyViewActions {
     private val viewModel by viewModels<ProfileViewModel> {
         ViewModelFactory(args)
     }
+    private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var binding: FragmentProfileBinding
 
@@ -62,6 +67,7 @@ class ProfileFragment : Fragment(), EmptyViewActions {
         binding.apply {
             emptyViewActions = this@ProfileFragment
             viewModel = this@ProfileFragment.viewModel
+            mainViewModel = this@ProfileFragment.mainViewModel
             lifecycleOwner = this@ProfileFragment
         }
 
@@ -100,9 +106,22 @@ class ProfileFragment : Fragment(), EmptyViewActions {
                 ProfileEvent.CLICK_COMPANY -> {
                     openCompany()
                 }
+                ProfileEvent.EDIT_STATUS -> {
+                    findNavController().navigate(
+                        R.id.edit_status_fragment,
+                        EditStatusFragmentArgs(
+                            viewModel.userProfile.value?.data?.status
+                        ).toBundle()
+                    )
+                }
             }
         })
 
+        mainViewModel.fragmentScopedEvent.observe(viewLifecycleOwner, EventObserver {
+            if (it is UserEvent.UpdateUserState) {
+                viewModel.updateUserStatus(it.userStatus)
+            }
+        })
     }
 
     private fun editProfile() {

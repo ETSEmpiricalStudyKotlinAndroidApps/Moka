@@ -7,7 +7,7 @@ plugins {
     id("kotlin-android-extensions")
     id("kotlin-kapt")
     id("androidx.navigation.safeargs.kotlin")
-    id("io.fabric")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -138,8 +138,8 @@ dependencies {
 
     // Google
     implementation(Deps.Google.material)
-    implementation(Deps.Google.crashlytics)
-    implementation(Deps.Google.firebaseCore)
+    implementation(Deps.Google.firebaseAnalyticsKtx)
+    implementation(Deps.Google.firebaseCrashlytics)
 
     // Glide
     implementation(Deps.Glide.glide)

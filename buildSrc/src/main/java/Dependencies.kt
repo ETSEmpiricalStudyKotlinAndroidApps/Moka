@@ -6,7 +6,7 @@ object Versions {
 
     val androidGradle = "4.0.0"
     val gmsGoogleServiceGradle = "4.3.3"
-    val fabricToolsGradle = "1.31.2"
+    val firebaseCrashlyticsGradle = "2.1.1"
     val kotlin = "1.3.72"
     val coroutines = "1.3.7"
     val fragment = "1.3.0-alpha05"
@@ -35,8 +35,8 @@ object Versions {
     val commonMark = "0.13.1"
     val jsoup = "1.12.1"
     val timber = "4.7.1"
-    val firebaseCore = "17.3.0"
-    val crashlytics = "2.10.1"
+    val firebaseAnalyticsKtx = "17.4.3"
+    val firebaseCrashlytics = "17.0.1"
     val moshi = "1.9.2"
     val insetter = "0.2.1"
     val junit = "4.13"
@@ -63,7 +63,8 @@ object Deps {
         val navigationSafeArgs =
             "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.navigation}"
         val googleServices = "com.google.gms:google-services:${Versions.gmsGoogleServiceGradle}"
-        val fabric = "io.fabric.tools:gradle:${Versions.fabricToolsGradle}"
+        val firebaseCrashlyticsGradle =
+            "com.google.firebase:firebase-crashlytics-gradle:${Versions.firebaseCrashlyticsGradle}"
 
     }
 
@@ -141,8 +142,10 @@ object Deps {
     object Google {
 
         val material = "com.google.android.material:material:${Versions.material}"
-        val crashlytics = "com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}"
-        val firebaseCore = "com.google.firebase:firebase-core:${Versions.firebaseCore}"
+        val firebaseAnalyticsKtx =
+            "com.google.firebase:firebase-analytics-ktx:${Versions.firebaseAnalyticsKtx}"
+        val firebaseCrashlytics =
+            "com.google.firebase:firebase-crashlytics:${Versions.firebaseCrashlytics}"
 
     }
 

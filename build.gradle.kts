@@ -6,9 +6,6 @@ buildscript {
             url = uri("http://dl.bintray.com/kotlin/kotlin-eap")
         }
         maven {
-            url = uri("https://maven.fabric.io/public")
-        }
-        maven {
             url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
         }
     }
@@ -18,7 +15,7 @@ buildscript {
         classpath(Deps.GradlePlugin.apollo)
         classpath(Deps.GradlePlugin.navigationSafeArgs)
         classpath(Deps.GradlePlugin.googleServices)
-        classpath(Deps.GradlePlugin.fabric)
+        classpath(Deps.GradlePlugin.firebaseCrashlyticsGradle)
     }
 }
 

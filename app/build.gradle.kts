@@ -148,7 +148,7 @@ dependencies {
 
     // Retrofit
     implementation(Deps.Retrofit.retrofit)
-    implementation(Deps.Retrofit.gsonConverter)
+    implementation(Deps.Retrofit.moshiConverter)
 
     // OkHttp
     implementation(Deps.OkHttp.loggingInterceptor)
@@ -170,6 +170,9 @@ dependencies {
 
     implementation(Deps.Insetter.dbx)
     implementation(Deps.Insetter.ktx)
+
+    implementation(Deps.Moshi.adapters)
+    kapt(Deps.Moshi.kotlinCodegen)
 
     implementation(Deps.jsoup)
     implementation(Deps.timber)

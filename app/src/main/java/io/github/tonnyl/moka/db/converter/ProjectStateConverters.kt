@@ -7,18 +7,12 @@ object ProjectStateConverters {
 
     @TypeConverter
     @JvmStatic
-    fun projectStateToLong(state: ProjectState): Int = state.ordinal
+    fun projectStateToLong(state: ProjectState): String {
+        return state.rawValue
+    }
 
     @TypeConverter
     @JvmStatic
-    fun fromOrdinal(value: Int?): ProjectState = when (value) {
-        ProjectState.OPEN.ordinal -> {
-            ProjectState.OPEN
-        }
-        // including ProjectState.CLOSED.ordinal
-        else -> {
-            ProjectState.CLOSED
-        }
-    }
+    fun fromOrdinal(value: String): ProjectState = ProjectState.safeValueOf(value)
 
 }

@@ -1,25 +1,25 @@
 package io.github.tonnyl.moka.db.converter
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.github.tonnyl.moka.data.TrendingRepositoryBuiltBy
+import io.github.tonnyl.moka.util.MoshiInstance
 
 object TrendingRepositoryBuiltByListConverters {
 
-    private val gson = Gson()
-
     @TypeConverter
     @JvmStatic
-    fun trendingRepositoryBuiltByListToString(list: List<TrendingRepositoryBuiltBy>): String {
-        return gson.toJson(list)
+    fun trendingRepositoryBuiltByListToString(list: List<TrendingRepositoryBuiltBy>?): String? {
+        return list?.let {
+            MoshiInstance.trendingRepositoryBuiltByListAdapter.toJson(it)
+        }
     }
 
     @TypeConverter
     @JvmStatic
-    fun fromString(jsonString: String): List<TrendingRepositoryBuiltBy> {
-        val type = object : TypeToken<List<TrendingRepositoryBuiltBy>>() {}.type
-        return gson.fromJson(jsonString, type)
+    fun fromString(jsonString: String?): List<TrendingRepositoryBuiltBy>? {
+        return jsonString?.let {
+            MoshiInstance.trendingRepositoryBuiltByListAdapter.fromJson(jsonString)
+        }
     }
 
 }

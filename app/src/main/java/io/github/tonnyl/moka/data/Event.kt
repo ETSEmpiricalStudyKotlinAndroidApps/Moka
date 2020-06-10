@@ -5,45 +5,41 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import io.github.tonnyl.moka.data.Event.Companion.CREATE_EVENT
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
 @Entity(tableName = "event")
+@JsonClass(generateAdapter = true)
 data class Event(
 
-    @SerializedName("id")
     @PrimaryKey
     var id: String,
 
-    @SerializedName("type")
     @ColumnInfo(name = "type")
     var type: String,
 
     // note the difference of serialized name, column name and field name
-    @SerializedName("public")
+    @Json(name = "public")
     @ColumnInfo(name = "is_public")
     var isPublic: Boolean,
 
-    @SerializedName("actor")
     @Embedded(prefix = "actor_")
     var actor: EventActor,
 
-    @SerializedName("repo")
     @Embedded(prefix = "repo_")
     var repo: EventRepository?,
 
-    @SerializedName("org")
     @Embedded(prefix = "org_")
     var org: EventOrg?,
 
-    @SerializedName("created_at")
+    @Json(name = "created_at")
     @ColumnInfo(name = "created_at")
     var createdAt: Date,
 
-    @SerializedName("payload")
     @Embedded(prefix = "payload_")
     var payload: EventPayload?,
 
@@ -52,7 +48,6 @@ data class Event(
      *
      * The git ref (or null if only a repository was created).
      */
-    @SerializedName("ref")
     @ColumnInfo(name = "ref")
     var ref: String?,
 
@@ -61,7 +56,7 @@ data class Event(
      *
      * The object that was created. Can be one of repository, branch, or tag
      */
-    @SerializedName("ref_type")
+    @Json(name = "ref_type")
     @ColumnInfo(name = "ref_type")
     var refType: String?,
 
@@ -70,7 +65,7 @@ data class Event(
      *
      * The name of the repository's default branch (usually master).
      */
-    @SerializedName("master_branch")
+    @Json(name = "master_branch")
     @ColumnInfo(name = "master_branch")
     var masterBranch: String?,
 
@@ -79,19 +74,16 @@ data class Event(
      *
      * The repository's current description.
      */
-    @SerializedName("description")
     @ColumnInfo(name = "description")
     var description: String?,
 
-    @SerializedName("pusher_type")
+    @Json(name = "pusher_type")
     @ColumnInfo(name = "pusher_type")
     var pusherType: String?,
 
-    @SerializedName("head")
     @ColumnInfo(name = "head")
     var head: String?,
 
-    @SerializedName("before")
     @ColumnInfo(name = "before")
     var before: String?
 

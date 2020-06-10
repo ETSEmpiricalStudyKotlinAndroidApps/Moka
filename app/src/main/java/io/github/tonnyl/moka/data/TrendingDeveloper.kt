@@ -5,57 +5,54 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "trending_developer")
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class TrendingDeveloper(
 
     @PrimaryKey(autoGenerate = true)
-    var id: Int,
+    @ColumnInfo(name = "id")
+    @Transient // local field
+    var id: Int = 0,
 
-    @SerializedName("username")
     @ColumnInfo(name = "username")
     var username: String,
 
-    @SerializedName("name")
     @ColumnInfo(name = "name")
     var name: String?,
 
     /**
      * could be organization or user.
      */
-    @SerializedName("type")
     @ColumnInfo(name = "type")
     var type: String?,
 
-    @SerializedName("url")
     @ColumnInfo(name = "url")
     var url: String,
 
-    @SerializedName("avatar")
     @ColumnInfo(name = "avatar")
     var avatar: String,
 
-    @SerializedName("repo")
+    @Json(name = "repo")
     @Embedded(prefix = "trending_developer_repository_")
     var repository: TrendingDeveloperRepository
 
 ) : Parcelable
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class TrendingDeveloperRepository(
 
-    @SerializedName("name")
     @ColumnInfo(name = "name")
     var name: String,
 
-    @SerializedName("description")
     @ColumnInfo(name = "description")
     var description: String?,
 
-    @SerializedName("url")
     @ColumnInfo(name = "url")
     var url: String
 

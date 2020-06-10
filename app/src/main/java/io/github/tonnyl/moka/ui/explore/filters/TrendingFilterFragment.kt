@@ -74,7 +74,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment() {
 
         updateToolbarTitle()
 
-        exploreViewModel.languages.observe(viewLifecycleOwner, Observer {
+        mainViewModel.localLanguages.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = filterAdapter
@@ -99,8 +99,6 @@ class TrendingFilterFragment : BottomSheetDialogFragment() {
                 }
             }
         })
-
-        exploreViewModel.loadLanguagesData(requireContext().assets.open("languages.json"))
 
         binding.toolbar.setNavigationOnClickListener {
             dismiss()

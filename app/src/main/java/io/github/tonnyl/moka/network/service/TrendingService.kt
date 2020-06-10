@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.network.service
 
 import io.github.tonnyl.moka.data.TrendingDeveloper
-import io.github.tonnyl.moka.data.TrendingLanguages
 import io.github.tonnyl.moka.data.TrendingRepository
 import retrofit2.Response
 import retrofit2.http.GET
@@ -41,17 +40,5 @@ interface TrendingService {
         @Query("language") language: String?,
         @Query("since") since: String
     ): Response<List<TrendingDeveloper>>
-
-    /**
-     * List popular languages and all languages.
-     *
-     * @param url Url endpoint. DO NOT change it if not necessary.
-     *
-     * @return If successful, return a list of [TrendingLanguages].
-     */
-    @GET
-    suspend fun listLanguages(
-        @Url url: String = "https://github-trending-api.now.sh/languages"
-    ): Response<List<TrendingLanguages>>
 
 }

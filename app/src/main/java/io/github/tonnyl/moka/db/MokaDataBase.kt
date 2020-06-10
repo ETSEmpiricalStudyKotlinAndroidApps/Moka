@@ -30,7 +30,8 @@ import io.github.tonnyl.moka.db.dao.*
     UriConverters::class,
     EventGollumPageListConverters::class,
     TrendingRepositoryBuiltByListConverters::class,
-    EventGistFileMapConverters::class
+    EventGistFileMapConverters::class,
+    NotificationReasonsConverters::class
 )
 abstract class MokaDataBase : RoomDatabase() {
 

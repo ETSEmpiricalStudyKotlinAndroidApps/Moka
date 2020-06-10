@@ -2,8 +2,6 @@ package io.github.tonnyl.moka.ui
 
 import androidx.lifecycle.*
 import androidx.preference.PreferenceManager
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.Resource
@@ -11,10 +9,13 @@ import io.github.tonnyl.moka.network.mutations.addReaction
 import io.github.tonnyl.moka.network.mutations.removeReaction
 import io.github.tonnyl.moka.type.ReactionContent
 import io.github.tonnyl.moka.ui.UserEvent.*
-import io.github.tonnyl.moka.util.readFromAssets
+import io.github.tonnyl.moka.ui.explore.filters.LocalLanguage
+import io.github.tonnyl.moka.util.MoshiInstance
+import io.github.tonnyl.moka.util.readEmojisFromAssets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.nio.charset.Charset
 
 class MainViewModel(
     app: MokaApp
@@ -42,9 +43,7 @@ class MainViewModel(
 
     val emojis = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
         try {
-            val gson = Gson()
-            val emojiListTypeToken = object : TypeToken<List<Emoji>>() {}.type
-            val result = app.readFromAssets<List<Emoji>>(gson, emojiListTypeToken, "emojis.json")
+            val result = app.readEmojisFromAssets()
 
             val emojis = mutableListOf<EmojiType>()
 
@@ -52,10 +51,8 @@ class MainViewModel(
             val sp = PreferenceManager.getDefaultSharedPreferences(app.applicationContext)
             val recentEmojisString = sp.getString("recent_used_emojis", null)
             if (!recentEmojisString.isNullOrEmpty()) {
-                val recentEmojis = gson.fromJson<List<Emoji>>(
-                    recentEmojisString,
-                    emojiListTypeToken
-                )
+                val recentEmojis = MoshiInstance.emojiListAdapter
+                    .fromJson(recentEmojisString) ?: emptyList<Emoji>()
 
                 if (recentEmojis.isNotEmpty()) {
                     emojis.add(EmojiCategory.RecentlyUsed)
@@ -85,13 +82,29 @@ class MainViewModel(
         }
     }
 
+    val localLanguages: LiveData<List<LocalLanguage>> = liveData(
+        context = viewModelScope.coroutineContext + Dispatchers.IO
+    ) {
+        try {
+            val result = app.assets.open("languages.json").use { inputStream ->
+                val buffer = ByteArray(inputStream.available())
+                inputStream.read(buffer)
+                val json = String(buffer, Charset.forName("UTF-8"))
+                MoshiInstance.localLanguageListAdapter.fromJson(json)
+            } ?: emptyList<LocalLanguage>()
+
+            emit(result)
+        } catch (e: Exception) {
+            Timber.e(e)
+
+            emit(emptyList<LocalLanguage>())
+        }
+    }
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val gson = Gson()
-                val emojiListTypeToken = object : TypeToken<List<Emoji>>() {}.type
-                val result =
-                    app.readFromAssets<List<Emoji>>(gson, emojiListTypeToken, "emojis.json")
+                val result = app.readEmojisFromAssets()
 
                 result.forEach { e ->
                     e.names.forEach { name ->

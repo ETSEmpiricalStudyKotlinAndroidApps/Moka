@@ -10,34 +10,33 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
-import com.google.gson.Gson
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.AuthenticatedUser
+import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.ui.auth.Authenticator
-import java.lang.reflect.Type
 import java.nio.charset.Charset
 
 fun Account.mapToAccountTokenUserTriple(
-    gson: Gson,
     manager: AccountManager
-): Triple<Account, String, AuthenticatedUser> {
+): Triple<Account, String, AuthenticatedUser>? {
     val token = manager.blockingGetAuthToken(
         this,
         Authenticator.KEY_AUTH_TYPE,
         true
     )
-    val user = gson.fromJson(
-        manager.getUserData(
-            this,
-            Authenticator.KEY_AUTH_USER_INFO
-        ),
-        AuthenticatedUser::class.java
-    )
+    val user = MoshiInstance.authenticatedUserAdapter
+        .fromJson(
+            manager.getUserData(
+                this,
+                Authenticator.KEY_AUTH_USER_INFO
+            )
+        ) ?: return null
     return Triple(this, token, user)
 }
 
 suspend fun AccountManager.insertNewAccount(token: String, user: AuthenticatedUser) {
-    val info = Gson().toJson(user)
+    val info = MoshiInstance.authenticatedUserAdapter
+        .toJson(user)
     val account = Account(user.id.toString(), Authenticator.KEY_ACCOUNT_TYPE)
 
     addAccountExplicitly(
@@ -54,7 +53,9 @@ suspend fun AccountManager.moveAccountToFirstPosition(account: Account) {
     val token = blockingGetAuthToken(account, Authenticator.KEY_AUTH_TYPE, true)
     removeAccountExplicitly(account)
 
-    insertNewAccount(token, Gson().fromJson(userString, AuthenticatedUser::class.java))
+    MoshiInstance.authenticatedUserAdapter.fromJson(userString)?.let {
+        insertNewAccount(token, it)
+    }
 }
 
 fun AppCompatActivity.updateForTheme() {
@@ -83,11 +84,11 @@ fun AppCompatActivity.updateForTheme() {
 val Resources.isDarkModeOn: Boolean
     get() = (configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) == Configuration.UI_MODE_NIGHT_YES
 
-fun <T> Context.readFromAssets(gson: Gson, type: Type, fileName: String): T {
-    return assets.open(fileName).use { inputStream ->
+fun Context.readEmojisFromAssets(): List<Emoji> {
+    return assets.open("emojis.json").use { inputStream ->
         val buffer = ByteArray(inputStream.available())
         inputStream.read(buffer)
         val json = String(buffer, Charset.forName("UTF-8"))
-        gson.fromJson(json, type)
+        MoshiInstance.emojiListAdapter.fromJson(json) ?: emptyList()
     }
 }

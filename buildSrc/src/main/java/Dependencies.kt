@@ -37,6 +37,7 @@ object Versions {
     val timber = "4.7.1"
     val firebaseCore = "17.3.0"
     val crashlytics = "2.10.1"
+    val moshi = "1.9.2"
     val insetter = "0.2.1"
     val junit = "4.13"
     val androidJunit = "1.1.2-alpha04"
@@ -156,7 +157,7 @@ object Deps {
     object Retrofit {
 
         val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
-        val gsonConverter = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
+        val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}"
 
     }
 
@@ -198,6 +199,13 @@ object Deps {
 
         val dbx = "dev.chrisbanes:insetter-dbx:${Versions.insetter}"
         val ktx = "dev.chrisbanes:insetter-ktx:${Versions.insetter}"
+
+    }
+
+    object Moshi {
+
+        val kotlinCodegen = "com.squareup.moshi:moshi-kotlin-codegen:${Versions.moshi}"
+        val adapters = "com.squareup.moshi:moshi-adapters:${Versions.moshi}"
 
     }
 

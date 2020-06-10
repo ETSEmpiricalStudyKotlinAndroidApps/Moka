@@ -20,12 +20,12 @@ interface AccessTokenService {
     @POST
     @FormUrlEncoded
     suspend fun getAccessToken(
-            @Url url: String,
-            @Field("client_id") clientId: String,
-            @Field("client_secret") clientSecret: String,
-            @Field("code") code: String,
-            @Field("redirect_uri") redirectUri: String,
-            @Field("state") state: String
+        @Url url: String,
+        @Field("client_id") clientId: String,
+        @Field("client_secret") clientSecret: String,
+        @Field("code") code: String,
+        @Field("redirect_uri") redirectUri: String,
+        @Field("state") state: String
     ): Response<AccessToken>
 
 }

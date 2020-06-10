@@ -1,19 +1,20 @@
 package io.github.tonnyl.moka.data
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class AccessToken(
 
-    @SerializedName("access_token")
+    @Json(name = "access_token")
     val accessToken: String,
 
-    @SerializedName("scope")
     val scope: String,
 
-    @SerializedName("token_type")
+    @Json(name = "token_type")
     val tokenType: String
 
 ) : Parcelable

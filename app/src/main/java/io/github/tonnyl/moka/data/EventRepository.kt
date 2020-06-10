@@ -2,29 +2,28 @@ package io.github.tonnyl.moka.data
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class EventRepository(
 
-    @SerializedName("id")
     @ColumnInfo(name = "id")
     var id: String,
 
-    @SerializedName("name")
     @ColumnInfo(name = "name")
     var name: String,
 
-    @SerializedName("full_name")
+    @Json(name = "full_name")
     @ColumnInfo(name = "full_name")
     var fullName: String?,
 
-    @SerializedName("url")
     @ColumnInfo(name = "url")
     var url: String,
 
-    @SerializedName("html_url")
+    @Json(name = "html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String?
 

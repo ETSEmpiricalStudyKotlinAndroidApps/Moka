@@ -6,7 +6,6 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import androidx.work.*
-import com.google.gson.Gson
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.util.mapToAccountTokenUserTriple
 import io.github.tonnyl.moka.work.NotificationWorker
@@ -45,13 +44,13 @@ class MokaApp : Application() {
         accountManager.addOnAccountsUpdatedListener(
             { accounts ->
                 GlobalScope.launch(Dispatchers.IO) {
-                    val gson = Gson()
                     loginAccounts.postValue(
                         accounts.sortedByDescending {
                             accountManager.getPassword(it).toLong()
                         }.map {
-                            it.mapToAccountTokenUserTriple(gson, accountManager)
-                        }.toMutableList()
+                            it.mapToAccountTokenUserTriple(accountManager)
+                        }.filterNotNull()
+                            .toMutableList()
                     )
                 }
 

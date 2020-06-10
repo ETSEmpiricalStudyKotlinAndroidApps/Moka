@@ -3,51 +3,47 @@ package io.github.tonnyl.moka.data
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Gist(
 
-    @SerializedName("id")
     @ColumnInfo(name = "id")
     var id: String,
 
-    @SerializedName("html_url")
+    @Json(name = "html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
-    @SerializedName("files")
     @ColumnInfo(name = "files")
     var files: Map<String, EventGistFile>,
 
     // note the difference of serialized name, column name and field name
-    @SerializedName("public")
+    @Json(name = "public")
     @ColumnInfo(name = "is_public")
     var isPublic: Boolean,
 
-    @SerializedName("created_at")
+    @Json(name = "created_at")
     @ColumnInfo(name = "created_at")
     var createdAt: Date,
 
-    @SerializedName("updated_at")
+    @Json(name = "updated_at")
     @ColumnInfo(name = "updated_at")
     var updatedAt: Date,
 
-    @SerializedName("description")
     @ColumnInfo(name = "description")
     var description: String,
 
-    @SerializedName("comments")
     @ColumnInfo(name = "comments")
     var comments: Int,
 
-    @SerializedName("owner")
     @Embedded(prefix = "owner_")
     var owner: EventActor,
 
-    @SerializedName("truncated")
     @ColumnInfo(name = "truncated")
     var truncated: Boolean
 

@@ -8,7 +8,7 @@ import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.service.NotificationsService
-import io.github.tonnyl.moka.util.formatISO8601String
+import io.github.tonnyl.moka.util.Iso8601Utils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -42,7 +42,7 @@ class NotificationCallbackReceiver : BroadcastReceiver() {
 
                 when (intent.action) {
                     ACTION_MARK_AS_READ -> {
-                        service.markAsRead(formatISO8601String(notification.updatedAt))
+                        service.markAsRead(Iso8601Utils.format(notification.updatedAt))
                     }
                     ACTION_UNSUBSCRIBE -> {
                         val threadId = notification.url.split("/").lastOrNull()

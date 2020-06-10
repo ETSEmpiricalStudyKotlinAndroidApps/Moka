@@ -5,7 +5,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.response.CustomTypeAdapter
 import com.apollographql.apollo.response.CustomTypeValue
 import io.github.tonnyl.moka.type.CustomType
-import io.github.tonnyl.moka.util.iso8601Format
+import io.github.tonnyl.moka.util.Iso8601Utils
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import java.text.ParseException
@@ -40,12 +40,12 @@ object GraphQLClient {
     private val dateCustomTypeAdapter = object : CustomTypeAdapter<Date> {
 
         override fun encode(value: Date): CustomTypeValue<*> {
-            return CustomTypeValue.GraphQLString(iso8601Format.format(value))
+            return CustomTypeValue.GraphQLString(Iso8601Utils.format(value))
         }
 
         override fun decode(value: CustomTypeValue<*>): Date {
             try {
-                return DATE_FORMAT.parse(value.value.toString())
+                return Iso8601Utils.parse(value.value.toString())
             } catch (e: ParseException) {
                 throw RuntimeException(e)
             }

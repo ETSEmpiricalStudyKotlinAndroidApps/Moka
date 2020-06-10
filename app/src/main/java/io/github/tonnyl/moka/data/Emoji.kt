@@ -1,13 +1,22 @@
 package io.github.tonnyl.moka.data
 
+import com.squareup.moshi.JsonClass
+
 interface EmojiType
 
+@JsonClass(generateAdapter = true)
 data class Emoji(
+
     val emoji: String,
+
     val names: List<String>,
+
     val tags: List<String>,
+
     val description: String,
+
     val category: String
+
 ) : EmojiType
 
 enum class EmojiCategory(val categoryValue: String) : EmojiType {
@@ -40,7 +49,11 @@ enum class EmojiCategory(val categoryValue: String) : EmojiType {
 }
 
 data class SearchableEmoji(
+
     val emoji: String,
+
     val name: String,
+
     val category: String
+
 )

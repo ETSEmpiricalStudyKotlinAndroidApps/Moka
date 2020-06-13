@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Emoji
@@ -19,11 +18,9 @@ import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.emojis.EmojiEvent.EmojiSelected
 import io.github.tonnyl.moka.ui.emojis.EmojiEvent.ScrollToPosition
-import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiFragmentArgs
+import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiFragment
 
 class EmojisFragment : Fragment() {
-
-    private val args by navArgs<EmojisFragmentArgs>()
 
     private val emojiAdapter by lazy(LazyThreadSafetyMode.NONE) {
         EmojiAdapter(viewLifecycleOwner, emojisViewModel)
@@ -46,6 +43,18 @@ class EmojisFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val handle = findNavController().currentBackStackEntry?.savedStateHandle
+        handle?.getLiveData<String>(SearchEmojiFragment.RESULT_SEARCH_EMOJI)
+            ?.observe(viewLifecycleOwner, Observer {
+                if (it.isNotEmpty()) {
+                    findNavController().previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(RESULT_EMOJI, it)
+
+                    findNavController().navigateUp()
+                }
+            })
+
         with(binding) {
             lifecycleOwner = viewLifecycleOwner
 
@@ -53,10 +62,7 @@ class EmojisFragment : Fragment() {
                 inflateMenu(R.menu.fragment_emojis_menu)
                 setOnMenuItemClickListener { item ->
                     if (item.itemId == R.id.action_search_emoji) {
-                        findNavController().navigate(
-                            R.id.search_emoji_fragment,
-                            SearchEmojiFragmentArgs(args.fromScreenId).toBundle()
-                        )
+                        findNavController().navigate(R.id.search_emoji_fragment)
 
                         return@setOnMenuItemClickListener true
                     }
@@ -194,12 +200,20 @@ class EmojisFragment : Fragment() {
                     }
                 }
                 is EmojiSelected -> {
-                    mainViewModel.selectEmoji(event.emojiName)
+                    findNavController().previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(RESULT_EMOJI, event.emojiName)
 
-                    findNavController().popBackStack(args.fromScreenId, false)
+                    findNavController().navigateUp()
                 }
             }
         })
+    }
+
+    companion object {
+
+        const val RESULT_EMOJI = "result_emoji"
+
     }
 
 }

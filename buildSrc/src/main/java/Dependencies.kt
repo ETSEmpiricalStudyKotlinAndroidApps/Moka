@@ -59,7 +59,6 @@ object Deps {
 
         val android = "com.android.tools.build:gradle:${Versions.androidGradle}"
         val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
-        val apollo = "com.apollographql.apollo:apollo-gradle-plugin:${Versions.apollo}"
         val navigationSafeArgs =
             "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.navigation}"
         val googleServices = "com.google.gms:google-services:${Versions.gmsGoogleServiceGradle}"

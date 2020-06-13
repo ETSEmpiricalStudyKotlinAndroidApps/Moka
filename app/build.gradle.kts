@@ -2,7 +2,7 @@ import java.util.*
 
 plugins {
     id("com.android.application")
-    id("com.apollographql.apollo")
+    id("com.apollographql.apollo").version(Versions.apollo)
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("kotlin-kapt")

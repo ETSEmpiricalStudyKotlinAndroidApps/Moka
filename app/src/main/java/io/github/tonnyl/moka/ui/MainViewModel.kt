@@ -31,10 +31,6 @@ class MainViewModel(
     val fragmentScopedEvent: LiveData<Event<UserEvent>>
         get() = _fragmentScopedEvent
 
-    private val _selectEmojiEvent = MutableLiveData<Event<SelectEmoji>>()
-    val selectEmojiEvent: LiveData<Event<SelectEmoji>>
-        get() = _selectEmojiEvent
-
     private var allSearchableEmojis = mutableListOf<SearchableEmoji>()
 
     private val _searchableEmojis = MutableLiveData<List<SearchableEmoji>>()
@@ -218,10 +214,6 @@ class MainViewModel(
                 )
             }
         }
-    }
-
-    fun selectEmoji(emojiName: String) {
-        _selectEmojiEvent.value = Event(SelectEmoji(emojiName))
     }
 
     fun filterSearchable(text: String?) {

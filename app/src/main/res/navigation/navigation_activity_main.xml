@@ -291,25 +291,13 @@
         android:id="@+id/emojis_fragment"
         android:name="io.github.tonnyl.moka.ui.emojis.EmojisFragment"
         android:label="EmojisFragment"
-        tools:layout="@layout/fragment_emojis">
-
-        <argument
-            android:name="from_screen_id"
-            app:argType="integer" />
-
-    </fragment>
+        tools:layout="@layout/fragment_emojis" />
 
     <fragment
         android:id="@+id/search_emoji_fragment"
         android:name="io.github.tonnyl.moka.ui.emojis.search.SearchEmojiFragment"
         android:label="SearchEmojiFragment"
-        tools:layout="@layout/fragment_search_emoji">
-
-        <argument
-            android:name="from_screen_id"
-            app:argType="integer" />
-
-    </fragment>
+        tools:layout="@layout/fragment_search_emoji" />
 
     <fragment
         android:id="@+id/edit_status_fragment"

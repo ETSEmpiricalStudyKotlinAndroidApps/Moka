@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.databinding.FragmentSearchEmojiBinding
@@ -20,8 +19,6 @@ import io.github.tonnyl.moka.util.dismissKeyboard
 import io.github.tonnyl.moka.util.showKeyboard
 
 class SearchEmojiFragment : Fragment() {
-
-    private val args by navArgs<SearchEmojiFragmentArgs>()
 
     private lateinit var binding: FragmentSearchEmojiBinding
 
@@ -104,9 +101,11 @@ class SearchEmojiFragment : Fragment() {
         })
 
         searchEmojiViewModel.event.observe(viewLifecycleOwner, EventObserver { event ->
-            mainViewModel.selectEmoji(event.emojiName)
+            findNavController().previousBackStackEntry
+                ?.savedStateHandle
+                ?.set(RESULT_SEARCH_EMOJI, event.emojiName)
 
-            findNavController().popBackStack(args.fromScreenId, false)
+            findNavController().navigateUp()
         })
     }
 
@@ -119,6 +118,12 @@ class SearchEmojiFragment : Fragment() {
         super.onDestroyView()
 
         mainViewModel.filterSearchable(null)
+    }
+
+    companion object {
+
+        const val RESULT_SEARCH_EMOJI = "result_search_emoji"
+
     }
 
 }

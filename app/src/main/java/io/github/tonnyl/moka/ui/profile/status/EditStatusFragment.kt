@@ -19,7 +19,7 @@ import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainViewModel
-import io.github.tonnyl.moka.ui.emojis.EmojisFragmentArgs
+import io.github.tonnyl.moka.ui.emojis.EmojisFragment
 import io.github.tonnyl.moka.ui.profile.status.EditStatusEvent.ShowClearStatusMenu
 import io.github.tonnyl.moka.ui.profile.status.EditStatusEvent.ShowEmojis
 import io.github.tonnyl.moka.util.dismissKeyboard
@@ -49,6 +49,14 @@ class EditStatusFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val handle = findNavController().currentBackStackEntry?.savedStateHandle
+        handle?.getLiveData<String>(EmojisFragment.RESULT_EMOJI)
+            ?.observe(viewLifecycleOwner, Observer {
+                if (it.isNotEmpty()) {
+                    editStatusViewModel.updateEmoji(it)
+                }
+            })
+
         with(binding) {
             lifecycleOwner = viewLifecycleOwner
             viewModel = editStatusViewModel
@@ -72,10 +80,7 @@ class EditStatusFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
                     )
                 }
                 is ShowEmojis -> {
-                    findNavController().navigate(
-                        R.id.emojis_fragment,
-                        EmojisFragmentArgs(R.id.edit_status_fragment).toBundle()
-                    )
+                    findNavController().navigate(R.id.emojis_fragment)
                 }
             }
         })
@@ -110,10 +115,6 @@ class EditStatusFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
 
         editStatusViewModel.updateStatusState.observe(viewLifecycleOwner, updateUserStatusObserver)
         editStatusViewModel.clearStatusState.observe(viewLifecycleOwner, updateUserStatusObserver)
-
-        mainViewModel.selectEmojiEvent.observe(viewLifecycleOwner, EventObserver {
-            editStatusViewModel.updateEmoji(it.emojiName)
-        })
     }
 
     override fun onPause() {

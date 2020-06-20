@@ -139,9 +139,11 @@ class ProfileViewModel(
     }
 
     @MainThread
-    fun updateUserStatus(status: UserStatus?) {
+    fun updateUserStatusIfNeeded(status: UserStatus?) {
         _userProfile.value?.data?.let { user ->
-            _userProfile.value = Resource.success(user.copy(status = status))
+            if (user.status != status) {
+                _userProfile.value = Resource.success(user.copy(status = status))
+            }
         }
     }
 

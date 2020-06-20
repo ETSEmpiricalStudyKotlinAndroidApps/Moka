@@ -107,7 +107,9 @@ class EditStatusFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
 
         val updateUserStatusObserver = Observer<Resource<UserStatus?>> {
             if (it.status == Status.SUCCESS) {
-                mainViewModel.updateUserStatus(it.data)
+                findNavController().previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(RESULT_UPDATE_STATUS, it.data)
 
                 findNavController().navigateUp()
             }
@@ -148,5 +150,10 @@ class EditStatusFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
         return expireAt != null
     }
 
+    companion object {
+
+        const val RESULT_UPDATE_STATUS = "result_update_status"
+
+    }
 
 }

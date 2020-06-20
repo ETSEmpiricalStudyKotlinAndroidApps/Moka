@@ -7,15 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.databinding.FragmentProfileBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainViewModel
-import io.github.tonnyl.moka.ui.UserEvent
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.status.EditStatusFragment
 import io.github.tonnyl.moka.ui.profile.status.EditStatusFragmentArgs
 import io.github.tonnyl.moka.ui.projects.ProjectsFragmentArgs
 import io.github.tonnyl.moka.ui.projects.ProjectsType
@@ -59,6 +61,14 @@ class ProfileFragment : Fragment(), EmptyViewActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val handle = findNavController().currentBackStackEntry?.savedStateHandle
+        handle?.getLiveData<UserStatus?>(EditStatusFragment.RESULT_UPDATE_STATUS)
+            ?.observe(viewLifecycleOwner, Observer { userStatus ->
+                userStatus?.let {
+                    viewModel.updateUserStatusIfNeeded(it)
+                }
+            })
 
         binding.toolbar.setNavigationOnClickListener {
             parentFragment?.findNavController()?.navigateUp()
@@ -114,12 +124,6 @@ class ProfileFragment : Fragment(), EmptyViewActions {
                         ).toBundle()
                     )
                 }
-            }
-        })
-
-        mainViewModel.fragmentScopedEvent.observe(viewLifecycleOwner, EventObserver {
-            if (it is UserEvent.UpdateUserState) {
-                viewModel.updateUserStatus(it.userStatus)
             }
         })
     }

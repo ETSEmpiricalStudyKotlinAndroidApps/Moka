@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui
 
-import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.type.ReactionContent
 
@@ -22,10 +21,6 @@ sealed class UserEvent {
         val content: ReactionContent,
         val reactableId: String,
         val isSelected: Boolean
-    ) : UserEvent()
-
-    class UpdateUserState(
-        val userStatus: UserStatus?
     ) : UserEvent()
 
 }

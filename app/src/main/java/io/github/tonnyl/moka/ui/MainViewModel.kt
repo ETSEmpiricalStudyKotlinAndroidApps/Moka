@@ -246,8 +246,4 @@ class MainViewModel(
         }
     }
 
-    fun updateUserStatus(status: UserStatus?) {
-        _fragmentScopedEvent.value = Event(UpdateUserState(status))
-    }
-
 }

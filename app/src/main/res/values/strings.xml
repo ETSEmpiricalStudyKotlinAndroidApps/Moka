@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name" translatable="false">Moka</string>
 
+    <string name="no_description_provided">No description provided.</string>
+
     <string name="auth_get_started">GET STARTED</string>
 
     <string name="common_retry">Retry</string>
-    <string name="common_error_requesting_data">Error requesting data.</string>
+    <string name="common_error_requesting_data">Error while requesting data.</string>
 
     <string name="see_all">See all</string>
 
@@ -49,6 +51,7 @@
     <string name="profile_location">Location</string>
     <string name="profile_website">Website</string>
     <string name="profile_info">Info</string>
+    <string name="profile_pinned">Pinned</string>
     <string name="profile_contact">Contact</string>
     <string name="profile_joined_on">Joined on</string>
     <string name="profile_updated_on">Updated on</string>
@@ -261,7 +264,6 @@
     <string name="issue_pr_status_merged">merged</string>
 
     <string name="issue">Issue</string>
-    <string name="issue_timeline_no_description_provided">No description provided.</string>
     <string name="issue_timeline_added_to_project">added this to project</string>
     <string name="issue_timeline_assigned_event_self_assigned">self-assigned this</string>
     <string name="issue_timeline_assigned_event_assigned_someone">assigned <![CDATA[<b>%1$s</b>]]></string> <!--assigned username-->

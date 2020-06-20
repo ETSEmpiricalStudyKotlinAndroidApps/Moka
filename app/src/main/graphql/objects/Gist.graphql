@@ -1,0 +1,49 @@
+# https://developer.github.com/v4/object/gist/
+# A Gist.
+fragment Gist on Gist {
+  # Identifies the date and time when the object was created.
+  createdAt
+  # The gist description.
+  description
+  id
+  # Identifies if the gist is a fork.
+  isFork
+  # Whether the gist is public or not.
+  isPublic
+  # The gist name.
+  name
+  # The gist owner.
+  owner {
+    ... RepositoryOwner
+  }
+  # Identifies when the gist was last pushed to.
+  pushedAt
+  # The HTML path to this resource.
+  resourcePath
+  # Identifies the date and time when the object was last updated.
+  updatedAt
+  # The HTTP URL for this Gist.
+  url
+  # Returns a boolean indicating whether the viewing user has starred this starrable.
+  viewerHasStarred
+  # A list of comments associated with the gist
+  comments {
+    # Identifies the total count of items in the connection.
+    totalCount
+  }
+  # A list of forks associated with the gist
+  forks {
+    # Identifies the total count of items in the connection.
+    totalCount
+  }
+  # A list of users who have starred this starrable.
+  stargazers {
+    totalCount
+  }
+  files(limit: 1) {
+    # The gist file name.
+    name
+    # UTF8 text data or null if the file is binary
+    text(truncate: 100)
+  }
+}

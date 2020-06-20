@@ -1,0 +1,6 @@
+# Types that can be pinned to a profile page.
+fragment PinnableItem on PinnableItem {
+  __typename
+  ... RepositoryListItemFragment
+  ... Gist
+}

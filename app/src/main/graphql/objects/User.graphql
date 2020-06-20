@@ -72,4 +72,9 @@ fragment User on User {
     projects {
         totalCount
     }
+    pinnedItems(first: 6) {
+        nodes {
+            ... PinnableItem
+        }
+    }
 }

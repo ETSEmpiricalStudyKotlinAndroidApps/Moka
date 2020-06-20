@@ -139,11 +139,24 @@ data class User(
 
     val starredRepositoriesTotalCount: Int,
 
-    val projectsTotalCount: Int
+    val projectsTotalCount: Int,
+
+    val pinnedItems: MutableList<PinnableItem>?
 
 ) : Parcelable
 
 fun RawUser.toNonNullUser(): User {
+    val pinnableItems = mutableListOf<PinnableItem>()
+    pinnedItems.nodes?.map { node ->
+        node?.fragments?.pinnableItem?.fragments?.let { fragment ->
+            fragment.gist?.let {
+                pinnableItems.add(it.toGist())
+            } ?: fragment.repositoryListItemFragment?.let {
+                pinnableItems.add(it.toNonNullRepositoryItem())
+            }
+        }
+    }
+
     return User(
         avatarUrl,
         bio,
@@ -174,6 +187,7 @@ fun RawUser.toNonNullUser(): User {
         followers.totalCount,
         following.totalCount,
         starredRepositories.totalCount,
-        projects.totalCount
+        projects.totalCount,
+        pinnableItems
     )
 }

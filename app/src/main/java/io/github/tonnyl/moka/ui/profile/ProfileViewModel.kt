@@ -8,11 +8,15 @@ import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.network.mutations.addStar
 import io.github.tonnyl.moka.network.mutations.followUser
+import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.network.mutations.unfollowUser
 import io.github.tonnyl.moka.network.queries.queryOrganization
 import io.github.tonnyl.moka.network.queries.queryUser
 import io.github.tonnyl.moka.ui.Event
+import io.github.tonnyl.moka.ui.profile.ProfileEvent.*
+import io.github.tonnyl.moka.util.updateOnAnyThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -134,15 +138,101 @@ class ProfileViewModel(
     }
 
     @MainThread
-    fun userEvent(event: ProfileEvent) {
-        _userEvent.value = Event(event)
-    }
-
-    @MainThread
     fun updateUserStatusIfNeeded(status: UserStatus?) {
         _userProfile.value?.data?.let { user ->
             if (user.status != status) {
                 _userProfile.value = Resource.success(user.copy(status = status))
+            }
+        }
+    }
+
+    fun viewRepositories() {
+        _userEvent.updateOnAnyThread(Event(ViewRepositories))
+    }
+
+    fun viewStars() {
+        _userEvent.updateOnAnyThread(Event(ViewStars))
+    }
+
+    fun viewFollowers() {
+        _userEvent.updateOnAnyThread(Event(ViewFollowers))
+    }
+
+    fun viewFollowings() {
+        _userEvent.updateOnAnyThread(Event(ViewFollowings))
+    }
+
+    fun viewProjects() {
+        _userEvent.updateOnAnyThread(Event(ViewProjects))
+    }
+
+    fun editStatus() {
+        _userEvent.updateOnAnyThread(Event(EditStatus))
+    }
+
+    fun viewRepository(repository: RepositoryItem) {
+        _userEvent.updateOnAnyThread(Event(ViewRepository(repository)))
+    }
+
+    fun viewGist(gist: Gist2) {
+        _userEvent.updateOnAnyThread(Event(ViewGist(gist)))
+    }
+
+    fun starRepository(repository: RepositoryItem) {
+        starRepositoryOrGist(repository)
+    }
+
+    fun starGist(gist2: Gist2) {
+        starRepositoryOrGist(gist2)
+    }
+
+    private fun starRepositoryOrGist(pinnableItem: PinnableItem) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val (viewerHasStarred, pinnableItemsId) = when (pinnableItem) {
+                    is RepositoryItem -> {
+                        Pair(pinnableItem.viewerHasStarred, pinnableItem.id)
+                    }
+                    is Gist2 -> {
+                        Pair(pinnableItem.viewerHasStarred, pinnableItem.id)
+                    }
+                    else -> {
+                        throw IllegalStateException("unknown PinnableItem type")
+                    }
+                }
+                if (viewerHasStarred) {
+                    removeStar(pinnableItemsId)
+                } else {
+                    addStar(pinnableItemsId)
+                }
+
+                val pinnedItems = userProfile.value?.data?.pinnedItems
+                    ?: organizationProfile.value?.data?.pinnedItems
+                if (!pinnedItems.isNullOrEmpty()) {
+                    pinnedItems.indexOfFirst {
+                        if (pinnableItem is RepositoryItem) {
+                            it is RepositoryItem && it.id == pinnableItemsId
+                        } else {
+                            it is Gist2 && it.id == pinnableItemsId
+                        }
+                    }.let {
+                        if (it >= 0) {
+                            if (pinnableItem is RepositoryItem) {
+                                pinnedItems[it] = pinnableItem.copy(
+                                    viewerHasStarred = !pinnableItem.viewerHasStarred
+                                )
+                            } else if (pinnableItem is Gist2) {
+                                pinnedItems[it] = pinnableItem.copy(
+                                    viewerHasStarred = !pinnableItem.viewerHasStarred
+                                )
+                            }
+
+                            _userEvent.updateOnAnyThread(Event(PinnedItemUpdate(it)))
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
     }

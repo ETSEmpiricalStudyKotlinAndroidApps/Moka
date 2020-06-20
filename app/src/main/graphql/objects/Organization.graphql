@@ -56,4 +56,9 @@ fragment Organization on Organization {
     repositories {
         totalCount
     }
+    pinnedItems(first: 6) {
+        nodes {
+            ... PinnableItem
+        }
+    }
 }

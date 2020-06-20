@@ -40,25 +40,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:liftOnScroll="true"
-            app:liftOnScrollTargetViewId="@id/scroll_view">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:theme="@style/AppTheme.Toolbar"
-                app:menu="@menu/fragment_profile_option_menu"
-                app:navigationIcon="@drawable/ic_arrow_back_24"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="@string/profile_title" />
-
-        </com.google.android.material.appbar.AppBarLayout>
+        <include
+            android:id="@+id/appbar_layout"
+            layout="@layout/appbar_layout"
+            bind:liftOnScrollTargetViewId="@{@id/scroll_view}"
+            bind:titleString="@{@string/profile_title}" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -70,7 +56,7 @@
                 layout="@layout/layout_empty_content"
                 bind:actionString="@{@string/user_profile_content_empty_action}"
                 bind:actions="@{emptyViewActions}"
-                bind:goneUnless="@{viewModel.userProfile != null &amp;&amp; viewModel.organizationProfile != null &amp;&amp; viewModel.userProfile.data == null &amp;&amp; viewModel.organizationProfile.data == null &amp;&amp; viewModel.userProfile.status != Status.LOADING &amp;&amp; viewModel.organizationProfile.status != Status.LOADING}"
+                bind:goneUnless="@{viewModel.userProfile.data == null &amp;&amp; viewModel.organizationProfile.data == null &amp;&amp; viewModel.userProfile.status != null &amp;&amp; viewModel.organizationProfile.status != null &amp;&amp; viewModel.userProfile.status != Status.LOADING &amp;&amp; viewModel.organizationProfile.status != Status.LOADING}"
                 bind:iconDrawable="@{@drawable/ic_person_outline_24}"
                 bind:titleString="@{(viewModel.userProfile.status == Status.ERROR &amp;&amp; viewModel.organizationProfile.status == Status.ERROR) ? @string/common_error_requesting_data : @string/user_profile_content_empty_title}" />
 
@@ -106,7 +92,6 @@
                             android:id="@+id/profile_avatar"
                             android:layout_width="@dimen/profile_avatar_width"
                             android:layout_height="@dimen/profile_avatar_height"
-                            android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_AVATAR)}"
                             app:avatarUrl="@{(viewModel.userProfile.data.avatarUrl ?? viewModel.organizationProfile.data.avatarUrl)}"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -173,7 +158,7 @@
                         android:layout_marginStart="@dimen/fragment_content_padding"
                         android:layout_marginEnd="@dimen/fragment_content_padding"
                         android:background="@{viewModel.userProfile.data.status.indicatesLimitedAvailability ? @drawable/bg_user_status_busy : @drawable/bg_user_status}"
-                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.EDIT_STATUS)}"
+                        android:onClick="@{() -> viewModel.editStatus()}"
                         app:goneUnless="@{viewModel.userProfile.data != null}">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -216,6 +201,7 @@
                         android:padding="@dimen/fragment_content_padding"
                         android:text="@{viewModel.userProfile.data.bio ?? viewModel.organizationProfile.data.description}"
                         android:textIsSelectable="true"
+                        app:visibleOrGone="@{!TextUtils.isEmpty(viewModel.userProfile.data.bio) || !TextUtils.isEmpty(viewModel.organizationProfile.data.description)}"
                         tools:text="@sample/user.json/users/bio" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -227,7 +213,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_REPOSITORIES)}"
+                            android:onClick="@{() -> viewModel.viewRepositories()}"
                             android:padding="@dimen/fragment_content_padding"
                             app:category="@string/profile_repositories"
                             app:layout_constraintEnd_toStartOf="@id/profile_stars_text_group"
@@ -240,7 +226,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_STARS)}"
+                            android:onClick="@{() -> viewModel.viewStars()}"
                             android:padding="@dimen/fragment_content_padding"
                             app:category="@string/profile_stars"
                             app:layout_constraintEnd_toStartOf="@id/profile_followers_text_group"
@@ -253,7 +239,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_FOLLOWERS)}"
+                            android:onClick="@{() -> viewModel.viewFollowers()}"
                             android:padding="@dimen/fragment_content_padding"
                             app:category="@string/profile_followers"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -266,7 +252,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_FOLLOWINGS)}"
+                            android:onClick="@{() -> viewModel.viewFollowings()}"
                             android:padding="@dimen/fragment_content_padding"
                             app:category="@string/profile_following"
                             app:layout_constraintEnd_toStartOf="@id/profile_projects_text_group"
@@ -279,7 +265,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:onClick="@{() -> viewModel.userEvent(ProfileEvent.VIEW_PROJECTS)}"
+                            android:onClick="@{() -> viewModel.viewProjects()}"
                             android:padding="@dimen/fragment_content_padding"
                             app:category="@string/repository_projects"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -288,6 +274,24 @@
                             app:numberText="@{String.valueOf(viewModel.userProfile == null ? (viewModel.organizationProfile == null ? 0 : viewModel.organizationProfile.data.projectsTotalCount) : viewModel.userProfile.data.projectsTotalCount)}" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/profile_pinned_category_title"
+                        style="@style/CategoryStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_pinned"
+                        app:visibleUnless="@{(viewModel.userProfile.data.pinnedItems != null &amp;&amp; !viewModel.userProfile.data.pinnedItems.empty) || (viewModel.organizationProfile.data.pinnedItems != null &amp;&amp; !viewModel.organizationProfile.data.pinnedItems.empty)}" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/profile_pinned_items_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:spanCount="6"
+                        app:visibleUnless="@{(viewModel.userProfile.data.pinnedItems != null &amp;&amp; !viewModel.userProfile.data.pinnedItems.empty) || (viewModel.organizationProfile.data.pinnedItems != null &amp;&amp; !viewModel.organizationProfile.data.pinnedItems.empty)}"
+                        tools:layoutManager="LinearLayoutManager"
+                        tools:listitem="@layout/item_pinned_repository" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/profile_contact_category_title"
@@ -303,7 +307,6 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?android:attr/selectableItemBackground"
-                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.CLICK_COMPANY)}"
                         android:paddingStart="@dimen/fragment_content_padding"
                         android:paddingTop="@dimen/fragment_content_padding_half"
                         android:paddingEnd="@dimen/fragment_content_padding"
@@ -347,7 +350,6 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?android:attr/selectableItemBackground"
-                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.CLICK_EMAIL)}"
                         android:paddingStart="@dimen/fragment_content_padding"
                         android:paddingTop="@dimen/fragment_content_padding_half"
                         android:paddingEnd="@dimen/fragment_content_padding"
@@ -375,7 +377,7 @@
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/profile_email_content"
                             style="@style/LinearLayoutContentStyle"
-                            android:text="@{viewModel.userProfile.data.email ?? viewModel.organizationProfile.data.email}"
+                            android:text="@{viewModel.userProfile.data.email}"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/profile_email_image"
@@ -391,7 +393,6 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?android:attr/selectableItemBackground"
-                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.CLICK_LOCATION)}"
                         android:paddingStart="@dimen/fragment_content_padding"
                         android:paddingTop="@dimen/fragment_content_padding_half"
                         android:paddingEnd="@dimen/fragment_content_padding"
@@ -435,7 +436,6 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?android:attr/selectableItemBackground"
-                        android:onClick="@{() -> viewModel.userEvent(ProfileEvent.CLICK_WEBSITE)}"
                         android:paddingStart="@dimen/fragment_content_padding"
                         android:paddingTop="@dimen/fragment_content_padding_half"
                         android:paddingEnd="@dimen/fragment_content_padding"

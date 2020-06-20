@@ -117,7 +117,9 @@ data class Organization(
 
     val repositoriesTotalCount: Int,
 
-    val projectsTotalCount: Int
+    val projectsTotalCount: Int,
+
+    val pinnedItems: MutableList<PinnableItem>?
 
 ) : Parcelable
 
@@ -125,6 +127,18 @@ fun RawOrganization?.toNullableOrganization(): Organization? {
     this ?: return null
 
     val org = fragments.organization
+
+    val pinnableItems = mutableListOf<PinnableItem>()
+    org.pinnedItems.nodes?.map { node ->
+        node?.fragments?.pinnableItem?.fragments?.let { fragment ->
+            fragment.gist?.let {
+                pinnableItems.add(it.toGist())
+            } ?: fragment.repositoryListItemFragment?.let {
+                pinnableItems.add(it.toNonNullRepositoryItem())
+            }
+        }
+    }
+
     return Organization(
         org.avatarUrl,
         org.description,
@@ -149,6 +163,7 @@ fun RawOrganization?.toNullableOrganization(): Organization? {
         org.viewerIsAMember,
         org.websiteUrl,
         org.repositories.totalCount,
-        org.projects.totalCount
+        org.projects.totalCount,
+        pinnableItems
     )
 }

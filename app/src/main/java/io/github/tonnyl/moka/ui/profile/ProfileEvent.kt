@@ -1,29 +1,26 @@
 package io.github.tonnyl.moka.ui.profile
 
-enum class ProfileEvent {
+import io.github.tonnyl.moka.data.Gist2
+import io.github.tonnyl.moka.data.RepositoryItem
 
-    EDIT_PROFILE,
+sealed class ProfileEvent {
 
-    VIEW_REPOSITORIES,
+    object ViewRepositories : ProfileEvent()
 
-    VIEW_STARS,
+    object ViewStars : ProfileEvent()
 
-    VIEW_FOLLOWERS,
+    object ViewFollowers : ProfileEvent()
 
-    VIEW_FOLLOWINGS,
+    object ViewFollowings : ProfileEvent()
 
-    VIEW_PROJECTS,
+    object ViewProjects : ProfileEvent()
 
-    VIEW_AVATAR,
+    object EditStatus : ProfileEvent()
 
-    CLICK_EMAIL,
+    class ViewRepository(val repository: RepositoryItem) : ProfileEvent()
 
-    CLICK_WEBSITE,
+    class ViewGist(val gist: Gist2) : ProfileEvent()
 
-    CLICK_LOCATION,
-
-    CLICK_COMPANY,
-
-    EDIT_STATUS,
+    class PinnedItemUpdate(val index: Int) : ProfileEvent()
 
 }

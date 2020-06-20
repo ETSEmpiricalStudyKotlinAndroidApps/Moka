@@ -96,7 +96,7 @@ data class RepositoryItem(
 
     val stargazersCount: Int
 
-) : Parcelable
+) : Parcelable, PinnableItem
 
 fun RepositoryListItemFragment.toNonNullRepositoryItem(): RepositoryItem {
     return RepositoryItem(

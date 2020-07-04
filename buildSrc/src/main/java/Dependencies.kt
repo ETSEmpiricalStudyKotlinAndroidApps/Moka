@@ -4,7 +4,7 @@ object Versions {
     val targetSdk = 29
     val minSdk = 23
 
-    val androidGradle = "4.0.0"
+    val androidGradle = "4.2.0-alpha03"
     val gmsGoogleServiceGradle = "4.3.3"
     val firebaseCrashlyticsGradle = "2.1.1"
     val kotlin = "1.3.72"
@@ -27,6 +27,8 @@ object Versions {
     val room = "2.1.0-alpha04"
     val preference = "1.1.1"
     val swipeRefreshLayout = "1.1.0-rc01"
+    val ui = "0.1.0-dev14"
+    val composeKotlinCompilerVersion = "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
     val glide = "4.11.0"
     val lottie = "3.4.1"
     val retrofit = "2.9.0"
@@ -133,6 +135,21 @@ object Deps {
         object WorkManager {
 
             val runtime = "androidx.work:work-runtime-ktx:${Versions.workManager}"
+
+        }
+
+        object UI {
+
+            val compiler = "androidx.compose:compose-compiler:${Versions.ui}"
+            val runtime = "androidx.compose:compose-runtime:${Versions.ui}"
+            val core = "androidx.ui:ui-core:${Versions.ui}"
+            val layout = "androidx.ui:ui-layout:${Versions.ui}"
+            val material = "androidx.ui:ui-material:${Versions.ui}"
+            val materialIconExtended = "androidx.ui:ui-material-icons-extended:${Versions.ui}"
+            val foundation = "androidx.ui:ui-foundation:${Versions.ui}"
+            val animation = "androidx.ui:ui-animation:${Versions.ui}"
+            val tooling = "androidx.ui:ui-tooling:${Versions.ui}"
+            val liveData = "androidx.ui:ui-livedata:${Versions.ui}"
 
         }
 

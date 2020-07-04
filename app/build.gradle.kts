@@ -39,7 +39,9 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = mapOf("room.schemaLocation" to "$projectDir/schemas")
+                arguments(
+                    mapOf("room.schemaLocation" to "$projectDir/schemas")
+                )
             }
         }
 
@@ -72,6 +74,12 @@ android {
 
     buildFeatures {
         dataBinding = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerVersion = Versions.composeKotlinCompilerVersion
+        kotlinCompilerExtensionVersion = Versions.ui
     }
 }
 
@@ -135,6 +143,16 @@ dependencies {
     implementation(Deps.AndroidX.Room.migration)
     implementation(Deps.AndroidX.Room.coroutines)
     kapt(Deps.AndroidX.Room.compiler)
+    implementation(Deps.AndroidX.UI.compiler)
+    implementation(Deps.AndroidX.UI.runtime)
+    implementation(Deps.AndroidX.UI.animation)
+    implementation(Deps.AndroidX.UI.core)
+    implementation(Deps.AndroidX.UI.foundation)
+    implementation(Deps.AndroidX.UI.material)
+    implementation(Deps.AndroidX.UI.materialIconExtended)
+    implementation(Deps.AndroidX.UI.layout)
+    implementation(Deps.AndroidX.UI.liveData)
+    implementation(Deps.AndroidX.UI.tooling)
 
     // Google
     implementation(Deps.Google.material)

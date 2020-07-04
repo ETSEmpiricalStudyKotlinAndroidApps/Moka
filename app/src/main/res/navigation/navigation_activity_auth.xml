@@ -9,7 +9,7 @@
         android:id="@+id/auth_fragment"
         android:name="io.github.tonnyl.moka.ui.auth.AuthFragment"
         tools:label="Auth"
-        tools:layout="@layout/fragment_auth">
+        tools:layout="@layout/fragment_container">
 
         <argument
             android:name="code"

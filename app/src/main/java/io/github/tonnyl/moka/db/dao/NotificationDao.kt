@@ -16,7 +16,7 @@ interface NotificationDao {
      * Room maps it to an INTEGER column, mapping true to 1 and false to 0.
      */
     @Query("SELECT * FROM notification WHERE has_displayed = 0 ORDER BY updated_at ASC LIMIT :limit")
-    suspend fun notificationsToDisplayWithLimit(limit: Int): List<Notification>
+    fun notificationsToDisplayWithLimit(limit: Int): List<Notification>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(notifications: List<Notification>)
@@ -25,7 +25,7 @@ interface NotificationDao {
     fun markAsRead(lastReadAt: Date)
 
     @Update
-    suspend fun markAsDisplayed(notification: Notification)
+    fun markAsDisplayed(notification: Notification)
 
     @Query("DELETE FROM notification")
     fun deleteAll()

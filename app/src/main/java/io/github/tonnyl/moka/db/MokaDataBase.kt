@@ -5,10 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import io.github.tonnyl.moka.data.Event
-import io.github.tonnyl.moka.data.Notification
-import io.github.tonnyl.moka.data.TrendingDeveloper
-import io.github.tonnyl.moka.data.TrendingRepository
+import io.github.tonnyl.moka.BuildConfig
+import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.db.converter.*
 import io.github.tonnyl.moka.db.dao.*
@@ -19,9 +17,10 @@ import io.github.tonnyl.moka.db.dao.*
         Notification::class,
         TrendingDeveloper::class,
         TrendingRepository::class,
-        Project::class
+        Project::class,
+        RemoteKeys::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(
@@ -44,6 +43,8 @@ abstract class MokaDataBase : RoomDatabase() {
     abstract fun trendingDevelopersDao(): TrendingDeveloperDao
 
     abstract fun trendingRepositoriesDao(): TrendingRepositoryDao
+
+    abstract fun remoteKeysDao(): RemoteKeysDao
 
     companion object {
 
@@ -87,7 +88,20 @@ abstract class MokaDataBase : RoomDatabase() {
                 context,
                 MokaDataBase::class.java,
                 DATABASE_NAME_PREFIX + userId
-            ).build()
+            ).addMigrations(
+                MIGRATION_1_2
+            ).apply {
+                // If Room cannot find a migration path for upgrading an existing database
+                // on a device to the current version, an `IllegalStateException` occurs.
+                // Calling `fallbackToDestructiveMigration()` method tells room to destructively
+                // recreate the tables in app's database when it needs to perform an incremental
+                // migration where there is no defined migration path.
+                // On production flavor, it's acceptable to lose existing data rather than crash when a migration fails.
+                // On debug flavor, let the app crash to warn the developer that something is wrong.
+                if (!BuildConfig.DEBUG) {
+                    fallbackToDestructiveMigration()
+                }
+            }.build()
         }
 
     }

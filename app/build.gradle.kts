@@ -11,6 +11,8 @@ plugins {
 }
 
 android {
+    val roomSchemaLocation = "$projectDir/schemas"
+
     compileSdkVersion(Versions.compileSdk)
     defaultConfig {
         applicationId = "io.github.tonnyl.moka"
@@ -37,14 +39,18 @@ android {
             buildConfigField("String", "TEST_TOKEN", "\"${System.getenv("TEST_TOKEN")}\"")
         }
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments(
-                    mapOf("room.schemaLocation" to "$projectDir/schemas")
-                )
+        kapt {
+            arguments {
+                arg("room.schemaLocation", roomSchemaLocation)
             }
         }
 
+    }
+
+    sourceSets {
+        getByName("androidTest") {
+            assets.srcDirs(roomSchemaLocation)
+        }
     }
     buildTypes {
         getByName("release") {
@@ -141,7 +147,8 @@ dependencies {
     implementation(Deps.AndroidX.Room.common)
     implementation(Deps.AndroidX.Room.runtime)
     implementation(Deps.AndroidX.Room.migration)
-    implementation(Deps.AndroidX.Room.coroutines)
+    implementation(Deps.AndroidX.Room.ktx)
+    // implementation(Deps.AndroidX.Room.coroutines)
     kapt(Deps.AndroidX.Room.compiler)
     implementation(Deps.AndroidX.UI.compiler)
     implementation(Deps.AndroidX.UI.runtime)

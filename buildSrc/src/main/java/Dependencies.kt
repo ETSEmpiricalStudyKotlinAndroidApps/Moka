@@ -24,7 +24,7 @@ object Versions {
     val navigation = "2.3.0-beta01"
     val paging = "2.1.2"
     val workManager = "2.4.0-beta01"
-    val room = "2.1.0-alpha04"
+    val room = "2.3.0-alpha01"
     val preference = "1.1.1"
     val swipeRefreshLayout = "1.1.0-rc01"
     val ui = "0.1.0-dev14"
@@ -128,7 +128,8 @@ object Deps {
             val compiler = "androidx.room:room-compiler:${Versions.room}"
             val runtime = "androidx.room:room-runtime:${Versions.room}"
             val migration = "androidx.room:room-migration:${Versions.room}"
-            val coroutines = "androidx.room:room-coroutines:${Versions.room}"
+            val ktx = "androidx.room:room-ktx:${Versions.room}"
+            // val coroutines = "androidx.room:room-coroutines:${Versions.room}"
 
         }
 

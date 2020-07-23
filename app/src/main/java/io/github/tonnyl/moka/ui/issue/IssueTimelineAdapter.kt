@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.ui.issue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -19,25 +19,7 @@ class IssueTimelineAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val mainViewModel: MainViewModel,
     private val reactionViewPool: RecyclerView.RecycledViewPool
-) : PagedListAdapter<IssueTimelineItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
-
-    companion object {
-
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<IssueTimelineItem>() {
-
-            override fun areItemsTheSame(
-                oldItem: IssueTimelineItem,
-                newItem: IssueTimelineItem
-            ): Boolean = oldItem.areItemsTheSame(newItem)
-
-            override fun areContentsTheSame(
-                oldItem: IssueTimelineItem,
-                newItem: IssueTimelineItem
-            ): Boolean = oldItem.areContentsTheSame(newItem)
-
-        }
-
-    }
+) : PagingDataAdapter<IssueTimelineItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -141,6 +123,24 @@ class IssueTimelineAdapter(
 
                 executePendingBindings()
             }
+        }
+
+    }
+
+    companion object {
+
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<IssueTimelineItem>() {
+
+            override fun areItemsTheSame(
+                oldItem: IssueTimelineItem,
+                newItem: IssueTimelineItem
+            ): Boolean = oldItem.areItemsTheSame(newItem)
+
+            override fun areContentsTheSame(
+                oldItem: IssueTimelineItem,
+                newItem: IssueTimelineItem
+            ): Boolean = oldItem.areContentsTheSame(newItem)
+
         }
 
     }

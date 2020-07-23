@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.ui.pr
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -22,25 +22,7 @@ class PullRequestTimelineAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val mainViewModel: MainViewModel,
     private val reactionsViewPool: RecyclerView.RecycledViewPool
-) : PagedListAdapter<PullRequestTimelineItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
-
-    companion object {
-
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<PullRequestTimelineItem>() {
-
-            override fun areItemsTheSame(
-                oldItem: PullRequestTimelineItem,
-                newItem: PullRequestTimelineItem
-            ): Boolean = oldItem.areItemsTheSame(newItem)
-
-            override fun areContentsTheSame(
-                oldItem: PullRequestTimelineItem,
-                newItem: PullRequestTimelineItem
-            ): Boolean = oldItem.areContentsTheSame(newItem)
-
-        }
-
-    }
+) : PagingDataAdapter<PullRequestTimelineItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -176,6 +158,24 @@ class PullRequestTimelineAdapter(
                     }
                 }
             }
+        }
+
+    }
+
+    companion object {
+
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<PullRequestTimelineItem>() {
+
+            override fun areItemsTheSame(
+                oldItem: PullRequestTimelineItem,
+                newItem: PullRequestTimelineItem
+            ): Boolean = oldItem.areItemsTheSame(newItem)
+
+            override fun areContentsTheSame(
+                oldItem: PullRequestTimelineItem,
+                newItem: PullRequestTimelineItem
+            ): Boolean = oldItem.areContentsTheSame(newItem)
+
         }
 
     }

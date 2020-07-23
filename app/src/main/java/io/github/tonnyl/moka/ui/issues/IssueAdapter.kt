@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.ui.issues
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -13,23 +13,7 @@ import io.github.tonnyl.moka.databinding.ItemIssueBinding
 class IssueAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: IssuesViewModel
-) : PagedListAdapter<IssueItem, IssueAdapter.IssueViewHolder>(DIFF_CALLBACK) {
-
-    companion object {
-
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<IssueItem>() {
-
-            override fun areItemsTheSame(oldItem: IssueItem, newItem: IssueItem): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: IssueItem, newItem: IssueItem): Boolean {
-                return oldItem == newItem
-            }
-
-        }
-
-    }
+) : PagingDataAdapter<IssueItem, IssueAdapter.IssueViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IssueViewHolder {
         return IssueViewHolder(
@@ -66,6 +50,22 @@ class IssueAdapter(
                 viewModel = model
                 executePendingBindings()
             }
+        }
+
+    }
+
+    companion object {
+
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<IssueItem>() {
+
+            override fun areItemsTheSame(oldItem: IssueItem, newItem: IssueItem): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: IssueItem, newItem: IssueItem): Boolean {
+                return oldItem == newItem
+            }
+
         }
 
     }

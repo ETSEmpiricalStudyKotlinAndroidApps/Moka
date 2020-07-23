@@ -2,30 +2,14 @@ package io.github.tonnyl.moka.ui.projects
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.databinding.ItemProjectBinding
 
-class ProjectAdapter : PagedListAdapter<Project, ProjectAdapter.ProjectViewHolder>(DIFF_CALLBACK) {
-
-    companion object {
-
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Project>() {
-
-            override fun areItemsTheSame(oldItem: Project, newItem: Project): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: Project, newItem: Project): Boolean {
-                return oldItem == newItem
-            }
-
-        }
-
-    }
+class ProjectAdapter : PagingDataAdapter<Project, ProjectAdapter.ProjectViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectViewHolder {
         return ProjectViewHolder(
@@ -57,6 +41,22 @@ class ProjectAdapter : PagedListAdapter<Project, ProjectAdapter.ProjectViewHolde
 
                 executePendingBindings()
             }
+        }
+
+    }
+
+    companion object {
+
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Project>() {
+
+            override fun areItemsTheSame(oldItem: Project, newItem: Project): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Project, newItem: Project): Boolean {
+                return oldItem == newItem
+            }
+
         }
 
     }

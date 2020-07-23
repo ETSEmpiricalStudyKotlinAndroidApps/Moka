@@ -13,29 +13,29 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentIssuesBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.LoadStateAdapter
-import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.issue.IssueFragmentArgs
 import io.github.tonnyl.moka.ui.issues.IssueItemEvent.ViewIssueTimeline
 import io.github.tonnyl.moka.ui.issues.IssueItemEvent.ViewUserProfile
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 
-class IssuesFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
+class IssuesFragment : Fragment(), EmptyViewActions {
 
     private val args by navArgs<IssuesFragmentArgs>()
-
-    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
-        PagedListAdapterWrapper(
-            LoadStateAdapter(this),
-            IssueAdapter(viewLifecycleOwner, viewModel),
-            LoadStateAdapter(this)
-        )
-    }
 
     private val viewModel by viewModels<IssuesViewModel> {
         ViewModelFactory(args)
     }
+
+    private val issueAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val adapter = IssueAdapter(viewLifecycleOwner, viewModel)
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter(adapter::retry),
+            footer = LoadStateAdapter(adapter::retry)
+        )
+        adapter
+    }
+
     private lateinit var binding: FragmentIssuesBinding
 
     override fun onCreateView(
@@ -65,17 +65,15 @@ class IssuesFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.data.observe(viewLifecycleOwner, Observer {
+        viewModel.issuesResult.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = adapterWrapper.mergeAdapter
+                    adapter = issueAdapter
                 }
             }
 
-            adapterWrapper.pagingAdapter.submitList(it)
+            issueAdapter.submitData(lifecycle, it)
         })
-
-        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
 
         viewModel.event.observe(viewLifecycleOwner, Observer {
             when (val event = it.getContentIfNotHandled()) {
@@ -97,15 +95,11 @@ class IssuesFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
     }
 
     override fun retryInitial() {
-        viewModel.refresh()
+        issueAdapter.refresh()
     }
 
     override fun doAction() {
 
-    }
-
-    override fun retryLoadPreviousNext() {
-        viewModel.retryLoadPreviousNext()
     }
 
 }

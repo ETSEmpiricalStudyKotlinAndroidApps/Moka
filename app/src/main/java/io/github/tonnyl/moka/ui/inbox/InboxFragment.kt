@@ -9,36 +9,38 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.databinding.FragmentInboxBinding
-import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.ui.*
+import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.MainNavigationFragment
+import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.inbox.NotificationItemEvent.*
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
-class InboxFragment : MainNavigationFragment(),
-    EmptyViewActions, PagingNetworkStateActions {
+class InboxFragment : MainNavigationFragment(), EmptyViewActions {
 
     private val viewModel by viewModels<InboxViewModel> {
         ViewModelFactory(
-            MokaDataBase.getInstance(
-                requireContext(),
-                mainViewModel.currentUser.value?.id ?: 0L
-            ).notificationsDao()
+            requireContext().applicationContext as MokaApp
         )
     }
     private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var binding: FragmentInboxBinding
 
-    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
-        PagedListAdapterWrapper(
-            LoadStateAdapter(this),
-            InboxAdapter(viewLifecycleOwner, viewModel),
-            LoadStateAdapter(this)
+    private val inboxAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val adapter = InboxAdapter(viewLifecycleOwner, viewModel)
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter(adapter::retry),
+            footer = LoadStateAdapter(adapter::retry)
         )
+        adapter
     }
 
     override fun onCreateView(
@@ -59,9 +61,7 @@ class InboxFragment : MainNavigationFragment(),
             viewModel = this@InboxFragment.viewModel
             mainViewModel = this@InboxFragment.mainViewModel
             lifecycleOwner = viewLifecycleOwner
-        }
 
-        viewModel.data.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     addItemDecoration(
@@ -71,20 +71,31 @@ class InboxFragment : MainNavigationFragment(),
                         )
                     )
 
-                    adapter = adapterWrapper.mergeAdapter
+                    adapter = inboxAdapter
                 }
-
-                adapterWrapper.pagingAdapter.submitList(it)
             }
-        })
+        }
 
-        viewModel.previousNextLoadStatusLiveData.observe(
-            viewLifecycleOwner,
-            adapterWrapper.observer
-        )
+        val notificationsObserver = Observer<PagingData<Notification>> {
+            inboxAdapter.submitData(lifecycle, it)
+        }
 
         mainViewModel.currentUser.observe(viewLifecycleOwner, Observer {
-            viewModel.refreshData(it.login, false)
+            viewModel.userId = it.id
+            viewModel.login = it.login
+
+            var needRefresh = false
+            if (viewModel.notificationResult.hasObservers()) {
+                viewModel.notificationResult.removeObserver(notificationsObserver)
+
+                needRefresh = true
+            }
+
+            viewModel.notificationResult.observe(viewLifecycleOwner, notificationsObserver)
+
+            if (needRefresh) {
+                inboxAdapter.refresh()
+            }
         })
 
         viewModel.event.observe(viewLifecycleOwner, Observer {
@@ -108,10 +119,7 @@ class InboxFragment : MainNavigationFragment(),
         })
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.refreshData(
-                mainViewModel.currentUser.value?.login
-                    ?: return@setOnRefreshListener, true
-            )
+            inboxAdapter.refresh()
         }
 
         with(binding.emptyContent) {
@@ -123,7 +131,7 @@ class InboxFragment : MainNavigationFragment(),
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         // trick: use the position as item view's order.
-        val notification = viewModel.data.value?.get(item.order)
+//        val notification = inboxAdapter.geti viewModel.data.value?.get(item.order)
 
         when (item.itemId) {
             R.id.notification_menu_mark_as_read -> {
@@ -138,17 +146,11 @@ class InboxFragment : MainNavigationFragment(),
     }
 
     override fun retryInitial() {
-        mainViewModel.currentUser.value?.login?.let {
-            viewModel.refreshData(it, true)
-        }
+        inboxAdapter.refresh()
     }
 
     override fun doAction() {
 
-    }
-
-    override fun retryLoadPreviousNext() {
-        viewModel.retryLoadPreviousNext()
     }
 
 }

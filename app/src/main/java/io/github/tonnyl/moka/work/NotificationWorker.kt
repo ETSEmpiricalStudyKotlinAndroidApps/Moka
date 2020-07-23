@@ -44,7 +44,7 @@ class NotificationWorker(
             }
 
             if (notifications.isNotEmpty()) {
-                dao.insert(notifications)
+                dao.insertAll(notifications)
             }
 
             Result.success()

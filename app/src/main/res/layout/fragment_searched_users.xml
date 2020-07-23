@@ -45,9 +45,9 @@
                 layout="@layout/layout_empty_content"
                 bind:actionString="@{@string/timeline_content_empty_action}"
                 bind:actions="@{emptyViewActions}"
-                bind:goneUnless="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatus != null}"
+                bind:goneUnless="@{viewModel.initialLoadStatus.status == Status.ERROR | viewModel.initialLoadStatus.data.empty}"
                 bind:iconDrawable="@{@drawable/ic_menu_timeline_24}"
-                bind:titleString="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/timeline_content_empty_title}" />
+                bind:titleString="@{viewModel.initialLoadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/timeline_content_empty_title}" />
 
         </FrameLayout>
 

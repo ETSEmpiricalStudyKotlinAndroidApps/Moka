@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/main_search_bar_height"
-            app:bindRefreshing="@{viewModel.initialLoadStatusLiveData.status == Status.LOADING}"
+            app:bindRefreshing="@{viewModel.initialLoadStatus.status == Status.LOADING}"
             app:colorSchemaColors="@{@intArray/swipe_refresh}">
 
             <FrameLayout
@@ -52,7 +52,6 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     style="@style/RecyclerViewStyle"
-                    app:visibleOrGone="@{viewModel.data.size() != 0}"
                     tools:listitem="@layout/item_event" />
 
                 <include
@@ -60,9 +59,9 @@
                     layout="@layout/layout_empty_content"
                     bind:actionString="@{@string/timeline_content_empty_action}"
                     bind:actions="@{emptyViewActions}"
-                    bind:goneUnless="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatusLiveData != null}"
+                    bind:goneUnless="@{viewModel.initialLoadStatus != null &amp;&amp; viewModel.initialLoadStatus.status != Status.LOADING &amp;&amp; !viewModel.initialLoadStatus.data}"
                     bind:iconDrawable="@{@drawable/ic_menu_timeline_24}"
-                    bind:titleString="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatusLiveData.status == Status.ERROR ? @string/common_error_requesting_data : @string/timeline_content_empty_title}" />
+                    bind:titleString="@{viewModel.initialLoadStatus.data &amp;&amp; viewModel.initialLoadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/timeline_content_empty_title}" />
 
             </FrameLayout>
 

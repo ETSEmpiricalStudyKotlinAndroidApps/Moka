@@ -48,7 +48,7 @@
                     bind:actions="@{emptyViewActions}"
                     bind:goneUnless="@{viewModel.pullRequest != null &amp;&amp; (viewModel.initialLoadStatus != null &amp;&amp; viewModel.initialLoadStatus.status != Status.LOADING &amp;&amp; viewModel.pullRequest == null)}"
                     bind:iconDrawable="@{@drawable/ic_outline_people_24}"
-                    bind:titleString="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/users_content_empty_title}" />
+                    bind:titleString="@{viewModel.initialLoadStatus.data.empty &amp;&amp; viewModel.initialLoadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/users_content_empty_title}" />
 
                 <include
                     android:id="@+id/layout_loading"

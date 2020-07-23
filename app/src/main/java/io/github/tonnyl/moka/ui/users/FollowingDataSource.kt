@@ -1,86 +1,64 @@
 package io.github.tonnyl.moka.ui.users
 
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingSource
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullUserItem
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.queries.queryUsersFollowing
-import io.github.tonnyl.moka.ui.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class FollowingDataSource(
     private val login: String,
-    override val initial: MutableLiveData<Resource<List<UserItem>>>,
-    override val previousOrNext: MutableLiveData<PagedResource<List<UserItem>>>
-) : PageKeyedDataSourceWithLoadState<UserItem>() {
+    private val initialLoadStatus: MutableLiveData<Resource<List<UserItem>>>
+) : PagingSource<String, UserItem>() {
 
-    override fun doLoadInitial(params: LoadInitialParams<String>): InitialLoadResponse<UserItem> {
-        val response = queryUsersFollowing(
-            login,
-            perPage = params.requestedLoadSize
-        )
-
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, UserItem> {
         val list = mutableListOf<UserItem>()
-        val user = response.data()?.user
+        return withContext(Dispatchers.IO) {
+            try {
+                if (params is LoadParams.Refresh) {
+                    initialLoadStatus.postValue(Resource.loading(null))
+                }
 
-        user?.following?.nodes?.forEach { node ->
-            node?.let {
-                list.add(it.fragments.userListItemFragment.toNonNullUserItem())
+                val user = queryUsersFollowing(
+                    login,
+                    perPage = params.loadSize,
+                    after = params.key,
+                    before = params.key
+                ).data()?.user
+
+                user?.following?.nodes?.forEach { node ->
+                    node?.let {
+                        list.add(it.fragments.userListItemFragment.toNonNullUserItem())
+                    }
+                }
+
+                val pageInfo = user?.following?.pageInfo?.fragments?.pageInfo
+
+                LoadResult.Page(
+                    data = list,
+                    prevKey = pageInfo.checkedStartCursor,
+                    nextKey = pageInfo.checkedEndCursor
+                ).also {
+                    if (params is LoadParams.Refresh) {
+                        initialLoadStatus.postValue(Resource.success(list))
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+
+                if (params is LoadParams.Refresh) {
+                    initialLoadStatus.postValue(Resource.error(e.message, null))
+                }
+
+                LoadResult.Error<String, UserItem>(e)
             }
         }
-
-        val pageInfo = user?.following?.pageInfo?.fragments?.pageInfo
-
-        return InitialLoadResponse(
-            list,
-            PreviousPageKey(pageInfo.checkedStartCursor),
-            NextPageKey(pageInfo.checkedEndCursor)
-        )
     }
 
-    override fun doLoadAfter(params: LoadParams<String>): AfterLoadResponse<UserItem> {
-        val response = queryUsersFollowing(
-            login = login,
-            perPage = params.requestedLoadSize,
-            after = params.key
-        )
-
-        val list = mutableListOf<UserItem>()
-        val user = response.data()?.user
-
-        user?.following?.nodes?.forEach { node ->
-            node?.let {
-                list.add(it.fragments.userListItemFragment.toNonNullUserItem())
-            }
-        }
-
-        return AfterLoadResponse(
-            list,
-            NextPageKey(user?.following?.pageInfo?.fragments?.pageInfo.checkedEndCursor)
-        )
-    }
-
-    override fun doLoadBefore(params: LoadParams<String>): BeforeLoadResponse<UserItem> {
-        val response = queryUsersFollowing(
-            login = login,
-            perPage = params.requestedLoadSize,
-            before = params.key
-        )
-
-        val list = mutableListOf<UserItem>()
-        val user = response.data()?.user
-
-        user?.following?.nodes?.forEach { node ->
-            node?.let {
-                list.add(it.fragments.userListItemFragment.toNonNullUserItem())
-            }
-        }
-
-        return BeforeLoadResponse(
-            list,
-            PreviousPageKey(user?.following?.pageInfo?.fragments?.pageInfo.checkedStartCursor)
-        )
-    }
 }

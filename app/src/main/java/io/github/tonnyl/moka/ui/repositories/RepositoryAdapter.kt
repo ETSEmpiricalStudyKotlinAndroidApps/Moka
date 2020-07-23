@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.ui.repositories
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -13,29 +13,7 @@ import io.github.tonnyl.moka.databinding.ItemRepositoryBinding
 class RepositoryAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: RepositoriesViewModel
-) : PagedListAdapter<RepositoryItem, RepositoryAdapter.RepositoryViewHolder>(DIFF_CALLBACK) {
-
-    companion object {
-
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RepositoryItem>() {
-
-            override fun areItemsTheSame(
-                oldItem: RepositoryItem,
-                newItem: RepositoryItem
-            ): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(
-                oldItem: RepositoryItem,
-                newItem: RepositoryItem
-            ): Boolean {
-                return oldItem == newItem
-            }
-
-        }
-
-    }
+) : PagingDataAdapter<RepositoryItem, RepositoryAdapter.RepositoryViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryViewHolder {
         return RepositoryViewHolder(
@@ -67,6 +45,28 @@ class RepositoryAdapter(
 
                 executePendingBindings()
             }
+        }
+
+    }
+
+    companion object {
+
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RepositoryItem>() {
+
+            override fun areItemsTheSame(
+                oldItem: RepositoryItem,
+                newItem: RepositoryItem
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(
+                oldItem: RepositoryItem,
+                newItem: RepositoryItem
+            ): Boolean {
+                return oldItem == newItem
+            }
+
         }
 
     }

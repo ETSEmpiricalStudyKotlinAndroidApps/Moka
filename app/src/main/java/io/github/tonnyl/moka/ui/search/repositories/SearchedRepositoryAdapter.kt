@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.ui.search.repositories
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -13,27 +13,9 @@ import io.github.tonnyl.moka.databinding.ItemSearchedRepositoryBinding
 class SearchedRepositoryAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: SearchedRepositoriesViewModel
-) : PagedListAdapter<SearchedRepositoryItem, SearchedRepositoryAdapter.RepositoryViewHolder>(
+) : PagingDataAdapter<SearchedRepositoryItem, SearchedRepositoryAdapter.RepositoryViewHolder>(
     DIFF_CALLBACK
 ) {
-
-    companion object {
-
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<SearchedRepositoryItem>() {
-
-            override fun areItemsTheSame(
-                oldItem: SearchedRepositoryItem,
-                newItem: SearchedRepositoryItem
-            ): Boolean = oldItem == newItem
-
-            override fun areContentsTheSame(
-                oldItem: SearchedRepositoryItem,
-                newItem: SearchedRepositoryItem
-            ): Boolean = oldItem.id == newItem.id
-
-        }
-
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryViewHolder {
         return RepositoryViewHolder(
@@ -68,6 +50,28 @@ class SearchedRepositoryAdapter(
 
                 executePendingBindings()
             }
+        }
+
+    }
+
+    companion object {
+
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<SearchedRepositoryItem>() {
+
+            override fun areItemsTheSame(
+                oldItem: SearchedRepositoryItem,
+                newItem: SearchedRepositoryItem
+            ): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(
+                oldItem: SearchedRepositoryItem,
+                newItem: SearchedRepositoryItem
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+
         }
 
     }

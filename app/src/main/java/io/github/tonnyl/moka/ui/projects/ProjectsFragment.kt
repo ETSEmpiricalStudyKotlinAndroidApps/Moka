@@ -9,21 +9,20 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.databinding.FragmentProjectsBinding
-import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.ui.*
+import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.MainViewModel
 
-class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
+class ProjectsFragment : Fragment(), EmptyViewActions {
 
     private val mainViewModel by activityViewModels<MainViewModel>()
     private val viewModel by viewModels<ProjectsViewModel> {
         ViewModelFactory(
             login == mainViewModel.currentUser.value?.login,
-            MokaDataBase.getInstance(
-                requireContext(),
-                mainViewModel.currentUser.value?.id ?: 0L
-            ).projectsDao(),
-            args
+            args,
+            requireContext().applicationContext as MokaApp
         )
     }
 
@@ -31,12 +30,13 @@ class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions
 
     private val args: ProjectsFragmentArgs by navArgs()
 
-    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
-        PagedListAdapterWrapper(
-            LoadStateAdapter(this),
-            ProjectAdapter(),
-            LoadStateAdapter(this)
+    private val projectAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val adapter = ProjectAdapter()
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter(adapter::retry),
+            footer = LoadStateAdapter(adapter::retry)
         )
+        adapter
     }
 
     private val login: String
@@ -65,22 +65,18 @@ class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions
         }
 
         mainViewModel.currentUser.observe(viewLifecycleOwner, Observer {
-            viewModel.refreshData(it.login, true)
-        })
+            viewModel.login = it.login
+            viewModel.userId = it.id
 
-        viewModel.previousNextLoadStatusLiveData.observe(
-            viewLifecycleOwner,
-            adapterWrapper.observer
-        )
-
-        viewModel.data.observe(viewLifecycleOwner, Observer {
-            with(binding.recyclerView) {
-                if (adapter == null) {
-                    adapter = adapterWrapper.mergeAdapter
+            viewModel.projectsResult.observe(viewLifecycleOwner, Observer {
+                with(binding.recyclerView) {
+                    if (adapter == null) {
+                        adapter = projectAdapter
+                    }
                 }
-            }
 
-            adapterWrapper.pagingAdapter.submitList(it)
+                projectAdapter.submitData(lifecycle, it)
+            })
         })
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -88,12 +84,8 @@ class ProjectsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions
         }
     }
 
-    override fun retryLoadPreviousNext() {
-        viewModel.retryLoadPreviousNext()
-    }
-
     override fun retryInitial() {
-        viewModel.refreshData(login, true)
+        projectAdapter.refresh()
     }
 
     override fun doAction() {

@@ -1,65 +1,55 @@
 package io.github.tonnyl.moka.ui.timeline
 
+import android.app.Application
 import androidx.annotation.MainThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.cachedIn
+import androidx.paging.liveData
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.data.EventOrg
-import io.github.tonnyl.moka.db.dao.EventDao
-import io.github.tonnyl.moka.network.PagedResource
+import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.service.EventsService
-import io.github.tonnyl.moka.ui.NetworkDatabaseSourceViewModel
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.timeline.EventItemEvent.*
 import io.github.tonnyl.moka.ui.Event as UIEvent
 
 class TimelineViewModel(
-    private val localSource: EventDao
-) : NetworkDatabaseSourceViewModel<Event>() {
+    app: Application
+) : AndroidViewModel(app) {
 
-    private val _initialLoadStatusLiveData = MutableLiveData<Resource<List<Event>>>()
-    val initialLoadStatusLiveData: LiveData<Resource<List<Event>>>
+    var login: String = ""
+    var userId: Long = 0L
+
+    private val _initialLoadStatusLiveData = MutableLiveData<Resource<Boolean?>>()
+    val initialLoadStatus: LiveData<Resource<Boolean?>>
         get() = _initialLoadStatusLiveData
-
-    private val _previousNextLoadStatusLiveData = MutableLiveData<PagedResource<List<Event>>>()
-    val previousNextLoadStatusLiveData: LiveData<PagedResource<List<Event>>>
-        get() = _previousNextLoadStatusLiveData
 
     private val _event = MutableLiveData<UIEvent<EventItemEvent>>()
     val event: LiveData<UIEvent<EventItemEvent>>
         get() = _event
 
-    private lateinit var sourceFactory: TimelineDataSourceFactory
-
-    override fun initLocalSource(): LiveData<PagedList<Event>> {
-        return LivePagedListBuilder(
-            localSource.eventsByCreatedAt(),
-            pagingConfig
-        ).build()
-    }
-
-    override fun initRemoteSource(): LiveData<PagedList<Event>> {
-        sourceFactory = TimelineDataSourceFactory(
-            RetrofitClient.createService(EventsService::class.java),
-            localSource,
-            login,
-            _initialLoadStatusLiveData,
-            _previousNextLoadStatusLiveData
+    val eventResult = liveData {
+        emitSource(
+            Pager(
+                config = MokaApp.defaultPagingConfig,
+                remoteMediator = EventRemoteMediator(
+                    login,
+                    RetrofitClient.createService(EventsService::class.java),
+                    MokaDataBase.getInstance(getApplication(), userId),
+                    _initialLoadStatusLiveData
+                ),
+                pagingSourceFactory = {
+                    MokaDataBase.getInstance(getApplication(), userId)
+                        .eventDao()
+                        .eventsByCreatedAt()
+                }
+            ).liveData
         )
-
-        return LivePagedListBuilder(
-            sourceFactory,
-            pagingConfig
-        ).build()
-    }
-
-    fun retryLoadPreviousNext() {
-        sourceFactory.retryLoadPreviousNext()
-    }
+    }.cachedIn(viewModelScope)
 
     @MainThread
     fun viewProfile(login: String, type: ProfileType) {

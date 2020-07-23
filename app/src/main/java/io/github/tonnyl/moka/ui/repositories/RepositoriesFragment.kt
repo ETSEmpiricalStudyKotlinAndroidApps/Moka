@@ -13,13 +13,11 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentRepositoriesBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.LoadStateAdapter
-import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.repositories.RepositoryItemEvent.*
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 
-class RepositoriesFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
+class RepositoriesFragment : Fragment(), EmptyViewActions {
 
     private val args by navArgs<RepositoriesFragmentArgs>()
 
@@ -29,12 +27,13 @@ class RepositoriesFragment : Fragment(), EmptyViewActions, PagingNetworkStateAct
 
     private lateinit var binding: FragmentRepositoriesBinding
 
-    private val adapterWrapper by lazy {
-        PagedListAdapterWrapper(
-            LoadStateAdapter(this),
-            RepositoryAdapter(viewLifecycleOwner, repositoriesViewModel),
-            LoadStateAdapter(this)
+    private val repositoryAdapter by lazy {
+        val adapter = RepositoryAdapter(viewLifecycleOwner, repositoriesViewModel)
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter(adapter::retry),
+            footer = LoadStateAdapter(adapter::retry)
         )
+        adapter
     }
 
     override fun onCreateView(
@@ -72,19 +71,15 @@ class RepositoriesFragment : Fragment(), EmptyViewActions, PagingNetworkStateAct
             lifecycleOwner = viewLifecycleOwner
         }
 
-        repositoriesViewModel.data.observe(viewLifecycleOwner, Observer { list ->
+        repositoriesViewModel.repositoriesResult.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = adapterWrapper.mergeAdapter
+                    adapter = repositoryAdapter
                 }
             }
-            adapterWrapper.pagingAdapter.submitList(list)
-        })
 
-        repositoriesViewModel.pagedLoadStatus.observe(
-            viewLifecycleOwner,
-            adapterWrapper.observer
-        )
+            repositoryAdapter.submitData(lifecycle, it)
+        })
 
         repositoriesViewModel.event.observe(viewLifecycleOwner, Observer {
             when (val event = it.getContentIfNotHandled()) {
@@ -113,15 +108,11 @@ class RepositoriesFragment : Fragment(), EmptyViewActions, PagingNetworkStateAct
     }
 
     override fun retryInitial() {
-        repositoriesViewModel.refresh()
+        repositoryAdapter.refresh()
     }
 
     override fun doAction() {
 
-    }
-
-    override fun retryLoadPreviousNext() {
-        repositoriesViewModel.retryLoadPreviousNext()
     }
 
 }

@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.ui.search.users
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -16,25 +16,7 @@ import io.github.tonnyl.moka.databinding.ItemSearchedUserBinding
 class SearchedUserAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: SearchedUsersViewModel
-) : PagedListAdapter<SearchedUserOrOrgItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
-
-    companion object {
-
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<SearchedUserOrOrgItem>() {
-
-            override fun areItemsTheSame(
-                oldItem: SearchedUserOrOrgItem,
-                newItem: SearchedUserOrOrgItem
-            ): Boolean = oldItem.areItemsTheSame(newItem)
-
-            override fun areContentsTheSame(
-                oldItem: SearchedUserOrOrgItem,
-                newItem: SearchedUserOrOrgItem
-            ): Boolean = oldItem.areContentsTheSame(newItem)
-
-        }
-
-    }
+) : PagingDataAdapter<SearchedUserOrOrgItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -114,6 +96,28 @@ class SearchedUserAdapter(
 
                 executePendingBindings()
             }
+        }
+
+    }
+
+    companion object {
+
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<SearchedUserOrOrgItem>() {
+
+            override fun areItemsTheSame(
+                oldItem: SearchedUserOrOrgItem,
+                newItem: SearchedUserOrOrgItem
+            ): Boolean {
+                return oldItem.areItemsTheSame(newItem)
+            }
+
+            override fun areContentsTheSame(
+                oldItem: SearchedUserOrOrgItem,
+                newItem: SearchedUserOrOrgItem
+            ): Boolean {
+                return oldItem.areContentsTheSame(newItem)
+            }
+
         }
 
     }

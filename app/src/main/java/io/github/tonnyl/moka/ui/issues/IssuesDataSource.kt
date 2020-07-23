@@ -1,93 +1,66 @@
 package io.github.tonnyl.moka.ui.issues
 
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingSource
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.data.item.toNonNullIssueItem
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.queries.queryIssues
-import io.github.tonnyl.moka.ui.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class IssuesDataSource(
     private val owner: String,
     private val name: String,
-    override val initial: MutableLiveData<Resource<List<IssueItem>>>,
-    override val previousOrNext: MutableLiveData<PagedResource<List<IssueItem>>>
-) : PageKeyedDataSourceWithLoadState<IssueItem>() {
+    private val initialLoadStatus: MutableLiveData<Resource<List<IssueItem>>>
+) : PagingSource<String, IssueItem>() {
 
-    override fun doLoadInitial(params: LoadInitialParams<String>): InitialLoadResponse<IssueItem> {
-        val response = queryIssues(
-            owner = owner,
-            name = name,
-            perPage = params.requestedLoadSize
-        )
-
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, IssueItem> {
         val list = mutableListOf<IssueItem>()
-        val repository = response.data()?.repository
+        return withContext(Dispatchers.IO) {
+            try {
+                if (params is LoadParams.Refresh) {
+                    initialLoadStatus.postValue(Resource.loading(null))
+                }
 
-        repository?.issues?.nodes?.forEach { node ->
-            node?.let {
-                list.add(node.toNonNullIssueItem())
+                val repository = queryIssues(
+                    owner = owner,
+                    name = name,
+                    perPage = params.loadSize,
+                    after = params.key,
+                    before = params.key
+                ).data()?.repository
+
+                repository?.issues?.nodes?.forEach { node ->
+                    node?.let {
+                        list.add(node.toNonNullIssueItem())
+                    }
+                }
+
+                val pageInfo = repository?.issues?.pageInfo?.fragments?.pageInfo
+
+                LoadResult.Page(
+                    data = list,
+                    prevKey = pageInfo.checkedStartCursor,
+                    nextKey = pageInfo.checkedEndCursor
+                ).also {
+                    if (params is LoadParams.Refresh) {
+                        initialLoadStatus.postValue(Resource.success(list))
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+
+                if (params is LoadParams.Refresh) {
+                    initialLoadStatus.postValue(Resource.error(e.message, null))
+                }
+
+                LoadResult.Error<String, IssueItem>(e)
             }
         }
-
-        val pageInfo = repository?.issues?.pageInfo?.fragments?.pageInfo
-
-        return InitialLoadResponse(
-            list,
-            PreviousPageKey(pageInfo.checkedStartCursor),
-            NextPageKey(pageInfo.checkedEndCursor)
-        )
-    }
-
-    override fun doLoadAfter(params: LoadParams<String>): AfterLoadResponse<IssueItem> {
-        val response = queryIssues(
-            owner = owner,
-            name = name,
-            perPage = params.requestedLoadSize,
-            after = params.key
-        )
-
-        val list = mutableListOf<IssueItem>()
-        val repository = response.data()?.repository
-
-        repository?.issues?.nodes?.forEach { node ->
-            node?.let {
-                list.add(node.toNonNullIssueItem())
-            }
-        }
-
-        return AfterLoadResponse(
-            list,
-            NextPageKey(repository?.issues?.pageInfo?.fragments?.pageInfo.checkedEndCursor)
-        )
-    }
-
-    override fun doLoadBefore(params: LoadParams<String>): BeforeLoadResponse<IssueItem> {
-        val response = queryIssues(
-            owner = owner,
-            name = name,
-            perPage = params.requestedLoadSize,
-            before = params.key
-        )
-
-        val list = mutableListOf<IssueItem>()
-        val repository = response.data()?.repository
-
-        repository?.issues?.nodes?.forEach { node ->
-            node?.let {
-                list.add(node.toNonNullIssueItem())
-            }
-        }
-
-        val pageInfo = repository?.issues?.pageInfo?.fragments?.pageInfo
-
-        return BeforeLoadResponse(
-            list,
-            PreviousPageKey(pageInfo.checkedStartCursor)
-        )
     }
 
 }

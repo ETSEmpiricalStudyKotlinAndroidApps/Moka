@@ -2,7 +2,7 @@ package io.github.tonnyl.moka.ui.inbox
 
 import android.view.*
 import androidx.lifecycle.LifecycleOwner
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
@@ -12,23 +12,7 @@ import io.github.tonnyl.moka.databinding.ItemInboxNotificationBinding
 class InboxAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: InboxViewModel
-) : PagedListAdapter<Notification, InboxAdapter.NotificationViewHolder>(DIFF_CALLBACK) {
-
-    companion object {
-
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Notification>() {
-
-            override fun areItemsTheSame(oldItem: Notification, newItem: Notification): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: Notification, newItem: Notification): Boolean {
-                return oldItem == newItem
-            }
-
-        }
-
-    }
+) : PagingDataAdapter<Notification, InboxAdapter.NotificationViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         return NotificationViewHolder(
@@ -90,6 +74,22 @@ class InboxAdapter(
             }
 
             itemView.setOnCreateContextMenuListener(this)
+        }
+
+    }
+
+    companion object {
+
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Notification>() {
+
+            override fun areItemsTheSame(oldItem: Notification, newItem: Notification): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Notification, newItem: Notification): Boolean {
+                return oldItem == newItem
+            }
+
         }
 
     }

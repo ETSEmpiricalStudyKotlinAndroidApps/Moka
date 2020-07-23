@@ -1,16 +1,16 @@
 package io.github.tonnyl.moka.ui.timeline
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.github.tonnyl.moka.db.dao.EventDao
 
 class ViewModelFactory(
-    private val localSource: EventDao
+    private val app: Application
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return TimelineViewModel(localSource) as T
+        return TimelineViewModel(app) as T
     }
 
 }

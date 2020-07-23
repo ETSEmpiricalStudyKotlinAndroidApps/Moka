@@ -13,15 +13,13 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchedRepositoriesBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.LoadStateAdapter
-import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.ui.search.SearchViewModel
 import io.github.tonnyl.moka.ui.search.repositories.SearchedRepositoryItemEvent.*
 
-class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
+class SearchedRepositoriesFragment : Fragment(), EmptyViewActions {
 
     private lateinit var binding: FragmentSearchedRepositoriesBinding
 
@@ -32,18 +30,16 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
     )
     private val searchedRepositoriesViewModel by viewModels<SearchedRepositoriesViewModel>()
 
-    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
-        PagedListAdapterWrapper(
-            LoadStateAdapter(this),
-            SearchedRepositoryAdapter(viewLifecycleOwner, searchedRepositoriesViewModel),
-            LoadStateAdapter(this)
+    private val searchedRepositoryAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val adapter = SearchedRepositoryAdapter(
+            viewLifecycleOwner,
+            searchedRepositoriesViewModel
         )
-    }
-
-    companion object {
-
-        fun newInstance(): SearchedRepositoriesFragment = SearchedRepositoriesFragment()
-
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter(adapter::retry),
+            footer = LoadStateAdapter(adapter::retry)
+        )
+        adapter
     }
 
     override fun onCreateView(
@@ -60,7 +56,7 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
+        with(binding) {
             emptyViewActions = this@SearchedRepositoriesFragment
             viewModel = searchedRepositoriesViewModel
             lifecycleOwner = viewLifecycleOwner
@@ -70,18 +66,8 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
             searchedRepositoriesViewModel.refresh(it)
         })
 
-        searchedRepositoriesViewModel.data.observe(viewLifecycleOwner, Observer {
-            with(binding.recyclerView) {
-                if (adapter == null) {
-                    adapter = adapterWrapper.mergeAdapter
-                }
-            }
-
-            adapterWrapper.pagingAdapter.submitList(it)
-        })
-
         binding.swipeRefresh.setOnRefreshListener {
-            triggerRefresh()
+            searchedRepositoryAdapter.refresh()
         }
 
         searchedRepositoriesViewModel.event.observe(viewLifecycleOwner, Observer {
@@ -103,27 +89,35 @@ class SearchedRepositoriesFragment : Fragment(), PagingNetworkStateActions, Empt
                     )
                 }
                 is StarRepository -> {
-                    adapterWrapper.pagingAdapter.notifyDataSetChanged()
+                    searchedRepositoryAdapter.notifyDataSetChanged()
                 }
             }
         })
 
-    }
+        searchedRepositoriesViewModel.repositoryResult.observe(viewLifecycleOwner, Observer {
+            with(binding.recyclerView) {
+                if (adapter == null) {
+                    adapter = searchedRepositoryAdapter
+                }
+            }
 
-    override fun retryLoadPreviousNext() {
-        searchedRepositoriesViewModel.retryLoadPreviousNext()
+            searchedRepositoryAdapter.submitData(lifecycle, it)
+        })
+
     }
 
     override fun retryInitial() {
-        searchedRepositoriesViewModel.refresh()
+        searchedRepositoryAdapter.refresh()
     }
 
     override fun doAction() {
 
     }
 
-    private fun triggerRefresh() {
-        searchedRepositoriesViewModel.refresh(parentViewModel.input.value ?: "")
+    companion object {
+
+        fun newInstance(): SearchedRepositoriesFragment = SearchedRepositoriesFragment()
+
     }
 
 }

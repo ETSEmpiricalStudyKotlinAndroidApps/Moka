@@ -1,110 +1,103 @@
 package io.github.tonnyl.moka.ui.pr
 
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingSource
 import io.github.tonnyl.moka.data.PullRequest
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.data.toNullablePullRequest
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.queries.queryPullRequest
 import io.github.tonnyl.moka.network.queries.queryPullRequestTimelineItems
 import io.github.tonnyl.moka.queries.PullRequestQuery
 import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery
-import io.github.tonnyl.moka.ui.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class PullRequestTimelineDataSource(
     private val owner: String,
     private val name: String,
     private val number: Int,
     private val pullRequestData: MutableLiveData<PullRequest>,
-    override val initial: MutableLiveData<Resource<List<PullRequestTimelineItem>>>,
-    override val previousOrNext: MutableLiveData<PagedResource<List<PullRequestTimelineItem>>>
-) : PageKeyedDataSourceWithLoadState<PullRequestTimelineItem>() {
+    private val initialLoadStatus: MutableLiveData<Resource<List<PullRequestTimelineItem>>>
+) : PagingSource<String, PullRequestTimelineItem>() {
 
-    override fun doLoadInitial(params: LoadInitialParams<String>): InitialLoadResponse<PullRequestTimelineItem> {
-        val response = queryPullRequest(
-            owner = owner,
-            name = name,
-            number = number,
-            perPage = params.requestedLoadSize
-        )
-
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, PullRequestTimelineItem> {
         val list = mutableListOf<PullRequestTimelineItem>()
-        val pullRequest = response.data()?.repository?.pullRequest
 
-        pullRequestData.postValue(pullRequest.toNullablePullRequest())
+        return withContext(Dispatchers.IO) {
+            try {
+                if (params is LoadParams.Refresh) {
+                    initialLoadStatus.postValue(Resource.loading(null))
 
-        val timeline = pullRequest?.timelineItems
+                    val pullRequest = queryPullRequest(
+                        owner = owner,
+                        name = name,
+                        number = number,
+                        perPage = params.loadSize,
+                        after = params.key,
+                        before = params.key
+                    ).data()?.repository?.pullRequest
 
-        timeline?.nodes?.forEach { node ->
-            node?.let {
-                initTimelineItemWithRawData(node)?.let {
-                    list.add(it)
+                    pullRequestData.postValue(pullRequest.toNullablePullRequest())
+
+                    val timeline = pullRequest?.timelineItems
+
+                    timeline?.nodes?.forEach { node ->
+                        node?.let {
+                            initTimelineItemWithRawData(node)?.let {
+                                list.add(it)
+                            }
+                        }
+                    }
+
+                    val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
+
+                    LoadResult.Page(
+                        data = list,
+                        prevKey = pageInfo.checkedStartCursor,
+                        nextKey = pageInfo.checkedEndCursor
+                    ).also {
+                        initialLoadStatus.postValue(Resource.success(list))
+                    }
+                } else {
+                    val timeline = queryPullRequestTimelineItems(
+                        owner = owner,
+                        name = name,
+                        number = number,
+                        perPage = params.loadSize,
+                        after = params.key,
+                        before = params.key
+                    ).data()?.repository?.pullRequest?.timelineItems
+
+                    timeline?.nodes?.forEach { node ->
+                        node?.let {
+                            initTimelineItemWithRawData(node)?.let {
+                                list.add(it)
+                            }
+                        }
+                    }
+
+                    val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
+
+                    LoadResult.Page(
+                        data = list,
+                        prevKey = pageInfo.checkedStartCursor,
+                        nextKey = pageInfo.checkedEndCursor
+                    )
                 }
+            } catch (e: Exception) {
+                Timber.e(e)
+
+                if (params is LoadParams.Refresh) {
+                    initialLoadStatus.postValue(Resource.error(e.message, null))
+                }
+
+                LoadResult.Error<String, PullRequestTimelineItem>(e)
             }
         }
-
-        val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
-
-        return InitialLoadResponse(
-            list,
-            PreviousPageKey(pageInfo.checkedStartCursor),
-            NextPageKey(pageInfo.checkedEndCursor)
-        )
-    }
-
-    override fun doLoadAfter(params: LoadParams<String>): AfterLoadResponse<PullRequestTimelineItem> {
-        val response = queryPullRequestTimelineItems(
-            owner = owner,
-            name = name,
-            number = number,
-            perPage = params.requestedLoadSize,
-            after = params.key
-        )
-
-        val list = mutableListOf<PullRequestTimelineItem>()
-        val timeline = response.data()?.repository?.pullRequest?.timelineItems
-
-        timeline?.nodes?.forEach { node ->
-            node?.let {
-                initTimelineItemWithRawData(node)?.let {
-                    list.add(it)
-                }
-            }
-        }
-
-        return AfterLoadResponse(
-            list,
-            NextPageKey(timeline?.pageInfo?.fragments?.pageInfo.checkedEndCursor)
-        )
-    }
-
-    override fun doLoadBefore(params: LoadParams<String>): BeforeLoadResponse<PullRequestTimelineItem> {
-        val response = queryPullRequestTimelineItems(
-            owner = owner,
-            name = name,
-            number = number,
-            perPage = params.requestedLoadSize,
-            before = params.key
-        )
-
-        val list = mutableListOf<PullRequestTimelineItem>()
-        val timeline = response.data()?.repository?.pullRequest?.timelineItems
-
-        timeline?.nodes?.forEach { node ->
-            node?.let {
-                initTimelineItemWithRawData(node)?.let {
-                    list.add(it)
-                }
-            }
-        }
-
-        return BeforeLoadResponse(
-            list,
-            PreviousPageKey(timeline?.pageInfo?.fragments?.pageInfo.checkedStartCursor)
-        )
     }
 
     private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Node): PullRequestTimelineItem? {

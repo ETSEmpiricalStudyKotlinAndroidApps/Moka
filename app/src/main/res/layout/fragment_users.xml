@@ -48,19 +48,19 @@
                     layout="@layout/layout_empty_content"
                     bind:actionString="@{@string/users_content_empty_action}"
                     bind:actions="@{emptyViewActions}"
-                    bind:goneUnless="@{viewModel.initialLoadStatus != null &amp;&amp; viewModel.initialLoadStatus.status != Status.LOADING &amp;&amp; (viewModel.data == null || viewModel.data.size() == 0)}"
+                    bind:goneUnless="@{viewModel.initialLoadStatus != null &amp;&amp; viewModel.initialLoadStatus.status != Status.LOADING &amp;&amp; (viewModel.initialLoadStatus.data == null || viewModel.initialLoadStatus.data.empty)}"
                     bind:iconDrawable="@{@drawable/ic_outline_people_24}"
-                    bind:titleString="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/users_content_empty_title}" />
+                    bind:titleString="@{viewModel.initialLoadStatus.data.empty &amp;&amp; viewModel.initialLoadStatus.status == Status.ERROR ? @string/common_error_requesting_data : @string/users_content_empty_title}" />
 
                 <include
                     android:id="@+id/layout_loading"
                     layout="@layout/layout_loading"
-                    bind:goneUnless="@{viewModel.data.size() == 0 &amp;&amp; viewModel.initialLoadStatus.status == Status.LOADING}" />
+                    bind:goneUnless="@{viewModel.initialLoadStatus.status == Status.LOADING}" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     style="@style/RecyclerViewStyle"
-                    app:goneUnless="@{viewModel.data.size() != 0}"
+                    app:goneUnless="@{!viewModel.initialLoadStatus.data.empty}"
                     tools:listitem="@layout/item_user" />
 
             </FrameLayout>

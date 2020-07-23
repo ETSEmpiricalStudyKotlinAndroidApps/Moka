@@ -4,6 +4,7 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingConfig
 import androidx.preference.PreferenceManager
 import androidx.work.*
 import io.github.tonnyl.moka.data.AuthenticatedUser
@@ -32,6 +33,14 @@ class MokaApp : Application() {
     companion object {
         const val PER_PAGE = 16
         const val MAX_SIZE_OF_PAGED_LIST = 1024
+
+        val defaultPagingConfig = PagingConfig(
+            pageSize = PER_PAGE,
+            prefetchDistance = PER_PAGE,
+            enablePlaceholders = false,
+            initialLoadSize = PER_PAGE,
+            maxSize = MAX_SIZE_OF_PAGED_LIST
+        )
     }
 
     override fun onCreate() {

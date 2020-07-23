@@ -13,14 +13,12 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentPrsBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.LoadStateAdapter
-import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.pr.PullRequestFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.prs.PullRequestItemEvent.ViewProfile
 import io.github.tonnyl.moka.ui.prs.PullRequestItemEvent.ViewPullRequest
 
-class PullRequestsFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
+class PullRequestsFragment : Fragment(), EmptyViewActions {
 
     private val args by navArgs<PullRequestsFragmentArgs>()
 
@@ -28,12 +26,13 @@ class PullRequestsFragment : Fragment(), PagingNetworkStateActions, EmptyViewAct
         ViewModelFactory(args)
     }
 
-    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
-        PagedListAdapterWrapper(
-            LoadStateAdapter(this),
-            PullRequestAdapter(viewLifecycleOwner, pullRequestsViewModel),
-            LoadStateAdapter(this)
+    private val pullRequestAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val adapter = PullRequestAdapter(viewLifecycleOwner, pullRequestsViewModel)
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter(adapter::retry),
+            footer = LoadStateAdapter(adapter::retry)
         )
+        adapter
     }
 
     private lateinit var binding: FragmentPrsBinding
@@ -65,14 +64,14 @@ class PullRequestsFragment : Fragment(), PagingNetworkStateActions, EmptyViewAct
         }
 
 
-        pullRequestsViewModel.data.observe(viewLifecycleOwner, Observer {
+        pullRequestsViewModel.prsResult.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = adapterWrapper.mergeAdapter
+                    adapter = pullRequestAdapter
                 }
             }
 
-            adapterWrapper.pagingAdapter.submitList(it)
+            pullRequestAdapter.submitData(lifecycle, it)
         })
 
         pullRequestsViewModel.event.observe(viewLifecycleOwner, Observer {
@@ -93,12 +92,8 @@ class PullRequestsFragment : Fragment(), PagingNetworkStateActions, EmptyViewAct
         })
     }
 
-    override fun retryLoadPreviousNext() {
-
-    }
-
     override fun retryInitial() {
-
+        pullRequestAdapter.refresh()
     }
 
     override fun doAction() {

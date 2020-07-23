@@ -13,13 +13,11 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentUsersBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.LoadStateAdapter
-import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.users.ItemUserEvent.FollowUser
 import io.github.tonnyl.moka.ui.users.ItemUserEvent.ViewProfile
 
-class UsersFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
+class UsersFragment : Fragment(), EmptyViewActions {
 
     private val args by navArgs<UsersFragmentArgs>()
 
@@ -27,12 +25,13 @@ class UsersFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
         ViewModelFactory(args)
     }
 
-    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
-        PagedListAdapterWrapper(
-            LoadStateAdapter(this),
-            UserAdapter(viewLifecycleOwner, viewModel),
-            LoadStateAdapter(this)
+    private val usersAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val adapter = UserAdapter(viewLifecycleOwner, viewModel)
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter(adapter::retry),
+            footer = LoadStateAdapter(adapter::retry)
         )
+        adapter
     }
 
     private lateinit var binding: FragmentUsersBinding
@@ -73,15 +72,13 @@ class UsersFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
-
-        viewModel.data.observe(viewLifecycleOwner, Observer { list ->
+        viewModel.usersResult.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = adapterWrapper.mergeAdapter
+                    adapter = usersAdapter
                 }
             }
-            adapterWrapper.pagingAdapter.submitList(list)
+            usersAdapter.submitData(lifecycle, it)
         })
 
         viewModel.event.observe(viewLifecycleOwner, Observer {
@@ -101,15 +98,11 @@ class UsersFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
     }
 
     override fun retryInitial() {
-        viewModel.refresh()
+        usersAdapter.refresh()
     }
 
     override fun doAction() {
 
-    }
-
-    override fun retryLoadPreviousNext() {
-        viewModel.retryLoadPreviousNext()
     }
 
 }

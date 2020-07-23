@@ -15,7 +15,10 @@ interface RemoteKeysDao {
     @Query("SELECT * FROM remote_keys WHERE id = :id")
     fun remoteKeysId(id: String): RemoteKeys?
 
-    @Query("DELETE FROM remote_keys WHERE id LIKE ':prefix%'")
-    fun clearRemoteKeys(prefix: String)
+    /**
+     * @param idLike should be formatted like:
+     */
+    @Query("DELETE FROM remote_keys WHERE id LIKE :idLike")
+    fun clearRemoteKeys(idLike: String)
 
 }

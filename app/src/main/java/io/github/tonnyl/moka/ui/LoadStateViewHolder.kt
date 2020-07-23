@@ -1,20 +1,26 @@
 package io.github.tonnyl.moka.ui
 
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.databinding.ItemLoadStateBinding
-import io.github.tonnyl.moka.network.NetworkState
 
 class LoadStateViewHolder(
-    private val binding: ItemLoadStateBinding
+    private val binding: ItemLoadStateBinding,
+    retry: () -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bindTo(loadState: NetworkState?, actions: PagingNetworkStateActions) {
-        binding.apply {
-            state = loadState
-            this.actions = actions
+    init {
+        binding.itemNetworkStateRetryButton.setOnClickListener {
+            retry.invoke()
         }
+    }
 
-        binding.executePendingBindings()
+    fun bind(state: LoadState) {
+        with(binding) {
+            loadState = state
+
+            executePendingBindings()
+        }
     }
 
 }

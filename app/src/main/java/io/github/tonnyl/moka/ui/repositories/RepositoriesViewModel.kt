@@ -1,54 +1,45 @@
 package io.github.tonnyl.moka.ui.repositories
 
 import androidx.annotation.MainThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.cachedIn
+import androidx.paging.liveData
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.RepositoryItem
-import io.github.tonnyl.moka.network.PagedResource
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.ui.Event
-import io.github.tonnyl.moka.ui.NetworkCacheSourceViewModel
 import io.github.tonnyl.moka.ui.repositories.RepositoryItemEvent.*
 
 class RepositoriesViewModel(
     private val args: RepositoriesFragmentArgs
-) : NetworkCacheSourceViewModel<RepositoryItem>() {
+) : ViewModel() {
 
     private val _initialLoadStatus = MutableLiveData<Resource<List<RepositoryItem>>>()
     val initialLoadStatus: LiveData<Resource<List<RepositoryItem>>>
         get() = _initialLoadStatus
 
-    private val _pagedLoadStatus = MutableLiveData<PagedResource<List<RepositoryItem>>>()
-    val pagedLoadStatus: LiveData<PagedResource<List<RepositoryItem>>>
-        get() = _pagedLoadStatus
-
     private val _event = MutableLiveData<Event<RepositoryItemEvent>>()
     val event: LiveData<Event<RepositoryItemEvent>>
         get() = _event
 
-    private lateinit var sourceFactory: RepositoriesDataSourceFactory
-
-    init {
-        refresh()
-    }
-
-    override fun initRemoteSource(): LiveData<PagedList<RepositoryItem>> {
-        sourceFactory = RepositoriesDataSourceFactory(
-            args.login,
-            args.repositoriesType,
-            _initialLoadStatus,
-            _pagedLoadStatus
+    val repositoriesResult = liveData {
+        emitSource(
+            Pager(
+                config = MokaApp.defaultPagingConfig,
+                pagingSourceFactory = {
+                    when (args.repositoriesType) {
+                        RepositoryType.STARRED -> {
+                            StarredRepositoriesDataSource(args.login, _initialLoadStatus)
+                        }
+                        RepositoryType.OWNED -> {
+                            OwnedRepositoriesDataSource(args.login, _initialLoadStatus)
+                        }
+                    }
+                }
+            ).liveData
         )
-
-        return LivePagedListBuilder(sourceFactory, pagingConfig)
-            .build()
-    }
-
-    override fun retryLoadPreviousNext() {
-        sourceFactory.retryLoadPreviousNext()
-    }
+    }.cachedIn(viewModelScope)
 
     @MainThread
     fun viewRepository(

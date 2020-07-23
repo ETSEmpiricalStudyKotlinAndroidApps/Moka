@@ -10,15 +10,22 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.MergeAdapter
+import androidx.paging.map
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.extension.updateByReactionEventIfNeeded
+import io.github.tonnyl.moka.data.item.IssueComment
 import io.github.tonnyl.moka.databinding.FragmentPrBinding
-import io.github.tonnyl.moka.ui.*
+import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.EventObserver
+import io.github.tonnyl.moka.ui.LoadStateAdapter
+import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.UserEvent.React
+import io.github.tonnyl.moka.ui.reaction.ReactionChangePayload
 
-class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActions {
+class PullRequestFragment : Fragment(), EmptyViewActions {
 
     private val args by navArgs<PullRequestFragmentArgs>()
 
@@ -33,28 +40,28 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
 
     private lateinit var binding: FragmentPrBinding
 
-    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
-        PagedListAdapterWrapper(
-            LoadStateAdapter(this),
-            PullRequestTimelineAdapter(
-                viewLifecycleOwner,
-                mainViewModel,
-                reactionsViewPool
-            ),
-            LoadStateAdapter(this)
+    private val pullRequestTimelineAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val adapter = PullRequestTimelineAdapter(
+            viewLifecycleOwner,
+            mainViewModel,
+            reactionsViewPool
         )
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter(adapter::retry),
+            footer = LoadStateAdapter(adapter::retry)
+        )
+        adapter
     }
-    private val mergeAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        MergeAdapter(
-            adapterWrapper.headerAdapter,
+
+    private val concatAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        ConcatAdapter(
             PullRequestDetailsAdapter(
                 viewLifecycleOwner,
                 mainViewModel,
                 pullRequestViewModel,
                 reactionsViewPool
             ),
-            adapterWrapper.pagingAdapter,
-            adapterWrapper.footerAdapter
+            pullRequestTimelineAdapter
         )
     }
 
@@ -84,38 +91,54 @@ class PullRequestFragment : Fragment(), EmptyViewActions, PagingNetworkStateActi
             lifecycleOwner = viewLifecycleOwner
         }
 
-        pullRequestViewModel.data.observe(viewLifecycleOwner, Observer {
+        pullRequestViewModel.prTimelineResult.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = mergeAdapter
+                    adapter = concatAdapter
                 }
             }
 
-            adapterWrapper.pagingAdapter.submitList(it)
+            pullRequestTimelineAdapter.submitData(lifecycle, it)
         })
 
-        pullRequestViewModel.pagedLoadStatus.observe(viewLifecycleOwner, adapterWrapper.observer)
-
         mainViewModel.fragmentScopedEvent.observe(viewLifecycleOwner, EventObserver { event ->
-            if (event is React) {
-                val payload = pullRequestViewModel.data.value?.updateByReactionEventIfNeeded(event)
-                if (payload != null && payload.index >= 0) {
-                    adapterWrapper.pagingAdapter.notifyItemChanged(payload.index, payload.change)
+            if (event is React
+                && event.resource.status == Status.SUCCESS
+            ) {
+                val currentValue =
+                    pullRequestViewModel.prTimelineResult.value ?: return@EventObserver
+                var index = -1
+                var payload: ReactionChangePayload? = null
+                val data = currentValue.map { item ->
+                    index += 1
+                    if (item is IssueComment
+                        && item.id == event.reactableId
+                    ) {
+                        val reactionGroups = item.reactionGroups ?: mutableListOf()
+                        val change = reactionGroups.updateByReactionEventIfNeeded(event)
+
+                        payload = ReactionChangePayload(index, change)
+                    }
+                    item
+                }
+
+                pullRequestTimelineAdapter.submitData(lifecycle, data)
+
+                payload?.let {
+                    if (it.index >= 0) {
+                        pullRequestTimelineAdapter.notifyItemChanged(it.index, it.change)
+                    }
                 }
             }
         })
     }
 
     override fun retryInitial() {
-        pullRequestViewModel.refresh()
+        pullRequestTimelineAdapter.refresh()
     }
 
     override fun doAction() {
 
-    }
-
-    override fun retryLoadPreviousNext() {
-        pullRequestViewModel.retryLoadPreviousNext()
     }
 
 }

@@ -13,14 +13,12 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchedUsersBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.LoadStateAdapter
-import io.github.tonnyl.moka.ui.PagedListAdapterWrapper
-import io.github.tonnyl.moka.ui.PagingNetworkStateActions
 import io.github.tonnyl.moka.ui.profile.ProfileFragmentArgs
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.search.SearchViewModel
 import io.github.tonnyl.moka.ui.search.users.SearchedUserItemEvent.*
 
-class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewActions {
+class SearchedUsersFragment : Fragment(), EmptyViewActions {
 
     private lateinit var binding: FragmentSearchedUsersBinding
 
@@ -31,12 +29,13 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
     )
     private val searchedUsersViewModel by viewModels<SearchedUsersViewModel>()
 
-    private val adapterWrapper by lazy(LazyThreadSafetyMode.NONE) {
-        PagedListAdapterWrapper(
-            LoadStateAdapter(this),
-            SearchedUserAdapter(viewLifecycleOwner, searchedUsersViewModel),
-            LoadStateAdapter(this)
+    private val searchedUserAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        val adapter = SearchedUserAdapter(viewLifecycleOwner, searchedUsersViewModel)
+        adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter(adapter::retry),
+            footer = LoadStateAdapter(adapter::retry)
         )
+        adapter
     }
 
     companion object {
@@ -69,19 +68,14 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
             searchedUsersViewModel.refresh(it)
         })
 
-        searchedUsersViewModel.pagedLoadStatus.observe(
-            viewLifecycleOwner,
-            adapterWrapper.observer
-        )
-
-        searchedUsersViewModel.data.observe(viewLifecycleOwner, Observer {
+        searchedUsersViewModel.usersResult.observe(viewLifecycleOwner, Observer {
             with(binding.recyclerView) {
                 if (adapter == null) {
-                    adapter = adapterWrapper.mergeAdapter
+                    adapter = searchedUserAdapter
                 }
             }
 
-            adapterWrapper.pagingAdapter.submitList(it)
+            searchedUserAdapter.submitData(lifecycle, it)
         })
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -97,19 +91,15 @@ class SearchedUsersFragment : Fragment(), PagingNetworkStateActions, EmptyViewAc
                     gotoProfile(event.login, ProfileType.ORGANIZATION)
                 }
                 is FollowUserEvent -> {
-                    adapterWrapper.pagingAdapter.notifyDataSetChanged()
+                    searchedUserAdapter.notifyDataSetChanged()
                 }
             }
         })
 
     }
 
-    override fun retryLoadPreviousNext() {
-        searchedUsersViewModel.retryLoadPreviousNext()
-    }
-
     override fun retryInitial() {
-        searchedUsersViewModel.refresh()
+        searchedUserAdapter.refresh()
     }
 
     override fun doAction() {

@@ -43,9 +43,8 @@
 
         <argument
             android:name="login"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
+            android:defaultValue=""
+            app:argType="string" />
 
         <!--if the projects don't belong to a repository, set this
         argument an empty string-->

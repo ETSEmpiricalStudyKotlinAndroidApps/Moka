@@ -1,6 +1,6 @@
 package io.github.tonnyl.moka.db.dao
 
-import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,7 +12,10 @@ import java.util.*
 interface EventDao {
 
     @Query("SELECT * FROM event ORDER BY created_at DESC")
-    fun eventsByCreatedAt(): DataSource.Factory<Int, Event>
+    fun eventsByCreatedAt(): PagingSource<Int, Event>
+
+    @Query("SELECT * FROM event ORDER BY created_at DESC LIMIT 20")
+    fun eventsByCreatedAtLimit20(): List<Event>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(events: List<Event>)
@@ -22,5 +25,8 @@ interface EventDao {
 
     @Query("DELETE FROM event")
     fun deleteAll()
+
+    @Query("SELECT COUNT(*) FROM event")
+    fun eventsCount(): Int
 
 }

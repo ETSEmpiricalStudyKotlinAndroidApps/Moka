@@ -20,7 +20,7 @@ suspend fun reopenPullRequest(pullRequestId: String) = withContext(Dispatchers.I
         GraphQLClient.apolloClient
             .mutate(
                 ReopenPullRequestMutation(
-                    ReopenPullRequestInput(pullRequestId)
+                    ReopenPullRequestInput(pullRequestId = pullRequestId)
                 )
             )
             .execute()

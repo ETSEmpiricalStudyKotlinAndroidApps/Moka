@@ -25,7 +25,10 @@ suspend fun updateSubscription(
         GraphQLClient.apolloClient
             .mutate(
                 UpdateSubscriptionMutation(
-                    UpdateSubscriptionInput(subscribableId, state)
+                    UpdateSubscriptionInput(
+                        state = state,
+                        subscribableId = subscribableId
+                    )
                 )
             )
             .execute()

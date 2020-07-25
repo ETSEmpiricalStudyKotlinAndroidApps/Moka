@@ -2,8 +2,8 @@ package io.github.tonnyl.moka.network
 
 import android.net.Uri
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.response.CustomTypeAdapter
-import com.apollographql.apollo.response.CustomTypeValue
+import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomTypeValue
 import io.github.tonnyl.moka.type.CustomType
 import io.github.tonnyl.moka.util.Iso8601Utils
 import okhttp3.*

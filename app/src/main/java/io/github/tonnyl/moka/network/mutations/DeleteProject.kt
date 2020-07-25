@@ -20,7 +20,7 @@ suspend fun deleteProject(projectId: String) = withContext(Dispatchers.IO) {
         GraphQLClient.apolloClient
             .mutate(
                 DeleteProjectMutation(
-                    DeleteProjectInput(projectId)
+                    DeleteProjectInput(projectId = projectId)
                 )
             )
             .execute()

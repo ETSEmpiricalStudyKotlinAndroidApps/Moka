@@ -27,7 +27,11 @@ suspend fun moveProjectCard(
         GraphQLClient.apolloClient
             .mutate(
                 MoveProjectCardMutation(
-                    MoveProjectCardInput(cardId, columnId, Input.optional(afterCardId))
+                    MoveProjectCardInput(
+                        cardId = cardId,
+                        columnId = columnId,
+                        afterCardId = Input.optional(afterCardId)
+                    )
                 )
             )
             .execute()

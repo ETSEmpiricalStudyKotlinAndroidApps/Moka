@@ -25,7 +25,10 @@ suspend fun moveProjectColumn(
         GraphQLClient.apolloClient
             .mutate(
                 MoveProjectColumnMutation(
-                    MoveProjectColumnInput(columnId, Input.optional(afterColumnId))
+                    MoveProjectColumnInput(
+                        columnId = columnId,
+                        afterColumnId = Input.optional(afterColumnId)
+                    )
                 )
             )
             .execute()

@@ -20,7 +20,7 @@ suspend fun deleteProjectColumn(columnId: String) = withContext(Dispatchers.IO) 
         GraphQLClient.apolloClient
             .mutate(
                 DeleteProjectColumnMutation(
-                    DeleteProjectColumnInput(columnId)
+                    DeleteProjectColumnInput(columnId = columnId)
                 )
             )
             .execute()

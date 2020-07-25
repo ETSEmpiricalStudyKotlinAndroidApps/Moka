@@ -33,11 +33,11 @@ suspend fun updateProject(
             .mutate(
                 UpdateProjectMutation(
                     UpdateProjectInput(
-                        projectId,
-                        Input.optional(name),
-                        Input.optional(body),
-                        Input.optional(state),
-                        Input.optional(isPublic)
+                        projectId = projectId,
+                        name = Input.optional(name),
+                        body = Input.optional(body),
+                        state = Input.optional(state),
+                        public_ = Input.optional(isPublic)
                     )
                 )
             )

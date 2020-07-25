@@ -14,7 +14,7 @@ suspend fun <T> ApolloCall<T>.execute() = suspendCoroutine<NonErrorResponse<T>> 
         override fun onResponse(response: Response<T>) {
             if (response.hasErrors()) {
                 continuation.resumeWithException(
-                    Exception(response.errors().firstOrNull()?.message())
+                    Exception(response.errors?.firstOrNull()?.message())
                 )
             } else {
                 continuation.resume(NonErrorResponse(response))

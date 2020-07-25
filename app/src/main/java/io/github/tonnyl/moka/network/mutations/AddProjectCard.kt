@@ -29,9 +29,9 @@ suspend fun addProjectCard(
             .mutate(
                 AddProjectCardMutation(
                     AddProjectCardInput(
-                        projectColumnId,
-                        Input.optional(contentId),
-                        Input.optional(note)
+                        projectColumnId = projectColumnId,
+                        contentId = Input.optional(contentId),
+                        note = Input.optional(note)
                     )
                 )
             )

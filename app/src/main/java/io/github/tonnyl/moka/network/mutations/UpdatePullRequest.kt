@@ -44,16 +44,16 @@ suspend fun updatePullRequest(
             .mutate(
                 UpdatePullRequestMutation(
                     UpdatePullRequestInput(
-                        pullRequestId,
-                        Input.optional(baseRefName),
-                        Input.optional(title),
-                        Input.optional(body),
-                        Input.optional(state),
-                        Input.optional(maintainerCanModify),
-                        Input.optional(assigneeIds),
-                        Input.optional(milestoneId),
-                        Input.optional(labelIds),
-                        Input.optional(projectIds)
+                        pullRequestId = pullRequestId,
+                        baseRefName = Input.optional(baseRefName),
+                        title = Input.optional(title),
+                        body = Input.optional(body),
+                        state = Input.optional(state),
+                        maintainerCanModify = Input.optional(maintainerCanModify),
+                        assigneeIds = Input.optional(assigneeIds),
+                        milestoneId = Input.optional(milestoneId),
+                        labelIds = Input.optional(labelIds),
+                        projectIds = Input.optional(projectIds)
                     )
                 )
             )

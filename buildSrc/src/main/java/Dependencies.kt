@@ -1,7 +1,7 @@
 object Versions {
 
-    val compileSdk = 29
-    val targetSdk = 29
+    val compileSdk = 30
+    val targetSdk = 30
     val minSdk = 23
 
     val androidGradle = "4.2.0-alpha05"
@@ -33,7 +33,7 @@ object Versions {
     val lottie = "3.4.1"
     val retrofit = "2.9.0"
     val okhttpLoggingInterceptor = "4.7.2"
-    val apollo = "1.3.2"
+    val apollo = "2.2.3"
     val commonMark = "0.13.1"
     val jsoup = "1.12.1"
     val timber = "4.7.1"

@@ -20,7 +20,7 @@ suspend fun closePullRequest(pullRequestId: String) = withContext(Dispatchers.IO
         GraphQLClient.apolloClient
             .mutate(
                 ClosePullRequestMutation(
-                    ClosePullRequestInput(pullRequestId)
+                    ClosePullRequestInput(pullRequestId = pullRequestId)
                 )
             )
             .execute()

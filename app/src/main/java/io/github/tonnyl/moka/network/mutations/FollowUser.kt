@@ -20,7 +20,7 @@ suspend fun followUser(userId: String) = withContext(Dispatchers.IO) {
         GraphQLClient.apolloClient
             .mutate(
                 FollowUserMutation(
-                    FollowUserInput(userId)
+                    FollowUserInput(userId = userId)
                 )
             )
             .execute()

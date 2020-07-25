@@ -39,14 +39,14 @@ suspend fun updateIssue(
             .mutate(
                 UpdateIssueMutation(
                     UpdateIssueInput(
-                        id,
-                        Input.optional(title),
-                        Input.optional(body),
-                        Input.optional(assigneeIds),
-                        Input.optional(milestoneId),
-                        Input.optional(labelIds),
-                        Input.optional(state),
-                        Input.optional(projectIds)
+                        id = id,
+                        title = Input.optional(title),
+                        body = Input.optional(body),
+                        assigneeIds = Input.optional(assigneeIds),
+                        milestoneId = Input.optional(milestoneId),
+                        labelIds = Input.optional(labelIds),
+                        state = Input.optional(state),
+                        projectIds = Input.optional(projectIds)
                     )
                 )
             )

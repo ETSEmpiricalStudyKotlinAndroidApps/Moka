@@ -25,7 +25,10 @@ suspend fun removeReaction(
         GraphQLClient.apolloClient
             .mutate(
                 RemoveReactionMutation(
-                    RemoveReactionInput(subjectId, content)
+                    RemoveReactionInput(
+                        subjectId = subjectId,
+                        content = content
+                    )
                 )
             )
             .execute()

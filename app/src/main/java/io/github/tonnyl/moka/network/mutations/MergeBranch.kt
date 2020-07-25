@@ -30,7 +30,10 @@ suspend fun mergeBranch(
             .mutate(
                 MergeBranchMutation(
                     MergeBranchInput(
-                        repositoryId, base, head, Input.optional(commitMessage)
+                        repositoryId = repositoryId,
+                        base = base,
+                        head = head,
+                        commitMessage = Input.optional(commitMessage)
                     )
                 )
             )

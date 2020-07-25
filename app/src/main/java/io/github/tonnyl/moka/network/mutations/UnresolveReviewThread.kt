@@ -20,7 +20,7 @@ suspend fun unresolveReviewThread(threadId: String) = withContext(Dispatchers.IO
         GraphQLClient.apolloClient
             .mutate(
                 UnresolveReviewThreadMutation(
-                    UnresolveReviewThreadInput(threadId)
+                    UnresolveReviewThreadInput(threadId = threadId)
                 )
             )
             .execute()

@@ -20,7 +20,7 @@ suspend fun deleteIssueComment(id: String) = withContext(Dispatchers.IO) {
         GraphQLClient.apolloClient
             .mutate(
                 DeleteIssueCommentMutation(
-                    DeleteIssueCommentInput(id)
+                    DeleteIssueCommentInput(id = id)
                 )
             )
             .execute()

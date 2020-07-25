@@ -24,7 +24,10 @@ suspend fun updateTopics(
         GraphQLClient.apolloClient
             .mutate(
                 UpdateTopicsMutation(
-                    UpdateTopicsInput(repositoryId, topicNames)
+                    UpdateTopicsInput(
+                        repositoryId = repositoryId,
+                        topicNames = topicNames
+                    )
                 )
             )
             .execute()

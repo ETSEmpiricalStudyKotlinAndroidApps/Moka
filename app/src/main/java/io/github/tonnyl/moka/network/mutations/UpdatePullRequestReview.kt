@@ -24,7 +24,10 @@ suspend fun updatePullRequestReview(
         GraphQLClient.apolloClient
             .mutate(
                 UpdatePullRequestReviewMutation(
-                    UpdatePullRequestReviewInput(pullRequestReviewId, body)
+                    UpdatePullRequestReviewInput(
+                        pullRequestReviewId = pullRequestReviewId,
+                        body = body
+                    )
                 )
             )
             .execute()

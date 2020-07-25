@@ -28,9 +28,9 @@ suspend fun updateProjectCard(
             .mutate(
                 UpdateProjectCardMutation(
                     UpdateProjectCardInput(
-                        projectCardId,
-                        Input.optional(isArchived),
-                        Input.optional(note)
+                        projectCardId = projectCardId,
+                        isArchived = Input.optional(isArchived),
+                        note = Input.optional(note)
                     )
                 )
             )

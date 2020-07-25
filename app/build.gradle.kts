@@ -52,7 +52,7 @@ android {
             assets.srcDirs(roomSchemaLocation)
         }
     }
-    buildTypes {
+    buildTypes(Action {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -67,7 +67,7 @@ android {
             versionNameSuffix = "-debug"
             isTestCoverageEnabled = true
         }
-    }
+    })
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -94,12 +94,15 @@ androidExtensions {
 }
 
 apollo {
-    onCompilationUnit {
-        schemaFile.set(File("/graphql/schema.json"))
+    service("github") {
+        // download the schema file from https://docs.github.com/public/schema.docs.graphql
+        // and then change the extension name of the file from `graphql` to `sdl`.
+        schemaFile.set(File("src/main/graphql/schema.sdl"))
         rootPackageName.set("io.github.tonnyl.moka")
         suppressRawTypesWarning.set(true)
         useSemanticNaming.set(true)
-        graphqlSourceDirectorySet.setSrcDirs(listOf("/graphql/*"))
+        graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
+        graphqlSourceDirectorySet.include("**/*.graphql")
         customTypeMapping.set(
             mutableMapOf(
                 "GitTimestamp" to "java.util.Date",
@@ -113,7 +116,6 @@ apollo {
             )
         )
     }
-
     generateKotlinModels.set(true)
 }
 

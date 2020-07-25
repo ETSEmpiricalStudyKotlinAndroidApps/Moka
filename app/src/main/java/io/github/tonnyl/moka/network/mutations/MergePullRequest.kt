@@ -33,11 +33,11 @@ suspend fun mergePullRequest(
             .mutate(
                 MergePullRequestMutation(
                     MergePullRequestInput(
-                        pullRequestId,
-                        Input.optional(commitHeadline),
-                        Input.optional(commitBody),
-                        Input.optional(expectedHeadOid),
-                        Input.optional(mergeMethod)
+                        pullRequestId = pullRequestId,
+                        commitHeadline = Input.optional(commitHeadline),
+                        commitBody = Input.optional(commitBody),
+                        expectedHeadOid = Input.optional(expectedHeadOid),
+                        mergeMethod = Input.optional(mergeMethod)
                     )
                 )
             )

@@ -20,7 +20,7 @@ suspend fun deletePullRequestReview(pullRequestReviewId: String) = withContext(D
         GraphQLClient.apolloClient
             .mutate(
                 DeletePullRequestReviewMutation(
-                    DeletePullRequestReviewInput(pullRequestReviewId)
+                    DeletePullRequestReviewInput(pullRequestReviewId = pullRequestReviewId)
                 )
             )
             .execute()

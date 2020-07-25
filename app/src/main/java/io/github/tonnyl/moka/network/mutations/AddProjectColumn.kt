@@ -24,7 +24,10 @@ suspend fun addProjectColumn(
         GraphQLClient.apolloClient
             .mutate(
                 AddProjectColumnMutation(
-                    AddProjectColumnInput(projectId, name)
+                    AddProjectColumnInput(
+                        projectId = projectId,
+                        name = name
+                    )
                 )
             )
             .execute()

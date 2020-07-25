@@ -20,7 +20,7 @@ suspend fun reopenIssue(issueId: String) = withContext(Dispatchers.IO) {
         GraphQLClient.apolloClient
             .mutate(
                 ReopenIssueMutation(
-                    ReopenIssueInput(issueId)
+                    ReopenIssueInput(issueId = issueId)
                 )
             )
             .execute()

@@ -20,7 +20,7 @@ suspend fun deleteRef(refId: String) = withContext(Dispatchers.IO) {
         GraphQLClient.apolloClient
             .mutate(
                 DeleteRefMutation(
-                    DeleteRefInput(refId)
+                    DeleteRefInput(refId = refId)
                 )
             )
             .execute()

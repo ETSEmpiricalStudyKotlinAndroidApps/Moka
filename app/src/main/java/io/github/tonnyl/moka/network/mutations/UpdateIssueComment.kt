@@ -24,7 +24,10 @@ suspend fun updateIssueComment(
         GraphQLClient.apolloClient
             .mutate(
                 UpdateIssueCommentMutation(
-                    UpdateIssueCommentInput(id, body)
+                    UpdateIssueCommentInput(
+                        id = id,
+                        body = body
+                    )
                 )
             )
             .execute()

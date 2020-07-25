@@ -20,7 +20,7 @@ suspend fun closeIssue(issueId: String) = withContext(Dispatchers.IO) {
         GraphQLClient.apolloClient
             .mutate(
                 CloseIssueMutation(
-                    CloseIssueInput(issueId)
+                    CloseIssueInput(issueId = issueId)
                 )
             )
             .execute()

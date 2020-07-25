@@ -24,7 +24,10 @@ suspend fun linkRepositoryToProject(
         GraphQLClient.apolloClient
             .mutate(
                 LinkRepositoryToProjectMutation(
-                    LinkRepositoryToProjectInput(projectId, repositoryId)
+                    LinkRepositoryToProjectInput(
+                        projectId = projectId,
+                        repositoryId = repositoryId
+                    )
                 )
             )
             .execute()

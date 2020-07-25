@@ -25,7 +25,10 @@ suspend fun addReaction(
         GraphQLClient.apolloClient
             .mutate(
                 AddReactionMutation(
-                    AddReactionInput(subjectId, content)
+                    AddReactionInput(
+                        subjectId = subjectId,
+                        content = content
+                    )
                 )
             )
             .execute()

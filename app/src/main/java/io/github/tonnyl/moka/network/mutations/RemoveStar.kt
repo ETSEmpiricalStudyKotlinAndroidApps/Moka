@@ -20,7 +20,7 @@ suspend fun removeStar(starrableId: String) = withContext(Dispatchers.IO) {
         GraphQLClient.apolloClient
             .mutate(
                 RemoveStarMutation(
-                    RemoveStarInput(starrableId)
+                    RemoveStarInput(starrableId = starrableId)
                 )
             )
             .execute()

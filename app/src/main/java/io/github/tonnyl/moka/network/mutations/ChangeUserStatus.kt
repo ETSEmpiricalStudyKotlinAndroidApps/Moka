@@ -22,11 +22,11 @@ suspend fun changeUserStatus(
             .mutate(
                 ChangeUserStatusMutation(
                     ChangeUserStatusInput(
-                        Input.optional(emoji),
-                        Input.optional(message),
-                        Input.optional(organizationId),
-                        Input.optional(limitedAvailability),
-                        Input.optional(expiresAt)
+                        emoji = Input.optional(emoji),
+                        message = Input.optional(message),
+                        organizationId = Input.optional(organizationId),
+                        limitedAvailability = Input.optional(limitedAvailability),
+                        expiresAt = Input.optional(expiresAt)
                     )
                 )
             )

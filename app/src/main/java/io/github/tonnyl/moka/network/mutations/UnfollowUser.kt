@@ -20,7 +20,7 @@ suspend fun unfollowUser(userId: String) = withContext(Dispatchers.IO) {
         GraphQLClient.apolloClient
             .mutate(
                 UnfollowUserMutation(
-                    UnfollowUserInput(userId)
+                    UnfollowUserInput(userId = userId)
                 )
             )
             .execute()

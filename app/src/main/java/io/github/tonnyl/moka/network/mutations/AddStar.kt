@@ -20,7 +20,7 @@ suspend fun addStar(starrableId: String) = withContext(Dispatchers.IO) {
         GraphQLClient.apolloClient
             .mutate(
                 AddStarMutation(
-                    AddStarInput(starrableId)
+                    AddStarInput(starrableId = starrableId)
                 )
             )
             .execute()

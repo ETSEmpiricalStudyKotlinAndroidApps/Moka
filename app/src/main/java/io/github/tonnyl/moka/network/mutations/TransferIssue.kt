@@ -22,7 +22,10 @@ suspend fun transferIssue(
         GraphQLClient.apolloClient
             .mutate(
                 TransferIssueMutation(
-                    TransferIssueInput(issueId, repositoryId)
+                    TransferIssueInput(
+                        issueId = issueId,
+                        repositoryId = repositoryId
+                    )
                 )
             )
             .execute()

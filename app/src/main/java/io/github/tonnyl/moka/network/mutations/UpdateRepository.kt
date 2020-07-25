@@ -40,14 +40,14 @@ suspend fun updateRepository(
             .mutate(
                 UpdateRepositoryMutation(
                     UpdateRepositoryInput(
-                        repositoryId,
-                        Input.optional(name),
-                        Input.optional(description),
-                        Input.optional(template),
-                        Input.optional(homepageUrl),
-                        Input.optional(hasWikiEnabled),
-                        Input.optional(hasIssuesEnabled),
-                        Input.optional(hasProjectsEnabled)
+                        repositoryId = repositoryId,
+                        name = Input.optional(name),
+                        description = Input.optional(description),
+                        template = Input.optional(template),
+                        homepageUrl = Input.optional(homepageUrl),
+                        hasWikiEnabled = Input.optional(hasWikiEnabled),
+                        hasIssuesEnabled = Input.optional(hasIssuesEnabled),
+                        hasProjectsEnabled = Input.optional(hasProjectsEnabled)
                     )
                 )
             )

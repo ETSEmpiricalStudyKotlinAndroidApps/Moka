@@ -30,10 +30,10 @@ suspend fun requestReviews(
             .mutate(
                 RequestReviewsMutation(
                     RequestReviewsInput(
-                        pullRequestId,
-                        Input.optional(userIds),
-                        Input.optional(teamIds),
-                        Input.optional(union)
+                        pullRequestId = pullRequestId,
+                        userIds = Input.optional(userIds),
+                        teamIds = Input.optional(teamIds),
+                        union = Input.optional(union)
                     )
                 )
             )

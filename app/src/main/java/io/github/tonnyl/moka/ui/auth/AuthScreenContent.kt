@@ -2,22 +2,22 @@ package io.github.tonnyl.moka.ui.auth
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.Composable
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.ConstraintLayout
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.ui.core.ContextAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.Text
-import androidx.ui.layout.ConstraintLayout
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.livedata.observeAsState
-import androidx.ui.material.Button
-import androidx.ui.material.MaterialTheme
-import androidx.ui.res.imageResource
-import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.viewinterop.AndroidView
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.AuthenticatedUser
@@ -74,9 +74,6 @@ fun AuthScreenContent(
             )
         } else {
             Button(
-                text = {
-                    Text(text = stringResource(id = R.string.auth_get_started))
-                },
                 onClick = {
                     val intent = Intent(Intent.ACTION_VIEW).apply {
                         data = Uri.parse(
@@ -96,7 +93,9 @@ fun AuthScreenContent(
                     bottom.linkTo(parent.bottom)
                     top.linkTo(guideline)
                 }
-            )
+            ) {
+                Text(text = stringResource(id = R.string.auth_get_started))
+            }
         }
     }
 }

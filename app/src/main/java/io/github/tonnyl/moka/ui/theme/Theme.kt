@@ -1,13 +1,13 @@
 package io.github.tonnyl.moka.ui.theme
 
-import androidx.compose.Composable
-import androidx.ui.foundation.isSystemInDarkTheme
-import androidx.ui.graphics.Color
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.darkColorPalette
-import androidx.ui.material.lightColorPalette
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
-private val LightThemeColors = lightColorPalette(
+private val LightThemeColors = lightColors(
     primary = Color(0xff6200ee),
     primaryVariant = Color(0xff3700b3),
     onPrimary = Color(0xffffffff),
@@ -22,7 +22,7 @@ private val LightThemeColors = lightColorPalette(
     onError = Color(0xffffffff)
 )
 
-private val DarkThemeColors = darkColorPalette(
+private val DarkThemeColors = darkColors(
     primary = Color(0xfffce548),
     primaryVariant = Color(0xffc6b300),
     onPrimary = Color(0xff000000),

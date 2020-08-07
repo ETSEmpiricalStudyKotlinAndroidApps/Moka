@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
@@ -75,7 +76,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     buildFeatures {
@@ -158,7 +159,6 @@ dependencies {
     implementation(Deps.AndroidX.UI.core)
     implementation(Deps.AndroidX.UI.foundation)
     implementation(Deps.AndroidX.UI.material)
-    implementation(Deps.AndroidX.UI.materialIconExtended)
     implementation(Deps.AndroidX.UI.layout)
     implementation(Deps.AndroidX.UI.liveData)
     implementation(Deps.AndroidX.UI.tooling)
@@ -203,6 +203,7 @@ dependencies {
 
     implementation(Deps.jsoup)
     implementation(Deps.timber)
+    implementation(Deps.accompanistCoil)
 
     testImplementation(Deps.Test.junit)
     testImplementation(Deps.Test.mockitoCore)
@@ -221,6 +222,17 @@ dependencies {
     androidTestImplementation(Deps.AndroidTest.work)
     androidTestImplementation(Deps.AndroidTest.room)
     androidTestImplementation(Deps.AndroidTest.fragment)
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs = listOf(
+            "-XXLanguage:+InlineClasses",
+            "-Xallow-jvm-ir-dependencies",
+            "-Xskip-prerelease-check"
+        )
+    }
 }
 
 apply(plugin = "com.google.gms.google-services")

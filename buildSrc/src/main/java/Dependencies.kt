@@ -4,11 +4,11 @@ object Versions {
     val targetSdk = 30
     val minSdk = 23
 
-    val androidGradle = "4.2.0-alpha05"
+    val androidGradle = "4.2.0-alpha07"
     val gmsGoogleServiceGradle = "4.3.3"
     val firebaseCrashlyticsGradle = "2.1.1"
-    val kotlin = "1.3.72"
-    val coroutines = "1.3.7"
+    val kotlin = "1.4.0-rc"
+    val coroutines = "1.3.8-1.4.0-rc"
     val fragment = "1.3.0-alpha06"
     val constraintLayout = "2.0.0-beta8"
     val coordinatorLayout = "1.1.0"
@@ -27,8 +27,9 @@ object Versions {
     val room = "2.3.0-alpha02"
     val preference = "1.1.1"
     val swipeRefreshLayout = "1.2.0-alpha01"
-    val ui = "0.1.0-dev14"
-    val composeKotlinCompilerVersion = "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
+    val ui = "0.1.0-dev16"
+    val composeKotlinCompilerVersion = "1.4.0-rc"
+    val accompanistCoil = "0.1.8"
     val glide = "4.11.0"
     val lottie = "3.4.1"
     val retrofit = "2.9.0"
@@ -56,6 +57,7 @@ object Deps {
 
     val jsoup = "org.jsoup:jsoup:${Versions.jsoup}"
     val timber = "com.jakewharton.timber:timber:${Versions.timber}"
+    val accompanistCoil = "dev.chrisbanes.accompanist:accompanist-coil:${Versions.accompanistCoil}"
 
     object GradlePlugin {
 
@@ -142,15 +144,14 @@ object Deps {
         object UI {
 
             val compiler = "androidx.compose:compose-compiler:${Versions.ui}"
-            val runtime = "androidx.compose:compose-runtime:${Versions.ui}"
-            val core = "androidx.ui:ui-core:${Versions.ui}"
-            val layout = "androidx.ui:ui-layout:${Versions.ui}"
-            val material = "androidx.ui:ui-material:${Versions.ui}"
-            val materialIconExtended = "androidx.ui:ui-material-icons-extended:${Versions.ui}"
-            val foundation = "androidx.ui:ui-foundation:${Versions.ui}"
-            val animation = "androidx.ui:ui-animation:${Versions.ui}"
+            val runtime = "androidx.compose.runtime:runtime:${Versions.ui}"
+            val core = "androidx.compose.ui:ui:${Versions.ui}"
+            val layout = "androidx.compose.foundation:foundation-layout:${Versions.ui}"
+            val material = "androidx.compose.material:material:${Versions.ui}"
+            val foundation = "androidx.compose.foundation:foundation:${Versions.ui}"
+            val animation = "androidx.compose.animation:animation:${Versions.ui}"
             val tooling = "androidx.ui:ui-tooling:${Versions.ui}"
-            val liveData = "androidx.ui:ui-livedata:${Versions.ui}"
+            val liveData = "androidx.compose.runtime:runtime-livedata:${Versions.ui}"
 
         }
 

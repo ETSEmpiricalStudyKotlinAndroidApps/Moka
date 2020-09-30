@@ -2,6 +2,8 @@ package io.github.tonnyl.moka.ui.auth
 
 import android.content.Intent
 import android.net.Uri
+import android.view.LayoutInflater
+import android.widget.FrameLayout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.ConstraintLayout
@@ -65,7 +67,10 @@ fun AuthScreenContent(
             || authTokenAndUser?.status == Status.SUCCESS
         ) {
             AndroidView(
-                resId = R.layout.view_lottie_loading,
+                viewBlock = { context ->
+                    LayoutInflater.from(context)
+                        .inflate(R.layout.view_lottie_loading, FrameLayout(context), false)
+                },
                 modifier = Modifier.constrainAs(progressBarRef) {
                     centerHorizontallyTo(parent)
                     bottom.linkTo(parent.bottom)

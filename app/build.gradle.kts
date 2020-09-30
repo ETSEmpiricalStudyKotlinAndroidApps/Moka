@@ -11,6 +11,11 @@ plugins {
     id("com.google.firebase.crashlytics")
 }
 
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
 android {
     val roomSchemaLocation = "$projectDir/schemas"
 
@@ -53,7 +58,7 @@ android {
             assets.srcDirs(roomSchemaLocation)
         }
     }
-    buildTypes(Action {
+    buildTypes {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -68,7 +73,7 @@ android {
             versionNameSuffix = "-debug"
             isTestCoverageEnabled = true
         }
-    })
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -153,7 +158,6 @@ dependencies {
     implementation(Deps.AndroidX.Room.ktx)
     // implementation(Deps.AndroidX.Room.coroutines)
     kapt(Deps.AndroidX.Room.compiler)
-    implementation(Deps.AndroidX.UI.compiler)
     implementation(Deps.AndroidX.UI.runtime)
     implementation(Deps.AndroidX.UI.animation)
     implementation(Deps.AndroidX.UI.core)
@@ -165,6 +169,7 @@ dependencies {
 
     // Google
     implementation(Deps.Google.material)
+    implementation(Deps.Google.composeThemeAdapter)
     implementation(Deps.Google.firebaseAnalyticsKtx)
     implementation(Deps.Google.firebaseCrashlytics)
 

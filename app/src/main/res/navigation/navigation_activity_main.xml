@@ -321,7 +321,7 @@
         android:id="@+id/add_reaction_dialog"
         android:name="io.github.tonnyl.moka.ui.reaction.AddReactionDialogFragment"
         tools:label="Add reaction"
-        tools:layout="@layout/dialog_fragment_add_reaction">
+        tools:layout="@layout/fragment_container">
 
         <argument
             android:name="viewer_has_reacted_contents"

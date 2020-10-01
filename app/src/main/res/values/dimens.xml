@@ -83,4 +83,6 @@
 
     <dimen name="profile_emoji_text_size">18sp</dimen>
 
+    <dimen name="reaction_emoji_button_size">64dp</dimen>
+
 </resources>

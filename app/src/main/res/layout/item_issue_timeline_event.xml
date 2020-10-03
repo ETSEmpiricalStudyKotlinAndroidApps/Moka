@@ -30,7 +30,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@android:color/white"
             tools:background="@drawable/bg_issue_timeline_event_1"
-            tools:src="@drawable/ic_edit_white_24" />
+            tools:src="@drawable/ic_edit_24" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/issue_timeline_event_author_avatar"

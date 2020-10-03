@@ -39,7 +39,7 @@ private val DarkThemeColors = darkColors(
 @Composable
 fun MokaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     MaterialTheme(
         colors = if (darkTheme) DarkThemeColors else LightThemeColors,

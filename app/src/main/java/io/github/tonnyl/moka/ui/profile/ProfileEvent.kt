@@ -21,6 +21,4 @@ sealed class ProfileEvent {
 
     class ViewGist(val gist: Gist2) : ProfileEvent()
 
-    class PinnedItemUpdate(val index: Int) : ProfileEvent()
-
 }

@@ -68,6 +68,7 @@
     <string name="user_profile_edit_profile">Edit profile</string>
     <string name="user_profile_content_empty_title">User not found</string>
     <string name="user_profile_content_empty_action">Search</string>
+    <string name="user_profile_pinned_item_caption_format">%1$s \n&#160;\n&#160;\n&#160;</string>
 
     <string name="event_at">&#160;at&#160;</string>
     <string name="event_to">&#160;to&#160;</string>

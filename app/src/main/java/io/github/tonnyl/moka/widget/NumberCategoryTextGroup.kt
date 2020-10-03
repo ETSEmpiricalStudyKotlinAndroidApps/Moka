@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatTextView
 import io.github.tonnyl.moka.R
 
@@ -38,6 +39,16 @@ class NumberCategoryTextGroup @JvmOverloads constructor(
     fun setNumberText(text: String?) {
         number = text
         numberText.text = number
+    }
+
+    fun setCategory(text: String?) {
+        category = text
+        categoryText.text = category
+    }
+
+    fun setCategory(@StringRes text: Int) {
+        category = context.getString(text)
+        categoryText.text = category
     }
 
 }

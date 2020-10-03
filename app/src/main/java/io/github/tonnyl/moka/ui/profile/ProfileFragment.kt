@@ -7,18 +7,25 @@ import android.provider.Browser.EXTRA_CREATE_NEW_TAB
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.PinnableItem
 import io.github.tonnyl.moka.data.UserStatus
-import io.github.tonnyl.moka.databinding.FragmentProfileBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainViewModel
@@ -31,9 +38,12 @@ import io.github.tonnyl.moka.ui.projects.ProjectsType
 import io.github.tonnyl.moka.ui.repositories.RepositoriesFragmentArgs
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
+import io.github.tonnyl.moka.ui.theme.MokaTheme
 import io.github.tonnyl.moka.ui.users.UsersFragmentArgs
 import io.github.tonnyl.moka.ui.users.UsersType
+import io.github.tonnyl.moka.util.isDarkModeOn
 import io.github.tonnyl.moka.util.safeStartActivity
+import io.github.tonnyl.moka.widget.TopAppBarElevation
 
 class ProfileFragment : Fragment(), EmptyViewActions {
 
@@ -42,8 +52,6 @@ class ProfileFragment : Fragment(), EmptyViewActions {
         ViewModelFactory(args)
     }
     private val mainViewModel by activityViewModels<MainViewModel>()
-
-    private lateinit var binding: FragmentProfileBinding
 
     private val specifiedProfileType: ProfileType
         get() {
@@ -58,18 +66,66 @@ class ProfileFragment : Fragment(), EmptyViewActions {
             }
         }
 
-    private val pinnedItemAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PinnedItemAdapter(viewLifecycleOwner, viewModel)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        val view = inflater.inflate(R.layout.fragment_container, container, false)
 
-        return binding.root
+        (view as ViewGroup).setContent(Recomposer.current()) {
+            val scrollState = rememberScrollState()
+            MokaTheme(darkTheme = resources.isDarkModeOn) {
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            backgroundColor = MaterialTheme.colors.background,
+                            title = { Text(text = stringResource(id = R.string.profile_title)) },
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = { findNavController().navigateUp() },
+                                    icon = { Icon(vectorResource(R.drawable.ic_arrow_back_24)) }
+                                )
+                            },
+                            elevation = TopAppBarElevation(lifted = scrollState.value != .0f),
+                            actions = {
+                                val userResource = viewModel.userProfile.observeAsState()
+                                if (userResource.value?.data?.isViewer == true) {
+                                    IconButton(onClick = {
+                                        val user = userResource.value?.data ?: return@IconButton
+
+                                        findNavController().navigate(
+                                            R.id.edit_profile_fragment,
+                                            EditProfileFragmentArgs(
+                                                user.login,
+                                                user.name,
+                                                user.email,
+                                                user.bio,
+                                                user.websiteUrl?.toString(),
+                                                user.company,
+                                                user.location
+                                            ).toBundle()
+                                        )
+                                    }) {
+                                        Icon(asset = vectorResource(id = R.drawable.ic_edit_24))
+                                    }
+                                }
+                            }
+                        )
+                    },
+                    bodyContent = {
+                        ProfileScreen(
+                            scrollState,
+                            mainViewModel.currentUser.value?.login
+                        ) {
+                            mainViewModel.getEmojiByName(it)
+                        }
+                    }
+                )
+            }
+        }
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,23 +133,11 @@ class ProfileFragment : Fragment(), EmptyViewActions {
 
         val handle = findNavController().currentBackStackEntry?.savedStateHandle
         handle?.getLiveData<UserStatus?>(EditStatusFragment.RESULT_UPDATE_STATUS)
-            ?.observe(viewLifecycleOwner, Observer { userStatus ->
+            ?.observe(viewLifecycleOwner) { userStatus ->
                 userStatus?.let {
                     viewModel.updateUserStatusIfNeeded(it)
                 }
-            })
-
-        with(binding) {
-            lifecycleOwner = viewLifecycleOwner
-
-            appbarLayout.toolbar.setNavigationOnClickListener {
-                parentFragment?.findNavController()?.navigateUp()
             }
-
-            emptyViewActions = this@ProfileFragment
-            viewModel = this@ProfileFragment.viewModel
-            mainViewModel = this@ProfileFragment.mainViewModel
-        }
 
         viewModel.userEvent.observe(viewLifecycleOwner, EventObserver { event ->
             when (event) {
@@ -174,22 +218,7 @@ class ProfileFragment : Fragment(), EmptyViewActions {
                         }
                     )
                 }
-                is PinnedItemUpdate -> {
-                    pinnedItemAdapter.notifyItemChanged(event.index)
-                }
             }
-        })
-
-        viewModel.userProfile.observe(viewLifecycleOwner, Observer {
-            if (it.data?.isViewer == true) {
-                inflateMenu()
-            }
-
-            handlePinnedItems(it.data?.pinnedItems)
-        })
-
-        viewModel.organizationProfile.observe(viewLifecycleOwner, Observer {
-            handlePinnedItems(it.data?.pinnedItems)
         })
     }
 
@@ -199,65 +228,6 @@ class ProfileFragment : Fragment(), EmptyViewActions {
 
     override fun retryInitial() {
         viewModel.refreshData()
-    }
-
-    private fun inflateMenu() {
-        with(binding.appbarLayout.toolbar) {
-            inflateMenu(R.menu.fragment_profile_option_menu)
-            setOnMenuItemClickListener { item ->
-                if (item.itemId == R.id.action_edit_profile) {
-                    viewModel.userProfile.value?.data?.let {
-                        findNavController().navigate(
-                            R.id.edit_profile_fragment,
-                            EditProfileFragmentArgs(
-                                it.login,
-                                it.name,
-                                it.email,
-                                it.bio,
-                                it.websiteUrl?.toString(),
-                                it.company,
-                                it.location
-                            ).toBundle()
-                        )
-                    }
-
-                    return@setOnMenuItemClickListener true
-                }
-
-                false
-            }
-        }
-    }
-
-    private fun handlePinnedItems(items: List<PinnableItem>?) {
-        if (items.isNullOrEmpty()) {
-            return
-        }
-
-        with(binding.profilePinnedItemsList) {
-            if (adapter == null) {
-                layoutManager = object : LinearLayoutManager(
-                    requireContext(),
-                    RecyclerView.HORIZONTAL,
-                    false
-                ) {
-
-                    override fun checkLayoutParams(lp: RecyclerView.LayoutParams?): Boolean {
-                        lp?.width = (width * .8f).toInt()
-                        return true
-                    }
-
-                }
-                adapter = pinnedItemAdapter
-                addItemDecoration(
-                    PinnedItemDecoration(
-                        resources.getDimensionPixelSize(R.dimen.fragment_content_padding)
-                    )
-                )
-            }
-
-            pinnedItemAdapter.submitList(items)
-        }
     }
 
 }

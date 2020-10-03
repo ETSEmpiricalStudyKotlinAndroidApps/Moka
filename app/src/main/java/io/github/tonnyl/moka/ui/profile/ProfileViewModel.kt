@@ -226,8 +226,6 @@ class ProfileViewModel(
                                     viewerHasStarred = !pinnableItem.viewerHasStarred
                                 )
                             }
-
-                            _userEvent.updateOnAnyThread(Event(PinnedItemUpdate(it)))
                         }
                     }
                 }

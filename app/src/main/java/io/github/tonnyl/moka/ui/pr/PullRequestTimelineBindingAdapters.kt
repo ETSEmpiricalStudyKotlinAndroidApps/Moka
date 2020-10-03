@@ -772,7 +772,7 @@ fun AppCompatImageView.prTimelineItemIconAndBgResId(
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
         is RenamedTitleEvent -> {
-            iconResId = R.drawable.ic_edit_white_24
+            iconResId = R.drawable.ic_edit_24
             bgResId = R.drawable.bg_issue_timeline_event_1
         }
         is ReopenedEvent -> {

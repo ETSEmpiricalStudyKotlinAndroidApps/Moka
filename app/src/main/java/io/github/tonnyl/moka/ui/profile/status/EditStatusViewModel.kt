@@ -148,10 +148,6 @@ class EditStatusViewModel(
         _expiresAt.value = expireAt
     }
 
-    fun showClearStatusMenu() {
-        _event.value = Event(EditStatusEvent.ShowClearStatusMenu)
-    }
-
     fun showEmojis() {
         _event.value = Event(EditStatusEvent.ShowEmojis)
     }

@@ -302,7 +302,7 @@
         android:id="@+id/edit_status_fragment"
         android:name="io.github.tonnyl.moka.ui.profile.status.EditStatusFragment"
         android:label="EditStatusFragment"
-        tools:layout="@layout/fragment_edit_status">
+        tools:layout="@layout/fragment_container">
 
         <argument
             android:name="user_status"

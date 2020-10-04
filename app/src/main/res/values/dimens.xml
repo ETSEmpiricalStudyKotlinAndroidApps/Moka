@@ -16,6 +16,8 @@
 
     <dimen name="regular_icon_size">40dp</dimen>
     <dimen name="regular_icon_padding">8dp</dimen>
+    <dimen name="regular_icon_size_plus_double_padding">72dp
+    </dimen> <!-- @dimen/regular_icon_size + @dimen/fragment_content_padding -->
 
     <dimen name="regular_radius">4dp</dimen>
 

@@ -117,6 +117,11 @@ data class User(
     val url: Uri,
 
     /**
+     * The user's Twitter username.
+     */
+    val twitterUsername: String?,
+
+    /**
      * Whether or not the viewer is able to follow the user.
      */
     val viewerCanFollow: Boolean,
@@ -180,6 +185,7 @@ fun RawUser.toNonNullUser(): User {
         status?.fragments?.userStatus?.toNonNullUserStatus(),
         updatedAt,
         url,
+        twitterUsername,
         viewerCanFollow,
         viewerIsFollowing,
         websiteUrl,

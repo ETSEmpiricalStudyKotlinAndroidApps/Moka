@@ -326,11 +326,11 @@
 
     <string name="edit_profile_title">Edit profile</string>
     <string name="edit_profile_name">Name</string>
-    <string name="edit_profile_email">Email</string>
     <string name="edit_profile_bio">Bio</string>
     <string name="edit_profile_url">Url</string>
     <string name="edit_profile_company">Company</string>
     <string name="edit_profile_location">Location</string>
+    <string name="edit_profile_twitter_username">Twitter Username</string>
     <string name="edit_profile_bio_caption">You can @mention other users and organizations to link to them.</string>
     <string name="edit_profile_company_caption">You can @mention your company’s GitHub organization to link it.</string>
 

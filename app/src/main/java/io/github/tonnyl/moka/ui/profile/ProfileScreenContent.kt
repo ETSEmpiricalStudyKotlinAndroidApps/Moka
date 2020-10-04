@@ -530,6 +530,7 @@ private fun ProfileScreenPreview() {
             viewerCanFollow = false,
             viewerIsFollowing = false,
             websiteUrl = Uri.parse("https://tonnyl.io"),
+            twitterUsername = "@TonnyLZTL",
             repositoriesTotalCount = 37,
             followersTotalCount = 890,
             followingTotalCount = 111,

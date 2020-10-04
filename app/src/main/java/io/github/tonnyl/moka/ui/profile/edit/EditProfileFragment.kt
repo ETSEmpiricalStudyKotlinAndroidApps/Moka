@@ -4,104 +4,140 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.*
+import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.launchInComposition
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.databinding.FragmentEditProfileBinding
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.theme.MokaTheme
+import io.github.tonnyl.moka.util.isDarkModeOn
+import io.github.tonnyl.moka.widget.LottieLoadingComponent
+import io.github.tonnyl.moka.widget.TopAppBarElevation
 
-class EditProfileFragment : Fragment(), View.OnClickListener {
+class EditProfileFragment : Fragment() {
 
     private val args by navArgs<EditProfileFragmentArgs>()
 
-    private val viewModel by viewModels<EditProfileViewModel>()
+    private val viewModel by viewModels<EditProfileViewModel>(
+        factoryProducer = {
+            ViewModelFactory(args)
+        }
+    )
 
-    private lateinit var binding: FragmentEditProfileBinding
-
-    private var name: String? = null
-    private var bio: String? = null
-    private var email: String? = null
-    private var url: String? = null
-    private var company: String? = null
-    private var location: String? = null
-
+    @ExperimentalMaterialApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setHasOptionsMenu(true)
+        val view = inflater.inflate(R.layout.fragment_container, container, false)
 
-        binding = FragmentEditProfileBinding.inflate(inflater, container, false)
+        (view as ViewGroup).setContent(Recomposer.current()) {
+            val scrollState = rememberScrollState()
+            val scaffoldState = rememberScaffoldState()
 
-        return binding.root
-    }
+            val name by viewModel.name.observeAsState()
+            val bio by viewModel.bio.observeAsState()
+            val url by viewModel.url.observeAsState()
+            val company by viewModel.company.observeAsState()
+            val location by viewModel.location.observeAsState()
+            val twitterUsername by viewModel.twitterUsername.observeAsState()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+            val updateState by viewModel.loadingStatus.observeAsState()
 
-        name = args.name
-        bio = args.bio
-        email = args.email
-        url = args.url
-        company = args.company
-        location = args.location
-
-        binding.toolbar.setNavigationOnClickListener {
-            parentFragment?.findNavController()?.navigateUp()
-        }
-
-        binding.fragmentEditProfileEmailInputEdit.setText(email)
-        name?.let {
-            binding.fragmentEditProfileNameInputEdit.setText(it)
-        }
-        bio?.let {
-            binding.fragmentEditProfileBioInputEdit.setText(it)
-        }
-        url?.let {
-            binding.fragmentEditProfileLinkInputEdit.setText(it)
-        }
-        company?.let {
-            binding.fragmentEditProfileGroupInputEdit.setText(it)
-        }
-        location?.let {
-            binding.fragmentEditProfileLocationInputEdit.setText(it)
-        }
-
-        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer { data ->
-            when (data.status) {
-                Status.SUCCESS -> {
-                    parentFragment?.findNavController()?.navigateUp()
-                }
-                Status.ERROR -> {
-                    binding.toolbarDone.isEnabled = true
-                }
-                Status.LOADING -> {
-                    binding.toolbarDone.isEnabled = false
-                }
-            }
-        })
-
-        binding.toolbarDone.setOnClickListener(this)
-    }
-
-    override fun onClick(v: View?) {
-        v ?: return
-        when (v.id) {
-            R.id.toolbar_done -> {
-                viewModel.updateUserInformation(
-                    binding.fragmentEditProfileNameInputEdit.text.toString(),
-                    binding.fragmentEditProfileEmailInputEdit.text.toString(),
-                    binding.fragmentEditProfileLinkInputEdit.text.toString(),
-                    binding.fragmentEditProfileGroupInputEdit.text.toString(),
-                    binding.fragmentEditProfileLocationInputEdit.text.toString(),
-                    binding.fragmentEditProfileBioInputEdit.text.toString()
+            MokaTheme(darkTheme = resources.isDarkModeOn) {
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            backgroundColor = MaterialTheme.colors.background,
+                            title = {
+                                Text(text = stringResource(id = R.string.profile_title))
+                            },
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = { findNavController().navigateUp() },
+                                    icon = { Icon(vectorResource(R.drawable.ic_close_24)) }
+                                )
+                            },
+                            elevation = TopAppBarElevation(lifted = scrollState.value != .0f),
+                            actions = {
+                                val enabled = name != args.name
+                                        || bio != args.bio
+                                        || url != args.url
+                                        || company != args.company
+                                        || location != args.location
+                                        || twitterUsername != args.twitter
+                                IconButton(
+                                    onClick = {
+                                        if (enabled) {
+                                            viewModel.updateUserInformation()
+                                        } else {
+                                            findNavController().navigateUp()
+                                        }
+                                    },
+                                    // ☹️ actions of TopAppBar have set emphasis internally...
+                                    // So in theory, setting enabled won't change the appearance at all.
+                                    enabled = enabled
+                                ) {
+                                    if (updateState?.status == Status.LOADING) {
+                                        LottieLoadingComponent()
+                                    } else {
+                                        Icon(asset = vectorResource(id = R.drawable.ic_check_24))
+                                    }
+                                }
+                            }
+                        )
+                    },
+                    bodyContent = {
+                        EditProfileScreen(scrollState = scrollState)
+                    },
+                    snackbarHost = {
+                        SnackbarHost(hostState = it) { data: SnackbarData ->
+                            Snackbar(snackbarData = data)
+                        }
+                    },
+                    scaffoldState = scaffoldState
                 )
+
+                when (updateState?.status) {
+                    Status.ERROR -> {
+                        val message = stringResource(id = R.string.common_error_requesting_data)
+                        val action = stringResource(id = R.string.common_retry)
+
+                        launchInComposition {
+                            val result = scaffoldState.snackbarHostState.showSnackbar(
+                                message = message,
+                                actionLabel = action,
+                                duration = SnackbarDuration.Short
+                            )
+                            if (result == SnackbarResult.ActionPerformed) {
+                                viewModel.updateUserInformation()
+                            }
+                        }
+                    }
+                    Status.SUCCESS -> {
+                        findNavController().navigateUp()
+                    }
+                    else -> {
+
+                    }
+                }
             }
         }
+
+        return view
     }
 
 }

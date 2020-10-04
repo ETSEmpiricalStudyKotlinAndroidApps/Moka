@@ -247,7 +247,7 @@
         android:id="@+id/edit_profile_fragment"
         android:name="io.github.tonnyl.moka.ui.profile.edit.EditProfileFragment"
         android:label="EditProfile"
-        tools:layout="@layout/fragment_edit_profile">
+        tools:layout="@layout/fragment_container">
 
         <argument
             android:name="login"
@@ -258,11 +258,6 @@
             android:name="name"
             app:argType="string"
             app:nullable="true" />
-
-        <argument
-            android:name="email"
-            app:argType="string"
-            app:nullable="false" />
 
         <argument
             android:name="bio"
@@ -281,6 +276,11 @@
 
         <argument
             android:name="location"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="twitter"
             app:argType="string"
             app:nullable="true" />
 

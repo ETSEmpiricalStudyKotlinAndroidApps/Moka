@@ -6,13 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.RetrofitClient
-import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.service.UserService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
-class EditProfileViewModel : ViewModel() {
+class EditProfileViewModel(
+    val args: EditProfileFragmentArgs
+) : ViewModel() {
 
     private val _loadingStatus = MutableLiveData<Resource<Unit>>()
     val loadingStatus: LiveData<Resource<Unit>>
@@ -22,27 +24,84 @@ class EditProfileViewModel : ViewModel() {
         RetrofitClient.createService(UserService::class.java)
     }
 
-    fun updateUserInformation(
-            name: String?,
-            email: String,
-            url: String?,
-            company: String?,
-            location: String?,
-            bio: String?
+    private val _name = MutableLiveData(args.name)
+    val name: LiveData<String?>
+        get() = _name
+
+    private val _bio = MutableLiveData(args.bio)
+    val bio: LiveData<String?>
+        get() = _bio
+
+    private val _url = MutableLiveData(args.url)
+    val url: LiveData<String?>
+        get() = _url
+
+    private val _company = MutableLiveData(args.company)
+    val company: LiveData<String?>
+        get() = _company
+
+    private val _location = MutableLiveData(args.location)
+    val location: LiveData<String?>
+        get() = _location
+
+    private val _twitterUsername = MutableLiveData(args.twitter)
+    val twitterUsername: LiveData<String?>
+        get() = _twitterUsername
+
+    fun updateLocal(
+        name: String? = null,
+        url: String? = null,
+        company: String? = null,
+        location: String? = null,
+        bio: String? = null,
+        twitterUsername: String? = null
     ) {
+        name?.let {
+            _name.value = it
+        }
+        url?.let {
+            _url.value = it
+        }
+        company?.let {
+            _company.value = it
+        }
+        location?.let {
+            _location.value = it
+        }
+        bio?.let {
+            _bio.value = it
+        }
+        twitterUsername?.let {
+            _twitterUsername.value = it
+        }
+    }
+
+    fun updateUserInformation() {
         _loadingStatus.value = Resource.loading(null)
 
         viewModelScope.launch {
-            val body = mapOf(Pair("name", name), Pair("email", email), Pair("url", url), Pair("company", company), Pair("location", location), Pair("bio", bio))
+            try {
+                val body = mapOf(
+                    "name" to name.value,
+                    "url" to url.value,
+                    "company" to company.value,
+                    "location" to location.value,
+                    "bio" to bio.value,
+                    "twitter_username" to twitterUsername.value
+                )
 
-            val updateResponse = withContext(Dispatchers.IO) {
-                service.updateUseInformation(body)
-            }
+                val updateResponse = withContext(Dispatchers.IO) {
+                    service.updateUseInformation(body)
+                }
 
-            _loadingStatus.value = if (updateResponse.isSuccessful) {
-                Resource(Status.SUCCESS, Unit, null)
-            } else {
-                Resource(Status.ERROR, Unit, updateResponse.errorBody()?.string())
+                _loadingStatus.value = if (updateResponse.isSuccessful) {
+                    Resource.success(null)
+                } else {
+                    Resource.error(null, null)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                _loadingStatus.value = Resource.error(null, null)
             }
         }
     }

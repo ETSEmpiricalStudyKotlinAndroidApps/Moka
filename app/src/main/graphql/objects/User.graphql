@@ -46,6 +46,8 @@ fragment User on User {
     updatedAt
     # The HTTP URL for this user
     url
+    # The user's Twitter username.
+    twitterUsername
     # Whether or not the viewer is able to follow the user.
     viewerCanFollow
     # Whether or not this user is followed by the viewer.

@@ -99,11 +99,11 @@ class ProfileFragment : Fragment(), EmptyViewActions {
                                             EditProfileFragmentArgs(
                                                 user.login,
                                                 user.name,
-                                                user.email,
                                                 user.bio,
                                                 user.websiteUrl?.toString(),
                                                 user.company,
-                                                user.location
+                                                user.location,
+                                                user.twitterUsername
                                             ).toBundle()
                                         )
                                     }) {

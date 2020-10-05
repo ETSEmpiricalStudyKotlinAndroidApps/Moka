@@ -32,7 +32,7 @@ class RepositoryViewModel(
 ) : ViewModel() {
 
     private val _usersRepository = MutableLiveData<Resource<Repository>>()
-    val userRepository: LiveData<Resource<Repository>>
+    val usersRepository: LiveData<Resource<Repository>>
         get() = _usersRepository
 
     private val _organizationsRepository = MutableLiveData<Resource<Repository>>()
@@ -252,7 +252,7 @@ class RepositoryViewModel(
     @MainThread
     fun viewOwnersProfile() {
         val profileType = if (args.profileType == ProfileType.NOT_SPECIFIED) {
-            if (userRepository.value != null) {
+            if (usersRepository.value != null) {
                 ProfileType.USER
             } else {
                 ProfileType.ORGANIZATION

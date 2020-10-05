@@ -101,7 +101,7 @@
         android:id="@+id/repository_fragment"
         android:name="io.github.tonnyl.moka.ui.repository.RepositoryFragment"
         tools:label="Repository"
-        tools:layout="@layout/fragment_repository">
+        tools:layout="@layout/fragment_container">
 
         <argument
             android:name="login"

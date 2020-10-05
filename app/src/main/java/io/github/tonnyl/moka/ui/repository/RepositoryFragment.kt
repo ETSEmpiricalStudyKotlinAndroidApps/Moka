@@ -4,16 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.launchInComposition
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.Repository
-import io.github.tonnyl.moka.databinding.FragmentRepositoryBinding
-import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.issues.IssuesFragmentArgs
@@ -22,6 +30,9 @@ import io.github.tonnyl.moka.ui.projects.ProjectsFragmentArgs
 import io.github.tonnyl.moka.ui.projects.ProjectsType
 import io.github.tonnyl.moka.ui.prs.PullRequestsFragmentArgs
 import io.github.tonnyl.moka.ui.repository.RepositoryEvent.*
+import io.github.tonnyl.moka.ui.theme.MokaTheme
+import io.github.tonnyl.moka.util.isDarkModeOn
+import io.github.tonnyl.moka.widget.TopAppBarElevation
 
 class RepositoryFragment : Fragment() {
 
@@ -31,64 +42,117 @@ class RepositoryFragment : Fragment() {
         ViewModelFactory(args)
     }
 
-    private lateinit var binding: FragmentRepositoryBinding
-
+    @ExperimentalMaterialApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentRepositoryBinding.inflate(inflater, container, false)
+        val view = inflater.inflate(R.layout.fragment_container, container, false)
 
-        return binding.root
+        (view as ViewGroup).setContent(Recomposer.current()) {
+            val scrollState = rememberScrollState()
+            val scaffoldState = rememberScaffoldState()
+
+            val usersRepository by viewModel.usersRepository.observeAsState()
+            val organizationsRepository by viewModel.organizationsRepository.observeAsState()
+
+            val repo = usersRepository?.data ?: organizationsRepository?.data
+
+            val starredState by viewModel.starState.observeAsState()
+            val followState by viewModel.followState.observeAsState()
+
+            MokaTheme(darkTheme = resources.isDarkModeOn) {
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            backgroundColor = MaterialTheme.colors.background,
+                            title = { Text(text = stringResource(id = R.string.repository)) },
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = { findNavController().navigateUp() },
+                                    icon = { Icon(vectorResource(R.drawable.ic_arrow_back_24)) }
+                                )
+                            },
+                            elevation = TopAppBarElevation(lifted = scrollState.value != .0f),
+                            actions = {
+                                if (repo?.viewerCanAdminister == true) {
+                                    IconButton(onClick = {}) {
+                                        Icon(vectorResource(id = R.drawable.ic_edit_24))
+                                    }
+                                }
+                            }
+                        )
+                    },
+                    bodyContent = {
+                        RepositoryScreen(scrollState = scrollState)
+                    },
+                    snackbarHost = {
+                        SnackbarHost(hostState = it) { data: SnackbarData ->
+                            Snackbar(snackbarData = data)
+                        }
+                    },
+                    bottomBar = {
+                        if (repo != null) {
+                            BottomAppBar(
+                                backgroundColor = MaterialTheme.colors.background,
+                                cutoutShape = CircleShape
+                            ) {
+                                IconButton(onClick = {}) {
+                                    Icon(asset = vectorResource(id = R.drawable.ic_code_24))
+                                }
+                                IconButton(onClick = {}) {
+                                    Icon(asset = vectorResource(id = R.drawable.ic_eye_24))
+                                }
+                                IconButton(onClick = {}) {
+                                    Icon(asset = vectorResource(id = R.drawable.ic_code_fork_24))
+                                }
+                            }
+                        }
+                    },
+                    floatingActionButton = {
+                        if (repo != null) {
+                            FloatingActionButton(
+                                onClick = { viewModel.toggleStar() },
+                                shape = CircleShape
+                            ) {
+                                Icon(
+                                    asset = vectorResource(
+                                        id = if (starredState?.data == true) {
+                                            R.drawable.ic_star_24
+                                        } else {
+                                            R.drawable.ic_star_border_24
+                                        }
+                                    ),
+                                    tint = MaterialTheme.colors.onPrimary
+                                )
+                            }
+                        }
+                    },
+                    isFloatingActionButtonDocked = true,
+                    floatingActionButtonPosition = FabPosition.End,
+                    scaffoldState = scaffoldState
+                )
+            }
+
+            if (followState?.status == Status.ERROR) {
+                ErrorMessage(
+                    scaffoldState = scaffoldState,
+                    retry = { viewModel.toggleFollow() }
+                )
+            } else if (starredState?.status == Status.ERROR) {
+                ErrorMessage(
+                    scaffoldState = scaffoldState,
+                    retry = { viewModel.toggleStar() }
+                )
+            }
+        }
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.toolbar.setNavigationOnClickListener {
-            parentFragment?.findNavController()?.navigateUp()
-        }
-
-        binding.apply {
-            viewModel = this@RepositoryFragment.viewModel
-            lifecycleOwner = viewLifecycleOwner
-        }
-
-        binding.repositoryBottomAppBar.inflateMenu(R.menu.fragment_repository_menu)
-
-        val repoObserver: Observer<Resource<Repository>> = Observer { repository ->
-            repository.data?.topics?.let { topicList ->
-                binding.repositoryTopics.apply {
-                    setHasFixedSize(true)
-                    layoutManager = LinearLayoutManager(
-                        requireContext(),
-                        LinearLayoutManager.HORIZONTAL,
-                        false
-                    )
-                    val adapter = RepositoryTopicAdapter()
-                    this.adapter = adapter
-                    adapter.submitList(topicList)
-                }
-            }
-        }
-
-        viewModel.userRepository.observe(viewLifecycleOwner, repoObserver)
-        viewModel.organizationsRepository.observe(viewLifecycleOwner, repoObserver)
-
-        viewModel.readmeHtml.observe(viewLifecycleOwner, Observer { resources ->
-            when (resources.status) {
-                Status.SUCCESS -> {
-                    binding.repositoryReadmeContent.loadData(resources.data ?: return@Observer)
-                }
-                Status.ERROR -> {
-
-                }
-                Status.LOADING -> {
-
-                }
-            }
-        })
 
         viewModel.userEvent.observe(viewLifecycleOwner, EventObserver {
             when (it) {
@@ -150,6 +214,27 @@ class RepositoryFragment : Fragment() {
             }
         })
 
+    }
+
+    @ExperimentalMaterialApi
+    @Composable
+    private fun ErrorMessage(
+        scaffoldState: ScaffoldState,
+        retry: () -> Unit
+    ) {
+        val message = stringResource(id = R.string.common_error_requesting_data)
+        val action = stringResource(id = R.string.common_retry)
+
+        launchInComposition {
+            val result = scaffoldState.snackbarHostState.showSnackbar(
+                message = message,
+                actionLabel = action,
+                duration = SnackbarDuration.Short
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                retry.invoke()
+            }
+        }
     }
 
 }

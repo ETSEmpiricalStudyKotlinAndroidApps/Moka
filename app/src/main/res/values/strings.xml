@@ -217,8 +217,8 @@
     <string name="repository_topics">Topics</string>
     <string name="repository_readme">Readme</string>
     <string name="repository_more_info">More info</string>
-    <string name="repository_created_on">Created on</string>
-    <string name="repository_updated_on">Updated on</string>
+    <string name="repository_created_at">Created on</string>
+    <string name="repository_updated_at">Updated on</string>
     <plurals name="watchers_count_plurals">
         <item quantity="zero">watcher</item>
         <item quantity="one">watcher</item>

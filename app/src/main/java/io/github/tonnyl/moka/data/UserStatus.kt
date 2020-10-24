@@ -1,20 +1,17 @@
 package io.github.tonnyl.moka.data
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.UserStatus as RawUserStatus
 
 /**
  * The user's description of what they're currently doing.
  */
-@Parcelize
 data class UserStatus(
 
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * An emoji summarizing the user's status.
@@ -24,7 +21,7 @@ data class UserStatus(
     /**
      * If set, the status will not be shown after this date.
      */
-    val expiresAt: Date?,
+    val expiresAt: Instant?,
 
     /**
      * ID of the object.
@@ -44,9 +41,9 @@ data class UserStatus(
     /**
      * Identifies the date and time when the object was last updated.
      */
-    val updatedAt: Date
+    val updatedAt: Instant
 
-) : Parcelable
+)
 
 fun RawUserStatus.toNonNullUserStatus(): UserStatus {
     return UserStatus(

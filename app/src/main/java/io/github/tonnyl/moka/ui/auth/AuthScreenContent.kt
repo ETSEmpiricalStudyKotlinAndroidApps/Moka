@@ -27,6 +27,7 @@ import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.util.safeStartActivity
+import kotlinx.datetime.Clock
 
 @Preview(name = "AuthScreen", showBackground = true)
 @Composable
@@ -87,7 +88,7 @@ fun AuthScreenContent(
                                 |?client_id=${BuildConfig.CLIENT_ID}
                                 |&redirect_uri=${RetrofitClient.GITHUB_AUTHORIZE_CALLBACK_URI}
                                 |&scope=${RetrofitClient.SCOPE}
-                                |&state=${System.currentTimeMillis()}
+                                |&state=${Clock.System.now().toEpochMilliseconds()}
                             """.trimMargin()
                         )
                     }

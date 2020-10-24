@@ -1,17 +1,15 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.Gist as RawGist
 
-@Parcelize
 data class Gist2(
 
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * The gist description.
@@ -43,7 +41,7 @@ data class Gist2(
     /**
      * Identifies when the gist was last pushed to.
      */
-    val pushedAt: Date?,
+    val pushedAt: Instant?,
 
     /**
      * The HTML path to this resource.
@@ -53,7 +51,7 @@ data class Gist2(
     /**
      * Identifies the date and time when the object was last updated.
      */
-    val updatedAt: Date,
+    val updatedAt: Instant,
 
     /**
      * The HTTP URL for this Gist.

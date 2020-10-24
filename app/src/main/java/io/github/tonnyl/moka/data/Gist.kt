@@ -1,14 +1,11 @@
 package io.github.tonnyl.moka.data
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class Gist(
 
@@ -29,11 +26,11 @@ data class Gist(
 
     @Json(name = "created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: Date,
+    var createdAt: Instant,
 
     @Json(name = "updated_at")
     @ColumnInfo(name = "updated_at")
-    var updatedAt: Date,
+    var updatedAt: Instant,
 
     @ColumnInfo(name = "description")
     var description: String,
@@ -47,4 +44,4 @@ data class Gist(
     @ColumnInfo(name = "truncated")
     var truncated: Boolean
 
-) : Parcelable
+)

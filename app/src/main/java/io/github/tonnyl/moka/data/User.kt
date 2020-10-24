@@ -1,12 +1,9 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.User as RawUser
 
-@Parcelize
 data class User(
 
     /**
@@ -37,7 +34,7 @@ data class User(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * The user's publicly visible profile email.
@@ -109,7 +106,7 @@ data class User(
     /**
      * Identifies the date and time when the object was last updated.
      */
-    val updatedAt: Date,
+    val updatedAt: Instant,
 
     /**
      * The HTTP URL for this user.
@@ -148,7 +145,7 @@ data class User(
 
     val pinnedItems: MutableList<PinnableItem>?
 
-) : Parcelable
+)
 
 fun RawUser.toNonNullUser(): User {
     val pinnableItems = mutableListOf<PinnableItem>()

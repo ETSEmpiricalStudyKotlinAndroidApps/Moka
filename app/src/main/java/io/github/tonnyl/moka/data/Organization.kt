@@ -1,11 +1,8 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.queries.OrganizationQuery.Organization as RawOrganization
 
-@Parcelize
 data class Organization(
 
     /**
@@ -121,7 +118,7 @@ data class Organization(
 
     val pinnedItems: MutableList<PinnableItem>?
 
-) : Parcelable
+)
 
 fun RawOrganization?.toNullableOrganization(): Organization? {
     this ?: return null

@@ -126,7 +126,7 @@ fun AppCompatTextView.issueInfo(issue: Issue?) {
     )
     val author = context.getString(R.string.issue_pr_created_by, issue.author?.login)
     val time = DateUtils.getRelativeTimeSpanString(
-        issue.createdAt.time,
+        issue.createdAt.toEpochMilliseconds(),
         System.currentTimeMillis(),
         DateUtils.MINUTE_IN_MILLIS
     )
@@ -147,7 +147,7 @@ fun AppCompatTextView.prInfo(pr: PullRequest?) {
     )
     val author = context.getString(R.string.issue_pr_created_by, pr.author?.login)
     val time = DateUtils.getRelativeTimeSpanString(
-        pr.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS
+        pr.createdAt.toEpochMilliseconds(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS
     )
 
     text = context.getString(R.string.issue_pr_info_format, status, author, time)

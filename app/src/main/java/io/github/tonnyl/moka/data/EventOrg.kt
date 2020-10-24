@@ -1,12 +1,9 @@
 package io.github.tonnyl.moka.data
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventOrg(
 
@@ -27,4 +24,4 @@ data class EventOrg(
     @ColumnInfo(name = "avatar_url")
     var avatarUrl: String
 
-) : Parcelable
+)

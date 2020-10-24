@@ -1,14 +1,11 @@
 package io.github.tonnyl.moka.data
 
-import android.os.Parcelable
 import io.github.tonnyl.moka.type.ReactionContent
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.fragment.ReactionGroup as RawReactionGroup
 
 /**
  * A group of emoji reactions to a particular piece of content.
  */
-@Parcelize
 data class ReactionGroup(
 
     /**
@@ -26,7 +23,7 @@ data class ReactionGroup(
      */
     var usersTotalCount: Int
 
-) : Parcelable
+)
 
 fun RawReactionGroup.toNonNullReactionGroup(): ReactionGroup {
     return ReactionGroup(content, viewerHasReacted, users.totalCount)

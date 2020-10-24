@@ -1,11 +1,8 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.fragment.ParentOfForkedRepository as RawParentOfForkedRepository
 
-@Parcelize
 data class ParentOrMirrorRepository(
 
     /**
@@ -23,7 +20,7 @@ data class ParentOrMirrorRepository(
      */
     val nameWithOwner: String
 
-) : Parcelable
+)
 
 fun RawParentOfForkedRepository.toNonNullParentOfForkedRepository(): ParentOrMirrorRepository {
     return ParentOrMirrorRepository(url, name, nameWithOwner)

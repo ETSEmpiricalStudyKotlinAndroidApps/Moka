@@ -8,6 +8,7 @@ object Versions {
     const val gmsGoogleServiceGradle = "4.3.3"
     const val firebaseCrashlyticsGradle = "2.3.0"
     const val kotlin = "1.4.10"
+    const val dateTime = "0.1.0"
     const val coroutines = "1.3.9"
     const val fragment = "1.3.0-beta01"
     const val constraintLayout = "2.0.2"
@@ -80,6 +81,7 @@ object Deps {
             "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
         const val coroutinesAndroid =
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
+        const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.dateTime}"
 
     }
 

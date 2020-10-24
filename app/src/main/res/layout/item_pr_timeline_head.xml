@@ -141,7 +141,7 @@
             app:layout_constraintEnd_toStartOf="@id/pr_comment_author_association"
             app:layout_constraintStart_toEndOf="@id/pr_comment_avatar"
             app:layout_constraintTop_toBottomOf="@id/pr_comment_username"
-            app:textFuture="@{DateUtils.getRelativeTimeSpanString(pullRequestViewModel.pullRequest.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
+            app:textFuture="@{DateUtils.getRelativeTimeSpanString(pullRequestViewModel.pullRequest.createdAt.toEpochMilliseconds(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
             tools:text="@sample/issue_timeline.json/timeline/createdAt" />
 
         <io.github.tonnyl.moka.widget.ThemedWebView

@@ -1,14 +1,11 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.fragment.GitObject as RawGitObject
 
 /**
  * Represents a Git object.
  */
-@Parcelize
 data class GitObject(
 
     /**
@@ -33,7 +30,7 @@ data class GitObject(
      */
     val oid: String
 
-) : Parcelable
+)
 
 fun RawGitObject.toNonNullGitObject(): GitObject {
     return GitObject(abbreviatedOid, commitResourcePath, commitUrl, id, oid)

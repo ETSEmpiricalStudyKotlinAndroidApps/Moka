@@ -1,12 +1,9 @@
 package io.github.tonnyl.moka.data
 
-import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class AuthenticatedUser(
 
@@ -54,10 +51,10 @@ data class AuthenticatedUser(
     val following: Long,
 
     @Json(name = "created_at")
-    val createdAt: Date,
+    val createdAt: Instant,
 
     @Json(name = "updated_at")
-    val updatedAt: Date,
+    val updatedAt: Instant,
 
     @Json(name = "private_gists")
     val privateGists: Int,
@@ -76,4 +73,4 @@ data class AuthenticatedUser(
     @Json(name = "two_factor_authentication")
     val twoFactorAuthentication: Boolean
 
-) : Parcelable
+)

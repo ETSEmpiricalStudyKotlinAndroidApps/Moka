@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import io.github.tonnyl.moka.MokaApp
-import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.db.MokaDataBase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,16 +24,11 @@ class NotificationDismissReceiver : BroadcastReceiver() {
             return
         }
 
-        val notification = intent.getParcelableExtra<Notification?>(EXTRA_NOTIFICATION) ?: return
-
-        GlobalScope.launch {
+        val notificationId = intent.getStringExtra(EXTRA_NOTIFICATION_ID) ?: return
+        GlobalScope.launch(Dispatchers.IO) {
             try {
                 val dao = MokaDataBase.getInstance(context, accountId).notificationsDao()
-                dao.markAsDisplayed(
-                    notification.apply {
-                        hasDisplayed = true
-                    }
-                )
+                dao.markAsDisplayed(notificationId)
             } catch (e: Exception) {
                 Timber.e(e, "handle received event")
             }
@@ -43,7 +38,7 @@ class NotificationDismissReceiver : BroadcastReceiver() {
     companion object {
 
         const val EXTRA_ACCOUNT_ID = "extra_account_id"
-        const val EXTRA_NOTIFICATION = "extra_notification"
+        const val EXTRA_NOTIFICATION_ID = "extra_notification_id"
 
     }
 

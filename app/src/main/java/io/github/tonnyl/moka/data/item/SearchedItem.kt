@@ -1,12 +1,10 @@
 package io.github.tonnyl.moka.data.item
 
 import android.net.Uri
-import android.os.Parcelable
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.fragment.OrganizationListItemFragment
 import io.github.tonnyl.moka.fragment.RepositoryListItemFragment
 import io.github.tonnyl.moka.fragment.UserListItemFragment
-import kotlinx.android.parcel.Parcelize
 
 interface SearchedUserOrOrgItem {
 
@@ -26,7 +24,6 @@ interface SearchedUserOrOrgItem {
 
 }
 
-@Parcelize
 data class SearchedUserItem(
 
     /**
@@ -76,7 +73,7 @@ data class SearchedUserItem(
      */
     val viewerIsFollowing: Boolean
 
-) : Parcelable, SearchedUserOrOrgItem
+) : SearchedUserOrOrgItem
 
 fun UserListItemFragment.toNonNullSearchedUserItem(): SearchedUserItem {
     return SearchedUserItem(
@@ -93,7 +90,6 @@ fun UserListItemFragment.toNonNullSearchedUserItem(): SearchedUserItem {
     )
 }
 
-@Parcelize
 data class SearchedOrganizationItem(
 
     /**
@@ -143,7 +139,7 @@ data class SearchedOrganizationItem(
      */
     val websiteUrl: Uri?
 
-) : Parcelable, SearchedUserOrOrgItem
+) : SearchedUserOrOrgItem
 
 fun OrganizationListItemFragment.toNonNullSearchedOrganizationItem(): SearchedOrganizationItem {
     return SearchedOrganizationItem(
@@ -160,7 +156,6 @@ fun OrganizationListItemFragment.toNonNullSearchedOrganizationItem(): SearchedOr
     )
 }
 
-@Parcelize
 data class SearchedRepositoryItem(
 
     /**
@@ -251,7 +246,7 @@ data class SearchedRepositoryItem(
 
     val stargazersCount: Int
 
-) : Parcelable
+)
 
 fun RepositoryListItemFragment.toNonNullSearchedRepositoryItem(): SearchedRepositoryItem {
     return SearchedRepositoryItem(

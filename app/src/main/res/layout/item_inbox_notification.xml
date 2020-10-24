@@ -86,7 +86,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_notification_space_to_end_of_avatar"
             app:layout_constraintTop_toBottomOf="@id/item_notification_caption"
-            app:textFuture="@{DateUtils.getRelativeTimeSpanString(notification.updatedAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
+            app:textFuture="@{DateUtils.getRelativeTimeSpanString(notification.updatedAt.toEpochMilliseconds(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
             tools:text="@sample/notification.json/notification/updated_at" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

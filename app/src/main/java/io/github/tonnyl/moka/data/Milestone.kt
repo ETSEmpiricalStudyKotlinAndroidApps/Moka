@@ -1,16 +1,13 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
 import io.github.tonnyl.moka.type.MilestoneState
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.Milestone as RawMilestone
 
 /**
  * Represents a Milestone object on a given repository.
  */
-@Parcelize
 data class Milestone(
 
     /**
@@ -21,12 +18,12 @@ data class Milestone(
     /**
      * Identifies the date and time when the object was closed.
      */
-    val closedAt: Date?,
+    val closedAt: Instant?,
 
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Identifies the actor who created the milestone.
@@ -41,7 +38,7 @@ data class Milestone(
     /**
      * Identifies the due date of the milestone.
      */
-    val dueOn: Date?,
+    val dueOn: Instant?,
 
     val id: String,
 
@@ -68,14 +65,14 @@ data class Milestone(
     /**
      * Identifies the date and time when the object was last updated.
      */
-    val updatedAt: Date,
+    val updatedAt: Instant,
 
     /**
      * The HTTP URL for this milestone
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun RawMilestone.toNonNullMilestone(): Milestone {
     return Milestone(

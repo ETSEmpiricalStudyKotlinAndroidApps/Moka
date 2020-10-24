@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.profile.status
 
-import android.text.format.DateUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,8 +12,8 @@ import io.github.tonnyl.moka.ui.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.*
 import timber.log.Timber
-import java.util.*
 
 class EditStatusViewModel(
     val args: EditStatusFragmentArgs
@@ -32,16 +31,16 @@ class EditStatusViewModel(
     val clearStatusState: LiveData<Resource<UserStatus?>>
         get() = _clearStatusState
 
-    private val _emojiName = MutableLiveData<String?>(args.userStatus?.emoji)
+    private val _emojiName = MutableLiveData<String?>(args.status?.emoji)
     val emojiName: LiveData<String?>
         get() = _emojiName
 
-    private val _message = MutableLiveData<String?>(args.userStatus?.message)
+    private val _message = MutableLiveData<String?>(args.status?.message)
     val message: LiveData<String?>
         get() = _message
 
     private val _limitedAvailability =
-        MutableLiveData<Boolean>(args.userStatus?.indicatesLimitedAvailability)
+        MutableLiveData<Boolean>(args.status?.indicatesLimitedAvailability)
     val limitedAvailability: LiveData<Boolean>
         get() = _limitedAvailability
 
@@ -80,19 +79,30 @@ class EditStatusViewModel(
             try {
                 _updateStatusState.value = Resource.loading(null)
 
-                val date: Date? = when (_expiresAt.value) {
+                val instant: Instant? = when (_expiresAt.value) {
                     ExpireAt.In30Minutes -> {
-                        Date(System.currentTimeMillis() + DateUtils.MINUTE_IN_MILLIS * 30)
+                        val now = Clock.System.now()
+                            .toLocalDateTime(TimeZone.UTC)
+                            .toInstant(TimeZone.UTC)
+                        now.plus(30, DateTimeUnit.MINUTE, TimeZone.UTC)
                     }
                     ExpireAt.In1Hour -> {
-                        Date(System.currentTimeMillis() + DateUtils.HOUR_IN_MILLIS)
+                        val now = Clock.System.now()
+                            .toLocalDateTime(TimeZone.UTC)
+                            .toInstant(TimeZone.UTC)
+                        now.plus(1, DateTimeUnit.HOUR, TimeZone.UTC)
                     }
                     ExpireAt.Today -> {
-                        Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY, 23)
-                            set(Calendar.MINUTE, 59)
-                            set(Calendar.SECOND, 59)
-                        }.time
+                        val todayAt = Clock.System.todayAt(TimeZone.UTC)
+                        val localDate = LocalDateTime(
+                            todayAt.year,
+                            todayAt.month,
+                            todayAt.dayOfMonth,
+                            23,
+                            59,
+                            59
+                        )
+                        localDate.toInstant(TimeZone.UTC)
                     }
                     ExpireAt.Never,
                     null -> {
@@ -104,19 +114,19 @@ class EditStatusViewModel(
                         emoji = _emojiName.value,
                         message = message.value,
                         limitedAvailability = _limitedAvailability.value,
-                        expiresAt = date
+                        expiresAt = instant
                     )
                 }
 
                 _updateStatusState.value = Resource.success(
                     UserStatus(
-                        createdAt = Date(),
+                        createdAt = Clock.System.now(),
                         emoji = _emojiName.value,
                         id = "",
                         indicatesLimitedAvailability = _limitedAvailability.value == true,
                         message = message.value,
-                        expiresAt = date,
-                        updatedAt = Date()
+                        expiresAt = instant,
+                        updatedAt = Clock.System.now()
                     )
                 )
             } catch (e: Exception) {

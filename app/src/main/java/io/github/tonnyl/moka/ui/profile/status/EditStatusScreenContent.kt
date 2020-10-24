@@ -25,7 +25,6 @@ import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.widget.EmojiComponent
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
-import java.util.*
 
 @ExperimentalMaterialApi
 @Composable
@@ -317,10 +316,10 @@ private fun EditStatusScreenContent(
                         updateStatus.invoke()
                         couldDisplayErrorMessage = true
                     },
-                    enabled = messageState != initialArgs.userStatus?.message
-                            || emojiState != initialArgs.userStatus?.emoji
+                    enabled = messageState != initialArgs.status?.message
+                            || emojiState != initialArgs.status?.emoji
                             || (dndState
-                        ?: false) != (initialArgs.userStatus?.indicatesLimitedAvailability
+                        ?: false) != (initialArgs.status?.indicatesLimitedAvailability
                         ?: false)
                             || (expireAtState != null && (!messageState.isNullOrEmpty() || !emojiState.isNullOrEmpty())),
                     modifier = Modifier.constrainAs(setStatusButtonRef) {
@@ -353,7 +352,7 @@ private fun EditStatusScreenContent(
                         clearStatus.invoke()
                         couldDisplayErrorMessage = true
                     },
-                    enabled = initialArgs.userStatus != null,
+                    enabled = initialArgs.status != null,
                     modifier = Modifier.constrainAs(clearStatusButtonRef) {
                         end.linkTo(spacerRef.start)
                         centerVerticallyTo(parent)
@@ -520,14 +519,10 @@ private fun EditScreenContentPreview() {
 
         getEmojiByName = { null },
         initialArgs = EditStatusFragmentArgs(
-            UserStatus(
-                createdAt = Date(),
+            EditStatusArgs(
                 emoji = ":dart:",
-                expiresAt = null,
-                id = "",
                 indicatesLimitedAvailability = false,
-                message = null,
-                updatedAt = Date()
+                message = null
             )
         ),
         showEmojis = {},

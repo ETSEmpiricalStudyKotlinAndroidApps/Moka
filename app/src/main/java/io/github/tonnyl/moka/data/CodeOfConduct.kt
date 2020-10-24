@@ -1,14 +1,11 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.fragment.CodeOfConduct as RawCodeOfConduct
 
 /**
  * The Code of Conduct for a repository.
  */
-@Parcelize
 data class CodeOfConduct(
 
     /**
@@ -31,7 +28,7 @@ data class CodeOfConduct(
      */
     val url: Uri?
 
-) : Parcelable
+)
 
 fun RawCodeOfConduct.toNonNullCodeOfConduct(): CodeOfConduct {
     return CodeOfConduct(body, key, name, url)

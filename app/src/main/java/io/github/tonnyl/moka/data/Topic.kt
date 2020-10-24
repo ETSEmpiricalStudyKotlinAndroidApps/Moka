@@ -1,10 +1,7 @@
 package io.github.tonnyl.moka.data
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.fragment.Topic as RawTopic
 
-@Parcelize
 data class Topic(
 
     val id: String,
@@ -19,7 +16,7 @@ data class Topic(
      */
     val viewerHasStarred: Boolean
 
-) : Parcelable
+)
 
 fun RawTopic.toNonNullTopic(): Topic {
     return Topic(id, name, viewerHasStarred)

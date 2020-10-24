@@ -8,8 +8,10 @@ import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.service.NotificationsService
 import io.github.tonnyl.moka.notifications.NotificationsCenter
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import timber.log.Timber
-import java.util.*
 
 class NotificationWorker(
     appContext: Context,
@@ -54,10 +56,10 @@ class NotificationWorker(
             Result.failure()
         }
 
-        // Westworld ‎Season 2; Episode 1
-        val journeyIntoNight = Calendar.getInstance().get(Calendar.HOUR_OF_DAY).let {
-            it >= 23 || it <= 6
-        }
+        val now = Clock.System.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+        // Westworld Season 2; Episode 1
+        val journeyIntoNight = now.hour >= 23 || now.hour <= 6
 
         if (journeyIntoNight) {
             return result

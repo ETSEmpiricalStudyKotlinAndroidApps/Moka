@@ -4,11 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import io.github.tonnyl.moka.MokaApp
-import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.service.NotificationsService
-import io.github.tonnyl.moka.util.Iso8601Utils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -27,22 +26,20 @@ class NotificationCallbackReceiver : BroadcastReceiver() {
             return
         }
 
-        val notification = intent.getParcelableExtra<Notification?>(EXTRA_NOTIFICATION) ?: return
+        val notificationId = intent.getStringExtra(EXTRA_NOTIFICATION_ID) ?: return
 
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             try {
                 val dao = MokaDataBase.getInstance(context, accountId).notificationsDao()
-                dao.markAsDisplayed(
-                    notification.apply {
-                        hasDisplayed = true
-                    }
-                )
+                dao.markAsDisplayed(notificationId)
+
+                val notification = dao.notificationById(notificationId) ?: return@launch
 
                 val service = RetrofitClient.createService(NotificationsService::class.java)
 
                 when (intent.action) {
                     ACTION_MARK_AS_READ -> {
-                        service.markAsRead(Iso8601Utils.format(notification.updatedAt))
+                        service.markAsRead(notification.updatedAt.toString())
                     }
                     ACTION_UNSUBSCRIBE -> {
                         val threadId = notification.url.split("/").lastOrNull()
@@ -53,18 +50,18 @@ class NotificationCallbackReceiver : BroadcastReceiver() {
                         }
                     }
                 }
+
+                NotificationsCenter.cancelNotification(context, notification.id.hashCode())
             } catch (e: Exception) {
                 Timber.e(e, "perform ${intent.action} error")
             }
         }
-
-        NotificationsCenter.cancelNotification(context, notification.id.hashCode())
     }
 
     companion object {
 
         const val EXTRA_ACCOUNT_ID = "extra_account_id"
-        const val EXTRA_NOTIFICATION = "extra_notification"
+        const val EXTRA_NOTIFICATION_ID = "extra_notification_id"
 
         const val ACTION_MARK_AS_READ = "io.github.tonnyl.moka.ACTION_MARK_AS_READ"
         const val ACTION_UNSUBSCRIBE = "io.github.tonnyl.moka.ACTION_UNSUBSCRIBE"

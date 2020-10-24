@@ -1,13 +1,10 @@
 package io.github.tonnyl.moka.data
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.fragment.Language as RawLanguage
 
 /**
  * Represents a given language found in repositories.
  */
-@Parcelize
 data class Language(
 
     /**
@@ -22,7 +19,7 @@ data class Language(
      */
     val name: String
 
-) : Parcelable
+)
 
 fun RawLanguage.toNonNullLanguage(): Language {
     return Language(color, id, name)

@@ -66,7 +66,7 @@ object NotificationsCenter {
         val markAsReadIntent = Intent(context, NotificationCallbackReceiver::class.java).apply {
             action = NotificationCallbackReceiver.ACTION_MARK_AS_READ
             putExtra(NotificationCallbackReceiver.EXTRA_ACCOUNT_ID, accountId)
-            putExtra(NotificationCallbackReceiver.EXTRA_NOTIFICATION, n)
+            putExtra(NotificationCallbackReceiver.EXTRA_NOTIFICATION_ID, n.id)
         }
         val markAsReadPendingIntent = PendingIntent.getBroadcast(
             context,
@@ -85,7 +85,7 @@ object NotificationsCenter {
         val unsubscribeIntent = Intent(context, NotificationCallbackReceiver::class.java).apply {
             action = NotificationCallbackReceiver.ACTION_UNSUBSCRIBE
             putExtra(NotificationCallbackReceiver.EXTRA_ACCOUNT_ID, accountId)
-            putExtra(NotificationCallbackReceiver.EXTRA_NOTIFICATION, n)
+            putExtra(NotificationCallbackReceiver.EXTRA_NOTIFICATION_ID, n.id)
         }
         val unsubscribePendingIntent = PendingIntent.getBroadcast(
             context,
@@ -103,7 +103,7 @@ object NotificationsCenter {
 
         val dismissIntent = Intent(context, NotificationDismissReceiver::class.java).apply {
             putExtra(NotificationDismissReceiver.EXTRA_ACCOUNT_ID, accountId)
-            putExtra(NotificationDismissReceiver.EXTRA_NOTIFICATION, n)
+            putExtra(NotificationDismissReceiver.EXTRA_NOTIFICATION_ID, n.id)
         }
         val dismissPendingIntent = PendingIntent.getBroadcast(
             context,
@@ -126,7 +126,7 @@ object NotificationsCenter {
             .setContentTitle(n.repository.fullName)
             .setContentText(content)
             .setStyle(NotificationCompat.BigTextStyle().bigText(content))
-            .setWhen(n.updatedAt.time)
+            .setWhen(n.updatedAt.toEpochMilliseconds())
             .addAction(readAction)
             .addAction(unsubscribeAction)
             .setContentIntent(contentPendingIntent)

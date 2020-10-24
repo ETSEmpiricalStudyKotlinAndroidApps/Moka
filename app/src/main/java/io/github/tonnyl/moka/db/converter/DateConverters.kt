@@ -1,18 +1,18 @@
 package io.github.tonnyl.moka.db.converter
 
 import androidx.room.TypeConverter
-import java.util.*
+import kotlinx.datetime.Instant
 
 object DateConverters {
 
     @TypeConverter
     @JvmStatic
-    fun dateToTimestamp(date: Date?): Long? = date?.time
+    fun dateToTimestamp(instant: Instant?): Long? = instant?.toEpochMilliseconds()
 
     @TypeConverter
     @JvmStatic
-    fun fromTimestamp(value: Long?): Date? = value?.let {
-        Date(it)
+    fun fromTimestamp(value: Long?): Instant? = value?.let {
+        Instant.fromEpochMilliseconds(it)
     }
 
 }

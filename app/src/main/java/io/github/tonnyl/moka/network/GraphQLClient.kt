@@ -5,12 +5,10 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.CustomTypeAdapter
 import com.apollographql.apollo.api.CustomTypeValue
 import io.github.tonnyl.moka.type.CustomType
-import io.github.tonnyl.moka.util.Iso8601Utils
+import kotlinx.datetime.Instant
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 
 object GraphQLClient {
@@ -18,8 +16,6 @@ object GraphQLClient {
     val accessToken = AtomicReference<String>()
 
     private const val SERVER_URL = "https://api.github.com/graphql"
-
-    private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
@@ -37,15 +33,15 @@ object GraphQLClient {
             .build()
     }
 
-    private val dateCustomTypeAdapter = object : CustomTypeAdapter<Date> {
+    private val dateCustomTypeAdapter = object : CustomTypeAdapter<Instant> {
 
-        override fun encode(value: Date): CustomTypeValue<*> {
-            return CustomTypeValue.GraphQLString(Iso8601Utils.format(value))
+        override fun encode(value: Instant): CustomTypeValue<*> {
+            return CustomTypeValue.GraphQLString(value.toString())
         }
 
-        override fun decode(value: CustomTypeValue<*>): Date {
+        override fun decode(value: CustomTypeValue<*>): Instant {
             try {
-                return Iso8601Utils.parse(value.value.toString())
+                return Instant.parse(value.value.toString())
             } catch (e: ParseException) {
                 throw RuntimeException(e)
             }

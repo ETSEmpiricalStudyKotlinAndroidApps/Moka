@@ -32,7 +32,7 @@ import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.util.formatWithSuffix
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
-import java.util.*
+import kotlinx.datetime.Instant
 
 @Composable
 fun ProfileScreen(
@@ -298,7 +298,7 @@ private fun ProfileScreenContent(
             InfoListItem(
                 leadingRes = R.string.profile_joined_on,
                 trailing = DateUtils.getRelativeTimeSpanString(
-                    user.createdAt.time,
+                    user.createdAt.toEpochMilliseconds(),
                     System.currentTimeMillis(),
                     DateUtils.MINUTE_IN_MILLIS
                 ).toString()
@@ -306,7 +306,7 @@ private fun ProfileScreenContent(
             InfoListItem(
                 leadingRes = R.string.profile_updated_on,
                 trailing = DateUtils.getRelativeTimeSpanString(
-                    user.updatedAt.time,
+                    user.updatedAt.toEpochMilliseconds(),
                     System.currentTimeMillis(),
                     DateUtils.MINUTE_IN_MILLIS
                 ).toString()
@@ -502,7 +502,7 @@ private fun ProfileScreenPreview() {
             bioHTML = "<div>Rock/Post-rock/Electronic</div>",
             company = null,
             companyHTML = "",
-            createdAt = Date(1436861097L),
+            createdAt = Instant.fromEpochMilliseconds(1436861097L),
             email = "lizhaotailang@gmail.com",
             id = "MDQ6VXNlcjEzMzI5MTQ4",
             isBountyHunter = false,
@@ -517,15 +517,15 @@ private fun ProfileScreenPreview() {
             name = "Li Zhao Tai Lang",
             resourcePath = Uri.parse("/TonnyL"),
             status = UserStatus(
-                createdAt = Date(1592643813L),
+                createdAt = Instant.fromEpochMilliseconds(1592643813L),
                 emoji = ":dart:",
                 expiresAt = null,
                 id = "3209515",
                 indicatesLimitedAvailability = true,
                 message = "Focusing",
-                updatedAt = Date(1592643813L)
+                updatedAt = Instant.fromEpochMilliseconds(1592643813L)
             ),
-            updatedAt = Date(1600415355L),
+            updatedAt = Instant.fromEpochMilliseconds(1600415355L),
             url = Uri.parse("https://github.com/TonnyL"),
             viewerCanFollow = false,
             viewerIsFollowing = false,
@@ -570,7 +570,7 @@ private fun ProfileScreenPreview() {
                     stargazersCount = 1145
                 ),
                 Gist2(
-                    createdAt = Date(1573833346L),
+                    createdAt = Instant.fromEpochMilliseconds(1573833346L),
                     description = "",
                     id = "MDQ6R2lzdGEzN2U5YTM3MGU0OGI5MDlhMzgzZDhlOTBiMzM5Y2Jk",
                     isFork = false,
@@ -583,9 +583,9 @@ private fun ProfileScreenPreview() {
                         resourcePath = Uri.parse("/lizhaotailang"),
                         url = Uri.parse("https://github.com/lizhaotailang")
                     ),
-                    pushedAt = Date(1573833347L),
+                    pushedAt = Instant.fromEpochMilliseconds(1573833347L),
                     resourcePath = Uri.parse("a37e9a370e48b909a383d8e90b339cbd"),
-                    updatedAt = Date(1592647150),
+                    updatedAt = Instant.fromEpochMilliseconds(1592647150),
                     url = Uri.parse("https://gist.github.com/a37e9a370e48b909a383d8e90b339cbd"),
                     viewerHasStarred = true,
                     commentsTotalCount = 0,

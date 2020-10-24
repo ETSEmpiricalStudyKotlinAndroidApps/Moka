@@ -93,7 +93,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/event_space_between_avatar_and_action"
             app:layout_constraintTop_toBottomOf="@id/event_content"
-            app:textFuture="@{DateUtils.getRelativeTimeSpanString(event.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
+            app:textFuture="@{DateUtils.getRelativeTimeSpanString(event.createdAt.toEpochMilliseconds(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
             tools:text="@tools:sample/date/hhmmss" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

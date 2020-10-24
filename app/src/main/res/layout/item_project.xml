@@ -75,7 +75,7 @@
             app:layout_constraintEnd_toStartOf="@id/item_project_created_by_avatar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_project_body_updated_at_space"
-            app:textFuture="@{DateUtils.getRelativeTimeSpanString(project.updatedAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
+            app:textFuture="@{DateUtils.getRelativeTimeSpanString(project.updatedAt.toEpochMilliseconds(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
             tools:text="@sample/project.json/projects/updatedAt" />
 
         <androidx.appcompat.widget.AppCompatImageView

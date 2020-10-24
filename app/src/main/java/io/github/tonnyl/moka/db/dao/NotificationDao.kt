@@ -1,9 +1,12 @@
 package io.github.tonnyl.moka.db.dao
 
 import androidx.paging.PagingSource
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import io.github.tonnyl.moka.data.Notification
-import java.util.*
+import kotlinx.datetime.Instant
 
 @Dao
 interface NotificationDao {
@@ -21,11 +24,14 @@ interface NotificationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(notifications: List<Notification>)
 
-    @Query("UPDATE notification SET last_read_at = :lastReadAt WHERE last_read_at < last_read_at")
-    fun markAsRead(lastReadAt: Date)
+    @Query("UPDATE notification SET last_read_at = :lastReadAt WHERE last_read_at < :lastReadAt")
+    fun markAsRead(lastReadAt: Instant)
 
-    @Update
-    fun markAsDisplayed(notification: Notification)
+    @Query("UPDATE notification SET has_displayed = 1 WHERE id = :id")
+    fun markAsDisplayed(id: String)
+
+    @Query("SELECT * FROM notification WHERE id = :id")
+    fun notificationById(id: String): Notification?
 
     @Query("DELETE FROM notification")
     fun deleteAll()

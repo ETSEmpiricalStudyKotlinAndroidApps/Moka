@@ -1,14 +1,11 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.fragment.RepositoryOwner as RawRepositoryOwner
 
 /**
  * Represents an owner of a Repository.
  */
-@Parcelize
 data class RepositoryOwner(
 
     /**
@@ -37,7 +34,7 @@ data class RepositoryOwner(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun RawRepositoryOwner.toNonNullRepositoryOwner(): RepositoryOwner {
     return RepositoryOwner(avatarUrl, id, login, resourcePath, url)

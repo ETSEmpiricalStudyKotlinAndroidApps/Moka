@@ -1,11 +1,8 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
 import io.github.tonnyl.moka.fragment.UserListItemFragment
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class UserItem(
 
     /**
@@ -55,7 +52,7 @@ data class UserItem(
      */
     val viewerIsFollowing: Boolean
 
-) : Parcelable
+)
 
 fun UserListItemFragment.toNonNullUserItem(): UserItem {
     return UserItem(

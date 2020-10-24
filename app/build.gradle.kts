@@ -111,8 +111,8 @@ apollo {
         graphqlSourceDirectorySet.include("**/*.graphql")
         customTypeMapping.set(
             mutableMapOf(
-                "GitTimestamp" to "java.util.Date",
-                "DateTime" to "java.util.Date",
+                "GitTimestamp" to "kotlinx.datetime.Instant",
+                "DateTime" to "kotlinx.datetime.Instant",
                 "HTML" to "kotlin.String",
                 "URI" to "android.net.Uri",
                 "ID" to "kotlin.String",
@@ -132,6 +132,7 @@ dependencies {
     implementation(Deps.Kotlin.stdlib)
     implementation(Deps.Kotlin.coroutinesCore)
     implementation(Deps.Kotlin.coroutinesAndroid)
+    implementation(Deps.Kotlin.dateTime)
 
     // AndroidX
     implementation(Deps.AndroidX.constraintLayout)

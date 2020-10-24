@@ -1,19 +1,16 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
 import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery
 import io.github.tonnyl.moka.queries.UsersRepositoryQuery
 import io.github.tonnyl.moka.type.RepositoryLockReason
 import io.github.tonnyl.moka.type.RepositoryPermission
 import io.github.tonnyl.moka.type.SubscriptionState
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
 /**
  * A repository contains the content for a project.
  */
-@Parcelize
 data class Repository(
 
     /**
@@ -24,7 +21,7 @@ data class Repository(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * The Ref associated with the repository's default branch.
@@ -156,7 +153,7 @@ data class Repository(
     /**
      * Identifies when the repository was last pushed to.
      */
-    val pushedAt: Date?,
+    val pushedAt: Instant?,
 
     /**
      * Whether or not rebase-merging is enabled on this repository.
@@ -190,7 +187,7 @@ data class Repository(
     /**
      * Identifies the date and time when the object was last updated.
      */
-    val updatedAt: Date,
+    val updatedAt: Instant,
 
     /**
      * The HTTP URL for this repository.
@@ -264,7 +261,7 @@ data class Repository(
 
     val topics: List<RepositoryTopic?>?
 
-) : Parcelable
+)
 
 fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
     val user = this?.user ?: return null

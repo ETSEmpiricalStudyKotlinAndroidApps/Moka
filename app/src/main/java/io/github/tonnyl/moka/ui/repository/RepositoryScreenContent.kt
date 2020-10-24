@@ -30,7 +30,7 @@ import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.type.RepositoryPermission
 import io.github.tonnyl.moka.type.SubscriptionState
 import io.github.tonnyl.moka.widget.*
-import java.util.*
+import kotlinx.datetime.Instant
 
 @Composable
 fun RepositoryScreen(scrollState: ScrollState) {
@@ -302,13 +302,15 @@ private fun RepositoryScreenContent(
         if (createdAt != null) {
             InfoListItem(
                 leadingRes = R.string.repository_created_at,
-                trailing = DateUtils.getRelativeTimeSpanString(createdAt.time).toString()
+                trailing = DateUtils.getRelativeTimeSpanString(createdAt.toEpochMilliseconds())
+                    .toString()
             )
         }
         if (updatedAt != null) {
             InfoListItem(
                 leadingRes = R.string.repository_updated_at,
-                trailing = DateUtils.getRelativeTimeSpanString(updatedAt.time).toString()
+                trailing = DateUtils.getRelativeTimeSpanString(updatedAt.toEpochMilliseconds())
+                    .toString()
             )
         }
         Spacer(modifier = Modifier.preferredHeight(padding))
@@ -338,7 +340,7 @@ private fun RepositoryScreenContentPreview() {
         scrollState = rememberScrollState(),
         usersRepository = Repository(
             codeOfConduct = null,
-            createdAt = Date(1458315345000L),
+            createdAt = Instant.fromEpochMilliseconds(1458315345000L),
             defaultBranchRef = Ref(
                 id = "MDM6UmVmNTQyMTIzNTU6cmVmcy9oZWFkcy9tYXN0ZXI=",
                 name = "master",
@@ -423,13 +425,13 @@ private fun RepositoryScreenContentPreview() {
             ),
             projectsResourcePath = Uri.parse("/TonnyL/PaperPlane/projects"),
             projectsUrl = Uri.parse("https://github.com/TonnyL/PaperPlane/projects"),
-            pushedAt = Date(1528288541000),
+            pushedAt = Instant.fromEpochMilliseconds(1528288541000),
             rebaseMergeAllowed = true,
             resourcePath = Uri.parse("/TonnyL/PaperPlane"),
             shortDescriptionHTML = "<g-emoji class=\"g-emoji\" alias=\"books\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f4da.png\">📚</g-emoji> PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. ",
             squashMergeAllowed = true,
             sshUrl = "git@github.com:TonnyL/PaperPlane.git",
-            updatedAt = Date(1601370442000),
+            updatedAt = Instant.fromEpochMilliseconds(1601370442000),
             url = Uri.parse("https://github.com/TonnyL/PaperPlane"),
             usesCustomOpenGraphImage = false,
             viewerCanAdminister = true,

@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.data.item
 
 import android.net.Uri
-import android.os.Parcelable
 import androidx.annotation.WorkerThread
 import io.github.tonnyl.moka.data.Actor
 import io.github.tonnyl.moka.data.ReactionGroup
@@ -11,8 +10,7 @@ import io.github.tonnyl.moka.fragment.*
 import io.github.tonnyl.moka.type.*
 import io.github.tonnyl.moka.util.HtmlHandler
 import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.PullRequestTimelineItemPullRequest as RawPullRequestTimelineItemPullRequest
 
 // ===== base issue/pull request timeline item definition =====
@@ -55,7 +53,6 @@ interface PullRequestTimelineItem : TimelineItem {
 // ===== base issue/pull request timeline item definition =====
 
 // ===== base issue/pull request common definition =====
-@Parcelize
 data class Bot(
 
     /**
@@ -73,13 +70,12 @@ data class Bot(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun IssuePullRequestTimelineItemBotFragment.toNonNullBot(): Bot {
     return Bot(avatarUrl, login, url)
 }
 
-@Parcelize
 data class Mannequin(
 
     /**
@@ -99,13 +95,12 @@ data class Mannequin(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun IssuePullRequestTimelineItemMannequinFragment.toNonNullMannequin(): Mannequin {
     return Mannequin(avatarUrl, id, login, url)
 }
 
-@Parcelize
 data class Organization(
 
     /**
@@ -130,13 +125,12 @@ data class Organization(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun IssuePullRequestTimelineItemOrganizationFragment.toNonNullOrganization(): Organization {
     return Organization(avatarUrl, id, login, name, url)
 }
 
-@Parcelize
 data class User(
     /**
      * A URL pointing to the user's public avatar.
@@ -160,13 +154,12 @@ data class User(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun IssuePullRequestTimelineItemUserFragment.toNonNullUser(): User {
     return User(avatarUrl, id, login, name, url)
 }
 
-@Parcelize
 data class Team(
 
     /**
@@ -191,13 +184,12 @@ data class Team(
 
     val id: String
 
-) : Parcelable
+)
 
 fun IssuePullRequestTimelineItemTeamFragment.toNonNullTeam(): Team {
     return Team(avatarUrl, combinedSlug, name, url, id)
 }
 
-@Parcelize
 data class MilestoneItemIssue(
 
     /**
@@ -217,7 +209,7 @@ data class MilestoneItemIssue(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun MilestoneItemIssueFragment.toNonNullMilestoneItemIssue(): MilestoneItemIssue {
     return MilestoneItemIssue(title, number, id, url)
@@ -226,7 +218,6 @@ fun MilestoneItemIssueFragment.toNonNullMilestoneItemIssue(): MilestoneItemIssue
 /**
  * Object referenced by event.
  */
-@Parcelize
 data class MilestoneItemPullRequest(
 
     /**
@@ -246,7 +237,7 @@ data class MilestoneItemPullRequest(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun MilestoneItemPullRequestFragment.toNonNullMilestoneItemPullRequest(): MilestoneItemPullRequest {
     return MilestoneItemPullRequest(title, number, id, url)
@@ -255,7 +246,6 @@ fun MilestoneItemPullRequestFragment.toNonNullMilestoneItemPullRequest(): Milest
 /**
  * A label for categorizing Issues or Milestones with a given Repository.
  */
-@Parcelize
 data class Label(
 
     /**
@@ -275,13 +265,12 @@ data class Label(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun IssuePrLabelFragment.toNonNullLabel(): Label {
     return Label(color, id, name, url)
 }
 
-@Parcelize
 data class Assignee(
 
     /**
@@ -304,9 +293,8 @@ data class Assignee(
      */
     val user: User?
 
-) : Parcelable {
+) {
 
-    @IgnoredOnParcel
     val assigneeLogin = user?.login ?: organization?.login ?: mannequin?.login ?: bot?.login
 
 }
@@ -321,7 +309,6 @@ fun IssuePullRequestTimelineItemAssigneeFragment?.toNonNullAssignee(): Assignee 
     )
 }
 
-@Parcelize
 data class PullRequestTimelineItemDeployment(
 
     /**
@@ -337,7 +324,7 @@ data class PullRequestTimelineItemDeployment(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Identifies the actor who triggered the deployment.
@@ -374,16 +361,16 @@ data class PullRequestTimelineItemDeployment(
     /**
      * Identifies the date and time when the object was last updated.
      */
-    val updatedAt: Date
+    val updatedAt: Instant
 
-) : Parcelable
+)
 
 fun PullRequestTimelineItemDeploymentFragment.toNonNullPullRequestTimelineItemDeployment(): PullRequestTimelineItemDeployment {
     return PullRequestTimelineItemDeployment(
         commit?.fragments?.pullRequestTimelineItemCommitFragment?.toNonNullPullRequestTimelineItemCommit(),
         commitOid,
         createdAt,
-        creator?.fragments?.actor?.toNonNullActor(),
+        creator.fragments.actor.toNonNullActor(),
         description,
         description,
         id,
@@ -397,7 +384,6 @@ fun PullRequestTimelineItemDeploymentFragment.toNonNullPullRequestTimelineItemDe
 /**
  * Represents a Git commit.
  */
-@Parcelize
 data class PullRequestTimelineItemCommit(
 
     /**
@@ -425,7 +411,7 @@ data class PullRequestTimelineItemCommit(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun PullRequestTimelineItemCommitFragment.toNonNullPullRequestTimelineItemCommit(): PullRequestTimelineItemCommit {
     return PullRequestTimelineItemCommit(
@@ -437,7 +423,6 @@ fun PullRequestTimelineItemCommitFragment.toNonNullPullRequestTimelineItemCommit
     )
 }
 
-@Parcelize
 data class PullRequestTimelineItemPullRequest(
 
     /**
@@ -467,7 +452,7 @@ data class PullRequestTimelineItemPullRequest(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun RawPullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(): PullRequestTimelineItemPullRequest {
     return PullRequestTimelineItemPullRequest(closed, number, id, state, title, url)
@@ -476,7 +461,6 @@ fun RawPullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRe
 /**
  *
  */
-@Parcelize
 data class PullRequestTimelineItemRef(
 
     val id: String,
@@ -491,13 +475,12 @@ data class PullRequestTimelineItemRef(
      */
     val prefix: String
 
-) : Parcelable
+)
 
 fun PullRequestTimelineItemRefFragment.toNonNullPullRequestTimelineItemRef(): PullRequestTimelineItemRef {
     return PullRequestTimelineItemRef(id, name, prefix)
 }
 
-@Parcelize
 data class PullRequestTimelineItemPullRequestReview(
 
     val id: String,
@@ -512,7 +495,7 @@ data class PullRequestTimelineItemPullRequestReview(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun PullRequestReviewFragment.toNonNullPullRequestTimelineItemPullRequestReview(): PullRequestTimelineItemPullRequestReview {
     return PullRequestTimelineItemPullRequestReview(
@@ -522,7 +505,6 @@ fun PullRequestReviewFragment.toNonNullPullRequestTimelineItemPullRequestReview(
     )
 }
 
-@Parcelize
 data class PullRequestTimelineItemGitActor(
 
     /**
@@ -545,7 +527,7 @@ data class PullRequestTimelineItemGitActor(
      */
     val user: User?
 
-) : Parcelable
+)
 
 fun GitActorFragment.toNonNullPullRequestTimelineItemGitActor(): PullRequestTimelineItemGitActor {
     return PullRequestTimelineItemGitActor(
@@ -561,7 +543,6 @@ fun GitActorFragment.toNonNullPullRequestTimelineItemGitActor(): PullRequestTime
 /**
  * Represents a 'added_to_project' event on a given issue or pull request.
  */
-@Parcelize
 data class AddedToProjectEvent(
 
     /**
@@ -572,11 +553,11 @@ data class AddedToProjectEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun AddedToProjectEventFragment.toNonNullAddedToProjectEvent(): AddedToProjectEvent {
     return AddedToProjectEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
@@ -585,7 +566,6 @@ fun AddedToProjectEventFragment.toNonNullAddedToProjectEvent(): AddedToProjectEv
 /**
  * Represents an 'assigned' event on any assignable object.
  */
-@Parcelize
 data class AssignedEvent(
     /**
      * Identifies the actor who performed the event.
@@ -595,7 +575,7 @@ data class AssignedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -609,7 +589,7 @@ data class AssignedEvent(
      */
     val assigneeName: String?
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun AssignedEventFragment.toNonNullAssignedEvent(): AssignedEvent {
     val assignee = assignee
@@ -646,7 +626,6 @@ fun AssignedEventFragment.toNonNullAssignedEvent(): AssignedEvent {
 /**
  * Represents a 'closed' event on any Closable.
  */
-@Parcelize
 data class ClosedEvent(
 
     /**
@@ -656,7 +635,7 @@ data class ClosedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -665,40 +644,15 @@ data class ClosedEvent(
      */
     val url: Uri
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun ClosedEventFragment.toNonNullClosedEvent(): ClosedEvent {
     return ClosedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id, url)
 }
 
 /**
- * Represents a 'comment_deleted' event on a given issue or pull request.
- */
-//@Parcelize
-//data class CommentDeletedEvent(
-//
-//    /**
-//     * Identifies the actor who performed the event.
-//     */
-//    val actor: Actor?,
-//
-//    /**
-//     * Identifies the date and time when the object was created.
-//     */
-//    val createdAt: Date,
-//
-//    override val id: String
-//
-//) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
-//
-//fun CommentDeletedEventFragment.toNonNullCommentDeletedEvent(): CommentDeletedEvent {
-//    return CommentDeletedEvent(actor()?.fragments()?.actor()?.toNonNullActor(), createdAt(), id())
-//}
-
-/**
  * Represents a 'converted_note_to_issue' event on a given issue or pull request.
  */
-@Parcelize
 data class ConvertedNoteToIssueEvent(
 
     /**
@@ -709,11 +663,11 @@ data class ConvertedNoteToIssueEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun ConvertedNoteToIssueEventFragment.toNonNullConvertedNoteToIssueEvent(): ConvertedNoteToIssueEvent {
     return ConvertedNoteToIssueEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
@@ -722,7 +676,6 @@ fun ConvertedNoteToIssueEventFragment.toNonNullConvertedNoteToIssueEvent(): Conv
 /**
  * Represents a mention made by one issue or pull request to another.
  */
-@Parcelize
 data class CrossReferencedEvent(
 
     /**
@@ -733,7 +686,7 @@ data class CrossReferencedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Reference originated in a different repository.
@@ -752,7 +705,7 @@ data class CrossReferencedEvent(
      */
     val pullRequest: ReferencedEventPullRequestFragmentItem?
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun CrossReferencedEventFragment.toNonNullCrossReferencedEvent(): CrossReferencedEvent {
     return CrossReferencedEvent(
@@ -768,7 +721,6 @@ fun CrossReferencedEventFragment.toNonNullCrossReferencedEvent(): CrossReference
 /**
  * Represents a 'demilestoned' event on a given issue or pull request.
  */
-@Parcelize
 data class DemilestonedEvent(
 
     /**
@@ -779,7 +731,7 @@ data class DemilestonedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -792,7 +744,7 @@ data class DemilestonedEvent(
 
     val subjectPullRequest: MilestoneItemPullRequest?
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun DemilestonedEventFragment.toNonNullDemilestonedEvent(): DemilestonedEvent {
     return DemilestonedEvent(
@@ -808,7 +760,6 @@ fun DemilestonedEventFragment.toNonNullDemilestonedEvent(): DemilestonedEvent {
 /**
  * Represents a comment on an Issue.
  */
-@Parcelize
 data class IssueComment(
 
     /**
@@ -821,7 +772,7 @@ data class IssueComment(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     val displayHtml: String,
 
@@ -867,7 +818,7 @@ data class IssueComment(
      */
     val viewerCannotUpdateReasons: List<CommentCannotUpdateReason>
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 @WorkerThread
 fun IssueCommentFragment.toNonNullIssueComment(
@@ -898,7 +849,6 @@ fun IssueCommentFragment.toNonNullIssueComment(
 /**
  * Represents a 'labeled' event on a given issue or pull request.
  */
-@Parcelize
 data class LabeledEvent(
 
     /**
@@ -909,7 +859,7 @@ data class LabeledEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -918,7 +868,7 @@ data class LabeledEvent(
      */
     val label: Label
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun LabeledEventFragment.toNonNullLabeledEvent(): LabeledEvent {
     return LabeledEvent(
@@ -932,7 +882,6 @@ fun LabeledEventFragment.toNonNullLabeledEvent(): LabeledEvent {
 /**
  * Represents a 'locked' event on a given issue or pull request.
  */
-@Parcelize
 data class LockedEvent(
 
     /**
@@ -943,7 +892,7 @@ data class LockedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -952,7 +901,7 @@ data class LockedEvent(
      */
     val lockReason: LockReason?
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun LockedEventFragment.toNonNullLockedEvent(): LockedEvent {
     return LockedEvent(
@@ -966,7 +915,6 @@ fun LockedEventFragment.toNonNullLockedEvent(): LockedEvent {
 /**
  * Represents a 'marked_as_duplicate' event on a given issue or pull request.
  */
-@Parcelize
 data class MarkedAsDuplicateEvent(
 
     /**
@@ -977,48 +925,19 @@ data class MarkedAsDuplicateEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun MarkedAsDuplicateEventFragment.toNonNullMarkedAsDuplicateEvent(): MarkedAsDuplicateEvent {
     return MarkedAsDuplicateEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
 /**
- * Represents a 'mentioned' event on a given issue or pull request.
- */
-//@Parcelize
-//data class MentionedEvent(
-//
-//    /**
-//     * Identifies the actor who performed the event.
-//     */
-//    val actor: Actor?,
-//
-//    /**
-//     * Identifies the date and time when the object was created.
-//     */
-//    val createdAt: Date,
-//
-//    override val id: String
-//
-//) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
-//
-//fun MentionedEventFragment.toNonNullMentionedEvent(): MentionedEvent {
-//    return MentionedEvent(
-//        actor()?.fragments()?.actor()?.toNonNullActor(),
-//        createdAt(),
-//        id()
-//    )
-//}
-
-/**
  * Represents a 'milestoned' event on a given issue or pull request.
  */
-@Parcelize
 data class MilestonedEvent(
 
     /**
@@ -1029,7 +948,7 @@ data class MilestonedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -1038,7 +957,7 @@ data class MilestonedEvent(
      */
     val milestoneTitle: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun MilestonedEventFragment.toNonNullMilestonedEvent(): MilestonedEvent {
     return MilestonedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id, milestoneTitle)
@@ -1047,7 +966,6 @@ fun MilestonedEventFragment.toNonNullMilestonedEvent(): MilestonedEvent {
 /**
  * Represents a 'moved_columns_in_project' event on a given issue or pull request.
  */
-@Parcelize
 data class MovedColumnsInProjectEvent(
 
     /**
@@ -1058,11 +976,11 @@ data class MovedColumnsInProjectEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun MovedColumnsInProjectEventFragment.toNonNullMovedColumnsInProjectEvent(): MovedColumnsInProjectEvent {
     return MovedColumnsInProjectEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
@@ -1071,7 +989,6 @@ fun MovedColumnsInProjectEventFragment.toNonNullMovedColumnsInProjectEvent(): Mo
 /**
  * Represents a 'pinned' event on a given issue or pull request.
  */
-@Parcelize
 data class PinnedEvent(
 
     /**
@@ -1082,11 +999,11 @@ data class PinnedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun PinnedEventFragment.toNonNullPinnedEvent(): PinnedEvent {
     return PinnedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
@@ -1095,7 +1012,6 @@ fun PinnedEventFragment.toNonNullPinnedEvent(): PinnedEvent {
 /**
  * Represents a 'referenced' event on a given ReferencedSubject.
  */
-@Parcelize
 data class ReferencedEvent(
 
     /**
@@ -1106,7 +1022,7 @@ data class ReferencedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -1125,7 +1041,7 @@ data class ReferencedEvent(
 
     val pullRequest: ReferencedEventPullRequestFragmentItem?
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun ReferencedEventFragment.toNonNullReferencedEvent(): ReferencedEvent {
     return ReferencedEvent(
@@ -1142,7 +1058,6 @@ fun ReferencedEventFragment.toNonNullReferencedEvent(): ReferencedEvent {
 /**
  * Represents a 'removed_from_project' event on a given issue or pull request.
  */
-@Parcelize
 data class RemovedFromProjectEvent(
 
     /**
@@ -1153,11 +1068,11 @@ data class RemovedFromProjectEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun RemovedFromProjectEventFragment.toNonNullRemovedFromProjectEvent(): RemovedFromProjectEvent {
     return RemovedFromProjectEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
@@ -1166,7 +1081,6 @@ fun RemovedFromProjectEventFragment.toNonNullRemovedFromProjectEvent(): RemovedF
 /**
  * Represents a 'renamed' event on a given issue or pull request
  */
-@Parcelize
 data class RenamedTitleEvent(
 
     val actor: Actor?,
@@ -1174,7 +1088,7 @@ data class RenamedTitleEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Identifies the current title of the issue or pull request.
@@ -1188,7 +1102,7 @@ data class RenamedTitleEvent(
      */
     val previousTitle: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun RenamedTitleEventFragment.toNonNullRenamedTitleEvent(): RenamedTitleEvent {
     return RenamedTitleEvent(
@@ -1203,7 +1117,6 @@ fun RenamedTitleEventFragment.toNonNullRenamedTitleEvent(): RenamedTitleEvent {
 /**
  * Represents a 'reopened' event on any Closable.
  */
-@Parcelize
 data class ReopenedEvent(
 
     /**
@@ -1214,11 +1127,11 @@ data class ReopenedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun ReopenedEventFragment.toNonNullReopenedEvent(): ReopenedEvent {
     return ReopenedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
@@ -1227,35 +1140,6 @@ fun ReopenedEventFragment.toNonNullReopenedEvent(): ReopenedEvent {
 /**
  * Represents a 'subscribed' event on a given `Subscribable`.
  */
-//@Parcelize
-//data class SubscribedEvent(
-//
-//    /**
-//     * Identifies the actor who performed the event.
-//     */
-//    val actor: Actor?,
-//
-//    /**
-//     * Identifies the date and time when the object was created.
-//     */
-//    val createdAt: Date,
-//
-//    override val id: String
-//
-//) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
-//
-//fun SubscribedEventFragment.toNonNullSubscribedEvent(): SubscribedEvent {
-//    return SubscribedEvent(
-//        actor()?.fragments()?.actor()?.toNonNullActor(),
-//        createdAt(),
-//        id()
-//    )
-//}
-
-/**
- * Represents a 'subscribed' event on a given `Subscribable`.
- */
-@Parcelize
 data class TransferredEvent(
 
     /**
@@ -1266,7 +1150,7 @@ data class TransferredEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -1279,7 +1163,7 @@ data class TransferredEvent(
 
     val ownerUser: User?
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun TransferredEventFragment.toNonNullTransferredEvent(): TransferredEvent {
     val owner = fromRepository?.owner?.fragments
@@ -1296,7 +1180,6 @@ fun TransferredEventFragment.toNonNullTransferredEvent(): TransferredEvent {
 /**
  * Represents an 'unassigned' event on any assignable object.
  */
-@Parcelize
 data class UnassignedEvent(
 
     /**
@@ -1307,13 +1190,13 @@ data class UnassignedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
     val assignee: Assignee
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun UnassignedEventFragment.toNonNullUnassignedEvent(): UnassignedEvent {
     return UnassignedEvent(
@@ -1327,7 +1210,6 @@ fun UnassignedEventFragment.toNonNullUnassignedEvent(): UnassignedEvent {
 /**
  * Represents an 'unlabeled' event on a given issue or pull request.
  */
-@Parcelize
 data class UnlabeledEvent(
 
     /**
@@ -1338,7 +1220,7 @@ data class UnlabeledEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -1347,7 +1229,7 @@ data class UnlabeledEvent(
      */
     val label: Label
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun UnlabeledEventFragment.toNonNullUnlabeledEvent(): UnlabeledEvent {
     return UnlabeledEvent(
@@ -1361,7 +1243,6 @@ fun UnlabeledEventFragment.toNonNullUnlabeledEvent(): UnlabeledEvent {
 /**
  * Represents an 'unlocked' event on a given issue or pull request.
  */
-@Parcelize
 data class UnlockedEvent(
 
     /**
@@ -1372,14 +1253,14 @@ data class UnlockedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Identifies the date and time when the object was created.
      */
     override val id: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun UnlockedEventFragment.toNonNullUnlockedEvent(): UnlockedEvent {
     return UnlockedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
@@ -1388,7 +1269,6 @@ fun UnlockedEventFragment.toNonNullUnlockedEvent(): UnlockedEvent {
 /**
  * Represents an 'unpinned' event on a given issue or pull request.
  */
-@Parcelize
 data class UnpinnedEvent(
 
     /**
@@ -1399,85 +1279,16 @@ data class UnpinnedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String
 
-) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
+) : IssueTimelineItem, PullRequestTimelineItem
 
 fun UnpinnedEventFragment.toNonNullUnpinnedEvent(): UnpinnedEvent {
     return UnpinnedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
-/**
- * Represents an 'unsubscribed' event on a given `Subscribable`.
- */
-//@Parcelize
-//data class UnsubscribedEvent(
-//
-//    /**
-//     * Identifies the actor who performed the event.
-//     */
-//    val actor: Actor?,
-//
-//    /**
-//     * Identifies the date and time when the object was created.
-//     */
-//    val createdAt: Date,
-//
-//    override val id: String
-//
-//) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
-//
-//fun UnsubscribedEventFragment.toNonNullUnsubscribedEvent(): UnsubscribedEvent {
-//    return UnsubscribedEvent(
-//        actor()?.fragments()?.actor()?.toNonNullActor(),
-//        createdAt(),
-//        id()
-//    )
-//}
-
-/**
- * Represents a 'user_blocked' event on a given user.
- */
-//@Parcelize
-//data class UserBlockedEvent(
-//
-//    /**
-//     * Identifies the actor who performed the event.
-//     */
-//    val actor: Actor?,
-//
-//    /**
-//     * Number of days that the user was blocked for.
-//     */
-//    val blockDuration: UserBlockDuration,
-//
-//    /**
-//     * Identifies the date and time when the object was created.
-//     */
-//    val createdAt: Date,
-//
-//    override val id: String,
-//
-//    /**
-//     * The user who was blocked.
-//     */
-//    val subjectUser: User?
-//
-//) : Parcelable, IssueTimelineItem, PullRequestTimelineItem
-//
-//fun UserBlockedEventFragment.toNonNullUserBlockedEvent(): UserBlockedEvent {
-//    return UserBlockedEvent(
-//        actor()?.fragments()?.actor()?.toNonNullActor(),
-//        blockDuration(),
-//        createdAt(),
-//        id(),
-//        subject()?.fragments()?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser()
-//    )
-//}
-
-@Parcelize
 data class ReferencedEventIssueFragmentItem(
 
     val title: String,
@@ -1486,13 +1297,12 @@ data class ReferencedEventIssueFragmentItem(
 
     val id: String
 
-) : Parcelable
+)
 
 fun ReferencedEventIssueFragment.toNonNullReferencedEventIssueFragmentItem(): ReferencedEventIssueFragmentItem {
     return ReferencedEventIssueFragmentItem(title, number, id)
 }
 
-@Parcelize
 data class ReferencedEventPullRequestFragmentItem(
 
     val title: String,
@@ -1501,13 +1311,12 @@ data class ReferencedEventPullRequestFragmentItem(
 
     val id: String
 
-) : Parcelable
+)
 
 fun ReferencedEventPullRequestFragment.toNonNullReferencedEventPullRequestFragmentItem(): ReferencedEventPullRequestFragmentItem {
     return ReferencedEventPullRequestFragmentItem(title, number, id)
 }
 
-@Parcelize
 data class BaseRefChangedEvent(
 
     /**
@@ -1518,17 +1327,16 @@ data class BaseRefChangedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun BaseRefChangedEventFragment.toNonNullBaseRefChangedEvent(): BaseRefChangedEvent {
     return BaseRefChangedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
 }
 
-@Parcelize
 data class BaseRefForcePushedEvent(
 
     /**
@@ -1549,7 +1357,7 @@ data class BaseRefForcePushedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -1558,7 +1366,7 @@ data class BaseRefForcePushedEvent(
      */
     val ref: PullRequestTimelineItemRef?
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun BaseRefForcePushedEventFragment.toNonNullBaseRefForcePushedEvent(): BaseRefForcePushedEvent {
     return BaseRefForcePushedEvent(
@@ -1571,7 +1379,6 @@ fun BaseRefForcePushedEventFragment.toNonNullBaseRefForcePushedEvent(): BaseRefF
     )
 }
 
-@Parcelize
 data class PullRequestCommit(
 
     /**
@@ -1591,7 +1398,7 @@ data class PullRequestCommit(
      */
     val url: Uri
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun PullRequestCommitFragment.toNonNullPullRequestCommit(): PullRequestCommit {
     return PullRequestCommit(
@@ -1602,7 +1409,6 @@ fun PullRequestCommitFragment.toNonNullPullRequestCommit(): PullRequestCommit {
     )
 }
 
-@Parcelize
 data class PullRequestCommitCommentThread(
 
     /**
@@ -1627,7 +1433,7 @@ data class PullRequestCommitCommentThread(
      */
     val pullRequest: PullRequestTimelineItemPullRequest
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun PullRequestCommitCommentThreadFragment.toNonNullPullRequestCommitCommentThread(): PullRequestCommitCommentThread {
     return PullRequestCommitCommentThread(
@@ -1639,7 +1445,6 @@ fun PullRequestCommitCommentThreadFragment.toNonNullPullRequestCommitCommentThre
     )
 }
 
-@Parcelize
 data class DeployedEvent(
 
     /**
@@ -1650,13 +1455,13 @@ data class DeployedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
     val deploymentEnvironment: String?
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun DeployedEventFragment.toNonNullDeployedEvent(): DeployedEvent {
     return DeployedEvent(
@@ -1670,7 +1475,6 @@ fun DeployedEventFragment.toNonNullDeployedEvent(): DeployedEvent {
 /**
  * Represents a 'deployment_environment_changed' event on a given pull request.
  */
-@Parcelize
 data class DeploymentEnvironmentChangedEvent(
 
     /**
@@ -1681,7 +1485,7 @@ data class DeploymentEnvironmentChangedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Identifies the deployment associated with status.
@@ -1690,7 +1494,7 @@ data class DeploymentEnvironmentChangedEvent(
 
     override val id: String
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun DeploymentEnvironmentChangedEventFragment.toNonNullDeploymentEnvironmentChangedEvent(): DeploymentEnvironmentChangedEvent {
     return DeploymentEnvironmentChangedEvent(
@@ -1708,7 +1512,6 @@ fun DeploymentEnvironmentChangedEventFragment.toNonNullDeploymentEnvironmentChan
 /**
  * Represents a 'head_ref_deleted' event on a given pull request.
  */
-@Parcelize
 data class HeadRefDeletedEvent(
 
     /**
@@ -1719,7 +1522,7 @@ data class HeadRefDeletedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -1728,7 +1531,7 @@ data class HeadRefDeletedEvent(
      */
     val headRefName: String
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun HeadRefDeletedEventFragment.toNonNullHeadRefDeletedEvent(): HeadRefDeletedEvent {
     return HeadRefDeletedEvent(
@@ -1742,7 +1545,6 @@ fun HeadRefDeletedEventFragment.toNonNullHeadRefDeletedEvent(): HeadRefDeletedEv
 /**
  * Represents a 'head_ref_force_pushed' event on a given pull request.
  */
-@Parcelize
 data class HeadRefForcePushedEvent(
 
     /**
@@ -1763,7 +1565,7 @@ data class HeadRefForcePushedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -1777,7 +1579,7 @@ data class HeadRefForcePushedEvent(
      */
     val ref: PullRequestTimelineItemRef?
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun HeadRefForcePushedEventFragment.toNonNullHeadRefForcePushedEvent(): HeadRefForcePushedEvent {
     return HeadRefForcePushedEvent(
@@ -1794,7 +1596,6 @@ fun HeadRefForcePushedEventFragment.toNonNullHeadRefForcePushedEvent(): HeadRefF
 /**
  * Represents a 'head_ref_restored' event on a given pull request.
  */
-@Parcelize
 data class HeadRefRestoredEvent(
 
     /**
@@ -1805,7 +1606,7 @@ data class HeadRefRestoredEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -1821,7 +1622,7 @@ data class HeadRefRestoredEvent(
 
     val pullRequest: PullRequestTimelineItemPullRequest
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun HeadRefRestoredEventFragment.toNonNullHeadRefRestoredEvent(): HeadRefRestoredEvent {
     return HeadRefRestoredEvent(
@@ -1834,7 +1635,6 @@ fun HeadRefRestoredEventFragment.toNonNullHeadRefRestoredEvent(): HeadRefRestore
     )
 }
 
-@Parcelize
 data class MergedEvent(
 
     /**
@@ -1845,7 +1645,7 @@ data class MergedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
     /**
@@ -1858,7 +1658,7 @@ data class MergedEvent(
      */
     val commitOid: String?
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun MergedEventFragment.toNonNullMergedEvent(): MergedEvent {
     return MergedEvent(
@@ -1870,7 +1670,6 @@ fun MergedEventFragment.toNonNullMergedEvent(): MergedEvent {
     )
 }
 
-@Parcelize
 data class PullRequestReview(
 
     /**
@@ -1901,7 +1700,7 @@ data class PullRequestReview(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Check if this comment was created via an email reply.
@@ -1923,12 +1722,12 @@ data class PullRequestReview(
     /**
      * The moment the editor made the last edit
      */
-    val lastEditedAt: Date?,
+    val lastEditedAt: Instant?,
 
     /**
      * Identifies when the comment was published at.
      */
-    val publishedAt: Date?,
+    val publishedAt: Instant?,
 
     /**
      * Identifies the pull request associated with this pull request review.
@@ -1943,12 +1742,12 @@ data class PullRequestReview(
     /**
      * Identifies when the Pull Request Review was submitted
      */
-    val submittedAt: Date?,
+    val submittedAt: Instant?,
 
     /**
      * Identifies the date and time when the object was last updated.
      */
-    val updatedAt: Date,
+    val updatedAt: Instant,
 
     /**
      * The HTTP URL permalink for this PullRequestReview.
@@ -1982,7 +1781,7 @@ data class PullRequestReview(
 
     val commentCount: Int
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun PullRequestReviewFragment.toNonNullPullRequestReview(): PullRequestReview {
     return PullRequestReview(
@@ -2012,7 +1811,6 @@ fun PullRequestReviewFragment.toNonNullPullRequestReview(): PullRequestReview {
     )
 }
 
-@Parcelize
 data class PullRequestReviewThread(
 
     override val id: String,
@@ -2042,7 +1840,7 @@ data class PullRequestReviewThread(
      */
     val viewerCanUnresolve: Boolean
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun PullRequestReviewThreadFragment.toNonNullPullRequestReviewThread(): PullRequestReviewThread {
     return PullRequestReviewThread(
@@ -2056,48 +1854,8 @@ fun PullRequestReviewThreadFragment.toNonNullPullRequestReviewThread(): PullRequ
 }
 
 /**
- * Represents the latest point in the pull request timeline for which the viewer has seen
- * the pull request's commits.
- */
-//@Parcelize
-//data class PullRequestRevisionMarker(
-//
-//    /**
-//     * Identifies the date and time when the object was created.
-//     */
-//    val createdAt: Date,
-//
-//    /**
-//     * Raw data from GitHub doesn't have a field name `id`,
-//     * this local field is added for convenience.
-//     */
-//    override val id: String,
-//
-//    /**
-//     * The last commit the viewer has seen.
-//     */
-//    val lastSeenCommit: PullRequestTimelineItemCommit,
-//
-//    /**
-//     * The pull request to which the marker belongs.
-//     */
-//    val pullRequest: PullRequestTimelineItemPullRequest
-//
-//) : Parcelable, PullRequestTimelineItem
-//
-//fun PullRequestRevisionMarkerFragment.toNonNullPullRequestRevisionMarker(): PullRequestRevisionMarker {
-//    return PullRequestRevisionMarker(
-//        createdAt(),
-//        UUID.randomUUID().toString(),
-//        lastSeenCommit().fragments().pullRequestTimelineItemCommitFragment().toNonNullPullRequestTimelineItemCommit(),
-//        pullRequest().fragments().pullRequestTimelineItemPullRequest().toNonNullPullRequestTimelineItemPullRequest()
-//    )
-//}
-
-/**
  * Represents a 'ready_for_review' event on a given pull request.
  */
-@Parcelize
 data class ReadyForReviewEvent(
 
     /**
@@ -2108,7 +1866,7 @@ data class ReadyForReviewEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -2122,7 +1880,7 @@ data class ReadyForReviewEvent(
      */
     val url: Uri
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun ReadyForReviewEventFragment.toNonNullReadyForReviewEvent(): ReadyForReviewEvent {
     return ReadyForReviewEvent(
@@ -2137,7 +1895,6 @@ fun ReadyForReviewEventFragment.toNonNullReadyForReviewEvent(): ReadyForReviewEv
 /**
  * Represents a 'review_dismissed' event on a given issue or pull request.
  */
-@Parcelize
 data class ReviewDismissedEvent(
 
     /**
@@ -2148,7 +1905,7 @@ data class ReviewDismissedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Identifies the message associated with the 'review_dismissed' event.
@@ -2170,7 +1927,7 @@ data class ReviewDismissedEvent(
 
     val url: Uri
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun ReviewDismissedEventFragment.toNonNullReviewDismissedEvent(): ReviewDismissedEvent {
     return ReviewDismissedEvent(
@@ -2188,7 +1945,6 @@ fun ReviewDismissedEventFragment.toNonNullReviewDismissedEvent(): ReviewDismisse
 /**
  * Represents an 'review_request_removed' event on a given pull request.
  */
-@Parcelize
 data class ReviewRequestRemovedEvent(
 
     /**
@@ -2199,7 +1955,7 @@ data class ReviewRequestRemovedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -2214,7 +1970,7 @@ data class ReviewRequestRemovedEvent(
 
     val requestedReviewerMannequin: Mannequin?
 
-) : Parcelable, PullRequestTimelineItem
+) : PullRequestTimelineItem
 
 fun ReviewRequestRemovedEventFragment.toNonNullReviewRequestRemovedEvent(): ReviewRequestRemovedEvent {
     return ReviewRequestRemovedEvent(
@@ -2231,7 +1987,6 @@ fun ReviewRequestRemovedEventFragment.toNonNullReviewRequestRemovedEvent(): Revi
 /**
  * Represents an 'review_requested' event on a given pull request.
  */
-@Parcelize
 data class ReviewRequestedEvent(
 
     /**
@@ -2242,7 +1997,7 @@ data class ReviewRequestedEvent(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     override val id: String,
 
@@ -2257,7 +2012,7 @@ data class ReviewRequestedEvent(
 
     val requestedReviewerMannequin: Mannequin?
 
-) : Parcelable, PullRequestTimelineItem {
+) : PullRequestTimelineItem {
 
     @IgnoredOnParcel
     val requestedReviewerLogin = requestedReviewerUser?.login

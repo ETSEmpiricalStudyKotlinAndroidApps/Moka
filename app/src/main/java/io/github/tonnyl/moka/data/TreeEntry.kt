@@ -1,10 +1,7 @@
 package io.github.tonnyl.moka.data
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.fragment.TreeEntry as RawTreeEntry
 
-@Parcelize
 data class TreeEntry(
 
     /**
@@ -32,7 +29,7 @@ data class TreeEntry(
      */
     val type: String
 
-) : Parcelable
+)
 
 fun RawTreeEntry.toNonNullTreeEntry(): TreeEntry {
     return TreeEntry(mode, name, object_?.fragments?.gitObject?.toNonNullGitObject(), oid, type)

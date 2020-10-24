@@ -6,7 +6,7 @@ import com.squareup.moshi.adapters.EnumJsonAdapter
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.type.ProjectState
 import io.github.tonnyl.moka.ui.explore.filters.LocalLanguage
-import java.util.*
+import kotlinx.datetime.Instant
 
 object MoshiInstance {
 
@@ -68,13 +68,13 @@ object MoshiInstance {
 class Iso8601DateAdapter {
 
     @ToJson
-    fun toJson(value: Date): String {
-        return Iso8601Utils.format(value)
+    fun toJson(value: Instant): String {
+        return value.toString()
     }
 
     @FromJson
-    fun fromJson(value: String): Date {
-        return Iso8601Utils.parse(value)
+    fun fromJson(value: String): Instant {
+        return Instant.parse(value)
     }
 
 }

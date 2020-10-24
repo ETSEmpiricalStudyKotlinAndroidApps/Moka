@@ -1,16 +1,11 @@
 package io.github.tonnyl.moka.data
 
-import android.annotation.SuppressLint
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
-@Parcelize
-@SuppressLint("ParcelCreator")
 @JsonClass(generateAdapter = true)
 data class EventPayload(
 
@@ -142,9 +137,8 @@ data class EventPayload(
     @ColumnInfo(name = "ref")
     var ref: String?
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventComment(
 
@@ -160,11 +154,11 @@ data class EventComment(
 
     @Json(name = "created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: Date,
+    var createdAt: Instant,
 
     @Json(name = "updated_at")
     @ColumnInfo(name = "updated_at")
-    var updatedAt: Date,
+    var updatedAt: Instant,
 
     @Json(name = "author_association")
     @ColumnInfo(name = "author_association")
@@ -177,9 +171,8 @@ data class EventComment(
     @ColumnInfo(name = "commit_id")
     var commitId: String?
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventPullRequest(
 
@@ -218,27 +211,26 @@ data class EventPullRequest(
 
     @Json(name = "created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: Date,
+    var createdAt: Instant,
 
     @Json(name = "updated_at")
     @ColumnInfo(name = "updated_at")
-    var updatedAt: Date,
+    var updatedAt: Instant,
 
     @Json(name = "closed_at")
     @ColumnInfo(name = "closed_at")
-    var closedAt: Date?,
+    var closedAt: Instant?,
 
     @Json(name = "merged_at")
     @ColumnInfo(name = "merged_at")
-    var mergedAt: Date?,
+    var mergedAt: Instant?,
 
     @Json(name = "author_association")
     @ColumnInfo(name = "author_association")
     var authorAssociation: String
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventReview(
 
@@ -253,7 +245,7 @@ data class EventReview(
 
     @Json(name = "submitted_at")
     @ColumnInfo(name = "submitted_at")
-    var submittedAt: Date,
+    var submittedAt: Instant,
 
     @ColumnInfo(name = "state")
     var state: String,
@@ -266,9 +258,8 @@ data class EventReview(
     @ColumnInfo(name = "author_association")
     var authorAssociation: String
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventDownload(
 
@@ -292,9 +283,8 @@ data class EventDownload(
     @ColumnInfo(name = "content_type")
     var contentType: String
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventGollumPage(
 
@@ -327,9 +317,8 @@ data class EventGollumPage(
     @Json(name = "html_url")
     var htmlUrl: String
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventTeam(
 
@@ -351,9 +340,8 @@ data class EventTeam(
     @ColumnInfo(name = "permission")
     var permission: String
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventRelease(
 
@@ -386,18 +374,17 @@ data class EventRelease(
 
     @Json(name = "created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: Date,
+    var createdAt: Instant,
 
     @Json(name = "published_at")
     @ColumnInfo(name = "published_at")
-    var publishedAt: Date,
+    var publishedAt: Instant,
 
     @ColumnInfo(name = "body")
     var body: String
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventProjectCard(
 
@@ -416,15 +403,14 @@ data class EventProjectCard(
 
     @Json(name = "created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: Date,
+    var createdAt: Instant,
 
     @Json(name = "updated_at")
     @ColumnInfo(name = "updated_at")
-    var updatedAt: Date
+    var updatedAt: Instant
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventProjectColumn(
 
@@ -436,15 +422,14 @@ data class EventProjectColumn(
 
     @Json(name = "created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: Date,
+    var createdAt: Instant,
 
     @Json(name = "updated_at")
     @ColumnInfo(name = "updated_at")
-    var updatedAt: Date
+    var updatedAt: Instant
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventProject(
 
@@ -472,15 +457,14 @@ data class EventProject(
 
     @Json(name = "created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: Date,
+    var createdAt: Instant,
 
     @Json(name = "updated_at")
     @ColumnInfo(name = "updated_at")
-    var updatedAt: Date
+    var updatedAt: Instant
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventGistFile(
 
@@ -500,9 +484,8 @@ data class EventGistFile(
     @ColumnInfo(name = "size")
     var size: Long
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventIssue(
 
@@ -526,9 +509,8 @@ data class EventIssue(
     @Embedded(prefix = "user_")
     var user: EventActor
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class EventMembership(
 
@@ -541,4 +523,4 @@ data class EventMembership(
     @Embedded(prefix = "user_")
     var user: EventActor
 
-) : Parcelable
+)

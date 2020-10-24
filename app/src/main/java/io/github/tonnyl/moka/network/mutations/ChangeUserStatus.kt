@@ -8,14 +8,14 @@ import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import java.util.*
+import kotlinx.datetime.Instant
 
 suspend fun changeUserStatus(
     emoji: String? = null,
     message: String? = null,
     organizationId: String? = null,
     limitedAvailability: Boolean? = null,
-    expiresAt: Date? = null
+    expiresAt: Instant? = null
 ) = withContext(Dispatchers.IO) {
     runBlocking {
         GraphQLClient.apolloClient

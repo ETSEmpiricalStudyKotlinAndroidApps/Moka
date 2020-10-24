@@ -1,13 +1,10 @@
 package io.github.tonnyl.moka.data.item
 
-import android.os.Parcelable
 import io.github.tonnyl.moka.data.Actor
 import io.github.tonnyl.moka.data.toNonNullActor
 import io.github.tonnyl.moka.queries.PullRequestsQuery
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
-@Parcelize
 data class PullRequestItem(
 
     /**
@@ -23,7 +20,7 @@ data class PullRequestItem(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     val id: String,
 
@@ -42,7 +39,7 @@ data class PullRequestItem(
      */
     val title: String
 
-) : Parcelable
+)
 
 fun PullRequestsQuery.Node.toNonNullPullRequestItem(): PullRequestItem {
     return PullRequestItem(

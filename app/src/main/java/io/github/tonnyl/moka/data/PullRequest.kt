@@ -1,13 +1,10 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
 import io.github.tonnyl.moka.queries.PullRequestQuery
 import io.github.tonnyl.moka.type.*
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
-@Parcelize
 data class PullRequest(
 
     /**
@@ -73,12 +70,12 @@ data class PullRequest(
     /**
      * Identifies the date and time when the object was closed.
      */
-    val closedAt: Date?,
+    val closedAt: Instant?,
 
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Check if this comment was created via an email reply.
@@ -130,7 +127,7 @@ data class PullRequest(
     /**
      * The moment the editor made the last edit.
      */
-    val lastEditedAt: Date?,
+    val lastEditedAt: Instant?,
 
     /**
      * true if the pull request is locked.
@@ -150,7 +147,7 @@ data class PullRequest(
     /**
      * The date and time that the pull request was merged.
      */
-    val mergedAt: Date?,
+    val mergedAt: Instant?,
 
     /**
      * The actor who merged the pull request.
@@ -175,7 +172,7 @@ data class PullRequest(
     /**
      * Identifies when the comment was published at.
      */
-    val publishedAt: Date?,
+    val publishedAt: Instant?,
 
     /**
      * A list of reactions grouped by content left on the subject.
@@ -210,7 +207,7 @@ data class PullRequest(
     /**
      * Identifies the date and time when the object was last updated.
      */
-    val updatedAt: Date,
+    val updatedAt: Instant,
 
     /**
      * The HTTP URL for this pull request.
@@ -252,7 +249,7 @@ data class PullRequest(
      */
     val viewerSubscription: SubscriptionState?
 
-) : Parcelable
+)
 
 fun PullRequestQuery.PullRequest?.toNullablePullRequest(): PullRequest? {
     this ?: return null

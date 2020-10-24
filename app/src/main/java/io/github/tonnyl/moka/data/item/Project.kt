@@ -1,14 +1,12 @@
 package io.github.tonnyl.moka.data.item
 
 import android.net.Uri
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import io.github.tonnyl.moka.type.ProjectState
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.Actor as RawActor
 import io.github.tonnyl.moka.fragment.Project as RawProject
 
@@ -16,7 +14,6 @@ import io.github.tonnyl.moka.fragment.Project as RawProject
  * Projects manage issues, pull requests and notes within a project owner.
  */
 @Entity(tableName = "project")
-@Parcelize
 data class Project(
 
     /**
@@ -41,13 +38,13 @@ data class Project(
      * Identifies the date and time when the object was closed.
      */
     @ColumnInfo(name = "closed_at")
-    var closedAt: Date?,
+    var closedAt: Instant?,
 
     /**
      * Identifies the date and time when the object was created.
      */
     @ColumnInfo(name = "created_at")
-    var createdAt: Date,
+    var createdAt: Instant,
 
     /**
      * The actor who originally created the project.
@@ -87,7 +84,7 @@ data class Project(
      * Identifies the date and time when the object was last updated.
      */
     @ColumnInfo(name = "updated_at")
-    var updatedAt: Date,
+    var updatedAt: Instant,
 
     /**
      * The HTTP URL for this project.
@@ -101,7 +98,7 @@ data class Project(
     @ColumnInfo(name = "viewer_can_update")
     var viewerCanUpdate: Boolean
 
-) : Parcelable
+)
 
 fun RawProject.toNonNullProject(): Project {
     return Project(
@@ -125,7 +122,6 @@ fun RawProject.toNonNullProject(): Project {
 /**
  * Represents an object which can take actions on GitHub. Typically a User or Bot.
  */
-@Parcelize
 data class ProjectActor(
 
     /**
@@ -146,7 +142,7 @@ data class ProjectActor(
     @ColumnInfo(name = "url")
     var url: Uri
 
-) : Parcelable
+)
 
 fun RawActor.toNonNullProjectActor(): ProjectActor {
     return ProjectActor(avatarUrl, login, url)

@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.data
 
 import android.content.Context
-import android.os.Parcelable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -14,10 +13,8 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.profile.ProfileType
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
-@Parcelize
 @Entity(tableName = "notification")
 @JsonClass(generateAdapter = true)
 data class Notification(
@@ -40,11 +37,11 @@ data class Notification(
 
     @Json(name = "updated_at")
     @ColumnInfo(name = "updated_at")
-    var updatedAt: Date,
+    var updatedAt: Instant,
 
     @Json(name = "last_read_at")
     @ColumnInfo(name = "last_read_at")
-    var lastReadAt: Date?,
+    var lastReadAt: Instant?,
 
     @ColumnInfo(name = "url")
     var url: String,
@@ -55,9 +52,8 @@ data class Notification(
     @Transient
     var hasDisplayed: Boolean = false
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class NotificationRepository(
 
@@ -96,9 +92,8 @@ data class NotificationRepository(
     @ColumnInfo(name = "url")
     var url: String
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class NotificationRepositoryOwner(
 
@@ -170,9 +165,8 @@ data class NotificationRepositoryOwner(
     @ColumnInfo(name = "site_admin")
     var siteAdmin: Boolean
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class NotificationRepositorySubject(
 
@@ -189,7 +183,7 @@ data class NotificationRepositorySubject(
     @ColumnInfo(name = "type")
     var type: String
 
-) : Parcelable
+)
 
 /**
  * When retrieving responses from the Notifications API, each payload has a key titled reason.

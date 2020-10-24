@@ -1,11 +1,8 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.fragment.RepositoryTopic as RawRepositoryTopic
 
-@Parcelize
 data class RepositoryTopic(
 
     val id: String,
@@ -25,7 +22,7 @@ data class RepositoryTopic(
      */
     val url: Uri
 
-) : Parcelable
+)
 
 fun RawRepositoryTopic.toNonNullRepositoryTopic(): RepositoryTopic {
     return RepositoryTopic(

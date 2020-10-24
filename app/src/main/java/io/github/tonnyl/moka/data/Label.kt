@@ -1,11 +1,8 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
-@Parcelize
 data class Label(
 
     /**
@@ -16,7 +13,7 @@ data class Label(
     /**
      * Identifies the date and time when the label was created.
      */
-    val createdAt: Date?,
+    val createdAt: Instant?,
 
     /**
      * A brief description of this label.
@@ -43,11 +40,11 @@ data class Label(
     /**
      * Identifies the date and time when the label was last updated.
      */
-    val updatedAt: Date?,
+    val updatedAt: Instant?,
 
     /**
      * The HTTP URL for this label.
      */
     val url: Uri
 
-) : Parcelable
+)

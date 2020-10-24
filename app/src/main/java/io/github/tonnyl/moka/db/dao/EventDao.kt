@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.github.tonnyl.moka.data.Event
-import java.util.*
+import kotlinx.datetime.Instant
 
 @Dao
 interface EventDao {
@@ -21,7 +21,7 @@ interface EventDao {
     fun insertAll(events: List<Event>)
 
     @Query("DELETE FROM event WHERE created_at < :date")
-    fun deleteByCreatedAt(date: Date)
+    fun deleteByCreatedAt(date: Instant)
 
     @Query("DELETE FROM event")
     fun deleteAll()

@@ -96,7 +96,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/issue_pr_item_avatar"
-            app:textFuture="@{DateUtils.getRelativeTimeSpanString(pullRequest.createdAt.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
+            app:textFuture="@{DateUtils.getRelativeTimeSpanString(pullRequest.createdAt.toEpochMilliseconds(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)}"
             tools:text="@sample/issue.json/issues/createdAt" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

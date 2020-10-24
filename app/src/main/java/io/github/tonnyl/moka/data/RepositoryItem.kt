@@ -1,11 +1,8 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
 import io.github.tonnyl.moka.fragment.RepositoryListItemFragment
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class RepositoryItem(
 
     /**
@@ -96,7 +93,7 @@ data class RepositoryItem(
 
     val stargazersCount: Int
 
-) : Parcelable, PinnableItem
+) : PinnableItem
 
 fun RepositoryListItemFragment.toNonNullRepositoryItem(): RepositoryItem {
     return RepositoryItem(

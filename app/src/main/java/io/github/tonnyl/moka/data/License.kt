@@ -1,14 +1,11 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import io.github.tonnyl.moka.fragment.License as RawLicense
 
 /**
  * A repository's open source license.
  */
-@Parcelize
 data class License(
 
     /**
@@ -83,7 +80,7 @@ data class License(
      */
     val url: Uri?
 
-) : Parcelable
+)
 
 fun RawLicense.toNonNullLicense(): License {
     return License(

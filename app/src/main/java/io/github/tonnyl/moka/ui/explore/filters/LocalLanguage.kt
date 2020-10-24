@@ -1,10 +1,7 @@
 package io.github.tonnyl.moka.ui.explore.filters
 
-import android.os.Parcelable
 import com.squareup.moshi.JsonClass
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class LocalLanguage(
 
@@ -14,4 +11,4 @@ data class LocalLanguage(
 
     val color: String
 
-) : Parcelable
+)

@@ -1,16 +1,13 @@
 package io.github.tonnyl.moka.data
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "trending_developer")
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class TrendingDeveloper(
 
@@ -41,9 +38,8 @@ data class TrendingDeveloper(
     @Embedded(prefix = "trending_developer_repository_")
     var repository: TrendingDeveloperRepository
 
-) : Parcelable
+)
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class TrendingDeveloperRepository(
 
@@ -56,4 +52,4 @@ data class TrendingDeveloperRepository(
     @ColumnInfo(name = "url")
     var url: String
 
-) : Parcelable
+)

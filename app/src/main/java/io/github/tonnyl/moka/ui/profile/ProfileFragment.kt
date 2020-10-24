@@ -31,6 +31,7 @@ import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.profile.ProfileEvent.*
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileFragmentArgs
+import io.github.tonnyl.moka.ui.profile.status.EditStatusArgs
 import io.github.tonnyl.moka.ui.profile.status.EditStatusFragment
 import io.github.tonnyl.moka.ui.profile.status.EditStatusFragmentArgs
 import io.github.tonnyl.moka.ui.projects.ProjectsFragmentArgs
@@ -194,10 +195,15 @@ class ProfileFragment : Fragment(), EmptyViewActions {
                     )
                 }
                 is EditStatus -> {
+                    val status = viewModel.userProfile.value?.data?.status
                     findNavController().navigate(
                         R.id.edit_status_fragment,
                         EditStatusFragmentArgs(
-                            viewModel.userProfile.value?.data?.status
+                            EditStatusArgs(
+                                status?.emoji,
+                                status?.message,
+                                status?.indicatesLimitedAvailability
+                            )
                         ).toBundle()
                     )
                 }

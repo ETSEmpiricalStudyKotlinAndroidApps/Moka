@@ -305,8 +305,9 @@
         tools:layout="@layout/fragment_container">
 
         <argument
-            android:name="user_status"
-            app:argType="io.github.tonnyl.moka.data.UserStatus"
+            android:name="status"
+            android:defaultValue="@null"
+            app:argType="io.github.tonnyl.moka.ui.profile.status.EditStatusArgs"
             app:nullable="true" />
 
     </fragment>

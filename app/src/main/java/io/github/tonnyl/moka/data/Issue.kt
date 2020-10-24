@@ -1,16 +1,13 @@
 package io.github.tonnyl.moka.data
 
 import android.net.Uri
-import android.os.Parcelable
 import io.github.tonnyl.moka.queries.IssueQuery
 import io.github.tonnyl.moka.type.*
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
 /**
  * An Issue is a place to discuss ideas, enhancements, tasks, and bugs for a project.
  */
-@Parcelize
 data class Issue(
     /**
      *Reason that the conversation was locked.
@@ -50,12 +47,12 @@ data class Issue(
     /**
      * Identifies the date and time when the object was closed.
      */
-    val closedAt: Date?,
+    val closedAt: Instant?,
 
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Check if this comment was created via an email reply.
@@ -77,7 +74,7 @@ data class Issue(
     /**
      * The moment the editor made the last edit.
      */
-    val lastEditedAt: Date?,
+    val lastEditedAt: Instant?,
 
     /**
      * true if the object is locked.
@@ -97,7 +94,7 @@ data class Issue(
     /**
      * Identifies when the comment was published at.
      */
-    val publishedAt: Date?,
+    val publishedAt: Instant?,
 
     /**
      * A list of reactions grouped by content left on the subject.
@@ -122,7 +119,7 @@ data class Issue(
     /**
      * Identifies the date and time when the object was last updated.
      */
-    val updatedAt: Date,
+    val updatedAt: Instant,
 
     /**
      * The HTTP URL for this issue.
@@ -159,7 +156,7 @@ data class Issue(
      */
     val viewerSubscription: SubscriptionState?
 
-) : Parcelable
+)
 
 fun IssueQuery.Issue.toNonNullIssue(): Issue {
     return Issue(

@@ -1,13 +1,10 @@
 package io.github.tonnyl.moka.data.item
 
-import android.os.Parcelable
 import io.github.tonnyl.moka.data.Actor
 import io.github.tonnyl.moka.data.toNonNullActor
 import io.github.tonnyl.moka.queries.IssuesQuery
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
-@Parcelize
 data class IssueItem(
 
     /**
@@ -25,7 +22,7 @@ data class IssueItem(
     /**
      * Identifies the date and time when the object was created.
      */
-    val createdAt: Date,
+    val createdAt: Instant,
 
     /**
      * Identifies the issue title.
@@ -37,7 +34,7 @@ data class IssueItem(
      */
     val closed: Boolean
 
-) : Parcelable
+)
 
 fun IssuesQuery.Node.toNonNullIssueItem(): IssueItem {
     return IssueItem(

@@ -420,7 +420,7 @@ fun AppCompatTextView.issueTimelineEventCreatedAt(
     }
 
     textFuture(
-        createdAt?.time?.let {
+        createdAt?.toEpochMilliseconds()?.let {
             DateUtils.getRelativeTimeSpanString(
                 it, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS
             )

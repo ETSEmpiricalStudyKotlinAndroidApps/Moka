@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.data
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -8,10 +7,8 @@ import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.tonnyl.moka.data.Event.Companion.CREATE_EVENT
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import kotlinx.datetime.Instant
 
-@Parcelize
 @Entity(tableName = "event")
 @JsonClass(generateAdapter = true)
 data class Event(
@@ -38,7 +35,7 @@ data class Event(
 
     @Json(name = "created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: Date,
+    var createdAt: Instant,
 
     @Embedded(prefix = "payload_")
     var payload: EventPayload?,
@@ -87,7 +84,7 @@ data class Event(
     @ColumnInfo(name = "before")
     var before: String?
 
-) : Parcelable {
+) {
 
     companion object {
 

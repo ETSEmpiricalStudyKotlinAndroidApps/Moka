@@ -119,7 +119,7 @@ private fun RepositoryScreenContent(
                     )
                 }
                 if (!ownerLogin.isNullOrEmpty()) {
-                    ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                         Text(
                             text = ownerLogin,
                             style = MaterialTheme.typography.body2,
@@ -155,7 +155,7 @@ private fun RepositoryScreenContent(
         val desc = usersRepository?.description
             ?: organizationsRepository?.description
             ?: stringResource(id = R.string.no_description_provided)
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
             Text(
                 text = desc,
                 style = MaterialTheme.typography.body2,
@@ -322,7 +322,7 @@ private fun EmptyReadmeText() {
         modifier = Modifier.fillMaxWidth(),
         alignment = Alignment.Center
     ) {
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
             Text(
                 text = stringResource(id = R.string.no_description_provided),
                 style = MaterialTheme.typography.caption

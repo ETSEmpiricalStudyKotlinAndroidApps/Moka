@@ -132,7 +132,7 @@ private fun EditStatusScreenContent(
                 )
             }
             Spacer(modifier = Modifier.preferredHeight(dimensionResource(id = R.dimen.fragment_content_padding)))
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = stringResource(id = R.string.edit_status_suggestions),
                     style = MaterialTheme.typography.body2,
@@ -237,7 +237,7 @@ private fun EditStatusScreenContent(
                         .padding(dimensionResource(id = R.dimen.fragment_content_padding))
                 )
             }
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = stringResource(id = R.string.edit_status_busy_info),
                     style = MaterialTheme.typography.caption,
@@ -245,7 +245,7 @@ private fun EditStatusScreenContent(
                 )
             }
             Spacer(modifier = Modifier.preferredHeight(dimensionResource(id = R.dimen.fragment_content_padding)))
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                 Text(
                     text = stringResource(id = R.string.edit_status_clear_status),
                     style = MaterialTheme.typography.body2,
@@ -482,7 +482,7 @@ private fun ErrorMessage(
     val message = stringResource(id = R.string.common_error_requesting_data)
     val action = stringResource(id = R.string.common_retry)
 
-    launchInComposition {
+    LaunchedTask {
         val result = scaffoldState.snackbarHostState.showSnackbar(
             message = message,
             actionLabel = action,

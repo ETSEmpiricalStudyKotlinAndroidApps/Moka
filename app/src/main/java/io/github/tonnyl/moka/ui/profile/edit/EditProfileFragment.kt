@@ -8,9 +8,9 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
+import androidx.compose.runtime.LaunchedTask
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.stringResource
@@ -116,7 +116,7 @@ class EditProfileFragment : Fragment() {
                         val message = stringResource(id = R.string.common_error_requesting_data)
                         val action = stringResource(id = R.string.common_retry)
 
-                        launchInComposition {
+                        LaunchedTask {
                             val result = scaffoldState.snackbarHostState.showSnackbar(
                                 message = message,
                                 actionLabel = action,

@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.ui.profile.edit
 import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.ProvideEmphasis
@@ -212,7 +212,7 @@ private fun EditProfileScreenContent(
 
 @Composable
 private fun UserInputHelperText(@StringRes helperResId: Int) {
-    ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
         Text(
             text = stringResource(id = helperResId),
             style = MaterialTheme.typography.caption,

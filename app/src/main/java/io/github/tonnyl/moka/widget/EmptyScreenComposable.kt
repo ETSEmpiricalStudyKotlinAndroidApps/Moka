@@ -32,12 +32,12 @@ fun EmptyScreenContent(
             .padding(dimensionResource(id = R.dimen.fragment_content_padding))
     ) {
         Spacer(modifier = Modifier.weight(1f))
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
             Image(
                 asset = vectorResource(id = icon),
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter(
-                    EmphasisAmbient.current.medium.applyEmphasis(contentColor()),
+                    AmbientEmphasisLevels.current.medium.applyEmphasis(contentColor()),
                     BlendMode.SrcIn
                 ),
                 modifier = Modifier.preferredSize(72.dp)

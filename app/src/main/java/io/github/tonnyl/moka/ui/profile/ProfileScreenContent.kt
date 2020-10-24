@@ -389,7 +389,7 @@ private fun PinnedItemCard(
             )
             Spacer(modifier = Modifier.preferredSize(dimensionResource(id = R.dimen.fragment_content_padding)))
             Column {
-                ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+                ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
                     Text(
                         text = title,
                         color = MaterialTheme.colors.primary,
@@ -409,7 +409,7 @@ private fun PinnedItemCard(
                     )
                 }
                 Spacer(modifier = Modifier.preferredHeight(dimensionResource(id = R.dimen.fragment_content_padding_half)))
-                ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+                ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         children = children

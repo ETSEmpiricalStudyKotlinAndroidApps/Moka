@@ -7,16 +7,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingConfig
 import androidx.preference.PreferenceManager
 import androidx.work.*
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.util.CoilUtils
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.util.mapToAccountTokenUserTriple
 import io.github.tonnyl.moka.work.NotificationWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class MokaApp : Application() {
+class MokaApp : Application(), ImageLoaderFactory {
 
     private val accountManager by lazy(LazyThreadSafetyMode.NONE) {
         AccountManager.get(this)
@@ -70,6 +75,18 @@ class MokaApp : Application() {
             null,
             true
         )
+    }
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(applicationContext)
+            .crossfade(enable = true)
+            .okHttpClient {
+                OkHttpClient.Builder()
+                    .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                    .cache(CoilUtils.createDefaultCache(applicationContext))
+                    .build()
+            }
+            .build()
     }
 
     fun triggerNotificationWorker(start: Boolean) {

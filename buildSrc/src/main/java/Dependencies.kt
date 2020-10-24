@@ -31,7 +31,6 @@ object Versions {
     const val ui = "1.0.0-alpha05"
     const val accompanistCoil = "0.3.1"
     const val composeKotlinCompilerVersion = "1.4.0"
-    const val glide = "4.11.0"
     const val lottie = "3.4.2"
     const val retrofit = "2.9.0"
     const val okhttpLoggingInterceptor = "4.7.2"
@@ -172,15 +171,6 @@ object Deps {
             "com.google.firebase:firebase-analytics-ktx:${Versions.firebaseAnalyticsKtx}"
         const val firebaseCrashlytics =
             "com.google.firebase:firebase-crashlytics:${Versions.firebaseCrashlytics}"
-
-    }
-
-    object Glide {
-
-        const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
-        const val okhttp3Integration =
-            "com.github.bumptech.glide:okhttp3-integration:${Versions.glide}"
-        const val compiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
 
     }
 

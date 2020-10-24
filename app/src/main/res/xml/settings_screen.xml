@@ -104,15 +104,6 @@
             app:key="key_clear_local_data"
             app:title="@string/settings_clear_local_data_title" />
 
-        <ListPreference
-            app:defaultValue="2"
-            app:entries="@array/maximum_size_of_image_cache_entries"
-            app:entryValues="@array/maximum_size_of_image_cache_entry_values"
-            app:iconSpaceReserved="false"
-            app:key="key_maximum_size_of_image_cache"
-            app:summary="%s"
-            app:title="@string/settings_maximum_size_of_image_cache_title" />
-
         <Preference
             app:iconSpaceReserved="false"
             app:key="key_clear_image_cache"

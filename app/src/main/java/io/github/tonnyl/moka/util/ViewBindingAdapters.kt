@@ -18,7 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Issue
 import io.github.tonnyl.moka.data.PullRequest
-import io.github.tonnyl.moka.network.GlideLoader
+import io.github.tonnyl.moka.network.ImageLoader
 import io.github.tonnyl.moka.type.CommentAuthorAssociation
 import io.github.tonnyl.moka.widget.ThemedWebView
 
@@ -49,7 +49,7 @@ fun View.visibleOrGone(visible: Boolean) {
 fun AppCompatImageView.avatarUrl(
     url: String?
 ) {
-    GlideLoader.loadAvatar(url, this)
+    ImageLoader.loadAvatar(url, this)
 }
 
 @BindingAdapter("avatarUrl")

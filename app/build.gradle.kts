@@ -174,11 +174,6 @@ dependencies {
     implementation(Deps.Google.firebaseAnalyticsKtx)
     implementation(Deps.Google.firebaseCrashlytics)
 
-    // Glide
-    implementation(Deps.Glide.glide)
-    implementation(Deps.Glide.okhttp3Integration)
-    kapt(Deps.Glide.compiler)
-
     // Retrofit
     implementation(Deps.Retrofit.retrofit)
     implementation(Deps.Retrofit.moshiConverter)

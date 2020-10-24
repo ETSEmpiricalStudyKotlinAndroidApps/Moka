@@ -10,7 +10,7 @@ import androidx.annotation.IdRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import com.google.android.material.button.MaterialButtonToggleGroup
-import io.github.tonnyl.moka.network.GlideLoader
+import io.github.tonnyl.moka.network.ImageLoader
 
 @BindingAdapter(
     "emoji",
@@ -31,7 +31,7 @@ fun AppCompatTextView.emoji(
     }
 
     if (URLUtil.isValidUrl(emoji)) {
-        GlideLoader.loadEmoji(emoji, emojiTextSize, this)
+        ImageLoader.loadEmoji(emoji, emojiTextSize, this)
     } else {
         text = emoji
     }

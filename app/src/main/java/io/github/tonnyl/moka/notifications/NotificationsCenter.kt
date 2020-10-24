@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
@@ -12,11 +13,14 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavDeepLinkBuilder
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.data.toDisplayContentText
-import io.github.tonnyl.moka.network.GlideApp
 import io.github.tonnyl.moka.ui.MainActivity
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import android.app.Notification as AndroidNotification
 
@@ -135,12 +139,13 @@ object NotificationsCenter {
         n.repository.owner.avatarUrl.let { avatarUrl ->
             if (avatarUrl.isNotEmpty()) {
                 try {
-                    val bitmap = GlideApp.with(context)
-                        .asBitmap()
-                        .load(avatarUrl)
-                        .circleCrop()
-                        .submit()
-                        .get()
+                    val request = ImageRequest.Builder(context)
+                        .data(avatarUrl)
+                        .transformations(CircleCropTransformation())
+                        .build()
+                    val bitmap = runBlocking {
+                        (context.imageLoader.execute(request).drawable as? BitmapDrawable)?.bitmap
+                    }
                     notificationBuilder.setLargeIcon(bitmap)
                 } catch (e: Exception) {
                     Timber.e(e, "get avatar error")

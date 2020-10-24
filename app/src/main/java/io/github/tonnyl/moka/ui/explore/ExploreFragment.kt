@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import com.google.android.material.tabs.TabLayoutMediator
+import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentExploreBinding
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.ui.EmptyViewActions
+import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainNavigationFragment
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.explore.filters.FilterEvent
@@ -49,17 +51,22 @@ class ExploreFragment : MainNavigationFragment(), EmptyViewActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        val adapter = ExplorePagerAdapter(requireContext(), childFragmentManager)
-        binding.viewPager.adapter = adapter
+        binding.viewPager.adapter = ExplorePagerAdapter(this)
 
-        binding.tabLayout.setupWithViewPager(binding.viewPager)
-
-        viewModel.filterEvent.observe(viewLifecycleOwner, Observer {
-            when (it.getContentIfNotHandled()) {
-                is FilterEvent.ShowFilters -> {
-                    val sheet = TrendingFilterFragment.newInstance()
-                    sheet.show(childFragmentManager, TrendingFilterFragment::class.java.simpleName)
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = getString(
+                if (position == 0) {
+                    R.string.explore_trending_repositories
+                } else {
+                    R.string.explore_trending_developers
                 }
+            )
+        }.attach()
+
+        viewModel.filterEvent.observe(viewLifecycleOwner, EventObserver {
+            if (it is FilterEvent.ShowFilters) {
+                val sheet = TrendingFilterFragment.newInstance()
+                sheet.show(childFragmentManager, TrendingFilterFragment::class.java.simpleName)
             }
         })
     }

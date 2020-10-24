@@ -8,6 +8,8 @@ import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.tabs.TabLayoutMediator
+import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchBinding
 import io.github.tonnyl.moka.util.dismissKeyboard
 import io.github.tonnyl.moka.util.showKeyboard
@@ -66,10 +68,16 @@ class SearchFragment : Fragment() {
             }
         }
 
-        val pagerAdapter = SearchPagerAdapter(requireContext(), childFragmentManager)
-        binding.viewPager.adapter = pagerAdapter
-
-        binding.tabLayout.setupWithViewPager(binding.viewPager)
+        binding.viewPager.adapter = SearchPagerAdapter(this)
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = getString(
+                if (position == 0) {
+                    R.string.search_tab_repositories
+                } else {
+                    R.string.search_tab_users
+                }
+            )
+        }.attach()
     }
 
     override fun onPause() {

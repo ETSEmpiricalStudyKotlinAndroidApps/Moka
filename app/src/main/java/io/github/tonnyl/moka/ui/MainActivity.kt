@@ -6,7 +6,6 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity(), NavigationHost {
                 true
             })
 
-        (application as MokaApp).loginAccounts.observe(this, Observer {
+        (application as MokaApp).loginAccounts.observe(this) {
             if (it.firstOrNull() == null) {
                 startActivity(Intent(this, AuthActivity::class.java))
                 finish()
@@ -72,11 +71,11 @@ class MainActivity : AppCompatActivity(), NavigationHost {
 
                 viewModel.currentUser.value = user
             }
-        })
+        }
 
-        viewModel.currentUser.observe(this, Observer {
+        viewModel.currentUser.observe(this) {
             viewModel.getUserProfile()
-        })
+        }
 
         viewModel.event.observe(this, EventObserver {
             when (it) {

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -65,7 +64,7 @@ class IssuesFragment : Fragment(), EmptyViewActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.issuesResult.observe(viewLifecycleOwner, Observer {
+        viewModel.issuesResult.observe(viewLifecycleOwner) {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = issueAdapter
@@ -73,9 +72,9 @@ class IssuesFragment : Fragment(), EmptyViewActions {
             }
 
             issueAdapter.submitData(lifecycle, it)
-        })
+        }
 
-        viewModel.event.observe(viewLifecycleOwner, Observer {
+        viewModel.event.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 is ViewUserProfile -> {
                     val profileFragmentArgs = ProfileFragmentArgs(event.login, ProfileType.USER)
@@ -91,7 +90,7 @@ class IssuesFragment : Fragment(), EmptyViewActions {
                     )
                 }
             }
-        })
+        }
     }
 
     override fun retryInitial() {

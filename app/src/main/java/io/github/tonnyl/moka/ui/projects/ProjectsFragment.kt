@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.databinding.FragmentProjectsBinding
@@ -64,11 +63,11 @@ class ProjectsFragment : Fragment(), EmptyViewActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        mainViewModel.currentUser.observe(viewLifecycleOwner, Observer {
+        mainViewModel.currentUser.observe(viewLifecycleOwner) {
             viewModel.login = it.login
             viewModel.userId = it.id
 
-            viewModel.projectsResult.observe(viewLifecycleOwner, Observer {
+            viewModel.projectsResult.observe(viewLifecycleOwner) {
                 with(binding.recyclerView) {
                     if (adapter == null) {
                         adapter = projectAdapter
@@ -76,8 +75,8 @@ class ProjectsFragment : Fragment(), EmptyViewActions {
                 }
 
                 projectAdapter.submitData(lifecycle, it)
-            })
-        })
+            }
+        }
 
         binding.swipeRefresh.setOnRefreshListener {
             retryInitial()

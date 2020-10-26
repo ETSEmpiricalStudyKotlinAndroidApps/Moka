@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.map
@@ -90,7 +89,7 @@ class IssueFragment : Fragment(), EmptyViewActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        issueViewModel.issueTimelineResult.observe(viewLifecycleOwner, Observer {
+        issueViewModel.issueTimelineResult.observe(viewLifecycleOwner) {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = concatAdapter
@@ -98,7 +97,7 @@ class IssueFragment : Fragment(), EmptyViewActions {
             }
 
             issueTimelineAdapter.submitData(lifecycle, it)
-        })
+        }
 
         mainViewModel.fragmentScopedEvent.observe(viewLifecycleOwner, EventObserver { event ->
             if (event is React

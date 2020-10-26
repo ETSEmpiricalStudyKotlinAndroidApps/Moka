@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -71,7 +70,7 @@ class RepositoriesFragment : Fragment(), EmptyViewActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        repositoriesViewModel.repositoriesResult.observe(viewLifecycleOwner, Observer {
+        repositoriesViewModel.repositoriesResult.observe(viewLifecycleOwner) {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = repositoryAdapter
@@ -79,9 +78,9 @@ class RepositoriesFragment : Fragment(), EmptyViewActions {
             }
 
             repositoryAdapter.submitData(lifecycle, it)
-        })
+        }
 
-        repositoriesViewModel.event.observe(viewLifecycleOwner, Observer {
+        repositoriesViewModel.event.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 is ViewRepository -> {
                     findNavController().navigate(
@@ -103,7 +102,7 @@ class RepositoriesFragment : Fragment(), EmptyViewActions {
 
                 }
             }
-        })
+        }
 
     }
 

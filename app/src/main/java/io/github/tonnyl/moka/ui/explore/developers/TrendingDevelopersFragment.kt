@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
@@ -73,7 +72,7 @@ class TrendingDevelopersFragment : Fragment(), EmptyViewActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.developersLocalData.observe(viewLifecycleOwner, Observer {
+        viewModel.developersLocalData.observe(viewLifecycleOwner) {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     addItemDecoration(
@@ -106,9 +105,9 @@ class TrendingDevelopersFragment : Fragment(), EmptyViewActions {
 
                 developerAdapter.submitList(it)
             }
-        })
+        }
 
-        viewModel.developerEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.developerEvent.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 is ViewProfile -> {
                     findNavController().navigate(
@@ -130,7 +129,7 @@ class TrendingDevelopersFragment : Fragment(), EmptyViewActions {
                     )
                 }
             }
-        })
+        }
 
         binding.swipeRefresh.setOnRefreshListener {
             retryInitial()

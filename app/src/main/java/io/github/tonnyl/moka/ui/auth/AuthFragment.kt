@@ -18,7 +18,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -80,7 +79,7 @@ class AuthFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.authTokenAndUserResult.observe(viewLifecycleOwner, Observer { resource ->
+        viewModel.authTokenAndUserResult.observe(viewLifecycleOwner) { resource ->
             if (resource.status == Status.SUCCESS) {
                 resource.data?.let {
                     val (token, authUser) = it
@@ -90,7 +89,7 @@ class AuthFragment : Fragment() {
                     )
                 }
             }
-        })
+        }
 
         val codeArg = args.code
         val stateArg = args.state

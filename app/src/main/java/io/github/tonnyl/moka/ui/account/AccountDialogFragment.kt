@@ -13,7 +13,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -77,7 +76,7 @@ class AccountDialogFragment : AppCompatDialogFragment() {
             executePendingBindings()
         }
 
-        accounts?.observe(viewLifecycleOwner, Observer {
+        accounts?.observe(viewLifecycleOwner) {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = accountAdapter
@@ -89,9 +88,9 @@ class AccountDialogFragment : AppCompatDialogFragment() {
             binding.accountSize = it.size
 
             viewModel.currentId.value = it.firstOrNull()?.third?.id
-        })
+        }
 
-        viewModel.event.observe(viewLifecycleOwner, Observer {
+        viewModel.event.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 AccountEvent.VIEW_PROFILE -> {
                     val args = ProfileFragmentArgs(currentAccount.login, ProfileType.USER)
@@ -113,9 +112,9 @@ class AccountDialogFragment : AppCompatDialogFragment() {
                     Timber.w("event $event not handled")
                 }
             }
-        })
+        }
 
-        viewModel.newSelectedAccount.observe(viewLifecycleOwner, Observer { event ->
+        viewModel.newSelectedAccount.observe(viewLifecycleOwner) { event ->
             val current = accounts?.value
                 ?.firstOrNull()
                 ?.third
@@ -141,7 +140,7 @@ class AccountDialogFragment : AppCompatDialogFragment() {
                     }
                 }
             }
-        })
+        }
 
     }
 

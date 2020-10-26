@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -72,16 +71,16 @@ class UsersFragment : Fragment(), EmptyViewActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        viewModel.usersResult.observe(viewLifecycleOwner, Observer {
+        viewModel.usersResult.observe(viewLifecycleOwner) {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = usersAdapter
                 }
             }
             usersAdapter.submitData(lifecycle, it)
-        })
+        }
 
-        viewModel.event.observe(viewLifecycleOwner, Observer {
+        viewModel.event.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 is ViewProfile -> {
                     findNavController().navigate(
@@ -93,7 +92,7 @@ class UsersFragment : Fragment(), EmptyViewActions {
 
                 }
             }
-        })
+        }
 
     }
 

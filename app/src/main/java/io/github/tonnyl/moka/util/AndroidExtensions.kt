@@ -12,7 +12,6 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.data.Emoji
@@ -63,7 +62,7 @@ suspend fun AccountManager.moveAccountToFirstPosition(account: Account) {
 }
 
 fun AppCompatActivity.updateForTheme() {
-    (applicationContext as MokaApp).theme.observe(this, Observer { value ->
+    (applicationContext as MokaApp).theme.observe(this) { value ->
         delegate.localNightMode = when (value) {
             "0" -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -82,7 +81,7 @@ fun AppCompatActivity.updateForTheme() {
                 throw IllegalArgumentException("invalid theme value: $value")
             }
         }
-    })
+    }
 }
 
 val Resources.isDarkModeOn: Boolean

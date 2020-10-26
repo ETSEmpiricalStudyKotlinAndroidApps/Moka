@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -74,7 +73,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment() {
 
         updateToolbarTitle()
 
-        mainViewModel.localLanguages.observe(viewLifecycleOwner, Observer {
+        mainViewModel.localLanguages.observe(viewLifecycleOwner) {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = filterAdapter
@@ -82,9 +81,9 @@ class TrendingFilterFragment : BottomSheetDialogFragment() {
 
                 filterAdapter.updateDataSource(it)
             }
-        })
+        }
 
-        exploreViewModel.filterEvent.observe(viewLifecycleOwner, Observer {
+        exploreViewModel.filterEvent.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 is SelectLanguage -> {
                     updateToolbarTitle()
@@ -98,7 +97,7 @@ class TrendingFilterFragment : BottomSheetDialogFragment() {
 
                 }
             }
-        })
+        }
 
         binding.toolbar.setNavigationOnClickListener {
             dismiss()

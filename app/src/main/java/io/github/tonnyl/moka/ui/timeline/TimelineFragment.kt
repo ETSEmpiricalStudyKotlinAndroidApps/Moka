@@ -74,7 +74,7 @@ class TimelineFragment : MainNavigationFragment(), EmptyViewActions {
             }
         }
 
-        viewModel.event.observe(viewLifecycleOwner, Observer {
+        viewModel.event.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 is ViewProfile -> {
                     findNavController().navigate(
@@ -85,7 +85,7 @@ class TimelineFragment : MainNavigationFragment(), EmptyViewActions {
                 is ViewRepository -> {
                     val loginAndRepoName = event.fullName.split("/")
                     if (loginAndRepoName.size < 2) {
-                        return@Observer
+                        return@observe
                     }
                     findNavController().navigate(
                         R.id.repository_fragment,
@@ -103,13 +103,13 @@ class TimelineFragment : MainNavigationFragment(), EmptyViewActions {
                     )
                 }
             }
-        })
+        }
 
         val eventObserver = Observer<PagingData<Event>> {
             eventAdapter.submitData(lifecycle, it)
         }
 
-        mainViewModel.currentUser.observe(viewLifecycleOwner, Observer { user ->
+        mainViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             viewModel.userId = user.id
             viewModel.login = user.login
 
@@ -125,7 +125,7 @@ class TimelineFragment : MainNavigationFragment(), EmptyViewActions {
             if (needRefresh) {
                 eventAdapter.refresh()
             }
-        })
+        }
 
         binding.swipeRefresh.setOnRefreshListener {
             eventAdapter.refresh()

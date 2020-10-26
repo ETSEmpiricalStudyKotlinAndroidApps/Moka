@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import io.github.tonnyl.moka.R
@@ -64,7 +63,7 @@ class PullRequestsFragment : Fragment(), EmptyViewActions {
         }
 
 
-        pullRequestsViewModel.prsResult.observe(viewLifecycleOwner, Observer {
+        pullRequestsViewModel.prsResult.observe(viewLifecycleOwner) {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = pullRequestAdapter
@@ -72,9 +71,9 @@ class PullRequestsFragment : Fragment(), EmptyViewActions {
             }
 
             pullRequestAdapter.submitData(lifecycle, it)
-        })
+        }
 
-        pullRequestsViewModel.event.observe(viewLifecycleOwner, Observer {
+        pullRequestsViewModel.event.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 is ViewPullRequest -> {
                     findNavController().navigate(
@@ -89,7 +88,7 @@ class PullRequestsFragment : Fragment(), EmptyViewActions {
                     )
                 }
             }
-        })
+        }
     }
 
     override fun retryInitial() {

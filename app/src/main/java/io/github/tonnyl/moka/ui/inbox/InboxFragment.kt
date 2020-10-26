@@ -80,7 +80,7 @@ class InboxFragment : MainNavigationFragment(), EmptyViewActions {
             inboxAdapter.submitData(lifecycle, it)
         }
 
-        mainViewModel.currentUser.observe(viewLifecycleOwner, Observer {
+        mainViewModel.currentUser.observe(viewLifecycleOwner) {
             viewModel.userId = it.id
             viewModel.login = it.login
 
@@ -96,9 +96,9 @@ class InboxFragment : MainNavigationFragment(), EmptyViewActions {
             if (needRefresh) {
                 inboxAdapter.refresh()
             }
-        })
+        }
 
-        viewModel.event.observe(viewLifecycleOwner, Observer {
+        viewModel.event.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 is ViewNotification -> {
 
@@ -116,7 +116,7 @@ class InboxFragment : MainNavigationFragment(), EmptyViewActions {
                     )
                 }
             }
-        })
+        }
 
         binding.swipeRefresh.setOnRefreshListener {
             inboxAdapter.refresh()

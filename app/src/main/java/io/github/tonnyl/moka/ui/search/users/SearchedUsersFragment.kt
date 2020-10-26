@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchedUsersBinding
@@ -64,11 +63,11 @@ class SearchedUsersFragment : Fragment(), EmptyViewActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        parentViewModel.input.observe(requireParentFragment().viewLifecycleOwner, Observer {
+        parentViewModel.input.observe(requireParentFragment().viewLifecycleOwner) {
             searchedUsersViewModel.refresh(it)
-        })
+        }
 
-        searchedUsersViewModel.usersResult.observe(viewLifecycleOwner, Observer {
+        searchedUsersViewModel.usersResult.observe(viewLifecycleOwner) {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = searchedUserAdapter
@@ -76,13 +75,13 @@ class SearchedUsersFragment : Fragment(), EmptyViewActions {
             }
 
             searchedUserAdapter.submitData(lifecycle, it)
-        })
+        }
 
         binding.swipeRefresh.setOnRefreshListener {
             triggerRefresh()
         }
 
-        searchedUsersViewModel.event.observe(viewLifecycleOwner, Observer {
+        searchedUsersViewModel.event.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 is ViewUserProfile -> {
                     gotoProfile(event.login, ProfileType.USER)
@@ -94,7 +93,7 @@ class SearchedUsersFragment : Fragment(), EmptyViewActions {
                     searchedUserAdapter.notifyDataSetChanged()
                 }
             }
-        })
+        }
 
     }
 

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.databinding.FragmentSearchedRepositoriesBinding
@@ -62,15 +61,15 @@ class SearchedRepositoriesFragment : Fragment(), EmptyViewActions {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        parentViewModel.input.observe(requireParentFragment().viewLifecycleOwner, Observer {
+        parentViewModel.input.observe(requireParentFragment().viewLifecycleOwner) {
             searchedRepositoriesViewModel.refresh(it)
-        })
+        }
 
         binding.swipeRefresh.setOnRefreshListener {
             searchedRepositoryAdapter.refresh()
         }
 
-        searchedRepositoriesViewModel.event.observe(viewLifecycleOwner, Observer {
+        searchedRepositoriesViewModel.event.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
                 is ViewProfile -> {
                     findNavController().navigate(
@@ -92,9 +91,9 @@ class SearchedRepositoriesFragment : Fragment(), EmptyViewActions {
                     searchedRepositoryAdapter.notifyDataSetChanged()
                 }
             }
-        })
+        }
 
-        searchedRepositoriesViewModel.repositoryResult.observe(viewLifecycleOwner, Observer {
+        searchedRepositoriesViewModel.repositoryResult.observe(viewLifecycleOwner) {
             with(binding.recyclerView) {
                 if (adapter == null) {
                     adapter = searchedRepositoryAdapter
@@ -102,7 +101,7 @@ class SearchedRepositoriesFragment : Fragment(), EmptyViewActions {
             }
 
             searchedRepositoryAdapter.submitData(lifecycle, it)
-        })
+        }
 
     }
 

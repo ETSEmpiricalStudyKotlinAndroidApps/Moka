@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRowForIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -389,7 +392,7 @@ private fun PinnedItemCard(
             )
             Spacer(modifier = Modifier.preferredSize(dimensionResource(id = R.dimen.fragment_content_padding)))
             Column {
-                ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
+                Providers(AmbientContentAlpha provides ContentAlpha.high) {
                     Text(
                         text = title,
                         color = MaterialTheme.colors.primary,
@@ -409,7 +412,7 @@ private fun PinnedItemCard(
                     )
                 }
                 Spacer(modifier = Modifier.preferredHeight(dimensionResource(id = R.dimen.fragment_content_padding_half)))
-                ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+                Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         children = children

@@ -5,6 +5,8 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -62,9 +64,9 @@ fun EditStatusScreen(
 
         getEmojiByName = { mainViewModel.getEmojiByName(it) },
         initialArgs = viewModel.args,
-        showEmojis = { viewModel.showEmojis() },
-        updateStatus = { viewModel.updateStatus() },
-        clearStatus = { viewModel.clearStatus() }
+        showEmojis = viewModel::showEmojis,
+        updateStatus = viewModel::updateStatus,
+        clearStatus = viewModel::clearStatus
     )
 }
 
@@ -131,7 +133,7 @@ private fun EditStatusScreenContent(
                 )
             }
             Spacer(modifier = Modifier.preferredHeight(dimensionResource(id = R.dimen.fragment_content_padding)))
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.edit_status_suggestions),
                     style = MaterialTheme.typography.body2,
@@ -236,7 +238,7 @@ private fun EditStatusScreenContent(
                         .padding(dimensionResource(id = R.dimen.fragment_content_padding))
                 )
             }
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.edit_status_busy_info),
                     style = MaterialTheme.typography.caption,
@@ -244,7 +246,7 @@ private fun EditStatusScreenContent(
                 )
             }
             Spacer(modifier = Modifier.preferredHeight(dimensionResource(id = R.dimen.fragment_content_padding)))
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.edit_status_clear_status),
                     style = MaterialTheme.typography.body2,

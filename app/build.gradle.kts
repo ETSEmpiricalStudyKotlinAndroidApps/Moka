@@ -82,6 +82,7 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        useIR = true
     }
 
     buildFeatures {
@@ -150,9 +151,11 @@ dependencies {
     implementation(Deps.AndroidX.Lifecycle.liveDataKtx)
     implementation(Deps.AndroidX.Navigation.navigationFragmentKtx)
     implementation(Deps.AndroidX.Navigation.navigationUIKtx)
+    implementation(Deps.AndroidX.Navigation.compose)
     implementation(Deps.AndroidX.WorkManager.runtime)
     implementation(Deps.AndroidX.Paging.common)
     implementation(Deps.AndroidX.Paging.runtime)
+    implementation(Deps.AndroidX.Paging.compose)
     implementation(Deps.AndroidX.Room.common)
     implementation(Deps.AndroidX.Room.runtime)
     implementation(Deps.AndroidX.Room.migration)
@@ -204,7 +207,9 @@ dependencies {
 
     implementation(Deps.jsoup)
     implementation(Deps.timber)
-    implementation(Deps.accompanistCoil)
+
+    implementation(Deps.Accompanist.coil)
+    implementation(Deps.Accompanist.insets)
 
     testImplementation(Deps.Test.junit)
     testImplementation(Deps.Test.mockitoCore)

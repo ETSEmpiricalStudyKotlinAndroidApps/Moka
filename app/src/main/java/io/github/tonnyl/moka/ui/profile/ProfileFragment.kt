@@ -7,13 +7,8 @@ import android.provider.Browser.EXTRA_CREATE_NEW_TAB
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.Icon
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.setContent

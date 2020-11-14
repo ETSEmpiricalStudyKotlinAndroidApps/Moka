@@ -4,37 +4,39 @@ object Versions {
     const val targetSdk = 30
     const val minSdk = 23
 
-    const val androidGradle = "4.2.0-alpha14"
+    const val androidGradle = "4.2.0-alpha15"
     const val gmsGoogleServiceGradle = "4.3.3"
     const val firebaseCrashlyticsGradle = "2.3.0"
     const val kotlin = "1.4.10"
     const val dateTime = "0.1.0"
-    const val coroutines = "1.3.9"
+    const val coroutines = "1.4.0"
     const val fragment = "1.3.0-beta01"
-    const val constraintLayout = "2.0.2"
+    const val constraintLayout = "2.0.4"
     const val coordinatorLayout = "1.1.0"
-    const val appcompat = "1.3.0-alpha0"
+    const val appcompat = "1.3.0-alpha02"
     const val drawerLayout = "1.1.1"
     const val material = "1.3.0-alpha03"
     const val viewpager2 = "1.1.0-alpha01"
-    const val browser = "1.3.0-alpha06"
+    const val browser = "1.3.0-beta01"
     const val recyclerView = "1.2.0-alpha06"
     const val recyclerViewSelection = "1.1.0-rc03"
     const val lifecycle = "2.2.0"
     const val liveDataKtx = "2.3.0-beta01"
     const val navigation = "2.3.1"
-    const val paging = "3.0.0-alpha07"
-    const val workManager = "2.5.0-alpha03"
+    const val navigationCompose = "1.0.0-alpha02"
+    const val paging = "3.0.0-alpha09"
+    const val pagingCompose = "1.0.0-alpha02"
+    const val workManager = "2.5.0-beta01"
     const val room = "2.3.0-alpha03"
     const val preference = "1.1.1"
     const val swipeRefreshLayout = "1.2.0-alpha01"
-    const val ui = "1.0.0-alpha05"
-    const val accompanistCoil = "0.3.1"
+    const val ui = "1.0.0-alpha07"
+    const val accompanistCoil = "0.3.3.1"
     const val composeKotlinCompilerVersion = "1.4.0"
     const val lottie = "3.4.2"
     const val retrofit = "2.9.0"
     const val okhttpLoggingInterceptor = "4.7.2"
-    const val apollo = "2.4.1"
+    const val apollo = "2.4.4"
     const val commonMark = "0.15.2"
     const val jsoup = "1.12.1"
     const val timber = "4.7.1"
@@ -57,8 +59,6 @@ object Deps {
 
     const val jsoup = "org.jsoup:jsoup:${Versions.jsoup}"
     const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
-    const val accompanistCoil =
-        "dev.chrisbanes.accompanist:accompanist-coil:${Versions.accompanistCoil}"
 
     object GradlePlugin {
 
@@ -117,6 +117,8 @@ object Deps {
                 "androidx.navigation:navigation-fragment-ktx:${Versions.navigation}"
             const val navigationUIKtx =
                 "androidx.navigation:navigation-ui-ktx:${Versions.navigation}"
+            const val compose =
+                "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
 
         }
 
@@ -124,6 +126,7 @@ object Deps {
 
             const val common = "androidx.paging:paging-common-ktx:${Versions.paging}"
             const val runtime = "androidx.paging:paging-runtime-ktx:${Versions.paging}"
+            const val compose = "androidx.paging:paging-compose:${Versions.pagingCompose}"
 
         }
 
@@ -197,6 +200,14 @@ object Deps {
     object Airbnb {
 
         const val lottie = "com.airbnb.android:lottie:${Versions.lottie}"
+
+    }
+
+    object Accompanist {
+
+        const val coil = "dev.chrisbanes.accompanist:accompanist-coil:${Versions.accompanistCoil}"
+        const val insets =
+            "dev.chrisbanes.accompanist:accompanist-insets:${Versions.accompanistCoil}"
 
     }
 

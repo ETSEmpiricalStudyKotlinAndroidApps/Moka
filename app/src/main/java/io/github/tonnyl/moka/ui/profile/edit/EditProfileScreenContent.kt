@@ -1,13 +1,14 @@
 package io.github.tonnyl.moka.ui.profile.edit
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.AmbientEmphasisLevels
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -135,7 +136,7 @@ private fun EditProfileScreenContent(
                 label = {
                     Text(text = stringResource(id = R.string.edit_profile_url))
                 },
-                keyboardType = KeyboardType.Uri,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                 modifier = Modifier.weight(1f)
             )
         }
@@ -212,7 +213,7 @@ private fun EditProfileScreenContent(
 
 @Composable
 private fun UserInputHelperText(@StringRes helperResId: Int) {
-    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
         Text(
             text = stringResource(id = helperResId),
             style = MaterialTheme.typography.caption,

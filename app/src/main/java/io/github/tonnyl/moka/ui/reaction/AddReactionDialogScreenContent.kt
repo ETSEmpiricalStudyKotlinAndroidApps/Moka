@@ -1,10 +1,11 @@
 package io.github.tonnyl.moka.ui.reaction
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material.ButtonConstants
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
@@ -154,11 +155,13 @@ private fun EmojiButton(
                 onValueChange = { },
                 indication = RippleIndication(color = MaterialTheme.colors.primary)
             ),
-        backgroundColor = if (checked) {
-            MaterialTheme.colors.primary.copy(alpha = .08f)
-        } else {
-            Color.Transparent
-        }
+        colors = ButtonConstants.defaultButtonColors(
+            backgroundColor = if (checked) {
+                MaterialTheme.colors.primary.copy(alpha = .08f)
+            } else {
+                Color.Transparent
+            }
+        )
     ) {
         Text(
             text = stringResource(id = id),

@@ -3,11 +3,10 @@ package io.github.tonnyl.moka.widget
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
@@ -32,12 +31,12 @@ fun EmptyScreenContent(
             .padding(dimensionResource(id = R.dimen.fragment_content_padding))
     ) {
         Spacer(modifier = Modifier.weight(1f))
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Image(
                 asset = vectorResource(id = icon),
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter(
-                    AmbientEmphasisLevels.current.medium.applyEmphasis(contentColor()),
+                    AmbientContentColor.current.copy(alpha = ContentAlpha.medium),
                     BlendMode.SrcIn
                 ),
                 modifier = Modifier.preferredSize(72.dp)

@@ -2,12 +2,16 @@ package io.github.tonnyl.moka.ui.repository
 
 import android.net.Uri
 import android.text.format.DateUtils
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRowForIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -54,12 +58,12 @@ fun RepositoryScreen(scrollState: ScrollState) {
                 organizationsRepository = organizationsRepositoryResource?.data,
                 isFollowing = isFollowing?.data == true,
 
-                onWatchersClicked = { viewModel.viewWatchers() },
-                onStargazersClicked = { viewModel.viewStargazers() },
-                onForksClicked = { viewModel.viewForks() },
-                onPrsClicked = { viewModel.viewPullRequests() },
-                onIssuesClicked = { viewModel.viewIssues() },
-                onProjectsClicked = { viewModel.viewProjects() },
+                onWatchersClicked = viewModel::viewWatchers,
+                onStargazersClicked = viewModel::viewStargazers,
+                onForksClicked = viewModel::viewForks,
+                onPrsClicked = viewModel::viewPullRequests,
+                onIssuesClicked = viewModel::viewIssues,
+                onProjectsClicked = viewModel::viewProjects,
                 readmeResource = readmeResource
             )
         }
@@ -119,7 +123,7 @@ private fun RepositoryScreenContent(
                     )
                 }
                 if (!ownerLogin.isNullOrEmpty()) {
-                    ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+                    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                         Text(
                             text = ownerLogin,
                             style = MaterialTheme.typography.body2,
@@ -155,7 +159,7 @@ private fun RepositoryScreenContent(
         val desc = usersRepository?.description
             ?: organizationsRepository?.description
             ?: stringResource(id = R.string.no_description_provided)
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = desc,
                 style = MaterialTheme.typography.body2,
@@ -324,7 +328,7 @@ private fun EmptyReadmeText() {
         modifier = Modifier.fillMaxWidth(),
         alignment = Alignment.Center
     ) {
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = stringResource(id = R.string.no_description_provided),
                 style = MaterialTheme.typography.caption

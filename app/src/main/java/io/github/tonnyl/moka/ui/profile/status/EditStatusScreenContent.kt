@@ -27,6 +27,7 @@ import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.widget.EmojiComponent
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
+import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 
 @ExperimentalMaterialApi
 @Composable
@@ -380,14 +381,14 @@ private fun EditStatusScreenContent(
 
     if (couldDisplayErrorMessage) {
         if (clearStatusStatus?.status == Status.ERROR) {
-            ErrorMessage(
+            SnackBarErrorMessage(
                 scaffoldState = scaffoldState,
-                retry = clearStatus
+                action = clearStatus
             )
         } else if (setStatusStatus?.status == Status.ERROR) {
-            ErrorMessage(
+            SnackBarErrorMessage(
                 scaffoldState = scaffoldState,
-                retry = updateStatus,
+                action = updateStatus
             )
         }
     }
@@ -471,27 +472,6 @@ private fun ExpireAtDropdownMenu(
         Item(R.string.edit_status_clear_status_in_30_minutes, ExpireAt.In30Minutes)
         Item(R.string.edit_status_clear_status_in_1_hour, ExpireAt.In1Hour)
         Item(R.string.edit_status_clear_status_today, ExpireAt.Today)
-    }
-}
-
-@ExperimentalMaterialApi
-@Composable
-private fun ErrorMessage(
-    scaffoldState: ScaffoldState,
-    retry: () -> Unit
-) {
-    val message = stringResource(id = R.string.common_error_requesting_data)
-    val action = stringResource(id = R.string.common_retry)
-
-    LaunchedTask {
-        val result = scaffoldState.snackbarHostState.showSnackbar(
-            message = message,
-            actionLabel = action,
-            duration = SnackbarDuration.Short
-        )
-        if (result == SnackbarResult.ActionPerformed) {
-            retry.invoke()
-        }
     }
 }
 

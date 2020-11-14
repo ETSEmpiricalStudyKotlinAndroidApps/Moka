@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedTask
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -30,6 +28,7 @@ import io.github.tonnyl.moka.ui.prs.PullRequestsFragmentArgs
 import io.github.tonnyl.moka.ui.repository.RepositoryEvent.*
 import io.github.tonnyl.moka.ui.theme.MokaTheme
 import io.github.tonnyl.moka.util.isDarkModeOn
+import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import io.github.tonnyl.moka.widget.TopAppBarElevation
 
 class RepositoryFragment : Fragment() {
@@ -134,14 +133,14 @@ class RepositoryFragment : Fragment() {
             }
 
             if (followState?.status == Status.ERROR) {
-                ErrorMessage(
+                SnackBarErrorMessage(
                     scaffoldState = scaffoldState,
-                    retry = { viewModel.toggleFollow() }
+                    action = viewModel::toggleFollow
                 )
             } else if (starredState?.status == Status.ERROR) {
-                ErrorMessage(
+                SnackBarErrorMessage(
                     scaffoldState = scaffoldState,
-                    retry = { viewModel.toggleStar() }
+                    action = viewModel::toggleStar
                 )
             }
         }
@@ -212,27 +211,6 @@ class RepositoryFragment : Fragment() {
             }
         })
 
-    }
-
-    @ExperimentalMaterialApi
-    @Composable
-    private fun ErrorMessage(
-        scaffoldState: ScaffoldState,
-        retry: () -> Unit
-    ) {
-        val message = stringResource(id = R.string.common_error_requesting_data)
-        val action = stringResource(id = R.string.common_retry)
-
-        LaunchedTask {
-            val result = scaffoldState.snackbarHostState.showSnackbar(
-                message = message,
-                actionLabel = action,
-                duration = SnackbarDuration.Short
-            )
-            if (result == SnackbarResult.ActionPerformed) {
-                retry.invoke()
-            }
-        }
     }
 
 }

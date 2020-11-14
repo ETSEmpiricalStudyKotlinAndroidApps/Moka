@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
-import androidx.compose.runtime.LaunchedTask
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -22,6 +21,7 @@ import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.theme.MokaTheme
 import io.github.tonnyl.moka.util.isDarkModeOn
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
+import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import io.github.tonnyl.moka.widget.TopAppBarElevation
 
 class EditProfileFragment : Fragment() {
@@ -111,19 +111,10 @@ class EditProfileFragment : Fragment() {
 
                 when (updateState?.status) {
                     Status.ERROR -> {
-                        val message = stringResource(id = R.string.common_error_requesting_data)
-                        val action = stringResource(id = R.string.common_retry)
-
-                        LaunchedTask {
-                            val result = scaffoldState.snackbarHostState.showSnackbar(
-                                message = message,
-                                actionLabel = action,
-                                duration = SnackbarDuration.Short
-                            )
-                            if (result == SnackbarResult.ActionPerformed) {
-                                viewModel.updateUserInformation()
-                            }
-                        }
+                        SnackBarErrorMessage(
+                            scaffoldState = scaffoldState,
+                            action = viewModel::updateUserInformation
+                        )
                     }
                     Status.SUCCESS -> {
                         findNavController().navigateUp()

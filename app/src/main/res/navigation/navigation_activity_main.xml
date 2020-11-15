@@ -8,8 +8,7 @@
     <activity
         android:id="@+id/auth_activity"
         android:name="io.github.tonnyl.moka.ui.auth.AuthActivity"
-        tools:label="Auth Activity"
-        tools:layout="@layout/activity_auth" />
+        tools:label="Auth Activity" />
 
     <fragment
         android:id="@+id/search_fragment"

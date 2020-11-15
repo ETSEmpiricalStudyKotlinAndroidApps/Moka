@@ -25,9 +25,22 @@
 
         </activity>
 
-        <activity android:name=".ui.auth.AuthActivity">
+        <activity
+            android:name=".ui.auth.AuthActivity"
+            android:theme="@style/AppTheme">
 
-            <nav-graph android:value="@navigation/navigation_activity_auth" />
+            <intent-filter>
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="tonnyl.io"
+                    android:scheme="https" />
+
+            </intent-filter>
 
         </activity>
 

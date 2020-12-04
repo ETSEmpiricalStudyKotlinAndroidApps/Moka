@@ -80,7 +80,7 @@ class ProfileFragment : Fragment(), EmptyViewActions {
                             navigationIcon = {
                                 IconButton(
                                     onClick = { findNavController().navigateUp() },
-                                    icon = { Icon(vectorResource(R.drawable.ic_arrow_back_24)) }
+                                    content = { Icon(imageVector = vectorResource(R.drawable.ic_arrow_back_24)) }
                                 )
                             },
                             elevation = TopAppBarElevation(lifted = scrollState.value != .0f),
@@ -103,7 +103,7 @@ class ProfileFragment : Fragment(), EmptyViewActions {
                                             ).toBundle()
                                         )
                                     }) {
-                                        Icon(asset = vectorResource(id = R.drawable.ic_edit_24))
+                                        Icon(imageVector = vectorResource(id = R.drawable.ic_edit_24))
                                     }
                                 }
                             }

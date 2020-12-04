@@ -12,13 +12,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawOpacity
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.viewinterop.viewModel
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.data.UserStatus
@@ -258,7 +258,7 @@ private fun EditStatusScreenContent(
             Spacer(modifier = Modifier.preferredHeight(dimensionResource(id = R.dimen.fragment_content_padding)))
             val expandedState = mutableStateOf(false)
             Box(
-                alignment = Alignment.Center,
+                contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxWidth()
                     .padding(horizontal = dimensionResource(id = R.dimen.fragment_content_padding))
                     .border(
@@ -298,7 +298,7 @@ private fun EditStatusScreenContent(
                             .padding(horizontal = dimensionResource(id = R.dimen.fragment_content_padding))
                             .align(Alignment.CenterVertically)
                     )
-                    Icon(asset = vectorResource(id = R.drawable.ic_arrow_drop_down_24))
+                    Icon(imageVector = vectorResource(id = R.drawable.ic_arrow_drop_down_24))
                     Spacer(modifier = Modifier.preferredWidth(dimensionResource(id = R.dimen.fragment_content_padding)))
                 }
                 ExpireAtDropdownMenu(
@@ -328,7 +328,7 @@ private fun EditStatusScreenContent(
                     modifier = Modifier.constrainAs(setStatusButtonRef) {
                         end.linkTo(parent.end)
                         centerVerticallyTo(parent)
-                    }.drawOpacity(
+                    }.alpha(
                         0f.takeIf {
                             setStatusStatus?.status == Status.LOADING
                         } ?: 1f
@@ -359,7 +359,7 @@ private fun EditStatusScreenContent(
                     modifier = Modifier.constrainAs(clearStatusButtonRef) {
                         end.linkTo(spacerRef.start)
                         centerVerticallyTo(parent)
-                    }.drawOpacity(
+                    }.alpha(
                         0f.takeIf {
                             clearStatusStatus?.status == Status.LOADING
                         } ?: 1f

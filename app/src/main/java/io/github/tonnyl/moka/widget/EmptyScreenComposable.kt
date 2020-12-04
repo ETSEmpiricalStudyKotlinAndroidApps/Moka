@@ -15,8 +15,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import io.github.tonnyl.moka.R
 
 @Composable
@@ -33,7 +33,7 @@ fun EmptyScreenContent(
         Spacer(modifier = Modifier.weight(1f))
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Image(
-                asset = vectorResource(id = icon),
+                imageVector = vectorResource(id = icon),
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter(
                     AmbientContentColor.current.copy(alpha = ContentAlpha.medium),

@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.vectorResource
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.SearchableEmoji
@@ -27,7 +27,7 @@ fun EmojiComponent(
     Box(modifier = modifier) {
         val placeholder = @Composable {
             Icon(
-                asset = vectorResource(id = R.drawable.ic_emoji_emotions_24),
+                imageVector = vectorResource(id = R.drawable.ic_emoji_emotions_24),
                 modifier = Modifier.align(Alignment.Center)
                     .preferredSize(dimensionResource(id = R.dimen.user_profile_status_card_height))
             )

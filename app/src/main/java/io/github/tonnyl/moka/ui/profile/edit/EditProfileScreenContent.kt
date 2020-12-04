@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.viewinterop.viewModel
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import io.github.tonnyl.moka.R
 
 @Composable
@@ -78,7 +78,7 @@ private fun EditProfileScreenContent(
                 .padding(horizontal = padding)
         ) {
             Icon(
-                asset = vectorResource(id = R.drawable.ic_person_24),
+                imageVector = vectorResource(id = R.drawable.ic_person_24),
                 modifier = Modifier.preferredSize(dimensionResource(id = R.dimen.regular_icon_size))
                     .align(Alignment.CenterVertically)
             )
@@ -100,7 +100,7 @@ private fun EditProfileScreenContent(
                 .padding(horizontal = padding)
         ) {
             Icon(
-                asset = vectorResource(id = R.drawable.ic_info_24),
+                imageVector = vectorResource(id = R.drawable.ic_info_24),
                 modifier = Modifier.preferredSize(dimensionResource(id = R.dimen.regular_icon_size))
                     .align(Alignment.CenterVertically)
             )
@@ -123,7 +123,7 @@ private fun EditProfileScreenContent(
                 .padding(horizontal = padding)
         ) {
             Icon(
-                asset = vectorResource(id = R.drawable.ic_link_24),
+                imageVector = vectorResource(id = R.drawable.ic_link_24),
                 modifier = Modifier.preferredSize(dimensionResource(id = R.dimen.regular_icon_size))
                     .align(Alignment.CenterVertically)
             )
@@ -146,7 +146,7 @@ private fun EditProfileScreenContent(
                 .padding(horizontal = padding)
         ) {
             Icon(
-                asset = vectorResource(id = R.drawable.ic_group_24),
+                imageVector = vectorResource(id = R.drawable.ic_group_24),
                 modifier = Modifier.preferredSize(dimensionResource(id = R.dimen.regular_icon_size))
                     .align(Alignment.CenterVertically)
             )
@@ -169,7 +169,7 @@ private fun EditProfileScreenContent(
                 .padding(horizontal = padding)
         ) {
             Icon(
-                asset = vectorResource(id = R.drawable.ic_location_on_24),
+                imageVector = vectorResource(id = R.drawable.ic_location_on_24),
                 modifier = Modifier.preferredSize(dimensionResource(id = R.dimen.regular_icon_size))
                     .align(Alignment.CenterVertically)
             )
@@ -191,7 +191,7 @@ private fun EditProfileScreenContent(
                 .padding(horizontal = padding)
         ) {
             Icon(
-                asset = vectorResource(id = R.drawable.ic_twitter_24),
+                imageVector = vectorResource(id = R.drawable.ic_twitter_24),
                 modifier = Modifier.preferredSize(dimensionResource(id = R.dimen.regular_icon_size))
                     .align(Alignment.CenterVertically)
             )

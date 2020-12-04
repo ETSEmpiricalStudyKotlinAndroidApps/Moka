@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawOpacity
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.R
@@ -31,14 +31,14 @@ fun AuthScreen(
     authTokenAndUserResource: Resource<Pair<String, AuthenticatedUser>>?,
     scaffoldState: ScaffoldState
 ) {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
 
     ConstraintLayout(modifier = Modifier.fillMaxSize().navigationBarsPadding()) {
         val guideline = createGuidelineFromTop(.5f)
         val (logoImageRef, appNameTextRef, getStartedButtonRef, progressBarRef) = createRefs()
 
         Image(
-            asset = imageResource(id = R.drawable.splash_screen_logo),
+            bitmap = imageResource(id = R.drawable.splash_screen_logo),
             modifier = Modifier.constrainAs(logoImageRef) {
                 centerHorizontallyTo(parent)
                 top.linkTo(parent.top)
@@ -76,7 +76,7 @@ fun AuthScreen(
                 centerHorizontallyTo(parent)
                 bottom.linkTo(parent.bottom)
                 top.linkTo(guideline)
-            }.drawOpacity(
+            }.alpha(
                 0f.takeIf {
                     authTokenAndUserResource?.status == Status.LOADING
                             || authTokenAndUserResource?.status == Status.SUCCESS

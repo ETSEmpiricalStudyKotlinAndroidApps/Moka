@@ -26,7 +26,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import dev.chrisbanes.accompanist.coil.CoilImage
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.*
@@ -152,7 +152,7 @@ private fun ProfileScreenContent(
         if (user != null) {
             Box(
                 modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.fragment_content_padding)),
-                alignment = Alignment.Center
+                contentAlignment = Alignment.Center
             ) {
                 Card(
                     border = BorderStroke(
@@ -327,7 +327,7 @@ private fun ContactListItem(
     ListItem(
         icon = {
             Icon(
-                asset = vectorResource(id = iconRes),
+                imageVector = vectorResource(id = iconRes),
                 modifier = Modifier.size(dimensionResource(id = R.dimen.regular_icon_size))
             )
         },
@@ -343,7 +343,7 @@ private fun ContactListItem(
 @Composable
 private fun PinnedItemSmallIcon(@DrawableRes resId: Int) {
     Icon(
-        asset = vectorResource(id = resId),
+        imageVector = vectorResource(id = resId),
         modifier = Modifier.preferredSize(dimensionResource(id = R.dimen.repository_card_icon_size))
     )
 }
@@ -415,7 +415,7 @@ private fun PinnedItemCard(
                 Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        children = children
+                        content = children
                     )
                 }
             }

@@ -4,9 +4,9 @@ import java.util.*
 plugins {
     id("com.android.application")
     id("com.apollographql.apollo").version(Versions.apollo)
-    id("kotlin-android")
-    id("kotlin-android-extensions")
-    id("kotlin-kapt")
+    kotlin("android")
+    id("kotlin-parcelize")
+    kotlin("kapt")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.firebase.crashlytics")
 }
@@ -94,10 +94,6 @@ android {
         kotlinCompilerVersion = Versions.composeKotlinCompilerVersion
         kotlinCompilerExtensionVersion = Versions.ui
     }
-}
-
-androidExtensions {
-    isExperimental = true
 }
 
 apollo {

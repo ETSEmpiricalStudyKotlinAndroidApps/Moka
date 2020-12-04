@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.viewinterop.viewModel
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import com.google.android.material.chip.Chip
 import dev.chrisbanes.accompanist.coil.CoilImage
 import io.github.tonnyl.moka.R
@@ -290,7 +290,7 @@ private fun RepositoryScreenContent(
             Status.LOADING -> {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
-                    alignment = Alignment.Center
+                    contentAlignment = Alignment.Center
                 ) {
                     LottieLoadingComponent(modifier = Modifier.preferredSize(dimensionResource(id = R.dimen.regular_icon_size_plus_double_padding)))
                 }
@@ -326,7 +326,7 @@ private fun RepositoryScreenContent(
 private fun EmptyReadmeText() {
     Box(
         modifier = Modifier.fillMaxWidth(),
-        alignment = Alignment.Center
+        contentAlignment = Alignment.Center
     ) {
         Providers(AmbientContentAlpha provides ContentAlpha.medium) {
             Text(

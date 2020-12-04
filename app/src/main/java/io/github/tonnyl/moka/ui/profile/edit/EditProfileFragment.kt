@@ -66,7 +66,7 @@ class EditProfileFragment : Fragment() {
                             navigationIcon = {
                                 IconButton(
                                     onClick = { findNavController().navigateUp() },
-                                    icon = { Icon(vectorResource(R.drawable.ic_close_24)) }
+                                    content = { Icon(imageVector = vectorResource(R.drawable.ic_close_24)) }
                                 )
                             },
                             elevation = TopAppBarElevation(lifted = scrollState.value != .0f),
@@ -92,7 +92,7 @@ class EditProfileFragment : Fragment() {
                                     if (updateState?.status == Status.LOADING) {
                                         LottieLoadingComponent()
                                     } else {
-                                        Icon(asset = vectorResource(id = R.drawable.ic_check_24))
+                                        Icon(imageVector = vectorResource(id = R.drawable.ic_check_24))
                                     }
                                 }
                             }

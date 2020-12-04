@@ -61,8 +61,8 @@ class AuthActivity : AppCompatActivity() {
                                 navigationIcon = {
                                     IconButton(
                                         onClick = { finish() },
-                                        icon = {
-                                            Icon(asset = vectorResource(R.drawable.ic_close_24))
+                                        content = {
+                                            Icon(imageVector = vectorResource(R.drawable.ic_close_24))
                                         }
                                     )
                                 },

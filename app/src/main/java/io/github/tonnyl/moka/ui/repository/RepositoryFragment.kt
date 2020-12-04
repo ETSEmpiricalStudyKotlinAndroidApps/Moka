@@ -68,7 +68,7 @@ class RepositoryFragment : Fragment() {
                             navigationIcon = {
                                 IconButton(
                                     onClick = { findNavController().navigateUp() },
-                                    icon = { Icon(vectorResource(R.drawable.ic_arrow_back_24)) }
+                                    content = { Icon(imageVector = vectorResource(R.drawable.ic_arrow_back_24)) }
                                 )
                             },
                             elevation = TopAppBarElevation(lifted = scrollState.value != .0f),
@@ -96,13 +96,13 @@ class RepositoryFragment : Fragment() {
                                 cutoutShape = CircleShape
                             ) {
                                 IconButton(onClick = {}) {
-                                    Icon(asset = vectorResource(id = R.drawable.ic_code_24))
+                                    Icon(imageVector = vectorResource(id = R.drawable.ic_code_24))
                                 }
                                 IconButton(onClick = {}) {
-                                    Icon(asset = vectorResource(id = R.drawable.ic_eye_24))
+                                    Icon(imageVector = vectorResource(id = R.drawable.ic_eye_24))
                                 }
                                 IconButton(onClick = {}) {
-                                    Icon(asset = vectorResource(id = R.drawable.ic_code_fork_24))
+                                    Icon(imageVector = vectorResource(id = R.drawable.ic_code_fork_24))
                                 }
                             }
                         }
@@ -114,7 +114,7 @@ class RepositoryFragment : Fragment() {
                                 shape = CircleShape
                             ) {
                                 Icon(
-                                    asset = vectorResource(
+                                    imageVector = vectorResource(
                                         id = if (starredState?.data == true) {
                                             R.drawable.ic_star_24
                                         } else {

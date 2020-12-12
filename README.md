@@ -1,6 +1,6 @@
 # Moka
 
-[![Build Status](https://travis-ci.com/TonnyL/Moka.svg?token=EEerQrHwqM2iTVXsTWXe&branch=master)](https://travis-ci.com/TonnyL/Moka)
+[![Build status](https://github.com/TonnyL/Moka/workflows/build/badge.svg)](https://github.com/TonnyL/Moka/actions?query=workflow%3Abuild)
 
 An Android app for github.com.
 

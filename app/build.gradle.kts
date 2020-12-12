@@ -38,11 +38,9 @@ android {
         if (hasPropertiesFile) {
             buildConfigField("String", "CLIENT_ID", "\"${properties["CLIENT_ID"]}\"")
             buildConfigField("String", "CLIENT_SECRET", "\"${properties["CLIENT_SECRET"]}\"")
-            buildConfigField("String", "TEST_TOKEN", "\"${properties["TEST_TOKEN"]}\"")
         } else { // CI
-            buildConfigField("String", "CLIENT_ID", "\"${System.getenv("CLIENT_ID")}\"")
-            buildConfigField("String", "CLIENT_SECRET", "\"${System.getenv("CLIENT_SECRET")}\"")
-            buildConfigField("String", "TEST_TOKEN", "\"${System.getenv("TEST_TOKEN")}\"")
+            buildConfigField("String", "CLIENT_ID", "\"client_id_placeholder\"")
+            buildConfigField("String", "CLIENT_SECRET", "\"client_secret_placeholder\"")
         }
 
         kapt {

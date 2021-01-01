@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package = "io.github.tonnyl.moka.proto";
+option java_multiple_files = true;
+
+message Emoji {
+  string emoji = 1;
+  repeated string names = 2;
+  repeated string tags = 3;
+  string description = 4;
+  string category = 5;
+}
+
+message RecentEmojis {
+  repeated Emoji recentEmojis = 1;
+}

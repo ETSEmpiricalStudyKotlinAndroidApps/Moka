@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+option java_package = "io.github.tonnyl.moka.proto";
+option java_multiple_files = true;
+
+message Settings {
+  enum Theme {
+    AUTO = 0;
+    LIGHT = 1;
+    DARK = 2;
+  }
+
+  enum NotificationSyncInterval {
+    ONE_QUARTER = 0;
+    THIRTY_MINUTES = 1;
+    ONE_HOUR = 2;
+    TWO_HOURS = 3;
+    SIX_HOURS = 4;
+    TWELVE_HOURS = 5;
+    TWENTY_FOUR_HOURS = 6;
+  }
+
+  enum KeepData {
+    FOREVER = 0;
+    ONE_DAY = 1;
+    THREE_DAYS = 2;
+    ONE_WEEK = 3;
+    ONE_MONTH = 4;
+  }
+
+  // App appearance.
+  Theme theme = 1;
+  // Fetch unread notifications on the background or not.
+  bool enable_notifications = 2;
+  // Time period of fetching unread notifications.
+  NotificationSyncInterval notification_sync_interval = 3;
+  // Do not disturb.
+  bool dnd = 4;
+  // Keep user's search history.
+  bool do_not_keep_search_history = 5;
+  // Time period of keeping local data.
+  KeepData keep_data = 6;
+  // Save user's input automatically or not.
+  bool auto_save = 7;
+}

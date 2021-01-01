@@ -12,10 +12,13 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.data.Emoji
+import io.github.tonnyl.moka.proto.Settings
 import io.github.tonnyl.moka.ui.auth.Authenticator
+import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import java.nio.charset.Charset
 
@@ -62,23 +65,24 @@ suspend fun AccountManager.moveAccountToFirstPosition(account: Account) {
 }
 
 fun AppCompatActivity.updateForTheme() {
-    (applicationContext as MokaApp).theme.observe(this) { value ->
-        delegate.localNightMode = when (value) {
-            "0" -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                } else {
-                    AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+    lifecycleScope.launchWhenStarted {
+        (applicationContext as MokaApp).settingsDataStore.data.collect {
+            delegate.localNightMode = when (it.theme) {
+                Settings.Theme.AUTO,
+                Settings.Theme.UNRECOGNIZED,
+                null -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    } else {
+                        AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                    }
                 }
-            }
-            "1" -> {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-            "2" -> {
-                AppCompatDelegate.MODE_NIGHT_YES
-            }
-            else -> {
-                throw IllegalArgumentException("invalid theme value: $value")
+                Settings.Theme.LIGHT -> {
+                    AppCompatDelegate.MODE_NIGHT_NO
+                }
+                Settings.Theme.DARK -> {
+                    AppCompatDelegate.MODE_NIGHT_YES
+                }
             }
         }
     }

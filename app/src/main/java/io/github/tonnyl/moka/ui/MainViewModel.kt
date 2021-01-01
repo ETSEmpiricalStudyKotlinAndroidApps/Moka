@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui
 
 import androidx.lifecycle.*
-import androidx.preference.PreferenceManager
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.Resource
@@ -13,7 +12,9 @@ import io.github.tonnyl.moka.ui.explore.filters.LocalLanguage
 import io.github.tonnyl.moka.util.MoshiInstance
 import io.github.tonnyl.moka.util.readEmojisFromAssets
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.nio.charset.Charset
 
@@ -43,17 +44,21 @@ class MainViewModel(
 
             val emojis = mutableListOf<EmojiType>()
 
-            // read recent emojis string from sp and convert it.
-            val sp = PreferenceManager.getDefaultSharedPreferences(app.applicationContext)
-            val recentEmojisString = sp.getString("recent_used_emojis", null)
-            if (!recentEmojisString.isNullOrEmpty()) {
-                val recentEmojis = MoshiInstance.emojiListAdapter
-                    .fromJson(recentEmojisString) ?: emptyList<Emoji>()
+            val recentEmojis = runBlocking {
+                (app.applicationContext as MokaApp).recentEmojis.data.first().recentEmojisList
+            }
 
-                if (recentEmojis.isNotEmpty()) {
-                    emojis.add(EmojiCategory.RecentlyUsed)
-                    emojis.addAll(recentEmojis)
-                }
+            if (recentEmojis.isNotEmpty()) {
+                emojis.add(EmojiCategory.RecentlyUsed)
+                emojis.addAll(recentEmojis.map {
+                    Emoji(
+                        it.emoji,
+                        it.namesList,
+                        it.tagsList,
+                        it.description,
+                        it.category
+                    )
+                })
             }
 
             emojis.add(EmojiCategory.SmileysAndEmotion)

@@ -3,18 +3,26 @@ package io.github.tonnyl.moka
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Application
+import androidx.datastore.core.DataStore
+import androidx.datastore.createDataStore
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingConfig
-import androidx.preference.PreferenceManager
 import androidx.work.*
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.util.CoilUtils
 import io.github.tonnyl.moka.data.AuthenticatedUser
+import io.github.tonnyl.moka.proto.RecentEmojis
+import io.github.tonnyl.moka.proto.Settings
+import io.github.tonnyl.moka.proto.SignedInAccounts
+import io.github.tonnyl.moka.serializers.store.AccountSerializer
+import io.github.tonnyl.moka.serializers.store.EmojiSerializer
+import io.github.tonnyl.moka.serializers.store.SettingSerializer
 import io.github.tonnyl.moka.util.mapToAccountTokenUserTriple
 import io.github.tonnyl.moka.work.NotificationWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,10 +36,26 @@ class MokaApp : Application(), ImageLoaderFactory {
     }
 
     val loginAccounts = MutableLiveData<List<Triple<Account, String, AuthenticatedUser>>>()
-    val theme by lazy(LazyThreadSafetyMode.NONE) {
-        MutableLiveData<String>(
-            PreferenceManager.getDefaultSharedPreferences(applicationContext)
-                .getString("key_choose_theme", "0")
+
+    val settingsDataStore: DataStore<Settings> by lazy {
+        createDataStore(
+            fileName = "global_settings.pb",
+            serializer = SettingSerializer
+        )
+    }
+
+    val accountsDataStore: DataStore<SignedInAccounts> by lazy {
+        createDataStore(
+            fileName = "accounts.pb",
+            serializer = AccountSerializer
+        )
+    }
+
+    // todo make it user-related
+    val recentEmojis: DataStore<RecentEmojis> by lazy {
+        createDataStore(
+            fileName = "recent_emojis.pb",
+            serializer = EmojiSerializer
         )
     }
 
@@ -69,7 +93,7 @@ class MokaApp : Application(), ImageLoaderFactory {
                 }
 
                 if (accounts.isNotEmpty()) {
-                    triggerNotificationWorker(true)
+                    triggerNotificationWorker()
                 }
             },
             null,
@@ -89,36 +113,55 @@ class MokaApp : Application(), ImageLoaderFactory {
             .build()
     }
 
-    fun triggerNotificationWorker(start: Boolean) {
-        if (start) {
-            if (!PreferenceManager.getDefaultSharedPreferences(applicationContext)
-                    .getBoolean("key_enable_notifications", true)
-            ) {
-                return
+    fun triggerNotificationWorker() {
+        GlobalScope.launch {
+            settingsDataStore.data.collect { settings ->
+                if (settings.enableNotifications) {
+                    val intervalTimePeriod = when (settings.notificationSyncInterval) {
+                        Settings.NotificationSyncInterval.ONE_QUARTER,
+                        Settings.NotificationSyncInterval.UNRECOGNIZED,
+                        null -> {
+                            15L
+                        }
+                        Settings.NotificationSyncInterval.THIRTY_MINUTES -> {
+                            30L
+                        }
+                        Settings.NotificationSyncInterval.ONE_HOUR -> {
+                            60L
+                        }
+                        Settings.NotificationSyncInterval.TWO_HOURS -> {
+                            60 * 2L
+                        }
+                        Settings.NotificationSyncInterval.SIX_HOURS -> {
+                            60 * 6L
+                        }
+                        Settings.NotificationSyncInterval.TWELVE_HOURS -> {
+                            60 * 12L
+                        }
+                        Settings.NotificationSyncInterval.TWENTY_FOUR_HOURS -> {
+                            60 * 24L
+                        }
+                    }
+                    WorkManager.getInstance(applicationContext)
+                        .enqueueUniquePeriodicWork(
+                            NotificationWorker::class.java.simpleName,
+                            ExistingPeriodicWorkPolicy.REPLACE,
+                            PeriodicWorkRequestBuilder<NotificationWorker>(
+                                intervalTimePeriod,
+                                TimeUnit.MINUTES
+                            ).setConstraints(
+                                Constraints.Builder()
+                                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                                    .setRequiresBatteryNotLow(true)
+                                    .build()
+                            ).addTag(NotificationWorker.WORKER_TAG)
+                                .build()
+                        )
+                } else {
+                    WorkManager.getInstance(applicationContext)
+                        .cancelAllWorkByTag(NotificationWorker.WORKER_TAG)
+                }
             }
-
-            val interval = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-                .getString("key_sync_interval", "15")
-                ?.toLong() ?: 15L
-
-            WorkManager.getInstance(applicationContext)
-                .enqueueUniquePeriodicWork(
-                    NotificationWorker::class.java.simpleName,
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    PeriodicWorkRequestBuilder<NotificationWorker>(
-                        interval,
-                        TimeUnit.MINUTES
-                    ).setConstraints(
-                        Constraints.Builder()
-                            .setRequiredNetworkType(NetworkType.CONNECTED)
-                            .setRequiresBatteryNotLow(true)
-                            .build()
-                    ).addTag(NotificationWorker.WORKER_TAG)
-                        .build()
-                )
-        } else {
-            WorkManager.getInstance(applicationContext)
-                .cancelAllWorkByTag(NotificationWorker.WORKER_TAG)
         }
     }
 

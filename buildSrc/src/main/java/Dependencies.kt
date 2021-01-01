@@ -28,9 +28,9 @@ object Versions {
     const val pagingCompose = "1.0.0-alpha04"
     const val workManager = "2.5.0-beta02"
     const val room = "2.3.0-alpha03"
-    const val preference = "1.1.1"
     const val swipeRefreshLayout = "1.2.0-alpha01"
     const val ui = "1.0.0-alpha09"
+    const val dataStore = "1.0.0-alpha05"
     const val accompanistCoil = "0.4.1"
     const val composeKotlinCompilerVersion = "1.4.21"
     const val lottie = "3.4.2"
@@ -44,6 +44,9 @@ object Versions {
     const val firebaseCrashlytics = "17.2.1"
     const val insetter = "0.3.1"
     const val moshi = "1.9.2"
+    const val protobufGradle = "0.8.14"
+    const val protoc = "3.14.0"
+    const val protobufJavaLite = "3.11.0"
     const val junit = "4.13"
     const val androidJunit = "1.1.2"
     const val androidTestCore = "1.3.0"
@@ -96,11 +99,11 @@ object Deps {
         const val browser = "androidx.browser:browser:${Versions.browser}"
         const val appcompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
         const val fragment = "androidx.fragment:fragment-ktx:${Versions.fragment}"
-        const val preference = "androidx.preference:preference-ktx:${Versions.preference}"
         const val drawerLayout = "androidx.drawerlayout:drawerlayout:${Versions.drawerLayout}"
         const val recyclerView = "androidx.recyclerview:recyclerview:${Versions.recyclerView}"
         const val recyclerViewSelection =
             "androidx.recyclerview:recyclerview-selection:${Versions.recyclerViewSelection}"
+        const val dataStore = "androidx.datastore:datastore:${Versions.dataStore}"
 
         object Lifecycle {
 
@@ -174,6 +177,8 @@ object Deps {
             "com.google.firebase:firebase-analytics-ktx:${Versions.firebaseAnalyticsKtx}"
         const val firebaseCrashlytics =
             "com.google.firebase:firebase-crashlytics:${Versions.firebaseCrashlytics}"
+        const val protoc = "com.google.protobuf:protoc:${Versions.protoc}"
+        const val protobufJavaLite = "com.google.protobuf:protobuf-javalite:${Versions.protobufJavaLite}"
 
     }
 

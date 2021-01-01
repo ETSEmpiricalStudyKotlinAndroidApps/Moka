@@ -1,3 +1,6 @@
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.protoc
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
@@ -7,6 +10,7 @@ plugins {
     kotlin("android")
     id("kotlin-parcelize")
     kotlin("kapt")
+    id("com.google.protobuf").version("0.8.14")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.firebase.crashlytics")
 }
@@ -127,6 +131,19 @@ apollo {
     generateKotlinModels.set(true)
 }
 
+protobuf {
+    protoc {
+        artifact = Deps.Google.protoc
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins.create("java") {
+                option("lite")
+            }
+        }
+    }
+}
+
 dependencies {
     implementation(fileTree(Pair("dir", "libs"), Pair("include", listOf("*.jar"))))
 
@@ -143,11 +160,11 @@ dependencies {
     implementation(Deps.AndroidX.browser)
     implementation(Deps.AndroidX.appcompat)
     implementation(Deps.AndroidX.fragment)
-    implementation(Deps.AndroidX.preference)
     implementation(Deps.AndroidX.viewpager2)
     implementation(Deps.AndroidX.drawerLayout)
     implementation(Deps.AndroidX.recyclerView)
     implementation(Deps.AndroidX.recyclerViewSelection)
+    implementation(Deps.AndroidX.dataStore)
     implementation(Deps.AndroidX.Lifecycle.lifecycleExtensions)
     implementation(Deps.AndroidX.Lifecycle.liveDataKtx)
     implementation(Deps.AndroidX.Navigation.navigationFragmentKtx)
@@ -177,6 +194,7 @@ dependencies {
     implementation(Deps.Google.composeThemeAdapter)
     implementation(Deps.Google.firebaseAnalyticsKtx)
     implementation(Deps.Google.firebaseCrashlytics)
+    implementation(Deps.Google.protobufJavaLite)
 
     // Retrofit
     implementation(Deps.Retrofit.retrofit)

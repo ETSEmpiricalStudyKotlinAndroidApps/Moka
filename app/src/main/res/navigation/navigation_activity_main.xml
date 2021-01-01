@@ -121,7 +121,7 @@
         android:id="@+id/about_fragment"
         android:name="io.github.tonnyl.moka.ui.about.AboutFragment"
         tools:label="About"
-        tools:layout="@layout/fragment_about" />
+        tools:layout="@layout/fragment_container" />
 
     <fragment
         android:id="@+id/settings_fragment"

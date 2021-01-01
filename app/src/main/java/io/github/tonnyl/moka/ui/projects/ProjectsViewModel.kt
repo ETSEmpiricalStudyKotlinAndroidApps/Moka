@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.projects
 
 import android.app.Application
 import androidx.lifecycle.*
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import androidx.paging.liveData
@@ -10,6 +11,7 @@ import io.github.tonnyl.moka.data.item.Project
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.Resource
 
+@ExperimentalPagingApi
 class ProjectsViewModel(
     private val isMyself: Boolean,
     private val args: ProjectsFragmentArgs,

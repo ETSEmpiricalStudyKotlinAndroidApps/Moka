@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.databinding.FragmentProjectsBinding
 import io.github.tonnyl.moka.ui.EmptyViewActions
 import io.github.tonnyl.moka.ui.LoadStateAdapter
 import io.github.tonnyl.moka.ui.MainViewModel
 
+@ExperimentalPagingApi
 class ProjectsFragment : Fragment(), EmptyViewActions {
 
     private val mainViewModel by activityViewModels<MainViewModel>()

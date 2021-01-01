@@ -6,11 +6,13 @@ import android.text.Spanned
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
+import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.util.textFuture
 
+@OptIn(ExperimentalPagingApi::class)
 @BindingAdapter(value = ["event", "viewModel"], requireAll = true)
 fun AppCompatTextView.eventActionTextFuture(
     event: Event?,
@@ -629,6 +631,7 @@ fun AppCompatTextView.eventContentVisibilityOrTextFuture(event: Event?) {
     }
 }
 
+@OptIn(ExperimentalPagingApi::class)
 private fun appendActorSpan(
     actor: EventActor,
     type: ProfileType,
@@ -647,6 +650,7 @@ private fun appendActorSpan(
     }
 }
 
+@OptIn(ExperimentalPagingApi::class)
 private fun appendRepositorySpan(
     repository: EventRepository,
     fullName: Boolean = false,
@@ -673,6 +677,7 @@ private fun appendRepositorySpan(
     }
 }
 
+@OptIn(ExperimentalPagingApi::class)
 private fun appendIssueNumberSpan(
     issue: EventIssue,
     actionBuilder: SpannableStringBuilder,
@@ -691,6 +696,7 @@ private fun appendIssueNumberSpan(
     }
 }
 
+@OptIn(ExperimentalPagingApi::class)
 private fun appendPullRequestNumberSpan(
     pullRequest: EventPullRequest,
     actionBuilder: SpannableStringBuilder,
@@ -709,6 +715,7 @@ private fun appendPullRequestNumberSpan(
     }
 }
 
+@OptIn(ExperimentalPagingApi::class)
 private fun appendProjectSpan(
     project: EventProject,
     actionBuilder: SpannableStringBuilder,
@@ -726,6 +733,7 @@ private fun appendProjectSpan(
     }
 }
 
+@OptIn(ExperimentalPagingApi::class)
 private fun appendProjectColumnSpan(
     projectColumn: EventProjectColumn,
     actionBuilder: SpannableStringBuilder,
@@ -743,6 +751,7 @@ private fun appendProjectColumnSpan(
     }
 }
 
+@ExperimentalPagingApi
 private fun appendReleaseSpan(
     release: EventRelease,
     actionBuilder: SpannableStringBuilder,
@@ -760,6 +769,7 @@ private fun appendReleaseSpan(
     }
 }
 
+@OptIn(ExperimentalPagingApi::class)
 private fun appendGistSpan(
     gist: Gist,
     actionBuilder: SpannableStringBuilder,

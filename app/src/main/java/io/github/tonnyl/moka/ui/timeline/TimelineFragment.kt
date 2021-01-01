@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
@@ -25,6 +26,7 @@ import io.github.tonnyl.moka.ui.repository.RepositoryFragmentArgs
 import io.github.tonnyl.moka.ui.timeline.EventItemEvent.*
 import io.github.tonnyl.moka.widget.ListCategoryDecoration
 
+@OptIn(ExperimentalPagingApi::class)
 class TimelineFragment : MainNavigationFragment(), EmptyViewActions {
 
     private val mainViewModel by activityViewModels<MainViewModel>()

@@ -5,10 +5,12 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.ui.profile.ProfileType
 
+@ExperimentalPagingApi
 abstract class EventClickableSpans(
     val resources: Resources,
     val viewModel: TimelineViewModel
@@ -24,6 +26,7 @@ abstract class EventClickableSpans(
 
 }
 
+@ExperimentalPagingApi
 class ActorClickableSpan(
     val actor: EventActor,
     val type: ProfileType,
@@ -37,6 +40,7 @@ class ActorClickableSpan(
 
 }
 
+@ExperimentalPagingApi
 class RepositoryClickableSpan(
     private val fullName: String,
     private val org: EventOrg?,
@@ -50,6 +54,7 @@ class RepositoryClickableSpan(
 
 }
 
+@ExperimentalPagingApi
 class IssueNumberClickableSpan(
     val issue: EventIssue,
     resources: Resources,
@@ -62,6 +67,7 @@ class IssueNumberClickableSpan(
 
 }
 
+@ExperimentalPagingApi
 class PullRequestNumberClickableSpan(
     val pullRequest: EventPullRequest,
     resources: Resources,
@@ -74,6 +80,7 @@ class PullRequestNumberClickableSpan(
 
 }
 
+@ExperimentalPagingApi
 class ProjectClickableSpan(
     val project: EventProject,
     resources: Resources,
@@ -86,6 +93,7 @@ class ProjectClickableSpan(
 
 }
 
+@ExperimentalPagingApi
 class ProjectColumnClickableSpan(
     val projectColumn: EventProjectColumn,
     resources: Resources,
@@ -98,6 +106,7 @@ class ProjectColumnClickableSpan(
 
 }
 
+@ExperimentalPagingApi
 class ProjectCardClickableSpan(
     val projectCard: EventProjectCard,
     resources: Resources,
@@ -110,6 +119,7 @@ class ProjectCardClickableSpan(
 
 }
 
+@ExperimentalPagingApi
 class ReleaseClickableSpan(
     val release: EventRelease,
     resources: Resources,
@@ -122,6 +132,7 @@ class ReleaseClickableSpan(
 
 }
 
+@ExperimentalPagingApi
 class TeamClickableSpan(
     val team: EventTeam,
     resources: Resources,
@@ -134,6 +145,7 @@ class TeamClickableSpan(
 
 }
 
+@ExperimentalPagingApi
 class GistClickableSpan(
     val gist: Gist,
     resources: Resources,

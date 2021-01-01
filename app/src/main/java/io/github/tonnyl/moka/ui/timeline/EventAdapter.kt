@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.timeline
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.databinding.ItemEventBinding
 
+@ExperimentalPagingApi
 class EventAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: TimelineViewModel

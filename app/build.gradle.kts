@@ -92,6 +92,13 @@ android {
         kotlinCompilerVersion = Versions.composeKotlinCompilerVersion
         kotlinCompilerExtensionVersion = Versions.ui
     }
+
+    // https://github.com/Kotlin/kotlinx.coroutines/issues/2023
+    configurations.all {
+        resolutionStrategy {
+            exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-debug")
+        }
+    }
 }
 
 apollo {
@@ -222,6 +229,8 @@ dependencies {
     androidTestImplementation(Deps.AndroidTest.work)
     androidTestImplementation(Deps.AndroidTest.room)
     androidTestImplementation(Deps.AndroidTest.fragment)
+    androidTestImplementation(Deps.AndroidTest.uiTest)
+    androidTestImplementation(Deps.AndroidTest.uiTestJunit4)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

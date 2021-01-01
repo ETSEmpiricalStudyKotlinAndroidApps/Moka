@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.timeline
 import android.app.Application
 import androidx.annotation.MainThread
 import androidx.lifecycle.*
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import androidx.paging.liveData
@@ -17,6 +18,7 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.timeline.EventItemEvent.*
 import io.github.tonnyl.moka.ui.Event as UIEvent
 
+@ExperimentalPagingApi
 class TimelineViewModel(
     app: Application
 ) : AndroidViewModel(app) {

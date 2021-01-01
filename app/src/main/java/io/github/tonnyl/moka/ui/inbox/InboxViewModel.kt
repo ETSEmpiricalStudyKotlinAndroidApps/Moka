@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.inbox
 import android.app.Application
 import androidx.annotation.MainThread
 import androidx.lifecycle.*
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import androidx.paging.liveData
@@ -18,6 +19,7 @@ import io.github.tonnyl.moka.network.service.NotificationsService
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.inbox.NotificationItemEvent.*
 
+@ExperimentalPagingApi
 class InboxViewModel(
     app: Application
 ) : AndroidViewModel(app) {

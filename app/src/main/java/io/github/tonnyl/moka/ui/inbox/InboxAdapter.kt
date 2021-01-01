@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.inbox
 
 import android.view.*
 import androidx.lifecycle.LifecycleOwner
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +10,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.databinding.ItemInboxNotificationBinding
 
+@ExperimentalPagingApi
 class InboxAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: InboxViewModel

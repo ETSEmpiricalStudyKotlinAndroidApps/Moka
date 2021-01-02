@@ -416,34 +416,23 @@
     <string name="settings_clear_local_data_title">Clear local data</string>
     <string name="settings_clear_image_cache_title">Clear image cache</string>
 
-    <string name="settings_choose_theme_follow_system">Follow system</string>
-    <string name="settings_choose_theme_auto_battery">Set by Battery Saver</string>
+    <string name="settings_choose_theme_auto">Set by Battery Saver</string>
     <string name="settings_choose_theme_light">Light</string>
     <string name="settings_choose_theme_dark">Dark</string>
 
-    <string-array name="choose_theme_entries">
-        <item>@string/settings_choose_theme_auto_battery</item>
-        <item>@string/settings_choose_theme_light</item>
-        <item>@string/settings_choose_theme_dark</item>
-    </string-array>
+    <string name="sync_interval_one_quarter">15 minutes</string>
+    <string name="sync_interval_thirty_minutes">30 minutes</string>
+    <string name="sync_interval_one_hour">1 hour</string>
+    <string name="sync_interval_two_hours">2 hours</string>
+    <string name="sync_interval_six_hours">6 hours</string>
+    <string name="sync_interval_twelve_hours">12 hours</string>
+    <string name="sync_interval_twenty_four_hours">24 hours</string>
 
-    <string-array name="sync_interval_entries">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>2 hours</item>
-        <item>6 hours</item>
-        <item>12 hours</item>
-        <item>24 hours</item>
-    </string-array>
-
-    <string-array name="keep_data_entries">
-        <item>1 day</item>
-        <item>3 days</item>
-        <item>1 week</item>
-        <item>1 month</item>
-        <item>Forever</item>
-    </string-array>
+    <string name="keep_data_forever">Forever</string>
+    <string name="keep_data_one_day">1 day</string>
+    <string name="keep_data_three_days">3 days</string>
+    <string name="keep_data_one_week">1 week</string>
+    <string name="keep_data_one_month">1 month</string>
 
     <string name="users_content_empty_title">No users found</string>
     <string name="users_content_empty_action">Back to profile</string>

@@ -12,7 +12,7 @@
     <dimen name="nav_item_background_corner_radius_left">0dp</dimen>
     <dimen name="nav_item_background_corner_radius_right">100dp</dimen>
     <dimen name="nav_item_background_inset_left">0dp</dimen>
-    <dimen name="nav_item_background_inset_right">8dp</dimen>>
+    <dimen name="nav_item_background_inset_right">8dp</dimen>
 
     <dimen name="regular_icon_size">40dp</dimen>
     <dimen name="regular_icon_padding">8dp</dimen>

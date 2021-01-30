@@ -1,1 +1,12 @@
-/Users/lizhaotailang/AndroidProjects/Moka/.gitignore
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+/bazel-bin
+/bazel-out
+/bazel-testlogs
+/bazel-Moka

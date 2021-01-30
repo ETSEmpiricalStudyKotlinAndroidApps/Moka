@@ -1,0 +1,187 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_compiler_plugin")
+load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
+load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
+
+_PACKAGE_NAME = "io.github.tonnyl.moka"
+_MANIFEST = "src/main/AndroidManifest.xml"
+
+kt_compiler_plugin(
+    name = "kotlin_parcelize_plugin",
+    id = "org.jetbrains.kotlin.parcelize",
+    deps = [
+        "@com_github_jetbrains_kotlin//:kotlinx-parcelize-compiler-plugin",
+    ],
+)
+
+_MIN_SDK_VERSION = "23"
+_TARGET_SDK_VERSION = "30"
+
+_VERSION_CODE = "1"
+_VERSION_NAME = "1.0"
+
+android_binary(
+    name = "moka_app",
+    custom_package = _PACKAGE_NAME,
+    incremental_dexing = 1,
+    manifest = _MANIFEST,
+    manifest_values = {
+        "applicationId": "io.github.tonnyl.moka",
+        "minSdkVersion": _MIN_SDK_VERSION,
+        "targetSdkVersion": _TARGET_SDK_VERSION,
+        "versionCode": _VERSION_CODE,
+        "versionName": _VERSION_NAME,
+    },
+    proguard_specs = [
+        "proguard-rules.pro",
+    ],
+    resource_files = glob(["src/main/res/**/*"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":crashlytics_library",
+        ":crashlytics_deps",
+        ":androidx_room_room_compiler_library",
+        ":moshi_kotlin_codegen_library",
+        "@maven//:org_jsoup_jsoup",
+        "@maven//:com_jakewharton_timber_timber",
+        "@maven//:org_jetbrains_kotlin_kotlin_stdlib_jdk7",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_android",
+        "@maven//:org_jetbrains_kotlinx_kotlinx_datetime",
+        "@maven//:androidx_constraintlayout_constraintlayout",
+        "@maven//:androidx_coordinatorlayout_coordinatorlayout",
+        "@maven//:androidx_swiperefreshlayout_swiperefreshlayout",
+        "@maven//:androidx_viewpager2_viewpager2",
+        "@maven//:androidx_browser_browser",
+        "@maven//:androidx_appcompat_appcompat",
+        "@maven//:androidx_fragment_fragment_ktx",
+        "@maven//:androidx_drawerlayout_drawerlayout",
+        "@maven//:androidx_recyclerview_recyclerview",
+        "@maven//:androidx_recyclerview_recyclerview_selection",
+        "@maven//:androidx_datastore_datastore",
+        "@maven//:androidx_databinding_databinding_runtime",
+        "@maven//:androidx_databinding_databinding_adapters",
+        "@maven//:androidx_databinding_databinding_common",
+        "@maven//:androidx_lifecycle_lifecycle_extensions",
+        "@maven//:androidx_lifecycle_lifecycle_livedata_ktx",
+        "@maven//:androidx_navigation_navigation_fragment_ktx",
+        "@maven//:androidx_navigation_navigation_ui_ktx",
+        "@maven//:androidx_navigation_navigation_compose",
+        "@maven//:androidx_paging_paging_common_ktx",
+        "@maven//:androidx_paging_paging_runtime_ktx",
+        "@maven//:androidx_paging_paging_compose",
+        "@maven//:androidx_room_room_common",
+        "@maven//:androidx_room_room_runtime",
+        "@maven//:androidx_room_room_migration",
+        "@maven//:androidx_room_room_ktx",
+        "@maven//:androidx_work_work_runtime_ktx",
+        "@maven//:androidx_compose_runtime_runtime",
+        "@maven//:androidx_compose_ui_ui",
+        "@maven//:androidx_compose_foundation_foundation_layout",
+        "@maven//:androidx_compose_material_material",
+        "@maven//:androidx_compose_foundation_foundation",
+        "@maven//:androidx_compose_animation_animation",
+        "@maven//:androidx_compose_ui_ui_tooling",
+        "@maven//:androidx_compose_runtime_runtime_livedata",
+        "@maven//:com_google_android_material_material",
+        "@maven//:com_google_android_material_compose_theme_adapter",
+        "@maven//:com_google_protobuf_protoc",
+        "@maven//:com_google_protobuf_protobuf_javalite",
+        "@maven//:com_squareup_retrofit2_retrofit",
+        "@maven//:com_squareup_retrofit2_converter_moshi",
+        "@maven//:com_squareup_okhttp3_logging_interceptor",
+        "@maven//:com_apollographql_apollo_apollo_runtime",
+        "@maven//:com_airbnb_android_lottie",
+        "@maven//:dev_chrisbanes_accompanist_accompanist_coil",
+        "@maven//:dev_chrisbanes_accompanist_accompanist_insets",
+        "@maven//:com_atlassian_commonmark_commonmark",
+        "@maven//:com_atlassian_commonmark_commonmark_ext_autolink",
+        "@maven//:com_atlassian_commonmark_commonmark_ext_gfm_strikethrough",
+        "@maven//:com_atlassian_commonmark_commonmark_ext_gfm_tables",
+        "@maven//:com_atlassian_commonmark_commonmark_ext_ins",
+        "@maven//:com_atlassian_commonmark_commonmark_ext_heading_anchor",
+        "@maven//:com_atlassian_commonmark_commonmark_ext_yaml_front_matter",
+        "@maven//:dev_chrisbanes_insetter_dbx",
+        "@maven//:dev_chrisbanes_insetter_ktx",
+        "@maven//:com_squareup_moshi_moshi_adapters",
+        "@maven//:junit_junit",
+        "@maven//:org_hamcrest_hamcrest_all",
+        "@maven//:com_squareup_retrofit2_retrofit_mock",
+        "@maven//:androidx_test_core_ktx",
+        "@maven//:androidx_test_runner",
+        "@maven//:androidx_test_rules",
+        "@maven//:androidx_test_ext_junit_ktx",
+        "@maven//:androidx_test_espresso_espresso_core",
+        "@maven//:androidx_test_espresso_espresso_contrib",
+        "@maven//:androidx_test_espresso_espresso_intents",
+        "@maven//:androidx_test_espresso_espresso_accessibility",
+        "@maven//:androidx_work_work_testing",
+        "@maven//:androidx_room_room_testing",
+        "@maven//:androidx_fragment_fragment_testing",
+        "@maven//:androidx_compose_ui_ui_test",
+        "@maven//:androidx_compose_ui_ui_test_junit4",
+    ]
+)
+
+java_plugin(
+    name = "androidx_room_room_compiler_plugin",
+    processor_class = "androidx.room.RoomProcessor",
+    deps = [
+        "@maven//:androidx_room_room_compiler",
+    ],
+)
+
+java_library(
+    name = "androidx_room_room_compiler_library",
+    exported_plugins = [
+        ":androidx_room_room_compiler_plugin",
+    ],
+    neverlink = True,
+    exports = [
+        "@maven//:androidx_room_room_compiler",
+    ],
+)
+
+java_plugin(
+    name = "moshi_kotlin_codegen_plugin",
+    processor_class = "com.squareup.moshi.kotlin.codegen.JsonClassCodegenProcessor",
+    deps = [
+      "@maven//:com_squareup_moshi_moshi_kotlin_codegen",
+    ],
+    generates_api = True,
+    visibility = ["//visibility:public"],
+)
+
+java_library(
+    name = "moshi_kotlin_codegen_library",
+    exported_plugins = [
+        ":moshi_kotlin_codegen_plugin",
+    ],
+    neverlink = True,
+    exports = [
+        "@maven//:com_squareup_moshi_moshi_kotlin_codegen",
+    ],
+)
+
+GOOGLE_SERVICES_RESOURCES = google_services_xml(
+    package_name = _PACKAGE_NAME,
+    google_services_json = "google-services.json",
+)
+
+# Generate build id:
+# bazel run @tools_android//tools/crashlytics:generate_uuid
+crashlytics_android_library(
+    name = "crashlytics_library",
+    package_name = _PACKAGE_NAME,
+    build_id = "47588341-83aa-47f9-8141-94ee1bb1b83f",
+    resource_files = GOOGLE_SERVICES_RESOURCES,
+)
+
+android_library(
+    name = "crashlytics_deps",
+    exports = [
+        "@maven//:com_google_firebase_firebase_analytics_ktx",
+        "@maven//:com_google_firebase_firebase_crashlytics",
+    ],
+)
+
+_DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]

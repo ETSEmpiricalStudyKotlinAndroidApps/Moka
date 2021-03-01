@@ -16,8 +16,6 @@ fragment Milestone on Milestone {
     # Identifies the due date of the milestone.
     dueOn
     id
-    # Just for debugging on review-lab
-    issuePrioritiesDebug
     # Identifies the number of the milestone.
     number
     # The HTTP path for this milestone

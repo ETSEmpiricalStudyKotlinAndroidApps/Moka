@@ -5,7 +5,7 @@ import com.squareup.moshi.*
 import com.squareup.moshi.adapters.EnumJsonAdapter
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.type.ProjectState
-import io.github.tonnyl.moka.ui.explore.filters.LocalLanguage
+import io.github.tonnyl.moka.ui.explore.LocalLanguage
 import kotlinx.datetime.Instant
 
 object MoshiInstance {

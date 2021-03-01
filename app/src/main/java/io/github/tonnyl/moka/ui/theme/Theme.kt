@@ -1,48 +1,97 @@
 package io.github.tonnyl.moka.ui.theme
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.zIndex
+import androidx.core.view.WindowInsetsControllerCompat
+import dev.chrisbanes.accompanist.insets.*
+import io.github.tonnyl.moka.MokaApp
+import io.github.tonnyl.moka.proto.Settings
+import io.github.tonnyl.moka.serializers.store.SettingSerializer
 
-private val LightThemeColors = lightColors(
-    primary = Color(0xff6200ee),
-    primaryVariant = Color(0xff3700b3),
-    onPrimary = Color(0xffffffff),
-    secondary = Color(0xff03dac6),
-    secondaryVariant = Color(0xff018786),
-    onSecondary = Color(0xff000000),
-    background = Color(0xffffffff),
-    onBackground = Color(0xff000000),
-    surface = Color(0xffffffff),
-    onSurface = Color(0xff000000),
-    error = Color(0xffc51162),
-    onError = Color(0xffffffff)
-)
+val LocalWindowInsetsController = staticCompositionLocalOf<WindowInsetsControllerCompat?> { null }
 
-private val DarkThemeColors = darkColors(
-    primary = Color(0xfffce548),
-    primaryVariant = Color(0xffc6b300),
-    onPrimary = Color(0xff000000),
-    secondary = Color(0xff407bfa),
-    onSecondary = Color(0xff000000),
-    background = Color(0xff000000),
-    onBackground = Color(0xffffffff),
-    surface = Color(0xff000000),
-    onSurface = Color(0xffffffff),
-    error = Color(0xffcf6679),
-    onError = Color(0xff000000)
-)
-
+@ExperimentalAnimatedInsets
 @Composable
-fun MokaTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
+fun MokaTheme(content: @Composable () -> Unit) {
+    val settings by (LocalContext.current.applicationContext as MokaApp).settingsDataStore
+        .data
+        .collectAsState(initial = SettingSerializer.defaultValue)
     MaterialTheme(
-        colors = if (darkTheme) DarkThemeColors else LightThemeColors,
-        content = content
+        shapes = MokaShapes,
+        colors = when (settings.theme) {
+            Settings.Theme.LIGHT -> {
+                LightThemeColors
+            }
+            Settings.Theme.DARK -> {
+                DarkThemeColors
+            }
+            Settings.Theme.AUTO,
+            Settings.Theme.UNRECOGNIZED,
+            null -> {
+                if (isSystemInDarkTheme()) {
+                    DarkThemeColors
+                } else {
+                    LightThemeColors
+                }
+            }
+        },
+        content = {
+            val windowInsetsController = LocalWindowInsetsController.current
+            DisposableEffect(settings.theme) {
+                windowInsetsController?.isAppearanceLightStatusBars =
+                    settings.theme != Settings.Theme.DARK
+                windowInsetsController?.isAppearanceLightNavigationBars =
+                    settings.theme != Settings.Theme.DARK
+                onDispose { }
+            }
+
+            ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
+                val navScrimColor = MaterialTheme.colors.background.copy(alpha = .3f)
+                val statusScrimColor = MaterialTheme.colors.background.copy(alpha = .9f)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Spacer(
+                        modifier = Modifier
+                            .statusBarsHeight()
+                            .navigationBarsPadding(bottom = false)
+                            .zIndex(zIndex = 999F)
+                            .fillMaxWidth()
+                            .background(color = statusScrimColor)
+                            .align(alignment = Alignment.TopCenter)
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .navigationBarsWidth(side = HorizontalSide.Left)
+                            .zIndex(zIndex = 999F)
+                            .fillMaxHeight()
+                            .background(color = navScrimColor)
+                            .align(alignment = Alignment.CenterStart)
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .navigationBarsWidth(side = HorizontalSide.Right)
+                            .zIndex(zIndex = 999F)
+                            .fillMaxHeight()
+                            .background(color = navScrimColor)
+                            .align(alignment = Alignment.CenterEnd)
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .navigationBarsHeight()
+                            .zIndex(zIndex = 999F)
+                            .fillMaxWidth()
+                            .background(color = navScrimColor)
+                            .align(alignment = Alignment.BottomCenter)
+                    )
+                    content()
+                }
+            }
+        }
     )
 }

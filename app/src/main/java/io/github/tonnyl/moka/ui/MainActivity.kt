@@ -1,64 +1,61 @@
 package io.github.tonnyl.moka.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.view.View
+import android.view.WindowManager
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Surface
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.paging.ExperimentalPagingApi
+import dev.chrisbanes.accompanist.insets.ExperimentalAnimatedInsets
 import io.github.tonnyl.moka.MokaApp
-import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.databinding.ActivityMainBinding
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.RetrofitClient
-import io.github.tonnyl.moka.ui.UserEvent.*
 import io.github.tonnyl.moka.ui.auth.AuthActivity
-import io.github.tonnyl.moka.ui.reaction.AddReactionDialogFragmentArgs
-import io.github.tonnyl.moka.util.HeightTopWindowInsetsListener
-import io.github.tonnyl.moka.util.NoopWindowInsetsListener
-import io.github.tonnyl.moka.util.updateForTheme
+import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
+import io.github.tonnyl.moka.ui.theme.MokaTheme
 
-class MainActivity : AppCompatActivity(), NavigationHost {
+class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel> {
         MainViewModelFactory(applicationContext as MokaApp)
     }
 
-    private lateinit var binding: ActivityMainBinding
-
-    private lateinit var navController: NavController
-
+    @ExperimentalAnimatedInsets
+    @ExperimentalComposeUiApi
+    @ExperimentalFoundationApi
+    @ExperimentalMaterialApi
+    @ExperimentalPagingApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        updateForTheme()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        with(window) {
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            navigationBarColor = Color.TRANSPARENT
+            statusBarColor = Color.TRANSPARENT
+        }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-
-        setContentView(binding.root)
-
-        binding.contentContainer.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        binding.contentContainer.setOnApplyWindowInsetsListener(NoopWindowInsetsListener)
-
-        binding.statusBarScrim.setOnApplyWindowInsetsListener(HeightTopWindowInsetsListener)
-
-        // add a default argument to nav controller.
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.main_fragment_nav_host) as NavHostFragment
-        navController = navHostFragment.navController
-        binding.navView.setupWithNavController(navController)
-
-        AppBarConfiguration(
-            TOP_LEVEL_DESTINATIONS,
-            binding.drawerLayout,
-            fallbackOnNavigateUpListener = {
-                true
-            })
+        setContent {
+            val windowInsetsControllerCompat =
+                remember { WindowInsetsControllerCompat(window, window.decorView) }
+            CompositionLocalProvider(LocalWindowInsetsController provides windowInsetsControllerCompat) {
+                MokaTheme {
+                    Surface {
+                        MainScreen(mainViewModel = viewModel)
+                    }
+                }
+            }
+        }
 
         (application as MokaApp).loginAccounts.observe(this) {
             if (it.firstOrNull() == null) {
@@ -76,51 +73,6 @@ class MainActivity : AppCompatActivity(), NavigationHost {
         viewModel.currentUser.observe(this) {
             viewModel.getUserProfile()
         }
-
-        viewModel.event.observe(this, EventObserver {
-            when (it) {
-                is ShowSearch -> {
-                    navController.navigate(R.id.search_fragment)
-                }
-                is ShowAccounts -> {
-                    navController.navigate(R.id.account_dialog)
-                }
-                is ShowReactionDialog -> {
-                    navController.navigate(
-                        R.id.add_reaction_dialog,
-                        AddReactionDialogFragmentArgs(
-                            it.userHasReactedContents,
-                            it.reactableId
-                        ).toBundle()
-                    )
-                }
-                is DismissReactionDialog -> {
-                    navController.navigateUp()
-                }
-            }
-        })
-    }
-
-    override fun onSupportNavigateUp(): Boolean = navController.navigateUp()
-
-    companion object {
-
-        private val TOP_LEVEL_DESTINATIONS = setOf(
-            R.id.nav_timeline,
-            R.id.nav_explore,
-            R.id.nav_inbox,
-            R.id.nav_projects,
-            R.id.nav_settings,
-            R.id.nav_about,
-            R.id.nav_help_faq,
-            R.id.nav_feedback
-        )
-
-    }
-
-    override fun registerToolbarWithNavigation(toolbar: Toolbar) {
-        val appBarConfiguration = AppBarConfiguration(TOP_LEVEL_DESTINATIONS, binding.drawerLayout)
-        toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
 }

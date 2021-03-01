@@ -1,35 +1,28 @@
 package io.github.tonnyl.moka.ui.search.repositories
 
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
-import androidx.paging.PagingSource.LoadParams.Refresh
 import androidx.paging.PagingSource.LoadResult.Error
 import androidx.paging.PagingSource.LoadResult.Page
+import androidx.paging.PagingState
+import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.github.tonnyl.moka.data.item.SearchedRepositoryItem
-import io.github.tonnyl.moka.data.item.toNonNullSearchedRepositoryItem
-import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.data.toNonNullRepositoryItem
 import io.github.tonnyl.moka.network.queries.querySearchRepositories
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class SearchedRepositoriesPagingSource(
-    val query: String,
-    val initialLoadStatus: MutableLiveData<Resource<List<SearchedRepositoryItem>>>
-) : PagingSource<String, SearchedRepositoryItem>() {
+class SearchedRepositoriesItemDataSource(
+    private val query: String
+) : PagingSource<String, RepositoryItem>() {
 
-    override suspend fun load(params: LoadParams<String>): LoadResult<String, SearchedRepositoryItem> {
-        val list = mutableListOf<SearchedRepositoryItem>()
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, RepositoryItem> {
+        val list = mutableListOf<RepositoryItem>()
 
         return withContext(Dispatchers.IO) {
             try {
-                if (params is Refresh) {
-                    initialLoadStatus.postValue(Resource.loading(null))
-                }
-
                 val search = querySearchRepositories(
                     queryWords = query,
                     first = params.loadSize,
@@ -39,7 +32,7 @@ class SearchedRepositoriesPagingSource(
 
                 search?.nodes?.forEach { node ->
                     node?.let {
-                        convertRawDataToSearchedRepositoryItem(node)?.let {
+                        convertRawDataRepositoryItem(node)?.let {
                             list.add(it)
                         }
                     }
@@ -50,27 +43,23 @@ class SearchedRepositoriesPagingSource(
                     data = list,
                     prevKey = pageInfo.checkedStartCursor,
                     nextKey = pageInfo.checkedEndCursor
-                ).also {
-                    if (params is Refresh) {
-                        initialLoadStatus.postValue(Resource.success(list))
-                    }
-                }
+                )
             } catch (e: Exception) {
                 Timber.e(e)
 
-                if (params is Refresh) {
-                    initialLoadStatus.postValue(Resource.error(e.message, null))
-                }
-
-                Error<String, SearchedRepositoryItem>(e)
+                Error(e)
             }
         }
     }
 
-    private fun convertRawDataToSearchedRepositoryItem(
+    override fun getRefreshKey(state: PagingState<String, RepositoryItem>): String? {
+        return null
+    }
+
+    private fun convertRawDataRepositoryItem(
         node: SearchRepositoriesQuery.Node
-    ): SearchedRepositoryItem? {
-        return node.fragments.repositoryListItemFragment?.toNonNullSearchedRepositoryItem()
+    ): RepositoryItem? {
+        return node.fragments.repositoryListItemFragment?.toNonNullRepositoryItem()
     }
 
 }

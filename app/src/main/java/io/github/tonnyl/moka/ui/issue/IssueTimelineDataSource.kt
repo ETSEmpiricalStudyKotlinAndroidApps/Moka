@@ -2,12 +2,12 @@ package io.github.tonnyl.moka.ui.issue
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import io.github.tonnyl.moka.data.Issue
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.data.toNonNullIssue
-import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.queries.queryIssue
 import io.github.tonnyl.moka.network.queries.queryIssueTimelineItems
 import io.github.tonnyl.moka.queries.IssueQuery
@@ -20,8 +20,7 @@ class IssueTimelineDataSource(
     private val owner: String,
     private val name: String,
     private val number: Int,
-    private val issueData: MutableLiveData<Issue>,
-    private val initialLoadStatus: MutableLiveData<Resource<List<IssueTimelineItem>>>
+    private val issueData: MutableLiveData<Issue>
 ) : PagingSource<String, IssueTimelineItem>() {
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, IssueTimelineItem> {
@@ -29,8 +28,6 @@ class IssueTimelineDataSource(
         return withContext(Dispatchers.IO) {
             try {
                 if (params is LoadParams.Refresh) {
-                    initialLoadStatus.postValue(Resource.loading(null))
-
                     val issue = queryIssue(
                         owner = owner,
                         name = name,
@@ -58,9 +55,7 @@ class IssueTimelineDataSource(
                         data = list,
                         prevKey = pageInfo.checkedStartCursor,
                         nextKey = pageInfo.checkedEndCursor
-                    ).also {
-                        initialLoadStatus.postValue(Resource.success(list))
-                    }
+                    )
                 } else {
                     val timeline = queryIssueTimelineItems(
                         owner = owner,
@@ -90,11 +85,7 @@ class IssueTimelineDataSource(
             } catch (e: Exception) {
                 Timber.e(e)
 
-                if (params is LoadParams.Refresh) {
-                    initialLoadStatus.postValue(Resource.error(e.message, null))
-                }
-
-                LoadResult.Error<String, IssueTimelineItem>(e)
+                LoadResult.Error(e)
             }
         }
     }
@@ -277,6 +268,10 @@ class IssueTimelineDataSource(
                 null
             }
         }
+    }
+
+    override fun getRefreshKey(state: PagingState<String, IssueTimelineItem>): String? {
+        return null
     }
 
 }

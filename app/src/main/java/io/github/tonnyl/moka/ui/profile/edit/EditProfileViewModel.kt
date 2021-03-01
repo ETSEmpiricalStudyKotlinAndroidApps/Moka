@@ -13,7 +13,12 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class EditProfileViewModel(
-    val args: EditProfileFragmentArgs
+    private val initialName: String?,
+    private val initialBio: String?,
+    private val initialUrl: String?,
+    private val initialCompany: String?,
+    private val initialLocation: String?,
+    private val initialTwitter: String?
 ) : ViewModel() {
 
     private val _loadingStatus = MutableLiveData<Resource<Unit>>()
@@ -24,27 +29,27 @@ class EditProfileViewModel(
         RetrofitClient.createService(UserService::class.java)
     }
 
-    private val _name = MutableLiveData(args.name)
+    private val _name = MutableLiveData(initialName)
     val name: LiveData<String?>
         get() = _name
 
-    private val _bio = MutableLiveData(args.bio)
+    private val _bio = MutableLiveData(initialBio)
     val bio: LiveData<String?>
         get() = _bio
 
-    private val _url = MutableLiveData(args.url)
+    private val _url = MutableLiveData(initialUrl)
     val url: LiveData<String?>
         get() = _url
 
-    private val _company = MutableLiveData(args.company)
+    private val _company = MutableLiveData(initialCompany)
     val company: LiveData<String?>
         get() = _company
 
-    private val _location = MutableLiveData(args.location)
+    private val _location = MutableLiveData(initialLocation)
     val location: LiveData<String?>
         get() = _location
 
-    private val _twitterUsername = MutableLiveData(args.twitter)
+    private val _twitterUsername = MutableLiveData(initialTwitter)
     val twitterUsername: LiveData<String?>
         get() = _twitterUsername
 

@@ -4,7 +4,7 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Application
 import androidx.datastore.core.DataStore
-import androidx.datastore.createDataStore
+import androidx.datastore.dataStore
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingConfig
 import androidx.work.*
@@ -37,27 +37,21 @@ class MokaApp : Application(), ImageLoaderFactory {
 
     val loginAccounts = MutableLiveData<List<Triple<Account, String, AuthenticatedUser>>>()
 
-    val settingsDataStore: DataStore<Settings> by lazy {
-        createDataStore(
-            fileName = "global_settings.pb",
-            serializer = SettingSerializer
-        )
-    }
+    val settingsDataStore: DataStore<Settings> by dataStore(
+        fileName = "global_settings.pb",
+        serializer = SettingSerializer
+    )
 
-    val accountsDataStore: DataStore<SignedInAccounts> by lazy {
-        createDataStore(
-            fileName = "accounts.pb",
-            serializer = AccountSerializer
-        )
-    }
+    val accountsDataStore: DataStore<SignedInAccounts> by dataStore(
+        fileName = "accounts.pb",
+        serializer = AccountSerializer
+    )
 
     // todo make it user-related
-    val recentEmojis: DataStore<RecentEmojis> by lazy {
-        createDataStore(
-            fileName = "recent_emojis.pb",
-            serializer = EmojiSerializer
-        )
-    }
+    val recentEmojis: DataStore<RecentEmojis> by dataStore(
+        fileName = "recent_emojis.pb",
+        serializer = EmojiSerializer
+    )
 
     companion object {
         const val PER_PAGE = 16

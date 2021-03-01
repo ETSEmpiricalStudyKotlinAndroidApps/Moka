@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.timeline
 
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -11,7 +10,6 @@ import androidx.room.withTransaction
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.data.RemoteKeys
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.EventsService
 import io.github.tonnyl.moka.util.PageLinks
 import kotlinx.coroutines.Dispatchers
@@ -21,8 +19,7 @@ import kotlinx.coroutines.withContext
 class EventRemoteMediator(
     private var login: String,
     private val eventsService: EventsService,
-    private val database: MokaDataBase,
-    private val initialLoadStatus: MutableLiveData<Resource<Boolean?>>
+    private val database: MokaDataBase
 ) : RemoteMediator<Int, Event>() {
 
     override suspend fun load(
@@ -33,8 +30,6 @@ class EventRemoteMediator(
             try {
                 when (loadType) {
                     LoadType.REFRESH -> {
-                        initialLoadStatus.postValue(Resource.loading(null))
-
                         val response = eventsService.listPublicEventThatAUserHasReceived(
                             login,
                             page = 1,
@@ -56,11 +51,7 @@ class EventRemoteMediator(
                             database.remoteKeysDao().insertAll(keys)
                         }
 
-                        Success(endOfPaginationReached = pl.next.isNullOrEmpty()).also {
-                            initialLoadStatus.postValue(
-                                Resource.success(database.eventDao().eventsCount() > 0)
-                            )
-                        }
+                        Success(endOfPaginationReached = pl.next.isNullOrEmpty())
                     }
                     LoadType.PREPEND -> {
                         val firstItemId = state.firstItemOrNull()?.id
@@ -122,16 +113,7 @@ class EventRemoteMediator(
                     }
                 }
             } catch (e: Exception) {
-                Error(e).also {
-                    if (loadType == LoadType.REFRESH) {
-                        initialLoadStatus.postValue(
-                            Resource.error(
-                                e.message,
-                                database.eventDao().eventsCount() > 0
-                            )
-                        )
-                    }
-                }
+                Error(e)
             }
         }
     }

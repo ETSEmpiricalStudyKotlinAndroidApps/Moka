@@ -4,12 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 class ViewModelFactory(
-    private val args: ProfileFragmentArgs
+    private val login: String,
+    private val profileType: ProfileType
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ProfileViewModel(args) as T
+        return ProfileViewModel(
+            login = login,
+            profileType = profileType
+        ) as T
     }
 
 }

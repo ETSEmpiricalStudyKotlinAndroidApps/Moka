@@ -3,10 +3,17 @@
 
     <string name="no_description_provided">No description provided.</string>
 
+    <string name="auth_logo_image_content_description">Moka logo</string>
     <string name="auth_get_started">GET STARTED</string>
 
     <string name="common_retry">Retry</string>
     <string name="common_error_requesting_data">Error while requesting data.</string>
+    <string name="empty_screen_icon_content_description">No data</string>
+    <string name="users_avatar_content_description">User\'s avatar image</string>
+    <string name="repository_owners_avatar_image_content_description">Repository owner\'s avatar image</string>
+    <string name="issue_pr_timeline_event_image_content_description">Event type image</string>
+    <string name="more_actions_image_content_description">More actions image</string>
+    <string name="add_reaction_image_content_description">Add reaction image</string>
 
     <string name="see_all">See all</string>
 
@@ -35,8 +42,6 @@
     <string name="navigation_menu_about" translation_description="The about menu item title of navigation drawer.">About</string>
     <string name="navigation_menu_faq_help">FAQ &amp; Help</string>
     <string name="navigation_menu_feedback">Feedback</string>
-
-    <string name="main_menu_search" translation_description="The search menu item title of main page.">Search</string>
 
     <string name="repository_name_unknown" translation_description="If it is unable to get a repository's name, then display this value.">Unknown</string>
     <string name="programming_language_unknown" translation_description="If a repository does not have a programming language, then display this value.">Unknown</string>
@@ -195,6 +200,7 @@
     <string name="event_project_deleted">deleted</string>
 
     <string name="navigate_up" translation-description="Arrow at the top left of the screen for navigation">Navigate up</string>
+    <string name="done_image_description">Done</string>
 
     <string name="users_following_title" translation-description="Following list title of users page, for example: Tonny's following.">%1$s\'s following</string>
     <string name="users_followers_title" translation-description="Followers list title of users page, for example: Tonny's followers.">%1$s\'s followers</string>
@@ -203,6 +209,12 @@
     <string name="repositories_stars" translation-description="The repositories list title when enter someone's starred repositories, for example: Tonny's stars">%1$s\'s stars</string>
 
     <string name="repository" translation-description="repository">Repository</string>
+    <string name="repository_view_code_image_content_description">View code</string>
+    <string name="repository_watch_image_content_description">Watch repository</string>
+    <string name="repository_fork_image_content_description">Fork repository</string>
+    <string name="repository_star_image_content_description">Star repository</string>
+    <string name="repository_unstar_image_content_description">Unstar repository</string>
+    <string name="repository_language_color_content_description">Language color</string>
     <string name="repository_watchers">Watchers</string>
     <string name="repository_stargazers">Stargazers</string>
     <string name="repository_forks">Forks</string>
@@ -263,13 +275,19 @@
     <string name="issue_pr_status_open">open</string>
     <string name="issue_pr_status_closed">closed</string>
     <string name="issue_pr_status_merged">merged</string>
+    <string name="issue_status_closed_image_content_description">Issue closed</string>
+    <string name="issue_status_open_image_content_description">Issue open</string>
+    <string name="pr_status_closed_image_content_description">Pull request closed</string>
+    <string name="pr_status_open_image_content_description">Pull request open</string>
+    <string name="pr_status_merged_image_content_description">Pull request merged</string>
 
     <string name="issue">Issue</string>
+    <string name="issue_timeline_issue_pr_number_with_blank_prefix">&#160;#%1$d</string>
     <string name="issue_timeline_added_to_project">added this to project</string>
     <string name="issue_timeline_assigned_event_self_assigned">self-assigned this</string>
-    <string name="issue_timeline_assigned_event_assigned_someone">assigned <![CDATA[<b>%1$s</b>]]></string> <!--assigned username-->
+    <string name="issue_timeline_assigned_event_assigned_someone">assigned&#160;</string> <!--assigned username-->
     <string name="issue_timeline_unassigned_event_self_unassigned">removed their assignment</string>
-    <string name="issue_timeline_unassigned_event_unassigned_someone">unassigned <![CDATA[<b>%1$s</b>]]></string> <!--unassigned username-->
+    <string name="issue_timeline_unassigned_event_unassigned_someone">unassigned&#160;</string> <!--unassigned username-->
     <string name="issue_timeline_closed_event_closed">closed this</string>
     <string name="issue_timeline_converted_note_to_issue">converted note to issue</string>
     <string name="issue_timeline_reopened_event_reopened">reopened this</string>
@@ -278,14 +296,19 @@
     <string name="issue_timeline_pinned">pinned this</string>
     <string name="issue_timeline_unpinned">unpinned this</string>
     <string name="issue_timeline_removed_from_project">removed this from project</string>
+    <string name="issue_timeline_locked_event_locked_as_part_1">locked as&#160;</string>
+    <string name="issue_timeline_locked_event_locked_as_part_2">&#160;and limited conversation to collaborators</string>
     <string name="issue_timeline_locked_event_locked_as">locked as <![CDATA[<b>%1$s</b>]]> and limited conversation to collaborators</string>
     <string name="issue_timeline_unlocked_event_unlocked">unlocked this conversation</string>
     <string name="issue_timeline_renamed_title_event_change_title">changed the title from <![CDATA[<b>%1$s</b>]]> to <![CDATA[<b>%2$s</b>]]></string>
-    <string name="issue_timeline_milestoned_event_milestoned">added this to the <![CDATA[<b>%1$s</b>]]> milestone</string>
-    <string name="issue_timeline_demilestoned_event_demilestoned">removed this from the <![CDATA[<b>%1$s</b>]]> milestone</string>
+    <string name="issue_timeline_renamed_title_event_change_title_part_1">changed the title from&#160;</string>
+    <string name="issue_timeline_renamed_title_event_change_title_part_2">&#160;to&#160;</string>
+    <string name="issue_timeline_milestone_suffix">&#160;milestone</string>
+    <string name="issue_timeline_milestoned_event_milestoned">added this to the&#160;</string>
+    <string name="issue_timeline_demilestoned_event_demilestoned">removed this from the&#160;</string>
     <string name="issue_timeline_transferred_event_transferred">transferred this issue from %1$s</string> <!-- transferred this issue from username/repository_name -->
-    <string name="issue_timeline_referenced_event_referenced">referenced this issue \n <![CDATA[<b>%1$s</b>]]> #%2$d</string> <!-- referenced this issue \n issue_or_pr_name #issue_or_pr_number -->
-    <string name="issue_timeline_cross_referenced_event_cross_referenced">cross referenced this issue \n <![CDATA[<b>%1$s</b>]]> #%2$d</string> <!-- referenced this issue \n issue_or_pr_name #issue_or_pr_number -->
+    <string name="issue_timeline_referenced_event_referenced">referenced this issue \n</string> <!-- referenced this issue \n issue_or_pr_name #issue_or_pr_number -->
+    <string name="issue_timeline_cross_referenced_event_cross_referenced">cross referenced this issue \n</string> <!-- referenced this issue \n issue_or_pr_name #issue_or_pr_number -->
     <string name="issue_timeline_labeled_event_labeled">added the&#160;</string>
     <string name="issue_timeline_unlabeled_event_unlabeled">removed the&#160;</string>
     <string name="issue_timeline_label">&#160;label</string>
@@ -295,6 +318,7 @@
     <string name="issue_lock_reason_resolved">resolved</string>
     <string name="issue_lock_reason_spam">spam</string>
     <string name="issue_lock_reason_too_heated">too heated</string>
+    <string name="issue_lock_reason_unknown">unknown</string>
 
     <string name="author_association_collaborator">Collaborator</string>
     <string name="author_association_contributor">Contributor</string>
@@ -303,6 +327,7 @@
     <string name="author_association_member">Member</string>
     <string name="author_association_owner">Owner</string>
 
+    <string name="pull_request_unknown">unknown</string>
     <string name="pull_request">Pull Request</string>
     <string name="pull_request_base_ref_changed">changed branch</string>
     <string name="pull_request_marked_as_ready_for_review">marked this pull request as ready for review</string>
@@ -311,14 +336,18 @@
     <string name="pull_request_merged_commit">merged commit %1$s into %2$s</string> <!-- merged commit 5288812 into TonnyL:master -->
     <string name="pull_request_deleted_branch">deleted the %1$s branch</string>
     <string name="pull_request_self_requested_a_review">self-requested a review</string>
-    <string name="pull_request_requested_review_from">requested review from <![CDATA[<b>%1$s</b>]]></string>
+    <string name="pull_request_requested_review_from">requested review from&#160;</string>
+    <string name="pull_request_dismiss_someones_review_part_1">dismissed&#160;</string>
+    <string name="pull_request_dismiss_someones_review_part_2">’s stale review</string>
     <string name="pull_request_dismiss_someones_review">dismissed <![CDATA[<b>%1$s</b>]]>’s stale review</string>
-    <string name="pull_request_dismiss_someones_review_and_left_a_comment">dismissed <![CDATA[<b>%1$s</b>]]>’s stale review and left a comment: <![CDATA[<br /><b>%2$s</b>]]></string>
+    <string name="pull_request_dismiss_someones_review_and_left_a_comment">&#160;and left a comment:&#160;</string>
     <string name="pull_request_review_approved_changes">approved these changes</string>
     <string name="pull_request_reviewed">reviewed</string>
-    <string name="pull_request_and_left_a_comment">&#160;and left a comment: <![CDATA[<br /><b>%1$s</b>]]></string>
+    <string name="pull_request_and_left_a_comment">&#160;and left a comment:&#160;</string>
     <string name="pull_request_review_request_changes">request changes</string>
     <string name="pull_request_removed_someones_review_request">removed <![CDATA[<b>%1$s</b>]]>’s review request</string>
+    <string name="pull_request_removed_someones_review_request_part_1">removed&#160;</string>
+    <string name="pull_request_removed_someones_review_request_part_2">’s review request</string>
     <string name="pull_request_restore_branch">restored the %1$s branch</string>
     <string name="pull_request_deployed_to_branch">deployed to %1$s</string>
     <string name="pull_request_changed_deploy_environment">changed the deploy environment to %1$s</string>
@@ -350,6 +379,7 @@
     <string name="notification_reason_team_mention">Team Mention</string>
     <string name="notification_reason_other">Other</string>
     <string name="notification_caption_notification_type">%1$s - &#160;</string>
+    <string name="notification_caption_formatted">%1$s - %2$s</string>
     <string name="notification_mark_as_read">Mark as read</string>
     <string name="notification_unsubscribe">Unsubscribe</string>
     <string name="notification_content_empty_title">You haven\'t received any notifications yet</string>
@@ -363,7 +393,7 @@
     <string name="explore_trending_repositories">Repositories</string>
     <string name="explore_trending_developers">Developers</string>
     <string name="explore_trending_developer_name">%1$s(%2$s)</string>
-    <string name="explore_trending_developer_repository_name_description">%1$s - %2$s</string>
+    <string name="explore_trending_developer_repository_description">&#160;- %1$s</string>
     <string name="explore_trending_filter_time_span">Time span</string>
     <string name="explore_trending_filter_time_span_daily">Daily</string>
     <string name="explore_trending_filter_time_span_weekly">Weekly</string>
@@ -437,12 +467,16 @@
     <string name="users_content_empty_title">No users found</string>
     <string name="users_content_empty_action">Back to profile</string>
 
+    <string name="accounts_avatar_of_account" translation_description="Content description of signed-in account's avatar image.">Signed-in account\'s avatar image</string>
     <string name="accounts_view_profile">View profile</string>
     <string name="accounts_add_another_account">Add another account</string>
     <string name="accounts_manage_your_github_account">Manage your Github account</string>
 
+    <string name="emoji_image_placeholder_content_description">Emoji image placeholder</string>
+    <string name="emoji_image_content_description">Emoji image</string>
     <string name="search_emoji">Search emoji…</string>
 
+    <string name="emoji_status_content_description">Emoji status</string>
     <string name="edit_status">Edit Status</string>
     <string name="edit_status_hint_whats_happening">What\'s happening?</string>
     <string name="edit_status_set_status">Set status</string>
@@ -465,10 +499,23 @@
     <string name="edit_status_suggestion_focusing_emoji">🎯</string>
     <string name="edit_status_suggestion_focusing_message">Focusing</string>
 
+    <string name="edit_status_clear_status_image_content_description">When to clear status</string>
     <string name="edit_status_clear_status_never">Never</string>
     <string name="edit_status_clear_status_in_30_minutes">In 30 minutes</string>
     <string name="edit_status_clear_status_in_1_hour">In 1 hour</string>
     <string name="edit_status_clear_status_in_2_hours">In 2 hours</string>
     <string name="edit_status_clear_status_today">Today</string>
+
+    <string name="emoji_category_recent_used_content_description">Recently Used</string>
+    <string name="emoji_category_smiley_and_emotion_content_description">Smileys &amp; Emotion</string>
+    <string name="emoji_category_people_and_body_content_description">People &amp; Body</string>
+    <string name="emoji_category_animals_and_nature_content_description">Animals &amp; Nature</string>
+    <string name="emoji_category_food_and_drink_content_description">Food &amp; Drink</string>
+    <string name="emoji_category_travel_and_places_content_description">Travel &amp; Places</string>
+    <string name="emoji_category_activities_content_description">Activities</string>
+    <string name="emoji_category_objects_content_description">Objects</string>
+    <string name="emoji_category_symbols_content_description">Symbols</string>
+    <string name="emoji_category_flags_content_description">Flags</string>
+    <string name="emoji_category_github_custom_emoji_content_description">GitHub Custom Emoji</string>
 
 </resources>

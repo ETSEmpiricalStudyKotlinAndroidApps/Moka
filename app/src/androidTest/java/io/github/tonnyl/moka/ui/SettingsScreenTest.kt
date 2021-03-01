@@ -1,19 +1,20 @@
 package io.github.tonnyl.moka.ui
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.runtime.Providers
+import androidx.activity.ComponentActivity
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.WindowInsets
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.proto.Settings
+import io.github.tonnyl.moka.serializers.store.SettingSerializer
 import io.github.tonnyl.moka.ui.settings.*
 import io.github.tonnyl.moka.ui.theme.MokaTheme
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,8 +24,9 @@ class SettingsScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    private lateinit var activity: AppCompatActivity
+    private lateinit var activity: ComponentActivity
 
+    @ExperimentalMaterialApi
     @Before
     fun setUp() {
         composeTestRule.activityRule.scenario.onActivity { newActivity ->
@@ -32,19 +34,11 @@ class SettingsScreenTest {
 
             val windowInsets = WindowInsets()
             composeTestRule.setContent {
-                Providers(AmbientWindowInsets provides windowInsets) {
+                CompositionLocalProvider(LocalWindowInsets provides windowInsets) {
                     MokaTheme {
                         SettingScreenContent(
-                            scrollState = rememberScrollState(),
-                            initialParams = InitialParams(
-                                theme = Settings.Theme.AUTO,
-                                enableNotifications = true,
-                                syncInterval = Settings.NotificationSyncInterval.ONE_QUARTER,
-                                dnd = true,
-                                autoSave = true,
-                                doNotKeepSearchHistory = false,
-                                keepData = Settings.KeepData.FOREVER
-                            ),
+                            topAppBarSize = 0,
+                            settingsFlow = flowOf(SettingSerializer.defaultValue),
                             onSettingItemClick = OnSettingItemClick(
                                 onThemeClick = {},
                                 onEnableNotificationClick = {},

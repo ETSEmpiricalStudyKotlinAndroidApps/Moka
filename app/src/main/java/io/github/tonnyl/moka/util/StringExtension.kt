@@ -1,9 +1,7 @@
 package io.github.tonnyl.moka.util
 
 import android.graphics.Color
-import android.text.Spanned
 import androidx.annotation.ColorInt
-import androidx.core.text.HtmlCompat
 import timber.log.Timber
 
 fun String?.toShortOid(): String = if (this == null || this.length < 7) "" else this.substring(0, 7)
@@ -34,8 +32,4 @@ fun String.toColor(): Int? {
     }
 
     return null
-}
-
-fun String.toHtmlInLegacyMode(): Spanned {
-    return HtmlCompat.fromHtml(this, HtmlCompat.FROM_HTML_MODE_LEGACY)
 }

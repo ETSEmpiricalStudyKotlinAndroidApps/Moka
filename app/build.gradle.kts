@@ -11,7 +11,6 @@ plugins {
     id("kotlin-parcelize")
     kotlin("kapt")
     id("com.google.protobuf").version("0.8.14")
-    id("androidx.navigation.safeargs.kotlin")
     id("com.google.firebase.crashlytics")
 }
 
@@ -88,12 +87,10 @@ android {
     }
 
     buildFeatures {
-        dataBinding = true
         compose = true
     }
 
     composeOptions {
-        kotlinCompilerVersion = Versions.composeKotlinCompilerVersion
         kotlinCompilerExtensionVersion = Versions.ui
     }
 
@@ -154,24 +151,14 @@ dependencies {
     implementation(Deps.Kotlin.dateTime)
 
     // AndroidX
-    implementation(Deps.AndroidX.constraintLayout)
-    implementation(Deps.AndroidX.coordinatorLayout)
-    implementation(Deps.AndroidX.swipeRefreshLayout)
     implementation(Deps.AndroidX.browser)
-    implementation(Deps.AndroidX.appcompat)
-    implementation(Deps.AndroidX.fragment)
-    implementation(Deps.AndroidX.viewpager2)
-    implementation(Deps.AndroidX.drawerLayout)
-    implementation(Deps.AndroidX.recyclerView)
-    implementation(Deps.AndroidX.recyclerViewSelection)
     implementation(Deps.AndroidX.dataStore)
+    implementation(Deps.AndroidX.activityCompose)
     implementation(Deps.AndroidX.Lifecycle.lifecycleExtensions)
     implementation(Deps.AndroidX.Lifecycle.liveDataKtx)
-    implementation(Deps.AndroidX.Navigation.navigationFragmentKtx)
-    implementation(Deps.AndroidX.Navigation.navigationUIKtx)
+    implementation(Deps.AndroidX.Lifecycle.viewModelCompose)
     implementation(Deps.AndroidX.Navigation.compose)
     implementation(Deps.AndroidX.WorkManager.runtime)
-    implementation(Deps.AndroidX.Paging.common)
     implementation(Deps.AndroidX.Paging.runtime)
     implementation(Deps.AndroidX.Paging.compose)
     implementation(Deps.AndroidX.Room.common)
@@ -188,10 +175,9 @@ dependencies {
     implementation(Deps.AndroidX.UI.layout)
     implementation(Deps.AndroidX.UI.liveData)
     implementation(Deps.AndroidX.UI.tooling)
+    implementation(Deps.AndroidX.UI.constraintLayout)
 
     // Google
-    implementation(Deps.Google.material)
-    implementation(Deps.Google.composeThemeAdapter)
     implementation(Deps.Google.firebaseAnalyticsKtx)
     implementation(Deps.Google.firebaseCrashlytics)
     implementation(Deps.Google.protobufJavaLite)
@@ -218,9 +204,6 @@ dependencies {
     implementation(Deps.CommonMark.headingAnchor)
     implementation(Deps.CommonMark.yamlFrontMatter)
 
-    implementation(Deps.Insetter.dbx)
-    implementation(Deps.Insetter.ktx)
-
     implementation(Deps.Moshi.adapters)
     kapt(Deps.Moshi.kotlinCodegen)
 
@@ -246,7 +229,6 @@ dependencies {
     androidTestImplementation(Deps.AndroidTest.mockito)
     androidTestImplementation(Deps.AndroidTest.work)
     androidTestImplementation(Deps.AndroidTest.room)
-    androidTestImplementation(Deps.AndroidTest.fragment)
     androidTestImplementation(Deps.AndroidTest.uiTest)
     androidTestImplementation(Deps.AndroidTest.uiTestJunit4)
 }

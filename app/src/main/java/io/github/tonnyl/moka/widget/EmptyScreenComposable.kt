@@ -6,18 +6,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
+import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 
 @Composable
 fun EmptyScreenContent(
@@ -27,42 +27,43 @@ fun EmptyScreenContent(
     @StringRes action: Int
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
-            .padding(dimensionResource(id = R.dimen.fragment_content_padding))
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = ContentPaddingLargeSize)
     ) {
-        Spacer(modifier = Modifier.weight(1f))
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        Spacer(modifier = Modifier.weight(weight = 1f))
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Image(
-                imageVector = vectorResource(id = icon),
+                contentDescription = stringResource(id = R.string.empty_screen_icon_content_description),
+                painter = painterResource(id = icon),
                 contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter(
-                    AmbientContentColor.current.copy(alpha = ContentAlpha.medium),
-                    BlendMode.SrcIn
-                ),
-                modifier = Modifier.preferredSize(72.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .padding(dimensionResource(id = R.dimen.fragment_content_padding_half))
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onBackground.copy(alpha = LocalContentAlpha.current)),
+                modifier = Modifier
+                    .size(size = 72.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(all = ContentPaddingMediumSize)
             )
             Text(
                 text = stringResource(id = title),
                 style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.fragment_content_padding_half))
-                    .align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .padding(vertical = ContentPaddingMediumSize)
+                    .align(alignment = Alignment.CenterHorizontally)
             )
         }
         Button(
             onClick = {},
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
         ) {
             Text(text = stringResource(id = retry))
         }
         TextButton(
             onClick = {},
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
         ) {
             Text(text = stringResource(id = action))
         }
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(weight = 1f))
     }
 }
 

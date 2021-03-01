@@ -2,8 +2,6 @@ package io.github.tonnyl.moka.data
 
 import com.squareup.moshi.JsonClass
 
-interface EmojiType
-
 @JsonClass(generateAdapter = true)
 data class Emoji(
 
@@ -17,9 +15,9 @@ data class Emoji(
 
     val category: String
 
-) : EmojiType
+)
 
-enum class EmojiCategory(val categoryValue: String) : EmojiType {
+enum class EmojiCategory(val categoryValue: String) {
 
     /**
      * local category.

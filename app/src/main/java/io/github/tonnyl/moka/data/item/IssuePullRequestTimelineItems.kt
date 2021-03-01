@@ -20,36 +20,9 @@ interface TimelineItem {
 
 }
 
-interface IssueTimelineItem : TimelineItem {
+interface IssueTimelineItem : TimelineItem
 
-    fun areItemsTheSame(other: IssueTimelineItem): Boolean {
-        if (this::class != other::class) {
-            return false
-        }
-        return id == other.id
-    }
-
-    fun areContentsTheSame(other: IssueTimelineItem): Boolean {
-        return this == other
-    }
-
-}
-
-interface PullRequestTimelineItem : TimelineItem {
-
-    fun areItemsTheSame(other: PullRequestTimelineItem): Boolean {
-        if (this::class != other::class) {
-            return false
-        }
-
-        return id == other.id
-    }
-
-    fun areContentsTheSame(other: PullRequestTimelineItem): Boolean {
-        return this == other
-    }
-
-}
+interface PullRequestTimelineItem : TimelineItem
 // ===== base issue/pull request timeline item definition =====
 
 // ===== base issue/pull request common definition =====

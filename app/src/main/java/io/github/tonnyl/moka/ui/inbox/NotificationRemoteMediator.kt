@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.inbox
 
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -9,7 +8,6 @@ import androidx.room.withTransaction
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.data.RemoteKeys
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.service.NotificationsService
 import io.github.tonnyl.moka.util.PageLinks
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +16,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalPagingApi::class)
 class NotificationRemoteMediator(
     private val notificationsService: NotificationsService,
-    private val database: MokaDataBase,
-    private val initialLoadStatus: MutableLiveData<Resource<Boolean?>>
+    private val database: MokaDataBase
 ) : RemoteMediator<Int, Notification>() {
 
     override suspend fun load(
@@ -30,8 +27,6 @@ class NotificationRemoteMediator(
             try {
                 when (loadType) {
                     LoadType.REFRESH -> {
-                        initialLoadStatus.postValue(Resource.loading(null))
-
                         val response = notificationsService.listNotifications(
                             true,
                             page = 1,
@@ -54,13 +49,6 @@ class NotificationRemoteMediator(
                         }
 
                         MediatorResult.Success(endOfPaginationReached = pl.next.isNullOrEmpty())
-                            .also {
-                                initialLoadStatus.postValue(
-                                    Resource.success(
-                                        database.notificationsDao().notificationsCount() > 0
-                                    )
-                                )
-                            }
                     }
                     LoadType.PREPEND -> {
                         val firstItemId = state.firstItemOrNull()?.id
@@ -128,16 +116,7 @@ class NotificationRemoteMediator(
                     }
                 }
             } catch (e: Exception) {
-                MediatorResult.Error(e).also {
-                    if (loadType == LoadType.REFRESH) {
-                        initialLoadStatus.postValue(
-                            Resource.error(
-                                e.message,
-                                database.notificationsDao().notificationsCount() > 0
-                            )
-                        )
-                    }
-                }
+                MediatorResult.Error(e)
             }
         }
     }

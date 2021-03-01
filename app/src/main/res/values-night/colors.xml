@@ -1,28 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <color name="colorPrimary">#FCE548</color>
-    <color name="colorPrimaryVariant">#C6B300</color>
-    <color name="colorOnPrimary">#000000</color>
-
-    <color name="colorSecondary">#407BFA</color>
-    <color name="colorSecondaryVariant">#0050C6</color>
-    <color name="colorOnSecondary">#000000</color>
-
-    <color name="colorBackground">#000000</color>
-    <color name="colorOnBackground">#FFFFFF</color>
-
-    <color name="colorSurface">#000000</color>
-    <color name="colorOnSurface">#FFFFFF</color>
-
-    <color name="colorError">#CF6679</color>
-    <color name="colorOnError">#000000</color>
-
-    <!-- Scrim colors -->
-    <color name="system_ui_scrim_light">#2EFFFFFF</color> <!-- 18% white -->
-    <color name="system_ui_scrim_black">#B3000000</color> <!-- 70% black -->
-
-    <!-- In dark mode without light status bar we can use transparent -->
-    <color name="status_bar_scrim">@android:color/transparent</color>
-
 </resources>

@@ -1,13 +1,13 @@
 package io.github.tonnyl.moka.ui
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.runtime.Providers
+import androidx.activity.ComponentActivity
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.LocalWindowInsets
 import dev.chrisbanes.accompanist.insets.WindowInsets
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.ui.about.AboutScreenContent
@@ -23,8 +23,9 @@ class AboutScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    private lateinit var activity: AppCompatActivity
+    private lateinit var activity: ComponentActivity
 
+    @ExperimentalMaterialApi
     @Before
     fun setUp() {
         composeTestRule.activityRule.scenario.onActivity { newActivity ->
@@ -32,10 +33,10 @@ class AboutScreenTest {
 
             val windowInsets = WindowInsets()
             composeTestRule.setContent {
-                Providers(AmbientWindowInsets provides windowInsets) {
+                CompositionLocalProvider(LocalWindowInsets provides windowInsets) {
                     MokaTheme {
                         AboutScreenContent(
-                            scrollState = rememberScrollState(),
+                            topAppBarSize = 0,
                             onItemClick = OnAboutItemClick(
                                 onWhatsNewClick = {},
                                 onViewInStoreClick = {},

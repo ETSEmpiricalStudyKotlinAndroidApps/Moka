@@ -6,19 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
 import android.os.Looper
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.data.Emoji
-import io.github.tonnyl.moka.proto.Settings
 import io.github.tonnyl.moka.ui.auth.Authenticator
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import java.nio.charset.Charset
 
@@ -61,30 +54,6 @@ suspend fun AccountManager.moveAccountToFirstPosition(account: Account) {
 
     MoshiInstance.authenticatedUserAdapter.fromJson(userString)?.let {
         insertNewAccount(token, it)
-    }
-}
-
-fun AppCompatActivity.updateForTheme() {
-    lifecycleScope.launchWhenStarted {
-        (applicationContext as MokaApp).settingsDataStore.data.collect {
-            delegate.localNightMode = when (it.theme) {
-                Settings.Theme.AUTO,
-                Settings.Theme.UNRECOGNIZED,
-                null -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    } else {
-                        AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-                    }
-                }
-                Settings.Theme.LIGHT -> {
-                    AppCompatDelegate.MODE_NIGHT_NO
-                }
-                Settings.Theme.DARK -> {
-                    AppCompatDelegate.MODE_NIGHT_YES
-                }
-            }
-        }
     }
 }
 

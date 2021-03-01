@@ -2,12 +2,12 @@ package io.github.tonnyl.moka.ui.pr
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import io.github.tonnyl.moka.data.PullRequest
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.data.toNullablePullRequest
-import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.queries.queryPullRequest
 import io.github.tonnyl.moka.network.queries.queryPullRequestTimelineItems
 import io.github.tonnyl.moka.queries.PullRequestQuery
@@ -20,8 +20,7 @@ class PullRequestTimelineDataSource(
     private val owner: String,
     private val name: String,
     private val number: Int,
-    private val pullRequestData: MutableLiveData<PullRequest>,
-    private val initialLoadStatus: MutableLiveData<Resource<List<PullRequestTimelineItem>>>
+    private val pullRequestData: MutableLiveData<PullRequest>
 ) : PagingSource<String, PullRequestTimelineItem>() {
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, PullRequestTimelineItem> {
@@ -30,8 +29,6 @@ class PullRequestTimelineDataSource(
         return withContext(Dispatchers.IO) {
             try {
                 if (params is LoadParams.Refresh) {
-                    initialLoadStatus.postValue(Resource.loading(null))
-
                     val pullRequest = queryPullRequest(
                         owner = owner,
                         name = name,
@@ -59,9 +56,7 @@ class PullRequestTimelineDataSource(
                         data = list,
                         prevKey = pageInfo.checkedStartCursor,
                         nextKey = pageInfo.checkedEndCursor
-                    ).also {
-                        initialLoadStatus.postValue(Resource.success(list))
-                    }
+                    )
                 } else {
                     val timeline = queryPullRequestTimelineItems(
                         owner = owner,
@@ -91,13 +86,13 @@ class PullRequestTimelineDataSource(
             } catch (e: Exception) {
                 Timber.e(e)
 
-                if (params is LoadParams.Refresh) {
-                    initialLoadStatus.postValue(Resource.error(e.message, null))
-                }
-
-                LoadResult.Error<String, PullRequestTimelineItem>(e)
+                LoadResult.Error(e)
             }
         }
+    }
+
+    override fun getRefreshKey(state: PagingState<String, PullRequestTimelineItem>): String? {
+        return null
     }
 
     private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Node): PullRequestTimelineItem? {

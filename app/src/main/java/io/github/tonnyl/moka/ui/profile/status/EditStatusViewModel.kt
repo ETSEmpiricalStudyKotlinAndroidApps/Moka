@@ -8,7 +8,6 @@ import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.changeUserStatus
-import io.github.tonnyl.moka.ui.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,12 +15,10 @@ import kotlinx.datetime.*
 import timber.log.Timber
 
 class EditStatusViewModel(
-    val args: EditStatusFragmentArgs
+    initialEmoji: String?,
+    initialMessage: String?,
+    initialIndicatesLimitedAvailability: Boolean?
 ) : ViewModel() {
-
-    private val _event = MutableLiveData<Event<EditStatusEvent>>()
-    val event: LiveData<Event<EditStatusEvent>>
-        get() = _event
 
     private val _updateStatusState = MutableLiveData<Resource<UserStatus?>>()
     val updateStatusState: LiveData<Resource<UserStatus?>>
@@ -31,16 +28,15 @@ class EditStatusViewModel(
     val clearStatusState: LiveData<Resource<UserStatus?>>
         get() = _clearStatusState
 
-    private val _emojiName = MutableLiveData<String?>(args.status?.emoji)
+    private val _emojiName = MutableLiveData<String?>(initialEmoji)
     val emojiName: LiveData<String?>
         get() = _emojiName
 
-    private val _message = MutableLiveData<String?>(args.status?.message)
+    private val _message = MutableLiveData<String?>(initialMessage)
     val message: LiveData<String?>
         get() = _message
 
-    private val _limitedAvailability =
-        MutableLiveData<Boolean>(args.status?.indicatesLimitedAvailability)
+    private val _limitedAvailability = MutableLiveData<Boolean>(initialIndicatesLimitedAvailability)
     val limitedAvailability: LiveData<Boolean>
         get() = _limitedAvailability
 
@@ -145,21 +141,12 @@ class EditStatusViewModel(
         _message.value = message
     }
 
-    fun updateEmojiAndMessage(emojiName: String?, msg: String?) {
-        updateEmoji(emojiName)
-        updateMessage(msg)
-    }
-
     fun updateLimitedAvailability(limited: Boolean) {
         _limitedAvailability.value = limited
     }
 
     fun updateExpireAt(expireAt: ExpireAt) {
         _expiresAt.value = expireAt
-    }
-
-    fun showEmojis() {
-        _event.value = Event(EditStatusEvent.ShowEmojis)
     }
 
 }

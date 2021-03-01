@@ -14,15 +14,13 @@ import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.network.mutations.unfollowUser
 import io.github.tonnyl.moka.network.queries.queryOrganization
 import io.github.tonnyl.moka.network.queries.queryUser
-import io.github.tonnyl.moka.ui.Event
-import io.github.tonnyl.moka.ui.profile.ProfileEvent.*
-import io.github.tonnyl.moka.util.updateOnAnyThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ProfileViewModel(
-    private val args: ProfileFragmentArgs
+    private val login: String,
+    private val profileType: ProfileType
 ) : ViewModel() {
 
     private val _userProfile = MutableLiveData<Resource<User>>()
@@ -37,21 +35,17 @@ class ProfileViewModel(
     val followState: LiveData<Resource<Boolean?>>
         get() = _followState
 
-    private val _userEvent = MutableLiveData<Event<ProfileEvent>>()
-    val userEvent: LiveData<Event<ProfileEvent>>
-        get() = _userEvent
-
     init {
         refreshData()
     }
 
     fun refreshData() {
         when {
-            args.profileType == ProfileType.USER
+            profileType == ProfileType.USER
                     || _userProfile.value?.data != null -> {
                 refreshUserProfile()
             }
-            args.profileType == ProfileType.ORGANIZATION
+            profileType == ProfileType.ORGANIZATION
                     || _organizationProfile.value?.data != null -> {
                 refreshOrganization()
             }
@@ -67,7 +61,7 @@ class ProfileViewModel(
             _userProfile.postValue(Resource.loading(null))
 
             try {
-                val user = queryUser(args.login)
+                val user = queryUser(login)
                     .data()
                     ?.user
                     ?.fragments
@@ -94,7 +88,7 @@ class ProfileViewModel(
             _organizationProfile.postValue(Resource.loading(null))
 
             try {
-                val response = queryOrganization(args.login)
+                val response = queryOrganization(login)
 
                 val org = response.data()?.organization.toNullableOrganization()
 
@@ -144,38 +138,6 @@ class ProfileViewModel(
                 _userProfile.value = Resource.success(user.copy(status = status))
             }
         }
-    }
-
-    fun viewRepositories() {
-        _userEvent.updateOnAnyThread(Event(ViewRepositories))
-    }
-
-    fun viewStars() {
-        _userEvent.updateOnAnyThread(Event(ViewStars))
-    }
-
-    fun viewFollowers() {
-        _userEvent.updateOnAnyThread(Event(ViewFollowers))
-    }
-
-    fun viewFollowings() {
-        _userEvent.updateOnAnyThread(Event(ViewFollowings))
-    }
-
-    fun viewProjects() {
-        _userEvent.updateOnAnyThread(Event(ViewProjects))
-    }
-
-    fun editStatus() {
-        _userEvent.updateOnAnyThread(Event(EditStatus))
-    }
-
-    fun viewRepository(repository: RepositoryItem) {
-        _userEvent.updateOnAnyThread(Event(ViewRepository(repository)))
-    }
-
-    fun viewGist(gist: Gist2) {
-        _userEvent.updateOnAnyThread(Event(ViewGist(gist)))
     }
 
     fun starRepository(repository: RepositoryItem) {

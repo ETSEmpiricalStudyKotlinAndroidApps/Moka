@@ -15,7 +15,6 @@ buildscript {
     dependencies {
         classpath(Deps.GradlePlugin.android)
         classpath(Deps.GradlePlugin.kotlin)
-        classpath(Deps.GradlePlugin.navigationSafeArgs)
         classpath(Deps.GradlePlugin.googleServices)
         classpath(Deps.GradlePlugin.firebaseCrashlyticsGradle)
     }

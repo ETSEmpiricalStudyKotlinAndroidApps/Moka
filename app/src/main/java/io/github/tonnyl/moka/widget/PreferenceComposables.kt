@@ -1,16 +1,13 @@
 package io.github.tonnyl.moka.widget
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Divider
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
-import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 
+@ExperimentalMaterialApi
 @Composable
 fun PreferenceCategoryText(text: String) {
     ListItem {
@@ -24,9 +21,10 @@ fun PreferenceCategoryText(text: String) {
 
 @Composable
 fun PreferenceDivider() {
-    Divider(modifier = Modifier.padding(vertical = dimensionResource(R.dimen.fragment_content_padding_half)))
+    Divider(modifier = Modifier.padding(vertical = ContentPaddingMediumSize))
 }
 
+@ExperimentalMaterialApi
 @Preview(name = "PreferenceCategoryTextPreview", showBackground = true)
 @Composable
 private fun PreferenceCategoryTextPreview() {

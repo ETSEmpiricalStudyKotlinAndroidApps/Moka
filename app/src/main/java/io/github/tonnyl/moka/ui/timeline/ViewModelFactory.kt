@@ -7,12 +7,18 @@ import androidx.paging.ExperimentalPagingApi
 
 @ExperimentalPagingApi
 class ViewModelFactory(
+    private val login: String,
+    private val userId: Long,
     private val app: Application
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return TimelineViewModel(app) as T
+        return TimelineViewModel(
+            login = login,
+            userId = userId,
+            app = app
+        ) as T
     }
 
 }

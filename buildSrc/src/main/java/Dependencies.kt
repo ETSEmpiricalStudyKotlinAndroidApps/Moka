@@ -4,47 +4,36 @@ object Versions {
     const val targetSdk = 30
     const val minSdk = 23
 
-    const val androidGradle = "7.0.0-alpha03"
+    const val androidGradle = "7.0.0-alpha06"
     const val gmsGoogleServiceGradle = "4.3.4"
     const val firebaseCrashlyticsGradle = "2.4.1"
-    const val kotlin = "1.4.21"
+    const val kotlin = "1.4.30"
     const val dateTime = "0.1.1"
     const val coroutines = "1.4.2"
-    const val fragment = "1.3.0-rc01"
-    const val constraintLayout = "2.1.0-alpha1"
-    const val coordinatorLayout = "1.1.0"
-    const val appcompat = "1.3.0-alpha02"
-    const val drawerLayout = "1.1.1"
-    const val material = "1.3.0-beta01"
-    const val viewpager2 = "1.1.0-alpha01"
     const val browser = "1.3.0"
-    const val recyclerView = "1.2.0-beta01"
-    const val recyclerViewSelection = "1.1.0-rc03"
     const val lifecycle = "2.2.0"
-    const val liveDataKtx = "2.3.0-rc01"
-    const val navigation = "2.3.2"
-    const val navigationCompose = "1.0.0-alpha04"
-    const val paging = "3.0.0-alpha11"
-    const val pagingCompose = "1.0.0-alpha04"
-    const val workManager = "2.5.0-beta02"
-    const val room = "2.3.0-alpha03"
-    const val swipeRefreshLayout = "1.2.0-alpha01"
-    const val ui = "1.0.0-alpha09"
-    const val dataStore = "1.0.0-alpha05"
-    const val accompanistCoil = "0.4.1"
-    const val composeKotlinCompilerVersion = "1.4.21"
-    const val lottie = "3.4.2"
+    const val liveDataKtx = "2.3.0"
+    const val viewModelCompose = "1.0.0-alpha02"
+    const val navigationCompose = "1.0.0-alpha08"
+    const val paging = "3.0.0-beta01"
+    const val pagingCompose = "1.0.0-alpha08"
+    const val workManager = "2.7.0-alpha01"
+    const val room = "2.3.0-beta02"
+    const val ui = "1.0.0-beta01"
+    const val constraintLayoutCompose = "1.0.0-alpha03"
+    const val dataStore = "1.0.0-alpha07"
+    const val activityCompose = "1.3.0-alpha03"
+    const val accompanistCoil = "0.6.0"
+    const val lottie = "1.0.0-alpha07-SNAPSHOT"
     const val retrofit = "2.9.0"
     const val okhttpLoggingInterceptor = "4.7.2"
-    const val apollo = "2.4.6"
+    const val apollo = "2.5.3"
     const val commonMark = "0.15.2"
     const val jsoup = "1.12.1"
     const val timber = "4.7.1"
     const val firebaseAnalyticsKtx = "17.5.0"
     const val firebaseCrashlytics = "17.2.1"
-    const val insetter = "0.3.1"
     const val moshi = "1.9.2"
-    const val protobufGradle = "0.8.14"
     const val protoc = "3.14.0"
     const val protobufJavaLite = "3.11.0"
     const val junit = "4.13"
@@ -67,8 +56,6 @@ object Deps {
 
         const val android = "com.android.tools.build:gradle:${Versions.androidGradle}"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
-        const val navigationSafeArgs =
-            "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.navigation}"
         const val googleServices =
             "com.google.gms:google-services:${Versions.gmsGoogleServiceGradle}"
         const val firebaseCrashlyticsGradle =
@@ -89,21 +76,9 @@ object Deps {
 
     object AndroidX {
 
-        const val constraintLayout =
-            "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
-        const val coordinatorLayout =
-            "androidx.coordinatorlayout:coordinatorlayout:${Versions.coordinatorLayout}"
-        const val swipeRefreshLayout =
-            "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swipeRefreshLayout}"
-        const val viewpager2 = "androidx.viewpager2:viewpager2:${Versions.viewpager2}"
         const val browser = "androidx.browser:browser:${Versions.browser}"
-        const val appcompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
-        const val fragment = "androidx.fragment:fragment-ktx:${Versions.fragment}"
-        const val drawerLayout = "androidx.drawerlayout:drawerlayout:${Versions.drawerLayout}"
-        const val recyclerView = "androidx.recyclerview:recyclerview:${Versions.recyclerView}"
-        const val recyclerViewSelection =
-            "androidx.recyclerview:recyclerview-selection:${Versions.recyclerViewSelection}"
         const val dataStore = "androidx.datastore:datastore:${Versions.dataStore}"
+        const val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
 
         object Lifecycle {
 
@@ -111,15 +86,13 @@ object Deps {
                 "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
             const val liveDataKtx =
                 "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.liveDataKtx}"
+            const val viewModelCompose =
+                "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.viewModelCompose}"
 
         }
 
         object Navigation {
 
-            const val navigationFragmentKtx =
-                "androidx.navigation:navigation-fragment-ktx:${Versions.navigation}"
-            const val navigationUIKtx =
-                "androidx.navigation:navigation-ui-ktx:${Versions.navigation}"
             const val compose =
                 "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
 
@@ -127,7 +100,6 @@ object Deps {
 
         object Paging {
 
-            const val common = "androidx.paging:paging-common-ktx:${Versions.paging}"
             const val runtime = "androidx.paging:paging-runtime-ktx:${Versions.paging}"
             const val compose = "androidx.paging:paging-compose:${Versions.pagingCompose}"
 
@@ -163,6 +135,8 @@ object Deps {
             const val animation = "androidx.compose.animation:animation:${Versions.ui}"
             const val tooling = "androidx.compose.ui:ui-tooling:${Versions.ui}"
             const val liveData = "androidx.compose.runtime:runtime-livedata:${Versions.ui}"
+            const val constraintLayout =
+                "androidx.constraintlayout:constraintlayout-compose:${Versions.constraintLayoutCompose}"
 
         }
 
@@ -170,15 +144,13 @@ object Deps {
 
     object Google {
 
-        const val material = "com.google.android.material:material:${Versions.material}"
-        const val composeThemeAdapter =
-            "com.google.android.material:compose-theme-adapter:${Versions.ui}"
         const val firebaseAnalyticsKtx =
             "com.google.firebase:firebase-analytics-ktx:${Versions.firebaseAnalyticsKtx}"
         const val firebaseCrashlytics =
             "com.google.firebase:firebase-crashlytics:${Versions.firebaseCrashlytics}"
         const val protoc = "com.google.protobuf:protoc:${Versions.protoc}"
-        const val protobufJavaLite = "com.google.protobuf:protobuf-javalite:${Versions.protobufJavaLite}"
+        const val protobufJavaLite =
+            "com.google.protobuf:protobuf-javalite:${Versions.protobufJavaLite}"
 
     }
 
@@ -204,7 +176,7 @@ object Deps {
 
     object Airbnb {
 
-        const val lottie = "com.airbnb.android:lottie:${Versions.lottie}"
+        const val lottie = "com.airbnb.android:lottie-compose:${Versions.lottie}"
 
     }
 
@@ -230,13 +202,6 @@ object Deps {
             "com.atlassian.commonmark:commonmark-ext-heading-anchor:${Versions.commonMark}"
         const val yamlFrontMatter =
             "com.atlassian.commonmark:commonmark-ext-yaml-front-matter:${Versions.commonMark}"
-
-    }
-
-    object Insetter {
-
-        const val dbx = "dev.chrisbanes:insetter-dbx:${Versions.insetter}"
-        const val ktx = "dev.chrisbanes:insetter-ktx:${Versions.insetter}"
 
     }
 
@@ -270,7 +235,6 @@ object Deps {
         const val mockito = "org.mockito:mockito-android:${Versions.mockito}"
         const val work = "androidx.work:work-testing:${Versions.workManager}"
         const val room = "androidx.room:room-testing:${Versions.room}"
-        const val fragment = "androidx.fragment:fragment-testing:${Versions.fragment}"
         const val uiTest = "androidx.compose.ui:ui-test:${Versions.ui}"
         const val uiTestJunit4 = "androidx.compose.ui:ui-test-junit4:${Versions.ui}"
 

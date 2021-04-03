@@ -24,9 +24,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.toPaddingValues
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
@@ -160,7 +160,7 @@ private fun UsersScreenScreen(
             ItemLoadingState(loadState = users.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = users) { index, item ->
+        itemsIndexed(lazyPagingItems = users) { _, item ->
             if (item != null) {
                 ItemUser(
                     user = item,

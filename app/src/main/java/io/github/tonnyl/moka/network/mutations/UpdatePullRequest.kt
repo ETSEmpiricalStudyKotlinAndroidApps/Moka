@@ -1,13 +1,12 @@
 package io.github.tonnyl.moka.network.mutations
 
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.mutations.UpdatePullRequestMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.PullRequestUpdateState
 import io.github.tonnyl.moka.type.UpdatePullRequestInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -39,24 +38,22 @@ suspend fun updatePullRequest(
     labelIds: List<String>? = null,
     projectIds: List<String>? = null
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                UpdatePullRequestMutation(
-                    UpdatePullRequestInput(
-                        pullRequestId = pullRequestId,
-                        baseRefName = Input.optional(baseRefName),
-                        title = Input.optional(title),
-                        body = Input.optional(body),
-                        state = Input.optional(state),
-                        maintainerCanModify = Input.optional(maintainerCanModify),
-                        assigneeIds = Input.optional(assigneeIds),
-                        milestoneId = Input.optional(milestoneId),
-                        labelIds = Input.optional(labelIds),
-                        projectIds = Input.optional(projectIds)
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            UpdatePullRequestMutation(
+                UpdatePullRequestInput(
+                    pullRequestId = pullRequestId,
+                    baseRefName = Input.Present(baseRefName),
+                    title = Input.Present(title),
+                    body = Input.Present(body),
+                    state = Input.Present(state),
+                    maintainerCanModify = Input.Present(maintainerCanModify),
+                    assigneeIds = Input.Present(assigneeIds),
+                    milestoneId = Input.Present(milestoneId),
+                    labelIds = Input.Present(labelIds),
+                    projectIds = Input.Present(projectIds)
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

@@ -3,9 +3,8 @@ package io.github.tonnyl.moka.network.mutations
 import io.github.tonnyl.moka.mutations.DeletePullRequestReviewMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.DeletePullRequestReviewInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -16,13 +15,11 @@ import kotlinx.coroutines.withContext
  * @param pullRequestReviewId The Node ID of the pull request review to delete.
  */
 suspend fun deletePullRequestReview(pullRequestReviewId: String) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                DeletePullRequestReviewMutation(
-                    DeletePullRequestReviewInput(pullRequestReviewId = pullRequestReviewId)
-                )
+    GraphQLClient.apolloClient
+        .mutate(
+            DeletePullRequestReviewMutation(
+                DeletePullRequestReviewInput(pullRequestReviewId = pullRequestReviewId)
             )
-            .execute()
-    }
+        )
+        .single()
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.data.toNonNullTreeEntry
 import io.github.tonnyl.moka.data.toNullableRepository
+import io.github.tonnyl.moka.fragment.Tree.Entries.Companion.treeEntry
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.addStar
@@ -18,6 +19,8 @@ import io.github.tonnyl.moka.network.queries.queryCurrentLevelTreeView
 import io.github.tonnyl.moka.network.queries.queryFileContent
 import io.github.tonnyl.moka.network.queries.queryOrganizationsRepository
 import io.github.tonnyl.moka.network.queries.queryUsersRepository
+import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery.Data.Repository.Object.Companion.tree
+import io.github.tonnyl.moka.queries.FileContentQuery.Data.Repository.Object.Companion.blob
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.util.HtmlHandler
 import kotlinx.coroutines.Dispatchers
@@ -88,30 +91,28 @@ class RepositoryViewModel(
                     "readme" to "plain"
                 )
 
-                val readmeFile = response.data()
+                val readmeFile = response.data
                     ?.repository
                     ?.object_
-                    ?.fragments
-                    ?.tree
+                    ?.tree()
                     ?.entries
                     ?.firstOrNull {
                         readmeFileNames.contains(
-                            it.fragments.treeEntry.name.toLowerCase(
+                            it.treeEntry()?.name?.toLowerCase(
                                 Locale.US
                             )
                         )
                     }
 
-                val fileEntry = readmeFile?.fragments
-                    ?.treeEntry
+                val fileEntry = readmeFile
+                    ?.treeEntry()
                     ?.toNonNullTreeEntry()
 
                 if (fileEntry != null) {
                     val expression = "$branchName:${fileEntry.name}"
                     val fileContentResponse = queryFileContent(login, repositoryName, expression)
 
-                    val html =
-                        fileContentResponse.data()?.repository?.object_?.fragments?.blob?.text
+                    val html = fileContentResponse.data?.repository?.object_?.blob()?.text
                     if (html.isNullOrEmpty()) {
                         _readmeHtml.postValue(Resource.success(""))
                     } else {
@@ -195,7 +196,7 @@ class RepositoryViewModel(
 
             try {
                 val repo = queryUsersRepository(login, repositoryName)
-                    .data()
+                    .data
                     .toNullableRepository()
 
                 _usersRepository.postValue(Resource.success(repo))
@@ -227,7 +228,7 @@ class RepositoryViewModel(
 
             try {
                 val repo = queryOrganizationsRepository(login, repositoryName)
-                    .data()
+                    .data
                     .toNullableRepository()
 
                 _organizationsRepository.postValue(Resource.success(repo))

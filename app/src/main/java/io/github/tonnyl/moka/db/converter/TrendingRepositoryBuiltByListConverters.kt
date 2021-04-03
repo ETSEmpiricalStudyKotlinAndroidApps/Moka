@@ -2,7 +2,9 @@ package io.github.tonnyl.moka.db.converter
 
 import androidx.room.TypeConverter
 import io.github.tonnyl.moka.data.TrendingRepositoryBuiltBy
-import io.github.tonnyl.moka.util.MoshiInstance
+import io.github.tonnyl.moka.util.json
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 
 object TrendingRepositoryBuiltByListConverters {
 
@@ -10,7 +12,9 @@ object TrendingRepositoryBuiltByListConverters {
     @JvmStatic
     fun trendingRepositoryBuiltByListToString(list: List<TrendingRepositoryBuiltBy>?): String? {
         return list?.let {
-            MoshiInstance.trendingRepositoryBuiltByListAdapter.toJson(it)
+            runCatching {
+                json.encodeToString(it)
+            }.getOrNull()
         }
     }
 
@@ -18,7 +22,9 @@ object TrendingRepositoryBuiltByListConverters {
     @JvmStatic
     fun fromString(jsonString: String?): List<TrendingRepositoryBuiltBy>? {
         return jsonString?.let {
-            MoshiInstance.trendingRepositoryBuiltByListAdapter.fromJson(jsonString)
+            runCatching {
+                json.decodeFromString<List<TrendingRepositoryBuiltBy>>(it)
+            }.getOrNull()
         }
     }
 

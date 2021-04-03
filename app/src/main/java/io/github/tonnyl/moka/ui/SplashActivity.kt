@@ -11,7 +11,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import dev.chrisbanes.accompanist.insets.ExperimentalAnimatedInsets
+import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController

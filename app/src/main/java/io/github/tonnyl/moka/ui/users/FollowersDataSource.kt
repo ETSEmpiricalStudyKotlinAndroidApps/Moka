@@ -7,6 +7,8 @@ import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullUserItem
 import io.github.tonnyl.moka.network.queries.queryUsersFollowers
+import io.github.tonnyl.moka.queries.FollowersQuery.Data.User.Followers.Nodes.Companion.userListItemFragment
+import io.github.tonnyl.moka.queries.FollowersQuery.Data.User.Followers.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -22,15 +24,15 @@ class FollowersDataSource(private val login: String) : PagingSource<String, User
                     perPage = params.loadSize,
                     after = params.key,
                     before = params.key
-                ).data()?.user
+                ).data?.user
 
-                user?.followers?.nodes?.forEach { node ->
-                    node?.let {
-                        list.add(it.fragments.userListItemFragment.toNonNullUserItem())
+                list.addAll(
+                    user?.followers?.nodes.orEmpty().mapNotNull { node ->
+                        node?.userListItemFragment()?.toNonNullUserItem()
                     }
-                }
+                )
 
-                val pageInfo = user?.followers?.pageInfo?.fragments?.pageInfo
+                val pageInfo = user?.followers?.pageInfo?.pageInfo()
 
                 LoadResult.Page(
                     data = list,

@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.pr
 
-import android.net.Uri
 import android.text.format.DateUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -32,9 +31,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.toPaddingValues
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.PullRequest
 import io.github.tonnyl.moka.data.item.*
@@ -209,7 +208,7 @@ private fun PullRequestScreenContent(
             ItemLoadingState(loadState = timelineItems.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = timelineItems) { index, item ->
+        itemsIndexed(lazyPagingItems = timelineItems) { _, item ->
             if (item != null) {
                 if (item is IssueComment) {
                     IssueTimelineCommentItem(
@@ -293,7 +292,7 @@ private fun ItemPullRequestTimelineEvent(
 private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData? {
     val iconResId: Int?
     val backgroundColor: Color?
-    val avatarUri: Uri?
+    val avatarUri: String?
     val login: String?
     val createdAt: Instant?
     val content: AnnotatedString?
@@ -433,7 +432,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
             content = AnnotatedString(
                 text = stringResource(
                     id = R.string.pull_request_deployed_to_branch,
-                    event.deployment.environment
+                    event.deployment?.environment
                         ?: stringResource(id = R.string.pull_request_unknown)
                 )
             )
@@ -489,7 +488,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
             createdAt = event.createdAt
             content = buildAnnotatedString {
                 append(text = stringResource(id = R.string.issue_timeline_labeled_event_labeled))
-                event.label.color.toColor()?.let {
+                event.label?.color?.toColor()?.let {
                     Color(it)
                 }?.let { bgColor ->
                     append(
@@ -602,14 +601,17 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
         is PullRequestCommit -> {
             iconResId = R.drawable.ic_commit_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.commit.author?.avatarUrl ?: event.commit.committer?.avatarUrl
-            login = event.commit.author?.user?.login
-                ?: event.commit.author?.name
-                        ?: event.commit.committer?.user?.login
-                        ?: event.commit.committer?.name
+            avatarUri = event.commit?.author?.avatarUrl ?: event.commit?.committer?.avatarUrl
+            login = event.commit?.author?.user?.login
+                ?: event.commit?.author?.name
+                        ?: event.commit?.committer?.user?.login
+                        ?: event.commit?.committer?.name
                         ?: "ghost"
             createdAt = null
-            content = AnnotatedString(text = event.commit.message)
+            content = AnnotatedString(
+                text = event.commit?.message
+                    ?: stringResource(id = R.string.no_description_provided)
+            )
         }
         is PullRequestReview -> {
             avatarUri = event.author?.avatarUrl
@@ -811,7 +813,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
             createdAt = event.createdAt
             content = buildAnnotatedString {
                 append(stringResource(id = R.string.issue_timeline_labeled_event_labeled))
-                event.label.color.toColor()?.let {
+                event.label?.color?.toColor()?.let {
                     Color(it)
                 }?.let { bgColor ->
                     append(

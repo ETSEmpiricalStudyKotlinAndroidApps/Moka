@@ -2,7 +2,9 @@ package io.github.tonnyl.moka.db.converter
 
 import androidx.room.TypeConverter
 import io.github.tonnyl.moka.data.EventGollumPage
-import io.github.tonnyl.moka.util.MoshiInstance
+import io.github.tonnyl.moka.util.json
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 
 object EventGollumPageListConverters {
 
@@ -10,7 +12,9 @@ object EventGollumPageListConverters {
     @JvmStatic
     fun eventGollumPageListToString(pages: List<EventGollumPage>?): String? {
         return pages?.let {
-            MoshiInstance.eventGollumPageListAdapter.toJson(it)
+            runCatching {
+                json.encodeToString(it)
+            }.getOrNull()
         }
     }
 
@@ -18,7 +22,9 @@ object EventGollumPageListConverters {
     @JvmStatic
     fun fromString(value: String?): List<EventGollumPage>? {
         return value?.let {
-            MoshiInstance.eventGollumPageListAdapter.fromJson(value)
+            runCatching {
+                json.decodeFromString<List<EventGollumPage>>(it)
+            }.getOrNull()
         }
     }
 

@@ -1,13 +1,11 @@
 package io.github.tonnyl.moka.network.mutations
 
-import android.net.Uri
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.mutations.UpdateRepositoryMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.UpdateRepositoryInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -30,27 +28,25 @@ suspend fun updateRepository(
     name: String? = null,
     description: String? = null,
     template: Boolean? = null,
-    homepageUrl: Uri? = null,
+    homepageUrl: String? = null,
     hasWikiEnabled: Boolean? = null,
     hasIssuesEnabled: Boolean? = null,
     hasProjectsEnabled: Boolean? = null
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                UpdateRepositoryMutation(
-                    UpdateRepositoryInput(
-                        repositoryId = repositoryId,
-                        name = Input.optional(name),
-                        description = Input.optional(description),
-                        template = Input.optional(template),
-                        homepageUrl = Input.optional(homepageUrl),
-                        hasWikiEnabled = Input.optional(hasWikiEnabled),
-                        hasIssuesEnabled = Input.optional(hasIssuesEnabled),
-                        hasProjectsEnabled = Input.optional(hasProjectsEnabled)
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            UpdateRepositoryMutation(
+                UpdateRepositoryInput(
+                    repositoryId = repositoryId,
+                    name = Input.Present(name),
+                    description = Input.Present(description),
+                    template = Input.Present(template),
+                    homepageUrl = Input.Present(homepageUrl),
+                    hasWikiEnabled = Input.Present(hasWikiEnabled),
+                    hasIssuesEnabled = Input.Present(hasIssuesEnabled),
+                    hasProjectsEnabled = Input.Present(hasProjectsEnabled)
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

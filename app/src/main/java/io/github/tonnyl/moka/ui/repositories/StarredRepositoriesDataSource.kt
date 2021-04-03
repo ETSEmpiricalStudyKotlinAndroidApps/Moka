@@ -7,6 +7,8 @@ import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullRepositoryItem
 import io.github.tonnyl.moka.network.queries.queryStarredRepositories
+import io.github.tonnyl.moka.queries.StarredRepositoriesQuery.Data.User.StarredRepositories.Nodes.Companion.repositoryListItemFragment
+import io.github.tonnyl.moka.queries.StarredRepositoriesQuery.Data.User.StarredRepositories.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -23,15 +25,15 @@ class StarredRepositoriesDataSource(private val login: String) :
                     perPage = params.loadSize,
                     after = params.key,
                     before = params.key
-                ).data()?.user
+                ).data?.user
 
-                user?.starredRepositories?.nodes?.forEach { node ->
-                    node?.let {
-                        list.add(node.fragments.repositoryListItemFragment.toNonNullRepositoryItem())
+                list.addAll(
+                    user?.starredRepositories?.nodes.orEmpty().mapNotNull { node ->
+                        node?.repositoryListItemFragment()?.toNonNullRepositoryItem()
                     }
-                }
+                )
 
-                val pageInfo = user?.starredRepositories?.pageInfo?.fragments?.pageInfo
+                val pageInfo = user?.starredRepositories?.pageInfo?.pageInfo()
 
                 LoadResult.Page(
                     data = list,

@@ -9,6 +9,8 @@ import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullRepositoryItem
 import io.github.tonnyl.moka.network.queries.queryOwnedRepositories
+import io.github.tonnyl.moka.queries.OwnedRepositoriesQuery.Data.User.Repositories.Nodes.Companion.repositoryListItemFragment
+import io.github.tonnyl.moka.queries.OwnedRepositoriesQuery.Data.User.Repositories.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -25,15 +27,15 @@ class OwnedRepositoriesDataSource(private val login: String) :
                     perPage = params.loadSize,
                     after = params.key,
                     before = params.key
-                ).data()?.user
+                ).data?.user
 
-                user?.repositories?.nodes?.forEach { node ->
-                    node?.let {
-                        list.add(node.fragments.repositoryListItemFragment.toNonNullRepositoryItem())
+                list.addAll(
+                    user?.repositories?.nodes.orEmpty().mapNotNull { node ->
+                        node?.repositoryListItemFragment()?.toNonNullRepositoryItem()
                     }
-                }
+                )
 
-                val pageInfo = user?.repositories?.pageInfo?.fragments?.pageInfo
+                val pageInfo = user?.repositories?.pageInfo?.pageInfo()
 
                 Page(
                     data = list,

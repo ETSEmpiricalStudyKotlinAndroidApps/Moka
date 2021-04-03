@@ -4,44 +4,47 @@ object Versions {
     const val targetSdk = 30
     const val minSdk = 23
 
-    const val androidGradle = "7.0.0-alpha06"
-    const val gmsGoogleServiceGradle = "4.3.4"
-    const val firebaseCrashlyticsGradle = "2.4.1"
-    const val kotlin = "1.4.30"
+    const val androidGradle = "7.0.0-alpha12"
+    const val gmsGoogleServiceGradle = "4.3.5"
+    const val firebaseCrashlyticsGradle = "2.5.1"
+    const val kotlin = "1.4.31"
     const val dateTime = "0.1.1"
-    const val coroutines = "1.4.2"
+    const val coroutines = "1.4.3"
+    const val serialization = "1.1.0"
     const val browser = "1.3.0"
     const val lifecycle = "2.2.0"
-    const val liveDataKtx = "2.3.0"
-    const val viewModelCompose = "1.0.0-alpha02"
-    const val navigationCompose = "1.0.0-alpha08"
-    const val paging = "3.0.0-beta01"
+    const val liveDataKtx = "2.4.0-alpha01"
+    const val viewModelCompose = "1.0.0-alpha03"
+    const val navigationCompose = "1.0.0-alpha09"
+    const val paging = "3.0.0-beta03"
     const val pagingCompose = "1.0.0-alpha08"
-    const val workManager = "2.7.0-alpha01"
-    const val room = "2.3.0-beta02"
-    const val ui = "1.0.0-beta01"
-    const val constraintLayoutCompose = "1.0.0-alpha03"
-    const val dataStore = "1.0.0-alpha07"
-    const val activityCompose = "1.3.0-alpha03"
-    const val accompanistCoil = "0.6.0"
-    const val lottie = "1.0.0-alpha07-SNAPSHOT"
+    const val workManager = "2.7.0-alpha02"
+    const val room = "2.3.0-rc01"
+    const val ui = "1.0.0-beta03"
+    const val constraintLayoutCompose = "1.0.0-alpha05"
+    const val dataStore = "1.0.0-alpha08"
+    const val activityCompose = "1.3.0-alpha05"
+    const val accompanist = "0.7.0"
+    const val material = "1.4.0-alpha02"
+    const val kspApi = "1.4.31-1.0.0-alpha06"
+    const val lottie = "1.0.0-beta03-2-SNAPSHOT"
     const val retrofit = "2.9.0"
+    const val serializationConverter = "0.8.0"
     const val okhttpLoggingInterceptor = "4.7.2"
-    const val apollo = "2.5.3"
+    const val apollo = "3.0.0-dev7-SNAPSHOT"
     const val commonMark = "0.15.2"
     const val jsoup = "1.12.1"
     const val timber = "4.7.1"
     const val firebaseAnalyticsKtx = "17.5.0"
     const val firebaseCrashlytics = "17.2.1"
-    const val moshi = "1.9.2"
     const val protoc = "3.14.0"
     const val protobufJavaLite = "3.11.0"
     const val junit = "4.13"
-    const val androidJunit = "1.1.2"
-    const val androidTestCore = "1.3.0"
-    const val androidTestRunner = "1.3.0"
-    const val androidTestRules = "1.3.0"
-    const val espresso = "3.3.0"
+    const val androidJunit = "1.1.3-alpha05"
+    const val androidTestCore = "1.4.0-alpha05"
+    const val androidTestRunner = "1.4.0-alpha05"
+    const val androidTestRules = "1.4.0-alpha05"
+    const val espresso = "3.4.0-alpha05"
     const val mockito = "3.5.13"
     const val hamcrest = "1.3"
 
@@ -60,17 +63,21 @@ object Deps {
             "com.google.gms:google-services:${Versions.gmsGoogleServiceGradle}"
         const val firebaseCrashlyticsGradle =
             "com.google.firebase:firebase-crashlytics-gradle:${Versions.firebaseCrashlyticsGradle}"
+        const val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}"
+        const val apollo = "com.apollographql.apollo3:apollo-gradle-plugin:${Versions.apollo}"
 
     }
 
     object Kotlin {
 
-        const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
+        const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
         const val coroutinesCore =
             "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
         const val coroutinesAndroid =
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
         const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.dateTime}"
+        const val serialization =
+            "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serialization}"
 
     }
 
@@ -144,6 +151,13 @@ object Deps {
 
     object Google {
 
+        object Accompanist {
+
+            const val coil = "com.google.accompanist:accompanist-coil:${Versions.accompanist}"
+            const val insets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
+
+        }
+
         const val firebaseAnalyticsKtx =
             "com.google.firebase:firebase-analytics-ktx:${Versions.firebaseAnalyticsKtx}"
         const val firebaseCrashlytics =
@@ -151,13 +165,16 @@ object Deps {
         const val protoc = "com.google.protobuf:protoc:${Versions.protoc}"
         const val protobufJavaLite =
             "com.google.protobuf:protobuf-javalite:${Versions.protobufJavaLite}"
+        const val material = "com.google.android.material:material:${Versions.material}"
+        const val kspApi = "com.google.devtools.ksp:symbol-processing-api:${Versions.kspApi}"
 
     }
 
     object Retrofit {
 
         const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
-        const val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}"
+        const val serializationConverter =
+            "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.serializationConverter}"
 
     }
 
@@ -170,21 +187,13 @@ object Deps {
 
     object Apollo {
 
-        const val runtime = "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
+        const val runtime = "com.apollographql.apollo3:apollo-runtime-kotlin:${Versions.apollo}"
 
     }
 
     object Airbnb {
 
         const val lottie = "com.airbnb.android:lottie-compose:${Versions.lottie}"
-
-    }
-
-    object Accompanist {
-
-        const val coil = "dev.chrisbanes.accompanist:accompanist-coil:${Versions.accompanistCoil}"
-        const val insets =
-            "dev.chrisbanes.accompanist:accompanist-insets:${Versions.accompanistCoil}"
 
     }
 
@@ -202,13 +211,6 @@ object Deps {
             "com.atlassian.commonmark:commonmark-ext-heading-anchor:${Versions.commonMark}"
         const val yamlFrontMatter =
             "com.atlassian.commonmark:commonmark-ext-yaml-front-matter:${Versions.commonMark}"
-
-    }
-
-    object Moshi {
-
-        const val kotlinCodegen = "com.squareup.moshi:moshi-kotlin-codegen:${Versions.moshi}"
-        const val adapters = "com.squareup.moshi:moshi-adapters:${Versions.moshi}"
 
     }
 

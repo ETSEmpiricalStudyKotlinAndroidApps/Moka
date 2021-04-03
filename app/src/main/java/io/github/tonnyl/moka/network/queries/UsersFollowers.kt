@@ -1,30 +1,29 @@
 package io.github.tonnyl.moka.network.queries
 
-import androidx.annotation.WorkerThread
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.FollowersQuery
-import io.github.tonnyl.moka.util.execute
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.withContext
 
 /**
  * A list of users the given user is followed by.
  */
-@WorkerThread
-fun queryUsersFollowers(
+suspend fun queryUsersFollowers(
     login: String,
     perPage: Int,
     before: String? = null,
     after: String? = null
-) = runBlocking {
+) = withContext(Dispatchers.IO) {
     GraphQLClient.apolloClient
         .query(
             FollowersQuery(
                 login,
                 perPage,
-                Input.optional(before),
-                Input.optional(after)
+                Input.Present(before),
+                Input.Present(after)
             )
         )
-        .execute()
+        .single()
 }

@@ -1,32 +1,31 @@
 package io.github.tonnyl.moka.network.queries
 
-import androidx.annotation.WorkerThread
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.RepositoriesProjectsQuery
-import io.github.tonnyl.moka.util.execute
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.withContext
 
 /**
  * A list of projects associated with the owner.
  */
-@WorkerThread
-fun queryRepositoriesProjects(
+suspend fun queryRepositoriesProjects(
     owner: String,
     name: String,
     perPage: Int,
     after: String? = null,
     before: String? = null
-) = runBlocking {
+) = withContext(Dispatchers.IO) {
     GraphQLClient.apolloClient
         .query(
             RepositoriesProjectsQuery(
                 owner,
                 name,
-                Input.optional(after),
-                Input.optional(before),
+                Input.Present(after),
+                Input.Present(before),
                 perPage
             )
         )
-        .execute()
+        .single()
 }

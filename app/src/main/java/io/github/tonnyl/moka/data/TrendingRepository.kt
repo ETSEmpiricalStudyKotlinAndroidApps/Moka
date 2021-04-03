@@ -3,10 +3,12 @@ package io.github.tonnyl.moka.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Entity(tableName = "trending_repository")
-@JsonClass(generateAdapter = true)
+@Serializable
 data class TrendingRepository(
 
     @PrimaryKey(autoGenerate = true)
@@ -27,13 +29,13 @@ data class TrendingRepository(
     var url: String,
 
     @ColumnInfo(name = "description")
-    var description: String?,
+    var description: String? = null,
 
     @ColumnInfo(name = "language")
-    var language: String?,
+    var language: String? = null,
 
     @ColumnInfo(name = "language_color")
-    var languageColor: String?,
+    var languageColor: String? = null,
 
     @ColumnInfo(name = "stars")
     var stars: Int,
@@ -44,11 +46,12 @@ data class TrendingRepository(
     @ColumnInfo(name = "current_period_stars")
     var currentPeriodStars: Int,
 
+    @Contextual
     var builtBy: List<TrendingRepositoryBuiltBy>
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class TrendingRepositoryBuiltBy(
 
     @ColumnInfo(name = "href")

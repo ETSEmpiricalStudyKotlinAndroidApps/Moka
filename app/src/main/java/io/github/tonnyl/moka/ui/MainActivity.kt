@@ -16,7 +16,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.paging.ExperimentalPagingApi
-import dev.chrisbanes.accompanist.insets.ExperimentalAnimatedInsets
+import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.RetrofitClient

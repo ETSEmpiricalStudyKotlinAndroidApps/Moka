@@ -1,6 +1,6 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
+import io.github.tonnyl.moka.fragment.RepositoryTopic.Topic.Companion.topic
 import io.github.tonnyl.moka.fragment.RepositoryTopic as RawRepositoryTopic
 
 data class RepositoryTopic(
@@ -10,24 +10,24 @@ data class RepositoryTopic(
     /**
      * The topic.
      */
-    val topic: Topic,
+    val topic: Topic?,
 
     /**
      * The HTTP path for this repository-topic.
      */
-    val resourcePath: Uri,
+    val resourcePath: String,
 
     /**
      * The HTTP URL for this repository-topic.
      */
-    val url: Uri
+    val url: String
 
 )
 
 fun RawRepositoryTopic.toNonNullRepositoryTopic(): RepositoryTopic {
     return RepositoryTopic(
         id,
-        topic.fragments.topic.toNonNullTopic(),
+        topic.topic()?.toNonNullTopic(),
         resourcePath,
         url
     )

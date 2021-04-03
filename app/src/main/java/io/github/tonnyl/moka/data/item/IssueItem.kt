@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.data.item
 import io.github.tonnyl.moka.data.Actor
 import io.github.tonnyl.moka.data.toNonNullActor
 import io.github.tonnyl.moka.queries.IssuesQuery
+import io.github.tonnyl.moka.queries.IssuesQuery.Data.Repository.Issues.Nodes.Author.Companion.actor
 import kotlinx.datetime.Instant
 
 data class IssueItem(
@@ -36,9 +37,9 @@ data class IssueItem(
 
 )
 
-fun IssuesQuery.Node.toNonNullIssueItem(): IssueItem {
+fun IssuesQuery.Data.Repository.Issues.Nodes.toNonNullIssueItem(): IssueItem {
     return IssueItem(
-        author?.fragments?.actor?.toNonNullActor(),
+        author?.actor()?.toNonNullActor(),
         id,
         number,
         createdAt,

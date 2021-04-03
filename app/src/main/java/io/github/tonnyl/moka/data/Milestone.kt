@@ -1,6 +1,6 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
+import io.github.tonnyl.moka.fragment.Milestone.Creator.Companion.actor
 import io.github.tonnyl.moka.type.MilestoneState
 import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.Milestone as RawMilestone
@@ -50,7 +50,7 @@ data class Milestone(
     /**
      * The HTTP path for this milestone.
      */
-    val resourcePath: Uri,
+    val resourcePath: String,
 
     /**
      * Identifies the state of the milestone.
@@ -70,7 +70,7 @@ data class Milestone(
     /**
      * The HTTP URL for this milestone
      */
-    val url: Uri
+    val url: String
 
 )
 
@@ -79,7 +79,7 @@ fun RawMilestone.toNonNullMilestone(): Milestone {
         closed,
         closedAt,
         createdAt,
-        creator?.fragments?.actor?.toNonNullActor(),
+        creator?.actor()?.toNonNullActor(),
         description,
         dueOn,
         id,

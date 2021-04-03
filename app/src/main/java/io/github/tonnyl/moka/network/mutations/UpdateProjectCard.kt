@@ -1,12 +1,11 @@
 package io.github.tonnyl.moka.network.mutations
 
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.mutations.UpdateProjectCardMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.UpdateProjectCardInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -23,17 +22,15 @@ suspend fun updateProjectCard(
     isArchived: Boolean? = null,
     note: String? = null
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                UpdateProjectCardMutation(
-                    UpdateProjectCardInput(
-                        projectCardId = projectCardId,
-                        isArchived = Input.optional(isArchived),
-                        note = Input.optional(note)
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            UpdateProjectCardMutation(
+                UpdateProjectCardInput(
+                    projectCardId = projectCardId,
+                    isArchived = Input.Present(isArchived),
+                    note = Input.Present(note)
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

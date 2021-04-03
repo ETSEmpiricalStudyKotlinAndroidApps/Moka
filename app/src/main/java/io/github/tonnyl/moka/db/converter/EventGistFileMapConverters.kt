@@ -2,7 +2,9 @@ package io.github.tonnyl.moka.db.converter
 
 import androidx.room.TypeConverter
 import io.github.tonnyl.moka.data.EventGistFile
-import io.github.tonnyl.moka.util.MoshiInstance
+import io.github.tonnyl.moka.util.json
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 
 object EventGistFileMapConverters {
 
@@ -10,7 +12,9 @@ object EventGistFileMapConverters {
     @JvmStatic
     fun eventGistFileListToString(map: Map<String, EventGistFile>?): String? {
         return map?.let {
-            MoshiInstance.eventGistFileMapAdapter.toJson(it)
+            runCatching {
+                json.encodeToString(it)
+            }.getOrNull()
         }
     }
 
@@ -18,7 +22,9 @@ object EventGistFileMapConverters {
     @JvmStatic
     fun fromString(jsonString: String?): Map<String, EventGistFile>? {
         return jsonString?.let {
-            MoshiInstance.eventGistFileMapAdapter.fromJson(jsonString)
+            runCatching {
+                json.decodeFromString<Map<String, EventGistFile>>(it)
+            }.getOrNull()
         }
     }
 

@@ -1,6 +1,6 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
+import io.github.tonnyl.moka.fragment.Gist.GistOwner.Companion.repositoryOwner
 import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.Gist as RawGist
 
@@ -46,7 +46,7 @@ data class Gist2(
     /**
      * The HTML path to this resource.
      */
-    val resourcePath: Uri,
+    val resourcePath: String,
 
     /**
      * Identifies the date and time when the object was last updated.
@@ -56,7 +56,7 @@ data class Gist2(
     /**
      * The HTTP URL for this Gist.
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * Returns a boolean indicating whether the viewing user has starred this starrable.
@@ -98,7 +98,7 @@ fun RawGist.toGist(): Gist2 {
         isFork,
         isPublic,
         name,
-        owner?.fragments?.repositoryOwner?.toNonNullRepositoryOwner(),
+        gistOwner?.repositoryOwner()?.toNonNullRepositoryOwner(),
         pushedAt,
         resourcePath,
         updatedAt,

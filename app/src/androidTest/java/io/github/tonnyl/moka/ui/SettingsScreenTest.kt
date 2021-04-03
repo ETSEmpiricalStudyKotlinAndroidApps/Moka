@@ -8,8 +8,9 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.WindowInsets
+import com.google.accompanist.insets.ExperimentalAnimatedInsets
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.WindowInsets
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.serializers.store.SettingSerializer
 import io.github.tonnyl.moka.ui.settings.*
@@ -19,6 +20,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalAnimatedInsets
 class SettingsScreenTest {
 
     @get:Rule

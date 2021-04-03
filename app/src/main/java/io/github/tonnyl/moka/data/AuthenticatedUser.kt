@@ -1,29 +1,30 @@
 package io.github.tonnyl.moka.data
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 import kotlinx.datetime.Instant
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class AuthenticatedUser(
 
     val login: String,
 
-    @Json(name = "id")
+    @SerialName("id")
     val id: Long,
 
-    @Json(name = "node_id")
+    @SerialName("node_id")
     val nodeId: String,
 
-    @Json(name = "avatar_url")
+    @SerialName("avatar_url")
     val avatarUrl: String,
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     val htmlUrl: String,
 
     val type: String,
 
-    @Json(name = "site_admin")
+    @SerialName("site_admin")
     val siteAdmin: Boolean,
 
     val name: String?,
@@ -40,37 +41,39 @@ data class AuthenticatedUser(
 
     val bio: String?,
 
-    @Json(name = "public_repos")
+    @SerialName("public_repos")
     val publicRepos: Int,
 
-    @Json(name = "public_gists")
+    @SerialName("public_gists")
     val publicGists: Int,
 
     val followers: Long,
 
     val following: Long,
 
-    @Json(name = "created_at")
+    @SerialName("created_at")
+    @Contextual
     val createdAt: Instant,
 
-    @Json(name = "updated_at")
+    @SerialName("updated_at")
+    @Contextual
     val updatedAt: Instant,
 
-    @Json(name = "private_gists")
+    @SerialName("private_gists")
     val privateGists: Int,
 
-    @Json(name = "total_private_repos")
+    @SerialName("total_private_repos")
     val totalPrivateRepos: Int,
 
-    @Json(name = "owned_private_repos")
+    @SerialName("owned_private_repos")
     val ownedPrivateRepos: Int,
 
-    @Json(name = "disk_usage")
+    @SerialName("disk_usage")
     val diskUsage: Long,
 
     val collaborators: Int,
 
-    @Json(name = "two_factor_authentication")
+    @SerialName("two_factor_authentication")
     val twoFactorAuthentication: Boolean
 
 )

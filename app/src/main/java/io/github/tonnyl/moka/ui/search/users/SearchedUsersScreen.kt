@@ -21,7 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import dev.chrisbanes.accompanist.coil.CoilImage
+import com.google.accompanist.coil.CoilImage
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.SearchedOrganizationItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem

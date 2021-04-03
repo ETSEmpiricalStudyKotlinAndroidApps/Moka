@@ -4,9 +4,8 @@ import io.github.tonnyl.moka.mutations.UpdateSubscriptionMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.SubscriptionState
 import io.github.tonnyl.moka.type.UpdateSubscriptionInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -21,16 +20,14 @@ suspend fun updateSubscription(
     subscribableId: String,
     state: SubscriptionState
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                UpdateSubscriptionMutation(
-                    UpdateSubscriptionInput(
-                        state = state,
-                        subscribableId = subscribableId
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            UpdateSubscriptionMutation(
+                UpdateSubscriptionInput(
+                    state = state,
+                    subscribableId = subscribableId
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

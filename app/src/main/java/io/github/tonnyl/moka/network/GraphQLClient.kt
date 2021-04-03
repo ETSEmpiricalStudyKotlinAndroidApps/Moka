@@ -1,14 +1,14 @@
 package io.github.tonnyl.moka.network
 
-import android.net.Uri
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.CustomTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue
-import io.github.tonnyl.moka.type.CustomType
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ResponseAdapter
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
+import io.github.tonnyl.moka.type.CustomScalars
 import kotlinx.datetime.Instant
-import okhttp3.*
-import okhttp3.logging.HttpLoggingInterceptor
-import java.text.ParseException
 import java.util.concurrent.atomic.AtomicReference
 
 object GraphQLClient {
@@ -17,130 +17,77 @@ object GraphQLClient {
 
     private const val SERVER_URL = "https://api.github.com/graphql"
 
-    private val okHttpClient: OkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .authenticator(object : Authenticator {
+    object DateCustomScalarAdapter : ResponseAdapter<Instant> {
 
-                override fun authenticate(route: Route?, response: Response): Request? {
-                    return response.request
-                        .newBuilder()
-                        .addHeader("Authorization", "Bearer ${accessToken.get()}")
-                        .build()
-                }
-
-            })
-            .build()
-    }
-
-    private val dateCustomTypeAdapter = object : CustomTypeAdapter<Instant> {
-
-        override fun encode(value: Instant): CustomTypeValue<*> {
-            return CustomTypeValue.GraphQLString(value.toString())
+        override fun fromResponse(
+            reader: JsonReader,
+            responseAdapterCache: ResponseAdapterCache
+        ): Instant {
+            return Instant.parse(reader.nextString()!!)
         }
 
-        override fun decode(value: CustomTypeValue<*>): Instant {
-            try {
-                return Instant.parse(value.value.toString())
-            } catch (e: ParseException) {
-                throw RuntimeException(e)
-            }
-        }
-
-    }
-
-    private val uriCustomTypeAdapter = object : CustomTypeAdapter<Uri> {
-
-        override fun encode(value: Uri): CustomTypeValue<*> {
-            return CustomTypeValue.GraphQLString(value.toString())
-        }
-
-        override fun decode(value: CustomTypeValue<*>): Uri {
-            try {
-                return Uri.parse(value.value.toString())
-            } catch (e: ParseException) {
-                throw RuntimeException(e)
-            }
-        }
-
-    }
-
-    private val htmlCustomTypeAdapter = object : CustomTypeAdapter<String> {
-
-        override fun encode(value: String): CustomTypeValue<*> {
-            return CustomTypeValue.GraphQLString(value)
-        }
-
-        override fun decode(value: CustomTypeValue<*>): String {
-            return value.value.toString()
-        }
-
-    }
-
-    private val idCustomTypeAdapter = object : CustomTypeAdapter<String> {
-
-        override fun encode(value: String): CustomTypeValue<*> {
-            return CustomTypeValue.GraphQLString(value)
-        }
-
-        override fun decode(value: CustomTypeValue<*>): String {
-            return value.value.toString()
-        }
-
-    }
-
-    private val gitObjectIDTypeAdapter = object : CustomTypeAdapter<String> {
-
-        override fun encode(value: String): CustomTypeValue<*> {
-            return CustomTypeValue.GraphQLString(value)
-        }
-
-        override fun decode(value: CustomTypeValue<*>): String {
-            return value.value.toString()
-        }
-
-    }
-
-    private val gitSSHRemoteTypeAdapter = object : CustomTypeAdapter<String> {
-
-        override fun encode(value: String): CustomTypeValue<*> {
-            return CustomTypeValue.GraphQLString(value)
-        }
-
-        override fun decode(value: CustomTypeValue<*>): String {
-            return value.value.toString()
+        override fun toResponse(
+            writer: JsonWriter,
+            responseAdapterCache: ResponseAdapterCache,
+            value: Instant
+        ) {
+            writer.value(value.toString())
         }
 
     }
 
     val apolloClient: ApolloClient by lazy {
-        ApolloClient.builder()
-            .okHttpClient(okHttpClient)
-            .addCustomTypeAdapter(
-                CustomType.DATETIME,
-                dateCustomTypeAdapter
+        ApolloClient.Builder()
+            .networkTransport(
+                networkTransport = ApolloHttpNetworkTransport(
+                    serverUrl = SERVER_URL,
+                    headers = mapOf(
+                        "Accept" to "application/json",
+                        "Content-Type" to "application/json",
+                        "Authorization" to "Bearer ${accessToken.get()}"
+                    )
+                )
             )
-            .addCustomTypeAdapter(
-                CustomType.URI,
-                uriCustomTypeAdapter
+            .addScalarTypeAdapter(
+                customScalar = CustomScalars.GitTimestamp,
+                customScalarAdapter = DateCustomScalarAdapter
             )
-            .addCustomTypeAdapter(
-                CustomType.HTML,
-                htmlCustomTypeAdapter
+            .addScalarTypeAdapter(
+                customScalar = CustomScalars.DateTime,
+                customScalarAdapter = DateCustomScalarAdapter
             )
-            .addCustomTypeAdapter(
-                CustomType.ID,
-                idCustomTypeAdapter
+            .addScalarTypeAdapter(
+                customScalar = CustomScalars.PreciseDateTime,
+                customScalarAdapter = DateCustomScalarAdapter
             )
-            .addCustomTypeAdapter(
-                CustomType.GITOBJECTID,
-                gitObjectIDTypeAdapter
+            .addScalarTypeAdapter(
+                customScalar = CustomScalars.Date,
+                customScalarAdapter = DateCustomScalarAdapter
             )
-            .addCustomTypeAdapter(
-                CustomType.GITSSHREMOTE,
-                gitSSHRemoteTypeAdapter
+            .addScalarTypeAdapter(
+                customScalar = CustomScalars.HTML,
+                customScalarAdapter = StringResponseAdapter
             )
-            .serverUrl(SERVER_URL)
+            .addScalarTypeAdapter(
+                customScalar = CustomScalars.URI,
+                customScalarAdapter = StringResponseAdapter
+            )
+            .addScalarTypeAdapter(
+                customScalar = CustomScalars.GitObjectID,
+                customScalarAdapter = StringResponseAdapter
+            )
+            .addScalarTypeAdapter(
+                customScalar = CustomScalars.GitSSHRemote,
+                customScalarAdapter = StringResponseAdapter
+            )
+            .addScalarTypeAdapter(
+                customScalar = CustomScalars.X509Certificate,
+                customScalarAdapter = StringResponseAdapter
+            )
+            .addScalarTypeAdapter(
+                customScalar = CustomScalars.GitRefname,
+                customScalarAdapter = StringResponseAdapter
+            )
             .build()
     }
 

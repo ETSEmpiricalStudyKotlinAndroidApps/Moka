@@ -4,9 +4,8 @@ import io.github.tonnyl.moka.mutations.AddReactionMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.AddReactionInput
 import io.github.tonnyl.moka.type.ReactionContent
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -21,16 +20,14 @@ suspend fun addReaction(
     subjectId: String,
     content: ReactionContent
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                AddReactionMutation(
-                    AddReactionInput(
-                        subjectId = subjectId,
-                        content = content
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            AddReactionMutation(
+                AddReactionInput(
+                    subjectId = subjectId,
+                    content = content
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

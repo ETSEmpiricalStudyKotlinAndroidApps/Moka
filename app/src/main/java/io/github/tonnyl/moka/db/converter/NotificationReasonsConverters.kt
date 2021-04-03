@@ -8,7 +8,9 @@ object NotificationReasonsConverters {
     @TypeConverter
     @JvmStatic
     fun toNotificationReasons(value: String): NotificationReasons {
-        return NotificationReasons.valueOf(value)
+        return runCatching {
+            NotificationReasons.valueOf(value)
+        }.getOrDefault(NotificationReasons.OTHER)
     }
 
     @TypeConverter

@@ -2,34 +2,38 @@ package io.github.tonnyl.moka.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 import kotlinx.datetime.Instant
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Gist(
 
     @ColumnInfo(name = "id")
     var id: String,
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
     @ColumnInfo(name = "files")
+    @Contextual
     var files: Map<String, EventGistFile>,
 
     // note the difference of serialized name, column name and field name
-    @Json(name = "public")
+    @SerialName("public")
     @ColumnInfo(name = "is_public")
     var isPublic: Boolean,
 
-    @Json(name = "created_at")
+    @SerialName("created_at")
     @ColumnInfo(name = "created_at")
+    @Contextual
     var createdAt: Instant,
 
-    @Json(name = "updated_at")
+    @SerialName("updated_at")
     @ColumnInfo(name = "updated_at")
+    @Contextual
     var updatedAt: Instant,
 
     @ColumnInfo(name = "description")
@@ -39,6 +43,7 @@ data class Gist(
     var comments: Int,
 
     @Embedded(prefix = "owner_")
+    @Contextual
     var owner: EventActor,
 
     @ColumnInfo(name = "truncated")

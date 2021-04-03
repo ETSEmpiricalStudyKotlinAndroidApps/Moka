@@ -7,6 +7,7 @@ import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.data.item.toNonNullIssueItem
 import io.github.tonnyl.moka.network.queries.queryIssues
+import io.github.tonnyl.moka.queries.IssuesQuery.Data.Repository.Issues.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -26,7 +27,7 @@ class IssuesDataSource(
                     perPage = params.loadSize,
                     after = params.key,
                     before = params.key
-                ).data()?.repository
+                ).data?.repository
 
                 repository?.issues?.nodes?.forEach { node ->
                     node?.let {
@@ -34,7 +35,7 @@ class IssuesDataSource(
                     }
                 }
 
-                val pageInfo = repository?.issues?.pageInfo?.fragments?.pageInfo
+                val pageInfo = repository?.issues?.pageInfo?.pageInfo()
 
                 LoadResult.Page(
                     data = list,

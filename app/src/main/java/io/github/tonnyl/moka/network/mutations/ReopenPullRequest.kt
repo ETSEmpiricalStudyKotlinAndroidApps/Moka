@@ -3,9 +3,8 @@ package io.github.tonnyl.moka.network.mutations
 import io.github.tonnyl.moka.mutations.ReopenPullRequestMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.ReopenPullRequestInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -16,13 +15,11 @@ import kotlinx.coroutines.withContext
  * @param pullRequestId ID of the pull request to be reopened.
  */
 suspend fun reopenPullRequest(pullRequestId: String) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                ReopenPullRequestMutation(
-                    ReopenPullRequestInput(pullRequestId = pullRequestId)
-                )
+    GraphQLClient.apolloClient
+        .mutate(
+            ReopenPullRequestMutation(
+                ReopenPullRequestInput(pullRequestId = pullRequestId)
             )
-            .execute()
-    }
+        )
+        .single()
 }

@@ -1,15 +1,100 @@
 package io.github.tonnyl.moka.data.item
 
-import android.net.Uri
-import androidx.annotation.WorkerThread
 import io.github.tonnyl.moka.data.Actor
 import io.github.tonnyl.moka.data.ReactionGroup
 import io.github.tonnyl.moka.data.toNonNullActor
 import io.github.tonnyl.moka.data.toNonNullReactionGroup
 import io.github.tonnyl.moka.fragment.*
+import io.github.tonnyl.moka.fragment.AddedToProjectEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.AssignedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.AssignedEventFragment.Assignee.Companion.issuePullRequestTimelineItemAssigneeFragment
+import io.github.tonnyl.moka.fragment.BaseRefChangedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.BaseRefForcePushedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.BaseRefForcePushedEventFragment.AfterCommit.Companion.pullRequestTimelineItemCommitFragment
+import io.github.tonnyl.moka.fragment.BaseRefForcePushedEventFragment.BeforeCommit.Companion.pullRequestTimelineItemCommitFragment
+import io.github.tonnyl.moka.fragment.BaseRefForcePushedEventFragment.Ref.Companion.pullRequestTimelineItemRefFragment
+import io.github.tonnyl.moka.fragment.ClosedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.ConvertedNoteToIssueEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.CrossReferencedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.CrossReferencedEventFragment.Source.Companion.referencedEventIssueFragment
+import io.github.tonnyl.moka.fragment.CrossReferencedEventFragment.Source.Companion.referencedEventPullRequestFragment
+import io.github.tonnyl.moka.fragment.DemilestonedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.DemilestonedEventFragment.Subject.Companion.milestoneItemIssueFragment
+import io.github.tonnyl.moka.fragment.DemilestonedEventFragment.Subject.Companion.milestoneItemPullRequestFragment
+import io.github.tonnyl.moka.fragment.DeployedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.DeployedEventFragment.Deployment.Companion.pullRequestTimelineItemDeploymentFragment
+import io.github.tonnyl.moka.fragment.DeploymentEnvironmentChangedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.DeploymentEnvironmentChangedEventFragment.DeploymentStatus.Deployment.Companion.pullRequestTimelineItemDeploymentFragment
+import io.github.tonnyl.moka.fragment.GitActorFragment.User.Companion.issuePullRequestTimelineItemUserFragment
+import io.github.tonnyl.moka.fragment.HeadRefDeletedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.HeadRefForcePushedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.HeadRefForcePushedEventFragment.AfterCommit.Companion.pullRequestTimelineItemCommitFragment
+import io.github.tonnyl.moka.fragment.HeadRefForcePushedEventFragment.BeforeCommit.Companion.pullRequestTimelineItemCommitFragment
+import io.github.tonnyl.moka.fragment.HeadRefForcePushedEventFragment.PullRequest.Companion.pullRequestTimelineItemPullRequest
+import io.github.tonnyl.moka.fragment.HeadRefForcePushedEventFragment.Ref.Companion.pullRequestTimelineItemRefFragment
+import io.github.tonnyl.moka.fragment.HeadRefRestoredEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.HeadRefRestoredEventFragment.PullRequest.Companion.pullRequestTimelineItemPullRequest
+import io.github.tonnyl.moka.fragment.IssueCommentFragment.Author.Companion.actor
+import io.github.tonnyl.moka.fragment.IssueCommentFragment.Editor.Companion.actor
+import io.github.tonnyl.moka.fragment.IssueCommentFragment.ReactionGroups.Companion.reactionGroup
+import io.github.tonnyl.moka.fragment.IssuePullRequestTimelineItemAssigneeFragment.Companion.issuePullRequestTimelineItemBotFragment
+import io.github.tonnyl.moka.fragment.IssuePullRequestTimelineItemAssigneeFragment.Companion.issuePullRequestTimelineItemMannequinFragment
+import io.github.tonnyl.moka.fragment.IssuePullRequestTimelineItemAssigneeFragment.Companion.issuePullRequestTimelineItemOrganizationFragment
+import io.github.tonnyl.moka.fragment.IssuePullRequestTimelineItemAssigneeFragment.Companion.issuePullRequestTimelineItemUserFragment
+import io.github.tonnyl.moka.fragment.LabeledEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.LabeledEventFragment.Label.Companion.issuePrLabelFragment
+import io.github.tonnyl.moka.fragment.LockedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.MarkedAsDuplicateEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.MergedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.MergedEventFragment.Commit.Companion.pullRequestTimelineItemCommitFragment
+import io.github.tonnyl.moka.fragment.MilestonedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.MovedColumnsInProjectEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.PinnedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.PullRequestCommitCommentThreadFragment.Commit.Companion.pullRequestTimelineItemCommitFragment
+import io.github.tonnyl.moka.fragment.PullRequestCommitCommentThreadFragment.PullRequest.Companion.pullRequestTimelineItemPullRequest
+import io.github.tonnyl.moka.fragment.PullRequestCommitFragment.Commit.Companion.pullRequestTimelineItemCommitFragment
+import io.github.tonnyl.moka.fragment.PullRequestCommitFragment.PullRequest.Companion.pullRequestTimelineItemPullRequest
+import io.github.tonnyl.moka.fragment.PullRequestReviewFragment.Author.Companion.actor
+import io.github.tonnyl.moka.fragment.PullRequestReviewFragment.Commit.Companion.pullRequestTimelineItemCommitFragment
+import io.github.tonnyl.moka.fragment.PullRequestReviewFragment.Editor.Companion.actor
+import io.github.tonnyl.moka.fragment.PullRequestReviewFragment.PullRequest.Companion.pullRequestTimelineItemPullRequest
+import io.github.tonnyl.moka.fragment.PullRequestReviewThreadFragment.PullRequest.Companion.pullRequestTimelineItemPullRequest
+import io.github.tonnyl.moka.fragment.PullRequestReviewThreadFragment.ResolvedBy.Companion.issuePullRequestTimelineItemUserFragment
+import io.github.tonnyl.moka.fragment.PullRequestTimelineItemCommitFragment.Author.Companion.gitActorFragment
+import io.github.tonnyl.moka.fragment.PullRequestTimelineItemCommitFragment.Committer.Companion.gitActorFragment
+import io.github.tonnyl.moka.fragment.PullRequestTimelineItemDeploymentFragment.Commit.Companion.pullRequestTimelineItemCommitFragment
+import io.github.tonnyl.moka.fragment.PullRequestTimelineItemDeploymentFragment.Creator.Companion.actor
+import io.github.tonnyl.moka.fragment.PullRequestTimelineItemDeploymentFragment.Ref.Companion.pullRequestTimelineItemRefFragment
+import io.github.tonnyl.moka.fragment.ReadyForReviewEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.ReadyForReviewEventFragment.PullRequest.Companion.pullRequestTimelineItemPullRequest
+import io.github.tonnyl.moka.fragment.ReferencedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.ReferencedEventFragment.Subject.Companion.referencedEventIssueFragment
+import io.github.tonnyl.moka.fragment.ReferencedEventFragment.Subject.Companion.referencedEventPullRequestFragment
+import io.github.tonnyl.moka.fragment.RemovedFromProjectEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.RenamedTitleEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.ReopenedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.ReviewDismissedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.ReviewDismissedEventFragment.Review.Companion.pullRequestReviewFragment
+import io.github.tonnyl.moka.fragment.ReviewRequestRemovedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.ReviewRequestRemovedEventFragment.PullRequest.Companion.pullRequestTimelineItemPullRequest
+import io.github.tonnyl.moka.fragment.ReviewRequestRemovedEventFragment.RequestedReviewer.Companion.issuePullRequestTimelineItemMannequinFragment
+import io.github.tonnyl.moka.fragment.ReviewRequestRemovedEventFragment.RequestedReviewer.Companion.issuePullRequestTimelineItemTeamFragment
+import io.github.tonnyl.moka.fragment.ReviewRequestRemovedEventFragment.RequestedReviewer.Companion.issuePullRequestTimelineItemUserFragment
+import io.github.tonnyl.moka.fragment.ReviewRequestedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.ReviewRequestedEventFragment.PullRequest.Companion.pullRequestTimelineItemPullRequest
+import io.github.tonnyl.moka.fragment.ReviewRequestedEventFragment.RequestedReviewer.Companion.issuePullRequestTimelineItemMannequinFragment
+import io.github.tonnyl.moka.fragment.ReviewRequestedEventFragment.RequestedReviewer.Companion.issuePullRequestTimelineItemTeamFragment
+import io.github.tonnyl.moka.fragment.ReviewRequestedEventFragment.RequestedReviewer.Companion.issuePullRequestTimelineItemUserFragment
+import io.github.tonnyl.moka.fragment.TransferredEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.TransferredEventFragment.FromRepository.Owner.Companion.issuePullRequestTimelineItemOrganizationFragment
+import io.github.tonnyl.moka.fragment.TransferredEventFragment.FromRepository.Owner.Companion.issuePullRequestTimelineItemUserFragment
+import io.github.tonnyl.moka.fragment.UnassignedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.UnassignedEventFragment.Assignee.Companion.issuePullRequestTimelineItemAssigneeFragment
+import io.github.tonnyl.moka.fragment.UnlabeledEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.UnlabeledEventFragment.Label.Companion.issuePrLabelFragment
+import io.github.tonnyl.moka.fragment.UnlockedEventFragment.Actor.Companion.actor
+import io.github.tonnyl.moka.fragment.UnpinnedEventFragment.Actor.Companion.actor
 import io.github.tonnyl.moka.type.*
-import io.github.tonnyl.moka.util.HtmlHandler
-import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.PullRequestTimelineItemPullRequest as RawPullRequestTimelineItemPullRequest
 
@@ -31,7 +116,7 @@ data class Bot(
     /**
      * A URL pointing to the GitHub App's public avatar.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     /**
      * The username of the actor.
@@ -41,7 +126,7 @@ data class Bot(
     /**
      * The HTTP URL for this bot
      */
-    val url: Uri
+    val url: String
 
 )
 
@@ -54,7 +139,7 @@ data class Mannequin(
     /**
      * A URL pointing to the GitHub App's public avatar.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     val id: String,
 
@@ -66,7 +151,7 @@ data class Mannequin(
     /**
      * The URL to this resource.
      */
-    val url: Uri
+    val url: String
 
 )
 
@@ -79,7 +164,7 @@ data class Organization(
     /**
      * A URL pointing to the organization's public avatar.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     val id: String,
 
@@ -96,7 +181,7 @@ data class Organization(
     /**
      * The HTTP URL for this organization.
      */
-    val url: Uri
+    val url: String
 
 )
 
@@ -108,7 +193,7 @@ data class User(
     /**
      * A URL pointing to the user's public avatar.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     val id: String,
 
@@ -125,7 +210,7 @@ data class User(
     /**
      * The HTTP URL for this user
      */
-    val url: Uri
+    val url: String
 
 )
 
@@ -138,7 +223,7 @@ data class Team(
     /**
      * A URL pointing to the team's avatar.
      */
-    val avatarUrl: Uri?,
+    val avatarUrl: String?,
 
     /**
      * The slug corresponding to the organization and team.
@@ -153,7 +238,7 @@ data class Team(
     /**
      * The HTTP URL for this team
      */
-    val url: Uri,
+    val url: String,
 
     val id: String
 
@@ -180,7 +265,7 @@ data class MilestoneItemIssue(
     /**
      * The HTTP URL for this issue
      */
-    val url: Uri
+    val url: String
 
 )
 
@@ -208,7 +293,7 @@ data class MilestoneItemPullRequest(
     /**
      * The HTTP URL for this pull request
      */
-    val url: Uri
+    val url: String
 
 )
 
@@ -236,7 +321,7 @@ data class Label(
     /**
      * The HTTP URL for this label.
      */
-    val url: Uri
+    val url: String
 
 )
 
@@ -273,12 +358,11 @@ data class Assignee(
 }
 
 fun IssuePullRequestTimelineItemAssigneeFragment?.toNonNullAssignee(): Assignee {
-    val assignee = this?.fragments
     return Assignee(
-        assignee?.issuePullRequestTimelineItemBotFragment?.toNonNullBot(),
-        assignee?.issuePullRequestTimelineItemMannequinFragment?.toNonNullMannequin(),
-        assignee?.issuePullRequestTimelineItemOrganizationFragment?.toNonNullOrganization(),
-        assignee?.issuePullRequestTimelineItemUserFragment?.toNonNullUser()
+        this?.issuePullRequestTimelineItemBotFragment()?.toNonNullBot(),
+        this?.issuePullRequestTimelineItemMannequinFragment()?.toNonNullMannequin(),
+        this?.issuePullRequestTimelineItemOrganizationFragment()?.toNonNullOrganization(),
+        this?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser()
     )
 }
 
@@ -340,14 +424,14 @@ data class PullRequestTimelineItemDeployment(
 
 fun PullRequestTimelineItemDeploymentFragment.toNonNullPullRequestTimelineItemDeployment(): PullRequestTimelineItemDeployment {
     return PullRequestTimelineItemDeployment(
-        commit?.fragments?.pullRequestTimelineItemCommitFragment?.toNonNullPullRequestTimelineItemCommit(),
+        commit?.pullRequestTimelineItemCommitFragment()?.toNonNullPullRequestTimelineItemCommit(),
         commitOid,
         createdAt,
-        creator.fragments.actor.toNonNullActor(),
+        creator.actor()?.toNonNullActor(),
         description,
         description,
         id,
-        ref?.fragments?.pullRequestTimelineItemRefFragment?.toNonNullPullRequestTimelineItemRef(),
+        ref?.pullRequestTimelineItemRefFragment()?.toNonNullPullRequestTimelineItemRef(),
         state,
         task,
         updatedAt
@@ -382,14 +466,14 @@ data class PullRequestTimelineItemCommit(
     /**
      * The HTTP URL for this commit
      */
-    val url: Uri
+    val url: String
 
 )
 
 fun PullRequestTimelineItemCommitFragment.toNonNullPullRequestTimelineItemCommit(): PullRequestTimelineItemCommit {
     return PullRequestTimelineItemCommit(
-        author?.fragments?.gitActorFragment?.toNonNullPullRequestTimelineItemGitActor(),
-        committer?.fragments?.gitActorFragment?.toNonNullPullRequestTimelineItemGitActor(),
+        author?.gitActorFragment()?.toNonNullPullRequestTimelineItemGitActor(),
+        committer?.gitActorFragment()?.toNonNullPullRequestTimelineItemGitActor(),
         message,
         oid,
         url
@@ -423,7 +507,7 @@ data class PullRequestTimelineItemPullRequest(
     /**
      * The HTTP URL for this pull request.
      */
-    val url: Uri
+    val url: String
 
 )
 
@@ -466,14 +550,14 @@ data class PullRequestTimelineItemPullRequestReview(
     /**
      * The HTTP URL permalink for this PullRequestReview.
      */
-    val url: Uri
+    val url: String
 
 )
 
 fun PullRequestReviewFragment.toNonNullPullRequestTimelineItemPullRequestReview(): PullRequestTimelineItemPullRequestReview {
     return PullRequestTimelineItemPullRequestReview(
         id,
-        author?.fragments?.actor?.toNonNullActor(),
+        author?.actor()?.toNonNullActor(),
         url
     )
 }
@@ -483,7 +567,7 @@ data class PullRequestTimelineItemGitActor(
     /**
      * A URL pointing to the author's public avatar.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     /**
      * The email in the Git commit.
@@ -507,7 +591,7 @@ fun GitActorFragment.toNonNullPullRequestTimelineItemGitActor(): PullRequestTime
         avatarUrl,
         email,
         name,
-        user?.fragments?.issuePullRequestTimelineItemUserFragment?.toNonNullUser()
+        user?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser()
     )
 }
 
@@ -533,7 +617,7 @@ data class AddedToProjectEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun AddedToProjectEventFragment.toNonNullAddedToProjectEvent(): AddedToProjectEvent {
-    return AddedToProjectEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
+    return AddedToProjectEvent(actor?.actor()?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -565,30 +649,27 @@ data class AssignedEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun AssignedEventFragment.toNonNullAssignedEvent(): AssignedEvent {
-    val assignee = assignee
-        ?.fragments
-        ?.issuePullRequestTimelineItemAssigneeFragment
-        ?.fragments
+    val assignee = assignee?.issuePullRequestTimelineItemAssigneeFragment()
 
     var assigneeLogin: String? = null
     var assigneeName: String? = null
 
-    assignee?.issuePullRequestTimelineItemBotFragment?.let {
+    assignee?.issuePullRequestTimelineItemBotFragment()?.let {
         assigneeLogin = it.login
         assigneeName = null
-    } ?: assignee?.issuePullRequestTimelineItemMannequinFragment?.let {
+    } ?: assignee?.issuePullRequestTimelineItemMannequinFragment()?.let {
         assigneeLogin = it.login
         assigneeName = null
-    } ?: assignee?.issuePullRequestTimelineItemOrganizationFragment?.let {
+    } ?: assignee?.issuePullRequestTimelineItemOrganizationFragment()?.let {
         assigneeLogin = it.login
         assigneeName = it.name
-    } ?: assignee?.issuePullRequestTimelineItemUserFragment?.let {
+    } ?: assignee?.issuePullRequestTimelineItemUserFragment()?.let {
         assigneeLogin = it.login
         assigneeName = it.name
     }
 
     return AssignedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
         assigneeLogin,
@@ -615,12 +696,12 @@ data class ClosedEvent(
     /**
      * The HTTP URL for this closed event.
      */
-    val url: Uri
+    val url: String
 
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun ClosedEventFragment.toNonNullClosedEvent(): ClosedEvent {
-    return ClosedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id, url)
+    return ClosedEvent(actor?.actor()?.toNonNullActor(), createdAt, id, url)
 }
 
 /**
@@ -643,7 +724,7 @@ data class ConvertedNoteToIssueEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun ConvertedNoteToIssueEventFragment.toNonNullConvertedNoteToIssueEvent(): ConvertedNoteToIssueEvent {
-    return ConvertedNoteToIssueEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
+    return ConvertedNoteToIssueEvent(actor?.actor()?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -682,12 +763,13 @@ data class CrossReferencedEvent(
 
 fun CrossReferencedEventFragment.toNonNullCrossReferencedEvent(): CrossReferencedEvent {
     return CrossReferencedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         isCrossRepository,
         id,
-        source.fragments.referencedEventIssueFragment?.toNonNullReferencedEventIssueFragmentItem(),
-        source.fragments.referencedEventPullRequestFragment?.toNonNullReferencedEventPullRequestFragmentItem()
+        source.referencedEventIssueFragment()?.toNonNullReferencedEventIssueFragmentItem(),
+        source.referencedEventPullRequestFragment()
+            ?.toNonNullReferencedEventPullRequestFragmentItem()
     )
 }
 
@@ -721,12 +803,12 @@ data class DemilestonedEvent(
 
 fun DemilestonedEventFragment.toNonNullDemilestonedEvent(): DemilestonedEvent {
     return DemilestonedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
         milestoneTitle,
-        subject.fragments.milestoneItemIssueFragment?.toNonNullMilestoneItemIssue(),
-        subject.fragments.milestoneItemPullRequestFragment?.toNonNullMilestoneItemPullRequest()
+        subject.milestoneItemIssueFragment()?.toNonNullMilestoneItemIssue(),
+        subject.milestoneItemPullRequestFragment()?.toNonNullMilestoneItemPullRequest()
     )
 }
 
@@ -793,22 +875,21 @@ data class IssueComment(
 
 ) : IssueTimelineItem, PullRequestTimelineItem
 
-@WorkerThread
 fun IssueCommentFragment.toNonNullIssueComment(
     login: String,
     repoName: String
 ): IssueComment {
     return IssueComment(
-        author?.fragments?.actor?.toNonNullActor(),
+        author?.actor()?.toNonNullActor(),
         authorAssociation,
         createdAt,
-        HtmlHandler.toHtml(body, login, repoName),
+        body,
         id,
-        editor?.fragments?.actor?.toNonNullActor(),
+        editor?.actor()?.toNonNullActor(),
         reactionGroups?.filter {
-            it.fragments.reactionGroup.users.totalCount > 0
-        }?.map {
-            it.fragments.reactionGroup.toNonNullReactionGroup()
+            (it.reactionGroup()?.users?.totalCount ?: 0) > 0
+        }?.mapNotNull {
+            it.reactionGroup()?.toNonNullReactionGroup()
         }?.toMutableList(),
         viewerCanDelete,
         viewerCanReact,
@@ -839,16 +920,16 @@ data class LabeledEvent(
     /**
      * Identifies the label associated with the 'labeled' event.
      */
-    val label: Label
+    val label: Label?
 
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun LabeledEventFragment.toNonNullLabeledEvent(): LabeledEvent {
     return LabeledEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
-        label.fragments.issuePrLabelFragment.toNonNullLabel()
+        label.issuePrLabelFragment()?.toNonNullLabel()
     )
 }
 
@@ -878,7 +959,7 @@ data class LockedEvent(
 
 fun LockedEventFragment.toNonNullLockedEvent(): LockedEvent {
     return LockedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
         lockReason
@@ -905,7 +986,7 @@ data class MarkedAsDuplicateEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun MarkedAsDuplicateEventFragment.toNonNullMarkedAsDuplicateEvent(): MarkedAsDuplicateEvent {
-    return MarkedAsDuplicateEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
+    return MarkedAsDuplicateEvent(actor?.actor()?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -933,7 +1014,7 @@ data class MilestonedEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun MilestonedEventFragment.toNonNullMilestonedEvent(): MilestonedEvent {
-    return MilestonedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id, milestoneTitle)
+    return MilestonedEvent(actor?.actor()?.toNonNullActor(), createdAt, id, milestoneTitle)
 }
 
 /**
@@ -956,7 +1037,7 @@ data class MovedColumnsInProjectEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun MovedColumnsInProjectEventFragment.toNonNullMovedColumnsInProjectEvent(): MovedColumnsInProjectEvent {
-    return MovedColumnsInProjectEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
+    return MovedColumnsInProjectEvent(actor?.actor()?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -979,7 +1060,7 @@ data class PinnedEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun PinnedEventFragment.toNonNullPinnedEvent(): PinnedEvent {
-    return PinnedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
+    return PinnedEvent(actor?.actor()?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1018,13 +1099,14 @@ data class ReferencedEvent(
 
 fun ReferencedEventFragment.toNonNullReferencedEvent(): ReferencedEvent {
     return ReferencedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
         isCrossRepository,
         isDirectReference,
-        subject.fragments.referencedEventIssueFragment?.toNonNullReferencedEventIssueFragmentItem(),
-        subject.fragments.referencedEventPullRequestFragment?.toNonNullReferencedEventPullRequestFragmentItem()
+        subject.referencedEventIssueFragment()?.toNonNullReferencedEventIssueFragmentItem(),
+        subject.referencedEventPullRequestFragment()
+            ?.toNonNullReferencedEventPullRequestFragmentItem()
     )
 }
 
@@ -1048,7 +1130,7 @@ data class RemovedFromProjectEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun RemovedFromProjectEventFragment.toNonNullRemovedFromProjectEvent(): RemovedFromProjectEvent {
-    return RemovedFromProjectEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
+    return RemovedFromProjectEvent(actor?.actor()?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1079,7 +1161,7 @@ data class RenamedTitleEvent(
 
 fun RenamedTitleEventFragment.toNonNullRenamedTitleEvent(): RenamedTitleEvent {
     return RenamedTitleEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         currentTitle,
         id,
@@ -1107,7 +1189,7 @@ data class ReopenedEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun ReopenedEventFragment.toNonNullReopenedEvent(): ReopenedEvent {
-    return ReopenedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
+    return ReopenedEvent(actor?.actor()?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1139,14 +1221,14 @@ data class TransferredEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun TransferredEventFragment.toNonNullTransferredEvent(): TransferredEvent {
-    val owner = fromRepository?.owner?.fragments
+    val owner = fromRepository?.owner
     return TransferredEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
         fromRepository?.nameWithOwner,
-        owner?.issuePullRequestTimelineItemOrganizationFragment?.toNonNullOrganization(),
-        owner?.issuePullRequestTimelineItemUserFragment?.toNonNullUser()
+        owner?.issuePullRequestTimelineItemOrganizationFragment()?.toNonNullOrganization(),
+        owner?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser()
     )
 }
 
@@ -1173,10 +1255,10 @@ data class UnassignedEvent(
 
 fun UnassignedEventFragment.toNonNullUnassignedEvent(): UnassignedEvent {
     return UnassignedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
-        assignee?.fragments?.issuePullRequestTimelineItemAssigneeFragment.toNonNullAssignee()
+        assignee?.issuePullRequestTimelineItemAssigneeFragment().toNonNullAssignee()
     )
 }
 
@@ -1200,16 +1282,16 @@ data class UnlabeledEvent(
     /**
      * Identifies the label associated with the 'unlabeled' event.
      */
-    val label: Label
+    val label: Label?
 
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun UnlabeledEventFragment.toNonNullUnlabeledEvent(): UnlabeledEvent {
     return UnlabeledEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
-        label.fragments.issuePrLabelFragment.toNonNullLabel()
+        label.issuePrLabelFragment()?.toNonNullLabel()
     )
 }
 
@@ -1236,7 +1318,7 @@ data class UnlockedEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun UnlockedEventFragment.toNonNullUnlockedEvent(): UnlockedEvent {
-    return UnlockedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
+    return UnlockedEvent(actor?.actor()?.toNonNullActor(), createdAt, id)
 }
 
 /**
@@ -1259,7 +1341,7 @@ data class UnpinnedEvent(
 ) : IssueTimelineItem, PullRequestTimelineItem
 
 fun UnpinnedEventFragment.toNonNullUnpinnedEvent(): UnpinnedEvent {
-    return UnpinnedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
+    return UnpinnedEvent(actor?.actor()?.toNonNullActor(), createdAt, id)
 }
 
 data class ReferencedEventIssueFragmentItem(
@@ -1307,7 +1389,7 @@ data class BaseRefChangedEvent(
 ) : PullRequestTimelineItem
 
 fun BaseRefChangedEventFragment.toNonNullBaseRefChangedEvent(): BaseRefChangedEvent {
-    return BaseRefChangedEvent(actor?.fragments?.actor?.toNonNullActor(), createdAt, id)
+    return BaseRefChangedEvent(actor?.actor()?.toNonNullActor(), createdAt, id)
 }
 
 data class BaseRefForcePushedEvent(
@@ -1343,12 +1425,14 @@ data class BaseRefForcePushedEvent(
 
 fun BaseRefForcePushedEventFragment.toNonNullBaseRefForcePushedEvent(): BaseRefForcePushedEvent {
     return BaseRefForcePushedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
-        afterCommit?.fragments?.pullRequestTimelineItemCommitFragment?.toNonNullPullRequestTimelineItemCommit(),
-        beforeCommit?.fragments?.pullRequestTimelineItemCommitFragment?.toNonNullPullRequestTimelineItemCommit(),
+        actor?.actor()?.toNonNullActor(),
+        afterCommit?.pullRequestTimelineItemCommitFragment()
+            ?.toNonNullPullRequestTimelineItemCommit(),
+        beforeCommit?.pullRequestTimelineItemCommitFragment()
+            ?.toNonNullPullRequestTimelineItemCommit(),
         createdAt,
         id,
-        ref?.fragments?.pullRequestTimelineItemRefFragment?.toNonNullPullRequestTimelineItemRef()
+        ref?.pullRequestTimelineItemRefFragment()?.toNonNullPullRequestTimelineItemRef()
     )
 }
 
@@ -1357,27 +1441,28 @@ data class PullRequestCommit(
     /**
      * The Git commit object
      */
-    val commit: PullRequestTimelineItemCommit,
+    val commit: PullRequestTimelineItemCommit?,
 
     override val id: String,
 
     /**
      * The pull request this commit belongs to
      */
-    val pullRequest: PullRequestTimelineItemPullRequest,
+    val pullRequest: PullRequestTimelineItemPullRequest?,
 
     /**
      * The HTTP URL for this pull request commit
      */
-    val url: Uri
+    val url: String
 
 ) : PullRequestTimelineItem
 
 fun PullRequestCommitFragment.toNonNullPullRequestCommit(): PullRequestCommit {
     return PullRequestCommit(
-        commit.fragments.pullRequestTimelineItemCommitFragment.toNonNullPullRequestTimelineItemCommit(),
+        commit.pullRequestTimelineItemCommitFragment()?.toNonNullPullRequestTimelineItemCommit(),
         id,
-        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        pullRequest.pullRequestTimelineItemPullRequest()
+            ?.toNonNullPullRequestTimelineItemPullRequest(),
         url
     )
 }
@@ -1387,7 +1472,7 @@ data class PullRequestCommitCommentThread(
     /**
      * The commit the comments were made on.
      */
-    val commit: PullRequestTimelineItemCommit,
+    val commit: PullRequestTimelineItemCommit?,
 
     override val id: String,
 
@@ -1404,17 +1489,18 @@ data class PullRequestCommitCommentThread(
     /**
      * The pull request this commit comment thread belongs to.
      */
-    val pullRequest: PullRequestTimelineItemPullRequest
+    val pullRequest: PullRequestTimelineItemPullRequest?
 
 ) : PullRequestTimelineItem
 
 fun PullRequestCommitCommentThreadFragment.toNonNullPullRequestCommitCommentThread(): PullRequestCommitCommentThread {
     return PullRequestCommitCommentThread(
-        commit.fragments.pullRequestTimelineItemCommitFragment.toNonNullPullRequestTimelineItemCommit(),
+        commit.pullRequestTimelineItemCommitFragment()?.toNonNullPullRequestTimelineItemCommit(),
         id,
         path,
         position,
-        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest()
+        pullRequest.pullRequestTimelineItemPullRequest()
+            ?.toNonNullPullRequestTimelineItemPullRequest()
     )
 }
 
@@ -1438,10 +1524,10 @@ data class DeployedEvent(
 
 fun DeployedEventFragment.toNonNullDeployedEvent(): DeployedEvent {
     return DeployedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
-        deployment.fragments.pullRequestTimelineItemDeploymentFragment.environment
+        deployment.pullRequestTimelineItemDeploymentFragment()?.environment
     )
 }
 
@@ -1463,7 +1549,7 @@ data class DeploymentEnvironmentChangedEvent(
     /**
      * Identifies the deployment associated with status.
      */
-    val deployment: PullRequestTimelineItemDeployment,
+    val deployment: PullRequestTimelineItemDeployment?,
 
     override val id: String
 
@@ -1471,13 +1557,12 @@ data class DeploymentEnvironmentChangedEvent(
 
 fun DeploymentEnvironmentChangedEventFragment.toNonNullDeploymentEnvironmentChangedEvent(): DeploymentEnvironmentChangedEvent {
     return DeploymentEnvironmentChangedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         deploymentStatus
             .deployment
-            .fragments
-            .pullRequestTimelineItemDeploymentFragment
-            .toNonNullPullRequestTimelineItemDeployment(),
+            .pullRequestTimelineItemDeploymentFragment()
+            ?.toNonNullPullRequestTimelineItemDeployment(),
         id
     )
 }
@@ -1508,7 +1593,7 @@ data class HeadRefDeletedEvent(
 
 fun HeadRefDeletedEventFragment.toNonNullHeadRefDeletedEvent(): HeadRefDeletedEvent {
     return HeadRefDeletedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
         headRefName
@@ -1545,7 +1630,7 @@ data class HeadRefForcePushedEvent(
     /**
      * PullRequest referenced by event.
      */
-    val pullRequest: PullRequestTimelineItemPullRequest,
+    val pullRequest: PullRequestTimelineItemPullRequest?,
 
     /**
      * Identifies the fully qualified ref name for the 'head_ref_force_pushed' event.
@@ -1556,13 +1641,14 @@ data class HeadRefForcePushedEvent(
 
 fun HeadRefForcePushedEventFragment.toNonNullHeadRefForcePushedEvent(): HeadRefForcePushedEvent {
     return HeadRefForcePushedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
-        afterCommit?.fragments?.pullRequestTimelineItemCommitFragment?.oid,
-        beforeCommit?.fragments?.pullRequestTimelineItemCommitFragment?.oid,
+        actor?.actor()?.toNonNullActor(),
+        afterCommit?.pullRequestTimelineItemCommitFragment()?.oid,
+        beforeCommit?.pullRequestTimelineItemCommitFragment()?.oid,
         createdAt,
         id,
-        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
-        ref?.fragments?.pullRequestTimelineItemRefFragment?.toNonNullPullRequestTimelineItemRef()
+        pullRequest.pullRequestTimelineItemPullRequest()
+            ?.toNonNullPullRequestTimelineItemPullRequest(),
+        ref?.pullRequestTimelineItemRefFragment()?.toNonNullPullRequestTimelineItemRef()
     )
 }
 
@@ -1593,18 +1679,19 @@ data class HeadRefRestoredEvent(
      */
     val pullRequestHeadRefName: String,
 
-    val pullRequest: PullRequestTimelineItemPullRequest
+    val pullRequest: PullRequestTimelineItemPullRequest?
 
 ) : PullRequestTimelineItem
 
 fun HeadRefRestoredEventFragment.toNonNullHeadRefRestoredEvent(): HeadRefRestoredEvent {
     return HeadRefRestoredEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
         pullRequest.baseRefName,
         pullRequest.headRefName,
-        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest()
+        pullRequest.pullRequestTimelineItemPullRequest()
+            ?.toNonNullPullRequestTimelineItemPullRequest()
     )
 }
 
@@ -1635,11 +1722,11 @@ data class MergedEvent(
 
 fun MergedEventFragment.toNonNullMergedEvent(): MergedEvent {
     return MergedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
         mergeRefName,
-        commit?.fragments?.pullRequestTimelineItemCommitFragment?.oid
+        commit?.pullRequestTimelineItemCommitFragment()?.oid
     )
 }
 
@@ -1705,7 +1792,7 @@ data class PullRequestReview(
     /**
      * Identifies the pull request associated with this pull request review.
      */
-    val pullRequest: PullRequestTimelineItemPullRequest,
+    val pullRequest: PullRequestTimelineItemPullRequest?,
 
     /**
      * Identifies the current state of the pull request review.
@@ -1725,7 +1812,7 @@ data class PullRequestReview(
     /**
      * The HTTP URL permalink for this PullRequestReview.
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * Check if the current viewer can delete this object.
@@ -1758,19 +1845,20 @@ data class PullRequestReview(
 
 fun PullRequestReviewFragment.toNonNullPullRequestReview(): PullRequestReview {
     return PullRequestReview(
-        author?.fragments?.actor?.toNonNullActor(),
+        author?.actor()?.toNonNullActor(),
         authorAssociation,
         body,
         bodyHTML,
-        commit?.fragments?.pullRequestTimelineItemCommitFragment?.toNonNullPullRequestTimelineItemCommit(),
+        commit?.pullRequestTimelineItemCommitFragment()?.toNonNullPullRequestTimelineItemCommit(),
         createdAt,
         createdViaEmail,
-        editor?.fragments?.actor?.toNonNullActor(),
+        editor?.actor()?.toNonNullActor(),
         id,
         includesCreatedEdit,
         lastEditedAt,
         publishedAt,
-        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        pullRequest.pullRequestTimelineItemPullRequest()
+            ?.toNonNullPullRequestTimelineItemPullRequest(),
         state,
         submittedAt,
         updatedAt,
@@ -1801,7 +1889,7 @@ data class PullRequestReviewThread(
     /**
      * Identifies the pull request associated with this thread.
      */
-    val pullRequest: PullRequestTimelineItemPullRequest,
+    val pullRequest: PullRequestTimelineItemPullRequest?,
 
     /**
      * Whether or not the viewer can resolve this thread
@@ -1819,8 +1907,9 @@ fun PullRequestReviewThreadFragment.toNonNullPullRequestReviewThread(): PullRequ
     return PullRequestReviewThread(
         id,
         isResolved,
-        resolvedBy?.fragments?.issuePullRequestTimelineItemUserFragment?.toNonNullUser(),
-        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        resolvedBy?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser(),
+        pullRequest.pullRequestTimelineItemPullRequest()
+            ?.toNonNullPullRequestTimelineItemPullRequest(),
         viewerCanResolve,
         viewerCanUnresolve
     )
@@ -1846,21 +1935,22 @@ data class ReadyForReviewEvent(
     /**
      * PullRequest referenced by event.
      */
-    val pullRequest: PullRequestTimelineItemPullRequest,
+    val pullRequest: PullRequestTimelineItemPullRequest?,
 
     /**
      * The HTTP URL for this ready for review event.
      */
-    val url: Uri
+    val url: String
 
 ) : PullRequestTimelineItem
 
 fun ReadyForReviewEventFragment.toNonNullReadyForReviewEvent(): ReadyForReviewEvent {
     return ReadyForReviewEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
-        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
+        pullRequest.pullRequestTimelineItemPullRequest()
+            ?.toNonNullPullRequestTimelineItemPullRequest(),
         url
     )
 }
@@ -1898,19 +1988,19 @@ data class ReviewDismissedEvent(
 
     val review: PullRequestTimelineItemPullRequestReview?,
 
-    val url: Uri
+    val url: String
 
 ) : PullRequestTimelineItem
 
 fun ReviewDismissedEventFragment.toNonNullReviewDismissedEvent(): ReviewDismissedEvent {
     return ReviewDismissedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         dismissalMessage,
         dismissalMessageHTML,
         id,
         previousReviewState,
-        review?.fragments?.pullRequestReviewFragment?.toNonNullPullRequestTimelineItemPullRequestReview(),
+        review?.pullRequestReviewFragment()?.toNonNullPullRequestTimelineItemPullRequestReview(),
         url
     )
 }
@@ -1935,7 +2025,7 @@ data class ReviewRequestRemovedEvent(
     /**
      * PullRequest referenced by event.
      */
-    val pullRequest: PullRequestTimelineItemPullRequest,
+    val pullRequest: PullRequestTimelineItemPullRequest?,
 
     val requestedReviewerTeam: Team?,
 
@@ -1947,13 +2037,14 @@ data class ReviewRequestRemovedEvent(
 
 fun ReviewRequestRemovedEventFragment.toNonNullReviewRequestRemovedEvent(): ReviewRequestRemovedEvent {
     return ReviewRequestRemovedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
-        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
-        requestedReviewer?.fragments?.issuePullRequestTimelineItemTeamFragment?.toNonNullTeam(),
-        requestedReviewer?.fragments?.issuePullRequestTimelineItemUserFragment?.toNonNullUser(),
-        requestedReviewer?.fragments?.issuePullRequestTimelineItemMannequinFragment?.toNonNullMannequin()
+        pullRequest.pullRequestTimelineItemPullRequest()
+            ?.toNonNullPullRequestTimelineItemPullRequest(),
+        requestedReviewer?.issuePullRequestTimelineItemTeamFragment()?.toNonNullTeam(),
+        requestedReviewer?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser(),
+        requestedReviewer?.issuePullRequestTimelineItemMannequinFragment()?.toNonNullMannequin()
     )
 }
 
@@ -1977,7 +2068,7 @@ data class ReviewRequestedEvent(
     /**
      * PullRequest referenced by event.
      */
-    val pullRequest: PullRequestTimelineItemPullRequest,
+    val pullRequest: PullRequestTimelineItemPullRequest?,
 
     val requestedReviewerTeam: Team?,
 
@@ -1987,7 +2078,6 @@ data class ReviewRequestedEvent(
 
 ) : PullRequestTimelineItem {
 
-    @IgnoredOnParcel
     val requestedReviewerLogin = requestedReviewerUser?.login
         ?: requestedReviewerTeam?.combinedSlug
         ?: requestedReviewerMannequin?.login
@@ -1996,12 +2086,13 @@ data class ReviewRequestedEvent(
 
 fun ReviewRequestedEventFragment.toNonNullReviewRequestedEvent(): ReviewRequestedEvent {
     return ReviewRequestedEvent(
-        actor?.fragments?.actor?.toNonNullActor(),
+        actor?.actor()?.toNonNullActor(),
         createdAt,
         id,
-        pullRequest.fragments.pullRequestTimelineItemPullRequest.toNonNullPullRequestTimelineItemPullRequest(),
-        requestedReviewer?.fragments?.issuePullRequestTimelineItemTeamFragment?.toNonNullTeam(),
-        requestedReviewer?.fragments?.issuePullRequestTimelineItemUserFragment?.toNonNullUser(),
-        requestedReviewer?.fragments?.issuePullRequestTimelineItemMannequinFragment?.toNonNullMannequin()
+        pullRequest.pullRequestTimelineItemPullRequest()
+            ?.toNonNullPullRequestTimelineItemPullRequest(),
+        requestedReviewer?.issuePullRequestTimelineItemTeamFragment()?.toNonNullTeam(),
+        requestedReviewer?.issuePullRequestTimelineItemUserFragment()?.toNonNullUser(),
+        requestedReviewer?.issuePullRequestTimelineItemMannequinFragment()?.toNonNullMannequin()
     )
 }

@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.data
 
+import io.github.tonnyl.moka.fragment.Ref.Target.Companion.gitObject
 import io.github.tonnyl.moka.fragment.Ref as RawRef
 
 /**
@@ -22,7 +23,7 @@ data class Ref(
     /**
      * The object the ref points to.
      */
-    val target: GitObject
+    val target: GitObject?
 
 )
 
@@ -31,6 +32,6 @@ fun RawRef.toNonNullRef(): Ref {
         id,
         name,
         prefix,
-        target.fragments.gitObject.toNonNullGitObject()
+        target.gitObject()?.toNonNullGitObject()
     )
 }

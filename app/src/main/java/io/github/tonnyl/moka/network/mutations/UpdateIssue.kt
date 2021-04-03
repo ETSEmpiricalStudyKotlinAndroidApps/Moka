@@ -1,13 +1,12 @@
 package io.github.tonnyl.moka.network.mutations
 
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.mutations.UpdateIssueMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.IssueState
 import io.github.tonnyl.moka.type.UpdateIssueInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -34,22 +33,20 @@ suspend fun updateIssue(
     state: IssueState? = null,
     projectIds: List<String>? = null
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                UpdateIssueMutation(
-                    UpdateIssueInput(
-                        id = id,
-                        title = Input.optional(title),
-                        body = Input.optional(body),
-                        assigneeIds = Input.optional(assigneeIds),
-                        milestoneId = Input.optional(milestoneId),
-                        labelIds = Input.optional(labelIds),
-                        state = Input.optional(state),
-                        projectIds = Input.optional(projectIds)
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            UpdateIssueMutation(
+                UpdateIssueInput(
+                    id = id,
+                    title = Input.Present(title),
+                    body = Input.Present(body),
+                    assigneeIds = Input.Present(assigneeIds),
+                    milestoneId = Input.Present(milestoneId),
+                    labelIds = Input.Present(labelIds),
+                    state = Input.Present(state),
+                    projectIds = Input.Present(projectIds)
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

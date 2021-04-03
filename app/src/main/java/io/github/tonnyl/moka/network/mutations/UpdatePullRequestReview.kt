@@ -3,9 +3,8 @@ package io.github.tonnyl.moka.network.mutations
 import io.github.tonnyl.moka.mutations.UpdatePullRequestReviewMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.UpdatePullRequestReviewInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -20,16 +19,14 @@ suspend fun updatePullRequestReview(
     pullRequestReviewId: String,
     body: String
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                UpdatePullRequestReviewMutation(
-                    UpdatePullRequestReviewInput(
-                        pullRequestReviewId = pullRequestReviewId,
-                        body = body
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            UpdatePullRequestReviewMutation(
+                UpdatePullRequestReviewInput(
+                    pullRequestReviewId = pullRequestReviewId,
+                    body = body
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

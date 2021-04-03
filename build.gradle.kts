@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven {
             url = uri("https://kotlin.bintray.com/kotlinx/")
         }
@@ -17,13 +17,15 @@ buildscript {
         classpath(Deps.GradlePlugin.kotlin)
         classpath(Deps.GradlePlugin.googleServices)
         classpath(Deps.GradlePlugin.firebaseCrashlyticsGradle)
+        classpath(Deps.GradlePlugin.serialization)
+        classpath(Deps.GradlePlugin.apollo)
     }
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven {
             url = uri("https://kotlin.bintray.com/kotlinx/")
         }

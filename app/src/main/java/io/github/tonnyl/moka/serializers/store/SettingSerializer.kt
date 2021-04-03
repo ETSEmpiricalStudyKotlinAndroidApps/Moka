@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.serializers.store
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
+import com.google.protobuf.InvalidProtocolBufferException
 import io.github.tonnyl.moka.proto.Settings
 import java.io.InputStream
 import java.io.OutputStream
@@ -22,15 +23,15 @@ object SettingSerializer : Serializer<Settings> {
             }
             .build()
 
-    override fun readFrom(input: InputStream): Settings {
+    override suspend fun readFrom(input: InputStream): Settings {
         try {
             return Settings.parseFrom(input)
-        } catch (e: Exception) {
+        } catch (e: InvalidProtocolBufferException) {
             throw CorruptionException("Cannot read proto.", e)
         }
     }
 
-    override fun writeTo(t: Settings, output: OutputStream) {
+    override suspend fun writeTo(t: Settings, output: OutputStream) {
         t.writeTo(output)
     }
 

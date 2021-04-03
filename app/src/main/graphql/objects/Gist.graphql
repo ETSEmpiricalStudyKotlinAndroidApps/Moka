@@ -13,8 +13,8 @@ fragment Gist on Gist {
   # The gist name.
   name
   # The gist owner.
-  owner {
-    ... RepositoryOwner
+  gistOwner : owner {
+      ... RepositoryOwner
   }
   # Identifies when the gist was last pushed to.
   pushedAt

@@ -9,14 +9,16 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import kotlinx.datetime.Instant
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Entity(tableName = "notification")
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Notification(
 
     @ColumnInfo(name = "id")
@@ -24,9 +26,11 @@ data class Notification(
     var id: String,
 
     @Embedded(prefix = "repository_")
+    @Contextual
     var repository: NotificationRepository,
 
     @Embedded(prefix = "subject_")
+    @Contextual
     var subject: NotificationRepositorySubject,
 
     @ColumnInfo(name = "reason")
@@ -35,13 +39,15 @@ data class Notification(
     @ColumnInfo(name = "unread")
     var unread: Boolean,
 
-    @Json(name = "updated_at")
+    @SerialName("updated_at")
     @ColumnInfo(name = "updated_at")
+    @Contextual
     var updatedAt: Instant,
 
-    @Json(name = "last_read_at")
+    @SerialName("last_read_at")
     @ColumnInfo(name = "last_read_at")
-    var lastReadAt: Instant?,
+    @Contextual
+    var lastReadAt: Instant? = null,
 
     @ColumnInfo(name = "url")
     var url: String,
@@ -54,37 +60,38 @@ data class Notification(
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class NotificationRepository(
 
     @ColumnInfo(name = "id")
     var id: Long,
 
-    @Json(name = "node_id")
+    @SerialName("node_id")
     @ColumnInfo(name = "node_id")
     var nodeId: String,
 
     @ColumnInfo(name = "name")
     var name: String,
 
-    @Json(name = "full_name")
+    @SerialName("full_name")
     @ColumnInfo(name = "full_name")
     var fullName: String,
 
     @Embedded(prefix = "owner_")
+    @Contextual
     var owner: NotificationRepositoryOwner,
 
     // note the difference of serialized name, column name and field name
-    @Json(name = "private")
+    @SerialName("private")
     @ColumnInfo(name = "is_private")
     var isPrivate: Boolean,
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
     @ColumnInfo(name = "description")
-    var description: String?,
+    var description: String? = null,
 
     @ColumnInfo(name = "fork")
     var fork: Boolean,
@@ -94,7 +101,7 @@ data class NotificationRepository(
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class NotificationRepositoryOwner(
 
     @ColumnInfo(name = "login")
@@ -103,71 +110,71 @@ data class NotificationRepositoryOwner(
     @ColumnInfo(name = "id")
     var id: Long,
 
-    @Json(name = "node_id")
+    @SerialName("node_id")
     @ColumnInfo(name = "node_id")
     var nodeId: String,
 
-    @Json(name = "avatar_url")
+    @SerialName("avatar_url")
     @ColumnInfo(name = "avatar_url")
     var avatarUrl: String,
 
-    @Json(name = "gravatar_id")
+    @SerialName("gravatar_id")
     @ColumnInfo(name = "gravatar_id")
     var gravatarId: String,
 
     @ColumnInfo(name = "url")
     var url: String,
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
-    @Json(name = "followers_url")
+    @SerialName("followers_url")
     @ColumnInfo(name = "followers_url")
     var followersUrl: String,
 
-    @Json(name = "following_url")
+    @SerialName("following_url")
     @ColumnInfo(name = "following_url")
     var followingUrl: String,
 
-    @Json(name = "gists_url")
+    @SerialName("gists_url")
     @ColumnInfo(name = "gists_url")
     var gistsUrl: String,
 
-    @Json(name = "starred_url")
+    @SerialName("starred_url")
     @ColumnInfo(name = "starred_url")
     var starredUrl: String,
 
-    @Json(name = "subscriptions_url")
+    @SerialName("subscriptions_url")
     @ColumnInfo(name = "subscriptions_url")
     var subscriptionsUrl: String,
 
-    @Json(name = "organizations_url")
+    @SerialName("organizations_url")
     @ColumnInfo(name = "organizations_url")
     var organizationsUrl: String,
 
-    @Json(name = "repos_url")
+    @SerialName("repos_url")
     @ColumnInfo(name = "repos_url")
     var reposUrl: String,
 
-    @Json(name = "events_url")
+    @SerialName("events_url")
     @ColumnInfo(name = "events_url")
     var eventsUrl: String,
 
-    @Json(name = "received_events_url")
+    @SerialName("received_events_url")
     @ColumnInfo(name = "received_events_url")
     var receivedEventsUrl: String,
 
     @ColumnInfo(name = "type")
     var type: String,
 
-    @Json(name = "site_admin")
+    @SerialName("site_admin")
     @ColumnInfo(name = "site_admin")
     var siteAdmin: Boolean
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class NotificationRepositorySubject(
 
     @ColumnInfo(name = "title")
@@ -176,9 +183,9 @@ data class NotificationRepositorySubject(
     @ColumnInfo(name = "url")
     var url: String,
 
-    @Json(name = "latest_comment_url")
+    @SerialName("latest_comment_url")
     @ColumnInfo(name = "latest_comment_url")
-    var latestCommentUrl: String?,
+    var latestCommentUrl: String? = null,
 
     @ColumnInfo(name = "type")
     var type: String
@@ -189,61 +196,73 @@ data class NotificationRepositorySubject(
  * When retrieving responses from the Notifications API, each payload has a key titled reason.
  * These correspond to events that trigger a notification.
  */
+@Serializable
 enum class NotificationReasons {
 
     /**
      * You were assigned to the Issue.
      */
+    @SerialName("assign")
     ASSIGN,
 
     /**
      * You created the thread.
      */
+    @SerialName("author")
     AUTHOR,
 
     /**
      * You commented on the thread.
      */
+    @SerialName("comment")
     COMMENT,
 
     /**
      * You accepted an invitation to contribute to the repository.
      */
+    @SerialName("invitation")
     INVITATION,
 
     /**
      * You subscribed to the thread (via an Issue or Pull Request).
      */
+    @SerialName("manual")
     MANUAL,
 
     /**
      * You were specifically @mentioned in the content.
      */
+    @SerialName("mention")
     MENTION,
 
     /**
      * You, or a team you're a member of, were requested to review a pull request.
      */
+    @SerialName("review_requested")
     REVIEW_REQUESTED,
 
     /**
      * You changed the thread state (for example, closing an Issue or merging a Pull Request).
      */
+    @SerialName("state_change")
     STATE_CHANGE,
 
     /**
      * You're watching the repository.
      */
+    @SerialName("subscribed")
     SUBSCRIBED,
 
     /**
      * You were on a team that was mentioned.
      */
+    @SerialName("team_mention")
     TEAM_MENTION,
 
     /**
      * LOCAL FALLBACK ONLY. You will never get an OTHER from server.
      */
+    @SerialName("other")
     OTHER,
 
 }

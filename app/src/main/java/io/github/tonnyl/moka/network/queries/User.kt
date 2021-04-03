@@ -1,16 +1,15 @@
 package io.github.tonnyl.moka.network.queries
 
-import androidx.annotation.WorkerThread
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.UserQuery
-import io.github.tonnyl.moka.util.execute
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.withContext
 
-@WorkerThread
-fun queryUser(login: String) = runBlocking {
+suspend fun queryUser(login: String) = withContext(Dispatchers.IO) {
     GraphQLClient.apolloClient
         .query(
             UserQuery(login)
         )
-        .execute()
+        .single()
 }

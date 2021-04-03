@@ -23,7 +23,7 @@ fragment RepositoryListItemFragment on Repository {
     # The repository's name with owner.
     nameWithOwner
     # The User owner of the repository.
-    owner {
+    repositoryOwner : owner {
         ... RepositoryOwner
     }
     # The repository parent, if this is a fork.

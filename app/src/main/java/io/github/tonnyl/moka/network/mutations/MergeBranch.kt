@@ -1,12 +1,11 @@
 package io.github.tonnyl.moka.network.mutations
 
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.mutations.MergeBranchMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.MergeBranchInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -25,18 +24,16 @@ suspend fun mergeBranch(
     head: String,
     commitMessage: String? = null
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                MergeBranchMutation(
-                    MergeBranchInput(
-                        repositoryId = repositoryId,
-                        base = base,
-                        head = head,
-                        commitMessage = Input.optional(commitMessage)
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            MergeBranchMutation(
+                MergeBranchInput(
+                    repositoryId = repositoryId,
+                    base = base,
+                    head = head,
+                    commitMessage = Input.Present(commitMessage)
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

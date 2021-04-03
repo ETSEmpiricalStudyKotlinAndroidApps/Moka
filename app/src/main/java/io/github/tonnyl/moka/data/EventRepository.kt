@@ -1,10 +1,10 @@
 package io.github.tonnyl.moka.data
 
 import androidx.room.ColumnInfo
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventRepository(
 
     @ColumnInfo(name = "id")
@@ -13,15 +13,15 @@ data class EventRepository(
     @ColumnInfo(name = "name")
     var name: String,
 
-    @Json(name = "full_name")
+    @SerialName("full_name")
     @ColumnInfo(name = "full_name")
-    var fullName: String?,
+    var fullName: String? = null,
 
     @ColumnInfo(name = "url")
     var url: String,
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
-    var htmlUrl: String?
+    var htmlUrl: String? = null
 
 )

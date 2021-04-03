@@ -1,19 +1,18 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 import io.github.tonnyl.moka.fragment.Actor as RawActor
 
 /**
  * Represents an object which can take actions on GitHub. Typically a User or Bot.
  */
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Actor(
 
     /**
      * A URL pointing to the actor's public avatar.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     /**
      * The username of the actor.
@@ -23,7 +22,7 @@ data class Actor(
     /**
      * The HTTP URL for this actor.
      */
-    val url: Uri
+    val url: String
 
 )
 

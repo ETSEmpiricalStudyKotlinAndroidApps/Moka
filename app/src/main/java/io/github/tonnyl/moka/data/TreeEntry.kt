@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.data
 
+import io.github.tonnyl.moka.fragment.TreeEntry.Object.Companion.gitObject
 import io.github.tonnyl.moka.fragment.TreeEntry as RawTreeEntry
 
 data class TreeEntry(
@@ -32,5 +33,5 @@ data class TreeEntry(
 )
 
 fun RawTreeEntry.toNonNullTreeEntry(): TreeEntry {
-    return TreeEntry(mode, name, object_?.fragments?.gitObject?.toNonNullGitObject(), oid, type)
+    return TreeEntry(mode, name, object_?.gitObject()?.toNonNullGitObject(), oid, type)
 }

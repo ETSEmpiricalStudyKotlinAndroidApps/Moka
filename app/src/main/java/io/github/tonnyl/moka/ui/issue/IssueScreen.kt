@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.issue
 
-import android.net.Uri
 import android.text.format.DateUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,9 +37,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.toPaddingValues
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Issue
 import io.github.tonnyl.moka.data.ReactionGroup
@@ -59,7 +58,7 @@ import kotlinx.datetime.Instant
 data class IssuePullRequestEventData(
     val iconResId: Int,
     val backgroundColor: Color,
-    val avatarUri: Uri?,
+    val avatarUri: String?,
     val login: String,
     val createdAt: Instant,
     val content: AnnotatedString
@@ -215,7 +214,7 @@ private fun IssueScreenContent(
             ItemLoadingState(loadState = timelineItems.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = timelineItems) { index, item ->
+        itemsIndexed(lazyPagingItems = timelineItems) { _, item ->
             if (item != null) {
                 if (item is IssueComment) {
                     IssueTimelineCommentItem(
@@ -297,7 +296,7 @@ private fun ItemIssueTimelineEvent(event: IssueTimelineItem) {
 private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
     val iconResId: Int?
     val backgroundColor: Color?
-    val avatarUri: Uri?
+    val avatarUri: String?
     val login: String?
     val createdAt: Instant?
     val content: AnnotatedString?
@@ -395,7 +394,7 @@ private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
             createdAt = event.createdAt
             content = buildAnnotatedString {
                 append(stringResource(id = R.string.issue_timeline_labeled_event_labeled))
-                event.label.color.toColor()?.let {
+                event.label?.color?.toColor()?.let {
                     Color(it)
                 }?.let { bgColor ->
                     append(
@@ -598,7 +597,7 @@ private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
             createdAt = event.createdAt
             content = buildAnnotatedString {
                 append(stringResource(id = R.string.issue_timeline_labeled_event_labeled))
-                event.label.color.toColor()?.let {
+                event.label?.color?.toColor()?.let {
                     Color(it)
                 }?.let { bgColor ->
                     append(
@@ -668,7 +667,7 @@ fun IssueOrPullRequestHeader(
     number: Int,
     title: String,
     caption: String,
-    avatarUrl: Uri?,
+    avatarUrl: String?,
     viewerCanReact: Boolean,
     reactionGroups: MutableList<ReactionGroup>?,
     authorLogin: String?,
@@ -719,7 +718,7 @@ fun IssueOrPullRequestHeader(
 
 @Composable
 fun IssueTimelineCommentItem(
-    avatarUrl: Uri?,
+    avatarUrl: String?,
     viewerCanReact: Boolean,
     reactionGroups: MutableList<ReactionGroup>?,
     authorLogin: String?,

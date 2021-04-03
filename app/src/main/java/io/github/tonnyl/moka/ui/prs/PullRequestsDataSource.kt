@@ -7,6 +7,7 @@ import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.PullRequestItem
 import io.github.tonnyl.moka.data.item.toNonNullPullRequestItem
 import io.github.tonnyl.moka.network.queries.queryPullRequests
+import io.github.tonnyl.moka.queries.PullRequestsQuery.Data.Repository.PullRequests.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -26,15 +27,15 @@ class PullRequestsDataSource(
                     perPage = params.loadSize,
                     after = params.key,
                     before = params.key
-                ).data()?.repository
+                ).data?.repository
 
-                repository?.pullRequests?.nodes?.forEach { node ->
-                    node?.let {
-                        list.add(node.toNonNullPullRequestItem())
+                list.addAll(
+                    repository?.pullRequests?.nodes.orEmpty().mapNotNull { node ->
+                        node?.toNonNullPullRequestItem()
                     }
-                }
+                )
 
-                val pageInfo = repository?.pullRequests?.pageInfo?.fragments?.pageInfo
+                val pageInfo = repository?.pullRequests?.pageInfo?.pageInfo()
 
                 LoadResult.Page(
                     data = list,

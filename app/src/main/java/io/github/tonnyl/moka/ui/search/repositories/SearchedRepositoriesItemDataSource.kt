@@ -10,6 +10,8 @@ import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullRepositoryItem
 import io.github.tonnyl.moka.network.queries.querySearchRepositories
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery
+import io.github.tonnyl.moka.queries.SearchRepositoriesQuery.Data.Search.Nodes.Companion.repositoryListItemFragment
+import io.github.tonnyl.moka.queries.SearchRepositoriesQuery.Data.Search.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -28,7 +30,7 @@ class SearchedRepositoriesItemDataSource(
                     first = params.loadSize,
                     after = params.key,
                     before = params.key
-                ).data()?.search
+                ).data?.search
 
                 search?.nodes?.forEach { node ->
                     node?.let {
@@ -38,7 +40,7 @@ class SearchedRepositoriesItemDataSource(
                     }
                 }
 
-                val pageInfo = search?.pageInfo?.fragments?.pageInfo
+                val pageInfo = search?.pageInfo?.pageInfo()
                 Page(
                     data = list,
                     prevKey = pageInfo.checkedStartCursor,
@@ -57,9 +59,9 @@ class SearchedRepositoriesItemDataSource(
     }
 
     private fun convertRawDataRepositoryItem(
-        node: SearchRepositoriesQuery.Node
+        node: SearchRepositoriesQuery.Data.Search.Nodes
     ): RepositoryItem? {
-        return node.fragments.repositoryListItemFragment?.toNonNullRepositoryItem()
+        return node.repositoryListItemFragment()?.toNonNullRepositoryItem()
     }
 
 }

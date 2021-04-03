@@ -25,8 +25,6 @@ import io.github.tonnyl.moka.db.dao.*
 )
 @TypeConverters(
     DateConverters::class,
-    ProjectStateConverters::class,
-    UriConverters::class,
     EventGollumPageListConverters::class,
     TrendingRepositoryBuiltByListConverters::class,
     EventGistFileMapConverters::class,

@@ -1,7 +1,14 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
 import io.github.tonnyl.moka.queries.PullRequestQuery
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.Author.Companion.actor
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.BaseRef.Companion.ref
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.Editor.Companion.actor
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.HeadRef.Companion.ref
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.HeadRepositoryOwner.Companion.repositoryOwner
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.MergedBy.Companion.actor
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.Milestone.Companion.milestone
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.ReactionGroups.Companion.reactionGroup
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
 
@@ -167,7 +174,7 @@ data class PullRequest(
     /**
      * The permalink to the pull request.
      */
-    val permalink: Uri,
+    val permalink: String,
 
     /**
      * Identifies when the comment was published at.
@@ -182,17 +189,17 @@ data class PullRequest(
     /**
      * The HTTP path for this pull request.
      */
-    val resourcePath: Uri,
+    val resourcePath: String,
 
     /**
      * The HTTP path for reverting this pull request.
      */
-    val revertResourcePath: Uri,
+    val revertResourcePath: String,
 
     /**
      * The HTTP URL for reverting this pull request.
      */
-    val revertUrl: Uri,
+    val revertUrl: String,
 
     /**
      * Identifies the state of the pull request.
@@ -212,7 +219,7 @@ data class PullRequest(
     /**
      * The HTTP URL for this pull request.
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * Whether or not the viewer can apply suggestion.
@@ -251,15 +258,15 @@ data class PullRequest(
 
 )
 
-fun PullRequestQuery.PullRequest?.toNullablePullRequest(): PullRequest? {
+fun PullRequestQuery.Data.Repository.PullRequest?.toNullablePullRequest(): PullRequest? {
     this ?: return null
 
     return PullRequest(
         activeLockReason,
         additions,
-        author?.fragments?.actor?.toNonNullActor(),
+        author?.actor()?.toNonNullActor(),
         authorAssociation,
-        baseRef?.fragments?.ref?.toNonNullRef(),
+        baseRef?.ref()?.toNonNullRef(),
         baseRefName,
         baseRefOid,
         body,
@@ -271,11 +278,11 @@ fun PullRequestQuery.PullRequest?.toNullablePullRequest(): PullRequest? {
         createdAt,
         createdViaEmail,
         deletions,
-        editor?.fragments?.actor?.toNonNullActor(),
-        headRef?.fragments?.ref?.toNonNullRef(),
+        editor?.actor()?.toNonNullActor(),
+        headRef?.ref()?.toNonNullRef(),
         headRefName,
         headRefOid,
-        headRepositoryOwner?.fragments?.repositoryOwner?.toNonNullRepositoryOwner(),
+        headRepositoryOwner?.repositoryOwner()?.toNonNullRepositoryOwner(),
         id,
         includesCreatedEdit,
         isCrossRepository,
@@ -284,15 +291,15 @@ fun PullRequestQuery.PullRequest?.toNullablePullRequest(): PullRequest? {
         maintainerCanModify,
         merged,
         mergedAt,
-        mergedBy?.fragments?.actor?.toNonNullActor(),
-        milestone?.fragments?.milestone?.toNonNullMilestone(),
+        mergedBy?.actor()?.toNonNullActor(),
+        milestone?.milestone()?.toNonNullMilestone(),
         number,
         permalink,
         publishedAt,
         reactionGroups?.filter {
-            it.fragments.reactionGroup.users.totalCount > 0
-        }?.map {
-            it.fragments.reactionGroup.toNonNullReactionGroup()
+            (it.reactionGroup()?.users?.totalCount ?: 0) > 0
+        }?.mapNotNull {
+            it.reactionGroup()?.toNonNullReactionGroup()
         }?.toMutableList(),
         resourcePath,
         revertResourcePath,

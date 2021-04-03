@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.repository
 
-import android.net.Uri
 import android.text.format.DateUtils
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,10 +22,10 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.toPaddingValues
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.Resource
@@ -431,8 +430,10 @@ private fun RepositoryScreenContent(
                         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                     }
                     items(count = topics.size) { index ->
-                        Chip(text = topics[index]!!.topic.name)
-                        Spacer(modifier = Modifier.padding(horizontal = ContentPaddingSmallSize))
+                        topics[index]?.topic?.let { topic ->
+                            Chip(text = topic.name)
+                            Spacer(modifier = Modifier.padding(horizontal = ContentPaddingSmallSize))
+                        }
                     }
                     item {
                         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
@@ -537,8 +538,8 @@ private fun RepositoryScreenContentPreview() {
                 prefix = "refs/heads/",
                 target = GitObject(
                     abbreviatedOid = "deabc06",
-                    commitResourcePath = Uri.parse("/TonnyL/PaperPlane/commit/deabc062ec138e29f8b34bcea164c8ef49881175"),
-                    commitUrl = Uri.parse("https://github.com/TonnyL/PaperPlane/commit/deabc062ec138e29f8b34bcea164c8ef49881175"),
+                    commitResourcePath = "/TonnyL/PaperPlane/commit/deabc062ec138e29f8b34bcea164c8ef49881175",
+                    commitUrl = "https://github.com/TonnyL/PaperPlane/commit/deabc062ec138e29f8b34bcea164c8ef49881175",
                     id = "MDY6Q29tbWl0NTQyMTIzNTU6ZGVhYmMwNjJlYzEzOGUyOWY4YjM0YmNlYTE2NGM4ZWY0OTg4MTE3NQ==",
                     oid = "deabc062ec138e29f8b34bcea164c8ef49881175"
                 )
@@ -549,7 +550,7 @@ private fun RepositoryScreenContentPreview() {
             forkCount = 292,
             hasIssuesEnabled = true,
             hasWikiEnabled = true,
-            homepageUrl = Uri.parse(""),
+            homepageUrl = "",
             id = "MDEwOlJlcG9zaXRvcnk1NDIxMjM1NQ==",
             isArchived = false,
             isFork = false,
@@ -593,36 +594,36 @@ private fun RepositoryScreenContentPreview() {
                 ),
                 pseudoLicense = false,
                 spdxId = "Apache-2.0",
-                url = Uri.parse("http://choosealicense.com/licenses/apache-2.0/")
+                url = "http://choosealicense.com/licenses/apache-2.0/"
             ),
             lockReason = null,
             mergeCommitAllowed = true,
             mirrorUrl = null,
             name = "PaperPlane",
             nameWithOwner = "TonnyL/PaperPlane",
-            openGraphImageUrl = Uri.parse("https://avatars3.githubusercontent.com/u/13329148?s=400&u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4"),
+            openGraphImageUrl = "https://avatars3.githubusercontent.com/u/13329148?s=400&u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4",
             owner = RepositoryOwner(
-                avatarUrl = Uri.parse("https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4"),
+                avatarUrl = "https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4",
                 id = "MDQ6VXNlcjEzMzI5MTQ4",
                 login = "TonnyL",
-                resourcePath = Uri.parse("/TonnyL"),
-                url = Uri.parse("https://github.com/TonnyL")
+                resourcePath = "/TonnyL",
+                url = "https://github.com/TonnyL"
             ),
             primaryLanguage = Language(
                 color = "#F18E33",
                 id = "MDg6TGFuZ3VhZ2UyNzI=",
                 name = "Kotlin"
             ),
-            projectsResourcePath = Uri.parse("/TonnyL/PaperPlane/projects"),
-            projectsUrl = Uri.parse("https://github.com/TonnyL/PaperPlane/projects"),
+            projectsResourcePath = "/TonnyL/PaperPlane/projects",
+            projectsUrl = "https://github.com/TonnyL/PaperPlane/projects",
             pushedAt = Instant.fromEpochMilliseconds(1528288541000),
             rebaseMergeAllowed = true,
-            resourcePath = Uri.parse("/TonnyL/PaperPlane"),
+            resourcePath = "/TonnyL/PaperPlane",
             shortDescriptionHTML = "<g-emoji class=\"g-emoji\" alias=\"books\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f4da.png\">📚</g-emoji> PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. ",
             squashMergeAllowed = true,
             sshUrl = "git@github.com:TonnyL/PaperPlane.git",
             updatedAt = Instant.fromEpochMilliseconds(1601370442000),
-            url = Uri.parse("https://github.com/TonnyL/PaperPlane"),
+            url = "https://github.com/TonnyL/PaperPlane",
             usesCustomOpenGraphImage = false,
             viewerCanAdminister = true,
             viewerCanCreateProjects = true,
@@ -646,13 +647,13 @@ private fun RepositoryScreenContentPreview() {
             topics = listOf(
                 RepositoryTopic(
                     id = "MDE1OlJlcG9zaXRvcnlUb3BpYzY2NDc5Nw==",
-                    resourcePath = Uri.parse("/topics/zhihu"),
+                    resourcePath = "/topics/zhihu",
                     topic = Topic(
                         id = "MDU6VG9waWN6aGlodQ==",
                         name = "zhihu",
                         viewerHasStarred = false
                     ),
-                    url = Uri.parse("https://github.com/topics/zhihu")
+                    url = "https://github.com/topics/zhihu"
                 ),
                 // ... incomplete
             )

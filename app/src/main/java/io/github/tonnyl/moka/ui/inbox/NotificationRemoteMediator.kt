@@ -12,6 +12,7 @@ import io.github.tonnyl.moka.network.service.NotificationsService
 import io.github.tonnyl.moka.util.PageLinks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 @OptIn(ExperimentalPagingApi::class)
 class NotificationRemoteMediator(
@@ -116,6 +117,7 @@ class NotificationRemoteMediator(
                     }
                 }
             } catch (e: Exception) {
+                Timber.e(e)
                 MediatorResult.Error(e)
             }
         }

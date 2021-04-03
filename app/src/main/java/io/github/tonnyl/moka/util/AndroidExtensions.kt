@@ -12,8 +12,11 @@ import androidx.lifecycle.MutableLiveData
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.ui.auth.Authenticator
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import okio.buffer
+import okio.source
 import timber.log.Timber
-import java.nio.charset.Charset
 
 fun Account.mapToAccountTokenUserTriple(
     manager: AccountManager
@@ -23,19 +26,22 @@ fun Account.mapToAccountTokenUserTriple(
         Authenticator.KEY_AUTH_TYPE,
         true
     )
-    val user = MoshiInstance.authenticatedUserAdapter
-        .fromJson(
+    val user = runCatching {
+        json.decodeFromString<AuthenticatedUser>(
             manager.getUserData(
                 this,
                 Authenticator.KEY_AUTH_USER_INFO
             )
-        ) ?: return null
+        )
+    }.getOrNull() ?: return null
     return Triple(this, token, user)
 }
 
 suspend fun AccountManager.insertNewAccount(token: String, user: AuthenticatedUser) {
-    val info = MoshiInstance.authenticatedUserAdapter
-        .toJson(user)
+    val info = runCatching {
+        json.encodeToString(user)
+    }.getOrNull() ?: return
+
     val account = Account(user.id.toString(), Authenticator.KEY_ACCOUNT_TYPE)
 
     addAccountExplicitly(
@@ -52,7 +58,9 @@ suspend fun AccountManager.moveAccountToFirstPosition(account: Account) {
     val token = blockingGetAuthToken(account, Authenticator.KEY_AUTH_TYPE, true)
     removeAccountExplicitly(account)
 
-    MoshiInstance.authenticatedUserAdapter.fromJson(userString)?.let {
+    runCatching {
+        json.decodeFromString<AuthenticatedUser>(userString)
+    }.getOrNull()?.let {
         insertNewAccount(token, it)
     }
 }
@@ -62,10 +70,8 @@ val Resources.isDarkModeOn: Boolean
 
 fun Context.readEmojisFromAssets(): List<Emoji> {
     return assets.open("emojis.json").use { inputStream ->
-        val buffer = ByteArray(inputStream.available())
-        inputStream.read(buffer)
-        val json = String(buffer, Charset.forName("UTF-8"))
-        MoshiInstance.emojiListAdapter.fromJson(json) ?: emptyList()
+        val jsonString = inputStream.source().buffer().readString(Charsets.UTF_8)
+        json.decodeFromString(jsonString)
     }
 }
 

@@ -4,11 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Entity(tableName = "trending_developer")
-@JsonClass(generateAdapter = true)
+@Serializable
 data class TrendingDeveloper(
 
     @PrimaryKey(autoGenerate = true)
@@ -20,13 +21,13 @@ data class TrendingDeveloper(
     var username: String,
 
     @ColumnInfo(name = "name")
-    var name: String?,
+    var name: String? = null,
 
     /**
      * could be organization or user.
      */
     @ColumnInfo(name = "type")
-    var type: String?,
+    var type: String? = null,
 
     @ColumnInfo(name = "url")
     var url: String,
@@ -34,20 +35,20 @@ data class TrendingDeveloper(
     @ColumnInfo(name = "avatar")
     var avatar: String,
 
-    @Json(name = "repo")
+    @Contextual
     @Embedded(prefix = "trending_developer_repository_")
     var repository: TrendingDeveloperRepository
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class TrendingDeveloperRepository(
 
     @ColumnInfo(name = "name")
     var name: String,
 
     @ColumnInfo(name = "description")
-    var description: String?,
+    var description: String? = null,
 
     @ColumnInfo(name = "url")
     var url: String

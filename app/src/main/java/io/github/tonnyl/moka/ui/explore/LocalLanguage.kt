@@ -1,8 +1,8 @@
 package io.github.tonnyl.moka.ui.explore
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class LocalLanguage(
 
     val urlParam: String?,

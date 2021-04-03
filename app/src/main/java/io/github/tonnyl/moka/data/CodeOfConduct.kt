@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
 import io.github.tonnyl.moka.fragment.CodeOfConduct as RawCodeOfConduct
 
 /**
@@ -26,7 +25,7 @@ data class CodeOfConduct(
     /**
      * The path to the CoC.
      */
-    val url: Uri?
+    val url: String?
 
 )
 

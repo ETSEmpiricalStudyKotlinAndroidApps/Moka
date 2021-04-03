@@ -11,6 +11,9 @@ import io.github.tonnyl.moka.data.item.toNonNullSearchedOrganizationItem
 import io.github.tonnyl.moka.data.toNonNullUserItem
 import io.github.tonnyl.moka.network.queries.querySearchUsers
 import io.github.tonnyl.moka.queries.SearchUsersQuery
+import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.Nodes.Companion.organizationListItemFragment
+import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.Nodes.Companion.userListItemFragment
+import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -28,17 +31,17 @@ class SearchedUsersItemDataSource(
                     first = params.loadSize,
                     after = params.key,
                     before = params.key
-                ).data()?.search
+                ).data?.search
 
-                search?.nodes?.forEach { node ->
-                    node?.let {
-                        initSearchedUserOrOrgItemWithRawData(node)?.let {
-                            list.add(it)
+                list.addAll(
+                    search?.nodes.orEmpty().mapNotNull { node ->
+                        node?.let {
+                            initSearchedUserOrOrgItemWithRawData(it)
                         }
                     }
-                }
+                )
 
-                val pageInfo = search?.pageInfo?.fragments?.pageInfo
+                val pageInfo = search?.pageInfo?.pageInfo()
                 Page(
                     data = list,
                     prevKey = pageInfo.checkedStartCursor,
@@ -56,17 +59,11 @@ class SearchedUsersItemDataSource(
         return null
     }
 
-    private fun initSearchedUserOrOrgItemWithRawData(node: SearchUsersQuery.Node): SearchedUserOrOrgItem? {
-        return when {
-            node.fragments.userListItemFragment != null -> {
-                SearchedUserOrOrgItem(user = node.fragments.userListItemFragment.toNonNullUserItem())
-            }
-            node.fragments.organizationListItemFragment != null -> {
-                SearchedUserOrOrgItem(org = node.fragments.organizationListItemFragment.toNonNullSearchedOrganizationItem())
-            }
-            else -> {
-                null
-            }
+    private fun initSearchedUserOrOrgItemWithRawData(node: SearchUsersQuery.Data.Search.Nodes): SearchedUserOrOrgItem? {
+        return node.userListItemFragment()?.toNonNullUserItem()?.let {
+            SearchedUserOrOrgItem(user = it)
+        } ?: node.organizationListItemFragment()?.toNonNullSearchedOrganizationItem()?.let {
+            SearchedUserOrOrgItem(org = it)
         }
     }
 

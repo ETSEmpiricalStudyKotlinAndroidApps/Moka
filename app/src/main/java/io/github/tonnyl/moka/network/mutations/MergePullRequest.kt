@@ -1,12 +1,12 @@
 package io.github.tonnyl.moka.network.mutations
 
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.mutations.MergePullRequestMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.MergePullRequestInput
 import io.github.tonnyl.moka.type.PullRequestMergeMethod
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -28,18 +28,17 @@ suspend fun mergePullRequest(
     expectedHeadOid: String? = null,
     mergeMethod: PullRequestMergeMethod? = null
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                MergePullRequestMutation(
-                    MergePullRequestInput(
-                        pullRequestId = pullRequestId,
-                        commitHeadline = Input.optional(commitHeadline),
-                        commitBody = Input.optional(commitBody),
-                        expectedHeadOid = Input.optional(expectedHeadOid),
-                        mergeMethod = Input.optional(mergeMethod)
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            MergePullRequestMutation(
+                MergePullRequestInput(
+                    pullRequestId = pullRequestId,
+                    commitHeadline = Input.Present(commitHeadline),
+                    commitBody = Input.Present(commitBody),
+                    expectedHeadOid = Input.Present(expectedHeadOid),
+                    mergeMethod = Input.Present(mergeMethod)
                 )
             )
-    }
+        )
+        .single()
 }

@@ -14,6 +14,7 @@ import io.github.tonnyl.moka.network.service.EventsService
 import io.github.tonnyl.moka.util.PageLinks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 @OptIn(ExperimentalPagingApi::class)
 class EventRemoteMediator(
@@ -113,6 +114,7 @@ class EventRemoteMediator(
                     }
                 }
             } catch (e: Exception) {
+                Timber.e(e)
                 Error(e)
             }
         }

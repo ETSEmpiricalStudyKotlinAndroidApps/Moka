@@ -1,12 +1,11 @@
 package io.github.tonnyl.moka.network.mutations
 
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.mutations.MoveProjectColumnMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.MoveProjectColumnInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -21,16 +20,14 @@ suspend fun moveProjectColumn(
     columnId: String,
     afterColumnId: String? = null
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                MoveProjectColumnMutation(
-                    MoveProjectColumnInput(
-                        columnId = columnId,
-                        afterColumnId = Input.optional(afterColumnId)
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            MoveProjectColumnMutation(
+                MoveProjectColumnInput(
+                    columnId = columnId,
+                    afterColumnId = Input.Present(afterColumnId)
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

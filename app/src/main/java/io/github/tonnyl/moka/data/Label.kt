@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
 import kotlinx.datetime.Instant
 
 data class Label(
@@ -35,7 +34,7 @@ data class Label(
     /**
      * The HTTP path for this label.
      */
-    val resourcePath: Uri,
+    val resourcePath: String,
 
     /**
      * Identifies the date and time when the label was last updated.
@@ -45,6 +44,6 @@ data class Label(
     /**
      * The HTTP URL for this label.
      */
-    val url: Uri
+    val url: String
 
 )

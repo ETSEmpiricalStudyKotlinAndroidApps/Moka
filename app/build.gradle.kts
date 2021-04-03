@@ -6,12 +6,14 @@ import java.util.*
 
 plugins {
     id("com.android.application")
-    id("com.apollographql.apollo").version(Versions.apollo)
+    id("com.apollographql.apollo3")
     kotlin("android")
     id("kotlin-parcelize")
     kotlin("kapt")
+    id("kotlinx-serialization")
     id("com.google.protobuf").version("0.8.14")
     id("com.google.firebase.crashlytics")
+    id("com.google.devtools.ksp").version(Versions.kspApi)
 }
 
 kapt {
@@ -44,12 +46,6 @@ android {
         } else { // CI
             buildConfigField("String", "CLIENT_ID", "\"client_id_placeholder\"")
             buildConfigField("String", "CLIENT_SECRET", "\"client_secret_placeholder\"")
-        }
-
-        kapt {
-            arguments {
-                arg("room.schemaLocation", roomSchemaLocation)
-            }
         }
 
     }
@@ -108,24 +104,24 @@ apollo {
         // and then change the extension name of the file from `graphql` to `sdl`.
         schemaFile.set(File("src/main/graphql/schema.sdl"))
         rootPackageName.set("io.github.tonnyl.moka")
-        suppressRawTypesWarning.set(true)
+        failOnWarnings.set(false)
         useSemanticNaming.set(true)
-        graphqlSourceDirectorySet.srcDir(file("src/main/graphql/"))
-        graphqlSourceDirectorySet.include("**/*.graphql")
-        customTypeMapping.set(
+        addGraphqlDirectory(file("src/main/graphql/"))
+        customScalarsMapping.set(
             mutableMapOf(
                 "GitTimestamp" to "kotlinx.datetime.Instant",
                 "DateTime" to "kotlinx.datetime.Instant",
+                "PreciseDateTime" to "kotlinx.datetime.Instant",
+                "Date" to "kotlinx.datetime.Instant",
                 "HTML" to "kotlin.String",
-                "URI" to "android.net.Uri",
-                "ID" to "kotlin.String",
+                "URI" to "kotlin.String",
                 "GitObjectID" to "kotlin.String",
                 "GitSSHRemote" to "kotlin.String",
-                "X509Certificate" to "kotlin.String"
+                "X509Certificate" to "kotlin.String",
+                "GitRefname" to "kotlin.String"
             )
         )
     }
-    generateKotlinModels.set(true)
 }
 
 protobuf {
@@ -149,6 +145,7 @@ dependencies {
     implementation(Deps.Kotlin.coroutinesCore)
     implementation(Deps.Kotlin.coroutinesAndroid)
     implementation(Deps.Kotlin.dateTime)
+    implementation(Deps.Kotlin.serialization)
 
     // AndroidX
     implementation(Deps.AndroidX.browser)
@@ -165,8 +162,8 @@ dependencies {
     implementation(Deps.AndroidX.Room.runtime)
     implementation(Deps.AndroidX.Room.migration)
     implementation(Deps.AndroidX.Room.ktx)
-    // implementation(Deps.AndroidX.Room.coroutines)
-    kapt(Deps.AndroidX.Room.compiler)
+    ksp(Deps.AndroidX.Room.compiler)
+
     implementation(Deps.AndroidX.UI.runtime)
     implementation(Deps.AndroidX.UI.animation)
     implementation(Deps.AndroidX.UI.core)
@@ -181,10 +178,13 @@ dependencies {
     implementation(Deps.Google.firebaseAnalyticsKtx)
     implementation(Deps.Google.firebaseCrashlytics)
     implementation(Deps.Google.protobufJavaLite)
+    implementation(Deps.Google.material)
+    implementation(Deps.Google.Accompanist.coil)
+    implementation(Deps.Google.Accompanist.insets)
 
     // Retrofit
     implementation(Deps.Retrofit.retrofit)
-    implementation(Deps.Retrofit.moshiConverter)
+    implementation(Deps.Retrofit.serializationConverter)
 
     // OkHttp
     implementation(Deps.OkHttp.loggingInterceptor)
@@ -204,14 +204,8 @@ dependencies {
     implementation(Deps.CommonMark.headingAnchor)
     implementation(Deps.CommonMark.yamlFrontMatter)
 
-    implementation(Deps.Moshi.adapters)
-    kapt(Deps.Moshi.kotlinCodegen)
-
     implementation(Deps.jsoup)
     implementation(Deps.timber)
-
-    implementation(Deps.Accompanist.coil)
-    implementation(Deps.Accompanist.insets)
 
     testImplementation(Deps.Test.junit)
     testImplementation(Deps.Test.mockitoCore)
@@ -238,7 +232,6 @@ tasks.withType<KotlinCompile>().configureEach {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs = listOf(
             "-XXLanguage:+InlineClasses",
-            "-Xallow-jvm-ir-dependencies",
             "-Xskip-prerelease-check"
         )
     }

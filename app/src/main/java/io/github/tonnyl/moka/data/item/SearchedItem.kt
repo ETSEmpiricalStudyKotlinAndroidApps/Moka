@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.data.item
 
-import android.net.Uri
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.fragment.OrganizationListItemFragment
 
@@ -17,7 +16,7 @@ data class SearchedOrganizationItem(
     /**
      * A URL pointing to the organization's public avatar.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     /**
      * The organization's public profile description.
@@ -49,7 +48,7 @@ data class SearchedOrganizationItem(
     /**
      * The HTTP URL for this organization.
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * Viewer is an active member of this organization.
@@ -59,7 +58,7 @@ data class SearchedOrganizationItem(
     /**
      * The organization's public profile URL.
      */
-    val websiteUrl: Uri?
+    val websiteUrl: String?
 
 )
 

@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
 import io.github.tonnyl.moka.fragment.UserListItemFragment
 
 data class UserItem(
@@ -8,7 +7,7 @@ data class UserItem(
     /**
      * A URL pointing to the user's public avatar.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     /**
      * The user's public profile bio.
@@ -40,7 +39,7 @@ data class UserItem(
     /**
      * The HTTP URL for this user.
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * Whether or not the viewer is able to follow the user.

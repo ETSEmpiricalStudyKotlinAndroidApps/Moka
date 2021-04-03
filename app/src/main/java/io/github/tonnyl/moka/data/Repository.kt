@@ -1,8 +1,15 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
+import io.github.tonnyl.moka.fragment.Repository.CodeOfConduct.Companion.codeOfConduct
+import io.github.tonnyl.moka.fragment.Repository.DefaultBranchRef.Companion.ref
+import io.github.tonnyl.moka.fragment.Repository.LicenseInfo.Companion.license
+import io.github.tonnyl.moka.fragment.Repository.Owner.Companion.repositoryOwner
+import io.github.tonnyl.moka.fragment.Repository.PrimaryLanguage.Companion.language
+import io.github.tonnyl.moka.fragment.Repository.RepositoryTopics.Nodes.Companion.repositoryTopic
 import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery
+import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery.Data.Organization.Repository.Companion.repository
 import io.github.tonnyl.moka.queries.UsersRepositoryQuery
+import io.github.tonnyl.moka.queries.UsersRepositoryQuery.Data.User.Repository.Companion.repository
 import io.github.tonnyl.moka.type.RepositoryLockReason
 import io.github.tonnyl.moka.type.RepositoryPermission
 import io.github.tonnyl.moka.type.SubscriptionState
@@ -61,7 +68,7 @@ data class Repository(
     /**
      * The repository's URL.
      */
-    val homepageUrl: Uri?,
+    val homepageUrl: String?,
 
     val id: String,
 
@@ -113,7 +120,7 @@ data class Repository(
     /**
      * The repository's original mirror URL.
      */
-    val mirrorUrl: Uri?,
+    val mirrorUrl: String?,
 
     /**
      * The name of the repository.
@@ -128,12 +135,12 @@ data class Repository(
     /**
      * The image used to represent this repository in Open Graph data.
      */
-    val openGraphImageUrl: Uri,
+    val openGraphImageUrl: String,
 
     /**
      * The User owner of the repository.
      */
-    val owner: RepositoryOwner,
+    val owner: RepositoryOwner?,
 
     /**
      * The primary language of the repository's code.
@@ -143,12 +150,12 @@ data class Repository(
     /**
      * The HTTP path listing the repository's projects.
      */
-    val projectsResourcePath: Uri,
+    val projectsResourcePath: String,
 
     /**
      * The HTTP URL listing the repository's projects.
      */
-    val projectsUrl: Uri,
+    val projectsUrl: String,
 
     /**
      * Identifies when the repository was last pushed to.
@@ -163,7 +170,7 @@ data class Repository(
     /**
      * The HTTP path for this repository.
      */
-    val resourcePath: Uri,
+    val resourcePath: String,
 
     /**
      * A description of the repository, rendered to HTML without any links in it.
@@ -192,7 +199,7 @@ data class Repository(
     /**
      * The HTTP URL for this repository.
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * Whether this repository has a custom image to use with Open Graph as opposed to being
@@ -265,12 +272,12 @@ data class Repository(
 
 fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
     val user = this?.user ?: return null
-    val repository = user.repository?.fragments?.repository ?: return null
+    val repository = user.repository?.repository() ?: return null
 
     return Repository(
-        repository.codeOfConduct?.fragments?.codeOfConduct?.toNonNullCodeOfConduct(),
+        repository.codeOfConduct?.codeOfConduct()?.toNonNullCodeOfConduct(),
         repository.createdAt,
-        repository.defaultBranchRef?.fragments?.ref?.toNonNullRef(),
+        repository.defaultBranchRef?.ref()?.toNonNullRef(),
         repository.description,
         repository.descriptionHTML,
         repository.diskUsage,
@@ -285,15 +292,15 @@ fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
         repository.isMirror,
         repository.isPrivate,
         repository.isTemplate,
-        repository.licenseInfo?.fragments?.license?.toNonNullLicense(),
+        repository.licenseInfo?.license()?.toNonNullLicense(),
         repository.lockReason,
         repository.mergeCommitAllowed,
         repository.mirrorUrl,
         repository.name,
         repository.nameWithOwner,
         repository.openGraphImageUrl,
-        repository.owner.fragments.repositoryOwner.toNonNullRepositoryOwner(),
-        repository.primaryLanguage?.fragments?.language?.toNonNullLanguage(),
+        repository.owner.repositoryOwner()?.toNonNullRepositoryOwner(),
+        repository.primaryLanguage?.language()?.toNonNullLanguage(),
         repository.projectsResourcePath,
         repository.projectsUrl,
         repository.pushedAt,
@@ -325,19 +332,19 @@ fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
         repository.releases.totalCount,
         repository.refs?.totalCount ?: 0,
         repository.repositoryTopics.nodes?.map {
-            it?.fragments?.repositoryTopic?.toNonNullRepositoryTopic()
+            it?.repositoryTopic()?.toNonNullRepositoryTopic()
         }
     )
 }
 
 fun OrganizationsRepositoryQuery.Data?.toNullableRepository(): Repository? {
     val organization = this?.organization ?: return null
-    val repository = organization.repository?.fragments?.repository ?: return null
+    val repository = organization.repository?.repository() ?: return null
 
     return Repository(
-        repository.codeOfConduct?.fragments?.codeOfConduct?.toNonNullCodeOfConduct(),
+        repository.codeOfConduct?.codeOfConduct()?.toNonNullCodeOfConduct(),
         repository.createdAt,
-        repository.defaultBranchRef?.fragments?.ref?.toNonNullRef(),
+        repository.defaultBranchRef?.ref()?.toNonNullRef(),
         repository.description,
         repository.descriptionHTML,
         repository.diskUsage,
@@ -352,15 +359,15 @@ fun OrganizationsRepositoryQuery.Data?.toNullableRepository(): Repository? {
         repository.isMirror,
         repository.isPrivate,
         repository.isTemplate,
-        repository.licenseInfo?.fragments?.license?.toNonNullLicense(),
+        repository.licenseInfo?.license()?.toNonNullLicense(),
         repository.lockReason,
         repository.mergeCommitAllowed,
         repository.mirrorUrl,
         repository.name,
         repository.nameWithOwner,
         repository.openGraphImageUrl,
-        repository.owner.fragments.repositoryOwner.toNonNullRepositoryOwner(),
-        repository.primaryLanguage?.fragments?.language?.toNonNullLanguage(),
+        repository.owner.repositoryOwner()?.toNonNullRepositoryOwner(),
+        repository.primaryLanguage?.language()?.toNonNullLanguage(),
         repository.projectsResourcePath,
         repository.projectsUrl,
         repository.pushedAt,
@@ -392,7 +399,7 @@ fun OrganizationsRepositoryQuery.Data?.toNullableRepository(): Repository? {
         releasesCount = repository.releases.totalCount,
         branchCount = repository.refs?.totalCount ?: 0,
         topics = repository.repositoryTopics.nodes?.map {
-            it?.fragments?.repositoryTopic?.toNonNullRepositoryTopic()
+            it?.repositoryTopic()?.toNonNullRepositoryTopic()
         }
     )
 }

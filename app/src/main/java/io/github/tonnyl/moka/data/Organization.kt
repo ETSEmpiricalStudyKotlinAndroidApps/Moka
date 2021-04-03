@@ -1,14 +1,17 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
-import io.github.tonnyl.moka.queries.OrganizationQuery.Organization as RawOrganization
+import io.github.tonnyl.moka.fragment.Organization.PinnedItems.Nodes.Companion.pinnableItem
+import io.github.tonnyl.moka.fragment.PinnableItem.Companion.gist
+import io.github.tonnyl.moka.fragment.PinnableItem.Companion.repositoryListItemFragment
+import io.github.tonnyl.moka.queries.OrganizationQuery.Data.Organization.Companion.organization
+import io.github.tonnyl.moka.queries.OrganizationQuery.Data.Organization as RawOrganization
 
 data class Organization(
 
     /**
      * A URL pointing to the organization's public avatar.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     /**
      * The organization's public profile description.
@@ -45,12 +48,12 @@ data class Organization(
     /**
      * The HTTP path creating a new team
      */
-    val newTeamResourcePath: Uri,
+    val newTeamResourcePath: String,
 
     /**
      * The HTTP URL creating a new team
      */
-    val newTeamUrl: Uri,
+    val newTeamUrl: String,
 
     /**
      * Returns how many more items this profile owner can pin to their profile.
@@ -60,22 +63,22 @@ data class Organization(
     /**
      * The HTTP path listing organization's projects
      */
-    val projectsResourcePath: Uri,
+    val projectsResourcePath: String,
 
     /**
      * The HTTP URL listing organization's projects
      */
-    val projectsUrl: Uri,
+    val projectsUrl: String,
 
     /**
      * The HTTP path for this organization.
      */
-    val resourcePath: Uri,
+    val resourcePath: String,
 
     /**
      * The HTTP URL for this organization.
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * Organization is adminable by the viewer.
@@ -110,7 +113,7 @@ data class Organization(
     /**
      * The organization's public profile URL.
      */
-    val websiteUrl: Uri?,
+    val websiteUrl: String?,
 
     val repositoriesTotalCount: Int,
 
@@ -123,14 +126,14 @@ data class Organization(
 fun RawOrganization?.toNullableOrganization(): Organization? {
     this ?: return null
 
-    val org = fragments.organization
+    val org = organization() ?: return null
 
     val pinnableItems = mutableListOf<PinnableItem>()
     org.pinnedItems.nodes?.map { node ->
-        node?.fragments?.pinnableItem?.fragments?.let { fragment ->
-            fragment.gist?.let {
+        node?.pinnableItem()?.let { fragment ->
+            fragment.gist()?.let {
                 pinnableItems.add(it.toGist())
-            } ?: fragment.repositoryListItemFragment?.let {
+            } ?: fragment.repositoryListItemFragment()?.let {
                 pinnableItems.add(it.toNonNullRepositoryItem())
             }
         }

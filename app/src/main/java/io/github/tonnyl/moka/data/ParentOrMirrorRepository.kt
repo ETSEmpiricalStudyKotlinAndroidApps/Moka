@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
 import io.github.tonnyl.moka.fragment.ParentOfForkedRepository as RawParentOfForkedRepository
 
 data class ParentOrMirrorRepository(
@@ -8,7 +7,7 @@ data class ParentOrMirrorRepository(
     /**
      * The HTTP URL for this repository
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * The name of the repository.

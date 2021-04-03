@@ -7,8 +7,9 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.WindowInsets
+import com.google.accompanist.insets.ExperimentalAnimatedInsets
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.WindowInsets
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.ui.about.AboutScreenContent
 import io.github.tonnyl.moka.ui.about.AboutScreenTestTag
@@ -18,6 +19,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalAnimatedInsets
 class AboutScreenTest {
 
     @get:Rule

@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
 import io.github.tonnyl.moka.fragment.GitObject as RawGitObject
 
 /**
@@ -16,12 +15,12 @@ data class GitObject(
     /**
      * The HTTP path for this Git object.
      */
-    val commitResourcePath: Uri,
+    val commitResourcePath: String,
 
     /**
      * The HTTP URL for this Git object.
      */
-    val commitUrl: Uri,
+    val commitUrl: String,
 
     val id: String,
 

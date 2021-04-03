@@ -1,7 +1,7 @@
 # Merge a head into a branch.
 # https://developer.github.com/v4/mutation/mergebranch/
 mutation MergeBranch($input: MergeBranchInput!) {
-    mergeBranch {
+    mergeBranch(input: $input) {
         # A unique identifier for the client performing the mutation.
         clientMutationId
     }

@@ -2,125 +2,132 @@ package io.github.tonnyl.moka.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 import kotlinx.datetime.Instant
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventPayload(
 
     @ColumnInfo(name = "action")
-    var action: String?,
+    var action: String? = null,
 
     @Embedded(prefix = "comment_")
-    var comment: EventComment?,
+    var comment: EventComment? = null,
 
-    @Json(name = "commit_comment")
+    @SerialName("commit_comment")
     @Embedded(prefix = "commit_comment_")
-    var commitComment: EventComment?,
+    var commitComment: EventComment? = null,
 
     @Embedded(prefix = "issue_")
-    var issue: EventIssue?,
+    var issue: EventIssue? = null,
 
-    @Json(name = "pull_request")
+    @SerialName("pull_request")
     @Embedded(prefix = "pull_request_")
-    var pullRequest: EventPullRequest?,
+    var pullRequest: EventPullRequest? = null,
 
     @Embedded(prefix = "review_")
-    var review: EventReview?,
+    var review: EventReview? = null,
 
     /**
      * Only for [Event.DOWNLOAD_EVENT].
      */
     @Embedded(prefix = "download_")
-    var download: EventDownload?,
+    var download: EventDownload? = null,
 
     /**
      * Only for [Event.FOLLOW_EVENT]
      */
     @Embedded(prefix = "target_")
-    var target: EventActor?,
+    @Contextual
+    var target: EventActor? = null,
 
     /**
      * Only for [Event.FORK_EVENT]
      */
     @Embedded(prefix = "forkee_")
-    var forkee: EventRepository?,
+    @Contextual
+    var forkee: EventRepository? = null,
 
     /**
      * Only for [Event.GIST_EVENT]
      */
     @Embedded(prefix = "gist_")
-    var gist: Gist?,
+    var gist: Gist? = null,
 
     /**
      * Only for [Event.GOLLUM_EVENT]
      */
     @ColumnInfo(name = "pages")
-    var pages: List<EventGollumPage>?,
+    var pages: List<EventGollumPage>? = null,
 
     /**
      * Only for [Event.MEMBER_EVENT]
      */
     @Embedded(prefix = "member_")
-    var member: EventActor?,
+    @Contextual
+    var member: EventActor? = null,
 
     /**
      * Only for [Event.TEAM_ADD_EVENT]
      */
     @Embedded(prefix = "team_")
-    var team: EventTeam?,
+    var team: EventTeam? = null,
 
     /**
      * Only for [Event.TEAM_ADD_EVENT]
      */
     @Embedded(prefix = "organization_")
-    var organization: EventActor?,
+    @Contextual
+    var organization: EventActor? = null,
 
     /**
      * Only for [Event.RELEASE_EVENT]
      */
     @Embedded(prefix = "release_")
-    var release: EventRelease?,
+    var release: EventRelease? = null,
 
     /**
      * Only for [Event.ORG_BLOCK_EVENT]
      */
-    @Json(name = "blocked_user")
+    @SerialName("blocked_user")
     @Embedded(prefix = "blocked_user_")
-    var blockedUser: EventActor?,
+    @Contextual
+    var blockedUser: EventActor? = null,
 
     /**
      * Only for [Event.PROJECT_CARD_EVENT]
      */
-    @Json(name = "project_card")
+    @SerialName("project_card")
     @Embedded(prefix = "project_card_")
-    var projectCard: EventProjectCard?,
+    var projectCard: EventProjectCard? = null,
 
     /**
      * Only for [Event.PROJECT_COLUMN_EVENT]
      */
-    @Json(name = "project_column")
+    @SerialName("project_column")
     @Embedded(prefix = "project_column_")
-    var projectColumn: EventProjectColumn?,
+    var projectColumn: EventProjectColumn? = null,
 
     /**
      * Only for [Event.ORGANIZATION_EVENT]
      */
     @Embedded(prefix = "membership_")
-    var membership: EventMembership?,
+    var membership: EventMembership? = null,
 
     /**
      * Only for [Event.ORGANIZATION_EVENT]
      */
     @Embedded(prefix = "invitation_")
-    var invitation: EventActor?,
+    @Contextual
+    var invitation: EventActor? = null,
 
     /**
      * Only for [Event.PROJECT_EVENT]
      */
     @Embedded(prefix = "project_")
-    var project: EventProject?,
+    var project: EventProject? = null,
 
     /**
      * Only for [Event.PUSH_EVENT]
@@ -128,21 +135,21 @@ data class EventPayload(
      * The number of commits in the push.
      */
     @ColumnInfo(name = "size")
-    var size: Int?,
+    var size: Int? = null,
 
-    @Json(name = "ref_type")
+    @SerialName("ref_type")
     @ColumnInfo(name = "ref_type")
-    var refType: String?,
+    var refType: String? = null,
 
     @ColumnInfo(name = "ref")
-    var ref: String?
+    var ref: String? = null
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventComment(
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
@@ -150,44 +157,47 @@ data class EventComment(
     var id: Long,
 
     @Embedded(prefix = "user_")
+    @Contextual
     var user: EventActor,
 
-    @Json(name = "created_at")
+    @SerialName("created_at")
     @ColumnInfo(name = "created_at")
+    @Contextual
     var createdAt: Instant,
 
-    @Json(name = "updated_at")
+    @SerialName("updated_at")
     @ColumnInfo(name = "updated_at")
+    @Contextual
     var updatedAt: Instant,
 
-    @Json(name = "author_association")
+    @SerialName("author_association")
     @ColumnInfo(name = "author_association")
     var authorAssociation: String,
 
     @ColumnInfo(name = "body")
     var body: String,
 
-    @Json(name = "commit_id")
+    @SerialName("commit_id")
     @ColumnInfo(name = "commit_id")
-    var commitId: String?
+    var commitId: String? = null
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventPullRequest(
 
     @ColumnInfo(name = "id")
     var id: String,
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
-    @Json(name = "diff_url")
+    @SerialName("diff_url")
     @ColumnInfo(name = "diff_url")
     var diffUrl: String,
 
-    @Json(name = "patch_url")
+    @SerialName("patch_url")
     @ColumnInfo(name = "patch_url")
     var patchUrl: String,
 
@@ -204,63 +214,70 @@ data class EventPullRequest(
     var title: String,
 
     @Embedded(prefix = "user_")
+    @Contextual
     var user: EventActor,
 
     @ColumnInfo(name = "body")
-    var body: String?,
+    var body: String? = null,
 
-    @Json(name = "created_at")
+    @SerialName("created_at")
     @ColumnInfo(name = "created_at")
+    @Contextual
     var createdAt: Instant,
 
-    @Json(name = "updated_at")
+    @SerialName("updated_at")
     @ColumnInfo(name = "updated_at")
+    @Contextual
     var updatedAt: Instant,
 
-    @Json(name = "closed_at")
+    @SerialName("closed_at")
     @ColumnInfo(name = "closed_at")
-    var closedAt: Instant?,
+    @Contextual
+    var closedAt: Instant? = null,
 
-    @Json(name = "merged_at")
+    @SerialName("merged_at")
     @ColumnInfo(name = "merged_at")
-    var mergedAt: Instant?,
+    @Contextual
+    var mergedAt: Instant? = null,
 
-    @Json(name = "author_association")
+    @SerialName("author_association")
     @ColumnInfo(name = "author_association")
     var authorAssociation: String
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventReview(
 
     @ColumnInfo(name = "id")
     var id: String,
 
     @Embedded(prefix = "user_")
+    @Contextual
     var user: EventActor,
 
     @ColumnInfo(name = "body")
     var body: String?,
 
-    @Json(name = "submitted_at")
+    @SerialName("submitted_at")
     @ColumnInfo(name = "submitted_at")
+    @Contextual
     var submittedAt: Instant,
 
     @ColumnInfo(name = "state")
     var state: String,
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
-    @Json(name = "author_association")
+    @SerialName("author_association")
     @ColumnInfo(name = "author_association")
     var authorAssociation: String
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventDownload(
 
     @ColumnInfo(name = "id")
@@ -275,23 +292,23 @@ data class EventDownload(
     @ColumnInfo(name = "size")
     var size: Long,
 
-    @Json(name = "download_count")
+    @SerialName("download_count")
     @ColumnInfo(name = "download_count")
     var downloadCount: Long,
 
-    @Json(name = "content_type")
+    @SerialName("content_type")
     @ColumnInfo(name = "content_type")
     var contentType: String
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventGollumPage(
 
     /**
      * The name of the page.
      */
-    @Json(name = "page_name")
+    @SerialName("page_name")
     var pageName: String,
 
     /**
@@ -299,7 +316,7 @@ data class EventGollumPage(
      */
     var title: String,
 
-    var summary: String?,
+    var summary: String? = null,
 
     /**
      * The action that was performed on the page. Can be created or edited.
@@ -314,12 +331,12 @@ data class EventGollumPage(
     /**
      * Points to the HTML wiki page.
      */
-    @Json(name = "html_url")
+    @SerialName("html_url")
     var htmlUrl: String
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventTeam(
 
     @ColumnInfo(name = "name")
@@ -342,42 +359,45 @@ data class EventTeam(
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventRelease(
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
     @ColumnInfo(name = "id")
     var id: Long,
 
-    @Json(name = "tag_name")
+    @SerialName("tag_name")
     @ColumnInfo(name = "tag_name")
     var tagName: String,
 
-    @Json(name = "target_commitish")
+    @SerialName("target_commitish")
     @ColumnInfo(name = "target_commitish")
     var targetCommitish: String,
 
     @ColumnInfo(name = "name")
-    var name: String?,
+    var name: String? = null,
 
     @ColumnInfo(name = "draft")
     var draft: Boolean,
 
     @Embedded(prefix = "author_")
+    @Contextual
     var author: EventActor,
 
     @ColumnInfo(name = "prerelease")
     var prerelease: Boolean,
 
-    @Json(name = "created_at")
+    @SerialName("created_at")
     @ColumnInfo(name = "created_at")
+    @Contextual
     var createdAt: Instant,
 
-    @Json(name = "published_at")
+    @SerialName("published_at")
     @ColumnInfo(name = "published_at")
+    @Contextual
     var publishedAt: Instant,
 
     @ColumnInfo(name = "body")
@@ -385,10 +405,10 @@ data class EventRelease(
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventProjectCard(
 
-    @Json(name = "column_id")
+    @SerialName("column_id")
     @ColumnInfo(name = "column_id")
     var columnId: Long,
 
@@ -399,19 +419,22 @@ data class EventProjectCard(
     var note: String,
 
     @Embedded(prefix = "creator_")
+    @Contextual
     var creator: EventActor,
 
-    @Json(name = "created_at")
+    @SerialName("created_at")
     @ColumnInfo(name = "created_at")
+    @Contextual
     var createdAt: Instant,
 
-    @Json(name = "updated_at")
+    @SerialName("updated_at")
     @ColumnInfo(name = "updated_at")
+    @Contextual
     var updatedAt: Instant
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventProjectColumn(
 
     @ColumnInfo(name = "id")
@@ -420,20 +443,22 @@ data class EventProjectColumn(
     @ColumnInfo(name = "name")
     var name: String,
 
-    @Json(name = "created_at")
+    @SerialName("created_at")
     @ColumnInfo(name = "created_at")
+    @Contextual
     var createdAt: Instant,
 
-    @Json(name = "updated_at")
+    @SerialName("updated_at")
     @ColumnInfo(name = "updated_at")
+    @Contextual
     var updatedAt: Instant
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventProject(
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
@@ -453,19 +478,22 @@ data class EventProject(
     var state: String,
 
     @Embedded(prefix = "creator_")
+    @Contextual
     var creator: EventActor,
 
-    @Json(name = "created_at")
+    @SerialName("created_at")
     @ColumnInfo(name = "created_at")
+    @Contextual
     var createdAt: Instant,
 
-    @Json(name = "updated_at")
+    @SerialName("updated_at")
     @ColumnInfo(name = "updated_at")
+    @Contextual
     var updatedAt: Instant
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventGistFile(
 
     @ColumnInfo(name = "filename")
@@ -477,7 +505,7 @@ data class EventGistFile(
     @ColumnInfo(name = "language")
     var language: String,
 
-    @Json(name = "raw_url")
+    @SerialName("raw_url")
     @ColumnInfo(name = "raw_url")
     var rawUrl: String,
 
@@ -486,14 +514,14 @@ data class EventGistFile(
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventIssue(
 
-    @Json(name = "repository_url")
+    @SerialName("repository_url")
     @ColumnInfo(name = "repository_url")
     var repositoryUrl: String,
 
-    @Json(name = "html_url")
+    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
@@ -507,11 +535,12 @@ data class EventIssue(
     var title: String,
 
     @Embedded(prefix = "user_")
+    @Contextual
     var user: EventActor
 
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class EventMembership(
 
     @ColumnInfo(name = "state")
@@ -521,6 +550,7 @@ data class EventMembership(
     var role: String,
 
     @Embedded(prefix = "user_")
+    @Contextual
     var user: EventActor
 
 )

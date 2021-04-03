@@ -1,6 +1,9 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
+import io.github.tonnyl.moka.fragment.PinnableItem.Companion.gist
+import io.github.tonnyl.moka.fragment.PinnableItem.Companion.repositoryListItemFragment
+import io.github.tonnyl.moka.fragment.User.PinnedItems.Nodes.Companion.pinnableItem
+import io.github.tonnyl.moka.fragment.User.Status.Companion.userStatus
 import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.User as RawUser
 
@@ -9,7 +12,7 @@ data class User(
     /**
      * A URL pointing to the user's public avatar.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     /**
      * The user's public profile bio.
@@ -96,7 +99,7 @@ data class User(
     /**
      * The HTTP path for this user.
      */
-    val resourcePath: Uri,
+    val resourcePath: String,
 
     /**
      * The user's description of what they're currently doing.
@@ -111,7 +114,7 @@ data class User(
     /**
      * The HTTP URL for this user.
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * The user's Twitter username.
@@ -131,7 +134,7 @@ data class User(
     /**
      * A URL pointing to the user's public website/blog.
      */
-    val websiteUrl: Uri?,
+    val websiteUrl: String?,
 
     val repositoriesTotalCount: Int,
 
@@ -150,10 +153,10 @@ data class User(
 fun RawUser.toNonNullUser(): User {
     val pinnableItems = mutableListOf<PinnableItem>()
     pinnedItems.nodes?.map { node ->
-        node?.fragments?.pinnableItem?.fragments?.let { fragment ->
-            fragment.gist?.let {
+        node?.pinnableItem()?.let { fragment ->
+            fragment.gist()?.let {
                 pinnableItems.add(it.toGist())
-            } ?: fragment.repositoryListItemFragment?.let {
+            } ?: fragment.repositoryListItemFragment()?.let {
                 pinnableItems.add(it.toNonNullRepositoryItem())
             }
         }
@@ -179,7 +182,7 @@ fun RawUser.toNonNullUser(): User {
         login,
         name,
         resourcePath,
-        status?.fragments?.userStatus?.toNonNullUserStatus(),
+        status?.userStatus()?.toNonNullUserStatus(),
         updatedAt,
         url,
         twitterUsername,

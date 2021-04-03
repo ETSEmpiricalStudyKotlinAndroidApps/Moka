@@ -30,9 +30,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.toPaddingValues
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.Status
@@ -128,7 +128,7 @@ fun ProfileScreen(
                                     )
                                     .replace(
                                         "{${Screen.ARG_EDIT_PROFILE_URL}}",
-                                        userValue.websiteUrl?.toString() ?: ""
+                                        userValue.websiteUrl ?: ""
                                     )
                                     .replace(
                                         "{${Screen.ARG_EDIT_PROFILE_COMPANY}}",
@@ -186,8 +186,7 @@ private fun ProfileScreenContent(
                 CoilImage(
                     contentDescription = stringResource(id = R.string.users_avatar_content_description),
                     request = createAvatarLoadRequest(
-                        url = user?.avatarUrl?.toString()
-                            ?: organization?.avatarUrl?.toString()
+                        url = user?.avatarUrl ?: organization?.avatarUrl
                     ),
                     modifier = Modifier
                         .size(size = 92.dp)
@@ -455,9 +454,8 @@ private fun ProfileScreenContent(
             ContactListItem(
                 iconRes = R.drawable.ic_link_24,
                 primaryTextRes = R.string.profile_website,
-                secondaryText = user?.url?.toString()
-                    ?: organization?.url?.toString()
-                    ?: stringResource(id = R.string.no_description_provided)
+                secondaryText = user?.url ?: organization?.url
+                ?: stringResource(id = R.string.no_description_provided)
             )
         }
         item {
@@ -533,7 +531,7 @@ private fun PinnedItemIconifiedText(text: String) {
 @Composable
 private fun PinnedItemCard(
     onClick: () -> Unit,
-    avatarUrl: Uri?,
+    avatarUrl: String?,
     title: String,
     caption: String,
     index: Int,
@@ -610,7 +608,7 @@ private fun PinnedRepositoryCard(
         onClick = {
             navController.navigate(
                 route = Screen.Repository.route
-                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", repository.owner.login)
+                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", repository.owner?.login ?: "ghost")
                     .replace("{${Screen.ARG_REPOSITORY_NAME}}", repository.name)
                     .replace(
                         "{${Screen.ARG_PROFILE_TYPE}}",
@@ -618,7 +616,7 @@ private fun PinnedRepositoryCard(
                     )
             )
         },
-        avatarUrl = repository.owner.avatarUrl,
+        avatarUrl = repository.owner?.avatarUrl,
         title = repository.nameWithOwner,
         caption = repository.description.takeIf {
             !it.isNullOrEmpty()
@@ -667,7 +665,7 @@ private fun PinnedGistCard(
     PinnedItemCard(
         onClick = {
             context.safeStartActivity(
-                Intent(Intent.ACTION_VIEW, gist.url).apply {
+                Intent(Intent.ACTION_VIEW, Uri.parse(gist.url)).apply {
                     putExtra(Browser.EXTRA_CREATE_NEW_TAB, true)
                     putExtra(Browser.EXTRA_APPLICATION_ID, context.packageName)
                 }
@@ -713,7 +711,7 @@ private fun ProfileScreenPreview() {
         navController = rememberNavController(),
         currentLoginUser = "",
         user = User(
-            avatarUrl = Uri.parse("https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4"),
+            avatarUrl = "https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4",
             bio = "Rock/Post-rock/Electronic",
             bioHTML = "<div>Rock/Post-rock/Electronic</div>",
             company = null,
@@ -731,7 +729,7 @@ private fun ProfileScreenPreview() {
             location = "Guangzhou",
             login = "TonnyL",
             name = "Li Zhao Tai Lang",
-            resourcePath = Uri.parse("/TonnyL"),
+            resourcePath = "/TonnyL",
             status = UserStatus(
                 createdAt = Instant.fromEpochMilliseconds(1592643813L),
                 emoji = ":dart:",
@@ -742,10 +740,10 @@ private fun ProfileScreenPreview() {
                 updatedAt = Instant.fromEpochMilliseconds(1592643813L)
             ),
             updatedAt = Instant.fromEpochMilliseconds(1600415355L),
-            url = Uri.parse("https://github.com/TonnyL"),
+            url = "https://github.com/TonnyL",
             viewerCanFollow = false,
             viewerIsFollowing = false,
-            websiteUrl = Uri.parse("https://tonnyl.io"),
+            websiteUrl = "https://tonnyl.io",
             twitterUsername = "@TonnyLZTL",
             repositoriesTotalCount = 37,
             followersTotalCount = 890,
@@ -767,11 +765,11 @@ private fun ProfileScreenPreview() {
                     name = "PaperPlane",
                     nameWithOwner = "TonnyL/PaperPlane",
                     owner = RepositoryOwner(
-                        avatarUrl = Uri.parse("https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4"),
+                        avatarUrl = "https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4",
                         id = "MDQ6VXNlcjEzMzI5MTQ4",
                         login = "TonnyL",
-                        resourcePath = Uri.parse("/TonnyL"),
-                        url = Uri.parse("https://github.com/TonnyL")
+                        resourcePath = "/TonnyL",
+                        url = "https://github.com/TonnyL"
                     ),
                     parent = null,
                     primaryLanguage = Language(
@@ -780,7 +778,7 @@ private fun ProfileScreenPreview() {
                         name = "Kotlin"
                     ),
                     shortDescriptionHTML = "<g-emoji class=\"g-emoji\" alias=\"books\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f4da.png\">📚</g-emoji> PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. ",
-                    url = Uri.parse("https://github.com/TonnyL/PaperPlane"),
+                    url = "https://github.com/TonnyL/PaperPlane",
                     viewerHasStarred = false,
                     forksCount = 287,
                     stargazersCount = 1145
@@ -793,16 +791,16 @@ private fun ProfileScreenPreview() {
                     isPublic = true,
                     name = "a37e9a370e48b909a383d8e90b339cbd",
                     owner = RepositoryOwner(
-                        avatarUrl = Uri.parse("https://avatars3.githubusercontent.com/u/28293513?u=d7546e7c81e3ec8d39bac67dc7ac57e3fed1b244&v=4"),
+                        avatarUrl = "https://avatars3.githubusercontent.com/u/28293513?u=d7546e7c81e3ec8d39bac67dc7ac57e3fed1b244&v=4",
                         id = "MDQ6VXNlcjI4MjkzNTEz",
                         login = "lizhaotailang",
-                        resourcePath = Uri.parse("/lizhaotailang"),
-                        url = Uri.parse("https://github.com/lizhaotailang")
+                        resourcePath = "/lizhaotailang",
+                        url = "https://github.com/lizhaotailang"
                     ),
                     pushedAt = Instant.fromEpochMilliseconds(1573833347L),
-                    resourcePath = Uri.parse("a37e9a370e48b909a383d8e90b339cbd"),
+                    resourcePath = "a37e9a370e48b909a383d8e90b339cbd",
                     updatedAt = Instant.fromEpochMilliseconds(1592647150),
-                    url = Uri.parse("https://gist.github.com/a37e9a370e48b909a383d8e90b339cbd"),
+                    url = "https://gist.github.com/a37e9a370e48b909a383d8e90b339cbd",
                     viewerHasStarred = true,
                     commentsTotalCount = 0,
                     forksTotalCount = 0,

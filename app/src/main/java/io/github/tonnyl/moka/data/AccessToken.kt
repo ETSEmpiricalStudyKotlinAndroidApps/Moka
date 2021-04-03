@@ -1,17 +1,17 @@
 package io.github.tonnyl.moka.data
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class AccessToken(
 
-    @Json(name = "access_token")
+    @SerialName("access_token")
     val accessToken: String,
 
     val scope: String,
 
-    @Json(name = "token_type")
+    @SerialName("token_type")
     val tokenType: String
 
 )

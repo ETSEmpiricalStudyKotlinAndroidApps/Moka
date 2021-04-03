@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import androidx.core.view.WindowInsetsControllerCompat
-import dev.chrisbanes.accompanist.insets.*
+import com.google.accompanist.insets.*
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.proto.Settings
 import io.github.tonnyl.moka.serializers.store.SettingSerializer

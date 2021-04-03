@@ -7,12 +7,14 @@ import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.data.EmojiCategory
 import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.ui.explore.LocalLanguage
-import io.github.tonnyl.moka.util.MoshiInstance
+import io.github.tonnyl.moka.util.json
 import io.github.tonnyl.moka.util.readEmojisFromAssets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.decodeFromString
+import okio.buffer
+import okio.source
 import timber.log.Timber
-import java.nio.charset.Charset
 
 class MainViewModel(
     app: MokaApp
@@ -58,11 +60,9 @@ class MainViewModel(
     ) {
         try {
             val result = app.assets.open("languages.json").use { inputStream ->
-                val buffer = ByteArray(inputStream.available())
-                inputStream.read(buffer)
-                val json = String(buffer, Charset.forName("UTF-8"))
-                MoshiInstance.localLanguageListAdapter.fromJson(json)
-            } ?: emptyList()
+                val jsonString = inputStream.source().buffer().readString(Charsets.UTF_8)
+                json.decodeFromString<List<LocalLanguage>>(jsonString)
+            }
 
             emit(result)
         } catch (e: Exception) {

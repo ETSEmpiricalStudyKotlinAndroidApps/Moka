@@ -11,7 +11,85 @@ import io.github.tonnyl.moka.data.toNullablePullRequest
 import io.github.tonnyl.moka.network.queries.queryPullRequest
 import io.github.tonnyl.moka.network.queries.queryPullRequestTimelineItems
 import io.github.tonnyl.moka.queries.PullRequestQuery
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.addedToProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.assignedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.baseRefChangedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.baseRefForcePushedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.closedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.convertedNoteToIssueEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.crossReferencedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.demilestonedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.deployedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.deploymentEnvironmentChangedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefDeletedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefForcePushedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefRestoredEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.issueCommentFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.labeledEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.lockedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.markedAsDuplicateEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.mergedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.milestonedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.movedColumnsInProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pinnedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestCommitCommentThreadFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestCommitFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestReviewFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestReviewThreadFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.readyForReviewEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.referencedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.removedFromProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.renamedTitleEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reopenedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewDismissedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewRequestRemovedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewRequestedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.transferredEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unassignedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unlabeledEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unlockedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unpinnedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.PageInfo.Companion.pageInfo
 import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.addedToProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.assignedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.baseRefChangedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.baseRefForcePushedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.closedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.convertedNoteToIssueEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.crossReferencedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.demilestonedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.deployedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.deploymentEnvironmentChangedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefDeletedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefForcePushedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefRestoredEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.issueCommentFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.labeledEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.lockedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.markedAsDuplicateEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.mergedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.milestonedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.movedColumnsInProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pinnedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestCommitCommentThreadFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestCommitFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestReviewFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestReviewThreadFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.readyForReviewEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.referencedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.removedFromProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.renamedTitleEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reopenedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewDismissedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewRequestRemovedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewRequestedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.transferredEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unassignedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unlabeledEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unlockedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unpinnedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -36,21 +114,21 @@ class PullRequestTimelineDataSource(
                         perPage = params.loadSize,
                         after = params.key,
                         before = params.key
-                    ).data()?.repository?.pullRequest
+                    ).data?.repository?.pullRequest
 
                     pullRequestData.postValue(pullRequest.toNullablePullRequest())
 
                     val timeline = pullRequest?.timelineItems
 
-                    timeline?.nodes?.forEach { node ->
-                        node?.let {
-                            initTimelineItemWithRawData(node)?.let {
-                                list.add(it)
+                    list.addAll(
+                        timeline?.nodes.orEmpty().mapNotNull { node ->
+                            node?.let {
+                                initTimelineItemWithRawData(node)
                             }
                         }
-                    }
+                    )
 
-                    val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
+                    val pageInfo = timeline?.pageInfo?.pageInfo()
 
                     LoadResult.Page(
                         data = list,
@@ -65,17 +143,17 @@ class PullRequestTimelineDataSource(
                         perPage = params.loadSize,
                         after = params.key,
                         before = params.key
-                    ).data()?.repository?.pullRequest?.timelineItems
+                    ).data?.repository?.pullRequest?.timelineItems
 
-                    timeline?.nodes?.forEach { node ->
-                        node?.let {
-                            initTimelineItemWithRawData(node)?.let {
-                                list.add(it)
+                    list.addAll(
+                        timeline?.nodes.orEmpty().mapNotNull { node ->
+                            node?.let {
+                                initTimelineItemWithRawData(it)
                             }
                         }
-                    }
+                    )
 
-                    val pageInfo = timeline?.pageInfo?.fragments?.pageInfo
+                    val pageInfo = timeline?.pageInfo?.pageInfo()
 
                     LoadResult.Page(
                         data = list,
@@ -95,286 +173,90 @@ class PullRequestTimelineDataSource(
         return null
     }
 
-    private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Node): PullRequestTimelineItem? {
-        return when {
-            node.fragments.addedToProjectEventFragment != null -> {
-                node.fragments.addedToProjectEventFragment.toNonNullAddedToProjectEvent()
-            }
-            node.fragments.assignedEventFragment != null -> {
-                node.fragments.assignedEventFragment.toNonNullAssignedEvent()
-            }
-            node.fragments.baseRefChangedEventFragment != null -> {
-                node.fragments.baseRefChangedEventFragment.toNonNullBaseRefChangedEvent()
-            }
-            node.fragments.baseRefForcePushedEventFragment != null -> {
-                node.fragments.baseRefForcePushedEventFragment.toNonNullBaseRefForcePushedEvent()
-            }
-            node.fragments.closedEventFragment != null -> {
-                node.fragments.closedEventFragment.toNonNullClosedEvent()
-            }
-            // node.fragments.commentDeletedEventFragment != null -> {
-            //     node.fragments.commentDeletedEventFragment.toNonNullCommentDeletedEvent()
-            // }
-            node.fragments.convertedNoteToIssueEventFragment != null -> {
-                node.fragments.convertedNoteToIssueEventFragment.toNonNullConvertedNoteToIssueEvent()
-            }
-            node.fragments.crossReferencedEventFragment != null -> {
-                node.fragments.crossReferencedEventFragment.toNonNullCrossReferencedEvent()
-            }
-            node.fragments.demilestonedEventFragment != null -> {
-                node.fragments.demilestonedEventFragment.toNonNullDemilestonedEvent()
-            }
-            node.fragments.deployedEventFragment != null -> {
-                node.fragments.deployedEventFragment.toNonNullDeployedEvent()
-            }
-            node.fragments.deploymentEnvironmentChangedEventFragment != null -> {
-                node.fragments.deploymentEnvironmentChangedEventFragment.toNonNullDeploymentEnvironmentChangedEvent()
-            }
-            node.fragments.headRefDeletedEventFragment != null -> {
-                node.fragments.headRefDeletedEventFragment.toNonNullHeadRefDeletedEvent()
-            }
-            node.fragments.headRefForcePushedEventFragment != null -> {
-                node.fragments.headRefForcePushedEventFragment.toNonNullHeadRefForcePushedEvent()
-            }
-            node.fragments.headRefRestoredEventFragment != null -> {
-                node.fragments.headRefRestoredEventFragment.toNonNullHeadRefRestoredEvent()
-            }
-            node.fragments.issueCommentFragment != null -> {
-                node.fragments.issueCommentFragment.toNonNullIssueComment(owner, name)
-            }
-            node.fragments.labeledEventFragment != null -> {
-                node.fragments.labeledEventFragment.toNonNullLabeledEvent()
-            }
-            node.fragments.lockedEventFragment != null -> {
-                node.fragments.lockedEventFragment.toNonNullLockedEvent()
-            }
-            node.fragments.markedAsDuplicateEventFragment != null -> {
-                node.fragments.markedAsDuplicateEventFragment.toNonNullMarkedAsDuplicateEvent()
-            }
-            // node.fragments.mentionedEventFragment != null -> {
-            //     node.fragments.mentionedEventFragment?.toNonNullMentionedEvent()
-            // }
-            node.fragments.mergedEventFragment != null -> {
-                node.fragments.mergedEventFragment.toNonNullMergedEvent()
-            }
-            node.fragments.milestonedEventFragment != null -> {
-                node.fragments.milestonedEventFragment.toNonNullMilestonedEvent()
-            }
-            node.fragments.movedColumnsInProjectEventFragment != null -> {
-                node.fragments.movedColumnsInProjectEventFragment.toNonNullMovedColumnsInProjectEvent()
-            }
-            node.fragments.pinnedEventFragment != null -> {
-                node.fragments.pinnedEventFragment.toNonNullPinnedEvent()
-            }
-            node.fragments.pullRequestCommitFragment != null -> {
-                node.fragments.pullRequestCommitFragment.toNonNullPullRequestCommit()
-            }
-            node.fragments.pullRequestCommitCommentThreadFragment != null -> {
-                node.fragments.pullRequestCommitCommentThreadFragment.toNonNullPullRequestCommitCommentThread()
-            }
-            node.fragments.pullRequestReviewFragment != null -> {
-                node.fragments.pullRequestReviewFragment.toNonNullPullRequestReview()
-            }
-            node.fragments.pullRequestReviewThreadFragment != null -> {
-                node.fragments.pullRequestReviewThreadFragment.toNonNullPullRequestReviewThread()
-            }
-            // node.fragments.pullRequestRevisionMarkerFragment != null -> {
-            //     node.fragments.pullRequestRevisionMarkerFragment.toNonNullPullRequestRevisionMarker()
-            // }
-            node.fragments.readyForReviewEventFragment != null -> {
-                node.fragments.readyForReviewEventFragment.toNonNullReadyForReviewEvent()
-            }
-            node.fragments.referencedEventFragment != null -> {
-                node.fragments.referencedEventFragment.toNonNullReferencedEvent()
-            }
-            node.fragments.removedFromProjectEventFragment != null -> {
-                node.fragments.removedFromProjectEventFragment.toNonNullRemovedFromProjectEvent()
-            }
-            node.fragments.renamedTitleEventFragment != null -> {
-                node.fragments.renamedTitleEventFragment.toNonNullRenamedTitleEvent()
-            }
-            node.fragments.reopenedEventFragment != null -> {
-                node.fragments.reopenedEventFragment.toNonNullReopenedEvent()
-            }
-            node.fragments.reviewDismissedEventFragment != null -> {
-                node.fragments.reviewDismissedEventFragment.toNonNullReviewDismissedEvent()
-            }
-            node.fragments.reviewRequestRemovedEventFragment != null -> {
-                node.fragments.reviewRequestRemovedEventFragment.toNonNullReviewRequestRemovedEvent()
-            }
-            node.fragments.reviewRequestedEventFragment != null -> {
-                node.fragments.reviewRequestedEventFragment.toNonNullReviewRequestedEvent()
-            }
-            // node.fragments.subscribedEventFragment != null -> {
-            //     node.fragments.subscribedEventFragment.toNonNullSubscribedEvent()
-            // }
-            node.fragments.transferredEventFragment != null -> {
-                node.fragments.transferredEventFragment.toNonNullTransferredEvent()
-            }
-            node.fragments.unassignedEventFragment != null -> {
-                node.fragments.unassignedEventFragment.toNonNullUnassignedEvent()
-            }
-            node.fragments.unlabeledEventFragment != null -> {
-                node.fragments.unlabeledEventFragment.toNonNullUnlabeledEvent()
-            }
-            node.fragments.unlockedEventFragment != null -> {
-                node.fragments.unlockedEventFragment.toNonNullUnlockedEvent()
-            }
-            node.fragments.unpinnedEventFragment != null -> {
-                node.fragments.unpinnedEventFragment.toNonNullUnpinnedEvent()
-            }
-            // node.fragments.unsubscribedEventFragment != null -> {
-            //     node.fragments.unsubscribedEventFragment.toNonNullUnsubscribedEvent()
-            // }
-            // node.fragments.userBlockedEventFragment != null -> {
-            //     node.fragments.userBlockedEventFragment.toNonNullUserBlockedEvent()
-            // }
-            else -> {
-                // unsupported type, just ignore it.
-                null
-            }
-        }
+    private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes): PullRequestTimelineItem? {
+        return node.addedToProjectEventFragment()?.toNonNullAddedToProjectEvent()
+            ?: node.assignedEventFragment()?.toNonNullAssignedEvent()
+            ?: node.baseRefChangedEventFragment()?.toNonNullBaseRefChangedEvent()
+            ?: node.baseRefForcePushedEventFragment()?.toNonNullBaseRefForcePushedEvent()
+            ?: node.closedEventFragment()?.toNonNullClosedEvent()
+            ?: node.convertedNoteToIssueEventFragment()?.toNonNullConvertedNoteToIssueEvent()
+            ?: node.crossReferencedEventFragment()?.toNonNullCrossReferencedEvent()
+            ?: node.demilestonedEventFragment()?.toNonNullDemilestonedEvent()
+            ?: node.deployedEventFragment()?.toNonNullDeployedEvent()
+            ?: node.deploymentEnvironmentChangedEventFragment()
+                ?.toNonNullDeploymentEnvironmentChangedEvent()
+            ?: node.headRefDeletedEventFragment()?.toNonNullHeadRefDeletedEvent()
+            ?: node.headRefForcePushedEventFragment()?.toNonNullHeadRefForcePushedEvent()
+            ?: node.headRefRestoredEventFragment()?.toNonNullHeadRefRestoredEvent()
+            ?: node.issueCommentFragment()?.toNonNullIssueComment(owner, name)
+            ?: node.labeledEventFragment()?.toNonNullLabeledEvent()
+            ?: node.lockedEventFragment()?.toNonNullLockedEvent()
+            ?: node.markedAsDuplicateEventFragment()?.toNonNullMarkedAsDuplicateEvent()
+            ?: node.mergedEventFragment()?.toNonNullMergedEvent()
+            ?: node.milestonedEventFragment()?.toNonNullMilestonedEvent()
+            ?: node.movedColumnsInProjectEventFragment()?.toNonNullMovedColumnsInProjectEvent()
+            ?: node.pinnedEventFragment()?.toNonNullPinnedEvent()
+            ?: node.pullRequestCommitFragment()?.toNonNullPullRequestCommit()
+            ?: node.pullRequestCommitCommentThreadFragment()
+                ?.toNonNullPullRequestCommitCommentThread()
+            ?: node.pullRequestReviewFragment()?.toNonNullPullRequestReview()
+            ?: node.pullRequestReviewThreadFragment()?.toNonNullPullRequestReviewThread()
+            ?: node.readyForReviewEventFragment()?.toNonNullReadyForReviewEvent()
+            ?: node.referencedEventFragment()?.toNonNullReferencedEvent()
+            ?: node.removedFromProjectEventFragment()?.toNonNullRemovedFromProjectEvent()
+            ?: node.renamedTitleEventFragment()?.toNonNullRenamedTitleEvent()
+            ?: node.reopenedEventFragment()?.toNonNullReopenedEvent()
+            ?: node.reviewDismissedEventFragment()?.toNonNullReviewDismissedEvent()
+            ?: node.reviewRequestRemovedEventFragment()?.toNonNullReviewRequestRemovedEvent()
+            ?: node.reviewRequestedEventFragment()?.toNonNullReviewRequestedEvent()
+            ?: node.transferredEventFragment()?.toNonNullTransferredEvent()
+            ?: node.unassignedEventFragment()?.toNonNullUnassignedEvent()
+            ?: node.unlabeledEventFragment()?.toNonNullUnlabeledEvent()
+            ?: node.unlockedEventFragment()?.toNonNullUnlockedEvent()
+            ?: node.unpinnedEventFragment()?.toNonNullUnpinnedEvent()
     }
 
-    private fun initTimelineItemWithRawData(node: PullRequestQuery.Node): PullRequestTimelineItem? {
-        return when {
-            node.fragments.addedToProjectEventFragment != null -> {
-                node.fragments.addedToProjectEventFragment.toNonNullAddedToProjectEvent()
-            }
-            node.fragments.assignedEventFragment != null -> {
-                node.fragments.assignedEventFragment.toNonNullAssignedEvent()
-            }
-            node.fragments.baseRefChangedEventFragment != null -> {
-                node.fragments.baseRefChangedEventFragment.toNonNullBaseRefChangedEvent()
-            }
-            node.fragments.baseRefForcePushedEventFragment != null -> {
-                node.fragments.baseRefForcePushedEventFragment.toNonNullBaseRefForcePushedEvent()
-            }
-            node.fragments.closedEventFragment != null -> {
-                node.fragments.closedEventFragment.toNonNullClosedEvent()
-            }
-            // node.fragments.commentDeletedEventFragment != null -> {
-            //     node.fragments.commentDeletedEventFragment.toNonNullCommentDeletedEvent()
-            // }
-            node.fragments.convertedNoteToIssueEventFragment != null -> {
-                node.fragments.convertedNoteToIssueEventFragment.toNonNullConvertedNoteToIssueEvent()
-            }
-            node.fragments.crossReferencedEventFragment != null -> {
-                node.fragments.crossReferencedEventFragment.toNonNullCrossReferencedEvent()
-            }
-            node.fragments.demilestonedEventFragment != null -> {
-                node.fragments.demilestonedEventFragment.toNonNullDemilestonedEvent()
-            }
-            node.fragments.deployedEventFragment != null -> {
-                node.fragments.deployedEventFragment.toNonNullDeployedEvent()
-            }
-            node.fragments.deploymentEnvironmentChangedEventFragment != null -> {
-                node.fragments.deploymentEnvironmentChangedEventFragment.toNonNullDeploymentEnvironmentChangedEvent()
-            }
-            node.fragments.headRefDeletedEventFragment != null -> {
-                node.fragments.headRefDeletedEventFragment.toNonNullHeadRefDeletedEvent()
-            }
-            node.fragments.headRefForcePushedEventFragment != null -> {
-                node.fragments.headRefForcePushedEventFragment.toNonNullHeadRefForcePushedEvent()
-            }
-            node.fragments.headRefRestoredEventFragment != null -> {
-                node.fragments.headRefRestoredEventFragment.toNonNullHeadRefRestoredEvent()
-            }
-            node.fragments.issueCommentFragment != null -> {
-                node.fragments.issueCommentFragment.toNonNullIssueComment(owner, name)
-            }
-            node.fragments.labeledEventFragment != null -> {
-                node.fragments.labeledEventFragment.toNonNullLabeledEvent()
-            }
-            node.fragments.lockedEventFragment != null -> {
-                node.fragments.lockedEventFragment.toNonNullLockedEvent()
-            }
-            node.fragments.markedAsDuplicateEventFragment != null -> {
-                node.fragments.markedAsDuplicateEventFragment.toNonNullMarkedAsDuplicateEvent()
-            }
-            // node.fragments.mentionedEventFragment != null -> {
-            //     node.fragments.mentionedEventFragment?.toNonNullMentionedEvent()
-            // }
-            node.fragments.mergedEventFragment != null -> {
-                node.fragments.mergedEventFragment.toNonNullMergedEvent()
-            }
-            node.fragments.milestonedEventFragment != null -> {
-                node.fragments.milestonedEventFragment.toNonNullMilestonedEvent()
-            }
-            node.fragments.movedColumnsInProjectEventFragment != null -> {
-                node.fragments.movedColumnsInProjectEventFragment.toNonNullMovedColumnsInProjectEvent()
-            }
-            node.fragments.pinnedEventFragment != null -> {
-                node.fragments.pinnedEventFragment.toNonNullPinnedEvent()
-            }
-            node.fragments.pullRequestCommitFragment != null -> {
-                node.fragments.pullRequestCommitFragment.toNonNullPullRequestCommit()
-            }
-            node.fragments.pullRequestCommitCommentThreadFragment != null -> {
-                node.fragments.pullRequestCommitCommentThreadFragment.toNonNullPullRequestCommitCommentThread()
-            }
-            node.fragments.pullRequestReviewFragment != null -> {
-                node.fragments.pullRequestReviewFragment.toNonNullPullRequestReview()
-            }
-            node.fragments.pullRequestReviewThreadFragment != null -> {
-                node.fragments.pullRequestReviewThreadFragment.toNonNullPullRequestReviewThread()
-            }
-            // node.fragments.pullRequestRevisionMarkerFragment != null -> {
-            //     node.fragments.pullRequestRevisionMarkerFragment.toNonNullPullRequestRevisionMarker()
-            // }
-            node.fragments.readyForReviewEventFragment != null -> {
-                node.fragments.readyForReviewEventFragment.toNonNullReadyForReviewEvent()
-            }
-            node.fragments.referencedEventFragment != null -> {
-                node.fragments.referencedEventFragment.toNonNullReferencedEvent()
-            }
-            node.fragments.removedFromProjectEventFragment != null -> {
-                node.fragments.removedFromProjectEventFragment.toNonNullRemovedFromProjectEvent()
-            }
-            node.fragments.renamedTitleEventFragment != null -> {
-                node.fragments.renamedTitleEventFragment.toNonNullRenamedTitleEvent()
-            }
-            node.fragments.reopenedEventFragment != null -> {
-                node.fragments.reopenedEventFragment.toNonNullReopenedEvent()
-            }
-            node.fragments.reviewDismissedEventFragment != null -> {
-                node.fragments.reviewDismissedEventFragment.toNonNullReviewDismissedEvent()
-            }
-            node.fragments.reviewRequestRemovedEventFragment != null -> {
-                node.fragments.reviewRequestRemovedEventFragment.toNonNullReviewRequestRemovedEvent()
-            }
-            node.fragments.reviewRequestedEventFragment != null -> {
-                node.fragments.reviewRequestedEventFragment.toNonNullReviewRequestedEvent()
-            }
-            // node.fragments.subscribedEventFragment != null -> {
-            //     node.fragments.subscribedEventFragment.toNonNullSubscribedEvent()
-            // }
-            node.fragments.transferredEventFragment != null -> {
-                node.fragments.transferredEventFragment.toNonNullTransferredEvent()
-            }
-            node.fragments.unassignedEventFragment != null -> {
-                node.fragments.unassignedEventFragment.toNonNullUnassignedEvent()
-            }
-            node.fragments.unlabeledEventFragment != null -> {
-                node.fragments.unlabeledEventFragment.toNonNullUnlabeledEvent()
-            }
-            node.fragments.unlockedEventFragment != null -> {
-                node.fragments.unlockedEventFragment.toNonNullUnlockedEvent()
-            }
-            node.fragments.unpinnedEventFragment != null -> {
-                node.fragments.unpinnedEventFragment.toNonNullUnpinnedEvent()
-            }
-            // node.fragments.unsubscribedEventFragment != null -> {
-            //     node.fragments.unsubscribedEventFragment.toNonNullUnsubscribedEvent()
-            // }
-            // node.fragments.userBlockedEventFragment != null -> {
-            //     node.fragments.userBlockedEventFragment.toNonNullUserBlockedEvent()
-            // }
-            else -> {
-                // unsupported type, just ignore it.
-                null
-            }
-        }
+    private fun initTimelineItemWithRawData(node: PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes): PullRequestTimelineItem? {
+        return node.addedToProjectEventFragment()?.toNonNullAddedToProjectEvent()
+            ?: node.assignedEventFragment()?.toNonNullAssignedEvent()
+            ?: node.baseRefChangedEventFragment()?.toNonNullBaseRefChangedEvent()
+            ?: node.baseRefForcePushedEventFragment()?.toNonNullBaseRefForcePushedEvent()
+            ?: node.closedEventFragment()?.toNonNullClosedEvent()
+            ?: node.convertedNoteToIssueEventFragment()?.toNonNullConvertedNoteToIssueEvent()
+            ?: node.crossReferencedEventFragment()?.toNonNullCrossReferencedEvent()
+            ?: node.demilestonedEventFragment()?.toNonNullDemilestonedEvent()
+            ?: node.deployedEventFragment()?.toNonNullDeployedEvent()
+            ?: node.deploymentEnvironmentChangedEventFragment()
+                ?.toNonNullDeploymentEnvironmentChangedEvent()
+            ?: node.headRefDeletedEventFragment()?.toNonNullHeadRefDeletedEvent()
+            ?: node.headRefForcePushedEventFragment()?.toNonNullHeadRefForcePushedEvent()
+            ?: node.headRefRestoredEventFragment()?.toNonNullHeadRefRestoredEvent()
+            ?: node.issueCommentFragment()?.toNonNullIssueComment(owner, name)
+            ?: node.labeledEventFragment()?.toNonNullLabeledEvent()
+            ?: node.lockedEventFragment()?.toNonNullLockedEvent()
+            ?: node.markedAsDuplicateEventFragment()?.toNonNullMarkedAsDuplicateEvent()
+            ?: node.mergedEventFragment()?.toNonNullMergedEvent()
+            ?: node.milestonedEventFragment()?.toNonNullMilestonedEvent()
+            ?: node.movedColumnsInProjectEventFragment()?.toNonNullMovedColumnsInProjectEvent()
+            ?: node.pinnedEventFragment()?.toNonNullPinnedEvent()
+            ?: node.pullRequestCommitFragment()?.toNonNullPullRequestCommit()
+            ?: node.pullRequestCommitCommentThreadFragment()
+                ?.toNonNullPullRequestCommitCommentThread()
+            ?: node.pullRequestReviewFragment()?.toNonNullPullRequestReview()
+            ?: node.pullRequestReviewThreadFragment()?.toNonNullPullRequestReviewThread()
+            ?: node.readyForReviewEventFragment()?.toNonNullReadyForReviewEvent()
+            ?: node.referencedEventFragment()?.toNonNullReferencedEvent()
+            ?: node.removedFromProjectEventFragment()?.toNonNullRemovedFromProjectEvent()
+            ?: node.renamedTitleEventFragment()?.toNonNullRenamedTitleEvent()
+            ?: node.reopenedEventFragment()?.toNonNullReopenedEvent()
+            ?: node.reviewDismissedEventFragment()?.toNonNullReviewDismissedEvent()
+            ?: node.reviewRequestRemovedEventFragment()?.toNonNullReviewRequestRemovedEvent()
+            ?: node.reviewRequestedEventFragment()?.toNonNullReviewRequestedEvent()
+            ?: node.transferredEventFragment()?.toNonNullTransferredEvent()
+            ?: node.unassignedEventFragment()?.toNonNullUnassignedEvent()
+            ?: node.unlabeledEventFragment()?.toNonNullUnlabeledEvent()
+            ?: node.unlockedEventFragment()?.toNonNullUnlockedEvent()
+            ?: node.unpinnedEventFragment()?.toNonNullUnpinnedEvent()
     }
 
 }

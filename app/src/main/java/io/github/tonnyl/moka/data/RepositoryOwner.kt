@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
 import io.github.tonnyl.moka.fragment.RepositoryOwner as RawRepositoryOwner
 
 /**
@@ -15,7 +14,7 @@ data class RepositoryOwner(
      * Type: Int
      * Description: The size of the resulting square image.
      */
-    val avatarUrl: Uri,
+    val avatarUrl: String,
 
     val id: String,
 
@@ -27,12 +26,12 @@ data class RepositoryOwner(
     /**
      * The HTTP URL for the owner.
      */
-    val resourcePath: Uri,
+    val resourcePath: String,
 
     /**
      * The HTTP URL for the owner.
      */
-    val url: Uri
+    val url: String
 
 )
 

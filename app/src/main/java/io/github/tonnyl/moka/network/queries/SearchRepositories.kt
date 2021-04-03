@@ -1,29 +1,28 @@
 package io.github.tonnyl.moka.network.queries
 
-import androidx.annotation.WorkerThread
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery
-import io.github.tonnyl.moka.util.execute
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.withContext
 
-@WorkerThread
-fun querySearchRepositories(
+suspend fun querySearchRepositories(
     queryWords: String,
     first: Int? = null,
     last: Int? = null,
     after: String? = null,
     before: String? = null
-) = runBlocking {
+) = withContext(Dispatchers.IO) {
     GraphQLClient.apolloClient
         .query(
             SearchRepositoriesQuery(
                 queryWords,
-                Input.optional(first),
-                Input.optional(last),
-                Input.optional(after),
-                Input.optional(before)
+                Input.Present(first),
+                Input.Present(last),
+                Input.Present(after),
+                Input.Present(before)
             )
         )
-        .execute()
+        .single()
 }

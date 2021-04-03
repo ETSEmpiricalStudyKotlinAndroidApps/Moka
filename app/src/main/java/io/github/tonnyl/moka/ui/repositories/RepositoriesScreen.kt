@@ -27,9 +27,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.LocalWindowInsets
-import dev.chrisbanes.accompanist.insets.toPaddingValues
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
@@ -166,7 +166,7 @@ private fun RepositoriesScreenContent(
             ItemLoadingState(loadState = repositories.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = repositories) { index, item ->
+        itemsIndexed(lazyPagingItems = repositories) { _, item ->
             if (item != null) {
                 ItemRepository(
                     repo = item,
@@ -195,7 +195,7 @@ fun ItemRepository(
             .clickable {
                 navController.navigate(
                     route = Screen.Repository.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", repo.owner.login)
+                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", repo.owner?.login ?: "ghost")
                         .replace("{${Screen.ARG_REPOSITORY_NAME}}", repo.name)
                         .replace(
                             "{${Screen.ARG_PROFILE_TYPE}}",
@@ -207,7 +207,7 @@ fun ItemRepository(
     ) {
         CoilImage(
             contentDescription = stringResource(id = R.string.users_avatar_content_description),
-            request = createAvatarLoadRequest(url = repo.owner.avatarUrl),
+            request = createAvatarLoadRequest(url = repo.owner?.avatarUrl),
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)

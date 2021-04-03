@@ -14,6 +14,7 @@ import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.network.mutations.unfollowUser
 import io.github.tonnyl.moka.network.queries.queryOrganization
 import io.github.tonnyl.moka.network.queries.queryUser
+import io.github.tonnyl.moka.queries.UserQuery.Data.User.Companion.user
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -62,10 +63,9 @@ class ProfileViewModel(
 
             try {
                 val user = queryUser(login)
-                    .data()
+                    .data
                     ?.user
-                    ?.fragments
-                    ?.user
+                    ?.user()
                     ?.toNonNullUser()
 
                 _userProfile.postValue(Resource.success(user))
@@ -90,7 +90,7 @@ class ProfileViewModel(
             try {
                 val response = queryOrganization(login)
 
-                val org = response.data()?.organization.toNullableOrganization()
+                val org = response.data?.organization.toNullableOrganization()
 
                 _organizationProfile.postValue(Resource.success(org))
 

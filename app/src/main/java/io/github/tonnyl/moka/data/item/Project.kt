@@ -1,11 +1,10 @@
 package io.github.tonnyl.moka.data.item
 
-import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import io.github.tonnyl.moka.type.ProjectState
+import io.github.tonnyl.moka.fragment.Project.Creator.Companion.actor
 import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.Actor as RawActor
 import io.github.tonnyl.moka.fragment.Project as RawProject
@@ -72,13 +71,13 @@ data class Project(
      * The HTTP path for this project.
      */
     @ColumnInfo(name = "resource_path")
-    var resourcePath: Uri,
+    var resourcePath: String,
 
     /**
      * Whether the project is open or closed.
      */
     @ColumnInfo(name = "state")
-    var state: ProjectState,
+    var state: String,
 
     /**
      * Identifies the date and time when the object was last updated.
@@ -90,7 +89,7 @@ data class Project(
      * The HTTP URL for this project.
      */
     @ColumnInfo(name = "url")
-    var url: Uri,
+    var url: String,
 
     /**
      * Check if the current viewer can update this object.
@@ -107,12 +106,12 @@ fun RawProject.toNonNullProject(): Project {
         closed,
         closedAt,
         createdAt,
-        creator?.fragments?.actor?.toNonNullProjectActor(),
+        creator?.actor()?.toNonNullProjectActor(),
         id,
         name,
         number,
         resourcePath,
-        state,
+        state.rawValue,
         updatedAt,
         url,
         viewerCanUpdate
@@ -128,7 +127,7 @@ data class ProjectActor(
      * A URL pointing to the actor's public avatar.
      */
     @ColumnInfo(name = "avatar_url")
-    var avatarUrl: Uri,
+    var avatarUrl: String,
 
     /**
      * The username of the actor.
@@ -140,7 +139,7 @@ data class ProjectActor(
      * The HTTP URL for this actor.
      */
     @ColumnInfo(name = "url")
-    var url: Uri
+    var url: String
 
 )
 

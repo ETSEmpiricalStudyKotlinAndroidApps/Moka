@@ -3,9 +3,8 @@ package io.github.tonnyl.moka.network.mutations
 import io.github.tonnyl.moka.mutations.AddProjectColumnMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.AddProjectColumnInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -20,16 +19,14 @@ suspend fun addProjectColumn(
     projectId: String,
     name: String
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                AddProjectColumnMutation(
-                    AddProjectColumnInput(
-                        projectId = projectId,
-                        name = name
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            AddProjectColumnMutation(
+                AddProjectColumnInput(
+                    projectId = projectId,
+                    name = name
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

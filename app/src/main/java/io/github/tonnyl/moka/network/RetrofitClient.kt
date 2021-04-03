@@ -1,13 +1,15 @@
 package io.github.tonnyl.moka.network
 
 import android.content.Context
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.github.tonnyl.moka.network.service.TrendingService
-import io.github.tonnyl.moka.util.MoshiInstance
+import io.github.tonnyl.moka.util.json
+import kotlinx.serialization.ExperimentalSerializationApi
 import okhttp3.Cache
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.atomic.AtomicReference
 
 object RetrofitClient {
@@ -40,6 +42,7 @@ object RetrofitClient {
         cache = Cache(context.cacheDir, 20 * 1024 * 1024)
     }
 
+    @ExperimentalSerializationApi
     fun <T> createService(serviceClass: Class<T>): T {
         if (!::retrofit.isInitialized) {
             // Custom the http client.
@@ -64,7 +67,7 @@ object RetrofitClient {
             // Set the corresponding convert factory and call adapter factory.
             val retrofitBuilder = Retrofit.Builder()
                 .baseUrl(GITHUB_V1_BASE_URL)
-                .addConverterFactory(MoshiConverterFactory.create(MoshiInstance.moshi))
+                .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
 
             retrofit = retrofitBuilder
                 .client(httpClientBuilder.build())

@@ -23,8 +23,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.paging.ExperimentalPagingApi
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.about.AboutScreen
 import io.github.tonnyl.moka.ui.emojis.EmojisScreen

@@ -1,7 +1,10 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
 import io.github.tonnyl.moka.queries.IssueQuery
+import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.Author.Companion.actor
+import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.Editor.Companion.actor
+import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.Milestone.Companion.milestone
+import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.ReactionGroups.Companion.reactionGroup
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
 
@@ -104,7 +107,7 @@ data class Issue(
     /**
      * The HTTP path for this issue.
      */
-    val resourcePath: Uri,
+    val resourcePath: String,
 
     /**
      * Identifies the state of the issue.
@@ -124,7 +127,7 @@ data class Issue(
     /**
      * The HTTP URL for this issue.
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * Can user react to this subject.
@@ -158,10 +161,10 @@ data class Issue(
 
 )
 
-fun IssueQuery.Issue.toNonNullIssue(): Issue {
+fun IssueQuery.Data.Repository.Issue.toNonNullIssue(): Issue {
     return Issue(
         activeLockReason,
-        author?.fragments?.actor?.toNonNullActor(),
+        author?.actor()?.toNonNullActor(),
         authorAssociation,
         body,
         bodyHTML,
@@ -170,18 +173,18 @@ fun IssueQuery.Issue.toNonNullIssue(): Issue {
         closedAt,
         createdAt,
         createdViaEmail,
-        editor?.fragments?.actor?.toNonNullActor(),
+        editor?.actor()?.toNonNullActor(),
         id,
         includesCreatedEdit,
         lastEditedAt,
         locked,
-        milestone?.fragments?.milestone?.toNonNullMilestone(),
+        milestone?.milestone()?.toNonNullMilestone(),
         number,
         publishedAt,
         reactionGroups?.filter {
-            it.fragments.reactionGroup.users.totalCount > 0
-        }?.map {
-            it.fragments.reactionGroup.toNonNullReactionGroup()
+            (it.reactionGroup()?.users?.totalCount ?: 0) > 0
+        }?.mapNotNull {
+            it.reactionGroup()?.toNonNullReactionGroup()
         }?.toMutableList(),
         resourcePath,
         state,

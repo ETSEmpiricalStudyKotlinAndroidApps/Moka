@@ -1,7 +1,9 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
 import io.github.tonnyl.moka.fragment.RepositoryListItemFragment
+import io.github.tonnyl.moka.fragment.RepositoryListItemFragment.Parent.Companion.parentOfForkedRepository
+import io.github.tonnyl.moka.fragment.RepositoryListItemFragment.PrimaryLanguage.Companion.language
+import io.github.tonnyl.moka.fragment.RepositoryListItemFragment.RepositoryOwner.Companion.repositoryOwner
 
 data class RepositoryItem(
 
@@ -18,7 +20,7 @@ data class RepositoryItem(
     /**
      * The repository's URL.
      */
-    val homepageUrl: Uri?,
+    val homepageUrl: String?,
 
     val id: String,
 
@@ -50,7 +52,7 @@ data class RepositoryItem(
     /**
      * The repository's original mirror URL.
      */
-    val mirrorUrl: Uri?,
+    val mirrorUrl: String?,
 
     /**
      * The name of the repository.
@@ -65,7 +67,7 @@ data class RepositoryItem(
     /**
      * The User owner of the repository.
      */
-    val owner: RepositoryOwner,
+    val owner: RepositoryOwner?,
 
     val parent: ParentOrMirrorRepository?,
 
@@ -82,7 +84,7 @@ data class RepositoryItem(
     /**
      * The HTTP URL for this repository.
      */
-    val url: Uri,
+    val url: String,
 
     /**
      * Returns a boolean indicating whether the viewing user has starred this starrable.
@@ -109,9 +111,9 @@ fun RepositoryListItemFragment.toNonNullRepositoryItem(): RepositoryItem {
         mirrorUrl,
         name,
         nameWithOwner,
-        owner.fragments.repositoryOwner.toNonNullRepositoryOwner(),
-        parent?.fragments?.parentOfForkedRepository?.toNonNullParentOfForkedRepository(),
-        primaryLanguage?.fragments?.language?.toNonNullLanguage(),
+        repositoryOwner.repositoryOwner()?.toNonNullRepositoryOwner(),
+        parent?.parentOfForkedRepository()?.toNonNullParentOfForkedRepository(),
+        primaryLanguage?.language()?.toNonNullLanguage(),
         shortDescriptionHTML,
         url,
         viewerHasStarred,

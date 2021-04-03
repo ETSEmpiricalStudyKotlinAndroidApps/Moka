@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.util
 
-import android.net.Uri
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.data.item.*
@@ -294,9 +293,9 @@ class IssueItemProvider : PreviewParameterProvider<IssueItem> {
         get() = sequenceOf(
             IssueItem(
                 actor = Actor(
-                    avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/1776230?u=b99f29305efeed615ccbf10236f01a6a0bee739e&v=4"),
+                    avatarUrl = "https://avatars.githubusercontent.com/u/1776230?u=b99f29305efeed615ccbf10236f01a6a0bee739e&v=4",
                     login = "eneim",
-                    url = Uri.parse("https://github.com/eneim")
+                    url = "https://github.com/eneim"
                 ),
                 id = "MDU6SXNzdWU1MjEyNzQ1MjU=",
                 number = 1,
@@ -306,9 +305,9 @@ class IssueItemProvider : PreviewParameterProvider<IssueItem> {
             ),
             IssueItem(
                 actor = Actor(
-                    avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/11989916?u=496f5fa6421a661441ef6467a909be31cb7be9c6&v=4"),
+                    avatarUrl = "https://avatars.githubusercontent.com/u/11989916?u=496f5fa6421a661441ef6467a909be31cb7be9c6&v=4",
                     login = "caiyoufei",
-                    url = Uri.parse("https://github.com/caiyoufei")
+                    url = "https://github.com/caiyoufei"
                 ),
                 id = "MDU6SXNzdWU1MjQ5NTIyNTg=",
                 number = 4,
@@ -326,9 +325,9 @@ class PullRequestItemProvider : PreviewParameterProvider<PullRequestItem> {
         get() = sequenceOf(
             PullRequestItem(
                 actor = Actor(
-                    avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/5749794?u=23b1d3479940253cd4848bf7c5b4520019a4c372&v=4"),
+                    avatarUrl = "https://avatars.githubusercontent.com/u/5749794?u=23b1d3479940253cd4848bf7c5b4520019a4c372&v=4",
                     login = "jshvarts",
-                    url = Uri.parse("https://github.com/jshvarts")
+                    url = "https://github.com/jshvarts"
                 ),
                 closed = true,
                 createdAt = Instant.parse("2019-11-15T03:41:07Z"),
@@ -339,9 +338,9 @@ class PullRequestItemProvider : PreviewParameterProvider<PullRequestItem> {
             ),
             PullRequestItem(
                 actor = Actor(
-                    avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4"),
+                    avatarUrl = "https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4",
                     login = "TonnyL",
-                    url = Uri.parse("https://github.com/TonnyL")
+                    url = "https://github.com/TonnyL"
                 ),
                 closed = true,
                 createdAt = Instant.parse("2020-03-12T14:49:22Z"),
@@ -352,9 +351,9 @@ class PullRequestItemProvider : PreviewParameterProvider<PullRequestItem> {
             ),
             PullRequestItem(
                 actor = Actor(
-                    avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4"),
+                    avatarUrl = "https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4",
                     login = "TonnyL",
-                    url = Uri.parse("https://github.com/TonnyL")
+                    url = "https://github.com/TonnyL"
                 ),
                 closed = true,
                 createdAt = Instant.parse("2020-03-15T09:13:55Z"),
@@ -369,9 +368,9 @@ class PullRequestItemProvider : PreviewParameterProvider<PullRequestItem> {
 
 private val assignedEvent = AssignedEvent(
     actor = Actor(
-        avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4"),
+        avatarUrl = "https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4",
         login = "nickbutcher",
-        url = Uri.parse("https://github.com/nickbutcher")
+        url = "https://github.com/nickbutcher"
     ),
     createdAt = Instant.parse("2020-09-21T12:07:57Z"),
     id = "MDQ6VXNlcjM1MjU1Ng==",
@@ -388,9 +387,9 @@ class IssueTimelineEventProvider : PreviewParameterProvider<IssueTimelineItem> {
 
 private val commentEvent = IssueComment(
     author = Actor(
-        avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4"),
+        avatarUrl = "https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4",
         login = "nickbutcher",
-        url = Uri.parse("https://github.com/nickbutcher")
+        url = "https://github.com/nickbutcher"
     ),
     authorAssociation = CommentAuthorAssociation.COLLABORATOR,
     createdAt = Instant.parse("2020-09-21T12:07:53Z"),
@@ -443,34 +442,32 @@ class PullRequestTimelineItemProvider : PreviewParameterProvider<PullRequestTime
             PullRequestCommit(
                 commit = PullRequestTimelineItemCommit(
                     author = PullRequestTimelineItemGitActor(
-                        avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/352556?v=4"),
+                        avatarUrl = "https://avatars.githubusercontent.com/u/352556?v=4",
                         email = "nickbutcher@google.com",
                         name = "Nick Butcher",
                         user = User(
-                            avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4"),
+                            avatarUrl = "https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4",
                             login = "nickbutcher",
                             name = "Nick Butcher",
-                            url = Uri.parse("https://github.com/nickbutcher"),
+                            url = "https://github.com/nickbutcher",
                             id = "MDQ6VXNlcjM1MjU1Ng=="
                         )
                     ),
                     committer = PullRequestTimelineItemGitActor(
-                        avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/352556?v=4"),
+                        avatarUrl = "https://avatars.githubusercontent.com/u/352556?v=4",
                         email = "nickbutcher@google.com",
                         name = "Nick Butcher",
                         user = User(
-                            avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4"),
+                            avatarUrl = "https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4",
                             login = "nickbutcher",
                             name = "Nick Butcher",
-                            url = Uri.parse("https://github.com/nickbutcher"),
+                            url = "https://github.com/nickbutcher",
                             id = "MDQ6VXNlcjM1MjU1Ng=="
                         )
                     ),
                     message = "Update to snapshot 6994167.\n\nChange-Id: Ia634dfda0d83b5aaa187d6bb4a50cfb545a78841",
                     oid = "61a4cefac40aa542942dad4ae2e2962aef8e6ba0",
-                    url = Uri.parse(
-                        "https://github.com/android/compose-samples/commit/61a4cefac40aa542942dad4ae2e2962aef8e6ba0)"
-                    )
+                    url = "https://github.com/android/compose-samples/commit/61a4cefac40aa542942dad4ae2e2962aef8e6ba0"
                 ),
                 id = "MDE3OlB1bGxSZXF1ZXN0Q29tbWl0NTI3NTI2MTA5OjYxYTRjZWZhYzQwYWE1NDI5NDJkYWQ0YWUyZTI5NjJhZWY4ZTZiYTA=",
                 pullRequest = PullRequestTimelineItemPullRequest(
@@ -479,15 +476,15 @@ class PullRequestTimelineItemProvider : PreviewParameterProvider<PullRequestTime
                     id = "MDExOlB1bGxSZXF1ZXN0NTI3NTI2MTA5",
                     state = PullRequestState.OPEN,
                     title = "[Jetsnack] Update SysUi controller to provide easier theming of status/nav bars",
-                    url = Uri.parse("https://github.com/android/compose-samples/pull/293")
+                    url = "https://github.com/android/compose-samples/pull/293"
                 ),
-                url = Uri.parse("https://github.com/android/compose-samples/pull/293/commits/61a4cefac40aa542942dad4ae2e2962aef8e6ba0")
+                url = "https://github.com/android/compose-samples/pull/293/commits/61a4cefac40aa542942dad4ae2e2962aef8e6ba0"
             ),
             IssueComment(
                 author = Actor(
-                    avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/227486?v=4"),
+                    avatarUrl = "https://avatars.githubusercontent.com/u/227486?v=4",
                     login = "chrisbanes",
-                    url = Uri.parse("https://github.com/chrisbanes")
+                    url = "https://github.com/chrisbanes"
                 ),
                 authorAssociation = CommentAuthorAssociation.COLLABORATOR,
                 createdAt = Instant.parse("2020-11-25T16:16:47Z"),
@@ -515,7 +512,7 @@ class RepositoryItemProvider : PreviewParameterProvider<RepositoryItem> {
             RepositoryItem(
                 description = "🏀 An Android app for dribbble.com",
                 descriptionHTML = "<div>\n<g-emoji class=\"g-emoji\" alias=\"basketball\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f3c0.png\">🏀</g-emoji> An Android app for dribbble.com</div>",
-                homepageUrl = Uri.parse(""),
+                homepageUrl = "",
                 id = "MDEwOlJlcG9zaXRvcnk5NjA2NzIxMQ==",
                 isArchived = false,
                 isFork = false,
@@ -526,11 +523,11 @@ class RepositoryItemProvider : PreviewParameterProvider<RepositoryItem> {
                 name = "Mango",
                 nameWithOwner = "TonnyL/Mango",
                 owner = RepositoryOwner(
-                    avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4"),
+                    avatarUrl = "https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4",
                     id = "MDQ6VXNlcjEzMzI5MTQ4",
                     login = "TonnyL",
-                    resourcePath = Uri.parse("/TonnyL"),
-                    url = Uri.parse("https://github.com/TonnyL")
+                    resourcePath = "/TonnyL",
+                    url = "https://github.com/TonnyL"
                 ),
                 parent = null,
                 primaryLanguage = Language(
@@ -539,7 +536,7 @@ class RepositoryItemProvider : PreviewParameterProvider<RepositoryItem> {
                     name = "Kotlin"
                 ),
                 shortDescriptionHTML = "<g-emoji class=\"g-emoji\" alias=\"basketball\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f3c0.png\">🏀</g-emoji> An Android app for dribbble.com",
-                url = Uri.parse("https://github.com/TonnyL/Mango"),
+                url = "https://github.com/TonnyL/Mango",
                 viewerHasStarred = false,
                 forksCount = 98,
                 stargazersCount = 659
@@ -547,7 +544,7 @@ class RepositoryItemProvider : PreviewParameterProvider<RepositoryItem> {
             RepositoryItem(
                 description = "A command-line tool for browsing GitHub trending written by Rust.",
                 descriptionHTML = "<div>A command-line tool for browsing GitHub trending written by Rust.</div>",
-                homepageUrl = Uri.parse(""),
+                homepageUrl = "",
                 id = "MDEwOlJlcG9zaXRvcnkyMjIxMjU4MDk=",
                 isArchived = false,
                 isFork = false,
@@ -558,11 +555,11 @@ class RepositoryItemProvider : PreviewParameterProvider<RepositoryItem> {
                 name = "wukong",
                 nameWithOwner = "TonnyL/wukong",
                 owner = RepositoryOwner(
-                    avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4"),
+                    avatarUrl = "https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4",
                     id = "MDQ6VXNlcjEzMzI5MTQ4",
                     login = "TonnyL",
-                    resourcePath = Uri.parse("/TonnyL"),
-                    url = Uri.parse("https://github.com/TonnyL")
+                    resourcePath = "/TonnyL",
+                    url = "https://github.com/TonnyL"
                 ),
                 parent = null,
                 primaryLanguage = Language(
@@ -571,7 +568,7 @@ class RepositoryItemProvider : PreviewParameterProvider<RepositoryItem> {
                     name = "Rust"
                 ),
                 shortDescriptionHTML = "A command-line tool for browsing GitHub trending written by Rust.",
-                url = Uri.parse("https://github.com/TonnyL/wukong"),
+                url = "https://github.com/TonnyL/wukong",
                 viewerHasStarred = false,
                 forksCount = 3,
                 stargazersCount = 23
@@ -585,26 +582,26 @@ class UserItemProvider : PreviewParameterProvider<UserItem> {
     override val values: Sequence<UserItem>
         get() = sequenceOf(
             UserItem(
-                avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/3777021?u=8c2f8d46ac442b51f925e353bef7d80005a249e9&v=4"),
+                avatarUrl = "https://avatars.githubusercontent.com/u/3777021?u=8c2f8d46ac442b51f925e353bef7d80005a249e9&v=4",
                 bio = "Passionate about Android development and product design. Ex Android Infrastructure Tech Lead @ Zhihu",
                 bioHTML = "<div>Passionate about Android development and product design. Ex Android Infrastructure Tech Lead @ Zhihu</div>",
                 id = "MDQ6VXNlcjM3NzcwMjE=",
                 isViewer = false,
                 login = "gejiaheng",
                 name = "Jiaheng",
-                url = Uri.parse("https://github.com/gejiaheng"),
+                url = "https://github.com/gejiaheng",
                 viewerCanFollow = true,
                 viewerIsFollowing = true
             ),
             UserItem(
-                avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4"),
+                avatarUrl = "https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4",
                 bio = "Android designer and developer.",
                 bioHTML = "<div>Android designer and developer.</div>",
                 id = "MDQ6VXNlcjM1MjU1Ng==",
                 isViewer = false,
                 login = "nickbutcher",
                 name = "Nick Butcher",
-                url = Uri.parse("https://github.com/nickbutcher"),
+                url = "https://github.com/nickbutcher",
                 viewerCanFollow = true,
                 viewerIsFollowing = true
             )
@@ -617,28 +614,28 @@ class SearchedOrganizationItemProvider : PreviewParameterProvider<SearchedOrgani
     override val values: Sequence<SearchedOrganizationItem>
         get() = sequenceOf(
             SearchedOrganizationItem(
-                avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/32689599?v=4"),
+                avatarUrl = "https://avatars.githubusercontent.com/u/32689599?v=4",
                 description = "",
                 descriptionHTML = "<div></div>",
                 id = "MDEyOk9yZ2FuaXphdGlvbjMyNjg5NTk5",
                 isVerified = false,
                 login = "android",
                 name = "Android",
-                url = Uri.parse("https://github.com/android"),
+                url = "https://github.com/android",
                 viewerIsAMember = false,
-                websiteUrl = Uri.parse("https://d.android.com")
+                websiteUrl = "https://d.android.com"
             ),
             SearchedOrganizationItem(
-                avatarUrl = Uri.parse("https://avatars.githubusercontent.com/u/9919?v=4"),
+                avatarUrl = "https://avatars.githubusercontent.com/u/9919?v=4",
                 description = "How people build software.",
                 descriptionHTML = "<div>How people build software.</div>",
                 id = "MDEyOk9yZ2FuaXphdGlvbjk5MTk=",
                 isVerified = true,
                 login = "github",
                 name = "GitHub",
-                url = Uri.parse("https://github.com/github"),
+                url = "https://github.com/github",
                 viewerIsAMember = false,
-                websiteUrl = Uri.parse("https://github.com/about")
+                websiteUrl = "https://github.com/about"
             )
         )
 

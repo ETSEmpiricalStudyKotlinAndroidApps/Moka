@@ -1,6 +1,8 @@
 package io.github.tonnyl.moka.data
 
-import android.net.Uri
+import io.github.tonnyl.moka.fragment.License.Conditions.Companion.licenseRule
+import io.github.tonnyl.moka.fragment.License.Limitations.Companion.licenseRule
+import io.github.tonnyl.moka.fragment.License.Permissions.Companion.licenseRule
 import io.github.tonnyl.moka.fragment.License as RawLicense
 
 /**
@@ -78,15 +80,15 @@ data class License(
     /**
      * URL to the license on https://choosealicense.com .
      */
-    val url: Uri?
+    val url: String?
 
 )
 
 fun RawLicense.toNonNullLicense(): License {
     return License(
         body,
-        conditions.filterNotNull().map {
-            it.fragments.licenseRule.toNonNullLicenseRule()
+        conditions.mapNotNull {
+            it?.licenseRule()?.toNonNullLicenseRule()
         },
         description,
         featured,
@@ -94,13 +96,13 @@ fun RawLicense.toNonNullLicense(): License {
         id,
         implementation,
         key,
-        limitations.filterNotNull().map {
-            it.fragments.licenseRule.toNonNullLicenseRule()
+        limitations.mapNotNull {
+            it?.licenseRule()?.toNonNullLicenseRule()
         },
         name,
         nickname,
-        permissions.filterNotNull().map {
-            it.fragments.licenseRule.toNonNullLicenseRule()
+        permissions.mapNotNull {
+            it?.licenseRule()?.toNonNullLicenseRule()
         },
         pseudoLicense,
         spdxId,

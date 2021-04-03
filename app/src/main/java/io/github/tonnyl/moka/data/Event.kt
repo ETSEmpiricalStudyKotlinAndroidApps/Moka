@@ -4,13 +4,14 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 import io.github.tonnyl.moka.data.Event.Companion.CREATE_EVENT
 import kotlinx.datetime.Instant
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Entity(tableName = "event")
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Event(
 
     @PrimaryKey
@@ -20,25 +21,28 @@ data class Event(
     var type: String,
 
     // note the difference of serialized name, column name and field name
-    @Json(name = "public")
+    @SerialName("public")
     @ColumnInfo(name = "is_public")
     var isPublic: Boolean,
 
     @Embedded(prefix = "actor_")
+    @Contextual
     var actor: EventActor,
 
     @Embedded(prefix = "repo_")
-    var repo: EventRepository?,
+    var repo: EventRepository? = null,
 
     @Embedded(prefix = "org_")
-    var org: EventOrg?,
+    @Contextual
+    var org: EventOrg? = null,
 
-    @Json(name = "created_at")
+    @SerialName("created_at")
     @ColumnInfo(name = "created_at")
+    @Contextual
     var createdAt: Instant,
 
     @Embedded(prefix = "payload_")
-    var payload: EventPayload?,
+    var payload: EventPayload? = null,
 
     /**
      * Only for [CREATE_EVENT].
@@ -46,25 +50,25 @@ data class Event(
      * The git ref (or null if only a repository was created).
      */
     @ColumnInfo(name = "ref")
-    var ref: String?,
+    var ref: String? = null,
 
     /**
      * Only for [CREATE_EVENT].
      *
      * The object that was created. Can be one of repository, branch, or tag
      */
-    @Json(name = "ref_type")
+    @SerialName("ref_type")
     @ColumnInfo(name = "ref_type")
-    var refType: String?,
+    var refType: String? = null,
 
     /**
      * Only for [CREATE_EVENT].
      *
      * The name of the repository's default branch (usually master).
      */
-    @Json(name = "master_branch")
+    @SerialName("master_branch")
     @ColumnInfo(name = "master_branch")
-    var masterBranch: String?,
+    var masterBranch: String? = null,
 
     /**
      * Only for [CREATE_EVENT].
@@ -72,17 +76,17 @@ data class Event(
      * The repository's current description.
      */
     @ColumnInfo(name = "description")
-    var description: String?,
+    var description: String? = null,
 
-    @Json(name = "pusher_type")
+    @SerialName("pusher_type")
     @ColumnInfo(name = "pusher_type")
-    var pusherType: String?,
+    var pusherType: String? = null,
 
     @ColumnInfo(name = "head")
-    var head: String?,
+    var head: String? = null,
 
     @ColumnInfo(name = "before")
-    var before: String?
+    var before: String? = null
 
 ) {
 

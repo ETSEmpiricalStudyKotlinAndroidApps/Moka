@@ -1,12 +1,11 @@
 package io.github.tonnyl.moka.network.mutations
 
-import com.apollographql.apollo.api.Input
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.mutations.RequestReviewsMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.RequestReviewsInput
-import io.github.tonnyl.moka.util.execute
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -25,18 +24,16 @@ suspend fun requestReviews(
     teamIds: List<String>? = null,
     union: Boolean? = null
 ) = withContext(Dispatchers.IO) {
-    runBlocking {
-        GraphQLClient.apolloClient
-            .mutate(
-                RequestReviewsMutation(
-                    RequestReviewsInput(
-                        pullRequestId = pullRequestId,
-                        userIds = Input.optional(userIds),
-                        teamIds = Input.optional(teamIds),
-                        union = Input.optional(union)
-                    )
+    GraphQLClient.apolloClient
+        .mutate(
+            RequestReviewsMutation(
+                RequestReviewsInput(
+                    pullRequestId = pullRequestId,
+                    userIds = Input.Present(userIds),
+                    teamIds = Input.Present(teamIds),
+                    union = Input.Present(union)
                 )
             )
-            .execute()
-    }
+        )
+        .single()
 }

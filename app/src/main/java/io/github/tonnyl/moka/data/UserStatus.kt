@@ -1,11 +1,18 @@
 package io.github.tonnyl.moka.data
 
+import android.os.Parcelable
+import io.github.tonnyl.moka.serializers.parcelization.InstantParceler
 import kotlinx.datetime.Instant
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.TypeParceler
 import io.github.tonnyl.moka.fragment.UserStatus as RawUserStatus
 
 /**
  * The user's description of what they're currently doing.
  */
+@Parcelize
+@TypeParceler<Instant, InstantParceler>
+@TypeParceler<Instant?, InstantParceler>
 data class UserStatus(
 
     /**
@@ -43,7 +50,7 @@ data class UserStatus(
      */
     val updatedAt: Instant
 
-)
+) : Parcelable
 
 fun RawUserStatus.toNonNullUserStatus(): UserStatus {
     return UserStatus(

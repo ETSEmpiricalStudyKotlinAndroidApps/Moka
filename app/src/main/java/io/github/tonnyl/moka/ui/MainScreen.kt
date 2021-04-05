@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
@@ -26,6 +27,7 @@ import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
 import io.github.tonnyl.moka.ui.emojis.EmojisScreen
 import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiScreen
@@ -36,8 +38,10 @@ import io.github.tonnyl.moka.ui.issues.IssuesScreen
 import io.github.tonnyl.moka.ui.pr.PullRequestScreen
 import io.github.tonnyl.moka.ui.profile.ProfileScreen
 import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.profile.ProfileViewModel
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileScreen
 import io.github.tonnyl.moka.ui.profile.status.EditStatusScreen
+import io.github.tonnyl.moka.ui.profile.status.EditStatusViewModel
 import io.github.tonnyl.moka.ui.prs.PullRequestsScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoriesScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
@@ -51,6 +55,8 @@ import io.github.tonnyl.moka.ui.users.UsersScreen
 import io.github.tonnyl.moka.ui.users.UsersType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import io.github.tonnyl.moka.ui.profile.ViewModelFactory as ProfileViewModelFactory
+import io.github.tonnyl.moka.ui.profile.status.ViewModelFactory as EditStatusViewModelFactory
 
 sealed class Screen(val route: String) {
 
@@ -87,12 +93,20 @@ sealed class Screen(val route: String) {
     object PullRequest :
         Screen("pull_request/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_ISSUE_PR_NUMBER}}")
 
-    object Emojis : Screen("emojis")
+    object Emojis : Screen("emojis") {
+
+        const val RESULT_EMOJI = "result_emoji"
+
+    }
 
     object SearchEmoji : Screen("search_emoji")
 
     object EditStatus :
-        Screen("edit_status?${ARG_EDIT_STATUS_EMOJI}={${ARG_EDIT_STATUS_EMOJI}}?${ARG_EDIT_STATUS_MESSAGE}={${ARG_EDIT_STATUS_MESSAGE}}?${ARG_EDIT_STATUS_LIMIT_AVAILABILITY}={${ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}")
+        Screen("edit_status?${ARG_EDIT_STATUS_EMOJI}={${ARG_EDIT_STATUS_EMOJI}}?${ARG_EDIT_STATUS_MESSAGE}={${ARG_EDIT_STATUS_MESSAGE}}?${ARG_EDIT_STATUS_LIMIT_AVAILABILITY}={${ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}") {
+
+        const val RESULT_UPDATE_STATUS = "result_update_status"
+
+    }
 
     object Search : Screen("search")
 
@@ -221,14 +235,28 @@ fun MainScreen(mainViewModel: MainViewModel) {
                 )
             ) { backStackEntry ->
                 currentRoute = Screen.Profile.route
+
+                val viewModel = viewModel<ProfileViewModel>(
+                    factory = ProfileViewModelFactory(
+                        login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                            ?: return@composable,
+                        profileType = ProfileType.valueOf(
+                            backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
+                                ?: ProfileType.NOT_SPECIFIED.name
+                        )
+                    )
+                )
+
+                backStackEntry.savedStateHandle
+                    .getLiveData<UserStatus>(Screen.EditStatus.RESULT_UPDATE_STATUS)
+                    .value
+                    ?.let {
+                        viewModel.updateUserStatusIfNeeded(it)
+                    }
+
                 ProfileScreen(
-                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    profileType = ProfileType.valueOf(
-                        backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
-                            ?: ProfileType.NOT_SPECIFIED.name
-                    ),
                     mainViewModel = mainViewModel,
+                    viewModel = viewModel,
                     navController = navController
                 )
             }
@@ -316,14 +344,38 @@ fun MainScreen(mainViewModel: MainViewModel) {
                 )
             ) { backStackEntry ->
                 currentRoute = Screen.EditStatus.route
+
+                val initialEmoji = backStackEntry.arguments?.getString(Screen.ARG_EDIT_STATUS_EMOJI)
+                val initialMessage =
+                    backStackEntry.arguments?.getString(Screen.ARG_EDIT_STATUS_MESSAGE)
+                val initialIndicatesLimitedAvailability = backStackEntry.arguments?.getBoolean(
+                    Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY
+                )
+                val viewModel = viewModel<EditStatusViewModel>(
+                    factory = EditStatusViewModelFactory(
+                        emoji = initialEmoji,
+                        message = initialMessage,
+                        indicatesLimitedAvailability = initialIndicatesLimitedAvailability
+                    )
+                )
+
+                backStackEntry.savedStateHandle
+                    .getLiveData<String>(Screen.Emojis.RESULT_EMOJI)
+                    .value
+                    ?.let { resultEmoji ->
+                        if (resultEmoji.isNotEmpty()) {
+                            viewModel.updateEmoji(resultEmoji)
+                        }
+                    }
+
+
                 EditStatusScreen(
                     navController = navController,
                     mainViewModel = mainViewModel,
-                    initialEmoji = backStackEntry.arguments?.getString(Screen.ARG_EDIT_STATUS_EMOJI),
-                    initialMessage = backStackEntry.arguments?.getString(Screen.ARG_EDIT_STATUS_MESSAGE),
-                    initialIndicatesLimitedAvailability = backStackEntry.arguments?.getBoolean(
-                        Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY
-                    )
+                    initialEmoji = initialEmoji,
+                    initialMessage = initialMessage,
+                    initialIndicatesLimitedAvailability = initialIndicatesLimitedAvailability,
+                    viewModel = viewModel
                 )
             }
             composable(
@@ -469,10 +521,20 @@ fun MainScreen(mainViewModel: MainViewModel) {
             }
             composable(route = Screen.Emojis.route) {
                 currentRoute = Screen.Emojis.route
-                EmojisScreen(
-                    navController = navController,
-                    mainViewModel = mainViewModel
-                )
+                val resultEmoji = navController.currentBackStackEntry?.savedStateHandle
+                    ?.getLiveData<String>(Screen.Emojis.RESULT_EMOJI)?.value
+
+                if (!resultEmoji.isNullOrEmpty()) {
+                    navController.previousBackStackEntry?.savedStateHandle
+                        ?.set(Screen.Emojis.RESULT_EMOJI, resultEmoji)
+
+                    navController.navigateUp()
+                } else {
+                    EmojisScreen(
+                        navController = navController,
+                        mainViewModel = mainViewModel
+                    )
+                }
             }
             composable(route = Screen.SearchEmoji.route) {
                 currentRoute = Screen.SearchEmoji.route
@@ -498,7 +560,7 @@ fun MainDrawerContent(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    val navigate: (String, Boolean) -> Unit = { route, selected ->
+    val navigate: (String, Boolean) -> Unit = { route, _ ->
         navController.navigateUp()
         navController.navigate(route = route) {
             popUpTo = navController.graph.startDestination

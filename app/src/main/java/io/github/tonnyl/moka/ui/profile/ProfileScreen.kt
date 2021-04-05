@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
@@ -51,13 +50,11 @@ import kotlinx.datetime.Instant
 @ExperimentalMaterialApi
 @Composable
 fun ProfileScreen(
-    login: String,
-    profileType: ProfileType,
+    viewModel: ProfileViewModel,
     mainViewModel: MainViewModel,
     navController: NavController
 ) {
     val currentLoginUser by mainViewModel.currentUser.observeAsState()
-    val viewModel = viewModel<ProfileViewModel>(factory = ViewModelFactory(login, profileType))
     val organization by viewModel.organizationProfile.observeAsState()
     val user by viewModel.userProfile.observeAsState()
     val followState by viewModel.followState.observeAsState()
@@ -260,24 +257,28 @@ private fun ProfileScreenContent(
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .clickable(onClick = {
-                                if (user.isViewer
-                                    && user.status != null
-                                ) {
-                                    navController.navigate(
-                                        route = Screen.EditStatus.route
-                                            .replace(
+                                if (user.isViewer) {
+                                    var route = Screen.EditStatus.route
+
+                                    user.status?.let { userStatus ->
+                                        if (!userStatus.emoji.isNullOrEmpty()) {
+                                            route = route.replace(
                                                 "{${Screen.ARG_EDIT_STATUS_EMOJI}}",
-                                                user.status.emoji ?: ""
+                                                userStatus.emoji
                                             )
-                                            .replace(
+                                        }
+                                        if (!userStatus.message.isNullOrEmpty()) {
+                                            route = route.replace(
                                                 "{${Screen.ARG_EDIT_STATUS_MESSAGE}}",
-                                                user.status.message ?: ""
+                                                userStatus.message
                                             )
-                                            .replace(
-                                                "{${Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}",
-                                                user.status.indicatesLimitedAvailability.toString()
-                                            )
-                                    )
+                                        }
+                                        route = route.replace(
+                                            "{${Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}",
+                                            user.status.indicatesLimitedAvailability.toString()
+                                        )
+                                    }
+                                    navController.navigate(route = route)
                                 }
                             })
                     ) {

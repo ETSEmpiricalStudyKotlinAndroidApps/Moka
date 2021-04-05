@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.coil.CoilImage
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
@@ -28,6 +29,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.MainViewModel
+import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.util.SearchedEmojiItemProvider
 import io.github.tonnyl.moka.widget.SearchBar
@@ -55,7 +57,8 @@ fun SearchEmojiScreen(
 
         SearchEmojiScreenContent(
             topAppBarSize = topAppBarSize,
-            emojis = emojis ?: emptyList()
+            emojis = emojis ?: emptyList(),
+            navController = navController
         )
 
         SearchBar(
@@ -72,7 +75,8 @@ fun SearchEmojiScreen(
 @Composable
 private fun SearchEmojiScreenContent(
     topAppBarSize: Int,
-    emojis: List<SearchableEmoji>
+    emojis: List<SearchableEmoji>,
+    navController: NavController
 ) {
     LazyColumn(
         contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
@@ -81,20 +85,28 @@ private fun SearchEmojiScreenContent(
         )
     ) {
         items(count = emojis.size) { index ->
-            SearchedEmojiItem(emoji = emojis[index])
+            SearchedEmojiItem(
+                emoji = emojis[index],
+                navController = navController
+            )
         }
     }
 }
 
 @Composable
-private fun SearchedEmojiItem(emoji: SearchableEmoji) {
+private fun SearchedEmojiItem(
+    emoji: SearchableEmoji,
+    navController: NavController
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable {
-
+                navController.previousBackStackEntry?.savedStateHandle
+                    ?.set(Screen.Emojis.RESULT_EMOJI, emoji.name)
+                navController.navigateUp()
             }
     ) {
         Box(
@@ -134,5 +146,8 @@ private fun SearchedEmojiItemPreview(
     )
     emoji: SearchableEmoji
 ) {
-    SearchedEmojiItem(emoji = emoji)
+    SearchedEmojiItem(
+        emoji = emoji,
+        navController = rememberNavController()
+    )
 }

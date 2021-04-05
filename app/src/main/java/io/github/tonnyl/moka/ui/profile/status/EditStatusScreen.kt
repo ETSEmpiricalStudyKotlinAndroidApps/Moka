@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.google.accompanist.insets.LocalWindowInsets
@@ -49,16 +48,10 @@ fun EditStatusScreen(
     initialEmoji: String?,
     initialMessage: String?,
     initialIndicatesLimitedAvailability: Boolean?,
+    viewModel: EditStatusViewModel
 ) {
     val scaffoldState = rememberScaffoldState()
 
-    val viewModel = viewModel<EditStatusViewModel>(
-        factory = ViewModelFactory(
-            initialEmoji,
-            initialMessage,
-            initialIndicatesLimitedAvailability
-        )
-    )
     val clearStatus by viewModel.clearStatusState.observeAsState(null)
     val setStatus by viewModel.updateStatusState.observeAsState(null)
 
@@ -66,6 +59,21 @@ fun EditStatusScreen(
     val emoji by viewModel.emojiName.observeAsState()
     val message by viewModel.message.observeAsState()
     val dnd by viewModel.limitedAvailability.observeAsState()
+
+    if (clearStatus?.status == Status.SUCCESS) {
+        navController.previousBackStackEntry?.savedStateHandle
+            ?.set(Screen.EditStatus.RESULT_UPDATE_STATUS, clearStatus?.data)
+        navController.navigateUp()
+
+        return
+    }
+    if (setStatus?.status == Status.SUCCESS) {
+        navController.previousBackStackEntry?.savedStateHandle
+            ?.set(Screen.EditStatus.RESULT_UPDATE_STATUS, setStatus?.data)
+        navController.navigateUp()
+
+        return
+    }
 
     Box(
         modifier = Modifier

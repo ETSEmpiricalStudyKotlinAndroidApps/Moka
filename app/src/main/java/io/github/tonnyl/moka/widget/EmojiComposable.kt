@@ -18,7 +18,6 @@ import com.google.accompanist.coil.CoilImage
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 
 @Composable
 fun EmojiComponent(
@@ -33,8 +32,8 @@ fun EmojiComponent(
                 painter = painterResource(id = R.drawable.ic_emoji_emotions_24),
                 modifier = Modifier
                     .align(alignment = Alignment.Center)
+                    .padding(all = ContentPaddingLargeSize)
                     .wrapContentHeight()
-                    .padding(all = ContentPaddingMediumSize)
             )
         }
 
@@ -42,6 +41,7 @@ fun EmojiComponent(
             placeholder.invoke()
         } else {
             val emojiText = getEmojiByName(emoji)?.emoji
+
             when {
                 emojiText.isNullOrEmpty() -> {
                     placeholder()

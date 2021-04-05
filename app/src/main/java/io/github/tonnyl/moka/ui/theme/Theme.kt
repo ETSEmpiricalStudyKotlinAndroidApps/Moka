@@ -44,11 +44,12 @@ fun MokaTheme(content: @Composable () -> Unit) {
         },
         content = {
             val windowInsetsController = LocalWindowInsetsController.current
+            val isSystemDarkTheme = isSystemInDarkTheme()
             DisposableEffect(settings.theme) {
                 windowInsetsController?.isAppearanceLightStatusBars =
-                    settings.theme != Settings.Theme.DARK
+                    !isSystemDarkTheme && settings.theme != Settings.Theme.DARK
                 windowInsetsController?.isAppearanceLightNavigationBars =
-                    settings.theme != Settings.Theme.DARK
+                    isSystemDarkTheme && settings.theme != Settings.Theme.DARK
                 onDispose { }
             }
 

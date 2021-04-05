@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.coil.CoilImage
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -56,7 +57,8 @@ fun EmojisScreen(
         EmojisScreenContent(
             topAppBarSize = topAppBarSize,
             emojis = emojis.orEmpty(),
-            lazyListState = lazyListState
+            lazyListState = lazyListState,
+            navController = navController
         )
 
         InsetAwareTopAppBar(
@@ -98,7 +100,8 @@ fun EmojisScreen(
 private fun EmojisScreenContent(
     topAppBarSize: Int,
     emojis: List<Pair<EmojiCategory, List<Emoji>>>,
-    lazyListState: LazyListState
+    lazyListState: LazyListState,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -126,7 +129,8 @@ private fun EmojisScreenContent(
                             emoji3 = pair.second.getOrNull(i + 3),
                             emoji4 = pair.second.getOrNull(i + 4),
                             emoji5 = pair.second.getOrNull(i + 5),
-                            emoji6 = pair.second.getOrNull(i + 6)
+                            emoji6 = pair.second.getOrNull(i + 6),
+                            navController = navController
                         )
                     }
                 }
@@ -145,7 +149,9 @@ private fun EmojiCategoryButtons(
     emojis: List<Pair<EmojiCategory, List<Emoji>>>,
     modifier: Modifier = Modifier
 ) {
-    var currentSelectedCategory by mutableStateOf(EmojiCategory.RecentlyUsed)
+    var currentSelectedCategory by remember {
+        mutableStateOf(EmojiCategory.RecentlyUsed)
+    }
 
     val categoryStartIndexMap = remember {
         mutableStateOf(mutableMapOf<Int, EmojiCategory>())
@@ -201,90 +207,89 @@ private fun EmojiCategoryButtons(
 }
 
 @Composable
-private fun EmojiCategoryButton(
+private fun RowScope.EmojiCategoryButton(
     category: EmojiCategory,
     selected: Boolean,
     onCategorySelected: (EmojiCategory) -> Unit
 ) {
-    with(RowScope) {
-        IconButton(
-            onClick = {
-                onCategorySelected.invoke(category)
-            },
-            modifier = Modifier.weight(weight = 1f)
-        ) {
-            val imageRes: Int
-            val contentDescriptionsRes: Int
-            when (category) {
-                EmojiCategory.RecentlyUsed -> {
-                    imageRes = R.drawable.ic_emoji_recent_24
-                    contentDescriptionsRes = R.string.emoji_category_recent_used_content_description
-                }
-                EmojiCategory.SmileysAndEmotion -> {
-                    imageRes = R.drawable.ic_emoji_emotions_24
-                    contentDescriptionsRes =
-                        R.string.emoji_category_smiley_and_emotion_content_description
-                }
-                EmojiCategory.PeopleAndBody -> {
-                    imageRes = R.drawable.ic_emoji_people_24
-                    contentDescriptionsRes =
-                        R.string.emoji_category_people_and_body_content_description
-                }
-                EmojiCategory.AnimalsAndNature -> {
-                    imageRes = R.drawable.ic_emoji_nature_24
-                    contentDescriptionsRes =
-                        R.string.emoji_category_animals_and_nature_content_description
-                }
-                EmojiCategory.FoodAndDrink -> {
-                    imageRes = R.drawable.ic_emoji_food_beverage_24
-                    contentDescriptionsRes =
-                        R.string.emoji_category_food_and_drink_content_description
-                }
-                EmojiCategory.TravelAndPlaces -> {
-                    imageRes = R.drawable.ic_emoji_transportation_24
-                    contentDescriptionsRes =
-                        R.string.emoji_category_travel_and_places_content_description
-                }
-                EmojiCategory.Activities -> {
-                    imageRes = R.drawable.ic_emoji_events_24
-                    contentDescriptionsRes = R.string.emoji_category_activities_content_description
-                }
-                EmojiCategory.Objects -> {
-                    imageRes = R.drawable.ic_emoji_objects_24
-                    contentDescriptionsRes = R.string.emoji_category_objects_content_description
-                }
-                EmojiCategory.Symbols -> {
-                    imageRes = R.drawable.ic_emoji_symbols_24
-                    contentDescriptionsRes = R.string.emoji_category_symbols_content_description
-                }
-                EmojiCategory.Flags -> {
-                    imageRes = R.drawable.ic_emoji_flags_24
-                    contentDescriptionsRes = R.string.emoji_category_flags_content_description
-                }
-                EmojiCategory.GitHubCustomEmoji -> {
-                    imageRes = R.drawable.ic_code_24
-                    contentDescriptionsRes =
-                        R.string.emoji_category_github_custom_emoji_content_description
-                }
+    IconButton(
+        onClick = {
+            onCategorySelected.invoke(category)
+        },
+        modifier = Modifier.weight(weight = 1f)
+    ) {
+        val imageRes: Int
+        val contentDescriptionsRes: Int
+        when (category) {
+            EmojiCategory.RecentlyUsed -> {
+                imageRes = R.drawable.ic_emoji_recent_24
+                contentDescriptionsRes = R.string.emoji_category_recent_used_content_description
             }
-            Icon(
-                contentDescription = stringResource(id = contentDescriptionsRes),
-                painter = painterResource(
-                    id = imageRes
-                ),
-                tint = if (selected) {
-                    MaterialTheme.colors.primary
-                } else {
-                    MaterialTheme.colors.onBackground
-                }
-            )
+            EmojiCategory.SmileysAndEmotion -> {
+                imageRes = R.drawable.ic_emoji_emotions_24
+                contentDescriptionsRes =
+                    R.string.emoji_category_smiley_and_emotion_content_description
+            }
+            EmojiCategory.PeopleAndBody -> {
+                imageRes = R.drawable.ic_emoji_people_24
+                contentDescriptionsRes =
+                    R.string.emoji_category_people_and_body_content_description
+            }
+            EmojiCategory.AnimalsAndNature -> {
+                imageRes = R.drawable.ic_emoji_nature_24
+                contentDescriptionsRes =
+                    R.string.emoji_category_animals_and_nature_content_description
+            }
+            EmojiCategory.FoodAndDrink -> {
+                imageRes = R.drawable.ic_emoji_food_beverage_24
+                contentDescriptionsRes =
+                    R.string.emoji_category_food_and_drink_content_description
+            }
+            EmojiCategory.TravelAndPlaces -> {
+                imageRes = R.drawable.ic_emoji_transportation_24
+                contentDescriptionsRes =
+                    R.string.emoji_category_travel_and_places_content_description
+            }
+            EmojiCategory.Activities -> {
+                imageRes = R.drawable.ic_emoji_events_24
+                contentDescriptionsRes = R.string.emoji_category_activities_content_description
+            }
+            EmojiCategory.Objects -> {
+                imageRes = R.drawable.ic_emoji_objects_24
+                contentDescriptionsRes = R.string.emoji_category_objects_content_description
+            }
+            EmojiCategory.Symbols -> {
+                imageRes = R.drawable.ic_emoji_symbols_24
+                contentDescriptionsRes = R.string.emoji_category_symbols_content_description
+            }
+            EmojiCategory.Flags -> {
+                imageRes = R.drawable.ic_emoji_flags_24
+                contentDescriptionsRes = R.string.emoji_category_flags_content_description
+            }
+            EmojiCategory.GitHubCustomEmoji -> {
+                imageRes = R.drawable.ic_code_24
+                contentDescriptionsRes =
+                    R.string.emoji_category_github_custom_emoji_content_description
+            }
         }
+        Icon(
+            contentDescription = stringResource(id = contentDescriptionsRes),
+            painter = painterResource(
+                id = imageRes
+            ),
+            tint = if (selected) {
+                MaterialTheme.colors.primary
+            } else {
+                MaterialTheme.colors.onBackground
+            }
+        )
     }
 }
 
 @Composable
 private fun ItemEmoji(
     emoji: Emoji?,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -293,7 +298,9 @@ private fun ItemEmoji(
             .size(size = 48.dp)
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = emoji != null) {
-
+                navController.previousBackStackEntry?.savedStateHandle
+                    ?.set(Screen.Emojis.RESULT_EMOJI, emoji?.names?.firstOrNull())
+                navController.navigateUp()
             }
     ) {
         emoji?.emoji?.let { emoji ->
@@ -325,34 +332,42 @@ private fun ItemEmojiRow(
     emoji4: Emoji?,
     emoji5: Emoji?,
     emoji6: Emoji?,
+    navController: NavController
 ) {
     Row {
         ItemEmoji(
             emoji = emoji0,
+            navController = navController,
             modifier = Modifier.weight(weight = 1f)
         )
         ItemEmoji(
             emoji = emoji1,
+            navController = navController,
             modifier = Modifier.weight(weight = 1f)
         )
         ItemEmoji(
             emoji = emoji2,
+            navController = navController,
             modifier = Modifier.weight(weight = 1f)
         )
         ItemEmoji(
             emoji = emoji3,
+            navController = navController,
             modifier = Modifier.weight(weight = 1f)
         )
         ItemEmoji(
             emoji = emoji4,
+            navController = navController,
             modifier = Modifier.weight(weight = 1f)
         )
         ItemEmoji(
             emoji = emoji5,
+            navController = navController,
             modifier = Modifier.weight(weight = 1f)
         )
         ItemEmoji(
             emoji = emoji6,
+            navController = navController,
             modifier = Modifier.weight(weight = 1f)
         )
     }
@@ -380,7 +395,10 @@ private fun EmojiItemPreview(
     )
     emoji: Emoji
 ) {
-    ItemEmoji(emoji)
+    ItemEmoji(
+        emoji = emoji,
+        navController = rememberNavController()
+    )
 }
 
 @Preview(name = "EmojiCategoryItemPreview", showBackground = true)

@@ -16,8 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -36,6 +39,7 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 fun SearchBar(
     @StringRes hintResId: Int,
     modifier: Modifier = Modifier,
+    autoFocus: Boolean = true,
     navController: NavController,
     textState: MutableState<TextFieldValue>,
     onImeActionPerformed: () -> Unit = { },
@@ -44,6 +48,14 @@ fun SearchBar(
     InsetAwareTopAppBar(
         title = {
             val focusRequester = remember { FocusRequester() }
+            val keyboardController = LocalSoftwareKeyboardController.current
+
+            LaunchedEffect(autoFocus) {
+                if (autoFocus) {
+                    focusRequester.requestFocus()
+                    keyboardController?.showSoftwareKeyboard()
+                }
+            }
 
             Box(
                 contentAlignment = Alignment.CenterStart,
@@ -67,6 +79,11 @@ fun SearchBar(
                     modifier = Modifier
                         .focusable(enabled = true)
                         .focusRequester(focusRequester = focusRequester)
+                        .onFocusChanged {
+                            if (it == FocusState.Active) {
+                                keyboardController?.showSoftwareKeyboard()
+                            }
+                        }
                         .fillMaxWidth()
                         .horizontalScroll(
                             state = rememberScrollState(),

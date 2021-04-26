@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
@@ -180,11 +180,14 @@ private fun ProfileScreenContent(
                 modifier = Modifier
                     .padding(all = ContentPaddingLargeSize)
             ) {
-                CoilImage(
-                    contentDescription = stringResource(id = R.string.users_avatar_content_description),
-                    request = createAvatarLoadRequest(
-                        url = user?.avatarUrl ?: organization?.avatarUrl
+                Image(
+                    painter = rememberCoilPainter(
+                        request = user?.avatarUrl ?: organization?.avatarUrl,
+                        requestBuilder = {
+                            createAvatarLoadRequest()
+                        }
                     ),
+                    contentDescription = stringResource(id = R.string.users_avatar_content_description),
                     modifier = Modifier
                         .size(size = 92.dp)
                         .clip(shape = CircleShape)
@@ -559,9 +562,14 @@ private fun PinnedItemCard(
             .clickable(onClick = onClick)
     ) {
         Row(modifier = Modifier.padding(all = ContentPaddingLargeSize)) {
-            CoilImage(
+            Image(
+                painter = rememberCoilPainter(
+                    request = avatarUrl,
+                    requestBuilder = {
+                        createAvatarLoadRequest()
+                    }
+                ),
                 contentDescription = stringResource(id = R.string.users_avatar_content_description),
-                request = createAvatarLoadRequest(url = avatarUrl),
                 modifier = Modifier
                     .size(size = IconSize)
                     .clip(shape = CircleShape)

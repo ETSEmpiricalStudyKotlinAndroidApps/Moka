@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.emojis.search
 
 import android.webkit.URLUtil
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
@@ -114,9 +115,14 @@ private fun SearchedEmojiItem(
             modifier = Modifier.size(size = 48.dp)
         ) {
             if (URLUtil.isValidUrl(emoji.emoji)) {
-                CoilImage(
+                Image(
+                    painter = rememberCoilPainter(
+                        request = emoji.emoji,
+                        requestBuilder = {
+                            createAvatarLoadRequest()
+                        }
+                    ),
                     contentDescription = stringResource(id = R.string.emoji_status_content_description),
-                    request = createAvatarLoadRequest(url = emoji.emoji),
                     modifier = Modifier.size(size = 27.dp)
                 )
             } else {

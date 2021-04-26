@@ -21,7 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingRepository
 import io.github.tonnyl.moka.data.TrendingRepositoryBuiltBy
@@ -66,9 +66,14 @@ private fun TrendingRepositoryItem(
             }
             .padding(all = ContentPaddingLargeSize)
     ) {
-        CoilImage(
+        Image(
+            painter = rememberCoilPainter(
+                request = repository.avatar,
+                requestBuilder = {
+                    createAvatarLoadRequest()
+                }
+            ),
             contentDescription = stringResource(id = R.string.repository_owners_avatar_image_content_description),
-            request = createAvatarLoadRequest(url = repository.avatar),
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)

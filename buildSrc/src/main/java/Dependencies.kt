@@ -6,7 +6,7 @@ object Versions {
 
     const val androidGradle = "7.0.0-alpha14"
     const val gmsGoogleServiceGradle = "4.3.5"
-    const val firebaseCrashlyticsGradle = "2.5.1"
+    const val firebaseCrashlyticsGradle = "2.5.2"
     const val kotlin = "1.4.32"
     const val dateTime = "0.1.1"
     const val coroutines = "1.4.3"
@@ -17,17 +17,17 @@ object Versions {
     const val lifecycleRuntimeKtx = "2.4.0-alpha01"
     const val viewModelCompose = "1.0.0-alpha04"
     const val navigationCompose = "1.0.0-alpha10"
-    const val paging = "3.0.0-beta03"
+    const val paging = "3.0.0-rc01"
     const val pagingCompose = "1.0.0-alpha08"
-    const val workManager = "2.7.0-alpha02"
-    const val room = "2.3.0-rc01"
-    const val ui = "1.0.0-beta04"
+    const val workManager = "2.7.0-alpha03"
+    const val room = "2.4.0-alpha01"
+    const val ui = "1.0.0-beta05"
     const val constraintLayoutCompose = "1.0.0-alpha05"
-    const val dataStore = "1.0.0-alpha08"
-    const val activityCompose = "1.3.0-alpha06"
-    const val accompanist = "0.7.1"
+    const val dataStore = "1.0.0-beta01"
+    const val activityCompose = "1.3.0-alpha07"
+    const val accompanist = "0.8.1"
     const val material = "1.4.0-alpha02"
-    const val kspApi = "1.4.32-1.0.0-alpha07"
+    const val kspApi = "1.4.32-1.0.0-alpha08"
     const val lottie = "1.0.0-beta03-2-SNAPSHOT"
     const val okhttpLoggingInterceptor = "4.7.2"
     const val apollo = "3.0.0-dev9-SNAPSHOT"
@@ -158,6 +158,8 @@ object Deps {
 
             const val coil = "com.google.accompanist:accompanist-coil:${Versions.accompanist}"
             const val insets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
+            const val swipeRefresh =
+                "com.google.accompanist:accompanist-swiperefresh:${Versions.accompanist}"
 
         }
 

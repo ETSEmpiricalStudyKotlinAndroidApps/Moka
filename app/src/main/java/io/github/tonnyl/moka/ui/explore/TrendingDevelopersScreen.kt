@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.explore
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,7 +22,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingDeveloperRepository
@@ -63,9 +64,14 @@ private fun TrendingDeveloperItem(
             }
             .padding(all = ContentPaddingLargeSize)
     ) {
-        CoilImage(
+        Image(
+            painter = rememberCoilPainter(
+                request = developer.avatar,
+                requestBuilder = {
+                    createAvatarLoadRequest()
+                }
+            ),
             contentDescription = stringResource(id = R.string.users_avatar_content_description),
-            request = createAvatarLoadRequest(url = developer.avatar),
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)

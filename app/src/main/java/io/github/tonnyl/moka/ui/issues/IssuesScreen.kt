@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -27,22 +28,23 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.IssueItemProvider
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
-import io.github.tonnyl.moka.widget.SwipeToRefreshLayout
 
 @Composable
 fun IssuesScreen(
@@ -68,20 +70,22 @@ fun IssuesScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        SwipeToRefreshLayout(
-            refreshingState = issues.loadState.refresh is LoadState.Loading,
+        val contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
+            top = false,
+            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
+        )
+
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = issues.loadState.refresh is LoadState.Loading),
             onRefresh = issues::refresh,
-            refreshIndicator = {
-                Surface(
-                    elevation = 10.dp,
-                    shape = CircleShape
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(size = 36.dp)
-                            .padding(all = ContentPaddingSmallSize)
-                    )
-                }
+            indicatorPadding = contentPadding,
+            indicator = { state, refreshTriggerDistance ->
+                SwipeRefreshIndicator(
+                    state = state,
+                    refreshTriggerDistance = refreshTriggerDistance,
+                    scale = true,
+                    contentColor = MaterialTheme.colors.secondary
+                )
             }
         ) {
             when {
@@ -111,7 +115,7 @@ fun IssuesScreen(
                 }
                 else -> {
                     IssuesScreenContent(
-                        topAppBarSize = topAppBarSize,
+                        contentTopPadding = contentPadding.calculateTopPadding(),
                         owner = owner,
                         name = name,
                         navController = navController,
@@ -143,18 +147,17 @@ fun IssuesScreen(
 
 @Composable
 fun IssuesScreenContent(
-    topAppBarSize: Int,
+    contentTopPadding: Dp,
     owner: String,
     name: String,
     navController: NavController,
     prs: LazyPagingItems<IssueItem>,
 ) {
-    LazyColumn(
-        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-            top = false,
-            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
-        )
-    ) {
+    LazyColumn {
+        item {
+            Spacer(modifier = Modifier.height(height = contentTopPadding))
+        }
+
         item {
             ItemLoadingState(loadState = prs.loadState.prepend)
         }
@@ -235,9 +238,14 @@ private fun ItemIssue(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(start = 40.dp)
             ) {
-                CoilImage(
+                Image(
+                    painter = rememberCoilPainter(
+                        request = issue.actor?.avatarUrl,
+                        requestBuilder = {
+                            createAvatarLoadRequest()
+                        }
+                    ),
                     contentDescription = stringResource(id = R.string.users_avatar_content_description),
-                    request = createAvatarLoadRequest(url = issue.actor?.avatarUrl),
                     modifier = Modifier
                         .size(size = 24.dp)
                         .clip(shape = CircleShape)

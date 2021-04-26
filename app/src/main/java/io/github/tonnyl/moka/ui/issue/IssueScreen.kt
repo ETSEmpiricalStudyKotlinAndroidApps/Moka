@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.issue
 
 import android.text.format.DateUtils
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -37,9 +39,12 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Issue
 import io.github.tonnyl.moka.data.ReactionGroup
@@ -52,7 +57,10 @@ import io.github.tonnyl.moka.ui.reaction.AddReactionDialogScreen
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.IssueTimelineEventProvider
 import io.github.tonnyl.moka.util.toColor
-import io.github.tonnyl.moka.widget.*
+import io.github.tonnyl.moka.widget.EmptyScreenContent
+import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
+import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.github.tonnyl.moka.widget.ThemedWebView
 import kotlinx.datetime.Instant
 
 data class IssuePullRequestEventData(
@@ -92,20 +100,22 @@ fun IssueScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        SwipeToRefreshLayout(
-            refreshingState = issueTimelineItems.loadState.refresh is LoadState.Loading,
+        val contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
+            top = false,
+            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
+        )
+
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = issueTimelineItems.loadState.refresh is LoadState.Loading),
             onRefresh = issueTimelineItems::refresh,
-            refreshIndicator = {
-                Surface(
-                    elevation = 10.dp,
-                    shape = CircleShape
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(size = 36.dp)
-                            .padding(all = ContentPaddingSmallSize)
-                    )
-                }
+            indicatorPadding = contentPadding,
+            indicator = { state, refreshTriggerDistance ->
+                SwipeRefreshIndicator(
+                    state = state,
+                    refreshTriggerDistance = refreshTriggerDistance,
+                    scale = true,
+                    contentColor = MaterialTheme.colors.secondary
+                )
             }
         ) {
             when {
@@ -135,7 +145,7 @@ fun IssueScreen(
                 }
                 else -> {
                     IssueScreenContent(
-                        topAppBarSize = topAppBarSize,
+                        contentTopPadding = contentPadding.calculateTopPadding(),
                         owner = owner,
                         name = name,
                         issue = issue,
@@ -167,18 +177,17 @@ fun IssueScreen(
 
 @Composable
 private fun IssueScreenContent(
-    topAppBarSize: Int,
+    contentTopPadding: Dp,
     owner: String,
     name: String,
     issue: Issue?,
     timelineItems: LazyPagingItems<IssueTimelineItem>
 ) {
-    LazyColumn(
-        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-            top = false,
-            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
-        )
-    ) {
+    LazyColumn {
+        item {
+            Spacer(modifier = Modifier.height(height = contentTopPadding))
+        }
+
         if (issue != null) {
             item {
                 IssueOrPullRequestHeader(
@@ -265,9 +274,14 @@ private fun ItemIssueTimelineEvent(event: IssueTimelineItem) {
                     .padding(all = ContentPaddingMediumSize)
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
-            CoilImage(
+            Image(
+                painter = rememberCoilPainter(
+                    request = data.avatarUri,
+                    requestBuilder = {
+                        createAvatarLoadRequest()
+                    }
+                ),
                 contentDescription = stringResource(id = R.string.users_avatar_content_description),
-                request = createAvatarLoadRequest(url = data.avatarUri),
                 modifier = Modifier
                     .size(size = IssueTimelineEventAuthorAvatarSize)
                     .clip(shape = CircleShape)
@@ -753,9 +767,14 @@ fun IssueTimelineCommentItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            CoilImage(
+            Image(
+                painter = rememberCoilPainter(
+                    request = avatarUrl,
+                    requestBuilder = {
+                        createAvatarLoadRequest()
+                    }
+                ),
                 contentDescription = stringResource(id = R.string.users_avatar_content_description),
-                request = createAvatarLoadRequest(url = avatarUrl),
                 modifier = Modifier
                     .size(size = IconSize)
                     .clip(shape = CircleShape)

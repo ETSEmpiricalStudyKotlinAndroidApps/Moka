@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.widget
 
 import android.webkit.URLUtil
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
@@ -47,9 +48,9 @@ fun EmojiComponent(
                     placeholder()
                 }
                 URLUtil.isValidUrl(emojiText) -> {
-                    CoilImage(
+                    Image(
+                        painter = rememberCoilPainter(request = emojiText),
                         contentDescription = stringResource(id = R.string.emoji_image_content_description),
-                        data = emojiText,
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(all = ContentPaddingLargeSize)

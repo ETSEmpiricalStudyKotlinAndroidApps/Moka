@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.widget
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.MainViewModel
@@ -105,9 +106,14 @@ private fun MainSearchBarContent(
                         )
                     }
                 }
-                CoilImage(
+                Image(
+                    painter = rememberCoilPainter(
+                        request = avatarUrl,
+                        requestBuilder = {
+                            createAvatarLoadRequest()
+                        }
+                    ),
                     contentDescription = stringResource(id = R.string.navigation_header_avatar_desc),
-                    request = createAvatarLoadRequest(url = avatarUrl),
                     modifier = Modifier
                         .clip(shape = CircleShape)
                         .size(size = IconSize)

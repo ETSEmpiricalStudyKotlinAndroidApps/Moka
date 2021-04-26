@@ -1,10 +1,14 @@
 package io.github.tonnyl.moka.ui.search.users
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -14,14 +18,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.SearchedOrganizationItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
@@ -29,11 +34,13 @@ import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IconSize
 import io.github.tonnyl.moka.ui.users.ItemUser
 import io.github.tonnyl.moka.util.SearchedOrganizationItemProvider
-import io.github.tonnyl.moka.widget.*
+import io.github.tonnyl.moka.widget.EmptyScreenContent
+import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.github.tonnyl.moka.widget.Pager
+import io.github.tonnyl.moka.widget.PagerState
 
 @Composable
 fun SearchedUsersScreen(
@@ -41,21 +48,9 @@ fun SearchedUsersScreen(
     users: LazyPagingItems<SearchedUserOrOrgItem>,
     pagerState: PagerState = remember { PagerState() }
 ) {
-    SwipeToRefreshLayout(
-        refreshingState = users.loadState.refresh is LoadState.Loading,
-        onRefresh = users::refresh,
-        refreshIndicator = {
-            Surface(
-                elevation = 10.dp,
-                shape = CircleShape
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(size = 36.dp)
-                        .padding(all = ContentPaddingSmallSize)
-                )
-            }
-        }
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing = users.loadState.refresh is LoadState.Loading),
+        onRefresh = users::refresh
     ) {
         Pager(
             state = pagerState,
@@ -143,9 +138,14 @@ fun ItemSearchedOrganization(
             }
             .padding(all = ContentPaddingLargeSize)
     ) {
-        CoilImage(
+        Image(
+            painter = rememberCoilPainter(
+                request = org.avatarUrl,
+                requestBuilder = {
+                    createAvatarLoadRequest()
+                }
+            ),
             contentDescription = stringResource(id = R.string.users_avatar_content_description),
-            request = createAvatarLoadRequest(url = org.avatarUrl),
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)

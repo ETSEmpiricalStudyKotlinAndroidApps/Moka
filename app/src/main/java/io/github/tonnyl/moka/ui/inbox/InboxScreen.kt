@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.inbox
 
 import android.text.format.DateUtils
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
@@ -28,11 +29,14 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.data.NotificationReasons
@@ -42,11 +46,13 @@ import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IconSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.NotificationProvider
-import io.github.tonnyl.moka.widget.*
+import io.github.tonnyl.moka.widget.EmptyScreenContent
+import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.github.tonnyl.moka.widget.ListSubheader
+import io.github.tonnyl.moka.widget.MainSearchBar
 
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
@@ -73,22 +79,22 @@ fun InboxScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        SwipeToRefreshLayout(
-            refreshingState = notifications.loadState.refresh is LoadState.Loading,
-            onRefresh = {
-                notifications.refresh()
-            },
-            refreshIndicator = {
-                Surface(
-                    elevation = 10.dp,
-                    shape = CircleShape
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(size = 36.dp)
-                            .padding(all = ContentPaddingSmallSize)
-                    )
-                }
+        val contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
+            top = false,
+            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
+        )
+
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = notifications.loadState.refresh is LoadState.Loading),
+            onRefresh = notifications::refresh,
+            indicatorPadding = contentPadding,
+            indicator = { state, refreshTriggerDistance ->
+                SwipeRefreshIndicator(
+                    state = state,
+                    refreshTriggerDistance = refreshTriggerDistance,
+                    scale = true,
+                    contentColor = MaterialTheme.colors.secondary
+                )
             }
         ) {
             when {
@@ -118,7 +124,7 @@ fun InboxScreen(
                 }
                 else -> {
                     InboxScreenContent(
-                        topAppBarSize = topAppBarSize,
+                        contentTopPadding = contentPadding.calculateTopPadding(),
                         notifications = notifications,
                         navController = navController
                     )
@@ -141,16 +147,15 @@ fun InboxScreen(
 
 @Composable
 private fun InboxScreenContent(
-    topAppBarSize: Int,
+    contentTopPadding: Dp,
     navController: NavController,
     notifications: LazyPagingItems<Notification>
 ) {
-    LazyColumn(
-        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-            top = false,
-            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
-        )
-    ) {
+    LazyColumn {
+        item {
+            Spacer(modifier = Modifier.height(height = contentTopPadding))
+        }
+
         item {
             ItemLoadingState(loadState = notifications.loadState.prepend)
         }
@@ -188,9 +193,14 @@ private fun ItemNotification(
             .padding(all = ContentPaddingLargeSize)
             .fillMaxWidth()
     ) {
-        CoilImage(
+        Image(
+            painter = rememberCoilPainter(
+                request = item.repository.owner.avatarUrl,
+                requestBuilder = {
+                    createAvatarLoadRequest()
+                }
+            ),
             contentDescription = stringResource(id = R.string.repository_owners_avatar_image_content_description),
-            request = createAvatarLoadRequest(url = item.repository.owner.avatarUrl),
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)

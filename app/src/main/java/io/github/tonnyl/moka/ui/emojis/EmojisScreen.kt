@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.emojis
 
 import android.webkit.URLUtil
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.toPaddingValues
@@ -305,9 +306,14 @@ private fun ItemEmoji(
     ) {
         emoji?.emoji?.let { emoji ->
             if (URLUtil.isValidUrl(emoji)) {
-                CoilImage(
+                Image(
+                    painter = rememberCoilPainter(
+                        request = emoji,
+                        requestBuilder = {
+                            createAvatarLoadRequest()
+                        }
+                    ),
                     contentDescription = stringResource(id = R.string.emoji_image_content_description),
-                    request = createAvatarLoadRequest(url = emoji),
                     modifier = Modifier.size(size = 27.dp)
                 )
             } else {

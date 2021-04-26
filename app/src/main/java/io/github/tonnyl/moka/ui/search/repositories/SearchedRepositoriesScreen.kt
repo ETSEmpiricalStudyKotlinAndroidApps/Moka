@@ -1,26 +1,24 @@
 package io.github.tonnyl.moka.ui.search.repositories
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repositories.ItemRepository
-import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
-import io.github.tonnyl.moka.widget.*
+import io.github.tonnyl.moka.widget.EmptyScreenContent
+import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.github.tonnyl.moka.widget.Pager
+import io.github.tonnyl.moka.widget.PagerState
 
 @Composable
 fun SearchedRepositoriesScreen(
@@ -28,21 +26,9 @@ fun SearchedRepositoriesScreen(
     repositories: LazyPagingItems<RepositoryItem>,
     pagerState: PagerState = remember { PagerState() }
 ) {
-    SwipeToRefreshLayout(
-        refreshingState = repositories.loadState.refresh is LoadState.Loading,
-        onRefresh = repositories::refresh,
-        refreshIndicator = {
-            Surface(
-                elevation = 10.dp,
-                shape = CircleShape
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(size = 36.dp)
-                        .padding(all = ContentPaddingSmallSize)
-                )
-            }
-        }
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing = repositories.loadState.refresh is LoadState.Loading),
+        onRefresh = repositories::refresh
     ) {
         Pager(
             state = pagerState,

@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.account
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.provider.Settings
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,7 +26,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
@@ -244,9 +245,14 @@ private fun ItemAccount(
                 bottom = ContentPaddingMediumSize
             )
     ) {
-        CoilImage(
+        Image(
+            painter = rememberCoilPainter(
+                request = account.signedInAccount.account.avatarUrl,
+                requestBuilder = {
+                    createAvatarLoadRequest()
+                }
+            ),
             contentDescription = stringResource(id = R.string.accounts_avatar_of_account),
-            request = createAvatarLoadRequest(url = account.signedInAccount.account.avatarUrl),
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)

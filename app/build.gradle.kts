@@ -180,6 +180,7 @@ dependencies {
     implementation(Deps.Google.material)
     implementation(Deps.Google.Accompanist.coil)
     implementation(Deps.Google.Accompanist.insets)
+    implementation(Deps.Google.Accompanist.swipeRefresh)
 
     // OkHttp
     implementation(Deps.OkHttp.loggingInterceptor)

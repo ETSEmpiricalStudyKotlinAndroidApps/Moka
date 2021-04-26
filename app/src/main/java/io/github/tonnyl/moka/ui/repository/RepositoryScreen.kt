@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.repository
 
 import android.text.format.DateUtils
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +23,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.toPaddingValues
@@ -248,12 +249,15 @@ private fun RepositoryScreenContent(
     ) {
         item {
             Row(modifier = Modifier.padding(all = ContentPaddingLargeSize)) {
-                CoilImage(
-                    contentDescription = stringResource(id = R.string.repository_owners_avatar_image_content_description),
-                    request = createAvatarLoadRequest(
-                        url = usersRepository?.owner?.avatarUrl
-                            ?: organizationsRepository?.owner?.avatarUrl
+                Image(
+                    painter = rememberCoilPainter(
+                        request = usersRepository?.owner?.avatarUrl
+                            ?: organizationsRepository?.owner?.avatarUrl,
+                        requestBuilder = {
+                            createAvatarLoadRequest()
+                        }
                     ),
+                    contentDescription = stringResource(id = R.string.repository_owners_avatar_image_content_description),
                     modifier = Modifier
                         .size(size = IconSize)
                         .clip(shape = CircleShape)

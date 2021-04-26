@@ -1,8 +1,8 @@
 package io.github.tonnyl.moka.data
 
-import io.github.tonnyl.moka.fragment.Gist.GistOwner.Companion.repositoryOwner
+import io.github.tonnyl.moka.fragment.GistPinnableItem
+import io.github.tonnyl.moka.fragment.GistPinnableItem.GistOwner.Companion.repositoryOwner
 import kotlinx.datetime.Instant
-import io.github.tonnyl.moka.fragment.Gist as RawGist
 
 data class Gist2(
 
@@ -90,7 +90,7 @@ data class Gist2(
 
 ) : PinnableItem
 
-fun RawGist.toGist(): Gist2 {
+fun GistPinnableItem.toGist(): Gist2 {
     return Gist2(
         createdAt,
         description,

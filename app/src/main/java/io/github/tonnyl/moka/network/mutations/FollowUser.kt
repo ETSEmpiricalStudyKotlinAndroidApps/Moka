@@ -4,7 +4,6 @@ import io.github.tonnyl.moka.mutations.FollowUserMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.FollowUserInput
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -17,9 +16,8 @@ import kotlinx.coroutines.withContext
 suspend fun followUser(userId: String) = withContext(Dispatchers.IO) {
     GraphQLClient.apolloClient
         .mutate(
-            FollowUserMutation(
+            mutation = FollowUserMutation(
                 FollowUserInput(userId = userId)
             )
         )
-        .single()
 }

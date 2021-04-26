@@ -7,7 +7,16 @@ import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
-import io.github.tonnyl.moka.type.CustomScalars
+import io.github.tonnyl.moka.type.Types.Date
+import io.github.tonnyl.moka.type.Types.DateTime
+import io.github.tonnyl.moka.type.Types.GitObjectID
+import io.github.tonnyl.moka.type.Types.GitRefname
+import io.github.tonnyl.moka.type.Types.GitSSHRemote
+import io.github.tonnyl.moka.type.Types.GitTimestamp
+import io.github.tonnyl.moka.type.Types.HTML
+import io.github.tonnyl.moka.type.Types.PreciseDateTime
+import io.github.tonnyl.moka.type.Types.URI
+import io.github.tonnyl.moka.type.Types.X509Certificate
 import kotlinx.datetime.Instant
 import java.util.concurrent.atomic.AtomicReference
 
@@ -49,43 +58,43 @@ object GraphQLClient {
                 )
             )
             .addScalarTypeAdapter(
-                customScalar = CustomScalars.GitTimestamp,
+                customScalar = GitTimestamp,
                 customScalarAdapter = DateCustomScalarAdapter
             )
             .addScalarTypeAdapter(
-                customScalar = CustomScalars.DateTime,
+                customScalar = DateTime,
                 customScalarAdapter = DateCustomScalarAdapter
             )
             .addScalarTypeAdapter(
-                customScalar = CustomScalars.PreciseDateTime,
+                customScalar = PreciseDateTime,
                 customScalarAdapter = DateCustomScalarAdapter
             )
             .addScalarTypeAdapter(
-                customScalar = CustomScalars.Date,
+                customScalar = Date,
                 customScalarAdapter = DateCustomScalarAdapter
             )
             .addScalarTypeAdapter(
-                customScalar = CustomScalars.HTML,
+                customScalar = HTML,
                 customScalarAdapter = StringResponseAdapter
             )
             .addScalarTypeAdapter(
-                customScalar = CustomScalars.URI,
+                customScalar = URI,
                 customScalarAdapter = StringResponseAdapter
             )
             .addScalarTypeAdapter(
-                customScalar = CustomScalars.GitObjectID,
+                customScalar = GitObjectID,
                 customScalarAdapter = StringResponseAdapter
             )
             .addScalarTypeAdapter(
-                customScalar = CustomScalars.GitSSHRemote,
+                customScalar = GitSSHRemote,
                 customScalarAdapter = StringResponseAdapter
             )
             .addScalarTypeAdapter(
-                customScalar = CustomScalars.X509Certificate,
+                customScalar = X509Certificate,
                 customScalarAdapter = StringResponseAdapter
             )
             .addScalarTypeAdapter(
-                customScalar = CustomScalars.GitRefname,
+                customScalar = GitRefname,
                 customScalarAdapter = StringResponseAdapter
             )
             .build()

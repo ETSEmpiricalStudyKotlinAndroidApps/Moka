@@ -2,12 +2,14 @@ package io.github.tonnyl.moka.ui.repositories
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullRepositoryItem
-import io.github.tonnyl.moka.network.queries.queryStarredRepositories
-import io.github.tonnyl.moka.queries.StarredRepositoriesQuery.Data.User.StarredRepositories.Nodes.Companion.repositoryListItemFragment
+import io.github.tonnyl.moka.network.GraphQLClient
+import io.github.tonnyl.moka.queries.StarredRepositoriesQuery
+import io.github.tonnyl.moka.queries.StarredRepositoriesQuery.Data.User.StarredRepositories.Node.Companion.repositoryListItemFragment
 import io.github.tonnyl.moka.queries.StarredRepositoriesQuery.Data.User.StarredRepositories.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,11 +22,13 @@ class StarredRepositoriesDataSource(private val login: String) :
         val list = mutableListOf<RepositoryItem>()
         return withContext(Dispatchers.IO) {
             try {
-                val user = queryStarredRepositories(
-                    login = login,
-                    perPage = params.loadSize,
-                    after = params.key,
-                    before = params.key
+                val user = GraphQLClient.apolloClient.query(
+                    query = StarredRepositoriesQuery(
+                        login = login,
+                        perPage = params.loadSize,
+                        after = Input.Present(value = params.key),
+                        Input.Present(value = params.key)
+                    )
                 ).data?.user
 
                 list.addAll(

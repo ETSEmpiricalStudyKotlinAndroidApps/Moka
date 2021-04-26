@@ -8,7 +8,7 @@ import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullReques
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.HeadRepositoryOwner.Companion.repositoryOwner
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.MergedBy.Companion.actor
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.Milestone.Companion.milestone
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.ReactionGroups.Companion.reactionGroup
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.ReactionGroup.Companion.reactionGroup
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
 

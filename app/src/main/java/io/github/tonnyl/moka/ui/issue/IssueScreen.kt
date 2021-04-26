@@ -433,7 +433,7 @@ private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
                             LockReason.TOO_HEATED -> {
                                 R.string.issue_lock_reason_too_heated
                             }
-                            LockReason.UNKNOWN__,
+                            is LockReason.UNKNOWN__,
                             null -> {
                                 R.string.issue_lock_reason_unknown
                             }
@@ -780,7 +780,7 @@ fun IssueTimelineCommentItem(
             }
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 if (authorAssociation != CommentAuthorAssociation.NONE
-                    && authorAssociation != CommentAuthorAssociation.UNKNOWN__
+                    && authorAssociation !is CommentAuthorAssociation.UNKNOWN__
                 ) {
                     Text(
                         text = stringResource(
@@ -891,7 +891,7 @@ fun IssueTimelineCommentItem(
                                         ReactionContent.THUMBS_UP -> {
                                             R.string.emoji_thumbs_up
                                         }
-                                        ReactionContent.UNKNOWN__ -> {
+                                        is ReactionContent.UNKNOWN__ -> {
                                             R.string.emoji_unknown
                                         }
                                     }

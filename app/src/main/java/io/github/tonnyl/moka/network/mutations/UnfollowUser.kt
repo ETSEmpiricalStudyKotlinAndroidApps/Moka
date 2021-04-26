@@ -4,7 +4,6 @@ import io.github.tonnyl.moka.mutations.UnfollowUserMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.UnfollowUserInput
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -17,9 +16,8 @@ import kotlinx.coroutines.withContext
 suspend fun unfollowUser(userId: String) = withContext(Dispatchers.IO) {
     GraphQLClient.apolloClient
         .mutate(
-            UnfollowUserMutation(
+            mutation = UnfollowUserMutation(
                 UnfollowUserInput(userId = userId)
             )
         )
-        .single()
 }

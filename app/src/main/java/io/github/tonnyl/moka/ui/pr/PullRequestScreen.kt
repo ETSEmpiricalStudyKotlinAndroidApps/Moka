@@ -527,7 +527,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                             LockReason.TOO_HEATED -> {
                                 R.string.issue_lock_reason_too_heated
                             }
-                            LockReason.UNKNOWN__,
+                            is LockReason.UNKNOWN__,
                             null -> {
                                 R.string.issue_lock_reason_unknown
                             }

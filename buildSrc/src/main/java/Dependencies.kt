@@ -4,10 +4,10 @@ object Versions {
     const val targetSdk = 30
     const val minSdk = 23
 
-    const val androidGradle = "7.0.0-alpha12"
+    const val androidGradle = "7.0.0-alpha14"
     const val gmsGoogleServiceGradle = "4.3.5"
     const val firebaseCrashlyticsGradle = "2.5.1"
-    const val kotlin = "1.4.31"
+    const val kotlin = "1.4.32"
     const val dateTime = "0.1.1"
     const val coroutines = "1.4.3"
     const val serialization = "1.1.0"
@@ -31,7 +31,7 @@ object Versions {
     const val retrofit = "2.9.0"
     const val serializationConverter = "0.8.0"
     const val okhttpLoggingInterceptor = "4.7.2"
-    const val apollo = "3.0.0-dev7-SNAPSHOT"
+    const val apollo = "3.0.0-dev9-SNAPSHOT"
     const val commonMark = "0.15.2"
     const val jsoup = "1.12.1"
     const val timber = "4.7.1"

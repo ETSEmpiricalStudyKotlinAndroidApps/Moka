@@ -3,7 +3,7 @@ package io.github.tonnyl.moka.data.item
 import io.github.tonnyl.moka.data.Actor
 import io.github.tonnyl.moka.data.toNonNullActor
 import io.github.tonnyl.moka.queries.PullRequestsQuery
-import io.github.tonnyl.moka.queries.PullRequestsQuery.Data.Repository.PullRequests.Nodes.Author.Companion.actor
+import io.github.tonnyl.moka.queries.PullRequestsQuery.Data.Repository.PullRequests.Node.Author.Companion.actor
 import kotlinx.datetime.Instant
 
 data class PullRequestItem(
@@ -42,7 +42,7 @@ data class PullRequestItem(
 
 )
 
-fun PullRequestsQuery.Data.Repository.PullRequests.Nodes.toNonNullPullRequestItem(): PullRequestItem {
+fun PullRequestsQuery.Data.Repository.PullRequests.Node.toNonNullPullRequestItem(): PullRequestItem {
     return PullRequestItem(
         author?.actor()?.toNonNullActor(),
         closed,

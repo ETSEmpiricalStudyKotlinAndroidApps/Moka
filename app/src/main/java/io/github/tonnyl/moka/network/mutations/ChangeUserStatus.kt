@@ -5,7 +5,6 @@ import io.github.tonnyl.moka.mutations.ChangeUserStatusMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.ChangeUserStatusInput
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 
@@ -18,7 +17,7 @@ suspend fun changeUserStatus(
 ) = withContext(Dispatchers.IO) {
     GraphQLClient.apolloClient
         .mutate(
-            ChangeUserStatusMutation(
+            mutation = ChangeUserStatusMutation(
                 ChangeUserStatusInput(
                     emoji = Input.Present(emoji),
                     message = Input.Present(message),
@@ -28,5 +27,4 @@ suspend fun changeUserStatus(
                 )
             )
         )
-        .single()
 }

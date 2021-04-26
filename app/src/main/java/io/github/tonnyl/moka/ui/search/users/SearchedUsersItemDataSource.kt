@@ -4,15 +4,16 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadResult.Error
 import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedOrganizationItem
 import io.github.tonnyl.moka.data.toNonNullUserItem
-import io.github.tonnyl.moka.network.queries.querySearchUsers
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.SearchUsersQuery
-import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.Nodes.Companion.organizationListItemFragment
-import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.Nodes.Companion.userListItemFragment
+import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.Node.Companion.organizationListItemFragment
+import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.Node.Companion.userListItemFragment
 import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,11 +27,14 @@ class SearchedUsersItemDataSource(
         val list = mutableListOf<SearchedUserOrOrgItem>()
         return withContext(Dispatchers.IO) {
             try {
-                val search = querySearchUsers(
-                    queryWords = query,
-                    first = params.loadSize,
-                    after = params.key,
-                    before = params.key
+                val search = GraphQLClient.apolloClient.query(
+                    query = SearchUsersQuery(
+                        queryWords = query,
+                        first = Input.Present(value = params.loadSize),
+                        last = Input.Present(value = null),
+                        after = Input.Present(value = params.key),
+                        before = Input.Present(value = params.key)
+                    )
                 ).data?.search
 
                 list.addAll(
@@ -59,7 +63,7 @@ class SearchedUsersItemDataSource(
         return null
     }
 
-    private fun initSearchedUserOrOrgItemWithRawData(node: SearchUsersQuery.Data.Search.Nodes): SearchedUserOrOrgItem? {
+    private fun initSearchedUserOrOrgItemWithRawData(node: SearchUsersQuery.Data.Search.Node): SearchedUserOrOrgItem? {
         return node.userListItemFragment()?.toNonNullUserItem()?.let {
             SearchedUserOrOrgItem(user = it)
         } ?: node.organizationListItemFragment()?.toNonNullSearchedOrganizationItem()?.let {

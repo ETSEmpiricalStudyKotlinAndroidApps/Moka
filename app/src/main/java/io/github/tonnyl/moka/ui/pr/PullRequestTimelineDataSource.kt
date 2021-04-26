@@ -3,92 +3,92 @@ package io.github.tonnyl.moka.ui.pr
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.PullRequest
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.data.toNullablePullRequest
-import io.github.tonnyl.moka.network.queries.queryPullRequest
-import io.github.tonnyl.moka.network.queries.queryPullRequestTimelineItems
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.PullRequestQuery
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.addedToProjectEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.assignedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.baseRefChangedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.baseRefForcePushedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.closedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.convertedNoteToIssueEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.crossReferencedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.demilestonedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.deployedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.deploymentEnvironmentChangedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefDeletedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefForcePushedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefRestoredEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.issueCommentFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.labeledEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.lockedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.markedAsDuplicateEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.mergedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.milestonedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.movedColumnsInProjectEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pinnedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestCommitCommentThreadFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestCommitFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestReviewFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestReviewThreadFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.readyForReviewEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.referencedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.removedFromProjectEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.renamedTitleEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reopenedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewDismissedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewRequestRemovedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewRequestedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.transferredEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unassignedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unlabeledEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unlockedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unpinnedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.addedToProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.assignedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.baseRefChangedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.baseRefForcePushedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.closedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.convertedNoteToIssueEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.crossReferencedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.demilestonedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.deployedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.deploymentEnvironmentChangedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.headRefDeletedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.headRefForcePushedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.headRefRestoredEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.issueCommentFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.labeledEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.lockedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.markedAsDuplicateEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.mergedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.milestonedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.movedColumnsInProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.pinnedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.pullRequestCommitCommentThreadFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.pullRequestCommitFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.pullRequestReviewFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.pullRequestReviewThreadFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.readyForReviewEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.referencedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.removedFromProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.renamedTitleEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.reopenedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.reviewDismissedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.reviewRequestRemovedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.reviewRequestedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.transferredEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.unassignedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.unlabeledEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.unlockedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.unpinnedEventFragment
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.PageInfo.Companion.pageInfo
 import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.addedToProjectEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.assignedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.baseRefChangedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.baseRefForcePushedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.closedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.convertedNoteToIssueEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.crossReferencedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.demilestonedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.deployedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.deploymentEnvironmentChangedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefDeletedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefForcePushedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.headRefRestoredEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.issueCommentFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.labeledEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.lockedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.markedAsDuplicateEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.mergedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.milestonedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.movedColumnsInProjectEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pinnedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestCommitCommentThreadFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestCommitFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestReviewFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.pullRequestReviewThreadFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.readyForReviewEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.referencedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.removedFromProjectEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.renamedTitleEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reopenedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewDismissedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewRequestRemovedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.reviewRequestedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.transferredEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unassignedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unlabeledEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unlockedEventFragment
-import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes.Companion.unpinnedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.addedToProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.assignedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.baseRefChangedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.baseRefForcePushedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.closedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.convertedNoteToIssueEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.crossReferencedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.demilestonedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.deployedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.deploymentEnvironmentChangedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.headRefDeletedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.headRefForcePushedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.headRefRestoredEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.issueCommentFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.labeledEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.lockedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.markedAsDuplicateEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.mergedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.milestonedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.movedColumnsInProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.pinnedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.pullRequestCommitCommentThreadFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.pullRequestCommitFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.pullRequestReviewFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.pullRequestReviewThreadFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.readyForReviewEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.referencedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.removedFromProjectEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.renamedTitleEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.reopenedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.reviewDismissedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.reviewRequestRemovedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.reviewRequestedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.transferredEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.unassignedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.unlabeledEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.unlockedEventFragment
+import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.unpinnedEventFragment
 import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -107,14 +107,17 @@ class PullRequestTimelineDataSource(
         return withContext(Dispatchers.IO) {
             try {
                 if (params is LoadParams.Refresh) {
-                    val pullRequest = queryPullRequest(
-                        owner = owner,
-                        name = name,
-                        number = number,
-                        perPage = params.loadSize,
-                        after = params.key,
-                        before = params.key
+                    val pullRequest = GraphQLClient.apolloClient.query(
+                        query = PullRequestQuery(
+                            owner = owner,
+                            name = name,
+                            number = number,
+                            after = Input.Present(value = params.key),
+                            before = Input.Present(value = params.key),
+                            perPage = params.loadSize
+                        )
                     ).data?.repository?.pullRequest
+
 
                     pullRequestData.postValue(pullRequest.toNullablePullRequest())
 
@@ -136,13 +139,15 @@ class PullRequestTimelineDataSource(
                         nextKey = pageInfo.checkedEndCursor
                     )
                 } else {
-                    val timeline = queryPullRequestTimelineItems(
-                        owner = owner,
-                        name = name,
-                        number = number,
-                        perPage = params.loadSize,
-                        after = params.key,
-                        before = params.key
+                    val timeline = GraphQLClient.apolloClient.query(
+                        PullRequestTimelineItemsQuery(
+                            owner = owner,
+                            name = name,
+                            number = number,
+                            after = Input.Present(value = params.key),
+                            before = Input.Present(value = params.key),
+                            perPage = params.loadSize
+                        )
                     ).data?.repository?.pullRequest?.timelineItems
 
                     list.addAll(
@@ -173,7 +178,7 @@ class PullRequestTimelineDataSource(
         return null
     }
 
-    private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Nodes): PullRequestTimelineItem? {
+    private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.Node): PullRequestTimelineItem? {
         return node.addedToProjectEventFragment()?.toNonNullAddedToProjectEvent()
             ?: node.assignedEventFragment()?.toNonNullAssignedEvent()
             ?: node.baseRefChangedEventFragment()?.toNonNullBaseRefChangedEvent()
@@ -216,7 +221,7 @@ class PullRequestTimelineDataSource(
             ?: node.unpinnedEventFragment()?.toNonNullUnpinnedEvent()
     }
 
-    private fun initTimelineItemWithRawData(node: PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Nodes): PullRequestTimelineItem? {
+    private fun initTimelineItemWithRawData(node: PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node): PullRequestTimelineItem? {
         return node.addedToProjectEventFragment()?.toNonNullAddedToProjectEvent()
             ?: node.assignedEventFragment()?.toNonNullAssignedEvent()
             ?: node.baseRefChangedEventFragment()?.toNonNullBaseRefChangedEvent()

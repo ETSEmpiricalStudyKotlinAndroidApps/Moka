@@ -6,7 +6,7 @@ buildscript {
             url = uri("https://kotlin.bintray.com/kotlinx/")
         }
         maven {
-            url = uri("http://dl.bintray.com/kotlin/kotlin-eap")
+            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
         }
         maven {
             url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
@@ -30,7 +30,7 @@ allprojects {
             url = uri("https://kotlin.bintray.com/kotlinx/")
         }
         maven {
-            url = uri("http://dl.bintray.com/kotlin/kotlin-eap")
+            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
         }
         maven {
             url = uri("https://oss.sonatype.org/content/repositories/snapshots/")

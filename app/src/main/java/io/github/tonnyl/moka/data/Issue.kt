@@ -4,7 +4,7 @@ import io.github.tonnyl.moka.queries.IssueQuery
 import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.Author.Companion.actor
 import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.Editor.Companion.actor
 import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.Milestone.Companion.milestone
-import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.ReactionGroups.Companion.reactionGroup
+import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.ReactionGroup.Companion.reactionGroup
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
 

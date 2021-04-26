@@ -2,11 +2,13 @@ package io.github.tonnyl.moka.ui.prs
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.PullRequestItem
 import io.github.tonnyl.moka.data.item.toNonNullPullRequestItem
-import io.github.tonnyl.moka.network.queries.queryPullRequests
+import io.github.tonnyl.moka.network.GraphQLClient
+import io.github.tonnyl.moka.queries.PullRequestsQuery
 import io.github.tonnyl.moka.queries.PullRequestsQuery.Data.Repository.PullRequests.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,12 +23,14 @@ class PullRequestsDataSource(
         val list = mutableListOf<PullRequestItem>()
         return withContext(Dispatchers.IO) {
             try {
-                val repository = queryPullRequests(
-                    owner = owner,
-                    name = name,
-                    perPage = params.loadSize,
-                    after = params.key,
-                    before = params.key
+                val repository = GraphQLClient.apolloClient.query(
+                    query = PullRequestsQuery(
+                        owner = owner,
+                        name = name,
+                        after = Input.Present(value = params.key),
+                        before = Input.Present(value = params.key),
+                        perPage = params.loadSize
+                    )
                 ).data?.repository
 
                 list.addAll(

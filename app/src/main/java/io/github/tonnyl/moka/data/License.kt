@@ -1,8 +1,8 @@
 package io.github.tonnyl.moka.data
 
-import io.github.tonnyl.moka.fragment.License.Conditions.Companion.licenseRule
-import io.github.tonnyl.moka.fragment.License.Limitations.Companion.licenseRule
-import io.github.tonnyl.moka.fragment.License.Permissions.Companion.licenseRule
+import io.github.tonnyl.moka.fragment.License.Condition.Companion.licenseRule
+import io.github.tonnyl.moka.fragment.License.Limitation.Companion.licenseRule
+import io.github.tonnyl.moka.fragment.License.Permission.Companion.licenseRule
 import io.github.tonnyl.moka.fragment.License as RawLicense
 
 /**

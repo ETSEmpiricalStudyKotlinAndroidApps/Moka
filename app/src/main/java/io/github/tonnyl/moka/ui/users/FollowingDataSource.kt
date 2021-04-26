@@ -2,12 +2,14 @@ package io.github.tonnyl.moka.ui.users
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullUserItem
-import io.github.tonnyl.moka.network.queries.queryUsersFollowing
-import io.github.tonnyl.moka.queries.FollowingQuery.Data.User.Following.Nodes.Companion.userListItemFragment
+import io.github.tonnyl.moka.network.GraphQLClient
+import io.github.tonnyl.moka.queries.FollowingQuery
+import io.github.tonnyl.moka.queries.FollowingQuery.Data.User.Following.Node.Companion.userListItemFragment
 import io.github.tonnyl.moka.queries.FollowingQuery.Data.User.Following.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,11 +21,13 @@ class FollowingDataSource(private val login: String) : PagingSource<String, User
         val list = mutableListOf<UserItem>()
         return withContext(Dispatchers.IO) {
             try {
-                val user = queryUsersFollowing(
-                    login,
-                    perPage = params.loadSize,
-                    after = params.key,
-                    before = params.key
+                val user = GraphQLClient.apolloClient.query(
+                    query = FollowingQuery(
+                        login = login,
+                        perPage = params.loadSize,
+                        before = Input.Present(value = params.key),
+                        after = Input.Present(value = params.key)
+                    )
                 ).data?.user
 
                 list.addAll(

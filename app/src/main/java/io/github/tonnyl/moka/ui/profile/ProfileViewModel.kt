@@ -6,14 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.data.*
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.addStar
 import io.github.tonnyl.moka.network.mutations.followUser
 import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.network.mutations.unfollowUser
-import io.github.tonnyl.moka.network.queries.queryOrganization
-import io.github.tonnyl.moka.network.queries.queryUser
+import io.github.tonnyl.moka.queries.OrganizationQuery
+import io.github.tonnyl.moka.queries.UserQuery
 import io.github.tonnyl.moka.queries.UserQuery.Data.User.Companion.user
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,11 +63,11 @@ class ProfileViewModel(
             _userProfile.postValue(Resource.loading(null))
 
             try {
-                val user = queryUser(login)
-                    .data
-                    ?.user
-                    ?.user()
-                    ?.toNonNullUser()
+                val user = GraphQLClient.apolloClient
+                    .query(
+                        query = UserQuery(login)
+                    )
+                    .data?.user?.user()?.toNonNullUser()
 
                 _userProfile.postValue(Resource.success(user))
 
@@ -88,9 +89,11 @@ class ProfileViewModel(
             _organizationProfile.postValue(Resource.loading(null))
 
             try {
-                val response = queryOrganization(login)
-
-                val org = response.data?.organization.toNullableOrganization()
+                val org = GraphQLClient.apolloClient
+                    .query(
+                        query = OrganizationQuery(login = login)
+                    )
+                    .data?.organization.toNullableOrganization()
 
                 _organizationProfile.postValue(Resource.success(org))
 

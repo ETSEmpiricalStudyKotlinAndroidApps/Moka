@@ -8,19 +8,20 @@ import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.data.toNonNullTreeEntry
 import io.github.tonnyl.moka.data.toNullableRepository
-import io.github.tonnyl.moka.fragment.Tree.Entries.Companion.treeEntry
+import io.github.tonnyl.moka.fragment.Tree.Entry.Companion.treeEntry
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.addStar
 import io.github.tonnyl.moka.network.mutations.followUser
 import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.network.mutations.unfollowUser
-import io.github.tonnyl.moka.network.queries.queryCurrentLevelTreeView
-import io.github.tonnyl.moka.network.queries.queryFileContent
-import io.github.tonnyl.moka.network.queries.queryOrganizationsRepository
-import io.github.tonnyl.moka.network.queries.queryUsersRepository
+import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery
 import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery.Data.Repository.Object.Companion.tree
+import io.github.tonnyl.moka.queries.FileContentQuery
 import io.github.tonnyl.moka.queries.FileContentQuery.Data.Repository.Object.Companion.blob
+import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery
+import io.github.tonnyl.moka.queries.UsersRepositoryQuery
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.util.HtmlHandler
 import kotlinx.coroutines.Dispatchers
@@ -82,7 +83,14 @@ class RepositoryViewModel(
             _readmeHtml.postValue(Resource.loading(null))
 
             try {
-                val response = queryCurrentLevelTreeView(login, repositoryName, "$branchName:")
+                val response = GraphQLClient.apolloClient
+                    .query(
+                        query = CurrentLevelTreeViewQuery(
+                            login = login,
+                            repoName = repositoryName,
+                            expression = "$branchName:"
+                        )
+                    )
 
                 val readmeFileNames = mapOf(
                     "readme.md" to "md",
@@ -110,7 +118,14 @@ class RepositoryViewModel(
 
                 if (fileEntry != null) {
                     val expression = "$branchName:${fileEntry.name}"
-                    val fileContentResponse = queryFileContent(login, repositoryName, expression)
+                    val fileContentResponse = GraphQLClient.apolloClient
+                        .query(
+                            query = FileContentQuery(
+                                login = login,
+                                repoName = repositoryName,
+                                expression = expression
+                            )
+                        )
 
                     val html = fileContentResponse.data?.repository?.object_?.blob()?.text
                     if (html.isNullOrEmpty()) {
@@ -195,7 +210,13 @@ class RepositoryViewModel(
             _usersRepository.postValue(Resource.loading(null))
 
             try {
-                val repo = queryUsersRepository(login, repositoryName)
+                val repo = GraphQLClient.apolloClient
+                    .query(
+                        query = UsersRepositoryQuery(
+                            login = login,
+                            repoName = repositoryName
+                        )
+                    )
                     .data
                     .toNullableRepository()
 
@@ -227,7 +248,13 @@ class RepositoryViewModel(
             _organizationsRepository.postValue(Resource.loading(null))
 
             try {
-                val repo = queryOrganizationsRepository(login, repositoryName)
+                val repo = GraphQLClient.apolloClient
+                    .query(
+                        query = OrganizationsRepositoryQuery(
+                            login = login,
+                            repoName = repositoryName
+                        )
+                    )
                     .data
                     .toNullableRepository()
 

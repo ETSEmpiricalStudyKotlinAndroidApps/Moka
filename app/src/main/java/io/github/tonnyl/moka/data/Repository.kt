@@ -5,7 +5,7 @@ import io.github.tonnyl.moka.fragment.Repository.DefaultBranchRef.Companion.ref
 import io.github.tonnyl.moka.fragment.Repository.LicenseInfo.Companion.license
 import io.github.tonnyl.moka.fragment.Repository.Owner.Companion.repositoryOwner
 import io.github.tonnyl.moka.fragment.Repository.PrimaryLanguage.Companion.language
-import io.github.tonnyl.moka.fragment.Repository.RepositoryTopics.Nodes.Companion.repositoryTopic
+import io.github.tonnyl.moka.fragment.Repository.RepositoryTopics.Node.Companion.repositoryTopic
 import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery
 import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery.Data.Organization.Repository.Companion.repository
 import io.github.tonnyl.moka.queries.UsersRepositoryQuery

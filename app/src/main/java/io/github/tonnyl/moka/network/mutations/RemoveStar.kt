@@ -4,7 +4,6 @@ import io.github.tonnyl.moka.mutations.RemoveStarMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.RemoveStarInput
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -17,9 +16,8 @@ import kotlinx.coroutines.withContext
 suspend fun removeStar(starrableId: String) = withContext(Dispatchers.IO) {
     GraphQLClient.apolloClient
         .mutate(
-            RemoveStarMutation(
+            mutation = RemoveStarMutation(
                 RemoveStarInput(starrableId = starrableId)
             )
         )
-        .single()
 }

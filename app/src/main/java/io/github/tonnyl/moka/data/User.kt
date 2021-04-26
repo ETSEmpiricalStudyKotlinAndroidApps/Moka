@@ -1,8 +1,8 @@
 package io.github.tonnyl.moka.data
 
-import io.github.tonnyl.moka.fragment.PinnableItem.Companion.gist
+import io.github.tonnyl.moka.fragment.PinnableItem.Companion.asGist
 import io.github.tonnyl.moka.fragment.PinnableItem.Companion.repositoryListItemFragment
-import io.github.tonnyl.moka.fragment.User.PinnedItems.Nodes.Companion.pinnableItem
+import io.github.tonnyl.moka.fragment.User.PinnedItems.Node.Companion.pinnableItem
 import io.github.tonnyl.moka.fragment.User.Status.Companion.userStatus
 import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.User as RawUser
@@ -154,7 +154,7 @@ fun RawUser.toNonNullUser(): User {
     val pinnableItems = mutableListOf<PinnableItem>()
     pinnedItems.nodes?.map { node ->
         node?.pinnableItem()?.let { fragment ->
-            fragment.gist()?.let {
+            fragment.asGist()?.let {
                 pinnableItems.add(it.toGist())
             } ?: fragment.repositoryListItemFragment()?.let {
                 pinnableItems.add(it.toNonNullRepositoryItem())

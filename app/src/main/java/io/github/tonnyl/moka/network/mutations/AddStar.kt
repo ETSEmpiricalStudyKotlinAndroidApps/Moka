@@ -4,7 +4,6 @@ import io.github.tonnyl.moka.mutations.AddStarMutation
 import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.AddStarInput
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.withContext
 
 /**
@@ -17,9 +16,8 @@ import kotlinx.coroutines.withContext
 suspend fun addStar(starrableId: String) = withContext(Dispatchers.IO) {
     GraphQLClient.apolloClient
         .mutate(
-            AddStarMutation(
+            mutation = AddStarMutation(
                 AddStarInput(starrableId = starrableId)
             )
         )
-        .single()
 }

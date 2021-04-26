@@ -4,13 +4,14 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadResult.Error
 import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullRepositoryItem
-import io.github.tonnyl.moka.network.queries.querySearchRepositories
+import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery
-import io.github.tonnyl.moka.queries.SearchRepositoriesQuery.Data.Search.Nodes.Companion.repositoryListItemFragment
+import io.github.tonnyl.moka.queries.SearchRepositoriesQuery.Data.Search.Node.Companion.repositoryListItemFragment
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery.Data.Search.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,11 +26,14 @@ class SearchedRepositoriesItemDataSource(
 
         return withContext(Dispatchers.IO) {
             try {
-                val search = querySearchRepositories(
-                    queryWords = query,
-                    first = params.loadSize,
-                    after = params.key,
-                    before = params.key
+                val search = GraphQLClient.apolloClient.query(
+                    query = SearchRepositoriesQuery(
+                        queryWords = query,
+                        first = Input.Present(value = params.loadSize),
+                        last = Input.Present(value = null),
+                        after = Input.Present(value = params.key),
+                        before = Input.Present(value = params.key)
+                    )
                 ).data?.search
 
                 search?.nodes?.forEach { node ->
@@ -59,7 +63,7 @@ class SearchedRepositoriesItemDataSource(
     }
 
     private fun convertRawDataRepositoryItem(
-        node: SearchRepositoriesQuery.Data.Search.Nodes
+        node: SearchRepositoriesQuery.Data.Search.Node
     ): RepositoryItem? {
         return node.repositoryListItemFragment()?.toNonNullRepositoryItem()
     }

@@ -2,11 +2,13 @@ package io.github.tonnyl.moka.ui.issues
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.data.item.toNonNullIssueItem
-import io.github.tonnyl.moka.network.queries.queryIssues
+import io.github.tonnyl.moka.network.GraphQLClient
+import io.github.tonnyl.moka.queries.IssuesQuery
 import io.github.tonnyl.moka.queries.IssuesQuery.Data.Repository.Issues.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,12 +23,14 @@ class IssuesDataSource(
         val list = mutableListOf<IssueItem>()
         return withContext(Dispatchers.IO) {
             try {
-                val repository = queryIssues(
-                    owner = owner,
-                    name = name,
-                    perPage = params.loadSize,
-                    after = params.key,
-                    before = params.key
+                val repository = GraphQLClient.apolloClient.query(
+                    query = IssuesQuery(
+                        owner = owner,
+                        name = name,
+                        after = Input.Present(value = params.key),
+                        before = Input.Present(value = params.key),
+                        perPage = params.loadSize
+                    )
                 ).data?.repository
 
                 repository?.issues?.nodes?.forEach { node ->

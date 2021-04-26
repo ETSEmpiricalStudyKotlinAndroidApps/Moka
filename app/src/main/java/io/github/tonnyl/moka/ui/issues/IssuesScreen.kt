@@ -21,9 +21,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -41,6 +39,7 @@ import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.IssueItemProvider
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -49,8 +48,7 @@ import io.github.tonnyl.moka.widget.ItemLoadingState
 @Composable
 fun IssuesScreen(
     owner: String,
-    name: String,
-    navController: NavController
+    name: String
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
@@ -118,12 +116,13 @@ fun IssuesScreen(
                         contentTopPadding = contentPadding.calculateTopPadding(),
                         owner = owner,
                         name = name,
-                        navController = navController,
                         prs = issues
                     )
                 }
             }
         }
+
+        val navController = LocalNavController.current
 
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.issues)) },
@@ -150,7 +149,6 @@ fun IssuesScreenContent(
     contentTopPadding: Dp,
     owner: String,
     name: String,
-    navController: NavController,
     prs: LazyPagingItems<IssueItem>,
 ) {
     LazyColumn {
@@ -167,8 +165,7 @@ fun IssuesScreenContent(
                 ItemIssue(
                     owner = owner,
                     name = name,
-                    issue = item,
-                    navController = navController
+                    issue = item
                 )
             }
         }
@@ -183,9 +180,10 @@ fun IssuesScreenContent(
 private fun ItemIssue(
     owner: String,
     name: String,
-    issue: IssueItem,
-    navController: NavController
+    issue: IssueItem
 ) {
+    val navController = LocalNavController.current
+
     Column(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
@@ -288,7 +286,6 @@ private fun IssueItemPreview(
     ItemIssue(
         owner = "wasabeef",
         name = "droid",
-        navController = rememberNavController(),
         issue = issue
     )
 }

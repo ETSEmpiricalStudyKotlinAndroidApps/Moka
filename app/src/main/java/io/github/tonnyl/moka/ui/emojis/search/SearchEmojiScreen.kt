@@ -21,26 +21,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
+import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.SearchedEmojiItemProvider
 import io.github.tonnyl.moka.widget.SearchBar
 
 @ExperimentalComposeUiApi
 @Composable
-fun SearchEmojiScreen(
-    navController: NavController,
-    mainViewModel: MainViewModel
-) {
+fun SearchEmojiScreen() {
+    val mainViewModel = LocalMainViewModel.current
     val emojis by mainViewModel.searchableEmojis.observeAsState()
 
     val textState = remember { mutableStateOf(TextFieldValue()) }
@@ -59,12 +56,10 @@ fun SearchEmojiScreen(
         SearchEmojiScreenContent(
             topAppBarSize = topAppBarSize,
             emojis = emojis ?: emptyList(),
-            navController = navController
         )
 
         SearchBar(
             hintResId = R.string.search_emoji,
-            navController = navController,
             textState = textState,
             modifier = Modifier
                 .fillMaxWidth()
@@ -76,8 +71,7 @@ fun SearchEmojiScreen(
 @Composable
 private fun SearchEmojiScreenContent(
     topAppBarSize: Int,
-    emojis: List<SearchableEmoji>,
-    navController: NavController
+    emojis: List<SearchableEmoji>
 ) {
     LazyColumn(
         contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
@@ -86,19 +80,15 @@ private fun SearchEmojiScreenContent(
         )
     ) {
         items(count = emojis.size) { index ->
-            SearchedEmojiItem(
-                emoji = emojis[index],
-                navController = navController
-            )
+            SearchedEmojiItem(emoji = emojis[index])
         }
     }
 }
 
 @Composable
-private fun SearchedEmojiItem(
-    emoji: SearchableEmoji,
-    navController: NavController
-) {
+private fun SearchedEmojiItem(emoji: SearchableEmoji) {
+    val navController = LocalNavController.current
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -152,8 +142,5 @@ private fun SearchedEmojiItemPreview(
     )
     emoji: SearchableEmoji
 ) {
-    SearchedEmojiItem(
-        emoji = emoji,
-        navController = rememberNavController()
-    )
+    SearchedEmojiItem(emoji = emoji)
 }

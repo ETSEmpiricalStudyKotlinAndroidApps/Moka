@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.paging.ExperimentalPagingApi
@@ -51,6 +50,7 @@ import io.github.tonnyl.moka.ui.settings.SettingScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.timeline.TimelineScreen
 import io.github.tonnyl.moka.ui.users.UsersScreen
 import io.github.tonnyl.moka.ui.users.UsersType
@@ -160,8 +160,7 @@ sealed class Screen(val route: String) {
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable
-fun MainScreen(mainViewModel: MainViewModel) {
-    val navController = rememberNavController()
+fun MainScreen() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
@@ -174,7 +173,6 @@ fun MainScreen(mainViewModel: MainViewModel) {
                 currentRoute = currentRoute,
                 coroutineScope = coroutineScope,
                 drawerState = drawerState,
-                navController = navController,
                 modifier = Modifier
                     .statusBarsPadding()
                     .navigationBarsPadding(bottom = false)
@@ -189,40 +187,28 @@ fun MainScreen(mainViewModel: MainViewModel) {
         }
 
         NavHost(
-            navController = navController,
+            navController = LocalNavController.current,
             startDestination = Screen.Timeline.route
         ) {
             composable(route = Screen.Timeline.route) {
                 currentRoute = Screen.Timeline.route
-                TimelineScreen(
-                    openDrawer = openDrawer,
-                    mainViewModel = mainViewModel,
-                    navController = navController
-                )
+                TimelineScreen(openDrawer = openDrawer)
             }
             composable(route = Screen.Inbox.route) {
                 currentRoute = Screen.Inbox.route
-                InboxScreen(
-                    openDrawer = openDrawer,
-                    mainViewModel = mainViewModel,
-                    navController = navController
-                )
+                InboxScreen(openDrawer = openDrawer)
             }
             composable(route = Screen.Explore.route) {
                 currentRoute = Screen.Explore.route
-                ExploreScreen(
-                    openDrawer = openDrawer,
-                    mainViewModel = mainViewModel,
-                    navController = navController
-                )
+                ExploreScreen(openDrawer = openDrawer)
             }
             composable(route = Screen.Settings.route) {
                 currentRoute = Screen.Settings.route
-                SettingScreen(navController = navController)
+                SettingScreen()
             }
             composable(route = Screen.About.route) {
                 currentRoute = Screen.About.route
-                AboutScreen(navController = navController)
+                AboutScreen()
             }
             composable(
                 route = Screen.Profile.route,
@@ -259,11 +245,7 @@ fun MainScreen(mainViewModel: MainViewModel) {
                         viewModel.updateUserStatusIfNeeded(it)
                     }
 
-                ProfileScreen(
-                    mainViewModel = mainViewModel,
-                    viewModel = viewModel,
-                    navController = navController
-                )
+                ProfileScreen(viewModel = viewModel)
             }
             composable(
                 route = Screen.Repository.route,
@@ -281,7 +263,6 @@ fun MainScreen(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 currentRoute = Screen.Repository.route
                 RepositoryScreen(
-                    navController = navController,
                     login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                         ?: return@composable,
                     repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
@@ -323,7 +304,6 @@ fun MainScreen(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 currentRoute = Screen.EditProfile.route
                 EditProfileScreen(
-                    navController = navController,
                     initialName = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_NAME),
                     initialBio = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_BIO),
                     initialUrl = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_URL),
@@ -376,10 +356,7 @@ fun MainScreen(mainViewModel: MainViewModel) {
                         }
                     }
 
-
                 EditStatusScreen(
-                    navController = navController,
-                    mainViewModel = mainViewModel,
                     initialEmoji = initialEmoji,
                     initialMessage = initialMessage,
                     initialIndicatesLimitedAvailability = initialIndicatesLimitedAvailability,
@@ -399,7 +376,6 @@ fun MainScreen(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 currentRoute = Screen.Users.route
                 UsersScreen(
-                    navController = navController,
                     login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                         ?: return@composable,
                     usersType = UsersType.valueOf(
@@ -424,7 +400,6 @@ fun MainScreen(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 currentRoute = Screen.Repositories.route
                 RepositoriesScreen(
-                    navController = navController,
                     login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                         ?: return@composable,
                     repositoryType = RepositoryType.valueOf(
@@ -450,7 +425,6 @@ fun MainScreen(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 currentRoute = Screen.Issues.route
                 IssuesScreen(
-                    navController = navController,
                     owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                         ?: return@composable,
                     name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
@@ -470,7 +444,6 @@ fun MainScreen(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 currentRoute = Screen.PullRequests.route
                 PullRequestsScreen(
-                    navController = navController,
                     owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                         ?: return@composable,
                     name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
@@ -493,7 +466,6 @@ fun MainScreen(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 currentRoute = Screen.Issue.route
                 IssueScreen(
-                    navController = navController,
                     owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                         ?: return@composable,
                     name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
@@ -518,7 +490,6 @@ fun MainScreen(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 currentRoute = Screen.PullRequest.route
                 PullRequestScreen(
-                    navController = navController,
                     owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                         ?: return@composable,
                     name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
@@ -528,6 +499,7 @@ fun MainScreen(mainViewModel: MainViewModel) {
                 )
             }
             composable(route = Screen.Emojis.route) {
+                val navController = LocalNavController.current
                 currentRoute = Screen.Emojis.route
                 val resultEmoji = navController.currentBackStackEntry?.savedStateHandle
                     ?.getLiveData<String>(Screen.Emojis.RESULT_EMOJI)?.value
@@ -538,22 +510,16 @@ fun MainScreen(mainViewModel: MainViewModel) {
 
                     navController.navigateUp()
                 } else {
-                    EmojisScreen(
-                        navController = navController,
-                        mainViewModel = mainViewModel
-                    )
+                    EmojisScreen()
                 }
             }
             composable(route = Screen.SearchEmoji.route) {
                 currentRoute = Screen.SearchEmoji.route
-                SearchEmojiScreen(
-                    navController = navController,
-                    mainViewModel = mainViewModel
-                )
+                SearchEmojiScreen()
             }
             composable(route = Screen.Search.route) {
                 currentRoute = Screen.Search.route
-                SearchScreen(navController = navController)
+                SearchScreen()
             }
         }
     }
@@ -565,9 +531,10 @@ fun MainDrawerContent(
     currentRoute: String,
     coroutineScope: CoroutineScope,
     drawerState: DrawerState,
-    navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val navController = LocalNavController.current
+
     val navigate: (String, Boolean) -> Unit = { route, _ ->
         navController.navigateUp()
         navController.navigate(route = route) {
@@ -729,7 +696,6 @@ private fun MainDrawerContentPreview() {
     MainDrawerContent(
         currentRoute = Screen.Timeline.route,
         coroutineScope = rememberCoroutineScope(),
-        drawerState = rememberDrawerState(DrawerValue.Open),
-        navController = rememberNavController()
+        drawerState = rememberDrawerState(DrawerValue.Open)
     )
 }

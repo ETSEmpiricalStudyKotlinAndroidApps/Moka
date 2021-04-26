@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
@@ -36,17 +35,13 @@ import io.github.tonnyl.moka.type.RepositoryPermission
 import io.github.tonnyl.moka.type.SubscriptionState
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
-import io.github.tonnyl.moka.ui.theme.IconSize
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.*
 import kotlinx.datetime.Instant
 
 @ExperimentalMaterialApi
 @Composable
 fun RepositoryScreen(
-    navController: NavController,
     login: String,
     repoName: String,
     profileType: ProfileType
@@ -78,6 +73,8 @@ fun RepositoryScreen(
             .navigationBarsPadding()
     ) {
         var topAppBarSize by remember { mutableStateOf(0) }
+
+        val navController = LocalNavController.current
 
         Scaffold(
             content = {

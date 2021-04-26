@@ -23,33 +23,23 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.coil.rememberCoilPainter
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.profile.ProfileType
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
-import io.github.tonnyl.moka.ui.theme.IconSize
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.OutlineChip
 
 @ExperimentalMaterialApi
 @Composable
-fun AccountDialogScreen(
-    navController: NavController,
-    showState: MutableState<Boolean>,
-    mainViewModel: MainViewModel
-) {
-    val accounts by mainViewModel.getApplication<MokaApp>().accountInstancesLiveData.observeAsState(
+fun AccountDialogScreen(showState: MutableState<Boolean>) {
+    val accounts by LocalMainViewModel.current.getApplication<MokaApp>().accountInstancesLiveData.observeAsState(
         initial = emptyList()
     )
     if (accounts.isNullOrEmpty()) {
@@ -63,10 +53,8 @@ fun AccountDialogScreen(
             }
         ) {
             AccountDialogScreenContent(
-                navController = navController,
                 accounts = accounts,
-                showState = showState,
-                mainViewModel = mainViewModel
+                showState = showState
             )
         }
     }
@@ -75,10 +63,8 @@ fun AccountDialogScreen(
 @ExperimentalMaterialApi
 @Composable
 private fun AccountDialogScreenContent(
-    navController: NavController,
     accounts: List<AccountInstance>,
-    showState: MutableState<Boolean>,
-    mainViewModel: MainViewModel
+    showState: MutableState<Boolean>
 ) {
     val context = LocalContext.current
     val currentAccount = LocalAccountInstance.current ?: return
@@ -97,12 +83,10 @@ private fun AccountDialogScreenContent(
         ) {
             items(count = accounts.size) { index ->
                 ItemAccount(
-                    navController = navController,
                     isCurrentLoginUser = currentAccount.signedInAccount.account.id == accounts[index].signedInAccount.account.id,
                     showState = showState,
                     account = accounts[index],
-                    accountIndex = index,
-                    mainViewModel = mainViewModel
+                    accountIndex = index
                 )
             }
         }
@@ -220,13 +204,12 @@ private fun AccountDialogScreenContent(
 
 @Composable
 private fun ItemAccount(
-    navController: NavController,
     isCurrentLoginUser: Boolean,
     showState: MutableState<Boolean>,
     account: AccountInstance,
-    accountIndex: Int,
-    mainViewModel: MainViewModel
+    accountIndex: Int
 ) {
+    val mainViewModel = LocalMainViewModel.current
     Row(
         verticalAlignment = Alignment.Top,
         modifier = Modifier
@@ -277,6 +260,7 @@ private fun ItemAccount(
             }
             if (isCurrentLoginUser) {
                 Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+                val navController = LocalNavController.current
                 OutlineChip(
                     text = stringResource(id = R.string.accounts_view_profile),
                     onClick = {
@@ -305,9 +289,7 @@ private fun ItemAccount(
 @Composable
 private fun AccountDialogScreenContentPreview() {
     AccountDialogScreenContent(
-        navController = rememberNavController(),
         accounts = emptyList(),
-        showState = mutableStateOf(false),
-        mainViewModel = MainViewModel(LocalContext.current.applicationContext as MokaApp)
+        showState = mutableStateOf(false)
     )
 }

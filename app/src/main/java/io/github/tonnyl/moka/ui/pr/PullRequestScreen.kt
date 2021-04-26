@@ -27,7 +27,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -58,7 +57,6 @@ import kotlinx.datetime.Instant
 
 @Composable
 fun PullRequestScreen(
-    navController: NavController,
     owner: String,
     name: String,
     number: Int
@@ -137,6 +135,8 @@ fun PullRequestScreen(
                 }
             }
         }
+
+        val navController = LocalNavController.current
 
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.pull_request)) },

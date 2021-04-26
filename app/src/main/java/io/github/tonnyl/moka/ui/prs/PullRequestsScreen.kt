@@ -21,9 +21,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -41,6 +39,7 @@ import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.PullRequestItemProvider
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -48,7 +47,6 @@ import io.github.tonnyl.moka.widget.ItemLoadingState
 
 @Composable
 fun PullRequestsScreen(
-    navController: NavController,
     owner: String,
     name: String
 ) {
@@ -118,12 +116,13 @@ fun PullRequestsScreen(
                         contentTopPadding = contentPadding.calculateTopPadding(),
                         owner = owner,
                         name = name,
-                        navController = navController,
                         prs = prs
                     )
                 }
             }
         }
+
+        val navController = LocalNavController.current
 
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.pull_requests)) },
@@ -150,7 +149,6 @@ fun PullRequestsScreenContent(
     contentTopPadding: Dp,
     owner: String,
     name: String,
-    navController: NavController,
     prs: LazyPagingItems<PullRequestItem>,
 ) {
     LazyColumn {
@@ -167,8 +165,7 @@ fun PullRequestsScreenContent(
                 ItemPullRequest(
                     owner = owner,
                     name = name,
-                    pullRequest = item,
-                    navController = navController
+                    pullRequest = item
                 )
             }
         }
@@ -183,9 +180,10 @@ fun PullRequestsScreenContent(
 private fun ItemPullRequest(
     owner: String,
     name: String,
-    pullRequest: PullRequestItem,
-    navController: NavController
+    pullRequest: PullRequestItem
 ) {
+    val navController = LocalNavController.current
+
     Column(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
@@ -294,7 +292,6 @@ private fun PullRequestItemPreview(
     ItemPullRequest(
         owner = "wasabeef",
         name = "droid",
-        navController = rememberNavController(),
         pullRequest = pullRequest
     )
 }

@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
-import androidx.navigation.NavController
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.MokaApp
@@ -27,6 +26,7 @@ import io.github.tonnyl.moka.proto.Settings
 import io.github.tonnyl.moka.serializers.store.SettingSerializer
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.PreferenceCategoryText
 import io.github.tonnyl.moka.widget.PreferenceDivider
@@ -56,7 +56,7 @@ data class OnSettingItemClick(
 
 @ExperimentalMaterialApi
 @Composable
-fun SettingScreen(navController: NavController) {
+fun SettingScreen() {
     val coroutineScope = rememberCoroutineScope()
     val mokaApp = LocalContext.current.applicationContext as MokaApp
 
@@ -109,6 +109,7 @@ fun SettingScreen(navController: NavController) {
             )
         )
 
+        val navController = LocalNavController.current
         InsetAwareTopAppBar(
             title = {
                 Text(text = stringResource(id = R.string.navigation_menu_settings))

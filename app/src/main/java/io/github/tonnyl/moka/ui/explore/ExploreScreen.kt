@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -24,7 +23,6 @@ import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingRepository
-import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
@@ -41,11 +39,7 @@ private enum class ExploreCategory {
 
 @Composable
 @ExperimentalMaterialApi
-fun ExploreScreen(
-    openDrawer: () -> Unit,
-    navController: NavController,
-    mainViewModel: MainViewModel
-) {
+fun ExploreScreen(openDrawer: () -> Unit) {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val exploreViewModel = viewModel<ExploreViewModel>(
@@ -60,18 +54,12 @@ fun ExploreScreen(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
 
-    ExploreFiltersScreen(
-        navController = navController,
-        viewModel = mainViewModel,
-        sheetState = bottomSheetState
-    ) {
+    ExploreFiltersScreen(sheetState = bottomSheetState) {
         var topAppBarSize by remember { mutableStateOf(0) }
 
         Box {
             MainSearchBar(
                 openDrawer = openDrawer,
-                mainViewModel = mainViewModel,
-                navController = navController,
                 modifier = Modifier
                     .fillMaxWidth()
                     .onSizeChanged { topAppBarSize = it.height }

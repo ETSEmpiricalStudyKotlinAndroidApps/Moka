@@ -21,31 +21,28 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
+import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 
 @Composable
 @ExperimentalMaterialApi
 fun ExploreFiltersScreen(
-    navController: NavController,
-    viewModel: MainViewModel,
     sheetState: ModalBottomSheetState,
     content: @Composable () -> Unit
 ) {
-    val languages by viewModel.localLanguages.observeAsState(initial = emptyList())
+    val languages by LocalMainViewModel.current.localLanguages.observeAsState(initial = emptyList())
     val lazyListState = rememberLazyListState()
 
     ModalBottomSheetLayout(
         sheetContent = {
             ExploreFiltersScreenContent(
-                navController = navController,
                 lazyListState = lazyListState,
                 languages = languages
             )
@@ -58,7 +55,6 @@ fun ExploreFiltersScreen(
 @ExperimentalMaterialApi
 @Composable
 private fun ExploreFiltersScreenContent(
-    navController: NavController,
     lazyListState: LazyListState,
     languages: List<LocalLanguage>
 ) {
@@ -88,6 +84,7 @@ private fun ExploreFiltersScreenContent(
             }
         }
 
+        val navController = LocalNavController.current
         InsetAwareTopAppBar(
             title = {
                 Text(text = stringResource(id = R.string.navigation_menu_about))

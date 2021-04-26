@@ -16,15 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
-import io.github.tonnyl.moka.ui.theme.IconSize
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
@@ -32,7 +28,6 @@ import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 @ExperimentalMaterialApi
 @Composable
 fun EditProfileScreen(
-    navController: NavController,
     initialName: String?,
     initialBio: String?,
     initialUrl: String?,
@@ -67,6 +62,8 @@ fun EditProfileScreen(
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
+
+        val navController = LocalNavController.current
 
         Scaffold(
             content = {

@@ -17,13 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.navigation.compose.rememberNavController
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.ui.auth.AuthActivity
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
-import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
-import io.github.tonnyl.moka.ui.theme.MokaTheme
+import io.github.tonnyl.moka.ui.theme.*
 
 class MainActivity : ComponentActivity() {
 
@@ -58,14 +57,18 @@ class MainActivity : ComponentActivity() {
                 return@setContent
             }
 
+            val navController = rememberNavController()
+
             val currentSignedInAccount = remember(key1 = accounts.first()) { accounts.first() }
             CompositionLocalProvider(
                 LocalWindowInsetsController provides windowInsetsControllerCompat,
-                LocalAccountInstance provides currentSignedInAccount
+                LocalAccountInstance provides currentSignedInAccount,
+                LocalNavController provides navController,
+                LocalMainViewModel provides viewModel
             ) {
                 MokaTheme {
                     Surface {
-                        MainScreen(mainViewModel = viewModel)
+                        MainScreen()
                     }
                 }
             }

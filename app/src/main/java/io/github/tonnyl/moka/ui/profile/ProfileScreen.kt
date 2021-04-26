@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
@@ -36,7 +35,6 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.theme.*
@@ -49,11 +47,7 @@ import kotlinx.datetime.Instant
 
 @ExperimentalMaterialApi
 @Composable
-fun ProfileScreen(
-    viewModel: ProfileViewModel,
-    mainViewModel: MainViewModel,
-    navController: NavController
-) {
+fun ProfileScreen(viewModel: ProfileViewModel) {
     val currentAccount = LocalAccountInstance.current ?: return
     val organization by viewModel.organizationProfile.observeAsState()
     val user by viewModel.userProfile.observeAsState()
@@ -70,9 +64,9 @@ fun ProfileScreen(
             }
             user?.data != null
                     || organization?.data != null -> {
+                val mainViewModel = LocalMainViewModel.current
                 ProfileScreenContent(
                     topAppBarSize = topAppBarSize,
-                    navController = navController,
                     currentLoginUser = currentAccount.signedInAccount.account.login,
                     user = user?.data,
                     organization = organization?.data,
@@ -95,6 +89,7 @@ fun ProfileScreen(
             }
         }
 
+        val navController = LocalNavController.current
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.profile_title)) },
             navigationIcon = {
@@ -160,7 +155,6 @@ fun ProfileScreen(
 @Composable
 private fun ProfileScreenContent(
     topAppBarSize: Int,
-    navController: NavController,
     currentLoginUser: String,
     user: User?,
     organization: Organization?,
@@ -168,6 +162,7 @@ private fun ProfileScreenContent(
     getEmojiByName: (String) -> SearchableEmoji?,
     viewModel: ProfileViewModel? = null
 ) {
+    val navController = LocalNavController.current
     LazyColumn(
         contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
             top = false,
@@ -717,7 +712,6 @@ private fun PinnedGistCard(
 @Composable
 private fun ProfileScreenPreview() {
     ProfileScreenContent(
-        navController = rememberNavController(),
         currentLoginUser = "",
         user = User(
             avatarUrl = "https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4",

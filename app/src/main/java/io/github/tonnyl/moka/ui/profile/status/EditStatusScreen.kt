@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -31,10 +30,11 @@ import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.DividerSize
+import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.widget.EmojiComponent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
@@ -43,8 +43,6 @@ import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 @ExperimentalMaterialApi
 @Composable
 fun EditStatusScreen(
-    navController: NavController,
-    mainViewModel: MainViewModel,
     initialEmoji: String?,
     initialMessage: String?,
     initialIndicatesLimitedAvailability: Boolean?,
@@ -60,6 +58,7 @@ fun EditStatusScreen(
     val message by viewModel.message.observeAsState()
     val dnd by viewModel.limitedAvailability.observeAsState()
 
+    val navController = LocalNavController.current
     if (clearStatus?.status == Status.SUCCESS) {
         navController.previousBackStackEntry?.savedStateHandle
             ?.set(Screen.EditStatus.RESULT_UPDATE_STATUS, clearStatus?.data)
@@ -80,6 +79,8 @@ fun EditStatusScreen(
             .navigationBarsPadding()
     ) {
         var topAppBarSize by remember { mutableStateOf(0) }
+
+        val mainViewModel = LocalMainViewModel.current
 
         Scaffold(
             content = {

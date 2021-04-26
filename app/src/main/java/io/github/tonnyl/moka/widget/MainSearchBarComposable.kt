@@ -19,25 +19,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.google.accompanist.coil.rememberCoilPainter
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.account.AccountDialogScreen
-import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
-import io.github.tonnyl.moka.ui.theme.IconSize
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.theme.*
 
 @ExperimentalMaterialApi
 @Composable
 fun MainSearchBar(
     openDrawer: () -> Unit,
-    navController: NavController,
-    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -45,12 +38,9 @@ fun MainSearchBar(
         mutableStateOf(false)
     }
 
-    AccountDialogScreen(
-        navController = navController,
-        showState = state,
-        mainViewModel = mainViewModel
-    )
+    AccountDialogScreen(showState = state)
 
+    val navController = LocalNavController.current
     MainSearchBarContent(
         modifier = modifier,
         avatarUrl = currentAccount.signedInAccount.account.avatarUrl,

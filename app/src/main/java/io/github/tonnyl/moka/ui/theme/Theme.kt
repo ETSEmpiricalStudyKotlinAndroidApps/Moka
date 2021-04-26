@@ -4,20 +4,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
-import androidx.core.view.WindowInsetsControllerCompat
 import com.google.accompanist.insets.*
-import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.proto.Settings
 import io.github.tonnyl.moka.serializers.store.SettingSerializer
-
-val LocalWindowInsetsController = staticCompositionLocalOf<WindowInsetsControllerCompat?> { null }
-val LocalAccountInstance = staticCompositionLocalOf<AccountInstance?> { null }
 
 @ExperimentalAnimatedInsets
 @Composable

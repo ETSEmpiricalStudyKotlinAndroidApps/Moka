@@ -18,9 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -39,6 +37,7 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IconSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.UserItemProvider
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -46,7 +45,6 @@ import io.github.tonnyl.moka.widget.ItemLoadingState
 
 @Composable
 fun UsersScreen(
-    navController: NavController,
     login: String,
     usersType: UsersType
 ) {
@@ -114,12 +112,13 @@ fun UsersScreen(
                 else -> {
                     UsersScreenScreen(
                         contentTopPadding = contentPadding.calculateTopPadding(),
-                        navController = navController,
                         users = users
                     )
                 }
             }
         }
+
+        val navController = LocalNavController.current
 
         InsetAwareTopAppBar(
             title = {
@@ -158,7 +157,6 @@ fun UsersScreen(
 @Composable
 private fun UsersScreenScreen(
     contentTopPadding: Dp,
-    navController: NavController,
     users: LazyPagingItems<UserItem>
 ) {
     LazyColumn {
@@ -172,10 +170,7 @@ private fun UsersScreenScreen(
 
         itemsIndexed(lazyPagingItems = users) { _, item ->
             if (item != null) {
-                ItemUser(
-                    user = item,
-                    navController = navController
-                )
+                ItemUser(user = item)
             }
         }
 
@@ -186,10 +181,9 @@ private fun UsersScreenScreen(
 }
 
 @Composable
-fun ItemUser(
-    user: UserItem,
-    navController: NavController
-) {
+fun ItemUser(user: UserItem) {
+    val navController = LocalNavController.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -255,8 +249,5 @@ private fun ItemUserPreview(
     )
     user: UserItem
 ) {
-    ItemUser(
-        user = user,
-        navController = rememberNavController()
-    )
+    ItemUser(user = user)
 }

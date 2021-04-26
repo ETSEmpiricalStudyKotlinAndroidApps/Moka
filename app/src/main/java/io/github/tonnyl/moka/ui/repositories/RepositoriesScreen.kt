@@ -21,9 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -49,7 +47,6 @@ import io.github.tonnyl.moka.widget.ItemLoadingState
 
 @Composable
 fun RepositoriesScreen(
-    navController: NavController,
     login: String,
     repositoryType: RepositoryType,
     profileType: ProfileType
@@ -118,13 +115,14 @@ fun RepositoriesScreen(
                 else -> {
                     RepositoriesScreenContent(
                         contentTopPadding = contentPadding.calculateTopPadding(),
-                        navController = navController,
                         repositories = repositories,
                         profileType = profileType
                     )
                 }
             }
         }
+
+        val navController = LocalNavController.current
 
         InsetAwareTopAppBar(
             title = {
@@ -163,7 +161,6 @@ fun RepositoriesScreen(
 @Composable
 private fun RepositoriesScreenContent(
     contentTopPadding: Dp,
-    navController: NavController,
     repositories: LazyPagingItems<RepositoryItem>,
     profileType: ProfileType
 ) {
@@ -180,8 +177,7 @@ private fun RepositoriesScreenContent(
             if (item != null) {
                 ItemRepository(
                     repo = item,
-                    profileType = profileType,
-                    navController = navController
+                    profileType = profileType
                 )
             }
         }
@@ -195,9 +191,10 @@ private fun RepositoriesScreenContent(
 @Composable
 fun ItemRepository(
     repo: RepositoryItem,
-    profileType: ProfileType,
-    navController: NavController
+    profileType: ProfileType
 ) {
+    val navController = LocalNavController.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -310,7 +307,6 @@ private fun ItemRepositoryPreview(
 ) {
     ItemRepository(
         repo = repo,
-        profileType = ProfileType.USER,
-        navController = rememberNavController()
+        profileType = ProfileType.USER
     )
 }

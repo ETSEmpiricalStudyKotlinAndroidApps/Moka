@@ -30,10 +30,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 
 @ExperimentalComposeUiApi
 @Composable
@@ -41,11 +40,12 @@ fun SearchBar(
     @StringRes hintResId: Int,
     modifier: Modifier = Modifier,
     autoFocus: Boolean = true,
-    navController: NavController,
     textState: MutableState<TextFieldValue>,
     onImeActionPerformed: () -> Unit = { },
     elevation: Dp = 4.dp
 ) {
+    val navController = LocalNavController.current
+
     InsetAwareTopAppBar(
         title = {
             val focusRequester = remember { FocusRequester() }
@@ -127,7 +127,6 @@ fun SearchBar(
 private fun SearchBarPreview() {
     SearchBar(
         hintResId = R.string.search_emoji,
-        navController = rememberNavController(),
         textState = mutableStateOf(TextFieldValue())
     )
 }

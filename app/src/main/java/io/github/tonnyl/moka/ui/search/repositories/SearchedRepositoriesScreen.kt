@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
@@ -22,7 +21,6 @@ import io.github.tonnyl.moka.widget.PagerState
 
 @Composable
 fun SearchedRepositoriesScreen(
-    navController: NavController,
     repositories: LazyPagingItems<RepositoryItem>,
     pagerState: PagerState = remember { PagerState() }
 ) {
@@ -60,10 +58,7 @@ fun SearchedRepositoriesScreen(
                     )
                 }
                 else -> {
-                    SearchedRepositoriesScreenContent(
-                        navController = navController,
-                        repositories = repositories
-                    )
+                    SearchedRepositoriesScreenContent(repositories = repositories)
                 }
             }
         }
@@ -71,10 +66,7 @@ fun SearchedRepositoriesScreen(
 }
 
 @Composable
-private fun SearchedRepositoriesScreenContent(
-    navController: NavController,
-    repositories: LazyPagingItems<RepositoryItem>
-) {
+private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<RepositoryItem>) {
     LazyColumn {
         item {
             ItemLoadingState(loadState = repositories.loadState.prepend)
@@ -82,7 +74,6 @@ private fun SearchedRepositoriesScreenContent(
         itemsIndexed(lazyPagingItems = repositories) { _, repo ->
             if (repo != null) {
                 ItemRepository(
-                    navController = navController,
                     repo = repo,
                     profileType = ProfileType.NOT_SPECIFIED
                 )

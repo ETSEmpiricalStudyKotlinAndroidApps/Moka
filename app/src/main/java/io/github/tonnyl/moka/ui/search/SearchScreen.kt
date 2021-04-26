@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.insets.LocalWindowInsets
@@ -38,7 +37,7 @@ private enum class SearchType {
 
 @ExperimentalComposeUiApi
 @Composable
-fun SearchScreen(navController: NavController) {
+fun SearchScreen() {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel<SearchViewModel>(
@@ -54,14 +53,12 @@ fun SearchScreen(navController: NavController) {
 
         SearchScreenContent(
             topAppBarSize = topAppBarSize,
-            navController = navController,
             users = usersFlow?.collectAsLazyPagingItems(),
             repositories = repositoriesFlow?.collectAsLazyPagingItems()
         )
 
         SearchBar(
             hintResId = R.string.search_input_hint,
-            navController = navController,
             textState = textState,
             onImeActionPerformed = {
                 viewModel.updateInput(textState.value.text)
@@ -80,7 +77,6 @@ fun SearchScreen(navController: NavController) {
 @Composable
 private fun SearchScreenContent(
     topAppBarSize: Int,
-    navController: NavController,
     users: LazyPagingItems<SearchedUserOrOrgItem>?,
     repositories: LazyPagingItems<RepositoryItem>?
 ) {
@@ -143,18 +139,12 @@ private fun SearchScreenContent(
         when (selectedTabIndex) {
             SearchType.Users -> {
                 users?.let {
-                    SearchedUsersScreen(
-                        navController = navController,
-                        users = it
-                    )
+                    SearchedUsersScreen(users = it)
                 }
             }
             SearchType.Repositories -> {
                 repositories?.let {
-                    SearchedRepositoriesScreen(
-                        navController = navController,
-                        repositories = it
-                    )
+                    SearchedRepositoriesScreen(repositories = it)
                 }
             }
         }

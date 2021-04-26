@@ -21,9 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -42,12 +40,9 @@ import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.data.NotificationReasons
 import io.github.tonnyl.moka.data.NotificationRepositoryOwner
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.IconSize
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.NotificationProvider
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.ItemLoadingState
@@ -57,17 +52,13 @@ import io.github.tonnyl.moka.widget.MainSearchBar
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable
-fun InboxScreen(
-    openDrawer: () -> Unit,
-    navController: NavController,
-    mainViewModel: MainViewModel
-) {
+fun InboxScreen(openDrawer: () -> Unit) {
     val currentAccount = LocalAccountInstance.current ?: return
     val inboxViewModel = viewModel<InboxViewModel>(
         key = currentAccount.toString(),
         factory = ViewModelFactory(
             accountInstance = currentAccount,
-            app = mainViewModel.getApplication()
+            app = LocalMainViewModel.current.getApplication()
         )
     )
 
@@ -125,8 +116,7 @@ fun InboxScreen(
                 else -> {
                     InboxScreenContent(
                         contentTopPadding = contentPadding.calculateTopPadding(),
-                        notifications = notifications,
-                        navController = navController
+                        notifications = notifications
                     )
                 }
             }
@@ -134,8 +124,6 @@ fun InboxScreen(
 
         MainSearchBar(
             openDrawer = openDrawer,
-            mainViewModel = mainViewModel,
-            navController = navController,
             modifier = Modifier
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }
@@ -148,7 +136,6 @@ fun InboxScreen(
 @Composable
 private fun InboxScreenContent(
     contentTopPadding: Dp,
-    navController: NavController,
     notifications: LazyPagingItems<Notification>
 ) {
     LazyColumn {
@@ -166,10 +153,7 @@ private fun InboxScreenContent(
             }
 
             if (item != null) {
-                ItemNotification(
-                    item = item,
-                    navController = navController
-                )
+                ItemNotification(item = item)
             }
         }
 
@@ -180,10 +164,9 @@ private fun InboxScreenContent(
 }
 
 @Composable
-private fun ItemNotification(
-    item: Notification,
-    navController: NavController
-) {
+private fun ItemNotification(item: Notification) {
+    val navController = LocalNavController.current
+
     Row(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
@@ -346,8 +329,5 @@ private fun NotificationItemPreview(
     )
     notification: Notification
 ) {
-    ItemNotification(
-        item = notification,
-        navController = rememberNavController()
-    )
+    ItemNotification(item = notification)
 }

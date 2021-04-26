@@ -16,12 +16,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.PreferenceCategoryText
 import io.github.tonnyl.moka.widget.PreferenceDivider
@@ -42,7 +42,7 @@ data class OnAboutItemClick(
 
 @ExperimentalMaterialApi
 @Composable
-fun AboutScreen(navController: NavController) {
+fun AboutScreen() {
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
@@ -61,6 +61,7 @@ fun AboutScreen(navController: NavController) {
             )
         )
 
+        val navController = LocalNavController.current
         InsetAwareTopAppBar(
             title = {
                 Text(text = stringResource(id = R.string.navigation_menu_about))

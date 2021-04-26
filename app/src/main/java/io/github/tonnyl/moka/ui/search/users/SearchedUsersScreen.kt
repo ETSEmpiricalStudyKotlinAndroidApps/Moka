@@ -18,9 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
@@ -35,6 +33,7 @@ import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.users.ItemUser
 import io.github.tonnyl.moka.util.SearchedOrganizationItemProvider
 import io.github.tonnyl.moka.widget.EmptyScreenContent
@@ -44,7 +43,6 @@ import io.github.tonnyl.moka.widget.PagerState
 
 @Composable
 fun SearchedUsersScreen(
-    navController: NavController,
     users: LazyPagingItems<SearchedUserOrOrgItem>,
     pagerState: PagerState = remember { PagerState() }
 ) {
@@ -82,10 +80,7 @@ fun SearchedUsersScreen(
                     )
                 }
                 else -> {
-                    SearchedUsersScreenContent(
-                        navController = navController,
-                        users = users
-                    )
+                    SearchedUsersScreenContent(users = users)
                 }
             }
         }
@@ -93,26 +88,17 @@ fun SearchedUsersScreen(
 }
 
 @Composable
-private fun SearchedUsersScreenContent(
-    navController: NavController,
-    users: LazyPagingItems<SearchedUserOrOrgItem>
-) {
+private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgItem>) {
     LazyColumn {
         item {
             ItemLoadingState(loadState = users.loadState.prepend)
         }
         itemsIndexed(lazyPagingItems = users) { _, userOrOrg ->
             if (userOrOrg?.user != null) {
-                ItemUser(
-                    user = userOrOrg.user,
-                    navController = navController
-                )
+                ItemUser(user = userOrOrg.user)
             }
             if (userOrOrg?.org != null) {
-                ItemSearchedOrganization(
-                    org = userOrOrg.org,
-                    navController = navController
-                )
+                ItemSearchedOrganization(org = userOrOrg.org)
             }
         }
         item {
@@ -122,10 +108,9 @@ private fun SearchedUsersScreenContent(
 }
 
 @Composable
-fun ItemSearchedOrganization(
-    org: SearchedOrganizationItem,
-    navController: NavController
-) {
+fun ItemSearchedOrganization(org: SearchedOrganizationItem) {
+    val navController = LocalNavController.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -190,8 +175,5 @@ private fun ItemSearchedOrganizationPreview(
     )
     org: SearchedOrganizationItem
 ) {
-    ItemSearchedOrganization(
-        org = org,
-        navController = rememberNavController()
-    )
+    ItemSearchedOrganization(org = org)
 }

@@ -35,9 +35,10 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.data.EmojiCategory
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
+import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.EmojiCategoryProvider
 import io.github.tonnyl.moka.util.EmojiItemProvider
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -45,11 +46,8 @@ import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun EmojisScreen(
-    navController: NavController,
-    mainViewModel: MainViewModel
-) {
-    val emojis by mainViewModel.emojis.observeAsState(initial = emptyList())
+fun EmojisScreen() {
+    val emojis by LocalMainViewModel.current.emojis.observeAsState(initial = emptyList())
     val lazyListState = rememberLazyListState()
 
     Box {
@@ -58,9 +56,10 @@ fun EmojisScreen(
         EmojisScreenContent(
             topAppBarSize = topAppBarSize,
             emojis = emojis,
-            lazyListState = lazyListState,
-            navController = navController
+            lazyListState = lazyListState
         )
+
+        val navController = LocalNavController.current
 
         InsetAwareTopAppBar(
             title = { },
@@ -101,8 +100,7 @@ fun EmojisScreen(
 private fun EmojisScreenContent(
     topAppBarSize: Int,
     emojis: List<Pair<EmojiCategory, List<Emoji>>>,
-    lazyListState: LazyListState,
-    navController: NavController
+    lazyListState: LazyListState
 ) {
     Column(
         modifier = Modifier
@@ -130,8 +128,7 @@ private fun EmojisScreenContent(
                             emoji3 = pair.second.getOrNull(i + 3),
                             emoji4 = pair.second.getOrNull(i + 4),
                             emoji5 = pair.second.getOrNull(i + 5),
-                            emoji6 = pair.second.getOrNull(i + 6),
-                            navController = navController
+                            emoji6 = pair.second.getOrNull(i + 6)
                         )
                     }
                 }
@@ -337,9 +334,10 @@ private fun ItemEmojiRow(
     emoji3: Emoji?,
     emoji4: Emoji?,
     emoji5: Emoji?,
-    emoji6: Emoji?,
-    navController: NavController
+    emoji6: Emoji?
 ) {
+    val navController = LocalNavController.current
+
     Row {
         ItemEmoji(
             emoji = emoji0,

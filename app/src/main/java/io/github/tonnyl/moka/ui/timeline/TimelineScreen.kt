@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -40,30 +39,23 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.data.EventOrg
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.IconSize
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.TimelineEventProvider
 import io.github.tonnyl.moka.widget.*
 
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable
-fun TimelineScreen(
-    openDrawer: () -> Unit,
-    mainViewModel: MainViewModel,
-    navController: NavController
-) {
+fun TimelineScreen(openDrawer: () -> Unit) {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val timelineViewModel = viewModel<TimelineViewModel>(
         key = currentAccount.toString(),
         factory = ViewModelFactory(
             accountInstance = currentAccount,
-            app = mainViewModel.getApplication()
+            app = LocalMainViewModel.current.getApplication()
         )
     )
 
@@ -121,8 +113,7 @@ fun TimelineScreen(
                 else -> {
                     TimelineScreenContent(
                         contentTopPadding = contentPadding.calculateTopPadding(),
-                        events = events,
-                        navController = navController
+                        events = events
                     )
                 }
             }
@@ -130,8 +121,6 @@ fun TimelineScreen(
 
         MainSearchBar(
             openDrawer = openDrawer,
-            mainViewModel = mainViewModel,
-            navController = navController,
             modifier = Modifier
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }
@@ -145,7 +134,6 @@ fun TimelineScreen(
 @Composable
 fun TimelineScreenContent(
     contentTopPadding: Dp,
-    navController: NavController,
     events: LazyPagingItems<Event>
 ) {
     LazyColumn {
@@ -163,10 +151,7 @@ fun TimelineScreenContent(
             }
 
             if (item != null) {
-                ItemTimelineEvent(
-                    event = item,
-                    navController = navController
-                )
+                ItemTimelineEvent(event = item)
             }
         }
 
@@ -177,10 +162,8 @@ fun TimelineScreenContent(
 }
 
 @Composable
-private fun ItemTimelineEvent(
-    event: Event,
-    navController: NavController
-) {
+private fun ItemTimelineEvent(event: Event) {
+    val navController = LocalNavController.current
     Row(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
@@ -1319,8 +1302,5 @@ private fun TimelineItemPreview(
     )
     event: Event
 ) {
-    ItemTimelineEvent(
-        event = event,
-        navController = rememberNavController()
-    )
+    ItemTimelineEvent(event = event)
 }

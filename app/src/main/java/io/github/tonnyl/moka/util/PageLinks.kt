@@ -1,5 +1,7 @@
 package io.github.tonnyl.moka.util
 
+import io.ktor.client.statement.*
+
 /*******************************************************************************
  * Copyright (c) 2011 GitHub Inc.
  * All rights reserved. This program and the accompanying materials
@@ -16,9 +18,7 @@ package io.github.tonnyl.moka.util
  * Parse links from executed method
  */
 
-import retrofit2.Response
-
-class PageLinks(response: Response<*>) {
+class PageLinks(response: HttpResponse) {
 
     var next: String? = null
         private set
@@ -39,7 +39,7 @@ class PageLinks(response: Response<*>) {
     }
 
     init {
-        val linkHeader = response.headers().get(HEAD_LINK)
+        val linkHeader = response.headers[HEAD_LINK]
         if (linkHeader != null) {
             val links = linkHeader.split(DELIM_LINKS)
             for (link in links) {

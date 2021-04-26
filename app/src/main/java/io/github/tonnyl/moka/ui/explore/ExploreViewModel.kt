@@ -5,21 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingRepository
-import io.github.tonnyl.moka.db.dao.TrendingDeveloperDao
-import io.github.tonnyl.moka.db.dao.TrendingRepositoryDao
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.network.RetrofitClient
-import io.github.tonnyl.moka.network.service.TrendingService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class ExploreViewModel(
-    private val localDevelopersSource: TrendingDeveloperDao,
-    private val localRepositoriesSource: TrendingRepositoryDao
+    private val accountInstance: AccountInstance
 ) : ViewModel() {
 
     private val _queryData = MutableLiveData<Pair<ExploreTimeSpanType, LocalLanguage?>>()
@@ -34,8 +30,9 @@ class ExploreViewModel(
     val developersRemoteStatus: LiveData<Resource<List<TrendingDeveloper>>>
         get() = _developersRemoteStatus
 
-    val repositoriesLocalData = localRepositoriesSource.trendingRepositories()
-    val developersLocalData = localDevelopersSource.trendingDevelopers()
+    val repositoriesLocalData =
+        accountInstance.database.trendingRepositoriesDao().trendingRepositories()
+    val developersLocalData = accountInstance.database.trendingDevelopersDao().trendingDevelopers()
 
     init {
         // todo store/restore value from sp.
@@ -57,23 +54,20 @@ class ExploreViewModel(
         viewModelScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
-                    RetrofitClient.createService(TrendingService::class.java)
-                        .listTrendingDevelopers(
-                            since = queryDataValue.first.value,
-                            language = queryDataValue.second?.urlParam
-                        )
+                    accountInstance.trendingApi.listTrendingDevelopers(
+                        since = queryDataValue.first.value,
+                        language = queryDataValue.second?.urlParam
+                    )
                 }
 
-                val list = response.body()
-
                 withContext(Dispatchers.IO) {
-                    if (!list.isNullOrEmpty()) {
-                        localDevelopersSource.deleteAll()
-                        localDevelopersSource.insert(list)
+                    if (!response.isNullOrEmpty()) {
+                        accountInstance.database.trendingDevelopersDao().deleteAll()
+                        accountInstance.database.trendingDevelopersDao().insert(response)
                     }
                 }
 
-                _developersRemoteStatus.value = Resource.success(list)
+                _developersRemoteStatus.value = Resource.success(response)
             } catch (e: Exception) {
                 Timber.e(e)
 
@@ -91,23 +85,20 @@ class ExploreViewModel(
         viewModelScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
-                    RetrofitClient.createService(TrendingService::class.java)
-                        .listTrendingRepositories(
-                            since = queryDataValue.first.value,
-                            language = queryDataValue.second?.urlParam
-                        )
+                    accountInstance.trendingApi.listTrendingRepositories(
+                        since = queryDataValue.first.value,
+                        language = queryDataValue.second?.urlParam
+                    )
                 }
 
-                val list = response.body()
-
                 withContext(Dispatchers.IO) {
-                    if (!list.isNullOrEmpty()) {
-                        localRepositoriesSource.deleteAll()
-                        localRepositoriesSource.insert(list)
+                    if (!response.isNullOrEmpty()) {
+                        accountInstance.database.trendingRepositoriesDao().deleteAll()
+                        accountInstance.database.trendingRepositoriesDao().insert(response)
                     }
                 }
 
-                _repositoriesRemoteStatus.value = Resource.success(list)
+                _repositoriesRemoteStatus.value = Resource.success(response)
             } catch (e: Exception) {
                 Timber.e(e)
 

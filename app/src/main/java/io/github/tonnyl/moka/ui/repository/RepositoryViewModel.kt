@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.data.toNonNullTreeEntry
 import io.github.tonnyl.moka.data.toNullableRepository
 import io.github.tonnyl.moka.fragment.Tree.Entry.Companion.treeEntry
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.addStar
@@ -30,6 +30,7 @@ import timber.log.Timber
 import java.util.*
 
 class RepositoryViewModel(
+    private val accountInstance: AccountInstance,
     private val login: String,
     private val repositoryName: String,
     private val profileType: ProfileType
@@ -83,7 +84,8 @@ class RepositoryViewModel(
             _readmeHtml.postValue(Resource.loading(null))
 
             try {
-                val response = GraphQLClient.apolloClient
+                val response = accountInstance.apolloGraphQLClient
+                    .apolloClient
                     .query(
                         query = CurrentLevelTreeViewQuery(
                             login = login,
@@ -118,7 +120,8 @@ class RepositoryViewModel(
 
                 if (fileEntry != null) {
                     val expression = "$branchName:${fileEntry.name}"
-                    val fileContentResponse = GraphQLClient.apolloClient
+                    val fileContentResponse = accountInstance.apolloGraphQLClient
+                        .apolloClient
                         .query(
                             query = FileContentQuery(
                                 login = login,
@@ -133,7 +136,12 @@ class RepositoryViewModel(
                     } else {
                         _readmeHtml.postValue(
                             Resource.success(
-                                HtmlHandler.toHtml(html, login, repositoryName, branchName)
+                                HtmlHandler.toHtml(
+                                    rawText = html,
+                                    login = login,
+                                    repositoryName = repositoryName,
+                                    branch = branchName
+                                )
                             )
                         )
                     }
@@ -161,9 +169,15 @@ class RepositoryViewModel(
 
             try {
                 if (hasStarred) {
-                    removeStar(repositoryId)
+                    removeStar(
+                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                        starrableId = repositoryId
+                    )
                 } else {
-                    addStar(repositoryId)
+                    addStar(
+                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                        starrableId = repositoryId
+                    )
                 }
 
                 _starState.postValue(Resource.success(!hasStarred))
@@ -191,9 +205,15 @@ class RepositoryViewModel(
 
             try {
                 if (isFollowing) {
-                    unfollowUser(userId)
+                    unfollowUser(
+                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                        userId = userId
+                    )
                 } else {
-                    followUser(userId)
+                    followUser(
+                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                        userId = userId
+                    )
                 }
 
                 _followState.postValue(Resource.success(!isFollowing))
@@ -210,15 +230,14 @@ class RepositoryViewModel(
             _usersRepository.postValue(Resource.loading(null))
 
             try {
-                val repo = GraphQLClient.apolloClient
+                val repo = accountInstance.apolloGraphQLClient
+                    .apolloClient
                     .query(
                         query = UsersRepositoryQuery(
                             login = login,
                             repoName = repositoryName
                         )
-                    )
-                    .data
-                    .toNullableRepository()
+                    ).data.toNullableRepository()
 
                 _usersRepository.postValue(Resource.success(repo))
 
@@ -248,15 +267,14 @@ class RepositoryViewModel(
             _organizationsRepository.postValue(Resource.loading(null))
 
             try {
-                val repo = GraphQLClient.apolloClient
+                val repo = accountInstance.apolloGraphQLClient
+                    .apolloClient
                     .query(
                         query = OrganizationsRepositoryQuery(
                             login = login,
                             repoName = repositoryName
                         )
-                    )
-                    .data
-                    .toNullableRepository()
+                    ).data.toNullableRepository()
 
                 _organizationsRepository.postValue(Resource.success(repo))
 

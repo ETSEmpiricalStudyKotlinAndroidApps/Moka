@@ -2,8 +2,10 @@ package io.github.tonnyl.moka.ui.prs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import io.github.tonnyl.moka.AccountInstance
 
 class ViewModelFactory(
+    private val accountInstance: AccountInstance,
     private val owner: String,
     private val name: String
 ) : ViewModelProvider.NewInstanceFactory() {
@@ -11,6 +13,7 @@ class ViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return PullRequestsViewModel(
+            accountInstance = accountInstance,
             owner = owner,
             name = name
         ) as T

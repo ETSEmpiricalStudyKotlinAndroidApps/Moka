@@ -9,6 +9,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
+import io.github.tonnyl.moka.data.AccessToken
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.ui.auth.Authenticator
@@ -23,7 +24,7 @@ fun Account.mapToAccountTokenUserTriple(
 ): Triple<Account, String, AuthenticatedUser>? {
     val token = manager.blockingGetAuthToken(
         this,
-        Authenticator.KEY_AUTH_TYPE,
+        Authenticator.KEY_AUTH_TOKEN,
         true
     )
     val user = runCatching {
@@ -37,9 +38,12 @@ fun Account.mapToAccountTokenUserTriple(
     return Triple(this, token, user)
 }
 
-suspend fun AccountManager.insertNewAccount(token: String, user: AuthenticatedUser) {
-    val info = runCatching {
+fun AccountManager.insertNewAccount(token: AccessToken, user: AuthenticatedUser) {
+    val userString = runCatching {
         json.encodeToString(user)
+    }.getOrNull() ?: return
+    val tokenString = kotlin.runCatching {
+        json.encodeToString(token)
     }.getOrNull() ?: return
 
     val account = Account(user.id.toString(), Authenticator.KEY_ACCOUNT_TYPE)
@@ -48,21 +52,9 @@ suspend fun AccountManager.insertNewAccount(token: String, user: AuthenticatedUs
         account,
         System.currentTimeMillis().toString(),
         Bundle().apply {
-            putString(Authenticator.KEY_AUTH_USER_INFO, info)
+            putString(Authenticator.KEY_AUTH_USER_INFO, userString)
         })
-    setAuthToken(account, Authenticator.KEY_AUTH_TYPE, token)
-}
-
-suspend fun AccountManager.moveAccountToFirstPosition(account: Account) {
-    val userString = getUserData(account, Authenticator.KEY_AUTH_USER_INFO)
-    val token = blockingGetAuthToken(account, Authenticator.KEY_AUTH_TYPE, true)
-    removeAccountExplicitly(account)
-
-    runCatching {
-        json.decodeFromString<AuthenticatedUser>(userString)
-    }.getOrNull()?.let {
-        insertNewAccount(token, it)
-    }
+    setAuthToken(account, Authenticator.KEY_AUTH_TOKEN, tokenString)
 }
 
 val Resources.isDarkModeOn: Boolean

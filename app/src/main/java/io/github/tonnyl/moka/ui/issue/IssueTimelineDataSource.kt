@@ -3,13 +3,13 @@ package io.github.tonnyl.moka.ui.issue
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.Issue
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.data.toNonNullIssue
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.IssueQuery
 import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.TimelineItems.Node.Companion.addedToProjectEventFragment
 import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.TimelineItems.Node.Companion.assignedEventFragment
@@ -63,6 +63,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class IssueTimelineDataSource(
+    private val apolloClient: ApolloClient,
     private val owner: String,
     private val name: String,
     private val number: Int,
@@ -74,7 +75,7 @@ class IssueTimelineDataSource(
         return withContext(Dispatchers.IO) {
             try {
                 if (params is LoadParams.Refresh) {
-                    val issue = GraphQLClient.apolloClient.query(
+                    val issue = apolloClient.query(
                         query = IssueQuery(
                             owner = owner,
                             name = name,
@@ -105,7 +106,7 @@ class IssueTimelineDataSource(
                         nextKey = pageInfo.checkedEndCursor
                     )
                 } else {
-                    val timeline = GraphQLClient.apolloClient
+                    val timeline = apolloClient
                         .query(
                             query = IssueTimelineItemsQuery(
                                 owner = owner,
@@ -116,7 +117,6 @@ class IssueTimelineDataSource(
                                 perPage = params.loadSize
                             )
                         ).data?.repository?.issue?.timelineItems
-
 
                     list.addAll(
                         timeline?.nodes.orEmpty().mapNotNull { node ->

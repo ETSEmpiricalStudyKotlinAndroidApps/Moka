@@ -60,8 +60,15 @@ fun PullRequestScreen(
     name: String,
     number: Int
 ) {
+    val currentAccount = LocalAccountInstance.current ?: return
+
     val viewModel = viewModel<PullRequestViewModel>(
-        factory = ViewModelFactory(owner = owner, name = name, number = number)
+        factory = ViewModelFactory(
+            accountInstance = currentAccount,
+            owner = owner,
+            name = name,
+            number = number
+        )
     )
 
     val pullRequest by viewModel.pullRequest.observeAsState()

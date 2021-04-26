@@ -6,15 +6,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.cachedIn
+import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
-import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.RetrofitClient
-import io.github.tonnyl.moka.network.service.EventsService
 
 @ExperimentalPagingApi
 class TimelineViewModel(
-    login: String,
-    userId: Long,
+    accountInstance: AccountInstance,
     app: Application
 ) : AndroidViewModel(app) {
 
@@ -23,12 +20,12 @@ class TimelineViewModel(
         Pager(
             config = MokaApp.defaultPagingConfig,
             remoteMediator = EventRemoteMediator(
-                login,
-                RetrofitClient.createService(EventsService::class.java),
-                MokaDataBase.getInstance(getApplication(), userId)
+                login = accountInstance.signedInAccount.account.login,
+                eventApi = accountInstance.eventApi,
+                database = accountInstance.database
             ),
             pagingSourceFactory = {
-                MokaDataBase.getInstance(getApplication(), userId)
+                accountInstance.database
                     .eventDao()
                     .eventsByCreatedAt()
             }

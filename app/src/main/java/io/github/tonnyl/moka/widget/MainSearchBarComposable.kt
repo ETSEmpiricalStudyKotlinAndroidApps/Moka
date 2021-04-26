@@ -5,8 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +29,7 @@ import io.github.tonnyl.moka.ui.account.AccountDialogScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 
 @ExperimentalMaterialApi
 @Composable
@@ -36,20 +39,20 @@ fun MainSearchBar(
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
-    val currentAccount by mainViewModel.currentUser.observeAsState()
-
+    val currentAccount = LocalAccountInstance.current ?: return
     val state = remember {
         mutableStateOf(false)
     }
 
     AccountDialogScreen(
         navController = navController,
-        showState = state
+        showState = state,
+        mainViewModel = mainViewModel
     )
 
     MainSearchBarContent(
         modifier = modifier,
-        avatarUrl = currentAccount?.avatarUrl,
+        avatarUrl = currentAccount.signedInAccount.account.avatarUrl,
         onMenuClicked = openDrawer,
         onTextClicked = {
             navController.navigate(route = Screen.Search.route)

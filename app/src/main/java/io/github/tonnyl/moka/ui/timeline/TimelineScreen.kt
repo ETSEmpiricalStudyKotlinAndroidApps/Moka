@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
@@ -43,6 +42,7 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.TimelineEventProvider
 import io.github.tonnyl.moka.widget.*
 
@@ -54,15 +54,17 @@ fun TimelineScreen(
     mainViewModel: MainViewModel,
     navController: NavController
 ) {
-    val currentUser by mainViewModel.currentUser.observeAsState()
-    val authedUser = currentUser ?: return
+    val currentAccount = LocalAccountInstance.current ?: return
 
     val timelineViewModel = viewModel<TimelineViewModel>(
-        key = currentUser?.id?.toString(),
-        factory = ViewModelFactory(authedUser.login, authedUser.id, mainViewModel.getApplication())
+        key = currentAccount.toString(),
+        factory = ViewModelFactory(
+            accountInstance = currentAccount,
+            app = mainViewModel.getApplication()
+        )
     )
 
-    val eventsPager = remember {
+    val eventsPager = remember(key1 = currentAccount) {
         timelineViewModel.eventsFlow
     }
     val events = eventsPager.collectAsLazyPagingItems()

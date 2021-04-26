@@ -1,18 +1,21 @@
 package io.github.tonnyl.moka.ui.auth
 
-import android.accounts.AccountManager
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.BuildConfig
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.AuthenticatedUser
+import io.github.tonnyl.moka.data.extension.toPBAccessToken
+import io.github.tonnyl.moka.data.extension.toPbAccount
+import io.github.tonnyl.moka.network.KtorClient
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.Status
-import io.github.tonnyl.moka.network.service.AccessTokenService
-import io.github.tonnyl.moka.network.service.UserService
+import io.github.tonnyl.moka.network.api.AccessTokenApi
+import io.github.tonnyl.moka.network.api.UserApi
+import io.github.tonnyl.moka.proto.SignedInAccount
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.auth.AuthEvent.FinishAndGo
 import io.github.tonnyl.moka.util.insertNewAccount
@@ -33,53 +36,62 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     val event: LiveData<Event<AuthEvent>>
         get() = _event
 
-    private val service: AccessTokenService by lazy(LazyThreadSafetyMode.NONE) {
-        RetrofitClient.createService(AccessTokenService::class.java)
-    }
-
-    private val accountManager by lazy(LazyThreadSafetyMode.NONE) {
-        AccountManager.get(getApplication())
-    }
-
     fun getAccessToken(code: String, state: String) {
         viewModelScope.launch {
             try {
                 _authTokenAndUserResult.value = Resource(Status.LOADING, null, null)
 
-                val tokenResult = withContext(Dispatchers.IO) {
-                    service.getAccessToken(
-                        RetrofitClient.GITHUB_GET_ACCESS_TOKEN_URL,
-                        BuildConfig.CLIENT_ID,
-                        BuildConfig.CLIENT_SECRET,
-                        code,
-                        RetrofitClient.GITHUB_AUTHORIZE_CALLBACK_URI,
-                        state
+                val accessTokenResp = withContext(Dispatchers.IO) {
+                    AccessTokenApi(ktorClient = getApplication<MokaApp>().unauthenticatedKtorClient).getAccessToken(
+                        clientId = BuildConfig.CLIENT_ID,
+                        clientSecret = BuildConfig.CLIENT_SECRET,
+                        code = code,
+                        redirectUrl = KtorClient.GITHUB_AUTHORIZE_CALLBACK_URI,
+                        state = state
                     )
                 }
 
-                RetrofitClient.accessToken.set(tokenResult.body()?.accessToken)
-                val userService = RetrofitClient.createService(UserService::class.java)
-
-                val authUserResult = withContext(Dispatchers.IO) {
-                    userService.getAuthenticatedUser()
+                val authenticatedUserResp = withContext(Dispatchers.IO) {
+                    UserApi(ktorClient = getApplication<MokaApp>().unauthenticatedKtorClient)
+                        .getAuthenticatedUser(accessToken = accessTokenResp.accessToken)
                 }
 
-                val authenticatedUser = authUserResult.body()
-                val token = tokenResult.body()?.accessToken
+                getApplication<MokaApp>().accountManager.insertNewAccount(
+                    token = accessTokenResp,
+                    user = authenticatedUserResp
+                )
 
-                if (authenticatedUser != null
-                    && !token.isNullOrEmpty()
-                ) {
-                    accountManager.insertNewAccount(token, authenticatedUser)
-
-                    _authTokenAndUserResult.value =
-                        Resource(Status.SUCCESS, Pair(token, authenticatedUser), null)
-
-                    _event.updateOnAnyThread(Event(FinishAndGo))
-                } else {
-                    _authTokenAndUserResult.value =
-                        Resource(Status.ERROR, null, authUserResult.message())
+                getApplication<MokaApp>().accountsDataStore.updateData { signedInAccounts ->
+                    signedInAccounts.toBuilder()
+                        .apply {
+                            val existingAccountIndex = accountsList.indexOfFirst {
+                                it.hasAccount() && it.account.id == authenticatedUserResp.id
+                            }
+                            if (existingAccountIndex >= 0) {
+                                accountsList[existingAccountIndex].toBuilder()
+                                    .mergeAccount(authenticatedUserResp.toPbAccount())
+                                    .mergeAccessToken(accessTokenResp.toPBAccessToken())
+                                    .build()
+                            } else {
+                                addAccounts(
+                                    0,
+                                    SignedInAccount.newBuilder().apply {
+                                        accessToken = accessTokenResp.toPBAccessToken()
+                                        account = authenticatedUserResp.toPbAccount()
+                                    }.build()
+                                )
+                            }
+                        }
+                        .build()
                 }
+                _authTokenAndUserResult.value =
+                    Resource(
+                        Status.SUCCESS,
+                        Pair(accessTokenResp.accessToken, authenticatedUserResp),
+                        null
+                    )
+
+                _event.updateOnAnyThread(Event(FinishAndGo))
             } catch (e: Exception) {
                 _authTokenAndUserResult.value = Resource(Status.ERROR, null, e.message)
 

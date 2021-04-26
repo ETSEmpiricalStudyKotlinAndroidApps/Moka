@@ -51,8 +51,14 @@ fun RepositoriesScreen(
     repositoryType: RepositoryType,
     profileType: ProfileType
 ) {
+    val currentAccount = LocalAccountInstance.current ?: return
+
     val viewModel = viewModel<RepositoriesViewModel>(
-        factory = ViewModelFactory(login, repositoryType)
+        factory = ViewModelFactory(
+            accountInstance = currentAccount,
+            login = login,
+            repositoryType = repositoryType
+        )
     )
 
     val repositoriesPager = remember {

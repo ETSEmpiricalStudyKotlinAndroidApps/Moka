@@ -11,9 +11,9 @@ class Authenticator(
 
     companion object {
 
-        var KEY_ACCOUNT_TYPE = "io.github.tonnyl.moka"
-        var KEY_AUTH_TYPE = "KEY_AUTH_TYPE"
-        var KEY_AUTH_USER_INFO = "KEY_AUTH_USER_INFO"
+        const val KEY_ACCOUNT_TYPE = "io.github.tonnyl.moka"
+        const val KEY_AUTH_TOKEN = "KEY_AUTH_TOKEN"
+        const val KEY_AUTH_USER_INFO = "KEY_AUTH_USER_INFO"
 
     }
 
@@ -32,7 +32,7 @@ class Authenticator(
     ): Bundle? {
         val intent = Intent(context, AuthActivity::class.java)
         intent.putExtra(KEY_ACCOUNT_TYPE, accountType)
-        intent.putExtra(KEY_AUTH_TYPE, authTokenType)
+        intent.putExtra(KEY_AUTH_TOKEN, authTokenType)
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
 
         val bundle = Bundle()
@@ -69,7 +69,7 @@ class Authenticator(
         val intent = Intent(context, AuthActivity::class.java).apply {
             putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
             putExtra(KEY_ACCOUNT_TYPE, account.type)
-            putExtra(KEY_AUTH_TYPE, authTokenType)
+            putExtra(KEY_AUTH_TOKEN, authTokenType)
         }
 
         return Bundle().apply {

@@ -39,7 +39,7 @@ fun ExploreFiltersScreen(
     sheetState: ModalBottomSheetState,
     content: @Composable () -> Unit
 ) {
-    val languages by viewModel.localLanguages.observeAsState(emptyList())
+    val languages by viewModel.localLanguages.observeAsState(initial = emptyList())
     val lazyListState = rememberLazyListState()
 
     ModalBottomSheetLayout(

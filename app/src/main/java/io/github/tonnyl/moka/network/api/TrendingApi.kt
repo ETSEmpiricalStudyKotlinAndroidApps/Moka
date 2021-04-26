@@ -1,44 +1,44 @@
-package io.github.tonnyl.moka.network.service
+package io.github.tonnyl.moka.network.api
 
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingRepository
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Query
-import retrofit2.http.Url
+import io.ktor.client.*
+import io.ktor.client.request.*
 
-interface TrendingService {
+class TrendingApi(private val ktorClient: HttpClient) {
 
     /**
      * List all trending repositories.
      *
      * @param language optional, list trending repositories of certain programming languages.
      * @param since optional, default to daily, possible values: daily, weekly and monthly.
-     * @param url url endpoint. DO NOT change it if not necessary.
      *
      * @return If successful, return a list of [TrendingRepository].
      */
-    @GET
     suspend fun listTrendingRepositories(
-        @Url url: String = "https://github-trending-api.now.sh/repositories",
-        @Query("language") language: String?,
-        @Query("since") since: String
-    ): Response<List<TrendingRepository>>
+        language: String?,
+        since: String
+    ): List<TrendingRepository> {
+        return ktorClient.get(
+            urlString = "https://github-trending-api.now.sh/repositories?language=${language}&since=${since}"
+        )
+    }
 
     /**
      * List all trending developers.
      *
      * @param language optional, list trending repositories of certain programming languages.
      * @param since optional, default to daily, possible values: daily, weekly and monthly.
-     * @param url url endpoint. DO NOT change it if not necessary.
      *
      * @return If successful, return a list of [TrendingDeveloper].
      */
-    @GET
     suspend fun listTrendingDevelopers(
-        @Url url: String = "https://github-trending-api.now.sh/developers",
-        @Query("language") language: String?,
-        @Query("since") since: String
-    ): Response<List<TrendingDeveloper>>
+        language: String?,
+        since: String
+    ): List<TrendingDeveloper> {
+        return ktorClient.get(
+            urlString = "https://github-trending-api.now.sh/developers?language=${language}&since=${since}"
+        )
+    }
 
 }

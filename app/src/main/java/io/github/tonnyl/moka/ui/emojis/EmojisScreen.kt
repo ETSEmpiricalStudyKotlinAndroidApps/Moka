@@ -48,7 +48,7 @@ fun EmojisScreen(
     navController: NavController,
     mainViewModel: MainViewModel
 ) {
-    val emojis by mainViewModel.emojis.observeAsState()
+    val emojis by mainViewModel.emojis.observeAsState(initial = emptyList())
     val lazyListState = rememberLazyListState()
 
     Box {
@@ -56,7 +56,7 @@ fun EmojisScreen(
 
         EmojisScreenContent(
             topAppBarSize = topAppBarSize,
-            emojis = emojis.orEmpty(),
+            emojis = emojis,
             lazyListState = lazyListState,
             navController = navController
         )

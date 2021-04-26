@@ -1,14 +1,50 @@
 syntax = "proto3";
 
+import "google/protobuf/wrappers.proto";
+
 option java_package = "io.github.tonnyl.moka.proto";
 option java_multiple_files = true;
 
+message AccessToken {
+  string access_token = 1;
+  string scope = 2;
+  string token_type = 3;
+}
+
 message Account {
-  int32 id = 1;
-  string access_token = 2;
-  string login = 3;
+  string login = 1;
+  int64 id = 2;
+  string node_id = 3;
+  string avatar_url = 4;
+  string html_url = 5;
+  string type = 6;
+  bool site_admin = 7;
+  google.protobuf.StringValue name = 8;
+  google.protobuf.StringValue company = 9;
+  google.protobuf.StringValue blog = 10;
+  google.protobuf.StringValue location = 11;
+  google.protobuf.StringValue email = 12;
+  google.protobuf.BoolValue hireable = 13;
+  google.protobuf.StringValue bio = 14;
+  int32 public_repos = 15;
+  int32 public_gists = 16;
+  int64 followers = 17;
+  int64 following = 18;
+  string created_at = 19;
+  string updated_at = 20;
+  int32 private_gists = 21;
+  int32 total_private_repos = 22;
+  int32 owned_private_repos = 23;
+  int64 disk_usage = 24;
+  int32 collaborators = 25;
+  bool two_factor_authentication = 26;
+}
+
+message SignedInAccount {
+  AccessToken access_token = 1;
+  Account account = 2;
 }
 
 message SignedInAccounts {
-  repeated Account accounts = 1;
+  repeated SignedInAccount accounts = 1;
 }

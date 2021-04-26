@@ -2,8 +2,10 @@ package io.github.tonnyl.moka.ui.profile.edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import io.github.tonnyl.moka.AccountInstance
 
 class ViewModelFactory(
+    private val accountInstance: AccountInstance,
     private val name: String?,
     private val bio: String?,
     private val url: String?,
@@ -14,6 +16,14 @@ class ViewModelFactory(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return EditProfileViewModel(name, bio, url, company, location, twitter) as T
+        return EditProfileViewModel(
+            accountInstance = accountInstance,
+            initialName = name,
+            initialBio = bio,
+            initialUrl = url,
+            initialCompany = company,
+            initialLocation = location,
+            initialTwitter = twitter
+        ) as T
     }
 }

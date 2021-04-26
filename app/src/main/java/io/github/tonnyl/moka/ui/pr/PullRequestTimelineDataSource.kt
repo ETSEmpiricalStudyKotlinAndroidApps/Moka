@@ -3,13 +3,13 @@ package io.github.tonnyl.moka.ui.pr
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.PullRequest
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.data.toNullablePullRequest
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.PullRequestQuery
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.addedToProjectEventFragment
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.TimelineItems.Node.Companion.assignedEventFragment
@@ -95,6 +95,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class PullRequestTimelineDataSource(
+    private val apolloClient: ApolloClient,
     private val owner: String,
     private val name: String,
     private val number: Int,
@@ -107,7 +108,7 @@ class PullRequestTimelineDataSource(
         return withContext(Dispatchers.IO) {
             try {
                 if (params is LoadParams.Refresh) {
-                    val pullRequest = GraphQLClient.apolloClient.query(
+                    val pullRequest = apolloClient.query(
                         query = PullRequestQuery(
                             owner = owner,
                             name = name,
@@ -117,7 +118,6 @@ class PullRequestTimelineDataSource(
                             perPage = params.loadSize
                         )
                     ).data?.repository?.pullRequest
-
 
                     pullRequestData.postValue(pullRequest.toNullablePullRequest())
 
@@ -139,8 +139,8 @@ class PullRequestTimelineDataSource(
                         nextKey = pageInfo.checkedEndCursor
                     )
                 } else {
-                    val timeline = GraphQLClient.apolloClient.query(
-                        PullRequestTimelineItemsQuery(
+                    val timeline = apolloClient.query(
+                       query =  PullRequestTimelineItemsQuery(
                             owner = owner,
                             name = name,
                             number = number,

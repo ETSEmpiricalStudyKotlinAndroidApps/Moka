@@ -24,6 +24,7 @@ import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
@@ -39,13 +40,21 @@ fun EditProfileScreen(
     initialLocation: String?,
     initialTwitter: String?
 ) {
-    val scaffoldState = rememberScaffoldState()
+    val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel<EditProfileViewModel>(
         factory = ViewModelFactory(
-            initialName, initialBio, initialUrl, initialCompany, initialLocation, initialTwitter
+            accountInstance = currentAccount,
+            name = initialName,
+            bio = initialBio,
+            url = initialUrl,
+            company = initialCompany,
+            location = initialLocation,
+            twitter = initialTwitter
         )
     )
+
+    val scaffoldState = rememberScaffoldState()
 
     val updateState by viewModel.loadingStatus.observeAsState()
 

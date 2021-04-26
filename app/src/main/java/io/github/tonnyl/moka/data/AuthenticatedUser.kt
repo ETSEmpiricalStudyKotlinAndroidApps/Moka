@@ -27,19 +27,19 @@ data class AuthenticatedUser(
     @SerialName("site_admin")
     val siteAdmin: Boolean,
 
-    val name: String?,
+    val name: String? = null,
 
-    val company: String?,
+    val company: String? = null,
 
-    val blog: String?,
+    val blog: String? = null,
 
-    val location: String?,
+    val location: String? = null,
 
-    val email: String?,
+    val email: String? = null,
 
-    val hireable: Boolean?,
+    val hireable: Boolean? = null,
 
-    val bio: String?,
+    val bio: String? = null,
 
     @SerialName("public_repos")
     val publicRepos: Int,

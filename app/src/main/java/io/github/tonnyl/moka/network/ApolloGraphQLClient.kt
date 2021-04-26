@@ -18,13 +18,8 @@ import io.github.tonnyl.moka.type.Types.PreciseDateTime
 import io.github.tonnyl.moka.type.Types.URI
 import io.github.tonnyl.moka.type.Types.X509Certificate
 import kotlinx.datetime.Instant
-import java.util.concurrent.atomic.AtomicReference
 
-object GraphQLClient {
-
-    val accessToken = AtomicReference<String>()
-
-    private const val SERVER_URL = "https://api.github.com/graphql"
+class ApolloGraphQLClient(accessToken: String) {
 
     object DateCustomScalarAdapter : ResponseAdapter<Instant> {
 
@@ -53,7 +48,7 @@ object GraphQLClient {
                     headers = mapOf(
                         "Accept" to "application/json",
                         "Content-Type" to "application/json",
-                        "Authorization" to "Bearer ${accessToken.get()}"
+                        "Authorization" to "Bearer $accessToken"
                     )
                 )
             )
@@ -98,6 +93,12 @@ object GraphQLClient {
                 customScalarAdapter = StringResponseAdapter
             )
             .build()
+    }
+
+    companion object {
+
+        private const val SERVER_URL = "https://api.github.com/graphql"
+
     }
 
 }

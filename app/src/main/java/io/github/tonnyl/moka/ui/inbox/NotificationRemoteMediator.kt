@@ -8,15 +8,18 @@ import androidx.room.withTransaction
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.data.RemoteKeys
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.service.NotificationsService
+import io.github.tonnyl.moka.network.api.NotificationApi
 import io.github.tonnyl.moka.util.PageLinks
+import io.github.tonnyl.moka.util.json
+import io.ktor.client.statement.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
 import timber.log.Timber
 
 @OptIn(ExperimentalPagingApi::class)
 class NotificationRemoteMediator(
-    private val notificationsService: NotificationsService,
+    private val notificationsApi: NotificationApi,
     private val database: MokaDataBase
 ) : RemoteMediator<Int, Notification>() {
 
@@ -28,13 +31,14 @@ class NotificationRemoteMediator(
             try {
                 when (loadType) {
                     LoadType.REFRESH -> {
-                        val response = notificationsService.listNotifications(
+                        val response = notificationsApi.listNotifications(
                             true,
                             page = 1,
                             perPage = state.config.initialLoadSize
-                        ).execute()
+                        )
 
-                        val notifications = response.body() ?: emptyList()
+                        val notifications =
+                            json.decodeFromString<List<Notification>>(string = response.readText())
                         val pl = PageLinks(response)
                         val keys = notifications.map {
                             RemoteKeys(RemoteKeys.NOTIFICATION_PREFIX + it.id, pl.prev, pl.next)
@@ -62,9 +66,9 @@ class NotificationRemoteMediator(
                             if (prev.isNullOrEmpty()) {
                                 MediatorResult.Success(endOfPaginationReached = true)
                             } else {
-                                val response = notificationsService.listNotificationsByUrl(prev)
-                                    .execute()
-                                val notifications = response.body() ?: emptyList()
+                                val response = notificationsApi.listNotificationsByUrl(prev)
+                                val notifications =
+                                    json.decodeFromString<List<Notification>>(string = response.readText())
                                 val pl = PageLinks(response)
                                 val keys = notifications.map {
                                     RemoteKeys(
@@ -94,9 +98,9 @@ class NotificationRemoteMediator(
                             if (next.isNullOrEmpty()) {
                                 MediatorResult.Success(endOfPaginationReached = true)
                             } else {
-                                val response = notificationsService.listNotificationsByUrl(next)
-                                    .execute()
-                                val notifications = response.body() ?: emptyList()
+                                val response = notificationsApi.listNotificationsByUrl(next)
+                                val notifications =
+                                    json.decodeFromString<List<Notification>>(string = response.readText())
                                 val pl = PageLinks(response)
                                 val keys = notifications.map {
                                     RemoteKeys(

@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
@@ -45,6 +44,7 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.NotificationProvider
 import io.github.tonnyl.moka.widget.*
 
@@ -56,15 +56,16 @@ fun InboxScreen(
     navController: NavController,
     mainViewModel: MainViewModel
 ) {
-    val currentUser by mainViewModel.currentUser.observeAsState()
-    val authedUser = currentUser ?: return
-
+    val currentAccount = LocalAccountInstance.current ?: return
     val inboxViewModel = viewModel<InboxViewModel>(
-        key = currentUser?.id?.toString(),
-        factory = ViewModelFactory(userId = authedUser.id, app = mainViewModel.getApplication())
+        key = currentAccount.toString(),
+        factory = ViewModelFactory(
+            accountInstance = currentAccount,
+            app = mainViewModel.getApplication()
+        )
     )
 
-    val notificationsPager = remember {
+    val notificationsPager = remember(key1 = currentAccount) {
         inboxViewModel.notificationsFlow
     }
     val notifications = notificationsPager.collectAsLazyPagingItems()

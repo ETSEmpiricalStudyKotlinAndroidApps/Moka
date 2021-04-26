@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
@@ -14,7 +15,9 @@ import io.github.tonnyl.moka.ui.search.repositories.SearchedRepositoriesItemData
 import io.github.tonnyl.moka.ui.search.users.SearchedUsersItemDataSource
 import kotlinx.coroutines.flow.Flow
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel(
+    private val accountInstance: AccountInstance
+) : ViewModel() {
 
     private val _userInput = MutableLiveData<String>()
     val userInput: LiveData<String>
@@ -35,14 +38,20 @@ class SearchViewModel : ViewModel() {
         usersFlow = Pager(
             config = MokaApp.defaultPagingConfig,
             pagingSourceFactory = {
-                SearchedUsersItemDataSource(newInput)
+                SearchedUsersItemDataSource(
+                    apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                    query = newInput
+                )
             }
         ).flow.cachedIn(viewModelScope)
 
         repositoriesFlow = Pager(
             config = MokaApp.defaultPagingConfig,
             pagingSourceFactory = {
-                SearchedRepositoriesItemDataSource(newInput)
+                SearchedRepositoriesItemDataSource(
+                    apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                    query = newInput
+                )
             }
         ).flow.cachedIn(viewModelScope)
     }

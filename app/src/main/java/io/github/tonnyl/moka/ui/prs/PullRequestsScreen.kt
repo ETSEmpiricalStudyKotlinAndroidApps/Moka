@@ -37,6 +37,7 @@ import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.PullRequestItemProvider
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -49,8 +50,14 @@ fun PullRequestsScreen(
     owner: String,
     name: String
 ) {
+    val currentAccount = LocalAccountInstance.current ?: return
+
     val viewModel = viewModel<PullRequestsViewModel>(
-        factory = ViewModelFactory(owner = owner, name = name)
+        factory = ViewModelFactory(
+            accountInstance = currentAccount,
+            owner = owner,
+            name = name
+        )
     )
 
     val prsPager = remember {

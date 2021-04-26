@@ -35,6 +35,7 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.UserItemProvider
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -47,8 +48,14 @@ fun UsersScreen(
     login: String,
     usersType: UsersType
 ) {
+    val currentAccount = LocalAccountInstance.current ?: return
+
     val viewModel = viewModel<UsersViewModel>(
-        factory = ViewModelFactory(login, usersType)
+        factory = ViewModelFactory(
+            accountInstance = currentAccount,
+            login = login,
+            usersType = usersType
+        )
     )
 
     val usersPager by remember {

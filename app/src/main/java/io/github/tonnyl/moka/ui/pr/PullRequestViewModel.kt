@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.cachedIn
+import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.PullRequest
 
 class PullRequestViewModel(
+    accountInstance: AccountInstance,
     owner: String,
     name: String,
     number: Int
@@ -24,10 +26,11 @@ class PullRequestViewModel(
             config = MokaApp.defaultPagingConfig,
             pagingSourceFactory = {
                 PullRequestTimelineDataSource(
+                    apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
                     owner = owner,
                     name = name,
                     number = number,
-                    _pullRequest
+                    pullRequestData = _pullRequest
                 )
             }
         ).flow.cachedIn(viewModelScope)

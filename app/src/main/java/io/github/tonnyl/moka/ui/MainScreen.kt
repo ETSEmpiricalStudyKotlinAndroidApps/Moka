@@ -50,6 +50,7 @@ import io.github.tonnyl.moka.ui.search.SearchScreen
 import io.github.tonnyl.moka.ui.settings.SettingScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.timeline.TimelineScreen
 import io.github.tonnyl.moka.ui.users.UsersScreen
 import io.github.tonnyl.moka.ui.users.UsersType
@@ -236,8 +237,12 @@ fun MainScreen(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 currentRoute = Screen.Profile.route
 
+                val currentAccount = LocalAccountInstance.current ?: return@composable
+
                 val viewModel = viewModel<ProfileViewModel>(
+                    key = currentAccount.signedInAccount.account.login,
                     factory = ProfileViewModelFactory(
+                        accountInstance = currentAccount,
                         login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                             ?: return@composable,
                         profileType = ProfileType.valueOf(
@@ -345,6 +350,8 @@ fun MainScreen(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 currentRoute = Screen.EditStatus.route
 
+                val currentAccount = LocalAccountInstance.current ?: return@composable
+
                 val initialEmoji = backStackEntry.arguments?.getString(Screen.ARG_EDIT_STATUS_EMOJI)
                 val initialMessage =
                     backStackEntry.arguments?.getString(Screen.ARG_EDIT_STATUS_MESSAGE)
@@ -353,6 +360,7 @@ fun MainScreen(mainViewModel: MainViewModel) {
                 )
                 val viewModel = viewModel<EditStatusViewModel>(
                     factory = EditStatusViewModelFactory(
+                        accountInstance = currentAccount,
                         emoji = initialEmoji,
                         message = initialMessage,
                         indicatesLimitedAvailability = initialIndicatesLimitedAvailability

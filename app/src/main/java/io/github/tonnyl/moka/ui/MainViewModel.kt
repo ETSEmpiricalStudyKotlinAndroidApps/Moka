@@ -2,10 +2,10 @@ package io.github.tonnyl.moka.ui
 
 import androidx.lifecycle.*
 import io.github.tonnyl.moka.MokaApp
-import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.data.EmojiCategory
 import io.github.tonnyl.moka.data.SearchableEmoji
+import io.github.tonnyl.moka.proto.SignedInAccount
 import io.github.tonnyl.moka.ui.explore.LocalLanguage
 import io.github.tonnyl.moka.util.json
 import io.github.tonnyl.moka.util.readEmojisFromAssets
@@ -19,8 +19,6 @@ import timber.log.Timber
 class MainViewModel(
     app: MokaApp
 ) : AndroidViewModel(app) {
-
-    val currentUser = MutableLiveData<AuthenticatedUser>()
 
     private var allSearchableEmojis = mutableListOf<SearchableEmoji>()
 
@@ -145,6 +143,24 @@ class MainViewModel(
 
         return allSearchableEmojis.firstOrNull {
             it.name == name
+        }
+    }
+
+    fun moveAccountToFirst(
+        account: SignedInAccount,
+        index: Int
+    ) {
+        viewModelScope.launch {
+            try {
+                getApplication<MokaApp>().accountsDataStore.updateData { store ->
+                    store.toBuilder()
+                        .removeAccounts(index)
+                        .addAccounts(0, account)
+                        .build()
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 

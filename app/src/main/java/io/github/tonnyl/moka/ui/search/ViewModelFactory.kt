@@ -1,22 +1,16 @@
-package io.github.tonnyl.moka.ui.issues
+package io.github.tonnyl.moka.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.github.tonnyl.moka.AccountInstance
 
 class ViewModelFactory(
-    private val accountInstance: AccountInstance,
-    private val owner: String,
-    private val name: String
+    private val accountInstance: AccountInstance
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return IssuesViewModel(
-            accountInstance = accountInstance,
-            owner = owner,
-            name = name
-        ) as T
+        return SearchViewModel(accountInstance = accountInstance) as T
     }
 
 }

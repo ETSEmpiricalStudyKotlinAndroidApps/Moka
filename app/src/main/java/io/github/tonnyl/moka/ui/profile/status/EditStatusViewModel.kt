@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
@@ -15,6 +16,7 @@ import kotlinx.datetime.*
 import timber.log.Timber
 
 class EditStatusViewModel(
+    private val accountInstance: AccountInstance,
     initialEmoji: String?,
     initialMessage: String?,
     initialIndicatesLimitedAvailability: Boolean?
@@ -54,7 +56,7 @@ class EditStatusViewModel(
                 _clearStatusState.value = Resource.loading(null)
 
                 withContext(Dispatchers.IO) {
-                    changeUserStatus()
+                    changeUserStatus(apolloClient = accountInstance.apolloGraphQLClient.apolloClient)
                 }
 
                 _clearStatusState.value = Resource.success(null)
@@ -107,6 +109,7 @@ class EditStatusViewModel(
                 }
                 withContext(Dispatchers.IO) {
                     changeUserStatus(
+                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
                         emoji = _emojiName.value,
                         message = message.value,
                         limitedAvailability = _limitedAvailability.value,

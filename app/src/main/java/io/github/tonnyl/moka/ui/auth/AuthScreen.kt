@@ -21,8 +21,8 @@ import com.google.accompanist.insets.navigationBarsPadding
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.AuthenticatedUser
+import io.github.tonnyl.moka.network.KtorClient
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.network.RetrofitClient
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
@@ -72,10 +72,10 @@ fun AuthScreen(
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 data = Uri.parse(
                     """
-                        |${RetrofitClient.GITHUB_AUTHORIZE_URL}
+                        |${KtorClient.GITHUB_AUTHORIZE_URL}
                         |?client_id=${BuildConfig.CLIENT_ID}
-                        |&redirect_uri=${RetrofitClient.GITHUB_AUTHORIZE_CALLBACK_URI}
-                        |&scope=${RetrofitClient.SCOPE}
+                        |&redirect_uri=${KtorClient.GITHUB_AUTHORIZE_CALLBACK_URI}
+                        |&scope=${KtorClient.SCOPE}
                         |&state=${Clock.System.now().toEpochMilliseconds()}
                         """.trimMargin()
                 )

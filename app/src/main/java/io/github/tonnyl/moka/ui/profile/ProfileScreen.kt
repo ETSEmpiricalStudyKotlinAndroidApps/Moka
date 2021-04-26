@@ -54,7 +54,7 @@ fun ProfileScreen(
     mainViewModel: MainViewModel,
     navController: NavController
 ) {
-    val currentLoginUser by mainViewModel.currentUser.observeAsState()
+    val currentAccount = LocalAccountInstance.current ?: return
     val organization by viewModel.organizationProfile.observeAsState()
     val user by viewModel.userProfile.observeAsState()
     val followState by viewModel.followState.observeAsState()
@@ -73,7 +73,7 @@ fun ProfileScreen(
                 ProfileScreenContent(
                     topAppBarSize = topAppBarSize,
                     navController = navController,
-                    currentLoginUser = currentLoginUser?.login,
+                    currentLoginUser = currentAccount.signedInAccount.account.login,
                     user = user?.data,
                     organization = organization?.data,
                     follow = followState?.data,
@@ -161,7 +161,7 @@ fun ProfileScreen(
 private fun ProfileScreenContent(
     topAppBarSize: Int,
     navController: NavController,
-    currentLoginUser: String?,
+    currentLoginUser: String,
     user: User?,
     organization: Organization?,
     follow: Boolean?,

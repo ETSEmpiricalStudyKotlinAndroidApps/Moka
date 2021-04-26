@@ -2,12 +2,12 @@ package io.github.tonnyl.moka.ui.users
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullUserItem
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.FollowersQuery
 import io.github.tonnyl.moka.queries.FollowersQuery.Data.User.Followers.Node.Companion.userListItemFragment
 import io.github.tonnyl.moka.queries.FollowersQuery.Data.User.Followers.PageInfo.Companion.pageInfo
@@ -15,13 +15,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class FollowersDataSource(private val login: String) : PagingSource<String, UserItem>() {
+class FollowersDataSource(
+    private val apolloClient: ApolloClient,
+    private val login: String
+) : PagingSource<String, UserItem>() {
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, UserItem> {
         val list = mutableListOf<UserItem>()
         return withContext(Dispatchers.IO) {
             try {
-                val user = GraphQLClient.apolloClient.query(
+                val user = apolloClient.query(
                     query = FollowersQuery(
                         login = login,
                         perPage = params.loadSize,

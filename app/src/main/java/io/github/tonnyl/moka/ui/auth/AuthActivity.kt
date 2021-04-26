@@ -13,7 +13,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -65,8 +64,6 @@ class AuthActivity : ComponentActivity() {
             CompositionLocalProvider(LocalWindowInsetsController provides windowInsetsControllerCompat) {
                 MokaTheme {
                     Surface {
-                        var topAppBarSize by remember { mutableStateOf(0) }
-
                         Scaffold(
                             snackbarHost = {
                                 SnackbarHost(hostState = it) { data: SnackbarData ->
@@ -141,7 +138,6 @@ class AuthActivity : ComponentActivity() {
                             elevation = 0.dp,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .onSizeChanged { topAppBarSize = it.height }
                         )
                     }
                 }

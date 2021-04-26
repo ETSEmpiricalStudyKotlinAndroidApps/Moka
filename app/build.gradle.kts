@@ -11,7 +11,7 @@ plugins {
     id("kotlin-parcelize")
     kotlin("kapt")
     id("kotlinx-serialization")
-    id("com.google.protobuf").version("0.8.14")
+    id("com.google.protobuf").version(Versions.protoGradle)
     id("com.google.firebase.crashlytics")
     id("com.google.devtools.ksp").version(Versions.kspApi)
 }
@@ -130,9 +130,7 @@ protobuf {
     }
     generateProtoTasks {
         all().forEach { task ->
-            task.builtins.create("java") {
-                option("lite")
-            }
+            task.builtins.create("java")
         }
     }
 }
@@ -154,6 +152,7 @@ dependencies {
     implementation(Deps.AndroidX.Lifecycle.lifecycleExtensions)
     implementation(Deps.AndroidX.Lifecycle.liveDataKtx)
     implementation(Deps.AndroidX.Lifecycle.viewModelCompose)
+    implementation(Deps.AndroidX.Lifecycle.runtimeKtx)
     implementation(Deps.AndroidX.Navigation.compose)
     implementation(Deps.AndroidX.WorkManager.runtime)
     implementation(Deps.AndroidX.Paging.runtime)
@@ -177,14 +176,10 @@ dependencies {
     // Google
     implementation(Deps.Google.firebaseAnalyticsKtx)
     implementation(Deps.Google.firebaseCrashlytics)
-    implementation(Deps.Google.protobufJavaLite)
+    implementation(Deps.Google.protobufJava)
     implementation(Deps.Google.material)
     implementation(Deps.Google.Accompanist.coil)
     implementation(Deps.Google.Accompanist.insets)
-
-    // Retrofit
-    implementation(Deps.Retrofit.retrofit)
-    implementation(Deps.Retrofit.serializationConverter)
 
     // OkHttp
     implementation(Deps.OkHttp.loggingInterceptor)
@@ -207,10 +202,14 @@ dependencies {
     implementation(Deps.jsoup)
     implementation(Deps.timber)
 
+    implementation(Deps.Ktor.core)
+    implementation(Deps.Ktor.logging)
+    implementation(Deps.Ktor.okhttpClient)
+    implementation(Deps.Ktor.serialization)
+
     testImplementation(Deps.Test.junit)
     testImplementation(Deps.Test.mockitoCore)
     testImplementation(Deps.Test.hamcrestAll)
-    testImplementation(Deps.Test.retrofitMock)
 
     androidTestImplementation(Deps.AndroidTest.testCore)
     androidTestImplementation(Deps.AndroidTest.testRunner)

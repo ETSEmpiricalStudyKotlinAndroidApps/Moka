@@ -2,9 +2,11 @@ package io.github.tonnyl.moka.ui.users
 
 import androidx.lifecycle.ViewModel
 import androidx.paging.Pager
+import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 
 class UsersViewModel(
+    accountInstance: AccountInstance,
     login: String,
     usersType: UsersType
 ) : ViewModel() {
@@ -15,10 +17,16 @@ class UsersViewModel(
             pagingSourceFactory = {
                 when (usersType) {
                     UsersType.FOLLOWER -> {
-                        FollowersDataSource(login)
+                        FollowersDataSource(
+                            apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                            login = login
+                        )
                     }
                     UsersType.FOLLOWING -> {
-                        FollowingDataSource(login)
+                        FollowingDataSource(
+                            apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                            login = login
+                        )
                     }
                 }
             }

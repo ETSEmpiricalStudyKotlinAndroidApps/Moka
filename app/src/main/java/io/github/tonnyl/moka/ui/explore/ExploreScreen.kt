@@ -24,10 +24,10 @@ import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingRepository
-import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.widget.MainSearchBar
 import kotlinx.coroutines.launch
 
@@ -46,21 +46,19 @@ fun ExploreScreen(
     navController: NavController,
     mainViewModel: MainViewModel
 ) {
-    val bottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val coroutineScope = rememberCoroutineScope()
+    val currentAccount = LocalAccountInstance.current ?: return
 
-    val currentUser by mainViewModel.currentUser.observeAsState()
-    val authedUser = currentUser ?: return
-
-    val db = MokaDataBase.getInstance(mainViewModel.getApplication(), authedUser.id)
     val exploreViewModel = viewModel<ExploreViewModel>(
-        key = currentUser?.id?.toString(),
-        factory = ViewModelFactory(db.trendingDevelopersDao(), db.trendingRepositoriesDao())
+        key = LocalAccountInstance.current.toString(),
+        factory = ViewModelFactory(accountInstance = currentAccount)
     )
 
     val trendingDevelopers by exploreViewModel.developersLocalData.observeAsState(emptyList())
     val trendingRepositories by exploreViewModel.repositoriesLocalData.observeAsState(emptyList())
+
+    val bottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val coroutineScope = rememberCoroutineScope()
 
     ExploreFiltersScreen(
         navController = navController,

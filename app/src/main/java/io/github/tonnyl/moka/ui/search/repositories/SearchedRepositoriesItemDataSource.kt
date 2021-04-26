@@ -4,12 +4,12 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadResult.Error
 import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.toNonNullRepositoryItem
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery.Data.Search.Node.Companion.repositoryListItemFragment
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery.Data.Search.PageInfo.Companion.pageInfo
@@ -18,6 +18,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class SearchedRepositoriesItemDataSource(
+    private val apolloClient: ApolloClient,
     private val query: String
 ) : PagingSource<String, RepositoryItem>() {
 
@@ -26,7 +27,7 @@ class SearchedRepositoriesItemDataSource(
 
         return withContext(Dispatchers.IO) {
             try {
-                val search = GraphQLClient.apolloClient.query(
+                val search = apolloClient.query(
                     query = SearchRepositoriesQuery(
                         queryWords = query,
                         first = Input.Present(value = params.loadSize),

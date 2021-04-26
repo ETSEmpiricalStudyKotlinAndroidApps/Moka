@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.data.*
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.addStar
@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ProfileViewModel(
+    private val accountInstance: AccountInstance,
     private val login: String,
     private val profileType: ProfileType
 ) : ViewModel() {
@@ -63,11 +64,9 @@ class ProfileViewModel(
             _userProfile.postValue(Resource.loading(null))
 
             try {
-                val user = GraphQLClient.apolloClient
-                    .query(
-                        query = UserQuery(login)
-                    )
-                    .data?.user?.user()?.toNonNullUser()
+                val user = accountInstance.apolloGraphQLClient.apolloClient.query(
+                    UserQuery(login)
+                ).data?.user?.user()?.toNonNullUser()
 
                 _userProfile.postValue(Resource.success(user))
 
@@ -89,11 +88,10 @@ class ProfileViewModel(
             _organizationProfile.postValue(Resource.loading(null))
 
             try {
-                val org = GraphQLClient.apolloClient
-                    .query(
+                val org = accountInstance.apolloGraphQLClient
+                    .apolloClient.query(
                         query = OrganizationQuery(login = login)
-                    )
-                    .data?.organization.toNullableOrganization()
+                    ).data?.organization.toNullableOrganization()
 
                 _organizationProfile.postValue(Resource.success(org))
 
@@ -119,9 +117,15 @@ class ProfileViewModel(
 
             try {
                 if (isFollowing) {
-                    unfollowUser(user.id)
+                    unfollowUser(
+                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                        userId = user.id
+                    )
                 } else {
-                    followUser(user.id)
+                    followUser(
+                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                        userId = user.id
+                    )
                 }
 
                 _followState.postValue(Resource.success(!isFollowing))
@@ -166,9 +170,15 @@ class ProfileViewModel(
                     }
                 }
                 if (viewerHasStarred) {
-                    removeStar(pinnableItemsId)
+                    removeStar(
+                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                        starrableId = pinnableItemsId
+                    )
                 } else {
-                    addStar(pinnableItemsId)
+                    addStar(
+                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                        starrableId = pinnableItemsId
+                    )
                 }
 
                 val pinnedItems = userProfile.value?.data?.pinnedItems

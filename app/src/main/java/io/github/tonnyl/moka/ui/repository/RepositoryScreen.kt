@@ -38,6 +38,7 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.widget.*
 import kotlinx.datetime.Instant
 
@@ -49,10 +50,17 @@ fun RepositoryScreen(
     repoName: String,
     profileType: ProfileType
 ) {
+    val currentAccount = LocalAccountInstance.current ?: return
+
     val scaffoldState = rememberScaffoldState()
 
     val viewModel = viewModel<RepositoryViewModel>(
-        factory = ViewModelFactory(login, repoName, profileType)
+        factory = ViewModelFactory(
+            accountInstance = currentAccount,
+            login = login,
+            repositoryName = repoName,
+            profileType = profileType
+        )
     )
     val usersRepositoryResource by viewModel.usersRepository.observeAsState()
     val organizationsRepositoryResource by viewModel.organizationsRepository.observeAsState()

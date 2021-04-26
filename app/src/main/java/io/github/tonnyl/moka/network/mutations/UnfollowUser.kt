@@ -1,7 +1,7 @@
 package io.github.tonnyl.moka.network.mutations
 
+import com.apollographql.apollo3.ApolloClient
 import io.github.tonnyl.moka.mutations.UnfollowUserMutation
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.UnfollowUserInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,8 +13,11 @@ import kotlinx.coroutines.withContext
  *
  * @param userId ID of the user to unfollow.
  */
-suspend fun unfollowUser(userId: String) = withContext(Dispatchers.IO) {
-    GraphQLClient.apolloClient
+suspend fun unfollowUser(
+    apolloClient: ApolloClient,
+    userId: String
+) = withContext(Dispatchers.IO) {
+    apolloClient
         .mutate(
             mutation = UnfollowUserMutation(
                 UnfollowUserInput(userId = userId)

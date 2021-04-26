@@ -1,7 +1,7 @@
 package io.github.tonnyl.moka.network.mutations
 
+import com.apollographql.apollo3.ApolloClient
 import io.github.tonnyl.moka.mutations.AddStarMutation
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.AddStarInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,8 +13,11 @@ import kotlinx.coroutines.withContext
  *
  * @param starrableId The Starrable ID to star.
  */
-suspend fun addStar(starrableId: String) = withContext(Dispatchers.IO) {
-    GraphQLClient.apolloClient
+suspend fun addStar(
+    apolloClient: ApolloClient,
+    starrableId: String
+) = withContext(Dispatchers.IO) {
+    apolloClient
         .mutate(
             mutation = AddStarMutation(
                 AddStarInput(starrableId = starrableId)

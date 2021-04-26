@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.widget
 
+import android.annotation.SuppressLint
 import androidx.annotation.StringRes
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.horizontalScroll
@@ -53,7 +54,7 @@ fun SearchBar(
             LaunchedEffect(autoFocus) {
                 if (autoFocus) {
                     focusRequester.requestFocus()
-                    keyboardController?.showSoftwareKeyboard()
+                    keyboardController?.show()
                 }
             }
 
@@ -81,7 +82,7 @@ fun SearchBar(
                         .focusRequester(focusRequester = focusRequester)
                         .onFocusChanged {
                             if (it == FocusState.Active) {
-                                keyboardController?.showSoftwareKeyboard()
+                                keyboardController?.show()
                             }
                         }
                         .fillMaxWidth()
@@ -119,6 +120,7 @@ fun SearchBar(
     )
 }
 
+@SuppressLint("UnrememberedMutableState")
 @ExperimentalComposeUiApi
 @Preview(name = "SearchBarPreview", showBackground = true)
 @Composable

@@ -42,8 +42,8 @@ class SplashActivity : ComponentActivity() {
             }
         }
 
-        (application as MokaApp).loginAccounts.observe(this) {
-            val clazz = if (it.isEmpty()) {
+        (application as MokaApp).accountInstancesLiveData.observe(this) { accountInstances ->
+            val clazz = if (accountInstances.isEmpty()) {
                 AuthActivity::class.java
             } else {
                 MainActivity::class.java

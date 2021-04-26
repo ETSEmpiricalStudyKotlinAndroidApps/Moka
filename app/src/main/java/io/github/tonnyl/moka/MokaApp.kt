@@ -1,29 +1,37 @@
 package io.github.tonnyl.moka
 
-import android.accounts.Account
 import android.accounts.AccountManager
+import android.accounts.OnAccountsUpdateListener
 import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.paging.PagingConfig
 import androidx.work.*
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.util.CoilUtils
+import io.github.tonnyl.moka.data.AccessToken
 import io.github.tonnyl.moka.data.AuthenticatedUser
-import io.github.tonnyl.moka.proto.RecentEmojis
+import io.github.tonnyl.moka.data.extension.toPBAccessToken
+import io.github.tonnyl.moka.data.extension.toPbAccount
+import io.github.tonnyl.moka.network.KtorClient
 import io.github.tonnyl.moka.proto.Settings
+import io.github.tonnyl.moka.proto.SignedInAccount
 import io.github.tonnyl.moka.proto.SignedInAccounts
 import io.github.tonnyl.moka.serializers.store.AccountSerializer
-import io.github.tonnyl.moka.serializers.store.EmojiSerializer
 import io.github.tonnyl.moka.serializers.store.SettingSerializer
-import io.github.tonnyl.moka.util.mapToAccountTokenUserTriple
+import io.github.tonnyl.moka.ui.auth.Authenticator
+import io.github.tonnyl.moka.util.json
 import io.github.tonnyl.moka.work.NotificationWorker
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
+import kotlinx.serialization.decodeFromString
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber
@@ -31,11 +39,88 @@ import java.util.concurrent.TimeUnit
 
 class MokaApp : Application(), ImageLoaderFactory {
 
-    private val accountManager by lazy(LazyThreadSafetyMode.NONE) {
+    val accountManager: AccountManager by lazy {
         AccountManager.get(this)
     }
 
-    val loginAccounts = MutableLiveData<List<Triple<Account, String, AuthenticatedUser>>>()
+    val okHttpClient by lazy {
+        OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .cache(CoilUtils.createDefaultCache(this))
+            .build()
+    }
+
+    val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    private val accountListener by lazy {
+        OnAccountsUpdateListener { onDeviceAccountsRawData ->
+            applicationScope.launch(Dispatchers.IO) {
+                try {
+                    val onDeviceAccountAndTokenPairs = onDeviceAccountsRawData.mapNotNull {
+                        val account = runCatching {
+                            json.decodeFromString<AuthenticatedUser>(
+                                accountManager.getUserData(
+                                    it,
+                                    Authenticator.KEY_AUTH_USER_INFO
+                                )
+                            )
+                        }.getOrNull()
+                        val token = runCatching {
+                            json.decodeFromString<AccessToken>(
+                                accountManager.blockingGetAuthToken(
+                                    it,
+                                    Authenticator.KEY_AUTH_TOKEN,
+                                    true
+                                )
+                            )
+                        }.getOrNull()
+                        if (account == null || token == null) {
+                            null
+                        } else {
+                            Pair(account, token)
+                        }
+                    }
+
+                    val sortedAccounts = mutableListOf<Pair<AuthenticatedUser, AccessToken>>()
+
+                    val existingAccounts = accountsDataStore.data.single().accountsList
+                    existingAccounts.forEach { signedInAccount ->
+                        val onDeviceAccount =
+                            onDeviceAccountAndTokenPairs.find { it.first.id == signedInAccount.account.id }
+                        if (onDeviceAccount != null) {
+                            sortedAccounts.add(onDeviceAccount)
+                        }
+                    }
+
+                    onDeviceAccountAndTokenPairs.forEach { onDeviceAccountAndTokenPair ->
+                        val hasAdded =
+                            sortedAccounts.find { it.first.id == onDeviceAccountAndTokenPair.first.id }
+                        if (hasAdded != null) {
+                            sortedAccounts.add(onDeviceAccountAndTokenPair)
+                        }
+                    }
+
+                    accountsDataStore.updateData { store ->
+                        store.toBuilder().apply {
+                            clearAccounts()
+                            addAllAccounts(
+                                sortedAccounts.map { (onDeviceAccount, token) ->
+                                    SignedInAccount.newBuilder().apply {
+                                        account = onDeviceAccount.toPbAccount()
+                                        accessToken = token.toPBAccessToken()
+                                    }.build()
+                                }
+                            )
+                        }.build()
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+            }
+
+            triggerNotificationWorker()
+        }
+    }
 
     val settingsDataStore: DataStore<Settings> by dataStore(
         fileName = "global_settings.pb",
@@ -47,11 +132,21 @@ class MokaApp : Application(), ImageLoaderFactory {
         serializer = AccountSerializer
     )
 
-    // todo make it user-related
-    val recentEmojis: DataStore<RecentEmojis> by dataStore(
-        fileName = "recent_emojis.pb",
-        serializer = EmojiSerializer
-    )
+    val accountInstancesLiveData by lazy {
+        accountsDataStore.data.map { accounts ->
+            accounts.accountsList.map { account ->
+                AccountInstance(this, account)
+            }
+        }.asLiveData()
+    }
+
+    val unauthenticatedKtorClient by lazy {
+        KtorClient(
+            context = this,
+            requireAuth = false,
+            accessToken = null
+        ).httpClient
+    }
 
     companion object {
         private const val PER_PAGE = 16
@@ -71,22 +166,7 @@ class MokaApp : Application(), ImageLoaderFactory {
         }
 
         accountManager.addOnAccountsUpdatedListener(
-            { accounts ->
-                GlobalScope.launch(Dispatchers.IO) {
-                    loginAccounts.postValue(
-                        accounts.sortedByDescending {
-                            accountManager.getPassword(it).toLong()
-                        }.map {
-                            it.mapToAccountTokenUserTriple(accountManager)
-                        }.filterNotNull()
-                            .toMutableList()
-                    )
-                }
-
-                if (accounts.isNotEmpty()) {
-                    triggerNotificationWorker()
-                }
-            },
+            accountListener,
             null,
             true
         )
@@ -96,62 +176,63 @@ class MokaApp : Application(), ImageLoaderFactory {
         return ImageLoader.Builder(applicationContext)
             .crossfade(enable = true)
             .okHttpClient {
-                OkHttpClient.Builder()
-                    .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                    .cache(CoilUtils.createDefaultCache(applicationContext))
-                    .build()
+                okHttpClient
             }
             .build()
     }
 
     fun triggerNotificationWorker() {
-        GlobalScope.launch {
-            settingsDataStore.data.collect { settings ->
-                if (settings.enableNotifications) {
-                    val intervalTimePeriod = when (settings.notificationSyncInterval) {
-                        Settings.NotificationSyncInterval.ONE_QUARTER,
-                        Settings.NotificationSyncInterval.UNRECOGNIZED,
-                        null -> {
-                            15L
+        applicationScope.launch {
+            try {
+                settingsDataStore.data.collect { settings ->
+                    if (settings.enableNotifications) {
+                        val intervalTimePeriod = when (settings.notificationSyncInterval) {
+                            Settings.NotificationSyncInterval.ONE_QUARTER,
+                            Settings.NotificationSyncInterval.UNRECOGNIZED,
+                            null -> {
+                                15L
+                            }
+                            Settings.NotificationSyncInterval.THIRTY_MINUTES -> {
+                                30L
+                            }
+                            Settings.NotificationSyncInterval.ONE_HOUR -> {
+                                60L
+                            }
+                            Settings.NotificationSyncInterval.TWO_HOURS -> {
+                                60 * 2L
+                            }
+                            Settings.NotificationSyncInterval.SIX_HOURS -> {
+                                60 * 6L
+                            }
+                            Settings.NotificationSyncInterval.TWELVE_HOURS -> {
+                                60 * 12L
+                            }
+                            Settings.NotificationSyncInterval.TWENTY_FOUR_HOURS -> {
+                                60 * 24L
+                            }
                         }
-                        Settings.NotificationSyncInterval.THIRTY_MINUTES -> {
-                            30L
-                        }
-                        Settings.NotificationSyncInterval.ONE_HOUR -> {
-                            60L
-                        }
-                        Settings.NotificationSyncInterval.TWO_HOURS -> {
-                            60 * 2L
-                        }
-                        Settings.NotificationSyncInterval.SIX_HOURS -> {
-                            60 * 6L
-                        }
-                        Settings.NotificationSyncInterval.TWELVE_HOURS -> {
-                            60 * 12L
-                        }
-                        Settings.NotificationSyncInterval.TWENTY_FOUR_HOURS -> {
-                            60 * 24L
-                        }
-                    }
-                    WorkManager.getInstance(applicationContext)
-                        .enqueueUniquePeriodicWork(
-                            NotificationWorker::class.java.simpleName,
-                            ExistingPeriodicWorkPolicy.REPLACE,
-                            PeriodicWorkRequestBuilder<NotificationWorker>(
-                                intervalTimePeriod,
-                                TimeUnit.MINUTES
-                            ).setConstraints(
-                                Constraints.Builder()
-                                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                                    .setRequiresBatteryNotLow(true)
+                        WorkManager.getInstance(applicationContext)
+                            .enqueueUniquePeriodicWork(
+                                NotificationWorker::class.java.simpleName,
+                                ExistingPeriodicWorkPolicy.REPLACE,
+                                PeriodicWorkRequestBuilder<NotificationWorker>(
+                                    intervalTimePeriod,
+                                    TimeUnit.MINUTES
+                                ).setConstraints(
+                                    Constraints.Builder()
+                                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                                        .setRequiresBatteryNotLow(true)
+                                        .build()
+                                ).addTag(NotificationWorker.WORKER_TAG)
                                     .build()
-                            ).addTag(NotificationWorker.WORKER_TAG)
-                                .build()
-                        )
-                } else {
-                    WorkManager.getInstance(applicationContext)
-                        .cancelAllWorkByTag(NotificationWorker.WORKER_TAG)
+                            )
+                    } else {
+                        WorkManager.getInstance(applicationContext)
+                            .cancelAllWorkByTag(NotificationWorker.WORKER_TAG)
+                    }
                 }
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
     }

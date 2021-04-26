@@ -1,19 +1,15 @@
 package io.github.tonnyl.moka.ui.account
 
-import android.accounts.Account
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,27 +26,35 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.coil.CoilImage
+import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
+import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.OutlineChip
-import kotlinx.datetime.Clock
 
 @ExperimentalMaterialApi
 @Composable
 fun AccountDialogScreen(
     navController: NavController,
-    showState: MutableState<Boolean>
+    showState: MutableState<Boolean>,
+    mainViewModel: MainViewModel
 ) {
-    val accounts by (LocalContext.current.applicationContext as MokaApp).loginAccounts.observeAsState()
+    val accounts by mainViewModel.getApplication<MokaApp>().accountInstancesLiveData.observeAsState(
+        initial = emptyList()
+    )
+    if (accounts.isNullOrEmpty()) {
+        return
+    }
+
     if (showState.value) {
         Dialog(
             onDismissRequest = {
@@ -59,7 +63,9 @@ fun AccountDialogScreen(
         ) {
             AccountDialogScreenContent(
                 navController = navController,
-                accounts = accounts ?: emptyList()
+                accounts = accounts,
+                showState = showState,
+                mainViewModel = mainViewModel
             )
         }
     }
@@ -69,9 +75,12 @@ fun AccountDialogScreen(
 @Composable
 private fun AccountDialogScreenContent(
     navController: NavController,
-    accounts: List<Triple<Account, String, AuthenticatedUser>>
+    accounts: List<AccountInstance>,
+    showState: MutableState<Boolean>,
+    mainViewModel: MainViewModel
 ) {
     val context = LocalContext.current
+    val currentAccount = LocalAccountInstance.current ?: return
 
     ConstraintLayout(
         modifier = Modifier
@@ -85,11 +94,14 @@ private fun AccountDialogScreenContent(
                 top.linkTo(anchor = parent.top)
             }
         ) {
-            itemsIndexed(items = accounts) { index, triple ->
+            items(count = accounts.size) { index ->
                 ItemAccount(
                     navController = navController,
-                    isCurrentLoginUser = index == 0,
-                    account = triple.third
+                    isCurrentLoginUser = currentAccount.signedInAccount.account.id == accounts[index].signedInAccount.account.id,
+                    showState = showState,
+                    account = accounts[index],
+                    accountIndex = index,
+                    mainViewModel = mainViewModel
                 )
             }
         }
@@ -120,6 +132,7 @@ private fun AccountDialogScreenContent(
                 .fillMaxWidth()
                 .clickable {
                     context.startActivity(Intent(context, AuthActivity::class.java))
+                    showState.value = false
                 }
         )
         ListItem(
@@ -143,6 +156,7 @@ private fun AccountDialogScreenContent(
                 .fillMaxWidth()
                 .clickable {
                     context.safeStartActivity(Intent(Settings.ACTION_SYNC_SETTINGS))
+                    showState.value = false
                 }
         )
         Divider(
@@ -180,7 +194,7 @@ private fun AccountDialogScreenContent(
                     }
                     .clip(shape = MaterialTheme.shapes.medium)
                     .clickable {
-
+                        showState.value = false
                     }
                     .padding(all = ContentPaddingMediumSize)
             )
@@ -195,7 +209,7 @@ private fun AccountDialogScreenContent(
                     }
                     .clip(shape = MaterialTheme.shapes.medium)
                     .clickable {
-
+                        showState.value = false
                     }
                     .padding(all = ContentPaddingMediumSize)
             )
@@ -207,13 +221,21 @@ private fun AccountDialogScreenContent(
 private fun ItemAccount(
     navController: NavController,
     isCurrentLoginUser: Boolean,
-    account: AuthenticatedUser
+    showState: MutableState<Boolean>,
+    account: AccountInstance,
+    accountIndex: Int,
+    mainViewModel: MainViewModel
 ) {
     Row(
         verticalAlignment = Alignment.Top,
         modifier = Modifier
             .clickable(enabled = !isCurrentLoginUser) {
+                mainViewModel.moveAccountToFirst(
+                    account = account.signedInAccount,
+                    index = accountIndex
+                )
 
+                showState.value = false
             }
             .padding(
                 start = ContentPaddingLargeSize,
@@ -224,7 +246,7 @@ private fun ItemAccount(
     ) {
         CoilImage(
             contentDescription = stringResource(id = R.string.accounts_avatar_of_account),
-            request = createAvatarLoadRequest(url = account.avatarUrl),
+            request = createAvatarLoadRequest(url = account.signedInAccount.account.avatarUrl),
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)
@@ -233,7 +255,7 @@ private fun ItemAccount(
         Column(modifier = Modifier.weight(weight = 1f)) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(
-                    text = account.login,
+                    text = account.signedInAccount.account.login,
                     style = MaterialTheme.typography.body1,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -241,7 +263,7 @@ private fun ItemAccount(
             }
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = account.id.toString(),
+                    text = account.signedInAccount.account.id.toString(),
                     style = MaterialTheme.typography.body2,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -254,7 +276,10 @@ private fun ItemAccount(
                     onClick = {
                         navController.navigate(
                             route = Screen.Profile.route
-                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", account.login)
+                                .replace(
+                                    "{${Screen.ARG_PROFILE_LOGIN}}",
+                                    account.signedInAccount.account.login
+                                )
                                 .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
                         )
                     }
@@ -265,6 +290,7 @@ private fun ItemAccount(
 }
 
 
+@SuppressLint("UnrememberedMutableState")
 @ExperimentalMaterialApi
 @Preview(
     showBackground = true,
@@ -274,39 +300,8 @@ private fun ItemAccount(
 private fun AccountDialogScreenContentPreview() {
     AccountDialogScreenContent(
         navController = rememberNavController(),
-        accounts = listOf(
-            Triple(
-                Account("", ""),
-                "",
-                AuthenticatedUser(
-                    login = "TonnyL",
-                    id = 0L,
-                    nodeId = "",
-                    avatarUrl = "",
-                    htmlUrl = "https://github.com/TonnyL",
-                    type = "user",
-                    siteAdmin = true,
-                    name = "Li Zhao Tai Lang",
-                    company = null,
-                    blog = "https://tonnyl.io/",
-                    location = "Guangzhou",
-                    email = "lizhaotailang@gmail.com",
-                    hireable = null,
-                    bio = "Rock/Post-rock/Electronic.",
-                    publicRepos = 35,
-                    publicGists = 3,
-                    followers = 894,
-                    following = 115,
-                    createdAt = Clock.System.now(),
-                    updatedAt = Clock.System.now(),
-                    privateGists = 2,
-                    totalPrivateRepos = 2,
-                    ownedPrivateRepos = 2,
-                    diskUsage = 0L,
-                    collaborators = 9,
-                    twoFactorAuthentication = false
-                )
-            )
-        )
+        accounts = emptyList(),
+        showState = mutableStateOf(false),
+        mainViewModel = MainViewModel(LocalContext.current.applicationContext as MokaApp)
     )
 }

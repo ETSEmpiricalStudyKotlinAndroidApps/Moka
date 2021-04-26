@@ -25,6 +25,7 @@ import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 import io.github.tonnyl.moka.ui.search.repositories.SearchedRepositoriesScreen
 import io.github.tonnyl.moka.ui.search.users.SearchedUsersScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.widget.SearchBar
 
 private enum class SearchType {
@@ -38,7 +39,11 @@ private enum class SearchType {
 @ExperimentalComposeUiApi
 @Composable
 fun SearchScreen(navController: NavController) {
-    val viewModel = viewModel<SearchViewModel>()
+    val currentAccount = LocalAccountInstance.current ?: return
+
+    val viewModel = viewModel<SearchViewModel>(
+        factory = ViewModelFactory(accountInstance = currentAccount)
+    )
     val textState = remember { mutableStateOf(TextFieldValue()) }
 
     var usersFlow by remember { mutableStateOf(viewModel.usersFlow) }

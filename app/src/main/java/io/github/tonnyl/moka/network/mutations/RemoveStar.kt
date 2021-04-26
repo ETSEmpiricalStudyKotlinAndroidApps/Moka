@@ -1,7 +1,7 @@
 package io.github.tonnyl.moka.network.mutations
 
+import com.apollographql.apollo3.ApolloClient
 import io.github.tonnyl.moka.mutations.RemoveStarMutation
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.type.RemoveStarInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,8 +13,11 @@ import kotlinx.coroutines.withContext
  *
  * @param starrableId The Starrable ID to unstar.
  */
-suspend fun removeStar(starrableId: String) = withContext(Dispatchers.IO) {
-    GraphQLClient.apolloClient
+suspend fun removeStar(
+    apolloClient: ApolloClient,
+    starrableId: String
+) = withContext(Dispatchers.IO) {
+    apolloClient
         .mutate(
             mutation = RemoveStarMutation(
                 RemoveStarInput(starrableId = starrableId)

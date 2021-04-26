@@ -4,30 +4,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.network.Resource
-import io.github.tonnyl.moka.network.RetrofitClient
-import io.github.tonnyl.moka.network.service.UserService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class EditProfileViewModel(
-    private val initialName: String?,
-    private val initialBio: String?,
-    private val initialUrl: String?,
-    private val initialCompany: String?,
-    private val initialLocation: String?,
-    private val initialTwitter: String?
+    private val accountInstance: AccountInstance,
+    initialName: String?,
+    initialBio: String?,
+    initialUrl: String?,
+    initialCompany: String?,
+    initialLocation: String?,
+    initialTwitter: String?
 ) : ViewModel() {
 
     private val _loadingStatus = MutableLiveData<Resource<Unit>>()
     val loadingStatus: LiveData<Resource<Unit>>
         get() = _loadingStatus
-
-    private val service: UserService by lazy(LazyThreadSafetyMode.NONE) {
-        RetrofitClient.createService(UserService::class.java)
-    }
 
     private val _name = MutableLiveData(initialName)
     val name: LiveData<String?>
@@ -96,14 +92,10 @@ class EditProfileViewModel(
                 )
 
                 val updateResponse = withContext(Dispatchers.IO) {
-                    service.updateUseInformation(body)
+                    accountInstance.userApi.updateUseInformation(body)
                 }
 
-                _loadingStatus.value = if (updateResponse.isSuccessful) {
-                    Resource.success(null)
-                } else {
-                    Resource.error(null, null)
-                }
+                _loadingStatus.value = Resource.success(null)
             } catch (e: Exception) {
                 Timber.e(e)
                 _loadingStatus.value = Resource.error(null, null)

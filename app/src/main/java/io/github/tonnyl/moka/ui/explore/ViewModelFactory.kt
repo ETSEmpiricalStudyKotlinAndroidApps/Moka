@@ -2,17 +2,15 @@ package io.github.tonnyl.moka.ui.explore
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.github.tonnyl.moka.db.dao.TrendingDeveloperDao
-import io.github.tonnyl.moka.db.dao.TrendingRepositoryDao
+import io.github.tonnyl.moka.AccountInstance
 
 class ViewModelFactory(
-    private val localDevelopersSource: TrendingDeveloperDao,
-    private val localRepositoriesSource: TrendingRepositoryDao
+    private val accountInstance: AccountInstance
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ExploreViewModel(localDevelopersSource, localRepositoriesSource) as T
+        return ExploreViewModel(accountInstance = accountInstance) as T
     }
 
 }

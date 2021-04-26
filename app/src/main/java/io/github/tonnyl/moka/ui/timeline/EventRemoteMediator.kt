@@ -10,16 +10,19 @@ import androidx.room.withTransaction
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.data.RemoteKeys
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.service.EventsService
+import io.github.tonnyl.moka.network.api.EventApi
 import io.github.tonnyl.moka.util.PageLinks
+import io.github.tonnyl.moka.util.json
+import io.ktor.client.statement.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
 import timber.log.Timber
 
 @OptIn(ExperimentalPagingApi::class)
 class EventRemoteMediator(
-    private var login: String,
-    private val eventsService: EventsService,
+    private val login: String,
+    private val eventApi: EventApi,
     private val database: MokaDataBase
 ) : RemoteMediator<Int, Event>() {
 
@@ -31,13 +34,14 @@ class EventRemoteMediator(
             try {
                 when (loadType) {
                     LoadType.REFRESH -> {
-                        val response = eventsService.listPublicEventThatAUserHasReceived(
+                        val response = eventApi.listPublicEventThatAUserHasReceived(
                             login,
                             page = 1,
                             perPage = state.config.initialLoadSize
-                        ).execute()
+                        )
 
-                        val events = response.body() ?: emptyList()
+                        val events =
+                            json.decodeFromString<List<Event>>(string = response.readText())
                         val pl = PageLinks(response)
                         val keys = events.map {
                             RemoteKeys(RemoteKeys.EVENT_PREFIX + it.id, pl.prev, pl.next)
@@ -66,9 +70,9 @@ class EventRemoteMediator(
                                 Success(endOfPaginationReached = true)
                             } else {
                                 val response =
-                                    eventsService.listPublicEventThatAUserHasReceivedByUrl(prev)
-                                        .execute()
-                                val events = response.body() ?: emptyList()
+                                    eventApi.listPublicEventThatAUserHasReceivedByUrl(prev)
+                                val events =
+                                    json.decodeFromString<List<Event>>(string = response.readText())
                                 val pl = PageLinks(response)
                                 val keys = events.map {
                                     RemoteKeys(RemoteKeys.EVENT_PREFIX + it.id, pl.prev, pl.next)
@@ -95,9 +99,9 @@ class EventRemoteMediator(
                                 Success(endOfPaginationReached = true)
                             } else {
                                 val response =
-                                    eventsService.listPublicEventThatAUserHasReceivedByUrl(next)
-                                        .execute()
-                                val events = response.body() ?: emptyList()
+                                    eventApi.listPublicEventThatAUserHasReceivedByUrl(next)
+                                val events =
+                                    json.decodeFromString<List<Event>>(string = response.readText())
                                 val pl = PageLinks(response)
                                 val keys = events.map {
                                     RemoteKeys(RemoteKeys.EVENT_PREFIX + it.id, pl.prev, pl.next)

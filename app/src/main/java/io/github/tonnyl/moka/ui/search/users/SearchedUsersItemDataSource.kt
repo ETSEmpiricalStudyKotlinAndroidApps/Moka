@@ -4,13 +4,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadResult.Error
 import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 import io.github.tonnyl.moka.data.item.toNonNullSearchedOrganizationItem
 import io.github.tonnyl.moka.data.toNonNullUserItem
-import io.github.tonnyl.moka.network.GraphQLClient
 import io.github.tonnyl.moka.queries.SearchUsersQuery
 import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.Node.Companion.organizationListItemFragment
 import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.Node.Companion.userListItemFragment
@@ -20,6 +20,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class SearchedUsersItemDataSource(
+    private val apolloClient: ApolloClient,
     private val query: String
 ) : PagingSource<String, SearchedUserOrOrgItem>() {
 
@@ -27,7 +28,7 @@ class SearchedUsersItemDataSource(
         val list = mutableListOf<SearchedUserOrOrgItem>()
         return withContext(Dispatchers.IO) {
             try {
-                val search = GraphQLClient.apolloClient.query(
+                val search = apolloClient.query(
                     query = SearchUsersQuery(
                         queryWords = query,
                         first = Input.Present(value = params.loadSize),

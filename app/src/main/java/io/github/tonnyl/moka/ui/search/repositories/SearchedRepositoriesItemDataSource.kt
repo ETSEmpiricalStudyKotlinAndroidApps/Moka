@@ -5,7 +5,6 @@ import androidx.paging.PagingSource.LoadResult.Error
 import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
@@ -30,10 +29,10 @@ class SearchedRepositoriesItemDataSource(
                 val search = apolloClient.query(
                     query = SearchRepositoriesQuery(
                         queryWords = query,
-                        first = Input.Present(value = params.loadSize),
-                        last = Input.Present(value = null),
-                        after = Input.Present(value = params.key),
-                        before = Input.Present(value = params.key)
+                        first = params.loadSize,
+                        last = null,
+                        after = params.key,
+                        before = params.key
                     )
                 ).data?.search
 

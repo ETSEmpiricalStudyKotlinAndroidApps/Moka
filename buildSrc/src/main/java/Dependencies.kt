@@ -4,7 +4,7 @@ object Versions {
     const val targetSdk = 30
     const val minSdk = 23
 
-    const val androidGradle = "7.0.0-alpha14"
+    const val androidGradle = "7.0.0-alpha15"
     const val gmsGoogleServiceGradle = "4.3.5"
     const val firebaseCrashlyticsGradle = "2.5.2"
     const val kotlin = "1.4.32"

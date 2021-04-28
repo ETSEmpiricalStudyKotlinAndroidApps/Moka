@@ -3,7 +3,6 @@ package io.github.tonnyl.moka.ui.prs
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
 import io.github.tonnyl.moka.data.item.PullRequestItem
@@ -28,8 +27,8 @@ class PullRequestsDataSource(
                     query = PullRequestsQuery(
                         owner = owner,
                         name = name,
-                        after = Input.Present(value = params.key),
-                        before = Input.Present(value = params.key),
+                        after = params.key,
+                        before = params.key,
                         perPage = params.loadSize
                     )
                 ).data?.repository

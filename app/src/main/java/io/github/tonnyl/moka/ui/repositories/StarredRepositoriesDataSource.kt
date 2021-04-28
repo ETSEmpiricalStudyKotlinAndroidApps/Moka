@@ -3,7 +3,6 @@ package io.github.tonnyl.moka.ui.repositories
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
@@ -28,8 +27,8 @@ class StarredRepositoriesDataSource(
                     query = StarredRepositoriesQuery(
                         login = login,
                         perPage = params.loadSize,
-                        after = Input.Present(value = params.key),
-                        Input.Present(value = params.key)
+                        after = params.key,
+                        before = params.key
                     )
                 ).data?.user
 

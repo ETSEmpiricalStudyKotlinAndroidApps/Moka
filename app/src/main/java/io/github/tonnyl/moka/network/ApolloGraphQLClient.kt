@@ -41,58 +41,46 @@ class ApolloGraphQLClient(accessToken: String) {
     }
 
     val apolloClient: ApolloClient by lazy {
-        ApolloClient.Builder()
-            .networkTransport(
-                networkTransport = ApolloHttpNetworkTransport(
-                    serverUrl = SERVER_URL,
-                    headers = mapOf(
-                        "Accept" to "application/json",
-                        "Content-Type" to "application/json",
-                        "Authorization" to "Bearer $accessToken"
-                    )
+        ApolloClient(
+            networkTransport = ApolloHttpNetworkTransport(
+                serverUrl = SERVER_URL,
+                headers = mapOf(
+                    "Accept" to "application/json",
+                    "Content-Type" to "application/json",
+                    "Authorization" to "Bearer $accessToken"
                 )
             )
-            .addScalarTypeAdapter(
-                customScalar = GitTimestamp,
-                customScalarAdapter = DateCustomScalarAdapter
-            )
-            .addScalarTypeAdapter(
-                customScalar = DateTime,
-                customScalarAdapter = DateCustomScalarAdapter
-            )
-            .addScalarTypeAdapter(
-                customScalar = PreciseDateTime,
-                customScalarAdapter = DateCustomScalarAdapter
-            )
-            .addScalarTypeAdapter(
-                customScalar = Date,
-                customScalarAdapter = DateCustomScalarAdapter
-            )
-            .addScalarTypeAdapter(
-                customScalar = HTML,
-                customScalarAdapter = StringResponseAdapter
-            )
-            .addScalarTypeAdapter(
-                customScalar = URI,
-                customScalarAdapter = StringResponseAdapter
-            )
-            .addScalarTypeAdapter(
-                customScalar = GitObjectID,
-                customScalarAdapter = StringResponseAdapter
-            )
-            .addScalarTypeAdapter(
-                customScalar = GitSSHRemote,
-                customScalarAdapter = StringResponseAdapter
-            )
-            .addScalarTypeAdapter(
-                customScalar = X509Certificate,
-                customScalarAdapter = StringResponseAdapter
-            )
-            .addScalarTypeAdapter(
-                customScalar = GitRefname,
-                customScalarAdapter = StringResponseAdapter
-            )
-            .build()
+        ).withCustomScalarAdapter(
+            graphqlName = GitTimestamp.name,
+            customScalarAdapter = DateCustomScalarAdapter
+        ).withCustomScalarAdapter(
+            graphqlName = DateTime.name,
+            customScalarAdapter = DateCustomScalarAdapter
+        ).withCustomScalarAdapter(
+            graphqlName = PreciseDateTime.name,
+            customScalarAdapter = DateCustomScalarAdapter
+        ).withCustomScalarAdapter(
+            graphqlName = Date.name,
+            customScalarAdapter = DateCustomScalarAdapter
+        ).withCustomScalarAdapter(
+            graphqlName = HTML.name,
+            customScalarAdapter = StringResponseAdapter
+        ).withCustomScalarAdapter(
+            graphqlName = URI.name,
+            customScalarAdapter = StringResponseAdapter
+        ).withCustomScalarAdapter(
+            graphqlName = GitObjectID.name,
+            customScalarAdapter = StringResponseAdapter
+        ).withCustomScalarAdapter(
+            graphqlName = GitSSHRemote.name,
+            customScalarAdapter = StringResponseAdapter
+        ).withCustomScalarAdapter(
+            graphqlName = X509Certificate.name,
+            customScalarAdapter = StringResponseAdapter
+        ).withCustomScalarAdapter(
+            graphqlName = GitRefname.name,
+            customScalarAdapter = StringResponseAdapter
+        )
     }
 
     companion object {

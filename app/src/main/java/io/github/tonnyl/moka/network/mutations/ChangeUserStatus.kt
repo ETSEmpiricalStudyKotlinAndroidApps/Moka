@@ -1,7 +1,7 @@
 package io.github.tonnyl.moka.network.mutations
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import io.github.tonnyl.moka.mutations.ChangeUserStatusMutation
 import io.github.tonnyl.moka.type.ChangeUserStatusInput
 import kotlinx.coroutines.Dispatchers
@@ -20,11 +20,11 @@ suspend fun changeUserStatus(
         .mutate(
             mutation = ChangeUserStatusMutation(
                 ChangeUserStatusInput(
-                    emoji = Input.Present(emoji),
-                    message = Input.Present(message),
-                    organizationId = Input.Present(organizationId),
-                    limitedAvailability = Input.Present(limitedAvailability),
-                    expiresAt = Input.Present(expiresAt)
+                    emoji = Optional.Present(emoji),
+                    message = Optional.Present(message),
+                    organizationId = Optional.Present(organizationId),
+                    limitedAvailability = Optional.Present(limitedAvailability),
+                    expiresAt = Optional.Present(expiresAt)
                 )
             )
         )

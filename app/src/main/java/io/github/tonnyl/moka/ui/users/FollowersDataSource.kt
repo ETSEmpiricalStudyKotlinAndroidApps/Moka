@@ -3,7 +3,6 @@ package io.github.tonnyl.moka.ui.users
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Input
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.data.extension.checkedEndCursor
 import io.github.tonnyl.moka.data.extension.checkedStartCursor
@@ -28,8 +27,8 @@ class FollowersDataSource(
                     query = FollowersQuery(
                         login = login,
                         perPage = params.loadSize,
-                        before = Input.Present(value = params.key),
-                        after = Input.Present(value = params.key)
+                        before = params.key,
+                        after = params.key
                     )
                 ).data?.user
 

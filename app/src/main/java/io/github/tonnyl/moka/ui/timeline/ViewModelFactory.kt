@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.AccountInstance
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalPagingApi
 class ViewModelFactory(
     private val accountInstance: AccountInstance,

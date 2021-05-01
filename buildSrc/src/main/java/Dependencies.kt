@@ -10,7 +10,8 @@ object Versions {
     const val kotlin = "1.4.32"
     const val dateTime = "0.1.1"
     const val coroutines = "1.4.3"
-    const val serialization = "1.1.0"
+    const val serializationJson = "1.1.0"
+    const val serializationProtoBuf = "1.2.0"
     const val browser = "1.3.0"
     const val lifecycle = "2.2.0"
     const val liveDataKtx = "2.4.0-alpha01"
@@ -37,9 +38,6 @@ object Versions {
     const val ktor = "1.5.3"
     const val firebaseAnalyticsKtx = "17.5.0"
     const val firebaseCrashlytics = "17.2.1"
-    const val protoc = "4.0.0-rc-2"
-    const val protobufJava = "4.0.0-rc-2"
-    const val protoGradle = "0.8.14"
     const val junit = "4.13"
     const val androidJunit = "1.1.3-alpha05"
     const val androidTestCore = "1.4.0-alpha05"
@@ -77,8 +75,10 @@ object Deps {
         const val coroutinesAndroid =
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
         const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.dateTime}"
-        const val serialization =
-            "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serialization}"
+        const val serializationJson =
+            "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationJson}"
+        const val serializationProtoBuf =
+            "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:${Versions.serializationProtoBuf}"
 
     }
 
@@ -167,8 +167,6 @@ object Deps {
             "com.google.firebase:firebase-analytics-ktx:${Versions.firebaseAnalyticsKtx}"
         const val firebaseCrashlytics =
             "com.google.firebase:firebase-crashlytics:${Versions.firebaseCrashlytics}"
-        const val protoc = "com.google.protobuf:protoc:${Versions.protoc}"
-        const val protobufJava = "com.google.protobuf:protobuf-java:${Versions.protobufJava}"
         const val material = "com.google.android.material:material:${Versions.material}"
         const val kspApi = "com.google.devtools.ksp:symbol-processing-api:${Versions.kspApi}"
 

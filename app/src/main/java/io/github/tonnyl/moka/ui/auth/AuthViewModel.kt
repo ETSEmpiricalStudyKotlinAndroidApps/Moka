@@ -15,7 +15,7 @@ import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.api.AccessTokenApi
 import io.github.tonnyl.moka.network.api.UserApi
-import io.github.tonnyl.moka.proto.SignedInAccount
+import io.github.tonnyl.moka.serializers.store.data.SignedInAccount
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.auth.AuthEvent.FinishAndGo
 import io.github.tonnyl.moka.util.insertNewAccount
@@ -23,6 +23,7 @@ import io.github.tonnyl.moka.util.updateOnAnyThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import timber.log.Timber
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
@@ -36,6 +37,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     val event: LiveData<Event<AuthEvent>>
         get() = _event
 
+    @ExperimentalSerializationApi
     fun getAccessToken(code: String, state: String) {
         viewModelScope.launch {
             try {
@@ -62,27 +64,29 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 )
 
                 getApplication<MokaApp>().accountsDataStore.updateData { signedInAccounts ->
-                    signedInAccounts.toBuilder()
-                        .apply {
-                            val existingAccountIndex = accountsList.indexOfFirst {
-                                it.hasAccount() && it.account.id == authenticatedUserResp.id
-                            }
-                            if (existingAccountIndex >= 0) {
-                                accountsList[existingAccountIndex].toBuilder()
-                                    .mergeAccount(authenticatedUserResp.toPbAccount())
-                                    .mergeAccessToken(accessTokenResp.toPBAccessToken())
-                                    .build()
-                            } else {
-                                addAccounts(
-                                    0,
-                                    SignedInAccount.newBuilder().apply {
-                                        accessToken = accessTokenResp.toPBAccessToken()
-                                        account = authenticatedUserResp.toPbAccount()
-                                    }.build()
-                                )
-                            }
-                        }
-                        .build()
+                    val newAccounts = signedInAccounts.accounts.toMutableList()
+                    val existingAccountIndex = newAccounts.indexOfFirst {
+                        it.account.id == authenticatedUserResp.id
+                    }
+                    if (existingAccountIndex >= 0) {
+                        newAccounts.removeAt(existingAccountIndex)
+                        newAccounts.add(
+                            existingAccountIndex,
+                            SignedInAccount(
+                                accessToken = accessTokenResp.toPBAccessToken(),
+                                account = authenticatedUserResp.toPbAccount()
+                            )
+                        )
+                    } else {
+                        newAccounts.add(
+                            0,
+                            SignedInAccount(
+                                accessToken = accessTokenResp.toPBAccessToken(),
+                                account = authenticatedUserResp.toPbAccount()
+                            )
+                        )
+                    }
+                    signedInAccounts.copy(accounts = newAccounts)
                 }
                 _authTokenAndUserResult.value =
                     Resource(

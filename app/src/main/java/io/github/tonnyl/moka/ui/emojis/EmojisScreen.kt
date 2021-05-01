@@ -43,7 +43,9 @@ import io.github.tonnyl.moka.util.EmojiCategoryProvider
 import io.github.tonnyl.moka.util.EmojiItemProvider
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalFoundationApi
 @Composable
 fun EmojisScreen() {

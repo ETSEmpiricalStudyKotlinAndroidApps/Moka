@@ -16,11 +16,12 @@ import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
 import io.github.tonnyl.moka.data.extension.toPbAccount
 import io.github.tonnyl.moka.network.KtorClient
-import io.github.tonnyl.moka.proto.Settings
-import io.github.tonnyl.moka.proto.SignedInAccount
-import io.github.tonnyl.moka.proto.SignedInAccounts
 import io.github.tonnyl.moka.serializers.store.AccountSerializer
 import io.github.tonnyl.moka.serializers.store.SettingSerializer
+import io.github.tonnyl.moka.serializers.store.data.NotificationSyncInterval
+import io.github.tonnyl.moka.serializers.store.data.Settings
+import io.github.tonnyl.moka.serializers.store.data.SignedInAccount
+import io.github.tonnyl.moka.serializers.store.data.SignedInAccounts
 import io.github.tonnyl.moka.ui.auth.Authenticator
 import io.github.tonnyl.moka.util.json
 import io.github.tonnyl.moka.work.NotificationWorker
@@ -31,12 +32,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
+@ExperimentalSerializationApi
 class MokaApp : Application(), ImageLoaderFactory {
 
     val accountManager: AccountManager by lazy {
@@ -83,7 +86,7 @@ class MokaApp : Application(), ImageLoaderFactory {
 
                     val sortedAccounts = mutableListOf<Pair<AuthenticatedUser, AccessToken>>()
 
-                    val existingAccounts = accountsDataStore.data.single().accountsList
+                    val existingAccounts = accountsDataStore.data.single().accounts
                     existingAccounts.forEach { signedInAccount ->
                         val onDeviceAccount =
                             onDeviceAccountAndTokenPairs.find { it.first.id == signedInAccount.account.id }
@@ -101,17 +104,14 @@ class MokaApp : Application(), ImageLoaderFactory {
                     }
 
                     accountsDataStore.updateData { store ->
-                        store.toBuilder().apply {
-                            clearAccounts()
-                            addAllAccounts(
-                                sortedAccounts.map { (onDeviceAccount, token) ->
-                                    SignedInAccount.newBuilder().apply {
-                                        account = onDeviceAccount.toPbAccount()
-                                        accessToken = token.toPBAccessToken()
-                                    }.build()
-                                }
-                            )
-                        }.build()
+                        store.copy(
+                            accounts = sortedAccounts.map { (onDeviceAccount, token) ->
+                                SignedInAccount(
+                                    account = onDeviceAccount.toPbAccount(),
+                                    accessToken = token.toPBAccessToken()
+                                )
+                            }
+                        )
                     }
                 } catch (e: Exception) {
                     Timber.e(e)
@@ -134,7 +134,7 @@ class MokaApp : Application(), ImageLoaderFactory {
 
     val accountInstancesLiveData by lazy {
         accountsDataStore.data.map { accounts ->
-            accounts.accountsList.map { account ->
+            accounts.accounts.map { account ->
                 AccountInstance(this, account)
             }
         }.asLiveData()
@@ -187,27 +187,25 @@ class MokaApp : Application(), ImageLoaderFactory {
                 settingsDataStore.data.collect { settings ->
                     if (settings.enableNotifications) {
                         val intervalTimePeriod = when (settings.notificationSyncInterval) {
-                            Settings.NotificationSyncInterval.ONE_QUARTER,
-                            Settings.NotificationSyncInterval.UNRECOGNIZED,
-                            null -> {
+                            NotificationSyncInterval.ONE_QUARTER -> {
                                 15L
                             }
-                            Settings.NotificationSyncInterval.THIRTY_MINUTES -> {
+                            NotificationSyncInterval.THIRTY_MINUTES -> {
                                 30L
                             }
-                            Settings.NotificationSyncInterval.ONE_HOUR -> {
+                            NotificationSyncInterval.ONE_HOUR -> {
                                 60L
                             }
-                            Settings.NotificationSyncInterval.TWO_HOURS -> {
+                            NotificationSyncInterval.TWO_HOURS -> {
                                 60 * 2L
                             }
-                            Settings.NotificationSyncInterval.SIX_HOURS -> {
+                            NotificationSyncInterval.SIX_HOURS -> {
                                 60 * 6L
                             }
-                            Settings.NotificationSyncInterval.TWELVE_HOURS -> {
+                            NotificationSyncInterval.TWELVE_HOURS -> {
                                 60 * 12L
                             }
-                            Settings.NotificationSyncInterval.TWENTY_FOUR_HOURS -> {
+                            NotificationSyncInterval.TWENTY_FOUR_HOURS -> {
                                 60 * 24L
                             }
                         }

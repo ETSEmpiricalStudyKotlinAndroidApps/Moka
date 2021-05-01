@@ -1,6 +1,3 @@
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
@@ -11,7 +8,6 @@ plugins {
     id("kotlin-parcelize")
     kotlin("kapt")
     id("kotlinx-serialization")
-    id("com.google.protobuf").version(Versions.protoGradle)
     id("com.google.firebase.crashlytics")
     id("com.google.devtools.ksp").version(Versions.kspApi)
 }
@@ -122,17 +118,6 @@ apollo {
     }
 }
 
-protobuf {
-    protoc {
-        artifact = Deps.Google.protoc
-    }
-    generateProtoTasks {
-        all().forEach { task ->
-            task.builtins.create("java")
-        }
-    }
-}
-
 dependencies {
     implementation(fileTree(Pair("dir", "libs"), Pair("include", listOf("*.jar"))))
 
@@ -141,7 +126,8 @@ dependencies {
     implementation(Deps.Kotlin.coroutinesCore)
     implementation(Deps.Kotlin.coroutinesAndroid)
     implementation(Deps.Kotlin.dateTime)
-    implementation(Deps.Kotlin.serialization)
+    implementation(Deps.Kotlin.serializationJson)
+    implementation(Deps.Kotlin.serializationProtoBuf)
 
     // AndroidX
     implementation(Deps.AndroidX.browser)
@@ -174,7 +160,6 @@ dependencies {
     // Google
     implementation(Deps.Google.firebaseAnalyticsKtx)
     implementation(Deps.Google.firebaseCrashlytics)
-    implementation(Deps.Google.protobufJava)
     implementation(Deps.Google.material)
     implementation(Deps.Google.Accompanist.coil)
     implementation(Deps.Google.Accompanist.insets)

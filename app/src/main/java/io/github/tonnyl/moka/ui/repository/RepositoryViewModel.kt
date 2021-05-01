@@ -26,9 +26,11 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.util.HtmlHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import timber.log.Timber
 import java.util.*
 
+@ExperimentalSerializationApi
 class RepositoryViewModel(
     private val accountInstance: AccountInstance,
     private val login: String,

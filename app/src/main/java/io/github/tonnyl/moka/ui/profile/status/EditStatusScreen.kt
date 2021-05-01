@@ -39,7 +39,9 @@ import io.github.tonnyl.moka.widget.EmojiComponent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 fun EditStatusScreen(

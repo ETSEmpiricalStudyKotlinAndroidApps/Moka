@@ -10,10 +10,12 @@ import io.github.tonnyl.moka.network.api.EventApi
 import io.github.tonnyl.moka.network.api.NotificationApi
 import io.github.tonnyl.moka.network.api.TrendingApi
 import io.github.tonnyl.moka.network.api.UserApi
-import io.github.tonnyl.moka.proto.RecentEmojis
-import io.github.tonnyl.moka.proto.SignedInAccount
 import io.github.tonnyl.moka.serializers.store.EmojiSerializer
+import io.github.tonnyl.moka.serializers.store.data.RecentEmojis
+import io.github.tonnyl.moka.serializers.store.data.SignedInAccount
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 class AccountInstance(
     app: MokaApp,
     val signedInAccount: SignedInAccount
@@ -44,6 +46,7 @@ class AccountInstance(
 
 }
 
+@ExperimentalSerializationApi
 private val Context.recentEmojisDataStore: DataStore<RecentEmojis> by dataStore(
     fileName = "recent_emojis.pb",
     serializer = EmojiSerializer

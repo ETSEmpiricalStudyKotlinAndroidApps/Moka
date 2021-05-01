@@ -17,43 +17,47 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.proto.Settings
 import io.github.tonnyl.moka.serializers.store.SettingSerializer
+import io.github.tonnyl.moka.serializers.store.data.KeepData
+import io.github.tonnyl.moka.serializers.store.data.NotificationSyncInterval
+import io.github.tonnyl.moka.serializers.store.data.Settings
+import io.github.tonnyl.moka.serializers.store.data.Theme
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.PreferenceCategoryText
 import io.github.tonnyl.moka.widget.PreferenceDivider
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 
 const val SettingScreenTestTag = "SettingScreenTestTag"
 const val ChooseThemeTestTag = "ChooseThemeTestTag"
 const val EnableNotificationsTestTag = "EnableNotificationsTestTag"
 const val SyncIntervalTestTag = "SyncIntervalTestTag"
 
+@ExperimentalSerializationApi
 data class OnSettingItemClick(
-    val onThemeClick: (Settings.Theme) -> Unit,
+    val onThemeClick: (Theme) -> Unit,
     val onEnableNotificationClick: (Boolean) -> Unit,
-    val onSyncIntervalClick: (Settings.NotificationSyncInterval) -> Unit,
+    val onSyncIntervalClick: (NotificationSyncInterval) -> Unit,
     val onDndClick: (Boolean) -> Unit,
     val onAutoSaveClick: (Boolean) -> Unit,
     val onDoNotKeepSearchHistoryClick: (Boolean) -> Unit,
-    val onKeepDataClick: (Settings.KeepData) -> Unit,
+    val onKeepDataClick: (KeepData) -> Unit,
     val onClearDraftsClick: () -> Unit,
     val onClearSearchHistory: () -> Unit,
     val onClearLocalData: () -> Unit,
     val onClearImageCacheClick: () -> Unit
 )
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 fun SettingScreen() {
@@ -67,39 +71,53 @@ fun SettingScreen() {
             topAppBarSize = topAppBarSize,
             settingsFlow = mokaApp.settingsDataStore.data,
             onSettingItemClick = OnSettingItemClick(
-                onThemeClick = {
-                    updateSettingValue(coroutineScope, mokaApp.settingsDataStore) {
-                        theme = it
+                onThemeClick = { newTheme ->
+                    coroutineScope.launch {
+                        mokaApp.settingsDataStore.updateData {
+                            it.copy(theme = newTheme)
+                        }
                     }
                 },
-                onEnableNotificationClick = {
-                    updateSettingValue(coroutineScope, mokaApp.settingsDataStore) {
-                        enableNotifications = !enableNotifications
+                onEnableNotificationClick = { newEnableNotifications ->
+                    coroutineScope.launch {
+                        mokaApp.settingsDataStore.updateData {
+                            it.copy(enableNotifications = newEnableNotifications)
+                        }
                     }
                 },
-                onSyncIntervalClick = {
-                    updateSettingValue(coroutineScope, mokaApp.settingsDataStore) {
-                        notificationSyncInterval = it
+                onSyncIntervalClick = { newNotificationSyncInterval ->
+                    coroutineScope.launch {
+                        mokaApp.settingsDataStore.updateData {
+                            it.copy(notificationSyncInterval = newNotificationSyncInterval)
+                        }
                     }
                 },
-                onDndClick = {
-                    updateSettingValue(coroutineScope, mokaApp.settingsDataStore) {
-                        dnd = it
+                onDndClick = { newDnd ->
+                    coroutineScope.launch {
+                        mokaApp.settingsDataStore.updateData {
+                            it.copy(dnd = newDnd)
+                        }
                     }
                 },
-                onAutoSaveClick = {
-                    updateSettingValue(coroutineScope, mokaApp.settingsDataStore) {
-                        autoSave = it
+                onAutoSaveClick = { newAutoSave ->
+                    coroutineScope.launch {
+                        mokaApp.settingsDataStore.updateData {
+                            it.copy(autoSave = newAutoSave)
+                        }
                     }
                 },
-                onDoNotKeepSearchHistoryClick = {
-                    updateSettingValue(coroutineScope, mokaApp.settingsDataStore) {
-                        doNotKeepSearchHistory = it
+                onDoNotKeepSearchHistoryClick = { newDoNotKeepSearchHistory ->
+                    coroutineScope.launch {
+                        mokaApp.settingsDataStore.updateData {
+                            it.copy(doNotKeepSearchHistory = newDoNotKeepSearchHistory)
+                        }
                     }
                 },
-                onKeepDataClick = {
-                    updateSettingValue(coroutineScope, mokaApp.settingsDataStore) {
-                        keepData = it
+                onKeepDataClick = { newKeepData ->
+                    coroutineScope.launch {
+                        mokaApp.settingsDataStore.updateData {
+                            it.copy(keepData = newKeepData)
+                        }
                     }
                 },
                 onClearDraftsClick = {},
@@ -135,6 +153,7 @@ fun SettingScreen() {
 
 }
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 fun SettingScreenContent(
@@ -182,9 +201,7 @@ fun SettingScreenContent(
                         y = (-24).dp
                     )
                 ) {
-                    Settings.Theme.values().filter {
-                        it != Settings.Theme.UNRECOGNIZED
-                    }.map { themeOption ->
+                    Theme.values().map { themeOption ->
                         DropdownMenuItem(
                             onClick = {
                                 onSettingItemClick.onThemeClick.invoke(themeOption)
@@ -244,10 +261,7 @@ fun SettingScreenContent(
                         y = (-24).dp
                     )
                 ) {
-                    Settings.NotificationSyncInterval.values()
-                        .filter {
-                            it != Settings.NotificationSyncInterval.UNRECOGNIZED
-                        }
+                    NotificationSyncInterval.values()
                         .map { intervalOption ->
                             DropdownMenuItem(
                                 onClick = {
@@ -420,10 +434,7 @@ fun SettingScreenContent(
                         y = (-48).dp
                     )
                 ) {
-                    Settings.KeepData.values()
-                        .filter {
-                            it != Settings.KeepData.UNRECOGNIZED
-                        }
+                    KeepData.values()
                         .map { keepDataOption ->
                             DropdownMenuItem(
                                 onClick = {
@@ -468,92 +479,79 @@ fun SettingScreenContent(
     }
 }
 
-private fun updateSettingValue(
-    scope: CoroutineScope,
-    dataStore: DataStore<Settings>,
-    block: Settings.Builder.() -> Unit
-) {
-    scope.launch {
-        dataStore.updateData { currentSettings ->
-            currentSettings.toBuilder().apply {
-                block.invoke(this)
-            }.build()
-        }
-    }
-}
-
+@ExperimentalSerializationApi
 @Composable
-private fun getThemeValuesText(theme: Settings.Theme): String {
+private fun getThemeValuesText(theme: Theme): String {
     return stringResource(
-        when (theme) { // `Else` should be never used here.
-            Settings.Theme.AUTO,
-            Settings.Theme.UNRECOGNIZED -> {
+        when (theme) {
+            Theme.AUTO -> {
                 R.string.settings_choose_theme_auto
             }
-            Settings.Theme.LIGHT -> {
+            Theme.LIGHT -> {
                 R.string.settings_choose_theme_light
             }
-            Settings.Theme.DARK -> {
+            Theme.DARK -> {
                 R.string.settings_choose_theme_dark
             }
         }
     )
 }
 
+@ExperimentalSerializationApi
 @Composable
-private fun getNotificationSyncIntervalsText(intervals: Settings.NotificationSyncInterval): String {
+private fun getNotificationSyncIntervalsText(intervals: NotificationSyncInterval): String {
     return stringResource(
-        when (intervals) { // `Else` should be never used here.
-            Settings.NotificationSyncInterval.ONE_QUARTER,
-            Settings.NotificationSyncInterval.UNRECOGNIZED -> {
+        when (intervals) {
+            NotificationSyncInterval.ONE_QUARTER -> {
                 R.string.sync_interval_one_quarter
             }
-            Settings.NotificationSyncInterval.THIRTY_MINUTES -> {
+            NotificationSyncInterval.THIRTY_MINUTES -> {
                 R.string.sync_interval_thirty_minutes
             }
-            Settings.NotificationSyncInterval.ONE_HOUR -> {
+            NotificationSyncInterval.ONE_HOUR -> {
                 R.string.sync_interval_one_hour
             }
-            Settings.NotificationSyncInterval.TWO_HOURS -> {
+            NotificationSyncInterval.TWO_HOURS -> {
                 R.string.sync_interval_two_hours
             }
-            Settings.NotificationSyncInterval.SIX_HOURS -> {
+            NotificationSyncInterval.SIX_HOURS -> {
                 R.string.sync_interval_six_hours
             }
-            Settings.NotificationSyncInterval.TWELVE_HOURS -> {
+            NotificationSyncInterval.TWELVE_HOURS -> {
                 R.string.sync_interval_twelve_hours
             }
-            Settings.NotificationSyncInterval.TWENTY_FOUR_HOURS -> {
+            NotificationSyncInterval.TWENTY_FOUR_HOURS -> {
                 R.string.sync_interval_twenty_four_hours
             }
         }
     )
 }
 
+@ExperimentalSerializationApi
 @Composable
-private fun getKeepDataTimesText(keepData: Settings.KeepData): String {
+private fun getKeepDataTimesText(keepData: KeepData): String {
     return stringResource(
-        when (keepData) { // `Else` should be never used here.
-            Settings.KeepData.FOREVER,
-            Settings.KeepData.UNRECOGNIZED -> {
-                R.string.keep_data_forever
-            }
-            Settings.KeepData.ONE_DAY -> {
+        when (keepData) {
+            KeepData.ONE_DAY -> {
                 R.string.keep_data_one_day
             }
-            Settings.KeepData.THREE_DAYS -> {
+            KeepData.THREE_DAYS -> {
                 R.string.keep_data_three_days
             }
-            Settings.KeepData.ONE_WEEK -> {
+            KeepData.ONE_WEEK -> {
                 R.string.keep_data_one_week
             }
-            Settings.KeepData.ONE_MONTH -> {
+            KeepData.ONE_MONTH -> {
                 R.string.keep_data_one_month
+            }
+            KeepData.FOREVER -> {
+                R.string.keep_data_forever
             }
         }
     )
 }
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Preview(
     name = "SettingScreenContent",

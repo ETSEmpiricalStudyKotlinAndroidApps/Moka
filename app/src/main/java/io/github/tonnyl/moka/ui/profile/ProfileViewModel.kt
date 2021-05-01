@@ -18,8 +18,10 @@ import io.github.tonnyl.moka.queries.UserQuery
 import io.github.tonnyl.moka.queries.UserQuery.Data.User.Companion.user
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import timber.log.Timber
 
+@ExperimentalSerializationApi
 class ProfileViewModel(
     private val accountInstance: AccountInstance,
     private val login: String,

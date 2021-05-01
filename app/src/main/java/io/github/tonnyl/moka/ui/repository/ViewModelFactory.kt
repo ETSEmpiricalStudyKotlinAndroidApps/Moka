@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.ui.profile.ProfileType
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 class ViewModelFactory(
     private val accountInstance: AccountInstance,
     private val login: String,

@@ -30,7 +30,9 @@ import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @Composable
 @ExperimentalMaterialApi
 fun ExploreFiltersScreen(

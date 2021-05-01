@@ -48,7 +48,9 @@ import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.ItemLoadingState
 import io.github.tonnyl.moka.widget.ListSubheader
 import io.github.tonnyl.moka.widget.MainSearchBar
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable

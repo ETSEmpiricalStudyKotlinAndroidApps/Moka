@@ -6,7 +6,9 @@ import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 class PullRequestsViewModel(
     accountInstance: AccountInstance,
     owner: String,

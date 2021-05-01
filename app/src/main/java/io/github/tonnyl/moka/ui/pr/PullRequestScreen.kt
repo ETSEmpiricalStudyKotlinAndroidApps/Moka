@@ -54,7 +54,9 @@ import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
 import kotlinx.datetime.Instant
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @Composable
 fun PullRequestScreen(
     owner: String,

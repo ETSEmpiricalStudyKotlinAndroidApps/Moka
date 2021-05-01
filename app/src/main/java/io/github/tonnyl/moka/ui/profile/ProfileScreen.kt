@@ -44,7 +44,9 @@ import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import kotlinx.datetime.Instant
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel) {
@@ -151,6 +153,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
     }
 }
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 private fun ProfileScreenContent(
@@ -707,6 +710,7 @@ private fun PinnedGistCard(
 
 // Preview section start
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Preview(showBackground = true, name = "ProfileScreen")
 @Composable

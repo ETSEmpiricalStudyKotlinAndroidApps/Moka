@@ -21,6 +21,7 @@ import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.data.toDisplayContentText
 import io.github.tonnyl.moka.ui.MainActivity
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.ExperimentalSerializationApi
 import timber.log.Timber
 import android.app.Notification as AndroidNotification
 
@@ -31,6 +32,7 @@ object NotificationsCenter {
     private const val NOTIFICATION_GROUP = "io.github.tonnyl.moka.GITHUB_NOTIFICATION"
     private const val SUMMARY_ID = 0
 
+    @ExperimentalSerializationApi
     @WorkerThread
     fun showNotifications(
         context: Context,
@@ -54,6 +56,7 @@ object NotificationsCenter {
             .cancel(notificationId)
     }
 
+    @ExperimentalSerializationApi
     @WorkerThread
     private fun showNotification(
         context: Context,

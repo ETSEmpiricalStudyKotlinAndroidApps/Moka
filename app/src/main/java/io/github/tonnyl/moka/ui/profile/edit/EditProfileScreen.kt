@@ -24,7 +24,9 @@ import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 fun EditProfileScreen(

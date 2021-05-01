@@ -16,9 +16,11 @@ import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MokaTheme
+import kotlinx.serialization.ExperimentalSerializationApi
 
 class SplashActivity : ComponentActivity() {
 
+    @ExperimentalSerializationApi
     @ExperimentalAnimatedInsets
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

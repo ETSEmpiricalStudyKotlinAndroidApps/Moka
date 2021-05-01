@@ -6,10 +6,12 @@ import android.content.Intent
 import io.github.tonnyl.moka.MokaApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import timber.log.Timber
 
 class NotificationDismissReceiver : BroadcastReceiver() {
 
+    @ExperimentalSerializationApi
     override fun onReceive(context: Context?, intent: Intent?) {
         context ?: return
         intent ?: return

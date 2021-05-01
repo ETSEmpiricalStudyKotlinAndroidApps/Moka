@@ -38,7 +38,9 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.*
 import kotlinx.datetime.Instant
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 fun RepositoryScreen(

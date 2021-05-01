@@ -26,7 +26,9 @@ import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.account.AccountDialogScreen
 import io.github.tonnyl.moka.ui.theme.*
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 fun MainSearchBar(

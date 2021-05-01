@@ -44,7 +44,9 @@ import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @Composable
 fun RepositoriesScreen(
     login: String,

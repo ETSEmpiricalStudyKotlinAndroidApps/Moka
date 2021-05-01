@@ -28,6 +28,7 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.widget.MainSearchBar
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 
 private enum class ExploreCategory {
 
@@ -37,6 +38,7 @@ private enum class ExploreCategory {
 
 }
 
+@ExperimentalSerializationApi
 @Composable
 @ExperimentalMaterialApi
 fun ExploreScreen(openDrawer: () -> Unit) {

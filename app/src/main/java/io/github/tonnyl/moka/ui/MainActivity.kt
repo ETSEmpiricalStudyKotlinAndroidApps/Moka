@@ -23,7 +23,9 @@ import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.theme.*
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel> {

@@ -34,6 +34,7 @@ import io.github.tonnyl.moka.ui.auth.AuthEvent.FinishAndGo
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MokaTheme
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
+import kotlinx.serialization.ExperimentalSerializationApi
 
 class AuthActivity : ComponentActivity() {
 
@@ -41,6 +42,7 @@ class AuthActivity : ComponentActivity() {
         ViewModelFactory(this)
     })
 
+    @ExperimentalSerializationApi
     @ExperimentalAnimatedInsets
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {

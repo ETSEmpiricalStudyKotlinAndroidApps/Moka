@@ -9,7 +9,9 @@ import androidx.paging.cachedIn
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.PullRequest
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 class PullRequestViewModel(
     accountInstance: AccountInstance,
     owner: String,

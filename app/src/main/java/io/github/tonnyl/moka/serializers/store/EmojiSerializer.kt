@@ -2,26 +2,31 @@ package io.github.tonnyl.moka.serializers.store
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import com.google.protobuf.InvalidProtocolBufferException
-import io.github.tonnyl.moka.proto.RecentEmojis
+import io.github.tonnyl.moka.serializers.store.data.RecentEmojis
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.protobuf.ProtoBuf
 import java.io.InputStream
 import java.io.OutputStream
 
+@ExperimentalSerializationApi
 object EmojiSerializer : Serializer<RecentEmojis> {
 
     override val defaultValue: RecentEmojis
-        get() = RecentEmojis.getDefaultInstance()
+        get() = RecentEmojis()
 
     override suspend fun readFrom(input: InputStream): RecentEmojis {
         try {
-            return RecentEmojis.parseFrom(input)
-        } catch (e: InvalidProtocolBufferException) {
+            return ProtoBuf.decodeFromByteArray(input.readBytes())
+        } catch (e: SerializationException) {
             throw CorruptionException("Cannot read proto.", e)
         }
     }
 
     override suspend fun writeTo(t: RecentEmojis, output: OutputStream) {
-        t.writeTo(output)
+        output.write(ProtoBuf.encodeToByteArray(t))
     }
 
 }

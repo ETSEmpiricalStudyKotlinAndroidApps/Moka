@@ -14,9 +14,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import com.google.accompanist.insets.*
 import io.github.tonnyl.moka.MokaApp
-import io.github.tonnyl.moka.proto.Settings
 import io.github.tonnyl.moka.serializers.store.SettingSerializer
+import io.github.tonnyl.moka.serializers.store.data.Theme
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalAnimatedInsets
 @Composable
 fun MokaTheme(content: @Composable () -> Unit) {
@@ -26,15 +28,13 @@ fun MokaTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         shapes = MokaShapes,
         colors = when (settings.theme) {
-            Settings.Theme.LIGHT -> {
+            Theme.LIGHT -> {
                 LightThemeColors
             }
-            Settings.Theme.DARK -> {
+            Theme.DARK -> {
                 DarkThemeColors
             }
-            Settings.Theme.AUTO,
-            Settings.Theme.UNRECOGNIZED,
-            null -> {
+            Theme.AUTO -> {
                 if (isSystemInDarkTheme()) {
                     DarkThemeColors
                 } else {
@@ -47,9 +47,9 @@ fun MokaTheme(content: @Composable () -> Unit) {
             val isSystemDarkTheme = isSystemInDarkTheme()
             DisposableEffect(settings.theme) {
                 windowInsetsController?.isAppearanceLightStatusBars =
-                    !isSystemDarkTheme && settings.theme != Settings.Theme.DARK
+                    !isSystemDarkTheme && settings.theme != Theme.DARK
                 windowInsetsController?.isAppearanceLightNavigationBars =
-                    isSystemDarkTheme && settings.theme != Settings.Theme.DARK
+                    isSystemDarkTheme && settings.theme != Theme.DARK
                 onDispose { }
             }
 

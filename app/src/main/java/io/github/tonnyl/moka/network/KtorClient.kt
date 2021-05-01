@@ -8,6 +8,7 @@ import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -17,6 +18,7 @@ class KtorClient(
     accessToken: String?
 ) {
 
+    @ExperimentalSerializationApi
     val httpClient = HttpClient(OkHttp) {
         install(JsonFeature) {
             serializer = KotlinxSerializer(json)

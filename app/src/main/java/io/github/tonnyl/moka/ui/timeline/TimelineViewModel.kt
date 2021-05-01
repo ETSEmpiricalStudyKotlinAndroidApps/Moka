@@ -8,7 +8,9 @@ import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalPagingApi
 class TimelineViewModel(
     accountInstance: AccountInstance,

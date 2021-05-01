@@ -12,8 +12,10 @@ import io.github.tonnyl.moka.network.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import timber.log.Timber
 
+@ExperimentalSerializationApi
 class ExploreViewModel(
     private val accountInstance: AccountInstance
 ) : ViewModel() {

@@ -56,6 +56,7 @@ import io.github.tonnyl.moka.ui.users.UsersScreen
 import io.github.tonnyl.moka.ui.users.UsersType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import io.github.tonnyl.moka.ui.profile.ViewModelFactory as ProfileViewModelFactory
 import io.github.tonnyl.moka.ui.profile.status.ViewModelFactory as EditStatusViewModelFactory
 
@@ -155,6 +156,7 @@ sealed class Screen(val route: String) {
 
 }
 
+@ExperimentalSerializationApi
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi

@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import timber.log.Timber
 
-@OptIn(ExperimentalPagingApi::class)
+@ExperimentalPagingApi
 class NotificationRemoteMediator(
     private val notificationsApi: NotificationApi,
     private val database: MokaDataBase

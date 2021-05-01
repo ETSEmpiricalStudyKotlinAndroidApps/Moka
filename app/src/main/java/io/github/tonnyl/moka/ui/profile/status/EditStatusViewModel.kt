@@ -13,8 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import timber.log.Timber
 
+@ExperimentalSerializationApi
 class EditStatusViewModel(
     private val accountInstance: AccountInstance,
     initialEmoji: String?,

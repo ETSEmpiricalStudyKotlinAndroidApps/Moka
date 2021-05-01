@@ -42,7 +42,9 @@ import io.github.tonnyl.moka.util.UserItemProvider
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @Composable
 fun UsersScreen(
     login: String,

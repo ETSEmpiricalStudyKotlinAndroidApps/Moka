@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import timber.log.Timber
 
-@OptIn(ExperimentalPagingApi::class)
+@ExperimentalPagingApi
 class EventRemoteMediator(
     private val login: String,
     private val eventApi: EventApi,

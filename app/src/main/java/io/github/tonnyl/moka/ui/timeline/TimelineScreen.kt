@@ -44,7 +44,9 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.TimelineEventProvider
 import io.github.tonnyl.moka.widget.*
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable

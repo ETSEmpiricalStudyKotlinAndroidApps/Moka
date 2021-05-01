@@ -33,7 +33,9 @@ import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.SearchedEmojiItemProvider
 import io.github.tonnyl.moka.widget.SearchBar
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalComposeUiApi
 @Composable
 fun SearchEmojiScreen() {

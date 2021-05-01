@@ -61,6 +61,7 @@ import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
 import io.github.tonnyl.moka.widget.ThemedWebView
 import kotlinx.datetime.Instant
+import kotlinx.serialization.ExperimentalSerializationApi
 
 data class IssuePullRequestEventData(
     val iconResId: Int,
@@ -71,6 +72,7 @@ data class IssuePullRequestEventData(
     val content: AnnotatedString
 )
 
+@ExperimentalSerializationApi
 @Composable
 fun IssueScreen(
     owner: String,

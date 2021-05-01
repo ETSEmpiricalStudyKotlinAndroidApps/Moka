@@ -26,6 +26,7 @@ import io.github.tonnyl.moka.ui.search.users.SearchedUsersScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.widget.SearchBar
+import kotlinx.serialization.ExperimentalSerializationApi
 
 private enum class SearchType {
 
@@ -35,6 +36,7 @@ private enum class SearchType {
 
 }
 
+@ExperimentalSerializationApi
 @ExperimentalComposeUiApi
 @Composable
 fun SearchScreen() {

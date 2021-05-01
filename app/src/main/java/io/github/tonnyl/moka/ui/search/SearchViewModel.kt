@@ -14,7 +14,9 @@ import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 import io.github.tonnyl.moka.ui.search.repositories.SearchedRepositoriesItemDataSource
 import io.github.tonnyl.moka.ui.search.users.SearchedUsersItemDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 class SearchViewModel(
     private val accountInstance: AccountInstance
 ) : ViewModel() {

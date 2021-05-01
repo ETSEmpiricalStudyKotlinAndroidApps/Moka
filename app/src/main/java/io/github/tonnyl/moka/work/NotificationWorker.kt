@@ -11,6 +11,7 @@ import io.ktor.client.statement.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import timber.log.Timber
 
@@ -19,6 +20,7 @@ class NotificationWorker(
     params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
 
+    @ExperimentalSerializationApi
     override suspend fun doWork(): Result {
         Timber.i("NotificationWorker do work")
 

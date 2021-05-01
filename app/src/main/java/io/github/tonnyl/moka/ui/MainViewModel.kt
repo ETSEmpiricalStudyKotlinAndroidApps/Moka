@@ -5,17 +5,19 @@ import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.data.EmojiCategory
 import io.github.tonnyl.moka.data.SearchableEmoji
-import io.github.tonnyl.moka.proto.SignedInAccount
+import io.github.tonnyl.moka.serializers.store.data.SignedInAccount
 import io.github.tonnyl.moka.ui.explore.LocalLanguage
 import io.github.tonnyl.moka.util.json
 import io.github.tonnyl.moka.util.readEmojisFromAssets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import okio.buffer
 import okio.source
 import timber.log.Timber
 
+@ExperimentalSerializationApi
 class MainViewModel(
     app: MokaApp
 ) : AndroidViewModel(app) {
@@ -153,10 +155,10 @@ class MainViewModel(
         viewModelScope.launch {
             try {
                 getApplication<MokaApp>().accountsDataStore.updateData { store ->
-                    store.toBuilder()
-                        .removeAccounts(index)
-                        .addAccounts(0, account)
-                        .build()
+                    val newAccounts = store.accounts.toMutableList()
+                    newAccounts.removeAt(index = index)
+                    newAccounts.add(0, account)
+                    store.copy(accounts = newAccounts)
                 }
             } catch (e: Exception) {
                 Timber.e(e)

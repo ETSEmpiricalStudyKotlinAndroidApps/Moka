@@ -2,37 +2,42 @@ package io.github.tonnyl.moka.serializers.store
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import com.google.protobuf.InvalidProtocolBufferException
-import io.github.tonnyl.moka.proto.Settings
+import io.github.tonnyl.moka.serializers.store.data.KeepData
+import io.github.tonnyl.moka.serializers.store.data.NotificationSyncInterval
+import io.github.tonnyl.moka.serializers.store.data.Settings
+import io.github.tonnyl.moka.serializers.store.data.Theme
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.protobuf.ProtoBuf
 import java.io.InputStream
 import java.io.OutputStream
 
+@ExperimentalSerializationApi
 object SettingSerializer : Serializer<Settings> {
 
     override val defaultValue: Settings
-        get() = Settings.getDefaultInstance()
-            .toBuilder()
-            .apply {
-                theme = Settings.Theme.AUTO
-                enableNotifications = true
-                notificationSyncInterval = Settings.NotificationSyncInterval.ONE_QUARTER
-                dnd = true
-                doNotKeepSearchHistory = true
-                keepData = Settings.KeepData.FOREVER
-                autoSave = true
-            }
-            .build()
+        get() = Settings(
+            theme = Theme.AUTO,
+            enableNotifications = true,
+            notificationSyncInterval = NotificationSyncInterval.ONE_QUARTER,
+            dnd = true,
+            doNotKeepSearchHistory = true,
+            keepData = KeepData.FOREVER,
+            autoSave = true
+        )
 
     override suspend fun readFrom(input: InputStream): Settings {
         try {
-            return Settings.parseFrom(input)
-        } catch (e: InvalidProtocolBufferException) {
+            return ProtoBuf.decodeFromByteArray(input.readBytes())
+        } catch (e: SerializationException) {
             throw CorruptionException("Cannot read proto.", e)
         }
     }
 
     override suspend fun writeTo(t: Settings, output: OutputStream) {
-        t.writeTo(output)
+        output.write(ProtoBuf.encodeToByteArray(t))
     }
 
 }

@@ -9,7 +9,9 @@ import androidx.paging.cachedIn
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.Issue
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 class IssueViewModel(
     accountInstance: AccountInstance,
     owner: String,

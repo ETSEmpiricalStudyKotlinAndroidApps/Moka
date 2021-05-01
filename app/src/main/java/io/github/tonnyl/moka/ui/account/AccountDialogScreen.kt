@@ -35,7 +35,9 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.OutlineChip
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 fun AccountDialogScreen(showState: MutableState<Boolean>) {
@@ -60,6 +62,7 @@ fun AccountDialogScreen(showState: MutableState<Boolean>) {
     }
 }
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 private fun AccountDialogScreenContent(
@@ -202,6 +205,7 @@ private fun AccountDialogScreenContent(
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun ItemAccount(
     isCurrentLoginUser: Boolean,
@@ -280,6 +284,7 @@ private fun ItemAccount(
 }
 
 
+@ExperimentalSerializationApi
 @SuppressLint("UnrememberedMutableState")
 @ExperimentalMaterialApi
 @Preview(

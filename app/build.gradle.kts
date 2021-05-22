@@ -164,6 +164,8 @@ dependencies {
     implementation(Deps.Google.Accompanist.coil)
     implementation(Deps.Google.Accompanist.insets)
     implementation(Deps.Google.Accompanist.swipeRefresh)
+    implementation(Deps.Google.Accompanist.pager)
+    implementation(Deps.Google.Accompanist.pagerIndicators)
 
     // OkHttp
     implementation(Deps.OkHttp.loggingInterceptor)

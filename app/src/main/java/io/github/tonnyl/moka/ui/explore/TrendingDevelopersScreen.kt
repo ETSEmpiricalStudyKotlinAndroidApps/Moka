@@ -1,18 +1,13 @@
 package io.github.tonnyl.moka.ui.explore
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
@@ -28,92 +25,84 @@ import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingDeveloperRepository
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.IconSize
-import io.github.tonnyl.moka.widget.Pager
-import io.github.tonnyl.moka.widget.PagerState
+import io.github.tonnyl.moka.ui.theme.DividerSize
 
 @Composable
-fun TrendingDevelopersScreen(
-    pagerState: PagerState = remember { PagerState() },
-    developers: List<TrendingDeveloper>
-) {
-    Pager(
-        state = pagerState
-    ) {
-        LazyColumn {
-            items(count = developers.size) { index ->
-                TrendingDeveloperItem(
-                    index = index,
-                    developer = developers[index]
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun TrendingDeveloperItem(
+fun TrendingDeveloperItem(
     index: Int,
     developer: TrendingDeveloper
 ) {
-    Row(
+    Card(
+        border = BorderStroke(
+            width = DividerSize,
+            color = MaterialTheme.colors.onBackground.copy(alpha = .12f)
+        ),
+        elevation = 0.dp,
         modifier = Modifier
-            .clip(shape = MaterialTheme.shapes.medium)
+            .padding(
+                start = if (index != 0) {
+                    ContentPaddingLargeSize
+                } else {
+                    0.dp
+                }
+            )
             .clickable {
 
             }
-            .padding(all = ContentPaddingLargeSize)
+            .width(width = 180.dp)
+            .height(height = 240.dp)
     ) {
-        Image(
-            painter = rememberCoilPainter(
-                request = developer.avatar,
-                requestBuilder = {
-                    createAvatarLoadRequest()
-                }
-            ),
-            contentDescription = stringResource(id = R.string.users_avatar_content_description),
-            modifier = Modifier
-                .size(size = IconSize)
-                .clip(shape = CircleShape)
-                .clickable(onClick = {})
-        )
-        Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
-        Column {
-            Row {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-                    Text(
-                        text = developer.name?.let {
-                            stringResource(
-                                R.string.explore_trending_developer_name,
-                                developer.username,
-                                it
-                            )
-                        } ?: developer.username,
-                        style = MaterialTheme.typography.subtitle1,
-                        modifier = Modifier.weight(weight = 1f)
-                    )
-                    Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
-                    Box(
-                        modifier = Modifier
-                            .size(size = 20.dp)
-                            .clip(shape = CircleShape)
-                            .background(color = MaterialTheme.colors.primary),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = (index + 1).toString(),
-                            color = MaterialTheme.colors.background
-                        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(all = ContentPaddingLargeSize)
+        ) {
+            Image(
+                painter = rememberCoilPainter(
+                    request = developer.avatar,
+                    requestBuilder = {
+                        createAvatarLoadRequest()
                     }
-                }
-            }
+                ),
+                contentDescription = stringResource(id = R.string.users_avatar_content_description),
+                modifier = Modifier
+                    .size(size = 80.dp)
+                    .clip(shape = CircleShape)
+            )
+            Spacer(modifier = Modifier.height(height = ContentPaddingLargeSize))
+            Text(
+                text = stringResource(
+                    id = R.string.user_profile_pinned_item_caption_format,
+                    developer.name.takeIf { !it.isNullOrEmpty() } ?: developer.username
+                ),
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.Center,
+                maxLines = 1
+            )
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = trendingDeveloperDescContent(
-                        developer.repository.name,
-                        developer.repository.description
-                    )
+                    text = stringResource(
+                        id = R.string.user_profile_pinned_item_caption_format,
+                        developer.username
+                    ),
+                    style = MaterialTheme.typography.body1,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
                 )
+            }
+            if (developer.repository != null) {
+                Spacer(modifier = Modifier.height(height = ContentPaddingLargeSize))
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Text(
+                        text = trendingDeveloperDescContent(
+                            developer.repository.name,
+                            developer.repository.description
+                        ),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.caption,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }

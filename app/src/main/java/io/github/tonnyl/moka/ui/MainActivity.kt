@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
+import com.google.accompanist.pager.ExperimentalPagerApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.theme.*
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
         MainViewModelFactory(applicationContext as MokaApp)
     }
 
+    @ExperimentalPagerApi
     @ExperimentalAnimatedInsets
     @ExperimentalComposeUiApi
     @ExperimentalFoundationApi

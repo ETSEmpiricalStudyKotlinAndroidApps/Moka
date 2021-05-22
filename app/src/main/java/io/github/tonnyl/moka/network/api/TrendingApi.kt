@@ -20,7 +20,7 @@ class TrendingApi(private val ktorClient: HttpClient) {
         since: String
     ): List<TrendingRepository> {
         return ktorClient.get(
-            urlString = "https://github-trending-api.now.sh/repositories?language=${language}&since=${since}"
+            urlString = "https://gtrending.yapie.me/repositories?language=${language.orEmpty()}&since=${since}"
         )
     }
 
@@ -37,7 +37,7 @@ class TrendingApi(private val ktorClient: HttpClient) {
         since: String
     ): List<TrendingDeveloper> {
         return ktorClient.get(
-            urlString = "https://github-trending-api.now.sh/developers?language=${language}&since=${since}"
+            urlString = "https://gtrending.yapie.me/developers?language=${language.orEmpty()}&since=${since}"
         )
     }
 

@@ -25,6 +25,7 @@ import androidx.navigation.compose.*
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
+import com.google.accompanist.pager.ExperimentalPagerApi
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
@@ -156,6 +157,7 @@ sealed class Screen(val route: String) {
 
 }
 
+@ExperimentalPagerApi
 @ExperimentalSerializationApi
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi

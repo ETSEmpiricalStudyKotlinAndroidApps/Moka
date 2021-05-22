@@ -137,7 +137,7 @@ class MokaApp : Application(), ImageLoaderFactory {
             accounts.accounts.map { account ->
                 AccountInstance(this, account)
             }
-        }.asLiveData()
+        }.asLiveData(timeoutInMs = Long.MAX_VALUE)
     }
 
     val unauthenticatedKtorClient by lazy {

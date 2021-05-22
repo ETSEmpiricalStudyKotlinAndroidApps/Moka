@@ -5,6 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -15,29 +16,30 @@ data class TrendingDeveloper(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     @Transient // local field
-    var id: Int = 0,
+    val id: Int = 0,
 
     @ColumnInfo(name = "username")
-    var username: String,
+    val username: String,
 
     @ColumnInfo(name = "name")
-    var name: String? = null,
+    val name: String? = null,
 
     /**
      * could be organization or user.
      */
     @ColumnInfo(name = "type")
-    var type: String? = null,
+    val type: String? = null,
 
     @ColumnInfo(name = "url")
-    var url: String,
+    val url: String,
 
     @ColumnInfo(name = "avatar")
-    var avatar: String,
+    val avatar: String,
 
+    @SerialName("repo")
     @Contextual
     @Embedded(prefix = "trending_developer_repository_")
-    var repository: TrendingDeveloperRepository
+    val repository: TrendingDeveloperRepository? = null
 
 )
 
@@ -45,12 +47,12 @@ data class TrendingDeveloper(
 data class TrendingDeveloperRepository(
 
     @ColumnInfo(name = "name")
-    var name: String,
+    val name: String,
 
     @ColumnInfo(name = "description")
-    var description: String? = null,
+    val description: String? = null,
 
     @ColumnInfo(name = "url")
-    var url: String
+    val url: String
 
 )

@@ -17,37 +17,37 @@ data class TrendingRepository(
     val id: Int = 0,
 
     @ColumnInfo(name = "author")
-    var author: String,
+    val author: String,
 
     @ColumnInfo(name = "name")
-    var name: String,
+    val name: String,
 
     @ColumnInfo(name = "avatar")
-    var avatar: String,
+    val avatar: String,
 
     @ColumnInfo(name = "url")
-    var url: String,
+    val url: String,
 
     @ColumnInfo(name = "description")
-    var description: String? = null,
+    val description: String? = null,
 
     @ColumnInfo(name = "language")
-    var language: String? = null,
+    val language: String? = null,
 
     @ColumnInfo(name = "language_color")
-    var languageColor: String? = null,
+    val languageColor: String? = null,
 
     @ColumnInfo(name = "stars")
-    var stars: Int,
+    val stars: Int,
 
     @ColumnInfo(name = "forks")
-    var forks: Int,
+    val forks: Int,
 
     @ColumnInfo(name = "current_period_stars")
-    var currentPeriodStars: Int,
+    val currentPeriodStars: Int,
 
     @Contextual
-    var builtBy: List<TrendingRepositoryBuiltBy>
+    val builtBy: List<TrendingRepositoryBuiltBy>
 
 )
 
@@ -55,12 +55,12 @@ data class TrendingRepository(
 data class TrendingRepositoryBuiltBy(
 
     @ColumnInfo(name = "href")
-    var href: String,
+    val href: String,
 
     @ColumnInfo(name = "avatar")
-    var avatar: String,
+    val avatar: String,
 
     @ColumnInfo(name = "username")
-    var username: String
+    val username: String
 
 )

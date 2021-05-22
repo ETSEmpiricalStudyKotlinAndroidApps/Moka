@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
@@ -12,7 +11,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,33 +29,9 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IconSize
 import io.github.tonnyl.moka.util.formatWithSuffix
 import io.github.tonnyl.moka.util.toColor
-import io.github.tonnyl.moka.widget.Pager
-import io.github.tonnyl.moka.widget.PagerState
 
 @Composable
-fun TrendingRepositoriesScreen(
-    pagerState: PagerState = remember { PagerState() },
-    repositories: List<TrendingRepository>
-) {
-    Pager(
-        state = pagerState
-    ) {
-        LazyColumn {
-            items(count = repositories.size) { index ->
-                TrendingRepositoryItem(
-                    index = index,
-                    repository = repositories[index]
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun TrendingRepositoryItem(
-    index: Int,
-    repository: TrendingRepository
-) {
+fun TrendingRepositoryItem(repository: TrendingRepository) {
     Row(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
@@ -92,21 +66,8 @@ private fun TrendingRepositoryItem(
                             repository.name
                         ),
                         style = MaterialTheme.typography.subtitle1,
+                        color = MaterialTheme.colors.primary,
                         modifier = Modifier.weight(weight = 1f)
-                    )
-                }
-                Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
-                Box(
-                    modifier = Modifier
-                        .size(size = 20.dp)
-                        .clip(shape = CircleShape)
-                        .background(color = MaterialTheme.colors.primary),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = (index + 1).toString(),
-                        color = MaterialTheme.colors.background,
-                        style = MaterialTheme.typography.subtitle1
                     )
                 }
             }
@@ -178,7 +139,6 @@ private fun TrendingRepositoryItem(
 @Composable
 private fun TrendingRepositoriesScreenPreview() {
     TrendingRepositoryItem(
-        index = 0,
         repository = TrendingRepository(
             author = "TonnyL",
             name = "PaperPlane",

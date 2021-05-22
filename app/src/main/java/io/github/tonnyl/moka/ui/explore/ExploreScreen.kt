@@ -1,10 +1,10 @@
 package io.github.tonnyl.moka.ui.explore
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -14,30 +14,29 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingRepository
+import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.widget.ListSubheader
 import io.github.tonnyl.moka.widget.MainSearchBar
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
-private enum class ExploreCategory {
-
-    Repositories,
-
-    Developers,
-
-}
-
+@ExperimentalPagerApi
 @ExperimentalSerializationApi
 @Composable
 @ExperimentalMaterialApi
@@ -52,6 +51,9 @@ fun ExploreScreen(openDrawer: () -> Unit) {
     val trendingDevelopers by exploreViewModel.developersLocalData.observeAsState(emptyList())
     val trendingRepositories by exploreViewModel.repositoriesLocalData.observeAsState(emptyList())
 
+    val remoteDevelopersStatus by exploreViewModel.developersRemoteStatus.observeAsState()
+    val remoteRepositoriesStatus by exploreViewModel.repositoriesRemoteStatus.observeAsState()
+
     val bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
@@ -59,21 +61,37 @@ fun ExploreScreen(openDrawer: () -> Unit) {
     ExploreFiltersScreen(sheetState = bottomSheetState) {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        Box {
-            MainSearchBar(
-                openDrawer = openDrawer,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .onSizeChanged { topAppBarSize = it.height }
-                    .statusBarsPadding()
-                    .navigationBarsPadding(bottom = false)
-            )
+        val contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
+            top = false,
+            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
+        )
 
-            ExploreScreenContent(
-                topAppBarSize = topAppBarSize,
-                trendingRepositories = trendingRepositories,
-                trendingDevelopers = trendingDevelopers
-            )
+        Box {
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(
+                    isRefreshing = remoteDevelopersStatus?.status == Status.LOADING
+                            && remoteRepositoriesStatus?.status == Status.LOADING
+                ),
+                onRefresh = {
+                    exploreViewModel.refreshTrendingDevelopers()
+                    exploreViewModel.refreshTrendingRepositories()
+                },
+                indicatorPadding = contentPadding,
+                indicator = { state, refreshTriggerDistance ->
+                    SwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = refreshTriggerDistance,
+                        scale = true,
+                        contentColor = MaterialTheme.colors.secondary
+                    )
+                }
+            ) {
+                ExploreScreenContent(
+                    contentTopPadding = contentPadding.calculateTopPadding(),
+                    trendingRepositories = trendingRepositories,
+                    trendingDevelopers = trendingDevelopers
+                )
+            }
 
             FloatingActionButton(
                 onClick = {
@@ -91,87 +109,73 @@ fun ExploreScreen(openDrawer: () -> Unit) {
                     painter = painterResource(id = R.drawable.ic_filter_24)
                 )
             }
+
+            MainSearchBar(
+                openDrawer = openDrawer,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onSizeChanged { topAppBarSize = it.height }
+                    .statusBarsPadding()
+                    .navigationBarsPadding(bottom = false)
+            )
         }
     }
 }
 
+@ExperimentalPagerApi
 @Composable
 private fun ExploreScreenContent(
-    topAppBarSize: Int,
+    contentTopPadding: Dp,
     trendingRepositories: List<TrendingRepository>,
     trendingDevelopers: List<TrendingDeveloper>
 ) {
-    Column(
-        modifier = Modifier.padding(
-            top = LocalWindowInsets.current.systemBars.toPaddingValues(
-                top = false,
-                additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
-            ).calculateTopPadding()
-        )
-    ) {
-        var selectedTabIndex by remember { mutableStateOf(ExploreCategory.Repositories) }
-        TabRow(
-            selectedTabIndex = selectedTabIndex.ordinal,
-            indicator = @Composable { tabPositions: List<TabPosition> ->
-                Spacer(
-                    Modifier
-                        .tabIndicatorOffset(currentTabPosition = tabPositions[selectedTabIndex.ordinal])
-                        .padding(horizontal = 24.dp)
-                        .height(height = ContentPaddingSmallSize)
-                        .background(
-                            color = MaterialTheme.colors.primary,
-                            shape = RoundedCornerShape(
-                                topStartPercent = 100,
-                                topEndPercent = 100
-                            )
-                        )
+    val developersHorizontalScrollState = rememberLazyListState()
+
+    LazyColumn {
+        item {
+            Spacer(modifier = Modifier.height(height = contentTopPadding))
+        }
+
+        item {
+            ListSubheader(
+                text = stringResource(
+                    id = R.string.explore_title,
+                    stringResource(id = R.string.explore_trending_filter_all_languages),
+                    stringResource(id = R.string.explore_trending_filter_time_span_daily)
                 )
-            },
-            backgroundColor = MaterialTheme.colors.background
-        ) {
-            ExploreCategory.values().forEach { exploreCategory ->
-                Tab(
-                    selected = exploreCategory == selectedTabIndex,
-                    onClick = {
-                        selectedTabIndex = exploreCategory
-                    },
-                    text = {
-                        Text(
-                            text = stringResource(
-                                when (exploreCategory) {
-                                    ExploreCategory.Repositories -> {
-                                        R.string.explore_trending_repositories
-                                    }
-                                    ExploreCategory.Developers -> {
-                                        R.string.explore_trending_developers
-                                    }
-                                }
-                            ),
-                            style = MaterialTheme.typography.body2
-                        )
-                    },
-                    selectedContentColor = MaterialTheme.colors.primary,
-                    unselectedContentColor = MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium)
-                )
+            )
+        }
+
+        item {
+            LazyRow(
+                state = developersHorizontalScrollState,
+                contentPadding = PaddingValues(horizontal = ContentPaddingLargeSize)
+            ) {
+                items(count = trendingDevelopers.size) { index ->
+                    TrendingDeveloperItem(
+                        index = index,
+                        developer = trendingDevelopers[index]
+                    )
+                }
             }
         }
 
-        when (selectedTabIndex) {
-            ExploreCategory.Repositories -> {
-                TrendingRepositoriesScreen(repositories = trendingRepositories)
-            }
-            ExploreCategory.Developers -> {
-                TrendingDevelopersScreen(developers = trendingDevelopers)
-            }
+        item {
+            Spacer(modifier = Modifier.height(height = ContentPaddingLargeSize))
+        }
+
+        items(count = trendingRepositories.size) { index ->
+            TrendingRepositoryItem(repository = trendingRepositories[index])
         }
     }
 }
 
+@ExperimentalPagerApi
 @Composable
 @Preview(name = "ExploreScreenContentPreview", showBackground = true)
 private fun ExploreScreenContentPreview() {
     ExploreScreenContent(
-        topAppBarSize = 0,
+        contentTopPadding = 0.dp,
         trendingRepositories = emptyList(),
         trendingDevelopers = emptyList()
     )

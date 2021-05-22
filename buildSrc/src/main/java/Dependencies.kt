@@ -160,6 +160,9 @@ object Deps {
             const val insets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
             const val swipeRefresh =
                 "com.google.accompanist:accompanist-swiperefresh:${Versions.accompanist}"
+            const val pager = "com.google.accompanist:accompanist-pager:${Versions.accompanist}"
+            const val pagerIndicators =
+                "com.google.accompanist:accompanist-pager-indicators:${Versions.accompanist}"
 
         }
 

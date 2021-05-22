@@ -540,7 +540,7 @@ fun MainDrawerContent(
     val navigate: (String, Boolean) -> Unit = { route, _ ->
         navController.navigateUp()
         navController.navigate(route = route) {
-            popUpTo = navController.graph.startDestination
+            popUpTo = navController.graph.startDestinationId
             launchSingleTop = true
         }
 

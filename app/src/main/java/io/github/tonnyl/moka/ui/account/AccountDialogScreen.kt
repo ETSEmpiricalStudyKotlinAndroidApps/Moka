@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.compose.navigate
 import com.google.accompanist.coil.rememberCoilPainter
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp

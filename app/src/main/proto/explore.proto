@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_package = "io.github.tonnyl.moka.proto";
+option java_multiple_files = true;
+
+message ExploreOptions {
+
+  enum ExploreTimeSpan {
+    DAILY = 0;
+    WEEKLY = 1;
+    MONTHLY = 2;
+  }
+
+  ExploreTimeSpan explore_time_span = 1;
+  ExploreLanguage explore_language = 2;
+
+}
+
+message ExploreLanguage {
+
+  string url_param = 1;
+  string name = 2;
+  string color = 3;
+
+}

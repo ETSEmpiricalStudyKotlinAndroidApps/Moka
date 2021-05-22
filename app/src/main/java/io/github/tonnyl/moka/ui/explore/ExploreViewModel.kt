@@ -1,17 +1,15 @@
 package io.github.tonnyl.moka.ui.explore
 
-import androidx.annotation.MainThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import io.github.tonnyl.moka.AccountInstance
-import io.github.tonnyl.moka.data.TrendingDeveloper
-import io.github.tonnyl.moka.data.TrendingRepository
 import io.github.tonnyl.moka.network.Resource
+import io.github.tonnyl.moka.serializers.store.ExploreOptionsSerializer
+import io.github.tonnyl.moka.serializers.store.data.ExploreLanguage
+import io.github.tonnyl.moka.serializers.store.data.ExploreOptions
+import io.github.tonnyl.moka.serializers.store.data.ExploreTimeSpan
+import io.github.tonnyl.moka.serializers.store.data.urlParamValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import timber.log.Timber
 
@@ -20,91 +18,80 @@ class ExploreViewModel(
     private val accountInstance: AccountInstance
 ) : ViewModel() {
 
-    private val _queryData = MutableLiveData<Pair<ExploreTimeSpanType, LocalLanguage?>>()
-    val queryData: LiveData<Pair<ExploreTimeSpanType, LocalLanguage?>>
+    private val _queryData =
+        accountInstance.exploreOptionsDataStore.data.asLiveData(context = viewModelScope.coroutineContext)
+    val queryData: LiveData<ExploreOptions>
         get() = _queryData
 
-    private val _repositoriesRemoteStatus = MutableLiveData<Resource<List<TrendingRepository>>>()
-    val repositoriesRemoteStatus: LiveData<Resource<List<TrendingRepository>>>
-        get() = _repositoriesRemoteStatus
-
-    private val _developersRemoteStatus = MutableLiveData<Resource<List<TrendingDeveloper>>>()
-    val developersRemoteStatus: LiveData<Resource<List<TrendingDeveloper>>>
-        get() = _developersRemoteStatus
+    private val _refreshDataStatus = MutableLiveData<Resource<Unit>>()
+    val refreshDataStatus: LiveData<Resource<Unit>>
+        get() = _refreshDataStatus
 
     val repositoriesLocalData =
         accountInstance.database.trendingRepositoriesDao().trendingRepositories()
     val developersLocalData = accountInstance.database.trendingDevelopersDao().trendingDevelopers()
 
     init {
-        // todo store/restore value from sp.
-        _queryData.value = Pair(
-            ExploreTimeSpanType.DAILY,
-            LocalLanguage(null, "All Languages", "#ECECEC")
-        )
-
-        refreshTrendingDevelopers()
-        refreshTrendingRepositories()
+        refreshTrendingData()
     }
 
-    @MainThread
-    fun refreshTrendingDevelopers() {
-        val queryDataValue = queryData.value ?: return
+    fun refreshTrendingData() {
+        val queryDataValue = queryData.value ?: ExploreOptionsSerializer.defaultValue
 
-        _developersRemoteStatus.value = Resource.loading(null)
-
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = withContext(Dispatchers.IO) {
-                    accountInstance.trendingApi.listTrendingDevelopers(
-                        since = queryDataValue.first.value,
-                        language = queryDataValue.second?.urlParam
-                    )
+                val developers = accountInstance.trendingApi.listTrendingDevelopers(
+                    since = queryDataValue.timeSpan.urlParamValue,
+                    language = queryDataValue.exploreLanguage.urlParam
+                )
+
+                val repositories = accountInstance.trendingApi.listTrendingRepositories(
+                    since = queryDataValue.timeSpan.urlParamValue,
+                    language = queryDataValue.exploreLanguage.urlParam
+                )
+
+                if (!developers.isNullOrEmpty()) {
+                    accountInstance.database.trendingDevelopersDao().deleteAll()
+                    accountInstance.database.trendingDevelopersDao().insert(developers = developers)
                 }
 
-                withContext(Dispatchers.IO) {
-                    if (!response.isNullOrEmpty()) {
-                        accountInstance.database.trendingDevelopersDao().deleteAll()
-                        accountInstance.database.trendingDevelopersDao().insert(response)
-                    }
+                if (!repositories.isNullOrEmpty()) {
+                    accountInstance.database.trendingRepositoriesDao().deleteAll()
+                    accountInstance.database.trendingRepositoriesDao()
+                        .insert(repositories = repositories)
                 }
 
-                _developersRemoteStatus.value = Resource.success(response)
+                _refreshDataStatus.postValue(Resource.success(Unit))
             } catch (e: Exception) {
                 Timber.e(e)
 
-                _developersRemoteStatus.value = Resource.error(e.message, null)
+                _refreshDataStatus.postValue(Resource.error(e.message, null))
             }
         }
     }
 
-    @MainThread
-    fun refreshTrendingRepositories() {
-        val queryDataValue = queryData.value ?: return
-
-        _repositoriesRemoteStatus.value = Resource.loading(null)
+    fun updateExploreOptions(
+        exploreLanguage: ExploreLanguage,
+        timeSpan: ExploreTimeSpan
+    ) {
+        if (exploreLanguage == queryData.value?.exploreLanguage
+            && timeSpan == queryData.value?.timeSpan
+        ) {
+            return
+        }
 
         viewModelScope.launch {
             try {
-                val response = withContext(Dispatchers.IO) {
-                    accountInstance.trendingApi.listTrendingRepositories(
-                        since = queryDataValue.first.value,
-                        language = queryDataValue.second?.urlParam
+                accountInstance.exploreOptionsDataStore.updateData {
+                    ExploreOptions(
+                        timeSpan = timeSpan,
+                        exploreLanguage = exploreLanguage
                     )
                 }
 
-                withContext(Dispatchers.IO) {
-                    if (!response.isNullOrEmpty()) {
-                        accountInstance.database.trendingRepositoriesDao().deleteAll()
-                        accountInstance.database.trendingRepositoriesDao().insert(response)
-                    }
-                }
-
-                _repositoriesRemoteStatus.value = Resource.success(response)
+                refreshTrendingData()
             } catch (e: Exception) {
                 Timber.e(e)
-
-                _repositoriesRemoteStatus.value = Resource.error(e.message, null)
             }
         }
     }

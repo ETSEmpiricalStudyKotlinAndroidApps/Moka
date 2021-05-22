@@ -388,7 +388,7 @@
     <string name="search_input_hint">Search repositories &amp; users</string>
 
     <string name="explore_title">Explore (%1$s | %2$s)</string>
-    <string name="explore_filter_info">%1$s | %2$s</string> <!--All Languages | Daily-->
+    <string name="explore_filter_divider">&#160;|&#160;</string>
     <string name="explore_period_stars">%1$d stars %2$s</string> <!--123 stars today-->
     <string name="explore_filter_done">done</string>
     <string name="explore_trending_repositories">Repositories</string>

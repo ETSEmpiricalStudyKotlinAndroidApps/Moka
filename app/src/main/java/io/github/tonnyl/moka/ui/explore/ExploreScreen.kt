@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.explore
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -29,6 +30,10 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingRepository
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.serializers.store.ExploreOptionsSerializer
+import io.github.tonnyl.moka.serializers.store.data.ExploreOptions
+import io.github.tonnyl.moka.serializers.store.data.displayStringResId
+import io.github.tonnyl.moka.serializers.store.data.urlParamValue
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.widget.ListSubheader
@@ -36,6 +41,7 @@ import io.github.tonnyl.moka.widget.MainSearchBar
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @ExperimentalSerializationApi
 @Composable
@@ -48,11 +54,12 @@ fun ExploreScreen(openDrawer: () -> Unit) {
         factory = ViewModelFactory(accountInstance = currentAccount)
     )
 
+    val exploreOptions by exploreViewModel.queryData.observeAsState(initial = ExploreOptionsSerializer.defaultValue)
+
     val trendingDevelopers by exploreViewModel.developersLocalData.observeAsState(emptyList())
     val trendingRepositories by exploreViewModel.repositoriesLocalData.observeAsState(emptyList())
 
-    val remoteDevelopersStatus by exploreViewModel.developersRemoteStatus.observeAsState()
-    val remoteRepositoriesStatus by exploreViewModel.repositoriesRemoteStatus.observeAsState()
+    val refreshStatus by exploreViewModel.refreshDataStatus.observeAsState()
 
     val bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -66,15 +73,13 @@ fun ExploreScreen(openDrawer: () -> Unit) {
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
         )
 
-        Box {
+        Box(modifier = Modifier.fillMaxSize()) {
             SwipeRefresh(
                 state = rememberSwipeRefreshState(
-                    isRefreshing = remoteDevelopersStatus?.status == Status.LOADING
-                            && remoteRepositoriesStatus?.status == Status.LOADING
+                    isRefreshing = refreshStatus?.status == Status.LOADING
                 ),
                 onRefresh = {
-                    exploreViewModel.refreshTrendingDevelopers()
-                    exploreViewModel.refreshTrendingRepositories()
+                    exploreViewModel.refreshTrendingData()
                 },
                 indicatorPadding = contentPadding,
                 indicator = { state, refreshTriggerDistance ->
@@ -87,6 +92,7 @@ fun ExploreScreen(openDrawer: () -> Unit) {
                 }
             ) {
                 ExploreScreenContent(
+                    exploreOptions = exploreOptions,
                     contentTopPadding = contentPadding.calculateTopPadding(),
                     trendingRepositories = trendingRepositories,
                     trendingDevelopers = trendingDevelopers
@@ -122,10 +128,12 @@ fun ExploreScreen(openDrawer: () -> Unit) {
     }
 }
 
+@ExperimentalSerializationApi
 @ExperimentalPagerApi
 @Composable
 private fun ExploreScreenContent(
     contentTopPadding: Dp,
+    exploreOptions: ExploreOptions,
     trendingRepositories: List<TrendingRepository>,
     trendingDevelopers: List<TrendingDeveloper>
 ) {
@@ -140,8 +148,8 @@ private fun ExploreScreenContent(
             ListSubheader(
                 text = stringResource(
                     id = R.string.explore_title,
-                    stringResource(id = R.string.explore_trending_filter_all_languages),
-                    stringResource(id = R.string.explore_trending_filter_time_span_daily)
+                    exploreOptions.exploreLanguage.name,
+                    stringResource(id = exploreOptions.timeSpan.displayStringResId)
                 )
             )
         }
@@ -165,17 +173,22 @@ private fun ExploreScreenContent(
         }
 
         items(count = trendingRepositories.size) { index ->
-            TrendingRepositoryItem(repository = trendingRepositories[index])
+            TrendingRepositoryItem(
+                timeSpanText = exploreOptions.timeSpan.urlParamValue,
+                repository = trendingRepositories[index]
+            )
         }
     }
 }
 
+@ExperimentalSerializationApi
 @ExperimentalPagerApi
 @Composable
 @Preview(name = "ExploreScreenContentPreview", showBackground = true)
 private fun ExploreScreenContentPreview() {
     ExploreScreenContent(
         contentTopPadding = 0.dp,
+        exploreOptions = ExploreOptionsSerializer.defaultValue,
         trendingRepositories = emptyList(),
         trendingDevelopers = emptyList()
     )

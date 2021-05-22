@@ -5,8 +5,8 @@ import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.data.EmojiCategory
 import io.github.tonnyl.moka.data.SearchableEmoji
+import io.github.tonnyl.moka.serializers.store.data.ExploreLanguage
 import io.github.tonnyl.moka.serializers.store.data.SignedInAccount
-import io.github.tonnyl.moka.ui.explore.LocalLanguage
 import io.github.tonnyl.moka.util.json
 import io.github.tonnyl.moka.util.readEmojisFromAssets
 import kotlinx.coroutines.Dispatchers
@@ -55,20 +55,20 @@ class MainViewModel(
         }
     }
 
-    val localLanguages: LiveData<List<LocalLanguage>> = liveData(
+    val localLanguages: LiveData<List<ExploreLanguage>> = liveData(
         context = viewModelScope.coroutineContext + Dispatchers.IO
     ) {
         try {
             val result = app.assets.open("languages.json").use { inputStream ->
                 val jsonString = inputStream.source().buffer().readString(Charsets.UTF_8)
-                json.decodeFromString<List<LocalLanguage>>(jsonString)
+                json.decodeFromString<List<ExploreLanguage>>(jsonString)
             }
 
             emit(result)
         } catch (e: Exception) {
             Timber.e(e)
 
-            emit(emptyList<LocalLanguage>())
+            emit(emptyList<ExploreLanguage>())
         }
     }
 

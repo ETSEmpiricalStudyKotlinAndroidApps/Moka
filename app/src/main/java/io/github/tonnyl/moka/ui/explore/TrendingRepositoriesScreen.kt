@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
@@ -29,9 +30,14 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IconSize
 import io.github.tonnyl.moka.util.formatWithSuffix
 import io.github.tonnyl.moka.util.toColor
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @Composable
-fun TrendingRepositoryItem(repository: TrendingRepository) {
+fun TrendingRepositoryItem(
+    repository: TrendingRepository,
+    timeSpanText: String
+) {
     Row(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
@@ -76,13 +82,15 @@ fun TrendingRepositoryItem(repository: TrendingRepository) {
                     Text(
                         text = repository.description
                             ?: stringResource(id = R.string.no_description_provided),
+                        maxLines = 6,
+                        overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.body2
                     )
                     Text(
                         text = stringResource(
                             R.string.explore_period_stars,
                             repository.currentPeriodStars,
-                            "today"
+                            timeSpanText
                         ),
                         style = MaterialTheme.typography.body2
                     )
@@ -132,6 +140,7 @@ fun TrendingRepositoryItem(repository: TrendingRepository) {
     }
 }
 
+@ExperimentalSerializationApi
 @Preview(
     name = "TrendingRepositoriesScreenPreview",
     showBackground = true
@@ -139,6 +148,7 @@ fun TrendingRepositoryItem(repository: TrendingRepository) {
 @Composable
 private fun TrendingRepositoriesScreenPreview() {
     TrendingRepositoryItem(
+        timeSpanText = "daily",
         repository = TrendingRepository(
             author = "TonnyL",
             name = "PaperPlane",

@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -157,6 +158,7 @@ sealed class Screen(val route: String) {
 
 }
 
+@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @ExperimentalSerializationApi
 @ExperimentalComposeUiApi

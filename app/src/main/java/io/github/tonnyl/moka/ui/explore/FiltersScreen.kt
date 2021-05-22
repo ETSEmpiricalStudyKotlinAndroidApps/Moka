@@ -1,5 +1,9 @@
 package io.github.tonnyl.moka.ui.explore
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,19 +23,24 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
-import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
-import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.serializers.store.ExploreOptionsSerializer
+import io.github.tonnyl.moka.serializers.store.data.ExploreLanguage
+import io.github.tonnyl.moka.serializers.store.data.ExploreTimeSpan
+import io.github.tonnyl.moka.serializers.store.data.displayStringResId
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
+import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @Composable
 @ExperimentalMaterialApi
@@ -45,6 +54,7 @@ fun ExploreFiltersScreen(
     ModalBottomSheetLayout(
         sheetContent = {
             ExploreFiltersScreenContent(
+                sheetState = sheetState,
                 lazyListState = lazyListState,
                 languages = languages
             )
@@ -54,12 +64,26 @@ fun ExploreFiltersScreen(
     )
 }
 
+@ExperimentalAnimationApi
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 private fun ExploreFiltersScreenContent(
+    sheetState: ModalBottomSheetState,
     lazyListState: LazyListState,
-    languages: List<LocalLanguage>
+    languages: List<ExploreLanguage>
 ) {
+    val exploreViewModel = viewModel<ExploreViewModel>(
+        key = LocalAccountInstance.current.toString(),
+        factory = ViewModelFactory(accountInstance = LocalAccountInstance.current ?: return)
+    )
+    val exploreOptions by exploreViewModel.queryData.observeAsState(initial = ExploreOptionsSerializer.defaultValue)
+
+    val languageState = remember { mutableStateOf(exploreOptions.exploreLanguage) }
+    val timeSpanState = remember { mutableStateOf(exploreOptions.timeSpan) }
+
+    val scope = rememberCoroutineScope()
+
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
@@ -71,25 +95,59 @@ private fun ExploreFiltersScreenContent(
             )
         ) {
             item {
-                TimeSpanItem(initialCheckedTimeSpan = ExploreTimeSpanType.WEEKLY)
+                TimeSpanItem(timeSpanState = timeSpanState)
             }
 
             item {
                 Text(
                     text = stringResource(id = R.string.explore_trending_filter_languages),
+                    style = MaterialTheme.typography.body2,
                     modifier = Modifier.padding(all = ContentPaddingLargeSize)
                 )
             }
 
             items(count = languages.size) { index ->
-                LanguageItem(language = languages[index])
+                LanguageItem(
+                    language = languages[index],
+                    languageState = languageState
+                )
             }
         }
 
         val navController = LocalNavController.current
         InsetAwareTopAppBar(
             title = {
-                Text(text = stringResource(id = R.string.navigation_menu_about))
+                var languageName by remember { mutableStateOf("") }
+                languageName = languageState.value.name
+
+                var timeSpanName by remember { mutableStateOf("") }
+                timeSpanName = stringResource(id = timeSpanState.value.displayStringResId)
+
+                Row {
+                    Text(
+                        text = languageName,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .animateContentSize()
+                    )
+                    Text(
+                        text = stringResource(id = R.string.explore_filter_divider),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                    )
+                    Text(
+                        text = timeSpanName,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .animateContentSize()
+                    )
+                }
             },
             navigationIcon = {
                 IconButton(
@@ -104,6 +162,31 @@ private fun ExploreFiltersScreenContent(
                     }
                 )
             },
+            actions = {
+                var visibleState by remember { mutableStateOf(false) }
+                visibleState = exploreOptions.exploreLanguage != languageState.value
+                        || exploreOptions.timeSpan != timeSpanState.value
+
+                AnimatedVisibility(visible = visibleState) {
+                    IconButton(
+                        onClick = {
+                            exploreViewModel.updateExploreOptions(
+                                exploreLanguage = languageState.value,
+                                timeSpan = timeSpanState.value
+                            )
+
+                            scope.launch {
+                                sheetState.hide()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_check_24),
+                            contentDescription = stringResource(id = R.string.done_image_description)
+                        )
+                    }
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }
@@ -111,9 +194,17 @@ private fun ExploreFiltersScreenContent(
     }
 }
 
+@ExperimentalAnimationApi
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
-private fun LanguageItem(language: LocalLanguage) {
+private fun LanguageItem(
+    language: ExploreLanguage,
+    languageState: MutableState<ExploreLanguage>
+) {
+    var checked by remember { mutableStateOf(false) }
+    checked = languageState.value == language
+
     ListItem(
         text = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -134,22 +225,26 @@ private fun LanguageItem(language: LocalLanguage) {
             }
         },
         trailing = {
-            Image(
-                contentDescription = stringResource(id = R.string.explore_filter_done),
-                painter = painterResource(id = R.drawable.ic_done_24)
-            )
+            AnimatedVisibility(
+                visible = checked,
+            ) {
+                Image(
+                    contentDescription = stringResource(id = R.string.explore_filter_done),
+                    painter = painterResource(id = R.drawable.ic_done_24)
+                )
+            }
         },
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable {
-
+                languageState.value = language
             }
     )
 }
 
+@ExperimentalSerializationApi
 @Composable
-private fun TimeSpanItem(initialCheckedTimeSpan: ExploreTimeSpanType) {
-    var checkedTimeSpan by remember { mutableStateOf(initialCheckedTimeSpan) }
+private fun TimeSpanItem(timeSpanState: MutableState<ExploreTimeSpan>) {
     Column {
         Text(
             text = stringResource(id = R.string.explore_trending_filter_time_span),
@@ -157,34 +252,35 @@ private fun TimeSpanItem(initialCheckedTimeSpan: ExploreTimeSpanType) {
             modifier = Modifier.padding(all = ContentPaddingLargeSize)
         )
         TimeSpanRadioButtonItem(
-            spanType = ExploreTimeSpanType.DAILY,
-            checked = checkedTimeSpan == ExploreTimeSpanType.DAILY,
+            spanType = ExploreTimeSpan.DAILY,
+            checked = timeSpanState.value == ExploreTimeSpan.DAILY,
             onClick = {
-                checkedTimeSpan = ExploreTimeSpanType.DAILY
+                timeSpanState.value = ExploreTimeSpan.DAILY
             }
         )
         TimeSpanRadioButtonItem(
-            spanType = ExploreTimeSpanType.WEEKLY,
-            checked = checkedTimeSpan == ExploreTimeSpanType.WEEKLY,
+            spanType = ExploreTimeSpan.WEEKLY,
+            checked = timeSpanState.value == ExploreTimeSpan.WEEKLY,
             onClick = {
-                checkedTimeSpan = ExploreTimeSpanType.WEEKLY
+                timeSpanState.value = ExploreTimeSpan.WEEKLY
             }
         )
         TimeSpanRadioButtonItem(
-            spanType = ExploreTimeSpanType.MONTHLY,
-            checked = checkedTimeSpan == ExploreTimeSpanType.MONTHLY,
+            spanType = ExploreTimeSpan.MONTHLY,
+            checked = timeSpanState.value == ExploreTimeSpan.MONTHLY,
             onClick = {
-                checkedTimeSpan = ExploreTimeSpanType.MONTHLY
+                timeSpanState.value = ExploreTimeSpan.MONTHLY
             }
         )
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun TimeSpanRadioButtonItem(
-    spanType: ExploreTimeSpanType,
+    spanType: ExploreTimeSpan,
     checked: Boolean,
-    onClick: (ExploreTimeSpanType) -> Unit
+    onClick: (ExploreTimeSpan) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -207,13 +303,13 @@ private fun TimeSpanRadioButtonItem(
         Text(
             text = stringResource(
                 when (spanType) {
-                    ExploreTimeSpanType.DAILY -> {
+                    ExploreTimeSpan.DAILY -> {
                         R.string.explore_trending_filter_time_span_daily
                     }
-                    ExploreTimeSpanType.WEEKLY -> {
+                    ExploreTimeSpan.WEEKLY -> {
                         R.string.explore_trending_filter_time_span_weekly
                     }
-                    ExploreTimeSpanType.MONTHLY -> {
+                    ExploreTimeSpan.MONTHLY -> {
                         R.string.explore_trending_filter_time_span_monthly
                     }
                 }
@@ -224,21 +320,23 @@ private fun TimeSpanRadioButtonItem(
     }
 }
 
+@ExperimentalAnimationApi
+@SuppressLint("UnrememberedMutableState")
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Preview(name = "LanguageItemPreview", showBackground = true)
 @Composable
 private fun LanguageItemPreview() {
     LanguageItem(
-        language = LocalLanguage(
-            urlParam = null,
-            name = "Kotlin",
-            color = "#F18E33"
-        )
+        language = ExploreOptionsSerializer.defaultValue.exploreLanguage,
+        languageState = mutableStateOf(ExploreOptionsSerializer.defaultValue.exploreLanguage)
     )
 }
 
+@SuppressLint("UnrememberedMutableState")
+@ExperimentalSerializationApi
 @Preview(name = "TimeSpanItemPreview", showBackground = true)
 @Composable
 private fun TimeSpanItemPreview() {
-    TimeSpanItem(initialCheckedTimeSpan = ExploreTimeSpanType.DAILY)
+    TimeSpanItem(timeSpanState = mutableStateOf(ExploreOptionsSerializer.defaultValue.timeSpan))
 }

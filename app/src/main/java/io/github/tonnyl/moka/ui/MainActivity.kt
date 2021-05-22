@@ -7,6 +7,7 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
         MainViewModelFactory(applicationContext as MokaApp)
     }
 
+    @ExperimentalAnimationApi
     @ExperimentalPagerApi
     @ExperimentalAnimatedInsets
     @ExperimentalComposeUiApi

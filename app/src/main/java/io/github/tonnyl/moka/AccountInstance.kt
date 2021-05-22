@@ -11,6 +11,8 @@ import io.github.tonnyl.moka.network.api.NotificationApi
 import io.github.tonnyl.moka.network.api.TrendingApi
 import io.github.tonnyl.moka.network.api.UserApi
 import io.github.tonnyl.moka.serializers.store.EmojiSerializer
+import io.github.tonnyl.moka.serializers.store.ExploreOptionsSerializer
+import io.github.tonnyl.moka.serializers.store.data.ExploreOptions
 import io.github.tonnyl.moka.serializers.store.data.RecentEmojis
 import io.github.tonnyl.moka.serializers.store.data.SignedInAccount
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -42,12 +44,20 @@ class AccountInstance(
     val apolloGraphQLClient =
         ApolloGraphQLClient(accessToken = signedInAccount.accessToken.accessToken)
 
-    val recentEmojisDataStore: DataStore<RecentEmojis> = app.recentEmojisDataStore
+    val recentEmojisDataStore: DataStore<RecentEmojis> by lazy { app.recentEmojisDataStore }
+
+    val exploreOptionsDataStore: DataStore<ExploreOptions> by lazy { app.exploreOptionsDataStore }
+
+    @ExperimentalSerializationApi
+    private val Context.recentEmojisDataStore: DataStore<RecentEmojis> by dataStore(
+        fileName = "${signedInAccount.account.id}_recent_emojis.pb",
+        serializer = EmojiSerializer
+    )
+
+    @ExperimentalSerializationApi
+    private val Context.exploreOptionsDataStore: DataStore<ExploreOptions> by dataStore(
+        fileName = "${signedInAccount.account.id}_explore_options.pb",
+        serializer = ExploreOptionsSerializer
+    )
 
 }
-
-@ExperimentalSerializationApi
-private val Context.recentEmojisDataStore: DataStore<RecentEmojis> by dataStore(
-    fileName = "recent_emojis.pb",
-    serializer = EmojiSerializer
-)

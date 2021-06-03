@@ -1,12 +1,12 @@
 package io.github.tonnyl.moka.network
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
+import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import io.github.tonnyl.moka.type.Types.Date
 import io.github.tonnyl.moka.type.Types.DateTime
 import io.github.tonnyl.moka.type.Types.GitObjectID
@@ -21,18 +21,18 @@ import kotlinx.datetime.Instant
 
 class ApolloGraphQLClient(accessToken: String) {
 
-    object DateCustomScalarAdapter : ResponseAdapter<Instant> {
+    object DateCustomScalarAdapter : Adapter<Instant> {
 
-        override fun fromResponse(
+        override fun fromJson(
             reader: JsonReader,
-            responseAdapterCache: ResponseAdapterCache
+            customScalarAdapters: CustomScalarAdapters
         ): Instant {
             return Instant.parse(reader.nextString()!!)
         }
 
-        override fun toResponse(
+        override fun toJson(
             writer: JsonWriter,
-            responseAdapterCache: ResponseAdapterCache,
+            customScalarAdapters: CustomScalarAdapters,
             value: Instant
         ) {
             writer.value(value.toString())
@@ -42,7 +42,7 @@ class ApolloGraphQLClient(accessToken: String) {
 
     val apolloClient: ApolloClient by lazy {
         ApolloClient(
-            networkTransport = ApolloHttpNetworkTransport(
+            networkTransport = HttpNetworkTransport(
                 serverUrl = SERVER_URL,
                 headers = mapOf(
                     "Accept" to "application/json",
@@ -64,22 +64,22 @@ class ApolloGraphQLClient(accessToken: String) {
             customScalarAdapter = DateCustomScalarAdapter
         ).withCustomScalarAdapter(
             graphqlName = HTML.name,
-            customScalarAdapter = StringResponseAdapter
+            customScalarAdapter = StringAdapter
         ).withCustomScalarAdapter(
             graphqlName = URI.name,
-            customScalarAdapter = StringResponseAdapter
+            customScalarAdapter = StringAdapter
         ).withCustomScalarAdapter(
             graphqlName = GitObjectID.name,
-            customScalarAdapter = StringResponseAdapter
+            customScalarAdapter = StringAdapter
         ).withCustomScalarAdapter(
             graphqlName = GitSSHRemote.name,
-            customScalarAdapter = StringResponseAdapter
+            customScalarAdapter = StringAdapter
         ).withCustomScalarAdapter(
             graphqlName = X509Certificate.name,
-            customScalarAdapter = StringResponseAdapter
+            customScalarAdapter = StringAdapter
         ).withCustomScalarAdapter(
             graphqlName = GitRefname.name,
-            customScalarAdapter = StringResponseAdapter
+            customScalarAdapter = StringAdapter
         )
     }
 

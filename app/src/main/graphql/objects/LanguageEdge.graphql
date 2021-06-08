@@ -1,0 +1,5 @@
+#Represents the language of a repository.
+fragment LanguageEdge on LanguageEdge {
+    # The number of bytes of code written in the language.
+    size
+}

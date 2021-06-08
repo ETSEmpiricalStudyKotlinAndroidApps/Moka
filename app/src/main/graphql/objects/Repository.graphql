@@ -66,6 +66,16 @@ fragment Repository on Repository {
     primaryLanguage {
         ... Language
     }
+    # A list containing a breakdown of the language composition of the repository.
+    languages(first: 20, orderBy: {field: SIZE, direction: DESC}) {
+        totalSize
+        nodes {
+            ... Language
+        }
+        edges {
+            ... LanguageEdge
+        }
+    }
     # The HTTP path listing the repository's projects
     projectsResourcePath
     # The HTTP URL listing the repository's projects

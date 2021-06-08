@@ -226,6 +226,8 @@
     <string name="repository_releases">Releases</string>
     <string name="repository_language">Language</string>
     <string name="repository_license">License</string>
+    <string name="repository_language_other">Other</string>
+    <string name="repository_language_percentage_less_than_0_1">&#60;0.1%</string>
     <string name="repository_topics">Topics</string>
     <string name="repository_readme">Readme</string>
     <string name="repository_more_info">More info</string>

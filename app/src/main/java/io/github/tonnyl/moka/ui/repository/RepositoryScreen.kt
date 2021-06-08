@@ -1,18 +1,22 @@
 package io.github.tonnyl.moka.ui.repository
 
 import android.text.format.DateUtils
+import androidx.compose.animation.*
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -22,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.toPaddingValues
@@ -35,10 +40,12 @@ import io.github.tonnyl.moka.type.SubscriptionState
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -223,6 +230,7 @@ fun RepositoryScreen(
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 private fun RepositoryScreenContent(
     topAppBarSize: Int,
@@ -239,6 +247,8 @@ private fun RepositoryScreenContent(
 
     readmeResource: Resource<String>?
 ) {
+    var languageProgressBarShowState by remember { mutableStateOf(false) }
+
     LazyColumn(
         contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
             top = false,
@@ -408,8 +418,30 @@ private fun RepositoryScreenContent(
                 trailing = usersRepository?.primaryLanguage?.name
                     ?: organizationsRepository?.primaryLanguage?.name
                     ?: stringResource(id = R.string.programming_language_unknown),
-                modifier = Modifier.clickable(onClick = {})
+                modifier = Modifier.clickable(
+                    onClick = {
+                        languageProgressBarShowState = !languageProgressBarShowState
+                    }
+                )
             )
+
+            val repository = usersRepository ?: organizationsRepository
+            if (!repository?.languages.isNullOrEmpty()
+                && !repository?.languageEdges.isNullOrEmpty()
+            ) {
+                AnimatedVisibility(
+                    visible = languageProgressBarShowState,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    LanguagesProgressBar(
+                        languages = repository?.languages.orEmpty(),
+                        languageEdges = repository?.languageEdges.orEmpty(),
+                        totalSize = repository?.languagesTotalSize ?: 1,
+                        remainingPercentage = repository?.otherLanguagePercentage?.toFloat() ?: 0f
+                    )
+                }
+            }
         }
         item {
             val licenseInfo = usersRepository?.licenseInfo ?: organizationsRepository?.licenseInfo
@@ -534,9 +566,112 @@ private fun EmptyReadmeText() {
     }
 }
 
+@Composable
+private fun LanguagesProgressBar(
+    languages: List<Language>,
+    languageEdges: List<Int>,
+    totalSize: Int,
+    remainingPercentage: Float
+) {
+    Column(modifier = Modifier.padding(all = ContentPaddingLargeSize)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(height = ContentPaddingMediumSize)
+                .clip(shape = RoundedCornerShape(percent = 50))
+        ) {
+            for (i in languageEdges.indices) {
+                Box(
+                    modifier = Modifier
+                        .weight(weight = languageEdges[i] / totalSize.toFloat())
+                        .fillMaxHeight()
+                        .background(
+                            color = languages[i].color
+                                ?.toColor()
+                                ?.let { Color(it) }
+                                ?: MaterialTheme.colors.onBackground
+                        )
+                )
+            }
+            if (languages.size > Repository.MAX_LANGUAGE_DISPLAY_COUNT) {
+                Box(
+                    modifier = Modifier
+                        .weight(weight = remainingPercentage)
+                        .fillMaxHeight()
+                        .background(color = MaterialTheme.colors.onBackground)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+        FlowRow {
+            languages.forEachIndexed { index, lang ->
+                LanguageLabel(
+                    color = lang.color
+                        ?.toColor()
+                        ?.let { Color(it) }
+                        ?: MaterialTheme.colors.onBackground,
+                    name = lang.name,
+                    percent = (languageEdges[index] / totalSize.toFloat()) * 100
+                )
+            }
+
+            if (languages.size > Repository.MAX_LANGUAGE_DISPLAY_COUNT) {
+                LanguageLabel(
+                    color = MaterialTheme.colors.onBackground,
+                    name = stringResource(id = R.string.repository_language_other),
+                    percent = remainingPercentage * 100
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LanguageLabel(
+    color: Color,
+    name: String,
+    percent: Float
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            modifier = Modifier
+                .size(size = RepositoryCardLanguageDotSize)
+                .background(
+                    color = color,
+                    shape = CircleShape
+                )
+        )
+        Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
+        Text(
+            text = name,
+            style = MaterialTheme.typography.body2,
+            color = MaterialTheme.colors.onBackground
+        )
+        Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+            Text(
+                text = if (percent < 1) {
+                    stringResource(id = R.string.repository_language_percentage_less_than_0_1)
+                } else {
+                    "%.1f%%".format(percent)
+                },
+                style = MaterialTheme.typography.body2,
+                color = MaterialTheme.colors.onBackground
+            )
+        }
+        Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
+    }
+}
+
+@ExperimentalAnimationApi
 @Preview(showBackground = true, name = "RepositoryScreenContentPreview")
 @Composable
 private fun RepositoryScreenContentPreview() {
+    val language = Language(
+        color = "#F18E33",
+        id = "MDg6TGFuZ3VhZ2UyNzI=",
+        name = "Kotlin"
+    )
     RepositoryScreenContent(
         topAppBarSize = 0,
         usersRepository = Repository(
@@ -619,11 +754,7 @@ private fun RepositoryScreenContentPreview() {
                 resourcePath = "/TonnyL",
                 url = "https://github.com/TonnyL"
             ),
-            primaryLanguage = Language(
-                color = "#F18E33",
-                id = "MDg6TGFuZ3VhZ2UyNzI=",
-                name = "Kotlin"
-            ),
+            primaryLanguage = language,
             projectsResourcePath = "/TonnyL/PaperPlane/projects",
             projectsUrl = "https://github.com/TonnyL/PaperPlane/projects",
             pushedAt = Instant.fromEpochMilliseconds(1528288541000),
@@ -666,7 +797,11 @@ private fun RepositoryScreenContentPreview() {
                     url = "https://github.com/topics/zhihu"
                 ),
                 // ... incomplete
-            )
+            ),
+            languagesTotalSize = 1,
+            languages = listOf(language),
+            languageEdges = listOf(1),
+            otherLanguagePercentage = 0.0
         ),
         organizationsRepository = null,
         isFollowing = false,
@@ -679,5 +814,22 @@ private fun RepositoryScreenContentPreview() {
         onProjectsClicked = {},
 
         readmeResource = Resource.success("<div>\n<g-emoji class=\"g-emoji\" alias=\"books\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f4da.png\">📚</g-emoji> PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. </div>")
+    )
+}
+
+@Preview(showBackground = true, name = "LanguageProgressBarPreview")
+@Composable
+private fun LanguageProgressBarPreview() {
+    LanguagesProgressBar(
+        languages = listOf(
+            Language(
+                color = "#F18E33",
+                id = "MDg6TGFuZ3VhZ2UyNzI=",
+                name = "Kotlin"
+            )
+        ),
+        languageEdges = listOf(25),
+        totalSize = 50,
+        remainingPercentage = .5f
     )
 }

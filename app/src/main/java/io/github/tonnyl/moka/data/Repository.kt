@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.data
 
+import io.github.tonnyl.moka.data.Repository.Companion.MAX_LANGUAGE_DISPLAY_COUNT
 import io.github.tonnyl.moka.fragment.Repository.CodeOfConduct.Companion.codeOfConduct
 import io.github.tonnyl.moka.fragment.Repository.DefaultBranchRef.Companion.ref
 import io.github.tonnyl.moka.fragment.Repository.LicenseInfo.Companion.license
@@ -148,6 +149,27 @@ data class Repository(
     val primaryLanguage: Language?,
 
     /**
+     * The total size in bytes of files written in that language.
+     */
+    val languagesTotalSize: Int?,
+
+    /**
+     * A list of languages associated with the parent.
+     */
+    val languages: List<Language>?,
+
+    /**
+     * Represents the language of a repository.
+     */
+    val languageEdges: List<Int>?,
+
+    /**
+     * Computed field, if the languages count is more than [MAX_LANGUAGE_DISPLAY_COUNT], this field
+     * will represent the remaining languages percentage, or null.
+     */
+    val otherLanguagePercentage: Double?,
+
+    /**
      * The HTTP path listing the repository's projects.
      */
     val projectsResourcePath: String,
@@ -268,7 +290,15 @@ data class Repository(
 
     val topics: List<RepositoryTopic?>?
 
-)
+) {
+
+    companion object {
+
+        const val MAX_LANGUAGE_DISPLAY_COUNT = 20
+
+    }
+
+}
 
 fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
     val user = this?.user ?: return null
@@ -301,6 +331,20 @@ fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
         repository.openGraphImageUrl,
         repository.owner.repositoryOwner()?.toNonNullRepositoryOwner(),
         repository.primaryLanguage?.language()?.toNonNullLanguage(),
+        repository.languages?.totalSize,
+        repository.languages?.nodes?.mapNotNull {
+            it?.toNonNullLanguage()
+        },
+        repository.languages?.edges?.mapNotNull {
+            it?.size
+        },
+        if (repository.languages?.nodes.orEmpty().size > 20) {
+            (repository.languages?.edges?.sumOf {
+                (it?.size ?: 0).toDouble()
+            } ?: 0).toDouble() / (repository.languages?.totalSize ?: 1).toDouble()
+        } else {
+            null
+        },
         repository.projectsResourcePath,
         repository.projectsUrl,
         repository.pushedAt,
@@ -368,6 +412,20 @@ fun OrganizationsRepositoryQuery.Data?.toNullableRepository(): Repository? {
         repository.openGraphImageUrl,
         repository.owner.repositoryOwner()?.toNonNullRepositoryOwner(),
         repository.primaryLanguage?.language()?.toNonNullLanguage(),
+        repository.languages?.totalSize,
+        repository.languages?.nodes?.mapNotNull {
+            it?.toNonNullLanguage()
+        },
+        repository.languages?.edges?.mapNotNull {
+            it?.size
+        },
+        if (repository.languages?.nodes.orEmpty().size > 20) {
+            (repository.languages?.edges?.sumOf {
+                (it?.size ?: 0).toDouble()
+            } ?: 0).toDouble() / (repository.languages?.totalSize ?: 1).toDouble()
+        } else {
+            null
+        },
         repository.projectsResourcePath,
         repository.projectsUrl,
         repository.pushedAt,

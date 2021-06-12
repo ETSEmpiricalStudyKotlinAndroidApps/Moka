@@ -4,13 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -18,6 +19,10 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
@@ -26,6 +31,7 @@ import io.github.tonnyl.moka.ui.search.users.SearchedUsersScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.widget.SearchBar
+import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
 private enum class SearchType {
@@ -36,6 +42,7 @@ private enum class SearchType {
 
 }
 
+@ExperimentalPagerApi
 @ExperimentalSerializationApi
 @ExperimentalComposeUiApi
 @Composable
@@ -45,7 +52,15 @@ fun SearchScreen() {
     val viewModel = viewModel<SearchViewModel>(
         factory = ViewModelFactory(accountInstance = currentAccount)
     )
-    val textState = remember { mutableStateOf(TextFieldValue()) }
+    val input = viewModel.userInput.value ?: ""
+    val textState = remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = input,
+                selection = TextRange(input.length)
+            )
+        )
+    }
 
     var usersFlow by remember { mutableStateOf(viewModel.usersFlow) }
     var repositoriesFlow by remember { mutableStateOf(viewModel.repositoriesFlow) }
@@ -76,12 +91,18 @@ fun SearchScreen() {
     }
 }
 
+@ExperimentalPagerApi
 @Composable
 private fun SearchScreenContent(
     topAppBarSize: Int,
     users: LazyPagingItems<SearchedUserOrOrgItem>?,
     repositories: LazyPagingItems<RepositoryItem>?
 ) {
+    val pagerState = rememberPagerState(
+        pageCount = SearchType.values().size,
+        initialOffscreenLimit = 2
+    )
+
     Column(
         modifier = Modifier
             .padding(
@@ -92,36 +113,34 @@ private fun SearchScreenContent(
                 ).calculateTopPadding()
             )
     ) {
-        var selectedTabIndex by remember { mutableStateOf(SearchType.values().first()) }
         TabRow(
-            selectedTabIndex = selectedTabIndex.ordinal,
-            indicator = @Composable { tabPositions: List<TabPosition> ->
-                Spacer(
-                    Modifier
-                        .tabIndicatorOffset(currentTabPosition = tabPositions[selectedTabIndex.ordinal])
+            selectedTabIndex = pagerState.currentPage,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    color = MaterialTheme.colors.primary,
+                    modifier = Modifier
+                        .pagerTabIndicatorOffset(
+                            pagerState = pagerState,
+                            tabPositions = tabPositions
+                        )
                         .padding(horizontal = 24.dp)
                         .height(height = ContentPaddingSmallSize)
-                        .background(
-                            color = MaterialTheme.colors.primary,
+                        .clip(
                             shape = RoundedCornerShape(
                                 topStartPercent = 100,
                                 topEndPercent = 100
                             )
                         )
                 )
-            },
-            backgroundColor = MaterialTheme.colors.background
+            }
         ) {
-            SearchType.values().forEach { searchType ->
+            val scope = rememberCoroutineScope()
+            SearchType.values().forEachIndexed { index, type ->
                 Tab(
-                    selected = searchType == selectedTabIndex,
-                    onClick = {
-                        selectedTabIndex = searchType
-                    },
                     text = {
                         Text(
                             text = stringResource(
-                                when (searchType) {
+                                when (type) {
                                     SearchType.Users -> {
                                         R.string.search_tab_users
                                     }
@@ -130,24 +149,36 @@ private fun SearchScreenContent(
                                     }
                                 }
                             ),
+                            color = if (pagerState.currentPage == index) {
+                                MaterialTheme.colors.primary
+                            } else {
+                                MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium)
+                            },
                             style = MaterialTheme.typography.body2
                         )
                     },
-                    selectedContentColor = MaterialTheme.colors.primary,
-                    unselectedContentColor = MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium)
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(page = index)
+                        }
+                    },
+                    modifier = Modifier.background(color = MaterialTheme.colors.background)
                 )
             }
         }
-
-        when (selectedTabIndex) {
-            SearchType.Users -> {
-                users?.let {
-                    SearchedUsersScreen(users = it)
+        Divider()
+        HorizontalPager(state = pagerState) { page ->
+            when (SearchType.values()[page]) {
+                SearchType.Users -> {
+                    users?.let {
+                        SearchedUsersScreen(users = it)
+                    }
                 }
-            }
-            SearchType.Repositories -> {
-                repositories?.let {
-                    SearchedRepositoriesScreen(repositories = it)
+                SearchType.Repositories -> {
+                    repositories?.let {
+                        SearchedRepositoriesScreen(repositories = it)
+                    }
                 }
             }
         }

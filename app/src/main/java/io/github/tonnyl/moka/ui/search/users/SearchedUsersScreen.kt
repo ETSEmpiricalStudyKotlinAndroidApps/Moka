@@ -11,7 +11,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -37,50 +36,41 @@ import io.github.tonnyl.moka.ui.users.ItemUser
 import io.github.tonnyl.moka.util.SearchedOrganizationItemProvider
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.ItemLoadingState
-import io.github.tonnyl.moka.widget.Pager
-import io.github.tonnyl.moka.widget.PagerState
 
 @Composable
-fun SearchedUsersScreen(
-    users: LazyPagingItems<SearchedUserOrOrgItem>,
-    pagerState: PagerState = remember { PagerState() }
-) {
+fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = users.loadState.refresh is LoadState.Loading),
-        onRefresh = users::refresh
+        onRefresh = users::refresh,
+        modifier = Modifier.fillMaxSize()
     ) {
-        Pager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            when {
-                users.loadState.refresh is LoadState.NotLoading
-                        && users.loadState.append is LoadState.NotLoading
-                        && users.loadState.prepend is LoadState.NotLoading
-                        && users.itemCount == 0 -> {
+        when {
+            users.loadState.refresh is LoadState.NotLoading
+                    && users.loadState.append is LoadState.NotLoading
+                    && users.loadState.prepend is LoadState.NotLoading
+                    && users.itemCount == 0 -> {
 
-                }
-                users.loadState.refresh is LoadState.NotLoading
-                        && users.itemCount == 0 -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_timeline_24,
-                        title = R.string.timeline_content_empty_title,
-                        retry = R.string.common_retry,
-                        action = R.string.timeline_content_empty_action
-                    )
-                }
-                users.loadState.refresh is LoadState.Error
-                        && users.itemCount == 0 -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_inbox_24,
-                        title = R.string.common_error_requesting_data,
-                        retry = R.string.common_retry,
-                        action = R.string.notification_content_empty_action
-                    )
-                }
-                else -> {
-                    SearchedUsersScreenContent(users = users)
-                }
+            }
+            users.loadState.refresh is LoadState.NotLoading
+                    && users.itemCount == 0 -> {
+                EmptyScreenContent(
+                    icon = R.drawable.ic_menu_timeline_24,
+                    title = R.string.timeline_content_empty_title,
+                    retry = R.string.common_retry,
+                    action = R.string.timeline_content_empty_action
+                )
+            }
+            users.loadState.refresh is LoadState.Error
+                    && users.itemCount == 0 -> {
+                EmptyScreenContent(
+                    icon = R.drawable.ic_menu_inbox_24,
+                    title = R.string.common_error_requesting_data,
+                    retry = R.string.common_retry,
+                    action = R.string.notification_content_empty_action
+                )
+            }
+            else -> {
+                SearchedUsersScreenContent(users = users)
             }
         }
     }

@@ -33,7 +33,7 @@ fun Chip(
         modifier = Modifier
             .height(height = ChipHeight)
             .clip(shape = ChipShape)
-            .background(color = MaterialTheme.colors.onSurface.copy(alpha = ChipBackgroundAlpha))
+            .background(color = MaterialTheme.colors.primary.copy(alpha = ChipBackgroundAlpha))
             .clickable {
                 onClick?.invoke()
             }
@@ -43,7 +43,7 @@ fun Chip(
             text = text,
             maxLines = 1,
             style = MaterialTheme.typography.body2,
-            color = MaterialTheme.colors.onSurface
+            color = MaterialTheme.colors.primary
         )
     }
 }

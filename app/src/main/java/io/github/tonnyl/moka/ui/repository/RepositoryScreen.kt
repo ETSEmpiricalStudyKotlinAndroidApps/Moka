@@ -44,6 +44,9 @@ import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlin.math.min
+
+private const val MAX_DISPLAY_COUNT_OF_TOPICS = 8
 
 @ExperimentalAnimationApi
 @ExperimentalSerializationApi
@@ -248,6 +251,7 @@ private fun RepositoryScreenContent(
     readmeResource: Resource<String>?
 ) {
     var languageProgressBarShowState by remember { mutableStateOf(false) }
+    val navController = LocalNavController.current
 
     LazyColumn(
         contentPadding = rememberInsetsPaddingValues(
@@ -460,11 +464,29 @@ private fun RepositoryScreenContent(
                 Row {
                     CategoryText(textRes = R.string.repository_topics)
                     Spacer(modifier = Modifier.weight(weight = 1f))
-                    TextButton(
-                        onClick = {},
-                        modifier = Modifier.align(alignment = Alignment.CenterVertically)
-                    ) {
-                        Text(text = stringResource(id = R.string.see_all))
+                    if (topics.orEmpty().size > MAX_DISPLAY_COUNT_OF_TOPICS) {
+                        TextButton(
+                            onClick = {
+                                val login = usersRepository?.owner?.login
+                                    ?: organizationsRepository?.owner?.login
+                                val repoName =
+                                    usersRepository?.name ?: organizationsRepository?.name
+                                val isOrg = organizationsRepository != null
+                                if (!login.isNullOrEmpty()
+                                    && !repoName.isNullOrEmpty()
+                                ) {
+                                    navController.navigate(
+                                        route = Screen.RepositoryTopics.route
+                                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                            .replace("{${Screen.ARG_IS_ORG}}", isOrg.toString())
+                                    )
+                                }
+                            },
+                            modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                        ) {
+                            Text(text = stringResource(id = R.string.see_all))
+                        }
                     }
                     Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                 }
@@ -472,9 +494,20 @@ private fun RepositoryScreenContent(
                     item {
                         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                     }
-                    items(count = topics.size) { index ->
+                    items(count = min(topics.size, MAX_DISPLAY_COUNT_OF_TOPICS)) { index ->
                         topics[index]?.topic?.let { topic ->
-                            Chip(text = topic.name)
+                            Chip(
+                                text = topic.name,
+                                onClick = {
+                                    navController.navigate(
+                                        route = Screen.Search.route
+                                            .replace(
+                                                "{${Screen.ARG_INITIAL_SEARCH_KEYWORD}}",
+                                                topic.name
+                                            )
+                                    )
+                                }
+                            )
                             Spacer(modifier = Modifier.padding(horizontal = ContentPaddingSmallSize))
                         }
                     }

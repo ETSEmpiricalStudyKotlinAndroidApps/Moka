@@ -141,7 +141,7 @@ fragment Repository on Repository {
     refs(first: 20, refPrefix: "refs/heads/") {
         totalCount
     }
-    repositoryTopics(first: 20) {
+    repositoryTopics(first: 9) {
         nodes {
             ... RepositoryTopic
         }

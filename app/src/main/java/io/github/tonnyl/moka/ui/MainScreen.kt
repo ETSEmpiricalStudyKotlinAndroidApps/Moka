@@ -54,6 +54,7 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.timeline.TimelineScreen
+import io.github.tonnyl.moka.ui.topics.RepositoryTopicsScreen
 import io.github.tonnyl.moka.ui.users.UsersScreen
 import io.github.tonnyl.moka.ui.users.UsersType
 import kotlinx.coroutines.CoroutineScope
@@ -112,7 +113,10 @@ sealed class Screen(val route: String) {
 
     }
 
-    object Search : Screen("search")
+    object Search : Screen("search?${ARG_INITIAL_SEARCH_KEYWORD}={${ARG_INITIAL_SEARCH_KEYWORD}}")
+
+    object RepositoryTopics :
+        Screen("repository_topics/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_IS_ORG}}")
 
     companion object {
 
@@ -153,6 +157,10 @@ sealed class Screen(val route: String) {
         const val ARG_EDIT_STATUS_LIMIT_AVAILABILITY = "arg_edit_status_limit_availability"
 
         const val ARG_ISSUE_PR_NUMBER = "arg_issue_pr_number"
+
+        const val ARG_IS_ORG = "arg_is_org"
+
+        const val ARG_INITIAL_SEARCH_KEYWORD = "arg_initial_search_keyword"
 
     }
 
@@ -523,9 +531,42 @@ fun MainScreen() {
                 currentRoute = Screen.SearchEmoji.route
                 SearchEmojiScreen()
             }
-            composable(route = Screen.Search.route) {
+            composable(
+                route = Screen.Search.route,
+                arguments = listOf(
+                    navArgument(name = Screen.ARG_INITIAL_SEARCH_KEYWORD) {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
                 currentRoute = Screen.Search.route
-                SearchScreen()
+                SearchScreen(
+                    initialSearchKeyword = backStackEntry.arguments?.getString(Screen.ARG_INITIAL_SEARCH_KEYWORD)
+                        ?: ""
+                )
+            }
+            composable(
+                route = Screen.RepositoryTopics.route,
+                arguments = listOf(
+                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                        type = NavType.StringType
+                    },
+                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                        type = NavType.StringType
+                    },
+                    navArgument(name = Screen.ARG_IS_ORG) {
+                        type = NavType.BoolType
+                    }
+                )
+            ) { backStackEntry ->
+                RepositoryTopicsScreen(
+                    isOrg = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_ORG)
+                        ?: return@composable,
+                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                        ?: return@composable,
+                    repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                        ?: return@composable
+                )
             }
         }
     }

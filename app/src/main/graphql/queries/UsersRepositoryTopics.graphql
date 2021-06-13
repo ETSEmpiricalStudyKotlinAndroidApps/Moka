@@ -1,0 +1,15 @@
+query UsersRepositoryTopics($login: String!, $repoName: String!, $after: String, $before: String, $first: Int, $last: Int) {
+    user(login: $login) {
+        repository(name: $repoName) {
+            repositoryTopics(after: $after, before: $before, first: $first, last: $last) {
+                nodes {
+                    ...RepositoryTopic
+                }
+                pageInfo {
+                    ... PageInfo
+                }
+                totalCount
+            }
+        }
+    }
+}

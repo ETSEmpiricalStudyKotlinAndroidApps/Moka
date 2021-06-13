@@ -47,7 +47,13 @@ fun MainSearchBar(
         avatarUrl = currentAccount.signedInAccount.account.avatarUrl,
         onMenuClicked = openDrawer,
         onTextClicked = {
-            navController.navigate(route = Screen.Search.route)
+            navController.navigate(
+                route = Screen.Search.route
+                    .replace(
+                        "{${Screen.ARG_INITIAL_SEARCH_KEYWORD}}",
+                        ""
+                    )
+            )
         },
         onAvatarClicked = {
             state.value = true
@@ -67,54 +73,60 @@ private fun MainSearchBarContent(
         modifier = modifier
             .background(color = Color.Transparent)
             .height(height = 64.dp)
+            .fillMaxWidth()
             .padding(all = ContentPaddingMediumSize)
     ) {
         Card(
             elevation = 3.dp,
             shape = MaterialTheme.shapes.small
         ) {
-            Row {
-                IconButton(onClick = onMenuClicked) {
-                    Icon(
-                        contentDescription = stringResource(id = R.string.navigation_header_avatar_desc),
-                        painter = painterResource(id = R.drawable.ic_menu_24)
+            IconButton(onClick = onMenuClicked) {
+                Icon(
+                    contentDescription = stringResource(id = R.string.navigation_header_avatar_desc),
+                    painter = painterResource(id = R.drawable.ic_menu_24)
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(onClick = onTextClicked)
+                    .padding(
+                        start = DefaultIconButtonSizeModifier,
+                        end = ContentPaddingSmallSize + ContentPaddingSmallSize + IconSize
+                    )
+            ) {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Text(
+                        text = stringResource(id = R.string.search_input_hint),
+                        maxLines = 1,
+                        style = MaterialTheme.typography.body1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.align(alignment = Alignment.CenterStart)
                     )
                 }
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(weight = 1f)
-                        .clickable(onClick = onTextClicked)
-                        .padding(horizontal = ContentPaddingMediumSize)
-                ) {
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Text(
-                            text = stringResource(id = R.string.search_input_hint),
-                            maxLines = 1,
-                            style = MaterialTheme.typography.body1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.align(alignment = Alignment.CenterStart)
-                        )
-                    }
-                }
-                Image(
-                    painter = rememberCoilPainter(
-                        request = avatarUrl,
-                        requestBuilder = {
-                            createAvatarLoadRequest()
-                        }
-                    ),
-                    contentDescription = stringResource(id = R.string.navigation_header_avatar_desc),
-                    modifier = Modifier
-                        .clip(shape = CircleShape)
-                        .size(size = IconSize)
-                        .clickable(onClick = onAvatarClicked)
-                        .padding(all = ContentPaddingSmallSize)
-                        .clip(shape = CircleShape)
-                        .align(alignment = Alignment.CenterVertically)
-                )
-                Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
             }
+            Image(
+                painter = rememberCoilPainter(
+                    request = avatarUrl,
+                    requestBuilder = {
+                        createAvatarLoadRequest()
+                    }
+                ),
+                contentDescription = stringResource(id = R.string.navigation_header_avatar_desc),
+                modifier = Modifier
+                    .clip(shape = CircleShape)
+                    .height(height = IconSize)
+                    .width(width = IconSize + ContentPaddingSmallSize)
+                    .clickable(onClick = onAvatarClicked)
+                    .padding(
+                        start = ContentPaddingSmallSize,
+                        top = ContentPaddingSmallSize,
+                        end = ContentPaddingMediumSize,
+                        bottom = ContentPaddingSmallSize
+                    )
+                    .clip(shape = CircleShape)
+                    .align(alignment = Alignment.CenterEnd)
+            )
         }
     }
 }

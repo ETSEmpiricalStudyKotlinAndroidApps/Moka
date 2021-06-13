@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.search
+package io.github.tonnyl.moka.ui.topics
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,14 +8,18 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 class ViewModelFactory(
     private val accountInstance: AccountInstance,
-    private val initialSearchKeyword: String
+    private val isOrg: Boolean,
+    private val login: String,
+    private val repoName: String
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return SearchViewModel(
+        return RepositoryTopicsViewModel(
             accountInstance = accountInstance,
-            initialSearchKeyword = initialSearchKeyword
+            isOrg = isOrg,
+            login = login,
+            repoName = repoName
         ) as T
     }
 

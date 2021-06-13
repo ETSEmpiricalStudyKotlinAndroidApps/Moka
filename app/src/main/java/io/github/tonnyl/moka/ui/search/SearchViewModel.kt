@@ -18,7 +18,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 class SearchViewModel(
-    private val accountInstance: AccountInstance
+    private val accountInstance: AccountInstance,
+    private val initialSearchKeyword: String
 ) : ViewModel() {
 
     private val _userInput = MutableLiveData<String>()
@@ -29,6 +30,12 @@ class SearchViewModel(
         private set
     var repositoriesFlow: Flow<PagingData<RepositoryItem>>? = null
         private set
+
+    init {
+        if (initialSearchKeyword.isNotEmpty()) {
+            updateInput(initialSearchKeyword)
+        }
+    }
 
     fun updateInput(newInput: String) {
         if (userInput.value == newInput) {

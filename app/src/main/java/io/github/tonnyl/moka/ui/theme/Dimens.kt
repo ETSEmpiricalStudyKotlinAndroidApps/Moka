@@ -13,3 +13,8 @@ val RepositoryCardIconSize = 16.dp
 val RepositoryCardLanguageDotSize = 12.dp
 
 val IssueTimelineEventAuthorAvatarSize = 24.dp
+
+/**
+ * @see [androidx.compose.material.IconButtonSizeModifier]
+ */
+val DefaultIconButtonSizeModifier = 48.dp

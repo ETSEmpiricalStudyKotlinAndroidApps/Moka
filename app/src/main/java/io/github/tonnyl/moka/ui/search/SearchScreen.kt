@@ -46,11 +46,14 @@ private enum class SearchType {
 @ExperimentalSerializationApi
 @ExperimentalComposeUiApi
 @Composable
-fun SearchScreen() {
+fun SearchScreen(initialSearchKeyword: String) {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel<SearchViewModel>(
-        factory = ViewModelFactory(accountInstance = currentAccount)
+        factory = ViewModelFactory(
+            accountInstance = currentAccount,
+            initialSearchKeyword = initialSearchKeyword
+        )
     )
     val input = viewModel.userInput.value ?: ""
     val textState = remember {

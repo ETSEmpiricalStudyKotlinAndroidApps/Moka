@@ -1,0 +1,9 @@
+fragment GitActorListItem on GitActor {
+    avatarUrl
+    name
+    user {
+        avatarUrl
+        name
+        login
+    }
+}

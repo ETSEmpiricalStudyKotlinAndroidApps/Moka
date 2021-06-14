@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.data
 
 import io.github.tonnyl.moka.data.Repository.Companion.MAX_LANGUAGE_DISPLAY_COUNT
+import io.github.tonnyl.moka.fragment.Ref.Target.Companion.asCommit
 import io.github.tonnyl.moka.fragment.Repository.CodeOfConduct.Companion.codeOfConduct
 import io.github.tonnyl.moka.fragment.Repository.DefaultBranchRef.Companion.ref
 import io.github.tonnyl.moka.fragment.Repository.LicenseInfo.Companion.license
@@ -170,16 +171,6 @@ data class Repository(
     val otherLanguagePercentage: Double?,
 
     /**
-     * The HTTP path listing the repository's projects.
-     */
-    val projectsResourcePath: String,
-
-    /**
-     * The HTTP URL listing the repository's projects.
-     */
-    val projectsUrl: String,
-
-    /**
      * Identifies when the repository was last pushed to.
      */
     val pushedAt: Instant?,
@@ -235,11 +226,6 @@ data class Repository(
     val viewerCanAdminister: Boolean,
 
     /**
-     * Can the current viewer create new projects on this owner.
-     */
-    val viewerCanCreateProjects: Boolean,
-
-    /**
      * Check if the viewer is able to change their subscription status for the repository.
      */
     val viewerCanSubscribe: Boolean,
@@ -282,11 +268,11 @@ data class Repository(
 
     val watchersCount: Int,
 
-    val projectsCount: Int,
-
     val releasesCount: Int,
 
     val branchCount: Int,
+
+    val commitsCount: Int,
 
     val topics: List<RepositoryTopic?>?
 
@@ -345,8 +331,6 @@ fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
         } else {
             null
         },
-        repository.projectsResourcePath,
-        repository.projectsUrl,
         repository.pushedAt,
         repository.rebaseMergeAllowed,
         repository.resourcePath,
@@ -357,7 +341,6 @@ fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
         repository.url,
         repository.usesCustomOpenGraphImage,
         repository.viewerCanAdminister,
-        repository.viewerCanCreateProjects,
         repository.viewerCanSubscribe,
         repository.viewerCanUpdateTopics,
         repository.viewerHasStarred,
@@ -372,9 +355,9 @@ fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
         repository.issues.totalCount,
         repository.pullRequests.totalCount,
         repository.watchers.totalCount,
-        repository.projects.totalCount,
         repository.releases.totalCount,
         repository.refs?.totalCount ?: 0,
+        repository.defaultBranchRef?.ref()?.target?.asCommit()?.history?.totalCount ?: 0,
         repository.repositoryTopics.nodes?.map {
             it?.repositoryTopic()?.toNonNullRepositoryTopic()
         }
@@ -426,8 +409,6 @@ fun OrganizationsRepositoryQuery.Data?.toNullableRepository(): Repository? {
         } else {
             null
         },
-        repository.projectsResourcePath,
-        repository.projectsUrl,
         repository.pushedAt,
         repository.rebaseMergeAllowed,
         repository.resourcePath,
@@ -438,7 +419,6 @@ fun OrganizationsRepositoryQuery.Data?.toNullableRepository(): Repository? {
         repository.url,
         repository.usesCustomOpenGraphImage,
         repository.viewerCanAdminister,
-        repository.viewerCanCreateProjects,
         repository.viewerCanSubscribe,
         repository.viewerCanUpdateTopics,
         repository.viewerHasStarred,
@@ -453,9 +433,10 @@ fun OrganizationsRepositoryQuery.Data?.toNullableRepository(): Repository? {
         issuesCount = repository.issues.totalCount,
         pullRequestsCount = repository.pullRequests.totalCount,
         watchersCount = repository.watchers.totalCount,
-        projectsCount = repository.projects.totalCount,
         releasesCount = repository.releases.totalCount,
         branchCount = repository.refs?.totalCount ?: 0,
+        commitsCount = repository.defaultBranchRef?.ref()?.target?.asCommit()?.history?.totalCount
+            ?: 0,
         topics = repository.repositoryTopics.nodes?.map {
             it?.repositoryTopic()?.toNonNullRepositoryTopic()
         }

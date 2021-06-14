@@ -30,6 +30,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
+import io.github.tonnyl.moka.ui.commits.CommitsScreen
 import io.github.tonnyl.moka.ui.emojis.EmojisScreen
 import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiScreen
 import io.github.tonnyl.moka.ui.explore.ExploreScreen
@@ -117,6 +118,9 @@ sealed class Screen(val route: String) {
 
     object RepositoryTopics :
         Screen("repository_topics/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_IS_ORG}}")
+
+    object Commits :
+        Screen("commits/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_IS_ORG}}")
 
     companion object {
 
@@ -560,6 +564,29 @@ fun MainScreen() {
                 )
             ) { backStackEntry ->
                 RepositoryTopicsScreen(
+                    isOrg = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_ORG)
+                        ?: return@composable,
+                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                        ?: return@composable,
+                    repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                        ?: return@composable
+                )
+            }
+            composable(
+                route = Screen.Commits.route,
+                arguments = listOf(
+                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                        type = NavType.StringType
+                    },
+                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                        type = NavType.StringType
+                    },
+                    navArgument(name = Screen.ARG_IS_ORG) {
+                        type = NavType.BoolType
+                    }
+                )
+            ) { backStackEntry ->
+                CommitsScreen(
                     isOrg = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_ORG)
                         ?: return@composable,
                     login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)

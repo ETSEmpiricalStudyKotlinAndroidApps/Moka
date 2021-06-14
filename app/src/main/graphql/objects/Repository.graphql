@@ -76,10 +76,6 @@ fragment Repository on Repository {
             ... LanguageEdge
         }
     }
-    # The HTTP path listing the repository's projects
-    projectsResourcePath
-    # The HTTP URL listing the repository's projects
-    projectsUrl
     # Identifies when the repository was last pushed to.
     pushedAt
     # Whether or not rebase-merging is enabled on this repository.
@@ -105,8 +101,6 @@ fragment Repository on Repository {
     usesCustomOpenGraphImage
     # Indicates whether the viewer has admin permissions on this repository.
     viewerCanAdminister
-    # Can the current viewer create new projects on this owner.
-    viewerCanCreateProjects
     # Check if the viewer is able to change their subscription status for the repository.
     viewerCanSubscribe
     # Indicates whether the viewer can update the topics of this repository.
@@ -130,9 +124,6 @@ fragment Repository on Repository {
         totalCount
     }
     watchers {
-        totalCount
-    }
-    projects {
         totalCount
     }
     releases {

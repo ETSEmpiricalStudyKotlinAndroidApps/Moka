@@ -258,10 +258,10 @@
         <item quantity="one">pull request</item>
         <item quantity="other">pull requests</item>
     </plurals>
-    <plurals name="projects_count_plurals">
-        <item quantity="zero">project</item>
-        <item quantity="one">project</item>
-        <item quantity="other">projects</item>
+    <plurals name="commit_count_plurals">
+        <item quantity="zero">Commit</item>
+        <item quantity="one">Commit</item>
+        <item quantity="other">@string/commits</item>
     </plurals>
     <string name="repository_update_time">Updated %1$s</string>
 
@@ -520,5 +520,9 @@
     <string name="emoji_category_symbols_content_description">Symbols</string>
     <string name="emoji_category_flags_content_description">Flags</string>
     <string name="emoji_category_github_custom_emoji_content_description">GitHub Custom Emoji</string>
+
+    <string name="commits">Commits</string>
+    <string name="commit_status_success">Status is successful</string>
+    <string name="commit_status_failure">Status is failing</string>
 
 </resources>

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -120,7 +121,16 @@ fun RepositoryScreen(
                                         .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
                                 )
                             },
-                            onProjectsClicked = { },
+                            onCommitsClicked = {
+                                val isOrg = profileType == ProfileType.ORGANIZATION
+                                        || organizationsRepositoryResource?.data != null
+                                navController.navigate(
+                                    route = Screen.Commits.route
+                                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                        .replace("{${Screen.ARG_IS_ORG}}", isOrg.toString())
+                                )
+                            },
                             readmeResource = readmeResource
                         )
                     }
@@ -246,7 +256,7 @@ private fun RepositoryScreenContent(
     onForksClicked: () -> Unit,
     onIssuesClicked: () -> Unit,
     onPrsClicked: () -> Unit,
-    onProjectsClicked: () -> Unit,
+    onCommitsClicked: () -> Unit,
 
     readmeResource: Resource<String>?
 ) {
@@ -387,12 +397,16 @@ private fun RepositoryScreenContent(
                     onClick = onPrsClicked,
                     modifier = Modifier.weight(weight = 1f)
                 )
+                val commitsCount = usersRepository?.commitsCount
+                    ?: organizationsRepository?.commitsCount
+                    ?: 0
                 NumberCategoryText(
-                    number = usersRepository?.projectsCount
-                        ?: organizationsRepository?.projectsCount
-                        ?: 0,
-                    category = stringResource(id = R.string.repository_projects),
-                    onClick = onProjectsClicked,
+                    number = commitsCount,
+                    category = LocalContext.current.resources.getQuantityString(
+                        R.plurals.commit_count_plurals,
+                        commitsCount
+                    ),
+                    onClick = onCommitsClicked,
                     modifier = Modifier.weight(weight = 1f)
                 )
             }
@@ -789,8 +803,6 @@ private fun RepositoryScreenContentPreview() {
                 url = "https://github.com/TonnyL"
             ),
             primaryLanguage = language,
-            projectsResourcePath = "/TonnyL/PaperPlane/projects",
-            projectsUrl = "https://github.com/TonnyL/PaperPlane/projects",
             pushedAt = Instant.fromEpochMilliseconds(1528288541000),
             rebaseMergeAllowed = true,
             resourcePath = "/TonnyL/PaperPlane",
@@ -801,7 +813,6 @@ private fun RepositoryScreenContentPreview() {
             url = "https://github.com/TonnyL/PaperPlane",
             usesCustomOpenGraphImage = false,
             viewerCanAdminister = true,
-            viewerCanCreateProjects = true,
             viewerCanSubscribe = true,
             viewerCanUpdateTopics = true,
             viewerHasStarred = false,
@@ -816,9 +827,9 @@ private fun RepositoryScreenContentPreview() {
             issuesCount = 27,
             pullRequestsCount = 1,
             watchersCount = 54,
-            projectsCount = 0,
             releasesCount = 2,
             branchCount = 1,
+            commitsCount = 1,
             topics = listOf(
                 RepositoryTopic(
                     id = "MDE1OlJlcG9zaXRvcnlUb3BpYzY2NDc5Nw==",
@@ -845,7 +856,7 @@ private fun RepositoryScreenContentPreview() {
         onForksClicked = {},
         onIssuesClicked = {},
         onPrsClicked = {},
-        onProjectsClicked = {},
+        onCommitsClicked = {},
 
         readmeResource = Resource.success("<div>\n<g-emoji class=\"g-emoji\" alias=\"books\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f4da.png\">📚</g-emoji> PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. </div>")
     )

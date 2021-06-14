@@ -33,6 +33,6 @@ val DarkThemeColors = darkColors(
     onError = Color(0xff000000)
 )
 
-val issuePrGreen = Color(0x388E3C)
+val issuePrGreen = Color(0xFF388E3C)
 
-val userStatusDndYellow = Color(0xFCD230)
+val userStatusDndYellow = Color(0xFFFCD230)

@@ -1,0 +1,14 @@
+fragment CommitListItem on Commit {
+    message
+    messageHeadline
+    committedDate
+    committer {
+        ...GitActorListItem
+    }
+    author {
+        ...GitActorListItem
+    }
+    statusCheckRollup {
+        state
+    }
+}

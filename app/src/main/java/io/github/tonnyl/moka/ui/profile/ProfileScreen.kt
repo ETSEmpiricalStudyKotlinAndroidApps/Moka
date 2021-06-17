@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.Status
@@ -166,8 +166,9 @@ private fun ProfileScreenContent(
 ) {
     val navController = LocalNavController.current
     LazyColumn(
-        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-            top = false,
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
         )
     ) {
@@ -253,34 +254,34 @@ private fun ProfileScreenContent(
                         } else {
                             MaterialTheme.colors.surface
                         },
+                        onClick = {
+                            if (user.isViewer) {
+                                var route = Screen.EditStatus.route
+
+                                user.status?.let { userStatus ->
+                                    if (!userStatus.emoji.isNullOrEmpty()) {
+                                        route = route.replace(
+                                            "{${Screen.ARG_EDIT_STATUS_EMOJI}}",
+                                            userStatus.emoji
+                                        )
+                                    }
+                                    if (!userStatus.message.isNullOrEmpty()) {
+                                        route = route.replace(
+                                            "{${Screen.ARG_EDIT_STATUS_MESSAGE}}",
+                                            userStatus.message
+                                        )
+                                    }
+                                    route = route.replace(
+                                        "{${Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}",
+                                        user.status.indicatesLimitedAvailability.toString()
+                                    )
+                                }
+                                navController.navigate(route = route)
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
-                            .clickable(onClick = {
-                                if (user.isViewer) {
-                                    var route = Screen.EditStatus.route
-
-                                    user.status?.let { userStatus ->
-                                        if (!userStatus.emoji.isNullOrEmpty()) {
-                                            route = route.replace(
-                                                "{${Screen.ARG_EDIT_STATUS_EMOJI}}",
-                                                userStatus.emoji
-                                            )
-                                        }
-                                        if (!userStatus.message.isNullOrEmpty()) {
-                                            route = route.replace(
-                                                "{${Screen.ARG_EDIT_STATUS_MESSAGE}}",
-                                                userStatus.message
-                                            )
-                                        }
-                                        route = route.replace(
-                                            "{${Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}",
-                                            user.status.indicatesLimitedAvailability.toString()
-                                        )
-                                    }
-                                    navController.navigate(route = route)
-                                }
-                            })
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             EmojiComponent(
@@ -529,6 +530,7 @@ private fun PinnedItemIconifiedText(text: String) {
     )
 }
 
+@ExperimentalMaterialApi
 @Composable
 private fun PinnedItemCard(
     onClick: () -> Unit,
@@ -544,6 +546,7 @@ private fun PinnedItemCard(
             color = MaterialTheme.colors.onBackground.copy(alpha = .12f)
         ),
         elevation = 0.dp,
+        onClick = onClick,
         modifier = Modifier
             .width(width = 320.dp)
             .padding(
@@ -556,7 +559,6 @@ private fun PinnedItemCard(
                 end = ContentPaddingLargeSize,
                 bottom = ContentPaddingLargeSize
             )
-            .clickable(onClick = onClick)
     ) {
         Row(modifier = Modifier.padding(all = ContentPaddingLargeSize)) {
             Image(
@@ -604,6 +606,7 @@ private fun PinnedItemCard(
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 private fun PinnedRepositoryCard(
     navController: NavController,
@@ -662,6 +665,7 @@ private fun PinnedRepositoryCard(
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 private fun PinnedGistCard(
     gist: Gist2,

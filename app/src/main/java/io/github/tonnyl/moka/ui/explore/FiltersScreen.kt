@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.serializers.store.ExploreOptionsSerializer
 import io.github.tonnyl.moka.serializers.store.data.ExploreLanguage
@@ -89,8 +89,9 @@ private fun ExploreFiltersScreenContent(
 
         LazyColumn(
             state = lazyListState,
-            contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-                top = false,
+            contentPadding = rememberInsetsPaddingValues(
+                insets = LocalWindowInsets.current.systemBars,
+                applyTop = false,
                 additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
             )
         ) {

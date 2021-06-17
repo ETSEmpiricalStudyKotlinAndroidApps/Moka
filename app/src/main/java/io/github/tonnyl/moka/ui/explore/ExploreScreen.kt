@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.statusBarsPadding
-import com.google.accompanist.insets.toPaddingValues
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -68,8 +68,9 @@ fun ExploreScreen(openDrawer: () -> Unit) {
     ExploreFiltersScreen(sheetState = bottomSheetState) {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-            top = false,
+        val contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
         )
 

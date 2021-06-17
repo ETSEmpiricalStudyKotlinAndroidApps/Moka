@@ -27,7 +27,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -69,8 +69,9 @@ fun PullRequestsScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-            top = false,
+        val contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
         )
 

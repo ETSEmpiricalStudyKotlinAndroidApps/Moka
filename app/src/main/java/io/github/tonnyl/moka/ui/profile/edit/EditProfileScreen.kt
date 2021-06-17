@@ -17,7 +17,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.ui.theme.*
@@ -182,8 +182,9 @@ private fun EditProfileScreenContent(
     updateTwitterUsername: (String) -> Unit
 ) {
     LazyColumn(
-        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-            top = false,
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
         )
     ) {

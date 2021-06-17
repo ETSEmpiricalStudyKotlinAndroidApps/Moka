@@ -29,7 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.data.EmojiCategory
@@ -110,8 +110,9 @@ private fun EmojisScreenContent(
     ) {
         LazyColumn(
             state = lazyListState,
-            contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-                top = false,
+            contentPadding = rememberInsetsPaddingValues(
+                insets = LocalWindowInsets.current.systemBars,
+                applyTop = false,
                 additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
             ),
             modifier = Modifier.weight(weight = 1f)

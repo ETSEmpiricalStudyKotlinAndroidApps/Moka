@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
@@ -76,8 +76,9 @@ private fun SearchEmojiScreenContent(
     emojis: List<SearchableEmoji>
 ) {
     LazyColumn(
-        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-            top = false,
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
         )
     ) {

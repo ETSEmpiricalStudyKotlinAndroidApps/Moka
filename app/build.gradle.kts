@@ -3,6 +3,7 @@ import java.util.*
 
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
     id("com.apollographql.apollo3")
     kotlin("android")
     id("kotlin-parcelize")
@@ -217,10 +218,7 @@ tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs = listOf(
-            "-XXLanguage:+InlineClasses",
             "-Xskip-prerelease-check"
         )
     }
 }
-
-apply(plugin = "com.google.gms.google-services")

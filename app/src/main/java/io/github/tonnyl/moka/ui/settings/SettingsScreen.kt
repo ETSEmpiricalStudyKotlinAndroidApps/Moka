@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.serializers.store.SettingSerializer
@@ -168,8 +168,9 @@ fun SettingScreenContent(
     val settings by settingsFlow.collectAsState(initial = SettingSerializer.defaultValue)
 
     LazyColumn(
-        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues(
-            top = false,
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
         ),
         modifier = Modifier.testTag(tag = SettingScreenTestTag)

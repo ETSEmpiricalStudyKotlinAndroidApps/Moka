@@ -17,7 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
@@ -85,8 +85,9 @@ private fun SearchScreenContent(
     Column(
         modifier = Modifier
             .padding(
-                top = LocalWindowInsets.current.systemBars.toPaddingValues(
-                    top = false,
+                top = rememberInsetsPaddingValues(
+                    insets = LocalWindowInsets.current.systemBars,
+                    applyTop = false,
                     additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
                 ).calculateTopPadding()
             )

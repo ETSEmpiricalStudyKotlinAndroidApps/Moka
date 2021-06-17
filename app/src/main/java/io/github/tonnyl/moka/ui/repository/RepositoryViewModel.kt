@@ -110,9 +110,7 @@ class RepositoryViewModel(
                     ?.entries
                     ?.firstOrNull {
                         readmeFileNames.contains(
-                            it.treeEntry()?.name?.toLowerCase(
-                                Locale.US
-                            )
+                            it.treeEntry()?.name?.lowercase(Locale.US)
                         )
                     }
 

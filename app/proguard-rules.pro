@@ -59,3 +59,31 @@
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
 -dontwarn org.conscrypt.ConscryptHostnameVerifier
 # ===== okhttp end =====
+
+# ===== kotlin-serialization start =====
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.AnnotationsKt # core serialization annotations
+
+# kotlinx-serialization-json specific. Add this if you have java.lang.NoClassDefFoundError kotlinx.serialization.json.JsonObjectSerializer
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
+}
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+-keep,includedescriptorclasses class io.github.tonnyl.moka.**$$serializer { *; } # <-- change package name to your app's
+-keepclassmembers class io.github.tonnyl.moka.** {
+    *** Companion;
+}
+-keepclasseswithmembers class io.github.tonnyl.moka.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+# ===== kotlin-serialization end =====
+
+# ===== ktor start =====
+-keep public class io.ktor.client.** {
+    public <methods>;
+    private <methods>;
+}
+# ===== ktor end =====

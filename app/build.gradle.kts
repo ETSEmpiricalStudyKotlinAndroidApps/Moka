@@ -68,13 +68,13 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
-        useIR = true
     }
 
     buildFeatures {
@@ -121,6 +121,8 @@ apollo {
 
 dependencies {
     implementation(fileTree(Pair("dir", "libs"), Pair("include", listOf("*.jar"))))
+
+    coreLibraryDesugaring(Deps.desugaring)
 
     // Kotlin
     implementation(Deps.Kotlin.stdlib)

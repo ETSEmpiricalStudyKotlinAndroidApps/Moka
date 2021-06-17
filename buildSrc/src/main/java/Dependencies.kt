@@ -7,6 +7,7 @@ object Versions {
     const val androidGradle = "7.1.0-alpha02"
     const val gmsGoogleServiceGradle = "4.3.8"
     const val firebaseCrashlyticsGradle = "2.7.0"
+    const val desugaring = "1.1.5"
     const val kotlin = "1.5.10"
     const val dateTime = "0.2.1"
     const val coroutines = "1.5.0"
@@ -53,6 +54,7 @@ object Deps {
 
     const val jsoup = "org.jsoup:jsoup:${Versions.jsoup}"
     const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
+    const val desugaring = "com.android.tools:desugar_jdk_libs:${Versions.desugaring}"
 
     object GradlePlugin {
 

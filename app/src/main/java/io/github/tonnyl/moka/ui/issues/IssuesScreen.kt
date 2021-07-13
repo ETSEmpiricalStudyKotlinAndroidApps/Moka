@@ -28,9 +28,12 @@ import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
@@ -40,6 +43,7 @@ import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.IssueItemProvider
+import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
@@ -80,11 +84,9 @@ fun IssuesScreen(
             onRefresh = issues::refresh,
             indicatorPadding = contentPadding,
             indicator = { state, refreshTriggerDistance ->
-                SwipeRefreshIndicator(
+                DefaultSwipeRefreshIndicator(
                     state = state,
-                    refreshTriggerDistance = refreshTriggerDistance,
-                    scale = true,
-                    contentColor = MaterialTheme.colors.secondary
+                    refreshTriggerDistance = refreshTriggerDistance
                 )
             }
         ) {
@@ -146,6 +148,7 @@ fun IssuesScreen(
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 fun IssuesScreenContent(
     contentTopPadding: Dp,
@@ -153,7 +156,10 @@ fun IssuesScreenContent(
     name: String,
     prs: LazyPagingItems<IssueItem>,
 ) {
-    LazyColumn {
+    val issuePlaceholder = remember {
+        IssueItemProvider().values.elementAt(1)
+    }
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
         }
@@ -162,13 +168,25 @@ fun IssuesScreenContent(
             ItemLoadingState(loadState = prs.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = prs) { _, item ->
-            if (item != null) {
+        if (prs.loadState.refresh is LoadState.Loading) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
                 ItemIssue(
-                    owner = owner,
-                    name = name,
-                    issue = item
+                    owner = "TonnyL",
+                    name = "PaperPlane",
+                    issue = issuePlaceholder,
+                    enablePlaceholder = true
                 )
+            }
+        } else {
+            itemsIndexed(lazyPagingItems = prs) { _, item ->
+                if (item != null) {
+                    ItemIssue(
+                        owner = owner,
+                        name = name,
+                        issue = item,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
 
@@ -182,14 +200,15 @@ fun IssuesScreenContent(
 private fun ItemIssue(
     owner: String,
     name: String,
-    issue: IssueItem
+    issue: IssueItem,
+    enablePlaceholder: Boolean
 ) {
     val navController = LocalNavController.current
 
     Column(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable {
+            .clickable(enabled = !enablePlaceholder) {
                 navController.navigate(
                     route = Screen.Issue.route
                         .replace("{${Screen.ARG_PROFILE_LOGIN}}", owner)
@@ -213,7 +232,12 @@ private fun ItemIssue(
                         issue.closed
                     } ?: R.drawable.ic_issue_open_24
                 ),
-                modifier = Modifier.size(size = IssueTimelineEventAuthorAvatarSize)
+                modifier = Modifier
+                    .size(size = IssueTimelineEventAuthorAvatarSize)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             Text(
@@ -222,13 +246,22 @@ private fun ItemIssue(
                 color = MaterialTheme.colors.primary,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(weight = 1f)
+                modifier = Modifier
+                    .weight(weight = 1f)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.issue_pr_number, issue.number),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
         }
@@ -252,13 +285,21 @@ private fun ItemIssue(
                         .clickable {
 
                         }
+                        .placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                 )
                 Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                 Text(
                     text = issue.actor?.login ?: "ghost",
                     style = MaterialTheme.typography.body2,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
                 Spacer(modifier = Modifier.weight(weight = 1f))
                 Text(
@@ -269,7 +310,11 @@ private fun ItemIssue(
                     ).toString(),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.caption
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
         }
@@ -288,6 +333,7 @@ private fun IssueItemPreview(
     ItemIssue(
         owner = "wasabeef",
         name = "droid",
-        issue = issue
+        issue = issue,
+        enablePlaceholder = false
     )
 }

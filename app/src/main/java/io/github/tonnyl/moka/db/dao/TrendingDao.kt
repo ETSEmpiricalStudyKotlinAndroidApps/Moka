@@ -20,6 +20,9 @@ interface TrendingRepositoryDao {
     @Query("DELETE FROM trending_repository")
     fun deleteAll()
 
+    @Query("SELECT COUNT(*) FROM trending_repository")
+    fun trendingRepositoriesCount(): Int
+
 }
 
 @Dao
@@ -33,5 +36,8 @@ interface TrendingDeveloperDao {
 
     @Query("DELETE FROM trending_developer")
     fun deleteAll()
+
+    @Query("SELECT COUNT(*) FROM trending_developer")
+    fun trendingDevelopersCount(): Int
 
 }

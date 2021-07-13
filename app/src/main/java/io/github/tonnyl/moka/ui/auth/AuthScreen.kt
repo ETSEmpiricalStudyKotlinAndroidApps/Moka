@@ -24,6 +24,7 @@ import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.network.KtorClient
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
+import io.github.tonnyl.moka.ui.theme.LottieLoadingAnimationSize
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
@@ -109,11 +110,13 @@ fun AuthScreen(
             || authTokenAndUserResource?.status == Status.SUCCESS
         ) {
             LottieLoadingComponent(
-                modifier = Modifier.constrainAs(ref = progressBarRef) {
-                    centerHorizontallyTo(other = parent)
-                    bottom.linkTo(anchor = parent.bottom)
-                    top.linkTo(anchor = guideline)
-                }
+                modifier = Modifier
+                    .size(size = LottieLoadingAnimationSize)
+                    .constrainAs(ref = progressBarRef) {
+                        centerHorizontallyTo(other = parent)
+                        bottom.linkTo(anchor = parent.bottom)
+                        top.linkTo(anchor = guideline)
+                    }
             )
         } else if (authTokenAndUserResource?.status == Status.ERROR) {
             SnackBarErrorMessage(

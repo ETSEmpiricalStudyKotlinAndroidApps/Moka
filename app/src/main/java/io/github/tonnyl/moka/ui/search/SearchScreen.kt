@@ -94,6 +94,7 @@ fun SearchScreen(initialSearchKeyword: String) {
     }
 }
 
+@ExperimentalSerializationApi
 @ExperimentalPagerApi
 @Composable
 private fun SearchScreenContent(

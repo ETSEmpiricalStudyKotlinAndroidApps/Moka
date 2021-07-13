@@ -13,6 +13,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.google.accompanist.coil.rememberCoilPainter
 import io.github.tonnyl.moka.AccountInstance
@@ -36,6 +38,7 @@ import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.OutlineChip
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalComposeUiApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -51,7 +54,8 @@ fun AccountDialogScreen(showState: MutableState<Boolean>) {
         Dialog(
             onDismissRequest = {
                 showState.value = false
-            }
+            },
+            properties = DialogProperties(usePlatformDefaultWidth = true)
         ) {
             AccountDialogScreenContent(
                 accounts = accounts,

@@ -41,9 +41,12 @@ import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Issue
 import io.github.tonnyl.moka.data.ReactionGroup
@@ -54,12 +57,10 @@ import io.github.tonnyl.moka.type.LockReason
 import io.github.tonnyl.moka.type.ReactionContent
 import io.github.tonnyl.moka.ui.reaction.AddReactionDialogScreen
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.util.IssueProvider
 import io.github.tonnyl.moka.util.IssueTimelineEventProvider
 import io.github.tonnyl.moka.util.toColor
-import io.github.tonnyl.moka.widget.EmptyScreenContent
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.github.tonnyl.moka.widget.ItemLoadingState
-import io.github.tonnyl.moka.widget.ThemedWebView
+import io.github.tonnyl.moka.widget.*
 import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -111,11 +112,9 @@ fun IssueScreen(
             onRefresh = issueTimelineItems::refresh,
             indicatorPadding = contentPadding,
             indicator = { state, refreshTriggerDistance ->
-                SwipeRefreshIndicator(
+                DefaultSwipeRefreshIndicator(
                     state = state,
-                    refreshTriggerDistance = refreshTriggerDistance,
-                    scale = true,
-                    contentColor = MaterialTheme.colors.secondary
+                    refreshTriggerDistance = refreshTriggerDistance
                 )
             }
         ) {
@@ -178,6 +177,7 @@ fun IssueScreen(
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun IssueScreenContent(
     contentTopPadding: Dp,
@@ -186,12 +186,58 @@ private fun IssueScreenContent(
     issue: Issue?,
     timelineItems: LazyPagingItems<IssueTimelineItem>
 ) {
-    LazyColumn {
+    val timelinePlaceholder = remember {
+        IssueTimelineEventProvider().values.first()
+    }
+    val issuePlaceholder = remember {
+        IssueProvider().values.first()
+    }
+
+    val enablePlaceholder = timelineItems.loadState.refresh is LoadState.Loading
+
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
         }
 
-        if (issue != null) {
+        if (enablePlaceholder) {
+            item {
+                IssueOrPullRequestHeader(
+                    repoOwner = owner,
+                    repoName = name,
+                    number = issuePlaceholder.number,
+                    title = issuePlaceholder.title,
+                    caption = stringResource(
+                        id = R.string.issue_pr_info_format,
+                        stringResource(
+                            id = if (issuePlaceholder.closed) {
+                                R.string.issue_pr_status_closed
+                            } else {
+                                R.string.issue_pr_status_open
+                            }
+                        ),
+                        stringResource(
+                            id = R.string.issue_pr_created_by,
+                            issuePlaceholder.author?.login ?: "ghost"
+                        ),
+                        DateUtils.getRelativeTimeSpanString(
+                            issuePlaceholder.createdAt.toEpochMilliseconds(),
+                            System.currentTimeMillis(),
+                            DateUtils.MINUTE_IN_MILLIS
+                        ) as String
+                    ),
+                    avatarUrl = issuePlaceholder.author?.avatarUrl,
+                    viewerCanReact = issuePlaceholder.viewerCanReact,
+                    reactionGroups = issuePlaceholder.reactionGroups,
+                    authorLogin = issuePlaceholder.author?.login,
+                    authorAssociation = issuePlaceholder.authorAssociation,
+                    displayHtml = issuePlaceholder.bodyHTML.takeIf { it.isNotEmpty() }
+                        ?: stringResource(id = R.string.no_description_provided),
+                    commentCreatedAt = issuePlaceholder.createdAt,
+                    enablePlaceholder = true
+                )
+            }
+        } else if (issue != null) {
             item {
                 IssueOrPullRequestHeader(
                     repoOwner = owner,
@@ -224,7 +270,8 @@ private fun IssueScreenContent(
                     authorAssociation = issue.authorAssociation,
                     displayHtml = issue.bodyHTML.takeIf { it.isNotEmpty() }
                         ?: stringResource(id = R.string.no_description_provided),
-                    commentCreatedAt = issue.createdAt
+                    commentCreatedAt = issue.createdAt,
+                    enablePlaceholder = false
                 )
             }
         }
@@ -233,20 +280,33 @@ private fun IssueScreenContent(
             ItemLoadingState(loadState = timelineItems.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = timelineItems) { _, item ->
-            if (item != null) {
-                if (item is IssueComment) {
-                    IssueTimelineCommentItem(
-                        avatarUrl = item.author?.avatarUrl,
-                        viewerCanReact = item.viewerCanReact,
-                        reactionGroups = item.reactionGroups,
-                        authorLogin = item.author?.login,
-                        authorAssociation = item.authorAssociation,
-                        displayHtml = item.displayHtml,
-                        commentCreatedAt = item.createdAt
-                    )
-                } else {
-                    ItemIssueTimelineEvent(event = item)
+        if (enablePlaceholder) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+                ItemIssueTimelineEvent(
+                    event = timelinePlaceholder,
+                    enablePlaceholder = enablePlaceholder
+                )
+            }
+        } else {
+            itemsIndexed(lazyPagingItems = timelineItems) { _, item ->
+                if (item != null) {
+                    if (item is IssueComment) {
+                        IssueTimelineCommentItem(
+                            avatarUrl = item.author?.avatarUrl,
+                            viewerCanReact = item.viewerCanReact,
+                            reactionGroups = item.reactionGroups,
+                            authorLogin = item.author?.login,
+                            authorAssociation = item.authorAssociation,
+                            displayHtml = item.displayHtml,
+                            commentCreatedAt = item.createdAt,
+                            enablePlaceholder = enablePlaceholder
+                        )
+                    } else {
+                        ItemIssueTimelineEvent(
+                            event = item,
+                            enablePlaceholder = enablePlaceholder
+                        )
+                    }
                 }
             }
         }
@@ -258,7 +318,10 @@ private fun IssueScreenContent(
 }
 
 @Composable
-private fun ItemIssueTimelineEvent(event: IssueTimelineItem) {
+private fun ItemIssueTimelineEvent(
+    event: IssueTimelineItem,
+    enablePlaceholder: Boolean
+) {
     val data = eventData(event) ?: return
     Column(
         modifier = Modifier
@@ -273,6 +336,10 @@ private fun ItemIssueTimelineEvent(event: IssueTimelineItem) {
                 modifier = Modifier
                     .size(size = IconSize)
                     .clip(shape = CircleShape)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                     .background(color = data.backgroundColor)
                     .padding(all = ContentPaddingMediumSize)
             )
@@ -288,6 +355,10 @@ private fun ItemIssueTimelineEvent(event: IssueTimelineItem) {
                 modifier = Modifier
                     .size(size = IssueTimelineEventAuthorAvatarSize)
                     .clip(shape = CircleShape)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             Text(
@@ -295,7 +366,12 @@ private fun ItemIssueTimelineEvent(event: IssueTimelineItem) {
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.weight(weight = 1f)
+                modifier = Modifier
+                    .weight(weight = 1f)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -307,12 +383,22 @@ private fun ItemIssueTimelineEvent(event: IssueTimelineItem) {
                     ) as String,
                     style = MaterialTheme.typography.body2,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
         }
         Spacer(modifier = Modifier.height(height = ContentPaddingLargeSize))
-        Text(text = data.content)
+        Text(
+            text = data.content,
+            modifier = Modifier.placeholder(
+                visible = enablePlaceholder,
+                highlight = PlaceholderHighlight.fade()
+            )
+        )
     }
 }
 
@@ -570,7 +656,7 @@ private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
         }
         is ReopenedEvent -> {
             iconResId = R.drawable.ic_dot_24
-            backgroundColor = Color(0x388E3C)
+            backgroundColor = issuePrGreen
             login = event.actor?.login
             avatarUri = event.actor?.avatarUrl
             createdAt = event.createdAt
@@ -697,7 +783,8 @@ fun IssueOrPullRequestHeader(
     authorLogin: String?,
     authorAssociation: CommentAuthorAssociation,
     displayHtml: String,
-    commentCreatedAt: Instant
+    commentCreatedAt: Instant,
+    enablePlaceholder: Boolean
 ) {
     Column {
         Text(
@@ -709,23 +796,32 @@ fun IssueOrPullRequestHeader(
             style = MaterialTheme.typography.body1,
             color = MaterialTheme.colors.primary,
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(all = ContentPaddingLargeSize)
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
         )
         Text(
             text = stringResource(id = R.string.issue_pr_title_format, number, title),
             style = MaterialTheme.typography.h6,
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(horizontal = ContentPaddingLargeSize)
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
         )
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = caption,
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(all = ContentPaddingLargeSize)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
         }
         IssueTimelineCommentItem(
@@ -735,7 +831,8 @@ fun IssueOrPullRequestHeader(
             authorLogin = authorLogin,
             authorAssociation = authorAssociation,
             displayHtml = displayHtml,
-            commentCreatedAt = commentCreatedAt
+            commentCreatedAt = commentCreatedAt,
+            enablePlaceholder = enablePlaceholder
         )
     }
 }
@@ -748,7 +845,8 @@ fun IssueTimelineCommentItem(
     authorLogin: String?,
     authorAssociation: CommentAuthorAssociation,
     displayHtml: String,
-    commentCreatedAt: Instant
+    commentCreatedAt: Instant,
+    enablePlaceholder: Boolean
 ) {
     val reactionDialogState = remember { mutableStateOf(false) }
     if (viewerCanReact) {
@@ -781,6 +879,10 @@ fun IssueTimelineCommentItem(
                 modifier = Modifier
                     .size(size = IconSize)
                     .clip(shape = CircleShape)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -792,8 +894,15 @@ fun IssueTimelineCommentItem(
                     text = authorLogin ?: "ghost",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.body1
+                    style = MaterialTheme.typography.body1,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
+                if (enablePlaceholder) {
+                    Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))
+                }
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
                         text = DateUtils.getRelativeTimeSpanString(
@@ -803,7 +912,11 @@ fun IssueTimelineCommentItem(
                         ) as String,
                         style = MaterialTheme.typography.body2,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
                 }
             }
@@ -835,7 +948,11 @@ fun IssueTimelineCommentItem(
                                 }
                             }
                         ),
-                        style = MaterialTheme.typography.body2
+                        style = MaterialTheme.typography.body2,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
                 }
                 Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
@@ -844,20 +961,28 @@ fun IssueTimelineCommentItem(
                     painter = painterResource(id = R.drawable.ic_emoji_emotions_24),
                     modifier = Modifier
                         .size(size = IconSize)
-                        .clickable {
+                        .clickable(enabled = !enablePlaceholder) {
                             reactionDialogState.value = true
                         }
                         .padding(all = ContentPaddingMediumSize)
+                        .placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                 )
                 Icon(
                     contentDescription = stringResource(id = R.string.more_actions_image_content_description),
                     painter = painterResource(id = R.drawable.ic_more_vert_24),
                     modifier = Modifier
                         .size(size = IconSize)
-                        .clickable {
+                        .clickable(enabled = !enablePlaceholder) {
 
                         }
                         .padding(all = ContentPaddingMediumSize)
+                        .placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                 )
             }
         }
@@ -868,9 +993,18 @@ fun IssueTimelineCommentItem(
                 webView?.stopLoading()
             }
         }
-        AndroidView(factory = { context ->
-            ThemedWebView(context = context)
-        }) {
+        if (enablePlaceholder) {
+            Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+        }
+        AndroidView(
+            factory = { context ->
+                ThemedWebView(context = context)
+            },
+            modifier = Modifier.placeholder(
+                visible = enablePlaceholder,
+                highlight = PlaceholderHighlight.fade()
+            )
+        ) {
             webView = it
         }
         reactionGroups?.let { reactions ->
@@ -880,7 +1014,7 @@ fun IssueTimelineCommentItem(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .clickable(enabled = viewerCanReact) {
+                                .clickable(enabled = !enablePlaceholder && viewerCanReact) {
 
                                 }
                                 .clip(shape = RoundedCornerShape(percent = 50))
@@ -926,12 +1060,20 @@ fun IssueTimelineCommentItem(
                                     }
                                 ),
                                 textAlign = TextAlign.Center,
-                                fontSize = 20.sp
+                                fontSize = 20.sp,
+                                modifier = Modifier.placeholder(
+                                    visible = enablePlaceholder,
+                                    highlight = PlaceholderHighlight.fade()
+                                )
                             )
                             Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
                             Text(
                                 text = reactions[index].usersTotalCount.toString(),
-                                style = MaterialTheme.typography.body2
+                                style = MaterialTheme.typography.body2,
+                                modifier = Modifier.placeholder(
+                                    visible = enablePlaceholder,
+                                    highlight = PlaceholderHighlight.fade()
+                                )
                             )
                         }
                         Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
@@ -951,5 +1093,8 @@ private fun IssueTimelineEventItemPreview(
     )
     event: IssueTimelineItem
 ) {
-    ItemIssueTimelineEvent(event)
+    ItemIssueTimelineEvent(
+        event = event,
+        enablePlaceholder = false
+    )
 }

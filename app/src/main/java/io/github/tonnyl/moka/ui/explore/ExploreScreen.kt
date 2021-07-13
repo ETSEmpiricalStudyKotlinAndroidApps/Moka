@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -24,8 +25,8 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.data.TrendingRepository
@@ -36,11 +37,15 @@ import io.github.tonnyl.moka.serializers.store.data.displayStringResId
 import io.github.tonnyl.moka.serializers.store.data.urlParamValue
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.util.TrendingDeveloperProvider
+import io.github.tonnyl.moka.util.TrendingRepositoryProvider
+import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.ListSubheader
 import io.github.tonnyl.moka.widget.MainSearchBar
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
 @ExperimentalSerializationApi
@@ -84,11 +89,9 @@ fun ExploreScreen(openDrawer: () -> Unit) {
                 },
                 indicatorPadding = contentPadding,
                 indicator = { state, refreshTriggerDistance ->
-                    SwipeRefreshIndicator(
+                    DefaultSwipeRefreshIndicator(
                         state = state,
-                        refreshTriggerDistance = refreshTriggerDistance,
-                        scale = true,
-                        contentColor = MaterialTheme.colors.secondary
+                        refreshTriggerDistance = refreshTriggerDistance
                     )
                 }
             ) {
@@ -96,7 +99,9 @@ fun ExploreScreen(openDrawer: () -> Unit) {
                     exploreOptions = exploreOptions,
                     contentTopPadding = contentPadding.calculateTopPadding(),
                     trendingRepositories = trendingRepositories,
-                    trendingDevelopers = trendingDevelopers
+                    trendingDevelopers = trendingDevelopers,
+                    enablePlaceholder = refreshStatus?.status == Status.LOADING
+                            && refreshStatus?.data == true
                 )
             }
 
@@ -136,11 +141,18 @@ private fun ExploreScreenContent(
     contentTopPadding: Dp,
     exploreOptions: ExploreOptions,
     trendingRepositories: List<TrendingRepository>,
-    trendingDevelopers: List<TrendingDeveloper>
+    trendingDevelopers: List<TrendingDeveloper>,
+    enablePlaceholder: Boolean
 ) {
     val developersHorizontalScrollState = rememberLazyListState()
+    val repositoryPlaceholder = remember {
+        TrendingRepositoryProvider().values.first()
+    }
+    val developerPlaceholder = remember {
+        TrendingDeveloperProvider().values.first()
+    }
 
-    LazyColumn {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
         }
@@ -151,7 +163,8 @@ private fun ExploreScreenContent(
                     id = R.string.explore_title,
                     exploreOptions.exploreLanguage.name,
                     stringResource(id = exploreOptions.timeSpan.displayStringResId)
-                )
+                ),
+                enablePlaceholder = enablePlaceholder
             )
         }
 
@@ -160,10 +173,21 @@ private fun ExploreScreenContent(
                 state = developersHorizontalScrollState,
                 contentPadding = PaddingValues(horizontal = ContentPaddingLargeSize)
             ) {
-                items(count = trendingDevelopers.size) { index ->
+                items(
+                    count = if (enablePlaceholder) {
+                        MokaApp.defaultPagingConfig.initialLoadSize
+                    } else {
+                        trendingDevelopers.size
+                    }
+                ) { index ->
                     TrendingDeveloperItem(
                         index = index,
-                        developer = trendingDevelopers[index]
+                        developer = if (enablePlaceholder) {
+                            developerPlaceholder
+                        } else {
+                            trendingDevelopers[index]
+                        },
+                        enablePlaceholder = enablePlaceholder
                     )
                 }
             }
@@ -173,10 +197,21 @@ private fun ExploreScreenContent(
             Spacer(modifier = Modifier.height(height = ContentPaddingLargeSize))
         }
 
-        items(count = trendingRepositories.size) { index ->
+        items(
+            count = if (enablePlaceholder) {
+                MokaApp.defaultPagingConfig.initialLoadSize
+            } else {
+                trendingRepositories.size
+            }
+        ) { index ->
             TrendingRepositoryItem(
                 timeSpanText = exploreOptions.timeSpan.urlParamValue,
-                repository = trendingRepositories[index]
+                repository = if (enablePlaceholder) {
+                    repositoryPlaceholder
+                } else {
+                    trendingRepositories[index]
+                },
+                enablePlaceholder = enablePlaceholder
             )
         }
     }
@@ -191,6 +226,7 @@ private fun ExploreScreenContentPreview() {
         contentTopPadding = 0.dp,
         exploreOptions = ExploreOptionsSerializer.defaultValue,
         trendingRepositories = emptyList(),
-        trendingDevelopers = emptyList()
+        trendingDevelopers = emptyList(),
+        enablePlaceholder = false
     )
 }

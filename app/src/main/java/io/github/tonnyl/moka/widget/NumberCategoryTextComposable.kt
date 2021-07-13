@@ -15,6 +15,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
@@ -24,6 +27,7 @@ fun NumberCategoryText(
     number: Int,
     category: String,
     onClick: () -> Unit,
+    enablePlaceholder: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -31,7 +35,7 @@ fun NumberCategoryText(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick, enabled = !enablePlaceholder)
             .padding(vertical = ContentPaddingLargeSize)
     ) {
         Text(
@@ -39,7 +43,11 @@ fun NumberCategoryText(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.subtitle1,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.placeholder(
+                visible = enablePlaceholder,
+                highlight = PlaceholderHighlight.fade()
+            )
         )
         Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -47,7 +55,11 @@ fun NumberCategoryText(
                 text = category,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.caption
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
             )
         }
     }
@@ -59,6 +71,7 @@ private fun NumberCategoryTextPreview() {
     NumberCategoryText(
         number = 11,
         category = stringResource(id = R.string.repository_projects),
-        onClick = {}
+        onClick = {},
+        enablePlaceholder = false
     )
 }

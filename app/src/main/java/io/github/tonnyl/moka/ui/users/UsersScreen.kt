@@ -25,19 +25,20 @@ import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.IconSize
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
-import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.UserItemProvider
+import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
@@ -78,11 +79,9 @@ fun UsersScreen(
             onRefresh = users::refresh,
             indicatorPadding = contentPadding,
             indicator = { state, refreshTriggerDistance ->
-                SwipeRefreshIndicator(
+                DefaultSwipeRefreshIndicator(
                     state = state,
-                    refreshTriggerDistance = refreshTriggerDistance,
-                    scale = true,
-                    contentColor = MaterialTheme.colors.secondary
+                    refreshTriggerDistance = refreshTriggerDistance
                 )
             }
         ) {
@@ -156,11 +155,15 @@ fun UsersScreen(
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun UsersScreenScreen(
     contentTopPadding: Dp,
     users: LazyPagingItems<UserItem>
 ) {
+    val userPlaceholder = remember {
+        UserItemProvider().values.last()
+    }
     LazyColumn {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
@@ -170,9 +173,21 @@ private fun UsersScreenScreen(
             ItemLoadingState(loadState = users.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = users) { _, item ->
-            if (item != null) {
-                ItemUser(user = item)
+        if (users.loadState.refresh is LoadState.Loading) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+                ItemUser(
+                    user = userPlaceholder,
+                    enablePlaceholder = true
+                )
+            }
+        } else {
+            itemsIndexed(lazyPagingItems = users) { _, item ->
+                if (item != null) {
+                    ItemUser(
+                        user = item,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
 
@@ -183,14 +198,17 @@ private fun UsersScreenScreen(
 }
 
 @Composable
-fun ItemUser(user: UserItem) {
+fun ItemUser(
+    user: UserItem,
+    enablePlaceholder: Boolean
+) {
     val navController = LocalNavController.current
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable {
+            .clickable(enabled = !enablePlaceholder) {
                 navController.navigate(
                     route = Screen.Profile.route
                         .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
@@ -210,6 +228,10 @@ fun ItemUser(user: UserItem) {
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
         Column {
@@ -217,15 +239,39 @@ fun ItemUser(user: UserItem) {
                 Text(
                     text = user.name,
                     style = MaterialTheme.typography.body1,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = if (enablePlaceholder) {
+                        Modifier
+                            .height(height = ContentPaddingLargeSize)
+                            .placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
+                    } else {
+                        Modifier.wrapContentHeight()
+                    }
                 )
+            }
+            if (enablePlaceholder) {
+                Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
             }
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = user.login,
                     style = MaterialTheme.typography.body2,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = if (enablePlaceholder) {
+                        Modifier
+                            .height(height = ContentPaddingLargeSize)
+                            .placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
+                    } else {
+                        Modifier.wrapContentHeight()
+                    }
                 )
+                if (enablePlaceholder) {
+                    Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+                }
                 (user.bio ?: user.bioHTML).let {
                     if (it.isNotEmpty()) {
                         Text(
@@ -233,7 +279,16 @@ fun ItemUser(user: UserItem) {
                             style = MaterialTheme.typography.body2,
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = if (enablePlaceholder) {
+                                Modifier
+                                    .height(height = ContentPaddingLargeSize)
+                                    .placeholder(
+                                        visible = enablePlaceholder,
+                                        highlight = PlaceholderHighlight.fade()
+                                    )
+                            } else {
+                                Modifier.wrapContentHeight()
+                            }
                         )
                     }
                 }
@@ -251,5 +306,8 @@ private fun ItemUserPreview(
     )
     user: UserItem
 ) {
-    ItemUser(user = user)
+    ItemUser(
+        user = user,
+        enablePlaceholder = false
+    )
 }

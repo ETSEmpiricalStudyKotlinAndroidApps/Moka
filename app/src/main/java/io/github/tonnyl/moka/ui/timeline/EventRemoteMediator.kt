@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.timeline
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -23,15 +24,26 @@ import timber.log.Timber
 class EventRemoteMediator(
     private val login: String,
     private val eventApi: EventApi,
-    private val database: MokaDataBase
+    private val database: MokaDataBase,
+    private val isNeedDisplayPlaceholder: MutableLiveData<Boolean>
 ) : RemoteMediator<Int, Event>() {
 
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, Event>
     ): MediatorResult {
+        val updateIsNeedDisplayPlaceholderIfNeeded = {
+            val newValue = loadType == LoadType.REFRESH
+                    && database.notificationsDao().notificationsCount() == 0
+            if (newValue != isNeedDisplayPlaceholder.value) {
+                isNeedDisplayPlaceholder.postValue(newValue)
+            }
+        }
+
         return withContext(Dispatchers.IO) {
             try {
+                updateIsNeedDisplayPlaceholderIfNeeded.invoke()
+
                 when (loadType) {
                     LoadType.REFRESH -> {
                         val response = eventApi.listPublicEventThatAUserHasReceived(
@@ -120,6 +132,8 @@ class EventRemoteMediator(
             } catch (e: Exception) {
                 Timber.e(e)
                 Error(e)
+            } finally {
+                updateIsNeedDisplayPlaceholderIfNeeded.invoke()
             }
         }
     }

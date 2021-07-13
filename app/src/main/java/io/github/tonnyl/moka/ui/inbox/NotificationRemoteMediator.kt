@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.inbox
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -20,15 +21,26 @@ import timber.log.Timber
 @ExperimentalPagingApi
 class NotificationRemoteMediator(
     private val notificationsApi: NotificationApi,
-    private val database: MokaDataBase
+    private val database: MokaDataBase,
+    private val isNeedDisplayPlaceholder: MutableLiveData<Boolean>
 ) : RemoteMediator<Int, Notification>() {
 
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, Notification>
     ): MediatorResult {
+        val updateIsNeedDisplayPlaceholderIfNeeded = {
+            val newValue = loadType == LoadType.REFRESH
+                    && database.notificationsDao().notificationsCount() == 0
+            if (newValue != isNeedDisplayPlaceholder.value) {
+                isNeedDisplayPlaceholder.postValue(newValue)
+            }
+        }
+
         return withContext(Dispatchers.IO) {
             try {
+                updateIsNeedDisplayPlaceholderIfNeeded.invoke()
+
                 when (loadType) {
                     LoadType.REFRESH -> {
                         val response = notificationsApi.listNotifications(
@@ -123,6 +135,8 @@ class NotificationRemoteMediator(
             } catch (e: Exception) {
                 Timber.e(e)
                 MediatorResult.Error(e)
+            } finally {
+                updateIsNeedDisplayPlaceholderIfNeeded.invoke()
             }
         }
     }

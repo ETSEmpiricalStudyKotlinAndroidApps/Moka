@@ -3,24 +3,36 @@ package io.github.tonnyl.moka.ui.search.repositories
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repositories.ItemRepository
+import io.github.tonnyl.moka.util.RepositoryItemProvider
+import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @Composable
 fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryItem>) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = repositories.loadState.refresh is LoadState.Loading),
         onRefresh = repositories::refresh,
+        indicator = { state, refreshTriggerDistance ->
+            DefaultSwipeRefreshIndicator(
+                state = state,
+                refreshTriggerDistance = refreshTriggerDistance
+            )
+        },
         modifier = Modifier.fillMaxSize()
     ) {
         when {
@@ -55,18 +67,35 @@ fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryItem>) {
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<RepositoryItem>) {
-    LazyColumn {
+    val repoPlaceholder = remember {
+        RepositoryItemProvider().values.first()
+    }
+
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             ItemLoadingState(loadState = repositories.loadState.prepend)
         }
-        itemsIndexed(lazyPagingItems = repositories) { _, repo ->
-            if (repo != null) {
+
+        if (repositories.loadState.refresh is LoadState.Loading) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
                 ItemRepository(
-                    repo = repo,
-                    profileType = ProfileType.NOT_SPECIFIED
+                    repo = repoPlaceholder,
+                    profileType = ProfileType.USER,
+                    enablePlaceholder = true
                 )
+            }
+        } else {
+            itemsIndexed(lazyPagingItems = repositories) { _, repo ->
+                if (repo != null) {
+                    ItemRepository(
+                        repo = repo,
+                        profileType = ProfileType.NOT_SPECIFIED,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
         item {

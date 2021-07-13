@@ -23,8 +23,8 @@ class ExploreViewModel(
     val queryData: LiveData<ExploreOptions>
         get() = _queryData
 
-    private val _refreshDataStatus = MutableLiveData<Resource<Unit>>()
-    val refreshDataStatus: LiveData<Resource<Unit>>
+    private val _refreshDataStatus = MutableLiveData<Resource<Boolean>>()
+    val refreshDataStatus: LiveData<Resource<Boolean>>
         get() = _refreshDataStatus
 
     val repositoriesLocalData =
@@ -38,8 +38,17 @@ class ExploreViewModel(
     fun refreshTrendingData() {
         val queryDataValue = queryData.value ?: ExploreOptionsSerializer.defaultValue
 
+        val countTrendingData: () -> Boolean = {
+            accountInstance.database.trendingDevelopersDao()
+                .trendingDevelopersCount() == 0
+                    && accountInstance.database.trendingRepositoriesDao()
+                .trendingRepositoriesCount() == 0
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                _refreshDataStatus.postValue(Resource.loading(data = countTrendingData.invoke()))
+
                 val developers = accountInstance.trendingApi.listTrendingDevelopers(
                     since = queryDataValue.timeSpan.urlParamValue,
                     language = queryDataValue.exploreLanguage.urlParam
@@ -61,7 +70,7 @@ class ExploreViewModel(
                         .insert(repositories = repositories)
                 }
 
-                _refreshDataStatus.postValue(Resource.success(Unit))
+                _refreshDataStatus.postValue(Resource.success(data = countTrendingData.invoke()))
             } catch (e: Exception) {
                 Timber.e(e)
 

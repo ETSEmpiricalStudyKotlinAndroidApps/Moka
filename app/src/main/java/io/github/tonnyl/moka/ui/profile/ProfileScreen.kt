@@ -8,7 +8,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -25,11 +24,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.Status
@@ -38,11 +41,11 @@ import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.users.UsersType
+import io.github.tonnyl.moka.util.UserProvider
 import io.github.tonnyl.moka.util.formatWithSuffix
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
-import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -54,26 +57,30 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
     val user by viewModel.userProfile.observeAsState()
     val followState by viewModel.followState.observeAsState()
 
+    val userPlaceholder = remember {
+        UserProvider().values.first()
+    }
+
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
+        val isLoading = (user == null && organization == null)
+                || user?.status == Status.LOADING
+                || organization?.status == Status.LOADING
         when {
-            (user == null && organization == null)
-                    || user?.status == Status.LOADING
-                    || organization?.status == Status.LOADING -> {
-                LoadingScreen()
-            }
-            user?.data != null
+            isLoading
+                    || user?.data != null
                     || organization?.data != null -> {
                 val mainViewModel = LocalMainViewModel.current
                 ProfileScreenContent(
                     topAppBarSize = topAppBarSize,
                     currentLoginUser = currentAccount.signedInAccount.account.login,
-                    user = user?.data,
+                    user = userPlaceholder.takeIf { isLoading } ?: user?.data,
                     organization = organization?.data,
                     follow = followState?.data,
                     getEmojiByName = mainViewModel::getEmojiByName,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    enablePlaceholder = isLoading
                 )
             }
             else -> {
@@ -161,140 +168,314 @@ private fun ProfileScreenContent(
     user: User?,
     organization: Organization?,
     follow: Boolean?,
+    enablePlaceholder: Boolean,
     getEmojiByName: (String) -> SearchableEmoji?,
     viewModel: ProfileViewModel? = null
 ) {
     val navController = LocalNavController.current
-    LazyColumn(
-        contentPadding = rememberInsetsPaddingValues(
-            insets = LocalWindowInsets.current.systemBars,
-            applyTop = false,
-            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
-        )
-    ) {
-        item {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(all = ContentPaddingLargeSize)
-            ) {
-                Image(
-                    painter = rememberCoilPainter(
-                        request = user?.avatarUrl ?: organization?.avatarUrl,
-                        requestBuilder = {
-                            createAvatarLoadRequest()
-                        }
-                    ),
-                    contentDescription = stringResource(id = R.string.users_avatar_content_description),
-                    modifier = Modifier
-                        .size(size = 92.dp)
-                        .clip(shape = CircleShape)
+
+    Column(
+        modifier = Modifier
+            .verticalScroll(state = rememberScrollState())
+            .padding(
+                paddingValues = rememberInsetsPaddingValues(
+                    insets = LocalWindowInsets.current.systemBars,
+                    applyTop = false,
+                    additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
                 )
-                Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .weight(weight = 1f)
-                        .align(alignment = Alignment.CenterVertically)
-                ) {
-                    (user?.name ?: organization?.name).let { name ->
-                        if (!name.isNullOrEmpty()) {
-                            Text(
-                                text = name,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                style = MaterialTheme.typography.h6
-                            )
-                        }
+            )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(all = ContentPaddingLargeSize)
+        ) {
+            Image(
+                painter = rememberCoilPainter(
+                    request = user?.avatarUrl ?: organization?.avatarUrl,
+                    requestBuilder = {
+                        createAvatarLoadRequest()
                     }
-                    Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
-                    (user?.login ?: organization?.login).let {
-                        if (!it.isNullOrEmpty()) {
-                            Text(
-                                text = it,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                ),
+                contentDescription = stringResource(id = R.string.users_avatar_content_description),
+                modifier = Modifier
+                    .size(size = 92.dp)
+                    .clip(shape = CircleShape)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
+            )
+            Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .weight(weight = 1f)
+                    .align(alignment = Alignment.CenterVertically)
+            ) {
+                (user?.name ?: organization?.name).let { name ->
+                    if (!name.isNullOrEmpty()) {
+                        Text(
+                            text = name,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
                             )
-                        }
+                        )
                     }
                 }
-                if (user != null && user.login != currentLoginUser) {
-                    Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
-                    OutlinedButton(
-                        onClick = { viewModel?.toggleFollow() },
-                        modifier = Modifier.align(alignment = Alignment.CenterVertically)
-                    ) {
+                Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
+                (user?.login ?: organization?.login).let {
+                    if (enablePlaceholder) {
+                        Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+                    }
+                    if (!it.isNullOrEmpty()) {
                         Text(
-                            text = stringResource(
-                                id = if (follow == true) {
-                                    R.string.user_profile_unfollow
-                                } else {
-                                    R.string.user_profile_follow
-                                }
+                            text = it,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
                             )
                         )
                     }
                 }
             }
-        }
-        item {
-            if (user != null) {
-                Box(
-                    modifier = Modifier.padding(horizontal = ContentPaddingLargeSize),
-                    contentAlignment = Alignment.Center
+            if (user != null
+                && user.login != currentLoginUser
+            ) {
+                Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
+                OutlinedButton(
+                    enabled = !enablePlaceholder,
+                    onClick = { viewModel?.toggleFollow() },
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
                 ) {
-                    Card(
-                        border = BorderStroke(
-                            width = DividerSize,
-                            color = MaterialTheme.colors.onBackground.copy(alpha = .12f)
+                    Text(
+                        text = stringResource(
+                            id = if (follow == true) {
+                                R.string.user_profile_unfollow
+                            } else {
+                                R.string.user_profile_follow
+                            }
                         ),
-                        elevation = 0.dp,
-                        backgroundColor = if (user.status?.indicatesLimitedAvailability == true) {
-                            userStatusDndYellow.copy(alpha = .2f)
-                        } else {
-                            MaterialTheme.colors.surface
-                        },
-                        onClick = {
-                            if (user.isViewer) {
-                                var route = Screen.EditStatus.route
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
+                    )
+                }
+            }
+        }
 
-                                user.status?.let { userStatus ->
-                                    if (!userStatus.emoji.isNullOrEmpty()) {
-                                        route = route.replace(
-                                            "{${Screen.ARG_EDIT_STATUS_EMOJI}}",
-                                            userStatus.emoji
-                                        )
-                                    }
-                                    if (!userStatus.message.isNullOrEmpty()) {
-                                        route = route.replace(
-                                            "{${Screen.ARG_EDIT_STATUS_MESSAGE}}",
-                                            userStatus.message
-                                        )
-                                    }
+        if (user != null) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .padding(horizontal = ContentPaddingLargeSize)
+            ) {
+                Card(
+                    border = BorderStroke(
+                        width = DividerSize,
+                        color = MaterialTheme.colors.onBackground.copy(alpha = .12f)
+                    ),
+                    elevation = 0.dp,
+                    backgroundColor = if (user.status?.indicatesLimitedAvailability == true) {
+                        userStatusDndYellow.copy(alpha = .2f)
+                    } else {
+                        MaterialTheme.colors.surface
+                    },
+                    onClick = {
+                        if (enablePlaceholder) {
+                            return@Card
+                        }
+
+                        if (user.isViewer) {
+                            var route = Screen.EditStatus.route
+
+                            user.status?.let { userStatus ->
+                                if (!userStatus.emoji.isNullOrEmpty()) {
                                     route = route.replace(
-                                        "{${Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}",
-                                        user.status.indicatesLimitedAvailability.toString()
+                                        "{${Screen.ARG_EDIT_STATUS_EMOJI}}",
+                                        userStatus.emoji
                                     )
                                 }
-                                navController.navigate(route = route)
+                                if (!userStatus.message.isNullOrEmpty()) {
+                                    route = route.replace(
+                                        "{${Screen.ARG_EDIT_STATUS_MESSAGE}}",
+                                        userStatus.message
+                                    )
+                                }
+                                route = route.replace(
+                                    "{${Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}",
+                                    user.status.indicatesLimitedAvailability.toString()
+                                )
                             }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            EmojiComponent(
-                                emoji = user.status?.emoji,
-                                getEmojiByName = getEmojiByName
+                            navController.navigate(route = route)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        EmojiComponent(
+                            emoji = user.status?.emoji,
+                            getEmojiByName = getEmojiByName,
+                            enablePlaceholder = enablePlaceholder
+                        )
+                        val scrollState = rememberScrollState()
+                        Row(modifier = Modifier.horizontalScroll(state = scrollState)) {
+                            Text(
+                                text = user.status?.message.takeIf { !it.isNullOrEmpty() }
+                                    ?: stringResource(id = R.string.edit_status_set_status),
+                                style = MaterialTheme.typography.body1,
+                                maxLines = 1,
+                                modifier = Modifier.placeholder(
+                                    visible = enablePlaceholder,
+                                    highlight = PlaceholderHighlight.fade()
+                                )
                             )
-                            val scrollState = rememberScrollState()
-                            Row(modifier = Modifier.horizontalScroll(state = scrollState)) {
-                                Text(
-                                    text = user.status?.message.takeIf { !it.isNullOrEmpty() }
-                                        ?: stringResource(id = R.string.edit_status_set_status),
-                                    style = MaterialTheme.typography.body1,
-                                    maxLines = 1
+                        }
+                    }
+                }
+            }
+        }
+
+        (user?.bio ?: organization?.description)?.let {
+            if (it.isNotEmpty()) {
+                Text(
+                    text = it,
+                    maxLines = if (enablePlaceholder) {
+                        1
+                    } else {
+                        Int.MAX_VALUE
+                    },
+                    modifier = Modifier
+                        .padding(all = ContentPaddingLargeSize)
+                        .placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
+                )
+            }
+        }
+
+        if (user != null) {
+            Row(modifier = Modifier.padding(horizontal = ContentPaddingLargeSize)) {
+                NumberCategoryText(
+                    number = user.repositoriesTotalCount,
+                    category = stringResource(id = R.string.profile_repositories),
+                    onClick = {
+                        navController.navigate(
+                            route = Screen.Repositories.route
+                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
+                                .replace(
+                                    "{${Screen.ARG_REPOSITORY_TYPE}}",
+                                    RepositoryType.OWNED.name
+                                )
+                                .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
+                        )
+                    },
+                    enablePlaceholder = enablePlaceholder,
+                    modifier = Modifier.weight(weight = 1f)
+                )
+                NumberCategoryText(
+                    number = user.starredRepositoriesTotalCount,
+                    category = stringResource(id = R.string.profile_stars),
+                    onClick = {
+                        navController.navigate(
+                            route = Screen.Repositories.route
+                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
+                                .replace(
+                                    "{${Screen.ARG_REPOSITORY_TYPE}}",
+                                    RepositoryType.STARRED.name
+                                )
+                                .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
+                        )
+                    },
+                    enablePlaceholder = enablePlaceholder,
+                    modifier = Modifier.weight(weight = 1f)
+                )
+                NumberCategoryText(
+                    number = user.followersTotalCount,
+                    category = stringResource(id = R.string.profile_followers),
+                    onClick = {
+                        navController.navigate(
+                            route = Screen.Users.route
+                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
+                                .replace("{${Screen.ARG_USERS_TYPE}}", UsersType.FOLLOWER.name)
+                        )
+                    },
+                    enablePlaceholder = enablePlaceholder,
+                    modifier = Modifier.weight(weight = 1f)
+                )
+            }
+            Row(modifier = Modifier.padding(horizontal = ContentPaddingLargeSize)) {
+                NumberCategoryText(
+                    number = user.followingTotalCount,
+                    category = stringResource(id = R.string.profile_following),
+                    onClick = {
+                        navController.navigate(
+                            route = Screen.Users.route
+                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
+                                .replace("{${Screen.ARG_USERS_TYPE}}", UsersType.FOLLOWING.name)
+                        )
+                    },
+                    enablePlaceholder = enablePlaceholder,
+                    modifier = Modifier.weight(weight = 1f)
+                )
+                NumberCategoryText(
+                    number = user.projectsTotalCount,
+                    category = stringResource(id = R.string.repository_projects),
+                    onClick = { },
+                    enablePlaceholder = enablePlaceholder,
+                    modifier = Modifier.weight(weight = 1f)
+                )
+            }
+        } else if (organization != null) {
+            Row(modifier = Modifier.padding(horizontal = ContentPaddingLargeSize)) {
+                NumberCategoryText(
+                    number = organization.repositoriesTotalCount,
+                    category = stringResource(id = R.string.profile_repositories),
+                    onClick = { },
+                    enablePlaceholder = enablePlaceholder,
+                    modifier = Modifier.weight(weight = 1f)
+                )
+                NumberCategoryText(
+                    number = organization.projectsTotalCount,
+                    category = stringResource(id = R.string.repository_projects),
+                    onClick = { },
+                    enablePlaceholder = enablePlaceholder,
+                    modifier = Modifier.weight(weight = 1f)
+                )
+            }
+        }
+
+        (user?.pinnedItems ?: organization?.pinnedItems)?.let { list ->
+            if (list.isNotEmpty()) {
+                Column {
+                    CategoryText(
+                        textRes = R.string.profile_pinned,
+                        enablePlaceholder = enablePlaceholder
+                    )
+                    LazyRow {
+                        items(count = list.size) { index ->
+                            val item = list[index]
+                            if (item is RepositoryItem) {
+                                PinnedRepositoryCard(
+                                    navController = navController,
+                                    repository = item,
+                                    index = index,
+                                    enablePlaceholder = enablePlaceholder
+                                )
+                            } else if (item is Gist2) {
+                                PinnedGistCard(
+                                    gist = item,
+                                    index = index,
+                                    enablePlaceholder = enablePlaceholder
                                 )
                             }
                         }
@@ -302,184 +483,69 @@ private fun ProfileScreenContent(
                 }
             }
         }
-        item {
-            (user?.bio ?: organization?.description)?.let {
-                Text(
-                    text = it,
-                    modifier = Modifier.padding(all = ContentPaddingLargeSize)
-                )
-            }
-        }
-        item {
-            if (user != null) {
-                Row(modifier = Modifier.padding(horizontal = ContentPaddingLargeSize)) {
-                    NumberCategoryText(
-                        number = user.repositoriesTotalCount,
-                        category = stringResource(id = R.string.profile_repositories),
-                        onClick = {
-                            navController.navigate(
-                                route = Screen.Repositories.route
-                                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
-                                    .replace(
-                                        "{${Screen.ARG_REPOSITORY_TYPE}}",
-                                        RepositoryType.OWNED.name
-                                    )
-                                    .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
-                            )
-                        },
-                        modifier = Modifier.weight(weight = 1f)
-                    )
-                    NumberCategoryText(
-                        number = user.starredRepositoriesTotalCount,
-                        category = stringResource(id = R.string.profile_stars),
-                        onClick = {
-                            navController.navigate(
-                                route = Screen.Repositories.route
-                                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
-                                    .replace(
-                                        "{${Screen.ARG_REPOSITORY_TYPE}}",
-                                        RepositoryType.STARRED.name
-                                    )
-                                    .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
-                            )
-                        },
-                        modifier = Modifier.weight(weight = 1f)
-                    )
-                    NumberCategoryText(
-                        number = user.followersTotalCount,
-                        category = stringResource(id = R.string.profile_followers),
-                        onClick = {
-                            navController.navigate(
-                                route = Screen.Users.route
-                                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
-                                    .replace("{${Screen.ARG_USERS_TYPE}}", UsersType.FOLLOWER.name)
-                            )
-                        },
-                        modifier = Modifier.weight(weight = 1f)
-                    )
-                }
-                Row(modifier = Modifier.padding(horizontal = ContentPaddingLargeSize)) {
-                    NumberCategoryText(
-                        number = user.followingTotalCount,
-                        category = stringResource(id = R.string.profile_following),
-                        onClick = {
-                            navController.navigate(
-                                route = Screen.Users.route
-                                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
-                                    .replace("{${Screen.ARG_USERS_TYPE}}", UsersType.FOLLOWING.name)
-                            )
-                        },
-                        modifier = Modifier.weight(weight = 1f)
-                    )
-                    NumberCategoryText(
-                        number = user.projectsTotalCount,
-                        category = stringResource(id = R.string.repository_projects),
-                        onClick = { },
-                        modifier = Modifier.weight(weight = 1f)
-                    )
-                }
-            } else if (organization != null) {
-                Row(modifier = Modifier.padding(horizontal = ContentPaddingLargeSize)) {
-                    NumberCategoryText(
-                        number = organization.repositoriesTotalCount,
-                        category = stringResource(id = R.string.profile_repositories),
-                        onClick = { },
-                        modifier = Modifier.weight(weight = 1f)
-                    )
-                    NumberCategoryText(
-                        number = organization.projectsTotalCount,
-                        category = stringResource(id = R.string.repository_projects),
-                        onClick = { },
-                        modifier = Modifier.weight(weight = 1f)
-                    )
-                }
-            }
-        }
-        item {
-            (user?.pinnedItems ?: organization?.pinnedItems)?.let { list ->
-                if (list.isNotEmpty()) {
-                    Column {
-                        CategoryText(textRes = R.string.profile_pinned)
-                        LazyRow {
-                            items(count = list.size) { index ->
-                                val item = list[index]
-                                if (item is RepositoryItem) {
-                                    PinnedRepositoryCard(
-                                        navController = navController,
-                                        repository = item,
-                                        index = index
-                                    )
-                                } else if (item is Gist2) {
-                                    PinnedGistCard(
-                                        gist = item,
-                                        index = index
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        item {
-            CategoryText(textRes = R.string.profile_contact)
-        }
-        item {
-            if (user != null) {
-                ContactListItem(
-                    iconRes = R.drawable.ic_group_24,
-                    primaryTextRes = R.string.profile_company,
-                    secondaryText = user.company
-                        ?: stringResource(id = R.string.no_description_provided)
-                )
-            }
-        }
-        item {
+
+        CategoryText(
+            textRes = R.string.profile_contact,
+            enablePlaceholder = enablePlaceholder
+        )
+
+        if (user != null) {
             ContactListItem(
-                iconRes = R.drawable.ic_email_24,
-                primaryTextRes = R.string.profile_email,
-                secondaryText = user?.email
-                    ?: organization?.email
-                    ?: stringResource(id = R.string.no_description_provided)
+                iconRes = R.drawable.ic_group_24,
+                primaryTextRes = R.string.profile_company,
+                secondaryText = user.company
+                    ?: stringResource(id = R.string.no_description_provided),
+                enablePlaceholder = enablePlaceholder
             )
         }
-        item {
-            ContactListItem(
-                iconRes = R.drawable.ic_location_on_24,
-                primaryTextRes = R.string.profile_location,
-                secondaryText = user?.location
-                    ?: organization?.location
-                    ?: stringResource(id = R.string.no_description_provided)
+
+        ContactListItem(
+            iconRes = R.drawable.ic_email_24,
+            primaryTextRes = R.string.profile_email,
+            secondaryText = user?.email
+                ?: organization?.email
+                ?: stringResource(id = R.string.no_description_provided),
+            enablePlaceholder = enablePlaceholder
+        )
+
+        ContactListItem(
+            iconRes = R.drawable.ic_location_on_24,
+            primaryTextRes = R.string.profile_location,
+            secondaryText = user?.location
+                ?: organization?.location
+                ?: stringResource(id = R.string.no_description_provided),
+            enablePlaceholder = enablePlaceholder
+        )
+        ContactListItem(
+            iconRes = R.drawable.ic_link_24,
+            primaryTextRes = R.string.profile_website,
+            secondaryText = user?.url ?: organization?.url
+            ?: stringResource(id = R.string.no_description_provided),
+            enablePlaceholder = enablePlaceholder
+        )
+        if (user != null) {
+            CategoryText(
+                textRes = R.string.profile_info,
+                enablePlaceholder = enablePlaceholder
             )
-        }
-        item {
-            ContactListItem(
-                iconRes = R.drawable.ic_link_24,
-                primaryTextRes = R.string.profile_website,
-                secondaryText = user?.url ?: organization?.url
-                ?: stringResource(id = R.string.no_description_provided)
+            InfoListItem(
+                leadingRes = R.string.profile_joined_on,
+                trailing = DateUtils.getRelativeTimeSpanString(
+                    user.createdAt.toEpochMilliseconds(),
+                    System.currentTimeMillis(),
+                    DateUtils.MINUTE_IN_MILLIS
+                ).toString(),
+                enablePlaceholder = enablePlaceholder
             )
-        }
-        item {
-            if (user != null) {
-                CategoryText(textRes = R.string.profile_info)
-                InfoListItem(
-                    leadingRes = R.string.profile_joined_on,
-                    trailing = DateUtils.getRelativeTimeSpanString(
-                        user.createdAt.toEpochMilliseconds(),
-                        System.currentTimeMillis(),
-                        DateUtils.MINUTE_IN_MILLIS
-                    ).toString()
-                )
-                InfoListItem(
-                    leadingRes = R.string.profile_updated_on,
-                    trailing = DateUtils.getRelativeTimeSpanString(
-                        user.updatedAt.toEpochMilliseconds(),
-                        System.currentTimeMillis(),
-                        DateUtils.MINUTE_IN_MILLIS
-                    ).toString()
-                )
-            }
+            InfoListItem(
+                leadingRes = R.string.profile_updated_on,
+                trailing = DateUtils.getRelativeTimeSpanString(
+                    user.updatedAt.toEpochMilliseconds(),
+                    System.currentTimeMillis(),
+                    DateUtils.MINUTE_IN_MILLIS
+                ).toString(),
+                enablePlaceholder = enablePlaceholder
+            )
         }
     }
 }
@@ -489,7 +555,8 @@ private fun ProfileScreenContent(
 private fun ContactListItem(
     @DrawableRes iconRes: Int,
     @StringRes primaryTextRes: Int,
-    secondaryText: String
+    secondaryText: String,
+    enablePlaceholder: Boolean
 ) {
     ListItem(
         icon = {
@@ -499,34 +566,63 @@ private fun ContactListItem(
                 modifier = Modifier
                     .size(size = IconSize)
                     .padding(all = ContentPaddingMediumSize)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
         },
         secondaryText = {
-            Text(text = secondaryText)
+            Text(
+                text = secondaryText,
+                modifier = Modifier.placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
+            )
         },
         singleLineSecondaryText = true
     ) {
-        Text(text = stringResource(id = primaryTextRes))
+        Text(
+            text = stringResource(id = primaryTextRes),
+            modifier = Modifier.placeholder(
+                visible = enablePlaceholder,
+                highlight = PlaceholderHighlight.fade()
+            )
+        )
     }
 }
 
 @Composable
 fun PinnedItemSmallIcon(
     @DrawableRes resId: Int,
-    @StringRes contentDescriptionId: Int
+    @StringRes contentDescriptionId: Int,
+    enablePlaceholder: Boolean
 ) {
     Icon(
         contentDescription = stringResource(id = contentDescriptionId),
         painter = painterResource(id = resId),
-        modifier = Modifier.size(size = RepositoryCardIconSize)
+        modifier = Modifier
+            .size(size = RepositoryCardIconSize)
+            .placeholder(
+                visible = enablePlaceholder,
+                highlight = PlaceholderHighlight.fade()
+            )
     )
 }
 
 @Composable
-private fun PinnedItemIconifiedText(text: String) {
+private fun PinnedItemIconifiedText(
+    text: String,
+    enablePlaceholder: Boolean
+) {
     Text(
         text = text,
-        style = MaterialTheme.typography.caption
+        style = MaterialTheme.typography.caption,
+        modifier = Modifier.placeholder(
+            visible = enablePlaceholder,
+            highlight = PlaceholderHighlight.fade()
+        )
     )
 }
 
@@ -538,6 +634,7 @@ private fun PinnedItemCard(
     title: String,
     caption: String,
     index: Int,
+    enablePlaceholder: Boolean,
     children: @Composable RowScope.() -> Unit
 ) {
     Card(
@@ -546,6 +643,7 @@ private fun PinnedItemCard(
             color = MaterialTheme.colors.onBackground.copy(alpha = .12f)
         ),
         elevation = 0.dp,
+        enabled = !enablePlaceholder,
         onClick = onClick,
         modifier = Modifier
             .width(width = 320.dp)
@@ -572,6 +670,10 @@ private fun PinnedItemCard(
                 modifier = Modifier
                     .size(size = IconSize)
                     .clip(shape = CircleShape)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Spacer(modifier = Modifier.size(size = ContentPaddingLargeSize))
             Column {
@@ -581,7 +683,11 @@ private fun PinnedItemCard(
                         color = MaterialTheme.colors.primary,
                         style = MaterialTheme.typography.body1,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
                     Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
                     Text(
@@ -591,7 +697,11 @@ private fun PinnedItemCard(
                         ),
                         style = MaterialTheme.typography.body2,
                         maxLines = 3,
-                        overflow = TextOverflow.Clip
+                        overflow = TextOverflow.Clip,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
                 }
                 Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
@@ -611,10 +721,14 @@ private fun PinnedItemCard(
 private fun PinnedRepositoryCard(
     navController: NavController,
     repository: RepositoryItem,
-    index: Int
+    index: Int,
+    enablePlaceholder: Boolean
 ) {
     PinnedItemCard(
         onClick = {
+            if (enablePlaceholder) {
+                return@PinnedItemCard
+            }
             navController.navigate(
                 route = Screen.Repository.route
                     .replace("{${Screen.ARG_PROFILE_LOGIN}}", repository.owner?.login ?: "ghost")
@@ -630,7 +744,8 @@ private fun PinnedRepositoryCard(
         caption = repository.description.takeIf {
             !it.isNullOrEmpty()
         } ?: stringResource(id = R.string.no_description_provided),
-        index = index
+        index = index,
+        enablePlaceholder = enablePlaceholder
     ) {
         Box(
             modifier = Modifier
@@ -642,26 +757,39 @@ private fun PinnedRepositoryCard(
                         ?: MaterialTheme.colors.onBackground,
                     shape = CircleShape
                 )
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
         PinnedItemIconifiedText(
             text = repository.primaryLanguage?.name
-                ?: stringResource(id = R.string.programming_language_unknown)
+                ?: stringResource(id = R.string.programming_language_unknown),
+            enablePlaceholder = enablePlaceholder
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
         PinnedItemSmallIcon(
             resId = R.drawable.ic_star_secondary_text_color_18,
-            contentDescriptionId = R.string.repository_language_color_content_description
+            contentDescriptionId = R.string.repository_language_color_content_description,
+            enablePlaceholder = enablePlaceholder
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
-        PinnedItemIconifiedText(text = repository.stargazersCount.formatWithSuffix())
+        PinnedItemIconifiedText(
+            text = repository.stargazersCount.formatWithSuffix(),
+            enablePlaceholder = enablePlaceholder
+        )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
         PinnedItemSmallIcon(
             resId = R.drawable.ic_code_fork_secondary_text_color_18,
-            contentDescriptionId = R.string.repository_stargazers
+            contentDescriptionId = R.string.repository_stargazers,
+            enablePlaceholder = enablePlaceholder
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
-        PinnedItemIconifiedText(text = repository.forksCount.formatWithSuffix())
+        PinnedItemIconifiedText(
+            text = repository.forksCount.formatWithSuffix(),
+            enablePlaceholder = enablePlaceholder
+        )
     }
 }
 
@@ -669,7 +797,8 @@ private fun PinnedRepositoryCard(
 @Composable
 private fun PinnedGistCard(
     gist: Gist2,
-    index: Int
+    index: Int,
+    enablePlaceholder: Boolean
 ) {
     val context = LocalContext.current
     PinnedItemCard(
@@ -686,28 +815,41 @@ private fun PinnedGistCard(
         caption = gist.firstFileText.takeIf { !it.isNullOrEmpty() }
             ?: gist.description.takeIf { !it.isNullOrEmpty() }
             ?: stringResource(id = R.string.no_description_provided),
-        index = index
+        index = index,
+        enablePlaceholder = enablePlaceholder
     ) {
         PinnedItemSmallIcon(
             resId = R.drawable.ic_comment_secondary_text_color_18,
-            contentDescriptionId = R.string.repository_language_color_content_description
+            contentDescriptionId = R.string.repository_language_color_content_description,
+            enablePlaceholder = enablePlaceholder
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
-        PinnedItemIconifiedText(text = gist.stargazersTotalCount.formatWithSuffix())
+        PinnedItemIconifiedText(
+            text = gist.stargazersTotalCount.formatWithSuffix(),
+            enablePlaceholder = enablePlaceholder
+        )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
         PinnedItemSmallIcon(
             resId = R.drawable.ic_star_secondary_text_color_18,
-            contentDescriptionId = R.string.repository_stargazers
+            contentDescriptionId = R.string.repository_stargazers,
+            enablePlaceholder = enablePlaceholder
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
-        PinnedItemIconifiedText(text = gist.forksTotalCount.formatWithSuffix())
+        PinnedItemIconifiedText(
+            text = gist.forksTotalCount.formatWithSuffix(),
+            enablePlaceholder = enablePlaceholder
+        )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
         PinnedItemSmallIcon(
             resId = R.drawable.ic_code_fork_secondary_text_color_18,
-            contentDescriptionId = R.string.repository_forks
+            contentDescriptionId = R.string.repository_forks,
+            enablePlaceholder = enablePlaceholder
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
-        PinnedItemIconifiedText(text = gist.commentsTotalCount.formatWithSuffix())
+        PinnedItemIconifiedText(
+            text = gist.commentsTotalCount.formatWithSuffix(),
+            enablePlaceholder = enablePlaceholder
+        )
     }
 }
 
@@ -717,109 +859,16 @@ private fun PinnedGistCard(
 @ExperimentalMaterialApi
 @Preview(showBackground = true, name = "ProfileScreen")
 @Composable
-private fun ProfileScreenPreview() {
+private fun ProfileScreenPreview(
+    @PreviewParameter(
+        provider = UserProvider::class,
+        limit = 1
+    )
+    user: User?
+) {
     ProfileScreenContent(
         currentLoginUser = "",
-        user = User(
-            avatarUrl = "https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4",
-            bio = "Rock/Post-rock/Electronic",
-            bioHTML = "<div>Rock/Post-rock/Electronic</div>",
-            company = null,
-            companyHTML = "",
-            createdAt = Instant.fromEpochMilliseconds(1436861097L),
-            email = "lizhaotailang@gmail.com",
-            id = "MDQ6VXNlcjEzMzI5MTQ4",
-            isBountyHunter = false,
-            isCampusExpert = false,
-            isDeveloperProgramMember = true,
-            isEmployee = false,
-            isHireable = false,
-            isSiteAdmin = false,
-            isViewer = true,
-            location = "Guangzhou",
-            login = "TonnyL",
-            name = "Li Zhao Tai Lang",
-            resourcePath = "/TonnyL",
-            status = UserStatus(
-                createdAt = Instant.fromEpochMilliseconds(1592643813L),
-                emoji = ":dart:",
-                expiresAt = null,
-                id = "3209515",
-                indicatesLimitedAvailability = true,
-                message = "Focusing",
-                updatedAt = Instant.fromEpochMilliseconds(1592643813L)
-            ),
-            updatedAt = Instant.fromEpochMilliseconds(1600415355L),
-            url = "https://github.com/TonnyL",
-            viewerCanFollow = false,
-            viewerIsFollowing = false,
-            websiteUrl = "https://tonnyl.io",
-            twitterUsername = "@TonnyLZTL",
-            repositoriesTotalCount = 37,
-            followersTotalCount = 890,
-            followingTotalCount = 111,
-            starredRepositoriesTotalCount = 268,
-            projectsTotalCount = 0,
-            pinnedItems = mutableListOf(
-                RepositoryItem(
-                    "📚 PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. ",
-                    "<div>\n<g-emoji class=\"g-emoji\" alias=\"books\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f4da.png\">📚</g-emoji> PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. </div>",
-                    homepageUrl = null,
-                    id = "MDEwOlJlcG9zaXRvcnk1NDIxMjM1NQ==",
-                    isArchived = false,
-                    isFork = false,
-                    isLocked = false,
-                    isMirror = false,
-                    isPrivate = false,
-                    mirrorUrl = null,
-                    name = "PaperPlane",
-                    nameWithOwner = "TonnyL/PaperPlane",
-                    owner = RepositoryOwner(
-                        avatarUrl = "https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4",
-                        id = "MDQ6VXNlcjEzMzI5MTQ4",
-                        login = "TonnyL",
-                        resourcePath = "/TonnyL",
-                        url = "https://github.com/TonnyL"
-                    ),
-                    parent = null,
-                    primaryLanguage = Language(
-                        color = "#F18E33",
-                        id = "MDg6TGFuZ3VhZ2UyNzI=",
-                        name = "Kotlin"
-                    ),
-                    shortDescriptionHTML = "<g-emoji class=\"g-emoji\" alias=\"books\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f4da.png\">📚</g-emoji> PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. ",
-                    url = "https://github.com/TonnyL/PaperPlane",
-                    viewerHasStarred = false,
-                    forksCount = 287,
-                    stargazersCount = 1145
-                ),
-                Gist2(
-                    createdAt = Instant.fromEpochMilliseconds(1573833346L),
-                    description = "",
-                    id = "MDQ6R2lzdGEzN2U5YTM3MGU0OGI5MDlhMzgzZDhlOTBiMzM5Y2Jk",
-                    isFork = false,
-                    isPublic = true,
-                    name = "a37e9a370e48b909a383d8e90b339cbd",
-                    owner = RepositoryOwner(
-                        avatarUrl = "https://avatars3.githubusercontent.com/u/28293513?u=d7546e7c81e3ec8d39bac67dc7ac57e3fed1b244&v=4",
-                        id = "MDQ6VXNlcjI4MjkzNTEz",
-                        login = "lizhaotailang",
-                        resourcePath = "/lizhaotailang",
-                        url = "https://github.com/lizhaotailang"
-                    ),
-                    pushedAt = Instant.fromEpochMilliseconds(1573833347L),
-                    resourcePath = "a37e9a370e48b909a383d8e90b339cbd",
-                    updatedAt = Instant.fromEpochMilliseconds(1592647150),
-                    url = "https://gist.github.com/a37e9a370e48b909a383d8e90b339cbd",
-                    viewerHasStarred = true,
-                    commentsTotalCount = 0,
-                    forksTotalCount = 0,
-                    stargazersTotalCount = 0,
-                    firstFileName = "cryptocurrency_symbols.json",
-                    firstFileText = "[\n  {\n    \"currency\": \"Bitcoin\",\n    \"abbreviation\": \"BTC\"\n  },\n  {\n    \"currency\": \"Ethereum\",\n    "
-                )
-            )
-        ),
+        user = user,
         organization = null,
         follow = false,
         getEmojiByName = {
@@ -829,7 +878,8 @@ private fun ProfileScreenPreview() {
                 category = "Activities"
             )
         },
-        topAppBarSize = 0
+        topAppBarSize = 0,
+        enablePlaceholder = false
     )
 }
 

@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
@@ -31,9 +33,12 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.statusBarsPadding
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.data.NotificationReasons
@@ -43,12 +48,10 @@ import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.NotificationProvider
-import io.github.tonnyl.moka.widget.EmptyScreenContent
-import io.github.tonnyl.moka.widget.ItemLoadingState
-import io.github.tonnyl.moka.widget.ListSubheader
-import io.github.tonnyl.moka.widget.MainSearchBar
+import io.github.tonnyl.moka.widget.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalComposeUiApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
@@ -62,6 +65,8 @@ fun InboxScreen(openDrawer: () -> Unit) {
             app = LocalMainViewModel.current.getApplication()
         )
     )
+
+    val isNeedDisplayPlaceholder by inboxViewModel.isNeedDisplayPlaceholderLiveData.observeAsState()
 
     val notificationsPager = remember(key1 = currentAccount) {
         inboxViewModel.notificationsFlow
@@ -82,11 +87,9 @@ fun InboxScreen(openDrawer: () -> Unit) {
             onRefresh = notifications::refresh,
             indicatorPadding = contentPadding,
             indicator = { state, refreshTriggerDistance ->
-                SwipeRefreshIndicator(
+                DefaultSwipeRefreshIndicator(
                     state = state,
-                    refreshTriggerDistance = refreshTriggerDistance,
-                    scale = true,
-                    contentColor = MaterialTheme.colors.secondary
+                    refreshTriggerDistance = refreshTriggerDistance
                 )
             }
         ) {
@@ -118,7 +121,8 @@ fun InboxScreen(openDrawer: () -> Unit) {
                 else -> {
                     InboxScreenContent(
                         contentTopPadding = contentPadding.calculateTopPadding(),
-                        notifications = notifications
+                        notifications = notifications,
+                        enablePlaceholder = isNeedDisplayPlaceholder == true
                     )
                 }
             }
@@ -135,12 +139,18 @@ fun InboxScreen(openDrawer: () -> Unit) {
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun InboxScreenContent(
     contentTopPadding: Dp,
-    notifications: LazyPagingItems<Notification>
+    notifications: LazyPagingItems<Notification>,
+    enablePlaceholder: Boolean
 ) {
-    LazyColumn {
+    val notificationPlaceholder = remember {
+        NotificationProvider().values.elementAt(0)
+    }
+
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
         }
@@ -149,15 +159,38 @@ private fun InboxScreenContent(
             ItemLoadingState(loadState = notifications.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = notifications) { index, item ->
-            if (index == 0) {
-                ListSubheader(text = stringResource(id = R.string.navigation_menu_inbox))
-            }
+        if (enablePlaceholder) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) { index ->
+                if (index == 0) {
+                    ListSubheader(
+                        text = stringResource(id = R.string.navigation_menu_inbox),
+                        enablePlaceholder = true
+                    )
+                }
 
-            if (item != null) {
-                ItemNotification(item = item)
+                ItemNotification(
+                    item = notificationPlaceholder,
+                    enablePlaceholder = true
+                )
+            }
+        } else {
+            itemsIndexed(lazyPagingItems = notifications) { index, item ->
+                if (index == 0) {
+                    ListSubheader(
+                        text = stringResource(id = R.string.navigation_menu_inbox),
+                        enablePlaceholder = false
+                    )
+                }
+
+                if (item != null) {
+                    ItemNotification(
+                        item = item,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
+
 
         item {
             ItemLoadingState(loadState = notifications.loadState.append)
@@ -166,13 +199,16 @@ private fun InboxScreenContent(
 }
 
 @Composable
-private fun ItemNotification(item: Notification) {
+private fun ItemNotification(
+    item: Notification,
+    enablePlaceholder: Boolean
+) {
     val navController = LocalNavController.current
 
     Row(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable {
+            .clickable(enabled = !enablePlaceholder) {
 
             }
             .padding(all = ContentPaddingLargeSize)
@@ -199,6 +235,10 @@ private fun ItemNotification(item: Notification) {
                             )
                     )
                 }
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
         Column {
@@ -214,21 +254,32 @@ private fun ItemNotification(item: Notification) {
                     } else {
                         FontWeight.Normal
                     },
-                    modifier = Modifier.clickable {
-                        navController.navigate(
-                            route = Screen.Repository.route
-                                .replace(
-                                    "{${Screen.ARG_PROFILE_LOGIN}}",
-                                    item.repository.owner.login
-                                )
-                                .replace("{${Screen.ARG_REPOSITORY_NAME}}", item.repository.name)
-                                .replace(
-                                    "{${Screen.ARG_PROFILE_TYPE}}",
-                                    getRepositoryOwnerType(item.repository.owner).name
-                                )
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate(
+                                route = Screen.Repository.route
+                                    .replace(
+                                        "{${Screen.ARG_PROFILE_LOGIN}}",
+                                        item.repository.owner.login
+                                    )
+                                    .replace(
+                                        "{${Screen.ARG_REPOSITORY_NAME}}",
+                                        item.repository.name
+                                    )
+                                    .replace(
+                                        "{${Screen.ARG_PROFILE_TYPE}}",
+                                        getRepositoryOwnerType(item.repository.owner).name
+                                    )
+                            )
+                        }
+                        .placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
                         )
-                    }
                 )
+            }
+            if (enablePlaceholder) {
+                Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
             }
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
@@ -236,14 +287,25 @@ private fun ItemNotification(item: Notification) {
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.body2,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
+                if (enablePlaceholder) {
+                    Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+                }
                 Text(
                     text = DateUtils.getRelativeTimeSpanString(
                         item.updatedAt.toEpochMilliseconds(),
                         System.currentTimeMillis(),
                         DateUtils.MINUTE_IN_MILLIS
                     ).toString(),
-                    style = MaterialTheme.typography.caption
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
         }
@@ -331,5 +393,8 @@ private fun NotificationItemPreview(
     )
     notification: Notification
 ) {
-    ItemNotification(item = notification)
+    ItemNotification(
+        item = notification,
+        enablePlaceholder = false
+    )
 }

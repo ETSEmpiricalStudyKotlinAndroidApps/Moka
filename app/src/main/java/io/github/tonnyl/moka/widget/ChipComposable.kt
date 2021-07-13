@@ -15,6 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 
 private val ChipHeight = 32.dp
 private val HorizontalPadding = 12.dp
@@ -26,6 +29,7 @@ private val ChipShape = RoundedCornerShape(percent = 50)
 @Composable
 fun Chip(
     text: String,
+    enablePlaceholder: Boolean,
     onClick: (() -> Unit)? = null
 ) {
     Box(
@@ -34,7 +38,12 @@ fun Chip(
             .height(height = ChipHeight)
             .clip(shape = ChipShape)
             .background(color = MaterialTheme.colors.primary.copy(alpha = ChipBackgroundAlpha))
-            .clickable {
+            .placeholder(
+                visible = enablePlaceholder,
+                highlight = PlaceholderHighlight.fade(),
+                color = MaterialTheme.colors.primary.copy(alpha = ChipBackgroundAlpha)
+            )
+            .clickable(enabled = !enablePlaceholder) {
                 onClick?.invoke()
             }
             .padding(horizontal = HorizontalPadding)
@@ -80,7 +89,10 @@ fun OutlineChip(
 @Preview(showBackground = true, name = "ChipPreview")
 @Composable
 private fun ChipPreview() {
-    Chip(text = "Chip")
+    Chip(
+        text = "Chip",
+        enablePlaceholder = false
+    )
 }
 
 @Preview(showBackground = true, name = "OutlineChipPreview")

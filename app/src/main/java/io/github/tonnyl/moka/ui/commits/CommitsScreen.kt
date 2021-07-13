@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
@@ -27,19 +28,23 @@ import androidx.paging.compose.items
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.fragment.CommitListItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.queries.UsersRepositoryDefaultCommitsQuery.Data.User.Repository.DefaultBranchRef.CommitTarget.History.Node
 import io.github.tonnyl.moka.type.StatusState
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.util.CommitProvider
+import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
-import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -77,11 +82,9 @@ fun CommitsScreen(
             onRefresh = commits::refresh,
             indicatorPadding = contentPadding,
             indicator = { state, refreshTriggerDistance ->
-                SwipeRefreshIndicator(
+                DefaultSwipeRefreshIndicator(
                     state = state,
-                    refreshTriggerDistance = refreshTriggerDistance,
-                    scale = true,
-                    contentColor = MaterialTheme.colors.secondary
+                    refreshTriggerDistance = refreshTriggerDistance
                 )
             },
             modifier = Modifier.fillMaxSize()
@@ -144,11 +147,15 @@ fun CommitsScreen(
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun CommitsScreenContent(
     contentTopPadding: Dp,
     commits: LazyPagingItems<CommitListItem>
 ) {
+    val commitPlaceholder = remember {
+        CommitProvider().values.first()
+    }
     LazyColumn {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
@@ -158,9 +165,22 @@ private fun CommitsScreenContent(
             ItemLoadingState(loadState = commits.loadState.prepend)
         }
 
-        items(lazyPagingItems = commits) { item ->
-            if (item != null) {
-                ItemCommit(commit = item)
+        val isInitialLoading = commits.loadState.refresh is LoadState.Loading
+        if (isInitialLoading) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+                ItemCommit(
+                    commit = commitPlaceholder,
+                    enablePlaceholder = true
+                )
+            }
+        } else {
+            items(lazyPagingItems = commits) { item ->
+                if (item != null) {
+                    ItemCommit(
+                        commit = item,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
 
@@ -171,12 +191,15 @@ private fun CommitsScreenContent(
 }
 
 @Composable
-private fun ItemCommit(commit: CommitListItem) {
+private fun ItemCommit(
+    commit: CommitListItem,
+    enablePlaceholder: Boolean
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable { }
+            .clickable(enabled = !enablePlaceholder) { }
             .padding(all = ContentPaddingLargeSize)
             .fillMaxWidth()
     ) {
@@ -185,7 +208,11 @@ private fun ItemCommit(commit: CommitListItem) {
                 text = commit.messageHeadline,
                 style = MaterialTheme.typography.subtitle1,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
             )
             Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -200,11 +227,19 @@ private fun ItemCommit(commit: CommitListItem) {
                     modifier = Modifier
                         .size(size = IssueTimelineEventAuthorAvatarSize)
                         .clip(shape = CircleShape)
+                        .placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                 )
                 Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
                 Text(
                     text = commit.author?.user?.login ?: commit.committer?.user?.login ?: "ghost",
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
                 Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -216,7 +251,11 @@ private fun ItemCommit(commit: CommitListItem) {
                         ).toString(),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.body2
+                        style = MaterialTheme.typography.body2,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
                 }
             }
@@ -248,7 +287,8 @@ private fun ItemCommit(commit: CommitListItem) {
                     } else {
                         MaterialTheme.colors.error
                     }
-                )
+                ),
+                modifier = Modifier.placeholder(visible = enablePlaceholder)
             )
         }
     }
@@ -256,35 +296,15 @@ private fun ItemCommit(commit: CommitListItem) {
 
 @Preview(name = "ItemCommitPreview", showBackground = true)
 @Composable
-private fun ItemCommitPreview() {
-
+private fun ItemCommitPreview(
+    @PreviewParameter(
+        provider = CommitProvider::class,
+        limit = 1
+    )
+    commit: Node
+) {
     ItemCommit(
-        commit = Node(
-            __typename = "",
-            message = "update readme",
-            messageHeadline = "update readme",
-            committedDate = Instant.parse("2020-05-04T06:49:43Z"),
-            committer = Node.Committer(
-                avatarUrl = "https://avatars.githubusercontent.com/u/13329148?v=4",
-                name = "Li Zhao Tai Lang",
-                user = Node.Committer.User(
-                    avatarUrl = "https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4",
-                    name = "Li Zhao Tai Lang",
-                    login = "TonnyL"
-                ),
-                __typename = "",
-            ),
-            author = Node.Author(
-                avatarUrl = "https://avatars.githubusercontent.com/u/13329148?v=4",
-                name = "Li Zhao Tai Lang",
-                user = Node.Author.User(
-                    avatarUrl = "https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4",
-                    name = "Li Zhao Tai Lang",
-                    login = "TonnyL"
-                ),
-                __typename = "",
-            ),
-            statusCheckRollup = Node.StatusCheckRollup(state = StatusState.SUCCESS)
-        )
+        commit = commit,
+        enablePlaceholder = false
     )
 }

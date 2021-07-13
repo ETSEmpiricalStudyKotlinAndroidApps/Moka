@@ -28,9 +28,12 @@ import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
@@ -40,6 +43,7 @@ import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.RepositoryItemProvider
 import io.github.tonnyl.moka.util.formatWithSuffix
 import io.github.tonnyl.moka.util.toColor
+import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
@@ -81,11 +85,9 @@ fun RepositoriesScreen(
             onRefresh = repositories::refresh,
             indicatorPadding = contentPadding,
             indicator = { state, refreshTriggerDistance ->
-                SwipeRefreshIndicator(
+                DefaultSwipeRefreshIndicator(
                     state = state,
-                    refreshTriggerDistance = refreshTriggerDistance,
-                    scale = true,
-                    contentColor = MaterialTheme.colors.secondary
+                    refreshTriggerDistance = refreshTriggerDistance
                 )
             }
         ) {
@@ -160,13 +162,17 @@ fun RepositoriesScreen(
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun RepositoriesScreenContent(
     contentTopPadding: Dp,
     repositories: LazyPagingItems<RepositoryItem>,
     profileType: ProfileType
 ) {
-    LazyColumn {
+    val repoPlaceholder = remember {
+        RepositoryItemProvider().values.first()
+    }
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
         }
@@ -175,12 +181,23 @@ private fun RepositoriesScreenContent(
             ItemLoadingState(loadState = repositories.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = repositories) { _, item ->
-            if (item != null) {
+        if (repositories.loadState.refresh is LoadState.Loading) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
                 ItemRepository(
-                    repo = item,
-                    profileType = profileType
+                    repo = repoPlaceholder,
+                    profileType = ProfileType.USER,
+                    enablePlaceholder = true
                 )
+            }
+        } else {
+            itemsIndexed(lazyPagingItems = repositories) { _, item ->
+                if (item != null) {
+                    ItemRepository(
+                        repo = item,
+                        profileType = profileType,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
 
@@ -193,7 +210,8 @@ private fun RepositoriesScreenContent(
 @Composable
 fun ItemRepository(
     repo: RepositoryItem,
-    profileType: ProfileType
+    profileType: ProfileType,
+    enablePlaceholder: Boolean
 ) {
     val navController = LocalNavController.current
 
@@ -201,7 +219,7 @@ fun ItemRepository(
         modifier = Modifier
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable {
+            .clickable(enabled = !enablePlaceholder) {
                 navController.navigate(
                     route = Screen.Repository.route
                         .replace("{${Screen.ARG_PROFILE_LOGIN}}", repo.owner?.login ?: "ghost")
@@ -225,6 +243,10 @@ fun ItemRepository(
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
         Column {
@@ -235,15 +257,27 @@ fun ItemRepository(
                     style = MaterialTheme.typography.body1,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
+                if (enablePlaceholder) {
+                    Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))
+                }
                 Text(
                     text = repo.description ?: repo.descriptionHTML,
                     style = MaterialTheme.typography.body2,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
+            }
+            if (enablePlaceholder) {
+                Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))
             }
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -257,6 +291,10 @@ fun ItemRepository(
                                     ?: MaterialTheme.colors.onBackground,
                                 shape = CircleShape
                             )
+                            .placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                     )
                     Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
                     Text(
@@ -264,33 +302,55 @@ fun ItemRepository(
                             ?: stringResource(id = R.string.programming_language_unknown),
                         maxLines = 1,
                         style = MaterialTheme.typography.body2,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
                     Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                     Icon(
                         contentDescription = stringResource(id = R.string.repository_stargazers),
                         painter = painterResource(id = R.drawable.ic_star_secondary_text_color_18),
-                        modifier = Modifier.size(size = RepositoryCardIconSize)
+                        modifier = Modifier
+                            .size(size = RepositoryCardIconSize)
+                            .placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                     )
                     Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
                     Text(
                         text = repo.stargazersCount.formatWithSuffix(),
                         maxLines = 1,
                         style = MaterialTheme.typography.body2,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
                     Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                     Icon(
                         contentDescription = stringResource(id = R.string.repository_forks),
                         painter = painterResource(id = R.drawable.ic_code_fork_secondary_text_color_18),
-                        modifier = Modifier.size(size = RepositoryCardIconSize)
+                        modifier = Modifier
+                            .size(size = RepositoryCardIconSize)
+                            .placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                     )
                     Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
                     Text(
                         text = repo.forksCount.formatWithSuffix(),
                         maxLines = 1,
                         style = MaterialTheme.typography.body2,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
                 }
             }
@@ -309,6 +369,7 @@ private fun ItemRepositoryPreview(
 ) {
     ItemRepository(
         repo = repo,
-        profileType = ProfileType.USER
+        profileType = ProfileType.USER,
+        enablePlaceholder = false
     )
 }

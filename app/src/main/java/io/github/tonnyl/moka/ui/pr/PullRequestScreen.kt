@@ -34,9 +34,12 @@ import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.PullRequest
 import io.github.tonnyl.moka.data.item.*
@@ -47,14 +50,17 @@ import io.github.tonnyl.moka.ui.issue.IssueOrPullRequestHeader
 import io.github.tonnyl.moka.ui.issue.IssuePullRequestEventData
 import io.github.tonnyl.moka.ui.issue.IssueTimelineCommentItem
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.util.PullRequestProvider
 import io.github.tonnyl.moka.util.PullRequestTimelineItemProvider
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.util.toShortOid
+import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
 import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
+import timber.log.Timber
 
 @ExperimentalSerializationApi
 @Composable
@@ -94,11 +100,9 @@ fun PullRequestScreen(
             onRefresh = prTimelineItems::refresh,
             indicatorPadding = contentPadding,
             indicator = { state, refreshTriggerDistance ->
-                SwipeRefreshIndicator(
+                DefaultSwipeRefreshIndicator(
                     state = state,
-                    refreshTriggerDistance = refreshTriggerDistance,
-                    scale = true,
-                    contentColor = MaterialTheme.colors.secondary
+                    refreshTriggerDistance = refreshTriggerDistance
                 )
             }
         ) {
@@ -161,6 +165,7 @@ fun PullRequestScreen(
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun PullRequestScreenContent(
     contentTopPadding: Dp,
@@ -169,26 +174,35 @@ private fun PullRequestScreenContent(
     pullRequest: PullRequest?,
     timelineItems: LazyPagingItems<PullRequestTimelineItem>
 ) {
-    LazyColumn {
+    val pullRequestPlaceholder = remember {
+        PullRequestProvider().values.first()
+    }
+    val timelinePlaceholder = remember {
+        PullRequestTimelineItemProvider().values.first()
+    }
+
+    val enablePlaceholder = timelineItems.loadState.refresh is LoadState.Loading
+
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
         }
 
-        if (pullRequest != null) {
+        if (enablePlaceholder) {
             item {
                 IssueOrPullRequestHeader(
                     repoOwner = owner,
                     repoName = name,
-                    number = pullRequest.number,
-                    title = pullRequest.title,
+                    number = pullRequestPlaceholder.number,
+                    title = pullRequestPlaceholder.title,
                     caption = stringResource(
                         id = R.string.issue_pr_info_format,
                         stringResource(
                             id = when {
-                                pullRequest.closed -> {
+                                pullRequestPlaceholder.closed -> {
                                     R.string.issue_pr_status_closed
                                 }
-                                pullRequest.merged -> {
+                                pullRequestPlaceholder.merged -> {
                                     R.string.issue_pr_status_merged
                                 }
                                 else -> {
@@ -198,23 +212,69 @@ private fun PullRequestScreenContent(
                         ),
                         stringResource(
                             id = R.string.issue_pr_created_by,
-                            pullRequest.author?.login ?: "ghost"
+                            pullRequestPlaceholder.author?.login ?: "ghost"
                         ),
                         DateUtils.getRelativeTimeSpanString(
-                            pullRequest.createdAt.toEpochMilliseconds(),
+                            pullRequestPlaceholder.createdAt.toEpochMilliseconds(),
                             System.currentTimeMillis(),
                             DateUtils.MINUTE_IN_MILLIS
                         ) as String
                     ),
-                    avatarUrl = pullRequest.author?.avatarUrl,
-                    viewerCanReact = pullRequest.viewerCanReact,
-                    reactionGroups = pullRequest.reactionGroups,
-                    authorLogin = pullRequest.author?.login,
-                    authorAssociation = pullRequest.authorAssociation,
-                    displayHtml = pullRequest.bodyHTML.takeIf { it.isNotEmpty() }
+                    avatarUrl = pullRequestPlaceholder.author?.avatarUrl,
+                    viewerCanReact = pullRequestPlaceholder.viewerCanReact,
+                    reactionGroups = pullRequestPlaceholder.reactionGroups,
+                    authorLogin = pullRequestPlaceholder.author?.login,
+                    authorAssociation = pullRequestPlaceholder.authorAssociation,
+                    displayHtml = pullRequestPlaceholder.bodyHTML.takeIf { it.isNotEmpty() }
                         ?: stringResource(id = R.string.no_description_provided),
-                    commentCreatedAt = pullRequest.createdAt
+                    commentCreatedAt = pullRequestPlaceholder.createdAt,
+                    enablePlaceholder = true
                 )
+            }
+        } else {
+            if (pullRequest != null) {
+                item {
+                    IssueOrPullRequestHeader(
+                        repoOwner = owner,
+                        repoName = name,
+                        number = pullRequest.number,
+                        title = pullRequest.title,
+                        caption = stringResource(
+                            id = R.string.issue_pr_info_format,
+                            stringResource(
+                                id = when {
+                                    pullRequest.closed -> {
+                                        R.string.issue_pr_status_closed
+                                    }
+                                    pullRequest.merged -> {
+                                        R.string.issue_pr_status_merged
+                                    }
+                                    else -> {
+                                        R.string.issue_pr_status_open
+                                    }
+                                }
+                            ),
+                            stringResource(
+                                id = R.string.issue_pr_created_by,
+                                pullRequest.author?.login ?: "ghost"
+                            ),
+                            DateUtils.getRelativeTimeSpanString(
+                                pullRequest.createdAt.toEpochMilliseconds(),
+                                System.currentTimeMillis(),
+                                DateUtils.MINUTE_IN_MILLIS
+                            ) as String
+                        ),
+                        avatarUrl = pullRequest.author?.avatarUrl,
+                        viewerCanReact = pullRequest.viewerCanReact,
+                        reactionGroups = pullRequest.reactionGroups,
+                        authorLogin = pullRequest.author?.login,
+                        authorAssociation = pullRequest.authorAssociation,
+                        displayHtml = pullRequest.bodyHTML.takeIf { it.isNotEmpty() }
+                            ?: stringResource(id = R.string.no_description_provided),
+                        commentCreatedAt = pullRequest.createdAt,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
 
@@ -222,20 +282,33 @@ private fun PullRequestScreenContent(
             ItemLoadingState(loadState = timelineItems.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = timelineItems) { _, item ->
-            if (item != null) {
-                if (item is IssueComment) {
-                    IssueTimelineCommentItem(
-                        avatarUrl = item.author?.avatarUrl,
-                        viewerCanReact = item.viewerCanReact,
-                        reactionGroups = item.reactionGroups,
-                        authorLogin = item.author?.login,
-                        authorAssociation = item.authorAssociation,
-                        displayHtml = item.displayHtml,
-                        commentCreatedAt = item.createdAt
-                    )
-                } else {
-                    ItemPullRequestTimelineEvent(timelineItem = item)
+        if (enablePlaceholder) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+                ItemPullRequestTimelineEvent(
+                    timelineItem = timelinePlaceholder,
+                    enablePlaceholder = true
+                )
+            }
+        } else {
+            itemsIndexed(lazyPagingItems = timelineItems) { _, item ->
+                if (item != null) {
+                    if (item is IssueComment) {
+                        IssueTimelineCommentItem(
+                            avatarUrl = item.author?.avatarUrl,
+                            viewerCanReact = item.viewerCanReact,
+                            reactionGroups = item.reactionGroups,
+                            authorLogin = item.author?.login,
+                            authorAssociation = item.authorAssociation,
+                            displayHtml = item.displayHtml,
+                            commentCreatedAt = item.createdAt,
+                            enablePlaceholder = false
+                        )
+                    } else {
+                        ItemPullRequestTimelineEvent(
+                            timelineItem = item,
+                            enablePlaceholder = false
+                        )
+                    }
                 }
             }
         }
@@ -248,8 +321,10 @@ private fun PullRequestScreenContent(
 
 @Composable
 private fun ItemPullRequestTimelineEvent(
-    timelineItem: PullRequestTimelineItem
+    timelineItem: PullRequestTimelineItem,
+    enablePlaceholder: Boolean
 ) {
+    Timber.d("xxx, ItemPullRequestTimelineEvent: $enablePlaceholder data: ${eventData(timelineItem)}")
     val data = eventData(timelineItem) ?: return
     Column(
         modifier = Modifier
@@ -265,6 +340,10 @@ private fun ItemPullRequestTimelineEvent(
                     .size(size = IconSize)
                     .clip(shape = CircleShape)
                     .background(color = data.backgroundColor)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                     .padding(all = ContentPaddingMediumSize)
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
@@ -279,6 +358,10 @@ private fun ItemPullRequestTimelineEvent(
                 modifier = Modifier
                     .size(size = IssueTimelineEventAuthorAvatarSize)
                     .clip(shape = CircleShape)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             Text(
@@ -286,7 +369,12 @@ private fun ItemPullRequestTimelineEvent(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.weight(weight = 1f)
+                modifier = Modifier
+                    .weight(weight = 1f)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -298,12 +386,22 @@ private fun ItemPullRequestTimelineEvent(
                     ) as String,
                     style = MaterialTheme.typography.body2,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
         }
         Spacer(modifier = Modifier.height(height = ContentPaddingLargeSize))
-        Text(text = data.content)
+        Text(
+            text = data.content,
+            modifier = Modifier.placeholder(
+                visible = enablePlaceholder,
+                highlight = PlaceholderHighlight.fade()
+            )
+        )
     }
 }
 
@@ -903,5 +1001,8 @@ private fun PullRequestTimelineEventItemPreview(
     )
     pullRequest: PullRequestTimelineItem
 ) {
-    ItemPullRequestTimelineEvent(timelineItem = pullRequest)
+    ItemPullRequestTimelineEvent(
+        timelineItem = pullRequest,
+        enablePlaceholder = false
+    )
 }

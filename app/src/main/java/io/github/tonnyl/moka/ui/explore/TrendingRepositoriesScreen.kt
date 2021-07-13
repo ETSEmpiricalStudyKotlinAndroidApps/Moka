@@ -19,15 +19,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingRepository
-import io.github.tonnyl.moka.data.TrendingRepositoryBuiltBy
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
+import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.util.TrendingRepositoryProvider
 import io.github.tonnyl.moka.util.formatWithSuffix
 import io.github.tonnyl.moka.util.toColor
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -36,12 +41,13 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @Composable
 fun TrendingRepositoryItem(
     repository: TrendingRepository,
-    timeSpanText: String
+    timeSpanText: String,
+    enablePlaceholder: Boolean
 ) {
     Row(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable {
+            .clickable(enabled = !enablePlaceholder) {
 
             }
             .padding(all = ContentPaddingLargeSize)
@@ -60,6 +66,10 @@ fun TrendingRepositoryItem(
                 .clickable {
 
                 }
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
         Column {
@@ -73,9 +83,17 @@ fun TrendingRepositoryItem(
                         ),
                         style = MaterialTheme.typography.subtitle1,
                         color = MaterialTheme.colors.primary,
-                        modifier = Modifier.weight(weight = 1f)
+                        modifier = Modifier
+                            .weight(weight = 1f)
+                            .placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                     )
                 }
+            }
+            if (enablePlaceholder) {
+                Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
             }
             Column {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -84,16 +102,30 @@ fun TrendingRepositoryItem(
                             ?: stringResource(id = R.string.no_description_provided),
                         maxLines = 6,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.body2
+                        style = MaterialTheme.typography.body2,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
+                    if (enablePlaceholder) {
+                        Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+                    }
                     Text(
                         text = stringResource(
                             R.string.explore_period_stars,
                             repository.currentPeriodStars,
                             timeSpanText
                         ),
-                        style = MaterialTheme.typography.body2
+                        style = MaterialTheme.typography.body2,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
+                    if (enablePlaceholder) {
+                        Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+                    }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
                             modifier = Modifier
@@ -106,32 +138,56 @@ fun TrendingRepositoryItem(
                                             Color(it)
                                         } ?: MaterialTheme.colors.onBackground
                                 )
+                                .placeholder(
+                                    visible = enablePlaceholder,
+                                    highlight = PlaceholderHighlight.fade()
+                                )
                         )
                         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
                         Text(
                             text = repository.language
                                 ?: stringResource(id = R.string.programming_language_unknown),
-                            style = MaterialTheme.typography.body2
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier.placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                         )
                         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                         Image(
                             contentDescription = stringResource(id = R.string.repository_stargazers),
-                            painter = painterResource(id = R.drawable.ic_star_secondary_text_color_18)
+                            painter = painterResource(id = R.drawable.ic_star_secondary_text_color_18),
+                            modifier = Modifier.placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                         )
                         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
                         Text(
                             text = repository.stars.formatWithSuffix(),
-                            style = MaterialTheme.typography.body2
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier.placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                         )
                         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                         Image(
                             contentDescription = stringResource(id = R.string.repository_forks),
-                            painter = painterResource(id = R.drawable.ic_code_fork_secondary_text_color_18)
+                            painter = painterResource(id = R.drawable.ic_code_fork_secondary_text_color_18),
+                            modifier = Modifier.placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                         )
                         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
                         Text(
                             text = repository.forks.formatWithSuffix(),
-                            style = MaterialTheme.typography.body2
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier.placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                         )
                     }
                 }
@@ -146,27 +202,16 @@ fun TrendingRepositoryItem(
     showBackground = true
 )
 @Composable
-private fun TrendingRepositoriesScreenPreview() {
+private fun TrendingRepositoriesScreenPreview(
+    @PreviewParameter(
+        provider = TrendingRepositoryProvider::class,
+        limit = 1
+    )
+    repository: TrendingRepository
+) {
     TrendingRepositoryItem(
         timeSpanText = "daily",
-        repository = TrendingRepository(
-            author = "TonnyL",
-            name = "PaperPlane",
-            avatar = "https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4",
-            url = "https://github.com/TonnyL/PaperPlane",
-            description = "📚 PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. ",
-            language = "Kotlin",
-            languageColor = "#F18E33",
-            stars = 1065,
-            forks = 296,
-            currentPeriodStars = 20,
-            builtBy = listOf(
-                TrendingRepositoryBuiltBy(
-                    href = "",
-                    avatar = "https://avatars1.githubusercontent.com/u/13329148?u=0a5724e7c9f7d1cc4a5486ab7ab07abb7b8d7956&v=4",
-                    username = "TonnyL"
-                )
-            )
-        )
+        repository = repository,
+        enablePlaceholder = false
     )
 }

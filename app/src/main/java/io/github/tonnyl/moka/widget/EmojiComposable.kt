@@ -16,6 +16,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
@@ -24,6 +27,7 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 fun EmojiComponent(
     emoji: String?,
     getEmojiByName: (String) -> SearchableEmoji?,
+    enablePlaceholder: Boolean,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
@@ -35,6 +39,10 @@ fun EmojiComponent(
                     .align(alignment = Alignment.Center)
                     .padding(all = ContentPaddingLargeSize)
                     .wrapContentHeight()
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
         }
 
@@ -54,16 +62,24 @@ fun EmojiComponent(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(all = ContentPaddingLargeSize)
+                            .placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                     )
                 }
                 else -> {
                     Text(
                         text = emojiText,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.h6,
                         modifier = Modifier
                             .padding(all = ContentPaddingLargeSize)
-                            .align(alignment = Alignment.Center),
-                        maxLines = 1,
-                        style = MaterialTheme.typography.h6
+                            .align(alignment = Alignment.Center)
+                            .placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                     )
                 }
             }
@@ -82,6 +98,7 @@ private fun EmojiContentPreview() {
                 name = ":dart:",
                 category = "Activities"
             )
-        }
+        },
+        enablePlaceholder = false
     )
 }

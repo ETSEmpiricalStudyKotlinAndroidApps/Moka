@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
@@ -19,15 +20,19 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryTopic
-import io.github.tonnyl.moka.data.Topic
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.util.RepositoryTopicProvider
+import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
@@ -69,11 +74,9 @@ fun RepositoryTopicsScreen(
             onRefresh = topics::refresh,
             indicatorPadding = contentPadding,
             indicator = { state, refreshTriggerDistance ->
-                SwipeRefreshIndicator(
+                DefaultSwipeRefreshIndicator(
                     state = state,
-                    refreshTriggerDistance = refreshTriggerDistance,
-                    scale = true,
-                    contentColor = MaterialTheme.colors.secondary
+                    refreshTriggerDistance = refreshTriggerDistance
                 )
             }
         ) {
@@ -135,12 +138,16 @@ fun RepositoryTopicsScreen(
     }
 }
 
+@ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 private fun RepositoriesScreenContent(
     contentTopPadding: Dp,
     topics: LazyPagingItems<RepositoryTopic>
 ) {
+    val topicPlaceholder = remember {
+        RepositoryTopicProvider().values.first()
+    }
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
@@ -150,9 +157,21 @@ private fun RepositoriesScreenContent(
             ItemLoadingState(loadState = topics.loadState.prepend)
         }
 
-        items(lazyPagingItems = topics) { topic ->
-            if (topic != null) {
-                ItemTopic(topic = topic)
+        if (topics.loadState.refresh is LoadState.Loading) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+                ItemTopic(
+                    topic = topicPlaceholder,
+                    enablePlaceholder = true
+                )
+            }
+        } else {
+            items(lazyPagingItems = topics) { topic ->
+                if (topic != null) {
+                    ItemTopic(
+                        topic = topic,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
 
@@ -164,21 +183,30 @@ private fun RepositoriesScreenContent(
 
 @ExperimentalMaterialApi
 @Composable
-private fun ItemTopic(topic: RepositoryTopic) {
+private fun ItemTopic(
+    topic: RepositoryTopic,
+    enablePlaceholder: Boolean
+) {
     val navController = LocalNavController.current
     val topicName = topic.topic?.name
     if (!topicName.isNullOrEmpty()) {
         ListItem(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
+                .clickable(enabled = !enablePlaceholder) {
                     navController.navigate(
                         route = Screen.Search.route
                             .replace("{${Screen.ARG_INITIAL_SEARCH_KEYWORD}}", topicName)
                     )
                 }
         ) {
-            Text(text = topicName)
+            Text(
+                text = topicName,
+                modifier = Modifier.placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
+            )
         }
     }
 }
@@ -186,17 +214,15 @@ private fun ItemTopic(topic: RepositoryTopic) {
 @ExperimentalMaterialApi
 @Preview(name = "ItemTopicPreview", showBackground = true)
 @Composable
-private fun ItemTopicPreview() {
+private fun ItemTopicPreview(
+    @PreviewParameter(
+        provider = RepositoryTopicProvider::class,
+        limit = 1
+    )
+    topic: RepositoryTopic
+) {
     ItemTopic(
-        topic = RepositoryTopic(
-            id = "MDE1OlJlcG9zaXRvcnlUb3BpYzY2NDc5Nw==",
-            resourcePath = "/topics/zhihu",
-            topic = Topic(
-                id = "MDU6VG9waWN6aGlodQ==",
-                name = "zhihu",
-                viewerHasStarred = false
-            ),
-            url = "https://github.com/topics/zhihu"
-        )
+        topic = topic,
+        enablePlaceholder = false
     )
 }

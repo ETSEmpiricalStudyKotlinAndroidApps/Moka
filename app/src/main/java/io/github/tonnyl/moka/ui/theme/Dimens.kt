@@ -18,3 +18,5 @@ val IssueTimelineEventAuthorAvatarSize = 24.dp
  * @see [androidx.compose.material.IconButtonSizeModifier]
  */
 val DefaultIconButtonSizeModifier = 48.dp
+
+val LottieLoadingAnimationSize = 196.dp

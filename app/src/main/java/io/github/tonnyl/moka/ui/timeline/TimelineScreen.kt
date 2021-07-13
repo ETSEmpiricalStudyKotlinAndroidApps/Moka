@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
@@ -31,9 +33,12 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.statusBarsPadding
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.data.EventOrg
@@ -45,6 +50,7 @@ import io.github.tonnyl.moka.util.TimelineEventProvider
 import io.github.tonnyl.moka.widget.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalComposeUiApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
@@ -59,6 +65,7 @@ fun TimelineScreen(openDrawer: () -> Unit) {
             app = LocalMainViewModel.current.getApplication()
         )
     )
+    val isNeedDisplayPlaceholder by timelineViewModel.isNeedDisplayPlaceholderLiveData.observeAsState()
 
     val eventsPager = remember(key1 = currentAccount) {
         timelineViewModel.eventsFlow
@@ -79,11 +86,9 @@ fun TimelineScreen(openDrawer: () -> Unit) {
             onRefresh = events::refresh,
             indicatorPadding = contentPadding,
             indicator = { state, refreshTriggerDistance ->
-                SwipeRefreshIndicator(
+                DefaultSwipeRefreshIndicator(
                     state = state,
-                    refreshTriggerDistance = refreshTriggerDistance,
-                    scale = true,
-                    contentColor = MaterialTheme.colors.secondary
+                    refreshTriggerDistance = refreshTriggerDistance
                 )
             }
         ) {
@@ -115,7 +120,8 @@ fun TimelineScreen(openDrawer: () -> Unit) {
                 else -> {
                     TimelineScreenContent(
                         contentTopPadding = contentPadding.calculateTopPadding(),
-                        events = events
+                        events = events,
+                        enablePlaceholder = isNeedDisplayPlaceholder == true
                     )
                 }
             }
@@ -133,12 +139,17 @@ fun TimelineScreen(openDrawer: () -> Unit) {
 
 }
 
+@ExperimentalSerializationApi
 @Composable
 fun TimelineScreenContent(
     contentTopPadding: Dp,
-    events: LazyPagingItems<Event>
+    events: LazyPagingItems<Event>,
+    enablePlaceholder: Boolean
 ) {
-    LazyColumn {
+    val eventPlaceholder = remember {
+        TimelineEventProvider().values.first()
+    }
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
         }
@@ -147,15 +158,38 @@ fun TimelineScreenContent(
             ItemLoadingState(loadState = events.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = events) { index, item ->
-            if (index == 0) {
-                ListSubheader(text = stringResource(id = R.string.navigation_menu_timeline))
-            }
+        if (enablePlaceholder) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) { index ->
+                if (index == 0) {
+                    ListSubheader(
+                        text = stringResource(id = R.string.navigation_menu_timeline),
+                        enablePlaceholder = true
+                    )
+                }
 
-            if (item != null) {
-                ItemTimelineEvent(event = item)
+                ItemTimelineEvent(
+                    event = eventPlaceholder,
+                    enablePlaceholder = true
+                )
+            }
+        } else {
+            itemsIndexed(lazyPagingItems = events) { index, item ->
+                if (index == 0) {
+                    ListSubheader(
+                        text = stringResource(id = R.string.navigation_menu_timeline),
+                        enablePlaceholder = false
+                    )
+                }
+
+                if (item != null) {
+                    ItemTimelineEvent(
+                        event = item,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
+
 
         item {
             ItemLoadingState(loadState = events.loadState.append)
@@ -164,12 +198,15 @@ fun TimelineScreenContent(
 }
 
 @Composable
-private fun ItemTimelineEvent(event: Event) {
+private fun ItemTimelineEvent(
+    event: Event,
+    enablePlaceholder: Boolean
+) {
     val navController = LocalNavController.current
     Row(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable {
+            .clickable(enabled = !enablePlaceholder) {
                 when (event.type) {
                     Event.WATCH_EVENT,
                     Event.PUBLIC_EVENT,
@@ -314,24 +351,50 @@ private fun ItemTimelineEvent(event: Event) {
                         login = event.actor.login
                     )
                 }
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
         Column {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(
                     text = eventContent(event = event),
-                    style = MaterialTheme.typography.subtitle1
+                    style = MaterialTheme.typography.subtitle1,
+                    maxLines = if (enablePlaceholder) {
+                        1
+                    } else {
+                        Int.MAX_VALUE
+                    },
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
+            if (enablePlaceholder) {
+                Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+            }
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                EventDetailedText(event)
+                EventDetailedText(
+                    event = event,
+                    enablePlaceholder = enablePlaceholder
+                )
+                if (enablePlaceholder) {
+                    Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+                }
                 Text(
                     text = DateUtils.getRelativeTimeSpanString(
                         event.createdAt.toEpochMilliseconds(),
                         System.currentTimeMillis(),
                         DateUtils.MINUTE_IN_MILLIS
                     ).toString(),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
         }
@@ -1221,7 +1284,10 @@ private fun AppendPrimaryColoredAnnotatedString(
 }
 
 @Composable
-private fun EventDetailedText(event: Event) {
+private fun EventDetailedText(
+    event: Event,
+    enablePlaceholder: Boolean
+) {
     when (event.type) {
         Event.COMMIT_COMMENT_EVENT -> {
             event.payload?.commitComment?.body
@@ -1247,7 +1313,11 @@ private fun EventDetailedText(event: Event) {
     }?.let {
         Text(
             text = it,
-            style = MaterialTheme.typography.caption
+            style = MaterialTheme.typography.caption,
+            modifier = Modifier.placeholder(
+                visible = enablePlaceholder,
+                highlight = PlaceholderHighlight.fade()
+            )
         )
     }
 }
@@ -1304,5 +1374,8 @@ private fun TimelineItemPreview(
     )
     event: Event
 ) {
-    ItemTimelineEvent(event = event)
+    ItemTimelineEvent(
+        event = event,
+        enablePlaceholder = false
+    )
 }

@@ -28,9 +28,12 @@ import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.PullRequestItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
@@ -40,6 +43,7 @@ import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.PullRequestItemProvider
+import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
@@ -80,11 +84,9 @@ fun PullRequestsScreen(
             onRefresh = prs::refresh,
             indicatorPadding = contentPadding,
             indicator = { state, refreshTriggerDistance ->
-                SwipeRefreshIndicator(
+                DefaultSwipeRefreshIndicator(
                     state = state,
-                    refreshTriggerDistance = refreshTriggerDistance,
-                    scale = true,
-                    contentColor = MaterialTheme.colors.secondary
+                    refreshTriggerDistance = refreshTriggerDistance
                 )
             }
         ) {
@@ -146,6 +148,7 @@ fun PullRequestsScreen(
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 fun PullRequestsScreenContent(
     contentTopPadding: Dp,
@@ -153,7 +156,10 @@ fun PullRequestsScreenContent(
     name: String,
     prs: LazyPagingItems<PullRequestItem>,
 ) {
-    LazyColumn {
+    val prPlaceholder = remember {
+        PullRequestItemProvider().values.elementAt(2)
+    }
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Spacer(modifier = Modifier.height(height = contentTopPadding))
         }
@@ -162,13 +168,25 @@ fun PullRequestsScreenContent(
             ItemLoadingState(loadState = prs.loadState.prepend)
         }
 
-        itemsIndexed(lazyPagingItems = prs) { _, item ->
-            if (item != null) {
+        if (prs.loadState.refresh is LoadState.Loading) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
                 ItemPullRequest(
-                    owner = owner,
-                    name = name,
-                    pullRequest = item
+                    owner = "TonnyL",
+                    name = "PaperPlane",
+                    pullRequest = prPlaceholder,
+                    enablePlaceholder = true
                 )
+            }
+        } else {
+            itemsIndexed(lazyPagingItems = prs) { _, item ->
+                if (item != null) {
+                    ItemPullRequest(
+                        owner = owner,
+                        name = name,
+                        pullRequest = item,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
 
@@ -182,14 +200,15 @@ fun PullRequestsScreenContent(
 private fun ItemPullRequest(
     owner: String,
     name: String,
-    pullRequest: PullRequestItem
+    pullRequest: PullRequestItem,
+    enablePlaceholder: Boolean
 ) {
     val navController = LocalNavController.current
 
     Column(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable {
+            .clickable(enabled = !enablePlaceholder) {
                 navController.navigate(
                     route = Screen.PullRequest.route
                         .replace("{${Screen.ARG_PROFILE_LOGIN}}", owner)
@@ -219,7 +238,12 @@ private fun ItemPullRequest(
             Image(
                 contentDescription = stringResource(id = contentDescriptionRes),
                 painter = painterResource(id = imageRes),
-                modifier = Modifier.size(size = IssueTimelineEventAuthorAvatarSize)
+                modifier = Modifier
+                    .size(size = IssueTimelineEventAuthorAvatarSize)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             Text(
@@ -228,13 +252,22 @@ private fun ItemPullRequest(
                 color = MaterialTheme.colors.primary,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(weight = 1f)
+                modifier = Modifier
+                    .weight(weight = 1f)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.issue_pr_number, pullRequest.number),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
         }
@@ -258,13 +291,21 @@ private fun ItemPullRequest(
                         .clickable {
 
                         }
+                        .placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                 )
                 Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                 Text(
                     text = pullRequest.actor?.login ?: "ghost",
                     style = MaterialTheme.typography.body2,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
                 Spacer(modifier = Modifier.weight(weight = 1f))
                 Text(
@@ -275,7 +316,11 @@ private fun ItemPullRequest(
                     ).toString(),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.caption
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
         }
@@ -294,6 +339,7 @@ private fun PullRequestItemPreview(
     ItemPullRequest(
         owner = "wasabeef",
         name = "droid",
-        pullRequest = pullRequest
+        pullRequest = pullRequest,
+        enablePlaceholder = false
     )
 }

@@ -4,7 +4,7 @@ object Versions {
     const val targetSdk = 30
     const val minSdk = 23
 
-    const val androidGradle = "7.1.0-alpha02"
+    const val androidGradle = "7.1.0-alpha03"
     const val gmsGoogleServiceGradle = "4.3.8"
     const val firebaseCrashlyticsGradle = "2.7.0"
     const val desugaring = "1.1.5"
@@ -30,9 +30,9 @@ object Versions {
     const val accompanist = "0.12.0"
     const val material = "1.4.0-rc01"
     const val kspApi = "1.5.10-1.0.0-beta02"
-    const val lottie = "1.0.0-beta07-1"
+    const val lottie = "1.0.0-rc01-1"
     const val okhttpLoggingInterceptor = "4.7.2"
-    const val apollo = "3.0.0-dev12-SNAPSHOT"
+    const val apollo = "3.0.0-dev12"
     const val commonMark = "0.15.2"
     const val jsoup = "1.12.1"
     const val timber = "4.7.1"
@@ -167,6 +167,8 @@ object Deps {
                 "com.google.accompanist:accompanist-pager-indicators:${Versions.accompanist}"
             const val flowLayout =
                 "com.google.accompanist:accompanist-flowlayout:${Versions.accompanist}"
+            const val placeholder =
+                "com.google.accompanist:accompanist-placeholder-material:${Versions.accompanist}"
 
         }
 

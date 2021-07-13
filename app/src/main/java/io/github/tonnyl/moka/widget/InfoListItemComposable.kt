@@ -16,6 +16,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 
@@ -23,6 +26,7 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 fun InfoListItem(
     @StringRes leadingRes: Int,
     trailing: String,
+    enablePlaceholder: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -35,7 +39,11 @@ fun InfoListItem(
                 text = stringResource(id = leadingRes),
                 style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Start,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
             )
         }
         Spacer(modifier = Modifier.weight(weight = 1f, fill = true))
@@ -43,7 +51,11 @@ fun InfoListItem(
             Text(
                 text = trailing,
                 style = MaterialTheme.typography.body2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
             )
         }
     }
@@ -54,6 +66,7 @@ fun InfoListItem(
 private fun InfoListItemPreview() {
     InfoListItem(
         leadingRes = R.string.profile_joined_on,
-        trailing = "Yesterday"
+        trailing = "Yesterday",
+        enablePlaceholder = false
     )
 }

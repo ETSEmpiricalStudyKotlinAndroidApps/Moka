@@ -11,6 +11,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -27,6 +28,7 @@ import io.github.tonnyl.moka.ui.account.AccountDialogScreen
 import io.github.tonnyl.moka.ui.theme.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalComposeUiApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -80,12 +82,6 @@ private fun MainSearchBarContent(
             elevation = 3.dp,
             shape = MaterialTheme.shapes.small
         ) {
-            IconButton(onClick = onMenuClicked) {
-                Icon(
-                    contentDescription = stringResource(id = R.string.navigation_header_avatar_desc),
-                    painter = painterResource(id = R.drawable.ic_menu_24)
-                )
-            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -104,6 +100,12 @@ private fun MainSearchBarContent(
                         modifier = Modifier.align(alignment = Alignment.CenterStart)
                     )
                 }
+            }
+            IconButton(onClick = onMenuClicked) {
+                Icon(
+                    contentDescription = stringResource(id = R.string.navigation_header_avatar_desc),
+                    painter = painterResource(id = R.drawable.ic_menu_24)
+                )
             }
             Image(
                 painter = rememberCoilPainter(

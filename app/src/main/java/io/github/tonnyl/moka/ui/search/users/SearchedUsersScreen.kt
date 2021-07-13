@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -21,8 +22,12 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.SearchedOrganizationItem
 import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
@@ -34,14 +39,24 @@ import io.github.tonnyl.moka.ui.theme.IconSize
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.users.ItemUser
 import io.github.tonnyl.moka.util.SearchedOrganizationItemProvider
+import io.github.tonnyl.moka.util.UserItemProvider
+import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @Composable
 fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = users.loadState.refresh is LoadState.Loading),
         onRefresh = users::refresh,
+        indicator = { state, refreshTriggerDistance ->
+            DefaultSwipeRefreshIndicator(
+                state = state,
+                refreshTriggerDistance = refreshTriggerDistance
+            )
+        },
         modifier = Modifier.fillMaxSize()
     ) {
         when {
@@ -76,18 +91,35 @@ fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgItem>) {
-    LazyColumn {
+    val userPlaceholder = remember {
+        UserItemProvider().values.last()
+    }
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             ItemLoadingState(loadState = users.loadState.prepend)
         }
-        itemsIndexed(lazyPagingItems = users) { _, userOrOrg ->
-            if (userOrOrg?.user != null) {
-                ItemUser(user = userOrOrg.user)
+
+        if (users.loadState.refresh is LoadState.Loading) {
+            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+                ItemUser(user = userPlaceholder, enablePlaceholder = true)
             }
-            if (userOrOrg?.org != null) {
-                ItemSearchedOrganization(org = userOrOrg.org)
+        } else {
+            itemsIndexed(lazyPagingItems = users) { _, userOrOrg ->
+                if (userOrOrg?.user != null) {
+                    ItemUser(
+                        user = userOrOrg.user,
+                        enablePlaceholder = false
+                    )
+                }
+                if (userOrOrg?.org != null) {
+                    ItemSearchedOrganization(
+                        org = userOrOrg.org,
+                        enablePlaceholder = false
+                    )
+                }
             }
         }
         item {
@@ -97,13 +129,16 @@ private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgI
 }
 
 @Composable
-fun ItemSearchedOrganization(org: SearchedOrganizationItem) {
+fun ItemSearchedOrganization(
+    org: SearchedOrganizationItem,
+    enablePlaceholder: Boolean
+) {
     val navController = LocalNavController.current
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
+            .clickable(enabled = !enablePlaceholder) {
                 navController.navigate(
                     route = Screen.Profile.route
                         .replace("{${Screen.ARG_PROFILE_LOGIN}}", org.login)
@@ -123,6 +158,10 @@ fun ItemSearchedOrganization(org: SearchedOrganizationItem) {
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
         Column {
@@ -130,14 +169,20 @@ fun ItemSearchedOrganization(org: SearchedOrganizationItem) {
                 Text(
                     text = org.name,
                     style = MaterialTheme.typography.body1,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = org.login,
                     style = MaterialTheme.typography.body2,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
                 (org.description ?: org.descriptionHTML)?.let {
                     if (it.isNotEmpty()) {
@@ -146,7 +191,10 @@ fun ItemSearchedOrganization(org: SearchedOrganizationItem) {
                             style = MaterialTheme.typography.body2,
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                         )
                     }
                 }
@@ -164,5 +212,8 @@ private fun ItemSearchedOrganizationPreview(
     )
     org: SearchedOrganizationItem
 ) {
-    ItemSearchedOrganization(org = org)
+    ItemSearchedOrganization(
+        org = org,
+        enablePlaceholder = false
+    )
 }

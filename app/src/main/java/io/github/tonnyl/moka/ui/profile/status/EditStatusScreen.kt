@@ -193,6 +193,7 @@ private fun EditStatusScreenContent(
                     EmojiComponent(
                         emoji = emojiState,
                         getEmojiByName = getEmojiByName,
+                        enablePlaceholder = false,
                         modifier = Modifier
                             .clip(shape = MaterialTheme.shapes.medium)
                             .align(alignment = Alignment.CenterVertically)
@@ -418,11 +419,13 @@ private fun EditStatusScreenContent(
                 }
             }
         }
+        val buttonHeight = 64.dp
+
         Surface(
             elevation = ContentPaddingLargeSize,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height = 64.dp)
+                .height(height = buttonHeight)
         ) {
             ConstraintLayout(modifier = Modifier.padding(horizontal = ContentPaddingLargeSize)) {
                 val (setStatusButtonRef, setStatusLoadingRef, spacerRef, clearStatusButtonRef, clearStatusLoadingRef) = createRefs()
@@ -450,10 +453,12 @@ private fun EditStatusScreenContent(
                 }
                 if (setStatusStatus?.status == Status.LOADING) {
                     LottieLoadingComponent(
-                        modifier = Modifier.constrainAs(ref = setStatusLoadingRef) {
-                            centerVerticallyTo(other = setStatusButtonRef)
-                            centerHorizontallyTo(other = setStatusButtonRef)
-                        }
+                        modifier = Modifier
+                            .height(height = buttonHeight)
+                            .constrainAs(ref = setStatusLoadingRef) {
+                                centerVerticallyTo(other = setStatusButtonRef)
+                                centerHorizontallyTo(other = setStatusButtonRef)
+                            }
                     )
                 }
                 Spacer(modifier = Modifier
@@ -484,10 +489,12 @@ private fun EditStatusScreenContent(
                 }
                 if (clearStatusStatus?.status == Status.LOADING) {
                     LottieLoadingComponent(
-                        modifier = Modifier.constrainAs(ref = clearStatusLoadingRef) {
-                            centerVerticallyTo(other = clearStatusButtonRef)
-                            centerHorizontallyTo(other = clearStatusButtonRef)
-                        }
+                        modifier = Modifier
+                            .height(height = buttonHeight)
+                            .constrainAs(ref = clearStatusLoadingRef) {
+                                centerVerticallyTo(other = clearStatusButtonRef)
+                                centerHorizontallyTo(other = clearStatusButtonRef)
+                            }
                     )
                 }
             }

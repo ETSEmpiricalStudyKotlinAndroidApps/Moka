@@ -18,19 +18,25 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
-import io.github.tonnyl.moka.data.TrendingDeveloperRepository
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
+import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.DividerSize
+import io.github.tonnyl.moka.util.TrendingDeveloperProvider
 
 @Composable
 fun TrendingDeveloperItem(
     index: Int,
-    developer: TrendingDeveloper
+    developer: TrendingDeveloper,
+    enablePlaceholder: Boolean
 ) {
     Card(
         border = BorderStroke(
@@ -67,6 +73,10 @@ fun TrendingDeveloperItem(
                 modifier = Modifier
                     .size(size = 80.dp)
                     .clip(shape = CircleShape)
+                    .placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
             )
             Spacer(modifier = Modifier.height(height = ContentPaddingLargeSize))
             Text(
@@ -76,8 +86,15 @@ fun TrendingDeveloperItem(
                 ),
                 style = MaterialTheme.typography.subtitle1,
                 textAlign = TextAlign.Center,
-                maxLines = 1
+                maxLines = 1,
+                modifier = Modifier.placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
             )
+            if (enablePlaceholder) {
+                Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
+            }
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(
@@ -86,7 +103,11 @@ fun TrendingDeveloperItem(
                     ),
                     style = MaterialTheme.typography.body1,
                     textAlign = TextAlign.Center,
-                    maxLines = 1
+                    maxLines = 1,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        highlight = PlaceholderHighlight.fade()
+                    )
                 )
             }
             if (developer.repository != null) {
@@ -100,7 +121,11 @@ fun TrendingDeveloperItem(
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.caption,
                         maxLines = 3,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                     )
                 }
             }
@@ -138,20 +163,16 @@ private fun trendingDeveloperDescContent(
     showBackground = true
 )
 @Composable
-private fun TrendingDeveloperItemPreview() {
+private fun TrendingDeveloperItemPreview(
+    @PreviewParameter(
+        provider = TrendingDeveloperProvider::class,
+        limit = 1
+    )
+    developer: TrendingDeveloper
+) {
     TrendingDeveloperItem(
         index = 0,
-        developer = TrendingDeveloper(
-            username = "TonnyL",
-            name = "Li Zhao Tai Lang",
-            type = "user",
-            url = "https://github.com/TonnyL",
-            avatar = "https://avatars0.githubusercontent.com/u/13329148?s=460&u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4",
-            repository = TrendingDeveloperRepository(
-                name = "Moka",
-                description = "An Android app for github.com",
-                url = "https://github.com/TonnyL/Moka"
-            )
-        )
+        developer = developer,
+        enablePlaceholder = false
     )
 }

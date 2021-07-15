@@ -25,7 +25,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -217,9 +217,9 @@ private fun ItemCommit(
             Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    painter = rememberCoilPainter(
-                        request = commit.author?.avatarUrl ?: commit.committer?.user?.avatarUrl,
-                        requestBuilder = {
+                    painter = rememberImagePainter(
+                        data = commit.author?.avatarUrl ?: commit.committer?.user?.avatarUrl,
+                        builder = {
                             createAvatarLoadRequest()
                         }
                     ),

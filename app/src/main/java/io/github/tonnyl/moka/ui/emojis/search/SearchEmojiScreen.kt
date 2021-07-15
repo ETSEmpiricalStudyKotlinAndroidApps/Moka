@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
@@ -109,9 +109,9 @@ private fun SearchedEmojiItem(emoji: SearchableEmoji) {
         ) {
             if (URLUtil.isValidUrl(emoji.emoji)) {
                 Image(
-                    painter = rememberCoilPainter(
-                        request = emoji.emoji,
-                        requestBuilder = {
+                    painter = rememberImagePainter(
+                        data = emoji.emoji,
+                        builder = {
                             createAvatarLoadRequest()
                         }
                     ),

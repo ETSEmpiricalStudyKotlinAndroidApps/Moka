@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -306,9 +306,9 @@ private fun ItemEmoji(
         emoji?.emoji?.let { emoji ->
             if (URLUtil.isValidUrl(emoji)) {
                 Image(
-                    painter = rememberCoilPainter(
-                        request = emoji,
-                        requestBuilder = {
+                    painter = rememberImagePainter(
+                        data = emoji,
+                        builder = {
                             createAvatarLoadRequest()
                         }
                     ),

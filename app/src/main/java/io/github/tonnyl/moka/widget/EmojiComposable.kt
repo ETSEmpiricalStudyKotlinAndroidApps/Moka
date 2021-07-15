@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
@@ -57,7 +57,7 @@ fun EmojiComponent(
                 }
                 URLUtil.isValidUrl(emojiText) -> {
                     Image(
-                        painter = rememberCoilPainter(request = emojiText),
+                        painter = rememberImagePainter(data = emojiText),
                         contentDescription = stringResource(id = R.string.emoji_image_content_description),
                         modifier = Modifier
                             .fillMaxSize()

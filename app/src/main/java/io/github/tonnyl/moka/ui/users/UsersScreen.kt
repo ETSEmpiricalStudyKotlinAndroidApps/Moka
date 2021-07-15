@@ -22,7 +22,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -218,9 +218,9 @@ fun ItemUser(
             .padding(all = ContentPaddingLargeSize)
     ) {
         Image(
-            painter = rememberCoilPainter(
-                request = user.avatarUrl,
-                requestBuilder = {
+            painter = rememberImagePainter(
+                data = user.avatarUrl,
+                builder = {
                     createAvatarLoadRequest()
                 }
             ),

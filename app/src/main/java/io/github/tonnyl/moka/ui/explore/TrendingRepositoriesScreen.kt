@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
@@ -53,9 +53,9 @@ fun TrendingRepositoryItem(
             .padding(all = ContentPaddingLargeSize)
     ) {
         Image(
-            painter = rememberCoilPainter(
-                request = repository.avatar,
-                requestBuilder = {
+            painter = rememberImagePainter(
+                data = repository.avatar,
+                builder = {
                     createAvatarLoadRequest()
                 }
             ),

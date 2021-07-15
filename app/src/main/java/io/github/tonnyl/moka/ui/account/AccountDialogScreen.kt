@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
@@ -236,9 +236,9 @@ private fun ItemAccount(
             )
     ) {
         Image(
-            painter = rememberCoilPainter(
-                request = account.signedInAccount.account.avatarUrl,
-                requestBuilder = {
+            painter = rememberImagePainter(
+                data = account.signedInAccount.account.avatarUrl,
+                builder = {
                     createAvatarLoadRequest()
                 }
             ),

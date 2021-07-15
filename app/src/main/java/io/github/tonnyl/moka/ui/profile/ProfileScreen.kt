@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -190,9 +190,9 @@ private fun ProfileScreenContent(
             modifier = Modifier.padding(all = ContentPaddingLargeSize)
         ) {
             Image(
-                painter = rememberCoilPainter(
-                    request = user?.avatarUrl ?: organization?.avatarUrl,
-                    requestBuilder = {
+                painter = rememberImagePainter(
+                    data = user?.avatarUrl ?: organization?.avatarUrl,
+                    builder = {
                         createAvatarLoadRequest()
                     }
                 ),
@@ -660,9 +660,9 @@ private fun PinnedItemCard(
     ) {
         Row(modifier = Modifier.padding(all = ContentPaddingLargeSize)) {
             Image(
-                painter = rememberCoilPainter(
-                    request = avatarUrl,
-                    requestBuilder = {
+                painter = rememberImagePainter(
+                    data = avatarUrl,
+                    builder = {
                         createAvatarLoadRequest()
                     }
                 ),

@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
@@ -148,9 +148,9 @@ fun ItemSearchedOrganization(
             .padding(all = ContentPaddingLargeSize)
     ) {
         Image(
-            painter = rememberCoilPainter(
-                request = org.avatarUrl,
-                requestBuilder = {
+            painter = rememberImagePainter(
+                data = org.avatarUrl,
+                builder = {
                     createAvatarLoadRequest()
                 }
             ),

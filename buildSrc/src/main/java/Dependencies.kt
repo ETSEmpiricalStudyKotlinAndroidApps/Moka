@@ -6,7 +6,7 @@ object Versions {
 
     const val androidGradle = "7.1.0-alpha03"
     const val gmsGoogleServiceGradle = "4.3.8"
-    const val firebaseCrashlyticsGradle = "2.7.0"
+    const val firebaseCrashlyticsGradle = "2.7.1"
     const val desugaring = "1.1.5"
     const val kotlin = "1.5.10"
     const val dateTime = "0.2.1"
@@ -18,22 +18,23 @@ object Versions {
     const val liveDataKtx = "2.4.0-alpha02"
     const val lifecycleRuntimeKtx = "2.4.0-alpha02"
     const val viewModelCompose = "1.0.0-alpha07"
-    const val navigationCompose = "2.4.0-alpha03"
-    const val paging = "3.1.0-alpha01"
-    const val pagingCompose = "1.0.0-alpha10"
+    const val navigationCompose = "2.4.0-alpha04"
+    const val paging = "3.1.0-alpha02"
+    const val pagingCompose = "1.0.0-alpha11"
     const val workManager = "2.7.0-alpha04"
     const val room = "2.4.0-alpha03"
-    const val ui = "1.0.0-beta09"
+    const val ui = "1.0.0-rc02"
     const val constraintLayoutCompose = "1.0.0-alpha08"
-    const val dataStore = "1.0.0-beta02"
-    const val activityCompose = "1.3.0-beta02"
-    const val accompanist = "0.12.0"
-    const val material = "1.4.0-rc01"
+    const val dataStore = "1.0.0-rc01"
+    const val activityCompose = "1.3.0-rc02"
+    const val accompanist = "0.14.0"
+    const val material = "1.5.0-alpha01"
     const val kspApi = "1.5.10-1.0.0-beta02"
     const val lottie = "1.0.0-rc01-1"
     const val okhttpLoggingInterceptor = "4.7.2"
     const val apollo = "3.0.0-dev12"
     const val commonMark = "0.15.2"
+    const val coil = "1.3.0"
     const val jsoup = "1.12.1"
     const val timber = "4.7.1"
     const val ktor = "1.6.0"
@@ -55,6 +56,7 @@ object Deps {
     const val jsoup = "org.jsoup:jsoup:${Versions.jsoup}"
     const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
     const val desugaring = "com.android.tools:desugar_jdk_libs:${Versions.desugaring}"
+    const val coilCompose = "io.coil-kt:coil-compose:${Versions.coil}"
 
     object GradlePlugin {
 
@@ -158,7 +160,6 @@ object Deps {
 
         object Accompanist {
 
-            const val coil = "com.google.accompanist:accompanist-coil:${Versions.accompanist}"
             const val insets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
             const val swipeRefresh =
                 "com.google.accompanist:accompanist-swiperefresh:${Versions.accompanist}"

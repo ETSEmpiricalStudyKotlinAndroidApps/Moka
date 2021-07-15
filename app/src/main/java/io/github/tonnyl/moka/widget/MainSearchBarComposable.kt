@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
@@ -108,9 +108,9 @@ private fun MainSearchBarContent(
                 )
             }
             Image(
-                painter = rememberCoilPainter(
-                    request = avatarUrl,
-                    requestBuilder = {
+                painter = rememberImagePainter(
+                    data = avatarUrl,
+                    builder = {
                         createAvatarLoadRequest()
                     }
                 ),

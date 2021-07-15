@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -285,10 +285,10 @@ private fun RepositoryScreenContent(
     ) {
         Row(modifier = Modifier.padding(all = ContentPaddingLargeSize)) {
             Image(
-                painter = rememberCoilPainter(
-                    request = usersRepository?.owner?.avatarUrl
+                painter = rememberImagePainter(
+                    data = usersRepository?.owner?.avatarUrl
                         ?: organizationsRepository?.owner?.avatarUrl,
-                    requestBuilder = {
+                    builder = {
                         createAvatarLoadRequest()
                     }
                 ),

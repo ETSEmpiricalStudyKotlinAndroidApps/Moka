@@ -164,7 +164,6 @@ dependencies {
     implementation(Deps.Google.firebaseAnalyticsKtx)
     implementation(Deps.Google.firebaseCrashlytics)
     implementation(Deps.Google.material)
-    implementation(Deps.Google.Accompanist.coil)
     implementation(Deps.Google.Accompanist.insets)
     implementation(Deps.Google.Accompanist.swipeRefresh)
     implementation(Deps.Google.Accompanist.pager)
@@ -180,6 +179,8 @@ dependencies {
 
     // Airbnb
     implementation(Deps.Airbnb.lottie)
+
+    implementation(Deps.coilCompose)
 
     // CommonMark
     implementation(Deps.CommonMark.commonMark)

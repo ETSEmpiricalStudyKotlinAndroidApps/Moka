@@ -1,10 +1,10 @@
 object Versions {
 
-    const val compileSdk = 30
-    const val targetSdk = 30
+    const val compileSdk = 31
+    const val targetSdk = 31
     const val minSdk = 23
 
-    const val androidGradle = "7.1.0-alpha03"
+    const val androidGradle = "7.1.0-alpha04"
     const val gmsGoogleServiceGradle = "4.3.8"
     const val firebaseCrashlyticsGradle = "2.7.1"
     const val desugaring = "1.1.5"
@@ -27,6 +27,7 @@ object Versions {
     const val constraintLayoutCompose = "1.0.0-alpha08"
     const val dataStore = "1.0.0-rc01"
     const val activityCompose = "1.3.0-rc02"
+    const val splashScreen = "1.0.0-alpha01"
     const val accompanist = "0.14.0"
     const val material = "1.5.0-alpha01"
     const val kspApi = "1.5.10-1.0.0-beta02"
@@ -91,6 +92,7 @@ object Deps {
         const val browser = "androidx.browser:browser:${Versions.browser}"
         const val dataStore = "androidx.datastore:datastore:${Versions.dataStore}"
         const val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
+        const val splashScreen = "androidx.core:core-splashscreen:${Versions.splashScreen}"
 
         object Lifecycle {
 

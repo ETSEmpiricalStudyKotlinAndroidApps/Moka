@@ -136,6 +136,7 @@ dependencies {
     implementation(Deps.AndroidX.browser)
     implementation(Deps.AndroidX.dataStore)
     implementation(Deps.AndroidX.activityCompose)
+    implementation(Deps.AndroidX.splashScreen)
     implementation(Deps.AndroidX.Lifecycle.lifecycleExtensions)
     implementation(Deps.AndroidX.Lifecycle.liveDataKtx)
     implementation(Deps.AndroidX.Lifecycle.viewModelCompose)

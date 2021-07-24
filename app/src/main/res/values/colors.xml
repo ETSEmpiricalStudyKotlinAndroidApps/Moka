@@ -2,4 +2,5 @@
 <resources>
     <color name="colorPrimary">#6200EE</color>
     <color name="colorSurface">#1A000000</color>
+    <color name="splashBackground">#FFFFFF</color>
 </resources>

@@ -174,7 +174,12 @@ private fun InboxScreenContent(
                 )
             }
         } else {
-            itemsIndexed(lazyPagingItems = notifications) { index, item ->
+            itemsIndexed(
+                items = notifications,
+                key = { _, item ->
+                    item.id
+                }
+            ) { index, item ->
                 if (index == 0) {
                     ListSubheader(
                         text = stringResource(id = R.string.navigation_menu_inbox),

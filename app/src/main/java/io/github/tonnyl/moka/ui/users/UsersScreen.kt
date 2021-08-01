@@ -181,7 +181,12 @@ private fun UsersScreenScreen(
                 )
             }
         } else {
-            itemsIndexed(lazyPagingItems = users) { _, item ->
+            itemsIndexed(
+                items = users,
+                key = { _, item ->
+                    item.id
+                }
+            ) { _, item ->
                 if (item != null) {
                     ItemUser(
                         user = item,

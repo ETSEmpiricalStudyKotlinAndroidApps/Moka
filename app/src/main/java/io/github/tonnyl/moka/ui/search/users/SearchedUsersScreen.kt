@@ -107,7 +107,12 @@ private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgI
                 ItemUser(user = userPlaceholder, enablePlaceholder = true)
             }
         } else {
-            itemsIndexed(lazyPagingItems = users) { _, userOrOrg ->
+            itemsIndexed(
+                items = users,
+                key = { _, item ->
+                    item.user?.id ?: item.org?.id ?: item
+                }
+            ) { _, userOrOrg ->
                 if (userOrOrg?.user != null) {
                     ItemUser(
                         user = userOrOrg.user,

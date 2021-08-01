@@ -746,7 +746,8 @@ class CommitProvider : PreviewParameterProvider<Node> {
                     ),
                     __typename = "",
                 ),
-                statusCheckRollup = Node.StatusCheckRollup(state = StatusState.SUCCESS)
+                statusCheckRollup = Node.StatusCheckRollup(state = StatusState.SUCCESS),
+                oid = ""
             )
         )
 

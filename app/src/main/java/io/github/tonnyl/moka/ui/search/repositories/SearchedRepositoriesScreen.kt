@@ -88,7 +88,12 @@ private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<Repo
                 )
             }
         } else {
-            itemsIndexed(lazyPagingItems = repositories) { _, repo ->
+            itemsIndexed(
+                items = repositories,
+                key = { _, item ->
+                    item.id
+                }
+            ) { _, repo ->
                 if (repo != null) {
                     ItemRepository(
                         repo = repo,

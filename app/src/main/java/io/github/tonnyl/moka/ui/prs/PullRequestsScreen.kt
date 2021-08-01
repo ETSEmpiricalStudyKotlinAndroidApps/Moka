@@ -178,7 +178,12 @@ fun PullRequestsScreenContent(
                 )
             }
         } else {
-            itemsIndexed(lazyPagingItems = prs) { _, item ->
+            itemsIndexed(
+                items = prs,
+                key = { _, item ->
+                    item.id
+                }
+            ) { _, item ->
                 if (item != null) {
                     ItemPullRequest(
                         owner = owner,

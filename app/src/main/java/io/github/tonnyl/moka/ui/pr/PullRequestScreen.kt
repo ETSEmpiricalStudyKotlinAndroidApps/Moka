@@ -290,7 +290,12 @@ private fun PullRequestScreenContent(
                 )
             }
         } else {
-            itemsIndexed(lazyPagingItems = timelineItems) { _, item ->
+            itemsIndexed(
+                items = timelineItems,
+                key = { _, item ->
+                    item.id
+                }
+            ) { _, item ->
                 if (item != null) {
                     if (item is IssueComment) {
                         IssueTimelineCommentItem(

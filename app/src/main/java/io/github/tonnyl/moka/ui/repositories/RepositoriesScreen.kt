@@ -190,7 +190,12 @@ private fun RepositoriesScreenContent(
                 )
             }
         } else {
-            itemsIndexed(lazyPagingItems = repositories) { _, item ->
+            itemsIndexed(
+                items = repositories,
+                key = { _, item ->
+                    item.id
+                }
+            ) { _, item ->
                 if (item != null) {
                     ItemRepository(
                         repo = item,

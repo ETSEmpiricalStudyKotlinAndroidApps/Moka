@@ -32,6 +32,6 @@ fun RawRef.toNonNullRef(): Ref {
         id,
         name,
         prefix,
-        target.gitObject()?.toNonNullGitObject()
+        target?.gitObject()?.toNonNullGitObject()
     )
 }

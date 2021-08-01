@@ -165,7 +165,10 @@ private fun RepositoriesScreenContent(
                 )
             }
         } else {
-            items(lazyPagingItems = topics) { topic ->
+            items(
+                items = topics,
+                key = { it.id }
+            ) { topic ->
                 if (topic != null) {
                     ItemTopic(
                         topic = topic,

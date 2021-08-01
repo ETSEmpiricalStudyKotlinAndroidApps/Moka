@@ -173,7 +173,12 @@ fun TimelineScreenContent(
                 )
             }
         } else {
-            itemsIndexed(lazyPagingItems = events) { index, item ->
+            itemsIndexed(
+                items = events,
+                key = { _, item ->
+                    item.id
+                }
+            ) { index, item ->
                 if (index == 0) {
                     ListSubheader(
                         text = stringResource(id = R.string.navigation_menu_timeline),

@@ -8,6 +8,7 @@ fragment CommitListItem on Commit {
     author {
         ...GitActorListItem
     }
+    oid
     statusCheckRollup {
         state
     }

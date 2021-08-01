@@ -174,7 +174,10 @@ private fun CommitsScreenContent(
                 )
             }
         } else {
-            items(lazyPagingItems = commits) { item ->
+            items(
+                items = commits,
+                key = { it.oid }
+            ) { item ->
                 if (item != null) {
                     ItemCommit(
                         commit = item,

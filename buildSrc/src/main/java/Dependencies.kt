@@ -172,6 +172,8 @@ object Deps {
                 "com.google.accompanist:accompanist-flowlayout:${Versions.accompanist}"
             const val placeholder =
                 "com.google.accompanist:accompanist-placeholder-material:${Versions.accompanist}"
+            const val systemUiController =
+                "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}"
 
         }
 

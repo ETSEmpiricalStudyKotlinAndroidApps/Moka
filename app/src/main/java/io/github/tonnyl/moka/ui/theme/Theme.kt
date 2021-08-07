@@ -1,18 +1,19 @@
 package io.github.tonnyl.moka.ui.theme
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.zIndex
-import com.google.accompanist.insets.*
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.ExperimentalAnimatedInsets
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.serializers.store.SettingSerializer
 import io.github.tonnyl.moka.serializers.store.data.Theme
@@ -43,55 +44,40 @@ fun MokaTheme(content: @Composable () -> Unit) {
             }
         },
         content = {
-            val windowInsetsController = LocalWindowInsetsController.current
-            val isSystemDarkTheme = isSystemInDarkTheme()
-            DisposableEffect(settings.theme) {
-                windowInsetsController?.isAppearanceLightStatusBars =
-                    !isSystemDarkTheme && settings.theme != Theme.DARK
-                windowInsetsController?.isAppearanceLightNavigationBars =
-                    isSystemDarkTheme && settings.theme != Theme.DARK
-                onDispose { }
-            }
-
             ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
-                val navScrimColor = MaterialTheme.colors.background.copy(alpha = .3f)
+                val gestureInsets = LocalWindowInsets.current.navigationBars
+                val systemUiController = rememberSystemUiController()
+                val useDarkIcons = MaterialTheme.colors.isLight
                 val statusScrimColor = MaterialTheme.colors.background.copy(alpha = .9f)
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Spacer(
-                        modifier = Modifier
-                            .statusBarsHeight()
-                            .navigationBarsPadding(bottom = false)
-                            .zIndex(zIndex = 999F)
-                            .fillMaxWidth()
-                            .background(color = statusScrimColor)
-                            .align(alignment = Alignment.TopCenter)
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .navigationBarsWidth(side = HorizontalSide.Left)
-                            .zIndex(zIndex = 999F)
-                            .fillMaxHeight()
-                            .background(color = navScrimColor)
-                            .align(alignment = Alignment.CenterStart)
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .navigationBarsWidth(side = HorizontalSide.Right)
-                            .zIndex(zIndex = 999F)
-                            .fillMaxHeight()
-                            .background(color = navScrimColor)
-                            .align(alignment = Alignment.CenterEnd)
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .navigationBarsHeight()
-                            .zIndex(zIndex = 999F)
-                            .fillMaxWidth()
-                            .background(color = navScrimColor)
-                            .align(alignment = Alignment.BottomCenter)
-                    )
-                    content()
+
+                // https://medium.com/androiddevelopers/gesture-navigation-handling-visual-overlaps-4aed565c134c
+                // Hardcoding a height value is not a good idea. But no better idea was found.
+                val defaultNavigationBarHeight = with(LocalDensity.current) {
+                    48.dp.toPx()
                 }
+                val gestureNavigationEnabled = !(gestureInsets.bottom >= defaultNavigationBarHeight
+                        || gestureInsets.left >= defaultNavigationBarHeight
+                        || gestureInsets.right >= defaultNavigationBarHeight)
+
+                SideEffect {
+                    systemUiController.setStatusBarColor(
+                        color = statusScrimColor,
+                        darkIcons = useDarkIcons
+                    )
+
+                    systemUiController.setNavigationBarColor(
+                        color = if (gestureNavigationEnabled) {
+                            Color.Transparent
+                        } else {
+                            statusScrimColor
+                        },
+                        darkIcons = useDarkIcons,
+                        navigationBarContrastEnforced = gestureNavigationEnabled,
+                        transformColorForLightContent = { statusScrimColor }
+                    )
+                }
+
+                content()
             }
         }
     )

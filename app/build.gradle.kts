@@ -171,6 +171,7 @@ dependencies {
     implementation(Deps.Google.Accompanist.pagerIndicators)
     implementation(Deps.Google.Accompanist.flowLayout)
     implementation(Deps.Google.Accompanist.placeholder)
+    implementation(Deps.Google.Accompanist.systemUiController)
 
     // OkHttp
     implementation(Deps.OkHttp.loggingInterceptor)

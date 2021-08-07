@@ -1,9 +1,7 @@
 package io.github.tonnyl.moka.ui
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -45,11 +43,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        with(window) {
-            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            navigationBarColor = Color.TRANSPARENT
-            statusBarColor = Color.TRANSPARENT
-        }
 
         setContent {
             val windowInsetsControllerCompat =

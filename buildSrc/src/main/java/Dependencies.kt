@@ -4,7 +4,7 @@ object Versions {
     const val targetSdk = 31
     const val minSdk = 23
 
-    const val androidGradle = "7.1.0-alpha06"
+    const val androidGradle = "7.1.0-alpha08"
     const val gmsGoogleServiceGradle = "4.3.8"
     const val firebaseCrashlyticsGradle = "2.7.1"
     const val desugaring = "1.1.5"
@@ -23,7 +23,7 @@ object Versions {
     const val pagingCompose = "1.0.0-alpha12"
     const val workManager = "2.7.0-alpha05"
     const val room = "2.4.0-alpha04"
-    const val ui = "1.1.0-alpha01"
+    const val ui = "1.0.1"
     const val constraintLayoutCompose = "1.0.0-beta02"
     const val dataStore = "1.0.0"
     const val activityCompose = "1.3.1"

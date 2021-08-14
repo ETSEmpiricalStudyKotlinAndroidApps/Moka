@@ -1,0 +1,9 @@
+fragment ReleaseListItem on Release {
+    createdAt
+    name
+    tagName
+    isDraft
+    isLatest
+    isPrerelease
+    url
+}

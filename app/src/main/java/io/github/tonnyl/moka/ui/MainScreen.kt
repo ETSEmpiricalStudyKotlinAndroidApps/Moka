@@ -22,7 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -45,6 +47,7 @@ import io.github.tonnyl.moka.ui.profile.edit.EditProfileScreen
 import io.github.tonnyl.moka.ui.profile.status.EditStatusScreen
 import io.github.tonnyl.moka.ui.profile.status.EditStatusViewModel
 import io.github.tonnyl.moka.ui.prs.PullRequestsScreen
+import io.github.tonnyl.moka.ui.releases.ReleasesScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoriesScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.repository.RepositoryScreen
@@ -121,6 +124,8 @@ sealed class Screen(val route: String) {
 
     object Commits :
         Screen("commits/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_IS_ORG}}")
+
+    object Releases : Screen("releases/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
     companion object {
 
@@ -589,6 +594,24 @@ fun MainScreen() {
                 CommitsScreen(
                     isOrg = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_ORG)
                         ?: return@composable,
+                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                        ?: return@composable,
+                    repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                        ?: return@composable
+                )
+            }
+            composable(
+                route = Screen.Releases.route,
+                arguments = listOf(
+                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                        type = NavType.StringType
+                    },
+                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+                ReleasesScreen(
                     login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                         ?: return@composable,
                     repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)

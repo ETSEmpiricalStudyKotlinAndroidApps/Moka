@@ -525,4 +525,9 @@
     <string name="commit_status_success">Status is successful</string>
     <string name="commit_status_failure">Status is failing</string>
 
+    <string name="releases">Releases</string>
+    <string name="release_is_latest">Latest</string>
+    <string name="release_is_pre_release">Pre-release</string>
+    <string name="release_is_draft">Draft</string>
+
 </resources>

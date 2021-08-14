@@ -1,0 +1,13 @@
+query RepositoryReleases($login: String!, $repoName: String!, $before: String, $after: String, $first: Int, $last: Int, $orderBy: ReleaseOrder) {
+    repository(owner: $login, name: $repoName) {
+        releases(before: $before, after: $after, first: $first, last: $last, orderBy: $orderBy) {
+            nodes {
+                ... ReleaseListItem
+            }
+            pageInfo {
+                ... PageInfo
+            }
+            totalCount
+        }
+    }
+}

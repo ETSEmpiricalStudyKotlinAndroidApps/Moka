@@ -137,6 +137,13 @@ fun RepositoryScreen(
                                         .replace("{${Screen.ARG_IS_ORG}}", isOrg.toString())
                                 )
                             },
+                            onReleasesClicked = {
+                                navController.navigate(
+                                    route = Screen.Releases.route
+                                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                )
+                            },
                             readmeResource = readmeResource,
                             enablePlaceholder = isLoading
                         )
@@ -264,6 +271,7 @@ private fun RepositoryScreenContent(
     onIssuesClicked: () -> Unit,
     onPrsClicked: () -> Unit,
     onCommitsClicked: () -> Unit,
+    onReleasesClicked: () -> Unit,
 
     readmeResource: Resource<String>?,
 
@@ -482,7 +490,7 @@ private fun RepositoryScreenContent(
             enablePlaceholder = enablePlaceholder,
             modifier = Modifier.clickable(
                 enabled = !enablePlaceholder,
-                onClick = {}
+                onClick = onReleasesClicked,
             )
         )
         InfoListItem(
@@ -800,6 +808,7 @@ private fun RepositoryScreenContentPreview(
         onIssuesClicked = {},
         onPrsClicked = {},
         onCommitsClicked = {},
+        onReleasesClicked = {},
 
         readmeResource = Resource.success("<div>\n<g-emoji class=\"g-emoji\" alias=\"books\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f4da.png\">📚</g-emoji> PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. </div>"),
 

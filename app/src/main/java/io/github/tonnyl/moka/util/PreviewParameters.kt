@@ -4,9 +4,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.data.item.User
+import io.github.tonnyl.moka.fragment.ReleaseListItem
 import io.github.tonnyl.moka.queries.UsersRepositoryDefaultCommitsQuery.Data.User.Repository.DefaultBranchRef.CommitTarget.History.Node
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
+import io.github.tonnyl.moka.queries.RepositoryReleasesQuery.Data.Repository.Releases.Node as ReleaseNode
 
 class TimelineEventProvider : PreviewParameterProvider<Event> {
 
@@ -1161,6 +1163,24 @@ class PullRequestProvider : PreviewParameterProvider<PullRequest> {
                 viewerCannotUpdateReasons = emptyList(),
                 viewerDidAuthor = true,
                 viewerSubscription = SubscriptionState.SUBSCRIBED
+            )
+        )
+
+}
+
+class ReleaseProvider : PreviewParameterProvider<ReleaseListItem> {
+
+    override val values: Sequence<ReleaseListItem>
+        get() = sequenceOf(
+            ReleaseNode(
+                __typename = "Release",
+                createdAt = Instant.parse("2021-06-25T22:13:53Z"),
+                name = "v0.5.0-build228",
+                tagName = "v0.5.0-build228",
+                isDraft = false,
+                isLatest = false,
+                isPrerelease = true,
+                url = "https://github.com/JetBrains/compose-jb/releases/tag/v0.5.0-build228"
             )
         )
 

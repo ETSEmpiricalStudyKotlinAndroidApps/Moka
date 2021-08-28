@@ -6,10 +6,7 @@ import androidx.datastore.dataStore
 import io.github.tonnyl.moka.db.MokaDataBase
 import io.github.tonnyl.moka.network.ApolloGraphQLClient
 import io.github.tonnyl.moka.network.KtorClient
-import io.github.tonnyl.moka.network.api.EventApi
-import io.github.tonnyl.moka.network.api.NotificationApi
-import io.github.tonnyl.moka.network.api.TrendingApi
-import io.github.tonnyl.moka.network.api.UserApi
+import io.github.tonnyl.moka.network.api.*
 import io.github.tonnyl.moka.serializers.store.EmojiSerializer
 import io.github.tonnyl.moka.serializers.store.ExploreOptionsSerializer
 import io.github.tonnyl.moka.serializers.store.data.ExploreOptions
@@ -35,6 +32,7 @@ class AccountInstance(
     val trendingApi = TrendingApi(ktorClient = unauthenticatedKtorClient)
     val userApi = UserApi(ktorClient = authenticatedKtorClient)
     val notificationApi = NotificationApi(ktorClient = authenticatedKtorClient)
+    val commitApi = CommitApi(ktorClient = unauthenticatedKtorClient)
 
     val database = MokaDataBase.getInstance(
         context = app,

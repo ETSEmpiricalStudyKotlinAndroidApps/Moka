@@ -1185,3 +1185,87 @@ class ReleaseProvider : PreviewParameterProvider<ReleaseListItem> {
         )
 
 }
+
+class CommitResponseProvider : PreviewParameterProvider<CommitResponse> {
+
+    override val values: Sequence<CommitResponse>
+        get() = sequenceOf(
+            CommitResponse(
+                url = "https://api.github.com/repos/TonnyL/PaperPlane/commits/deabc062ec138e29f8b34bcea164c8ef49881175",
+                sha = "deabc062ec138e29f8b34bcea164c8ef49881175",
+                nodeId = "MDY6Q29tbWl0NTQyMTIzNTU6ZGVhYmMwNjJlYzEzOGUyOWY4YjM0YmNlYTE2NGM4ZWY0OTg4MTE3NQ==",
+                htmlUrl = "https://github.com/TonnyL/PaperPlane/commit/deabc062ec138e29f8b34bcea164c8ef49881175",
+                commentsUrl = "https://api.github.com/repos/TonnyL/PaperPlane/commits/deabc062ec138e29f8b34bcea164c8ef49881175/comments",
+                commit = Commit(
+                    author = CommitCommitter(
+                        name = "tonnyl",
+                        email = "lizhaotailang@gmail.com",
+                        date = Instant.parse("2018-06-06T12:35:32Z")
+                    ),
+                    committer = CommitCommitter(
+                        name = "tonnyl",
+                        email = "lizhaotailang@gmail.com",
+                        date = Instant.parse("2018-06-06T12:35:32Z")
+                    ),
+                    message = "feat: replace product sans with roboto",
+                    tree = CommitTree(
+                        sha = "1d92e6d02c2b3460cc497f5908ac99be792099eb",
+                        url = "https://api.github.com/repos/TonnyL/PaperPlane/git/trees/1d92e6d02c2b3460cc497f5908ac99be792099eb"
+                    ),
+                    url = "https://api.github.com/repos/TonnyL/PaperPlane/git/commits/deabc062ec138e29f8b34bcea164c8ef49881175",
+                    verification = CommitVerification(
+                        verified = false,
+                        reason = "unsigned",
+                        signature = null,
+                        payload = null
+                    ),
+                    commentCount = 0
+                ),
+                author = EventActor(
+                    id = 13329148,
+                    login = "TonnyL",
+                    avatarUrl = "https://avatars.githubusercontent.com/u/13329148?v=4",
+                    htmlUrl = "https://github.com/TonnyL",
+                    type = "User"
+                ),
+                committer = EventActor(
+                    id = 13329148,
+                    login = "TonnyL",
+                    avatarUrl = "https://avatars.githubusercontent.com/u/13329148?v=4",
+                    htmlUrl = "https://github.com/TonnyL",
+                    type = "User"
+                ),
+                parents = listOf(
+                    CommitParent(
+                        sha = "7813c3e100d1f4b268e669b3d1a7e1b154c6b2b9",
+                        url = "https://api.github.com/repos/TonnyL/PaperPlane/commits/7813c3e100d1f4b268e669b3d1a7e1b154c6b2b9",
+                    )
+                ),
+                stats = CommitStats(
+                    total = 9,
+                    additions = 5,
+                    deletions = 4
+                ),
+                files = emptyList()
+            )
+        )
+
+}
+
+class CommitFileProvider : PreviewParameterProvider<CommitFile> {
+
+    override val values: Sequence<CommitFile>
+        get() = sequenceOf(
+            CommitFile(
+                filename = "app/build.gradle",
+                status = "modified",
+                additions = 1,
+                deletions = 0,
+                changes = 1,
+                blobUrl = "https://github.com/TonnyL/PaperPlane/blob/deabc062ec138e29f8b34bcea164c8ef49881175/app/build.gradle",
+                rawUrl = "https://github.com/TonnyL/PaperPlane/raw/deabc062ec138e29f8b34bcea164c8ef49881175/app/build.gradle",
+                patch = "@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'"
+            )
+        )
+
+}

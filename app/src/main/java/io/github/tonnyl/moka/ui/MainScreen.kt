@@ -26,12 +26,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.paging.ExperimentalPagingApi
+import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
+import io.github.tonnyl.moka.ui.commit.CommitScreen
 import io.github.tonnyl.moka.ui.commits.CommitsScreen
 import io.github.tonnyl.moka.ui.emojis.EmojisScreen
 import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiScreen
@@ -127,6 +129,8 @@ sealed class Screen(val route: String) {
 
     object Releases : Screen("releases/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
+    object Commit : Screen("commit/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_REF}}")
+
     companion object {
 
         const val ARG_PROFILE_LOGIN = "arg_profile_login"
@@ -171,11 +175,14 @@ sealed class Screen(val route: String) {
 
         const val ARG_INITIAL_SEARCH_KEYWORD = "arg_initial_search_keyword"
 
+        const val ARG_REF = "arg_ref"
+
     }
 
 }
 
 @ExperimentalAnimationApi
+@ExperimentalCoilApi
 @ExperimentalPagerApi
 @ExperimentalSerializationApi
 @ExperimentalComposeUiApi
@@ -616,6 +623,28 @@ fun MainScreen() {
                         ?: return@composable,
                     repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
                         ?: return@composable
+                )
+            }
+            composable(
+                route = Screen.Commit.route,
+                arguments = listOf(
+                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                        type = NavType.StringType
+                    },
+                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                        type = NavType.StringType
+                    },
+                    navArgument(name = Screen.ARG_REF) {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+                CommitScreen(
+                    owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                        ?: return@composable,
+                    repo = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                        ?: return@composable,
+                    ref = backStackEntry.arguments?.getString(Screen.ARG_REF) ?: return@composable
                 )
             }
         }

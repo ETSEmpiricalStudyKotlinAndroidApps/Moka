@@ -530,4 +530,22 @@
     <string name="release_is_pre_release">Pre-release</string>
     <string name="release_is_draft">Draft</string>
 
+    <string name="commit">Commit</string>
+    <string name="commit_binary_file_not_shown">Binary file not shown.</string>
+    <plurals name="commit_changed_files">
+        <item quantity="zero">%1$d changed file</item>
+        <item quantity="one">%1$d changed file</item>
+        <item quantity="other">%1$d changed files</item>
+    </plurals>
+    <plurals name="commit_with_additions">
+        <item quantity="zero">%1$d addition</item>
+        <item quantity="one">%1$d addition</item>
+        <item quantity="other">%1$d additions</item>
+    </plurals>
+    <plurals name="commit_with_deletions">
+        <item quantity="zero">%1$d deletion</item>
+        <item quantity="one">%1$d deletion</item>
+        <item quantity="other">%1$d deletions</item>
+    </plurals>
+
 </resources>

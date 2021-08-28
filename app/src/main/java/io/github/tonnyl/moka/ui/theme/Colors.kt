@@ -36,3 +36,7 @@ val DarkThemeColors = darkColors(
 val issuePrGreen = Color(0xFF388E3C)
 
 val userStatusDndYellow = Color(0xFFFCD230)
+
+val commitModificationColor = Color(blue = 192, green = 92, red = 0)
+val commitAdditionColor = Color(red = 45, green = 164, blue = 78)
+val commitDeletionColor = Color(red = 209, green = 43, blue = 55)

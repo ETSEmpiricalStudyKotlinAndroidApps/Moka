@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -39,12 +38,10 @@ import io.github.tonnyl.moka.fragment.CommitListItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.queries.UsersRepositoryDefaultCommitsQuery.Data.User.Repository.DefaultBranchRef.CommitTarget.History.Node
 import io.github.tonnyl.moka.type.StatusState
+import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.CommitProvider
-import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
-import io.github.tonnyl.moka.widget.EmptyScreenContent
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.github.tonnyl.moka.widget.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -117,7 +114,9 @@ fun CommitsScreen(
                 else -> {
                     CommitsScreenContent(
                         contentTopPadding = contentPadding.calculateTopPadding(),
-                        commits = commits
+                        commits = commits,
+                        login = login,
+                        repoName = repoName
                     )
                 }
             }
@@ -151,7 +150,9 @@ fun CommitsScreen(
 @Composable
 private fun CommitsScreenContent(
     contentTopPadding: Dp,
-    commits: LazyPagingItems<CommitListItem>
+    commits: LazyPagingItems<CommitListItem>,
+    login: String,
+    repoName: String
 ) {
     val commitPlaceholder = remember {
         CommitProvider().values.first()
@@ -170,7 +171,9 @@ private fun CommitsScreenContent(
             items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
                 ItemCommit(
                     commit = commitPlaceholder,
-                    enablePlaceholder = true
+                    enablePlaceholder = true,
+                    login = login,
+                    repoName = repoName
                 )
             }
         } else {
@@ -181,7 +184,9 @@ private fun CommitsScreenContent(
                 if (item != null) {
                     ItemCommit(
                         commit = item,
-                        enablePlaceholder = false
+                        enablePlaceholder = false,
+                        login = login,
+                        repoName = repoName
                     )
                 }
             }
@@ -196,13 +201,23 @@ private fun CommitsScreenContent(
 @Composable
 private fun ItemCommit(
     commit: CommitListItem,
-    enablePlaceholder: Boolean
+    enablePlaceholder: Boolean,
+    login: String,
+    repoName: String
 ) {
+    val navController = LocalNavController.current
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable(enabled = !enablePlaceholder) { }
+            .clickable(enabled = !enablePlaceholder) {
+                navController.navigate(
+                    route = Screen.Commit.route
+                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                        .replace("{${Screen.ARG_REF}}", commit.oid)
+                )
+            }
             .padding(all = ContentPaddingLargeSize)
             .fillMaxWidth()
     ) {
@@ -269,29 +284,9 @@ private fun ItemCommit(
             Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
 
             val isSuccess = commit.statusCheckRollup?.state == StatusState.SUCCESS
-            Image(
-                painter = painterResource(
-                    id = if (isSuccess) {
-                        R.drawable.ic_check_24
-                    } else {
-                        R.drawable.ic_close_24
-                    }
-                ),
-                contentDescription = stringResource(
-                    id = if (isSuccess) {
-                        R.string.commit_status_success
-                    } else {
-                        R.string.commit_status_failure
-                    }
-                ),
-                colorFilter = ColorFilter.tint(
-                    color = if (isSuccess) {
-                        issuePrGreen
-                    } else {
-                        MaterialTheme.colors.error
-                    }
-                ),
-                modifier = Modifier.placeholder(visible = enablePlaceholder)
+            CommitVerification(
+                verified = isSuccess,
+                enablePlaceholder = enablePlaceholder
             )
         }
     }
@@ -308,6 +303,8 @@ private fun ItemCommitPreview(
 ) {
     ItemCommit(
         commit = commit,
-        enablePlaceholder = false
+        enablePlaceholder = false,
+        login = "",
+        repoName = ""
     )
 }

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,7 +64,6 @@ import io.github.tonnyl.moka.ui.timeline.TimelineScreen
 import io.github.tonnyl.moka.ui.topics.RepositoryTopicsScreen
 import io.github.tonnyl.moka.ui.users.UsersScreen
 import io.github.tonnyl.moka.ui.users.UsersType
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import io.github.tonnyl.moka.ui.profile.ViewModelFactory as ProfileViewModelFactory
@@ -131,6 +131,10 @@ sealed class Screen(val route: String) {
 
     object Commit : Screen("commit/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_REF}}")
 
+    object FAQ : Screen("faq")
+
+    object Feedback : Screen("feedback")
+
     companion object {
 
         const val ARG_PROFILE_LOGIN = "arg_profile_login"
@@ -194,474 +198,11 @@ fun MainScreen() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
-    var currentRoute by remember { mutableStateOf(Screen.Timeline.route) }
+    val currentRoute = remember { mutableStateOf(Screen.Timeline.route) }
 
-    ModalDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            MainDrawerContent(
-                currentRoute = currentRoute,
-                coroutineScope = coroutineScope,
-                drawerState = drawerState,
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .navigationBarsPadding(bottom = false)
-            )
-        }
-    ) {
-        val openDrawer = {
-            coroutineScope.launch {
-                drawerState.open()
-            }
-            Unit
-        }
-
-        NavHost(
-            navController = LocalNavController.current,
-            startDestination = Screen.Timeline.route
-        ) {
-            composable(route = Screen.Timeline.route) {
-                currentRoute = Screen.Timeline.route
-                TimelineScreen(openDrawer = openDrawer)
-            }
-            composable(route = Screen.Inbox.route) {
-                currentRoute = Screen.Inbox.route
-                InboxScreen(openDrawer = openDrawer)
-            }
-            composable(route = Screen.Explore.route) {
-                currentRoute = Screen.Explore.route
-                ExploreScreen(openDrawer = openDrawer)
-            }
-            composable(route = Screen.Settings.route) {
-                currentRoute = Screen.Settings.route
-                SettingScreen()
-            }
-            composable(route = Screen.About.route) {
-                currentRoute = Screen.About.route
-                AboutScreen()
-            }
-            composable(
-                route = Screen.Profile.route,
-                arguments = listOf(
-                    navArgument(Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(Screen.ARG_PROFILE_TYPE) {
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.Profile.route
-
-                val currentAccount = LocalAccountInstance.current ?: return@composable
-
-                val viewModel = viewModel<ProfileViewModel>(
-                    key = currentAccount.signedInAccount.account.login,
-                    factory = ProfileViewModelFactory(
-                        accountInstance = currentAccount,
-                        login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                            ?: return@composable,
-                        profileType = ProfileType.valueOf(
-                            backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
-                                ?: ProfileType.NOT_SPECIFIED.name
-                        )
-                    )
-                )
-
-                backStackEntry.savedStateHandle
-                    .getLiveData<UserStatus>(Screen.EditStatus.RESULT_UPDATE_STATUS)
-                    .value
-                    ?.let {
-                        viewModel.updateUserStatusIfNeeded(it)
-                    }
-
-                ProfileScreen(viewModel = viewModel)
-            }
-            composable(
-                route = Screen.Repository.route,
-                arguments = listOf(
-                    navArgument(Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(Screen.ARG_REPOSITORY_NAME) {
-                        type = NavType.StringType
-                    },
-                    navArgument(Screen.ARG_EDIT_PROFILE_NAME) {
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.Repository.route
-                RepositoryScreen(
-                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                        ?: return@composable,
-                    profileType = ProfileType.valueOf(
-                        backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
-                            ?: ProfileType.NOT_SPECIFIED.name
-                    )
-                )
-            }
-            composable(
-                route = Screen.EditProfile.route,
-                arguments = listOf(
-                    navArgument(Screen.ARG_EDIT_PROFILE_NAME) {
-                        type = NavType.StringType
-                        nullable = true
-                    },
-                    navArgument(Screen.ARG_EDIT_PROFILE_BIO) {
-                        type = NavType.StringType
-                        nullable = true
-                    },
-                    navArgument(Screen.ARG_EDIT_PROFILE_URL) {
-                        type = NavType.StringType
-                        nullable = true
-                    },
-                    navArgument(Screen.ARG_EDIT_PROFILE_COMPANY) {
-                        type = NavType.StringType
-                        nullable = true
-                    },
-                    navArgument(Screen.ARG_EDIT_PROFILE_LOCATION) {
-                        type = NavType.StringType
-                        nullable = true
-                    },
-                    navArgument(Screen.ARG_EDIT_PROFILE_TWITTER) {
-                        type = NavType.StringType
-                        nullable = true
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.EditProfile.route
-                EditProfileScreen(
-                    initialName = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_NAME),
-                    initialBio = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_BIO),
-                    initialUrl = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_URL),
-                    initialCompany = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_COMPANY),
-                    initialLocation = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_LOCATION),
-                    initialTwitter = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_TWITTER)
-                )
-            }
-            composable(
-                route = Screen.EditStatus.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_EDIT_STATUS_EMOJI) {
-                        type = NavType.StringType
-                        nullable = true
-                    },
-                    navArgument(name = Screen.ARG_EDIT_STATUS_MESSAGE) {
-                        type = NavType.StringType
-                        nullable = true
-                    },
-                    navArgument(name = Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY) {
-                        type = NavType.BoolType
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.EditStatus.route
-
-                val currentAccount = LocalAccountInstance.current ?: return@composable
-
-                val initialEmoji = backStackEntry.arguments?.getString(Screen.ARG_EDIT_STATUS_EMOJI)
-                val initialMessage =
-                    backStackEntry.arguments?.getString(Screen.ARG_EDIT_STATUS_MESSAGE)
-                val initialIndicatesLimitedAvailability = backStackEntry.arguments?.getBoolean(
-                    Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY
-                )
-                val viewModel = viewModel<EditStatusViewModel>(
-                    factory = EditStatusViewModelFactory(
-                        accountInstance = currentAccount,
-                        emoji = initialEmoji,
-                        message = initialMessage,
-                        indicatesLimitedAvailability = initialIndicatesLimitedAvailability
-                    )
-                )
-
-                backStackEntry.savedStateHandle
-                    .getLiveData<String>(Screen.Emojis.RESULT_EMOJI)
-                    .value
-                    ?.let { resultEmoji ->
-                        if (resultEmoji.isNotEmpty()) {
-                            viewModel.updateEmoji(resultEmoji)
-                        }
-                    }
-
-                EditStatusScreen(
-                    initialEmoji = initialEmoji,
-                    initialMessage = initialMessage,
-                    initialIndicatesLimitedAvailability = initialIndicatesLimitedAvailability,
-                    viewModel = viewModel
-                )
-            }
-            composable(
-                route = Screen.Users.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_USERS_TYPE) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.Users.route
-                UsersScreen(
-                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    usersType = UsersType.valueOf(
-                        backStackEntry.arguments?.getString(Screen.ARG_USERS_TYPE)
-                            ?: return@composable
-                    )
-                )
-            }
-            composable(
-                route = Screen.Repositories.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_REPOSITORY_TYPE) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_PROFILE_TYPE) {
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.Repositories.route
-                RepositoriesScreen(
-                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    repositoryType = RepositoryType.valueOf(
-                        backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_TYPE)
-                            ?: return@composable
-                    ),
-                    profileType = ProfileType.valueOf(
-                        backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
-                            ?: ProfileType.NOT_SPECIFIED.name
-                    )
-                )
-            }
-            composable(
-                route = Screen.Issues.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.Issues.route
-                IssuesScreen(
-                    owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                        ?: return@composable
-                )
-            }
-            composable(
-                route = Screen.PullRequests.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.PullRequests.route
-                PullRequestsScreen(
-                    owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                        ?: return@composable
-                )
-            }
-            composable(
-                route = Screen.Issue.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_ISSUE_PR_NUMBER) {
-                        type = NavType.IntType
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.Issue.route
-                IssueScreen(
-                    owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                        ?: return@composable,
-                    number = backStackEntry.arguments?.getInt(Screen.ARG_ISSUE_PR_NUMBER)
-                        ?: return@composable
-                )
-            }
-            composable(
-                route = Screen.PullRequest.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_ISSUE_PR_NUMBER) {
-                        type = NavType.IntType
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.PullRequest.route
-                PullRequestScreen(
-                    owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                        ?: return@composable,
-                    number = backStackEntry.arguments?.getInt(Screen.ARG_ISSUE_PR_NUMBER)
-                        ?: return@composable
-                )
-            }
-            composable(route = Screen.Emojis.route) {
-                val navController = LocalNavController.current
-                currentRoute = Screen.Emojis.route
-                val resultEmoji = navController.currentBackStackEntry?.savedStateHandle
-                    ?.getLiveData<String>(Screen.Emojis.RESULT_EMOJI)?.value
-
-                if (!resultEmoji.isNullOrEmpty()) {
-                    navController.previousBackStackEntry?.savedStateHandle
-                        ?.set(Screen.Emojis.RESULT_EMOJI, resultEmoji)
-
-                    navController.navigateUp()
-                } else {
-                    EmojisScreen()
-                }
-            }
-            composable(route = Screen.SearchEmoji.route) {
-                currentRoute = Screen.SearchEmoji.route
-                SearchEmojiScreen()
-            }
-            composable(
-                route = Screen.Search.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_INITIAL_SEARCH_KEYWORD) {
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
-                currentRoute = Screen.Search.route
-                SearchScreen(
-                    initialSearchKeyword = backStackEntry.arguments?.getString(Screen.ARG_INITIAL_SEARCH_KEYWORD)
-                        ?: ""
-                )
-            }
-            composable(
-                route = Screen.RepositoryTopics.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_IS_ORG) {
-                        type = NavType.BoolType
-                    }
-                )
-            ) { backStackEntry ->
-                RepositoryTopicsScreen(
-                    isOrg = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_ORG)
-                        ?: return@composable,
-                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                        ?: return@composable
-                )
-            }
-            composable(
-                route = Screen.Commits.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_IS_ORG) {
-                        type = NavType.BoolType
-                    }
-                )
-            ) { backStackEntry ->
-                CommitsScreen(
-                    isOrg = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_ORG)
-                        ?: return@composable,
-                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                        ?: return@composable
-                )
-            }
-            composable(
-                route = Screen.Releases.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
-                ReleasesScreen(
-                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                        ?: return@composable
-                )
-            }
-            composable(
-                route = Screen.Commit.route,
-                arguments = listOf(
-                    navArgument(name = Screen.ARG_PROFILE_LOGIN) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_REPOSITORY_NAME) {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = Screen.ARG_REF) {
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
-                CommitScreen(
-                    owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    repo = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                        ?: return@composable,
-                    ref = backStackEntry.arguments?.getString(Screen.ARG_REF) ?: return@composable
-                )
-            }
-        }
-    }
-}
-
-@ExperimentalMaterialApi
-@Composable
-fun MainDrawerContent(
-    currentRoute: String,
-    coroutineScope: CoroutineScope,
-    drawerState: DrawerState,
-    modifier: Modifier = Modifier
-) {
     val navController = LocalNavController.current
 
-    val navigate: (String, Boolean) -> Unit = { route, _ ->
+    val navigate: (String) -> Unit = { route ->
         navController.navigateUp()
         navController.navigate(route = route) {
             popUpTo(route = route)
@@ -673,6 +214,50 @@ fun MainDrawerContent(
         }
     }
 
+    val configuration = LocalConfiguration.current
+    if (configuration.smallestScreenWidthDp < 600) {
+        ModalDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                MainDrawerContent(
+                    currentRoute = currentRoute.value,
+                    navigate = navigate,
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .navigationBarsPadding(bottom = false)
+                )
+            }
+        ) {
+            MainNavHost(currentRoute = currentRoute) {
+                coroutineScope.launch {
+                    drawerState.open()
+                }
+            }
+        }
+    } else {
+        Row {
+            MainNavigationRail(
+                currentRoute = currentRoute.value,
+                navigate = navigate,
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .navigationBarsPadding(bottom = false)
+            )
+            MainNavHost(
+                currentRoute = currentRoute,
+                openDrawer = null
+            )
+        }
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun MainDrawerContent(
+    currentRoute: String,
+    navigate: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(modifier = modifier.fillMaxWidth()) {
         item {
             MainDrawerHeader()
@@ -687,7 +272,7 @@ fun MainDrawerContent(
                 textRes = R.string.navigation_menu_timeline,
                 selected = currentRoute == Screen.Timeline.route,
                 onClick = {
-                    navigate.invoke(Screen.Timeline.route, true)
+                    navigate.invoke(Screen.Timeline.route)
                 }
             )
         }
@@ -697,7 +282,7 @@ fun MainDrawerContent(
                 textRes = R.string.navigation_menu_explore,
                 selected = currentRoute == Screen.Explore.route,
                 onClick = {
-                    navigate.invoke(Screen.Explore.route, true)
+                    navigate.invoke(Screen.Explore.route)
                 }
             )
         }
@@ -707,7 +292,7 @@ fun MainDrawerContent(
                 textRes = R.string.navigation_menu_inbox,
                 selected = currentRoute == Screen.Inbox.route,
                 onClick = {
-                    navigate.invoke(Screen.Inbox.route, true)
+                    navigate.invoke(Screen.Inbox.route)
                 }
             )
             Divider(modifier = Modifier.fillMaxWidth())
@@ -718,7 +303,7 @@ fun MainDrawerContent(
                 textRes = R.string.navigation_menu_settings,
                 selected = false,
                 onClick = {
-                    navigate.invoke(Screen.Settings.route, false)
+                    navigate.invoke(Screen.Settings.route)
                 }
             )
         }
@@ -728,7 +313,7 @@ fun MainDrawerContent(
                 textRes = R.string.navigation_menu_about,
                 selected = false,
                 onClick = {
-                    navigate.invoke(Screen.About.route, false)
+                    navigate.invoke(Screen.About.route)
                 }
             )
         }
@@ -817,11 +402,551 @@ private fun MainDrawerMenuItem(
 
 @ExperimentalMaterialApi
 @Composable
-@Preview(name = "MainDrawerContentPreview", showBackground = true)
+private fun MainNavigationRail(
+    currentRoute: String,
+    navigate: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val screens = listOf(
+        Triple(
+            Screen.Timeline,
+            stringResource(id = R.string.navigation_menu_timeline),
+            painterResource(id = R.drawable.ic_menu_timeline_24)
+        ),
+        Triple(
+            Screen.Explore,
+            stringResource(id = R.string.navigation_menu_explore),
+            painterResource(id = R.drawable.ic_menu_explore_24)
+        ),
+        Triple(
+            Screen.Inbox,
+            stringResource(id = R.string.navigation_menu_inbox),
+            painterResource(id = R.drawable.ic_menu_inbox_24)
+        ),
+        Triple(
+            Screen.Settings,
+            stringResource(id = R.string.navigation_menu_settings),
+            painterResource(id = R.drawable.ic_menu_settings_24)
+        ),
+        Triple(
+            Screen.About,
+            stringResource(id = R.string.navigation_menu_about),
+            painterResource(id = R.drawable.ic_info_24)
+        ),
+        Triple(
+            Screen.FAQ,
+            stringResource(id = R.string.navigation_menu_faq_help),
+            painterResource(id = R.drawable.ic_help_24)
+        ),
+        Triple(
+            Screen.Feedback,
+            stringResource(id = R.string.navigation_menu_feedback),
+            painterResource(id = R.drawable.ic_feedback_24)
+        )
+    )
+    NavigationRail(modifier = modifier) {
+        screens.forEach { (screen, text, icon) ->
+            NavigationRailItem(
+                selected = currentRoute == screen.route,
+                label = { Text(text = text) },
+                icon = { Icon(icon, contentDescription = text) },
+                onClick = {
+                    if (screen != Screen.Feedback
+                        && screen != Screen.FAQ
+                    ) {
+                        navigate.invoke(screen.route)
+                    }
+                },
+                alwaysShowLabel = false
+            )
+        }
+    }
+}
+
+@ExperimentalAnimationApi
+@ExperimentalCoilApi
+@ExperimentalPagerApi
+@ExperimentalSerializationApi
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
+@ExperimentalPagingApi
+@Composable
+private fun MainNavHost(
+    currentRoute: MutableState<String>,
+    openDrawer: (() -> Unit)?
+) {
+    NavHost(
+        navController = LocalNavController.current,
+        startDestination = Screen.Timeline.route
+    ) {
+        composable(route = Screen.Timeline.route) {
+            currentRoute.value = Screen.Timeline.route
+            TimelineScreen(openDrawer = openDrawer)
+        }
+        composable(route = Screen.Inbox.route) {
+            currentRoute.value = Screen.Inbox.route
+            InboxScreen(openDrawer = openDrawer)
+        }
+        composable(route = Screen.Explore.route) {
+            currentRoute.value = Screen.Explore.route
+            ExploreScreen(openDrawer = openDrawer)
+        }
+        composable(route = Screen.Settings.route) {
+            currentRoute.value = Screen.Settings.route
+            SettingScreen()
+        }
+        composable(route = Screen.About.route) {
+            currentRoute.value = Screen.About.route
+            AboutScreen()
+        }
+        composable(
+            route = Screen.Profile.route,
+            arguments = listOf(
+                navArgument(Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(Screen.ARG_PROFILE_TYPE) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Profile.route
+
+            val currentAccount = LocalAccountInstance.current ?: return@composable
+
+            val viewModel = viewModel<ProfileViewModel>(
+                key = currentAccount.signedInAccount.account.login,
+                factory = ProfileViewModelFactory(
+                    accountInstance = currentAccount,
+                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                        ?: return@composable,
+                    profileType = ProfileType.valueOf(
+                        backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
+                            ?: ProfileType.NOT_SPECIFIED.name
+                    )
+                )
+            )
+
+            backStackEntry.savedStateHandle
+                .getLiveData<UserStatus>(Screen.EditStatus.RESULT_UPDATE_STATUS)
+                .value
+                ?.let {
+                    viewModel.updateUserStatusIfNeeded(it)
+                }
+
+            ProfileScreen(viewModel = viewModel)
+        }
+        composable(
+            route = Screen.Repository.route,
+            arguments = listOf(
+                navArgument(Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(Screen.ARG_EDIT_PROFILE_NAME) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Repository.route
+            RepositoryScreen(
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable,
+                profileType = ProfileType.valueOf(
+                    backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
+                        ?: ProfileType.NOT_SPECIFIED.name
+                )
+            )
+        }
+        composable(
+            route = Screen.EditProfile.route,
+            arguments = listOf(
+                navArgument(Screen.ARG_EDIT_PROFILE_NAME) {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument(Screen.ARG_EDIT_PROFILE_BIO) {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument(Screen.ARG_EDIT_PROFILE_URL) {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument(Screen.ARG_EDIT_PROFILE_COMPANY) {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument(Screen.ARG_EDIT_PROFILE_LOCATION) {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument(Screen.ARG_EDIT_PROFILE_TWITTER) {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.EditProfile.route
+            EditProfileScreen(
+                initialName = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_NAME),
+                initialBio = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_BIO),
+                initialUrl = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_URL),
+                initialCompany = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_COMPANY),
+                initialLocation = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_LOCATION),
+                initialTwitter = backStackEntry.arguments?.getString(Screen.ARG_EDIT_PROFILE_TWITTER)
+            )
+        }
+        composable(
+            route = Screen.EditStatus.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_EDIT_STATUS_EMOJI) {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument(name = Screen.ARG_EDIT_STATUS_MESSAGE) {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument(name = Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY) {
+                    type = NavType.BoolType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.EditStatus.route
+
+            val currentAccount = LocalAccountInstance.current ?: return@composable
+
+            val initialEmoji =
+                backStackEntry.arguments?.getString(Screen.ARG_EDIT_STATUS_EMOJI)
+            val initialMessage =
+                backStackEntry.arguments?.getString(Screen.ARG_EDIT_STATUS_MESSAGE)
+            val initialIndicatesLimitedAvailability = backStackEntry.arguments?.getBoolean(
+                Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY
+            )
+            val viewModel = viewModel<EditStatusViewModel>(
+                factory = EditStatusViewModelFactory(
+                    accountInstance = currentAccount,
+                    emoji = initialEmoji,
+                    message = initialMessage,
+                    indicatesLimitedAvailability = initialIndicatesLimitedAvailability
+                )
+            )
+
+            backStackEntry.savedStateHandle
+                .getLiveData<String>(Screen.Emojis.RESULT_EMOJI)
+                .value
+                ?.let { resultEmoji ->
+                    if (resultEmoji.isNotEmpty()) {
+                        viewModel.updateEmoji(resultEmoji)
+                    }
+                }
+
+            EditStatusScreen(
+                initialEmoji = initialEmoji,
+                initialMessage = initialMessage,
+                initialIndicatesLimitedAvailability = initialIndicatesLimitedAvailability,
+                viewModel = viewModel
+            )
+        }
+        composable(
+            route = Screen.Users.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_USERS_TYPE) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Users.route
+            UsersScreen(
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                usersType = UsersType.valueOf(
+                    backStackEntry.arguments?.getString(Screen.ARG_USERS_TYPE)
+                        ?: return@composable
+                )
+            )
+        }
+        composable(
+            route = Screen.Repositories.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_TYPE) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_PROFILE_TYPE) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Repositories.route
+            RepositoriesScreen(
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                repositoryType = RepositoryType.valueOf(
+                    backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_TYPE)
+                        ?: return@composable
+                ),
+                profileType = ProfileType.valueOf(
+                    backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
+                        ?: ProfileType.NOT_SPECIFIED.name
+                )
+            )
+        }
+        composable(
+            route = Screen.Issues.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Issues.route
+            IssuesScreen(
+                owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.PullRequests.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.PullRequests.route
+            PullRequestsScreen(
+                owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.Issue.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_ISSUE_PR_NUMBER) {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Issue.route
+            IssueScreen(
+                owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable,
+                number = backStackEntry.arguments?.getInt(Screen.ARG_ISSUE_PR_NUMBER)
+                    ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.PullRequest.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_ISSUE_PR_NUMBER) {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.PullRequest.route
+            PullRequestScreen(
+                owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable,
+                number = backStackEntry.arguments?.getInt(Screen.ARG_ISSUE_PR_NUMBER)
+                    ?: return@composable
+            )
+        }
+        composable(route = Screen.Emojis.route) {
+            val navController = LocalNavController.current
+            currentRoute.value = Screen.Emojis.route
+            val resultEmoji = navController.currentBackStackEntry?.savedStateHandle
+                ?.getLiveData<String>(Screen.Emojis.RESULT_EMOJI)?.value
+
+            if (!resultEmoji.isNullOrEmpty()) {
+                navController.previousBackStackEntry?.savedStateHandle
+                    ?.set(Screen.Emojis.RESULT_EMOJI, resultEmoji)
+
+                navController.navigateUp()
+            } else {
+                EmojisScreen()
+            }
+        }
+        composable(route = Screen.SearchEmoji.route) {
+            currentRoute.value = Screen.SearchEmoji.route
+            SearchEmojiScreen()
+        }
+        composable(
+            route = Screen.Search.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_INITIAL_SEARCH_KEYWORD) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Search.route
+            SearchScreen(
+                initialSearchKeyword = backStackEntry.arguments?.getString(Screen.ARG_INITIAL_SEARCH_KEYWORD)
+                    ?: ""
+            )
+        }
+        composable(
+            route = Screen.RepositoryTopics.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_IS_ORG) {
+                    type = NavType.BoolType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.RepositoryTopics.route
+
+            RepositoryTopicsScreen(
+                isOrg = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_ORG)
+                    ?: return@composable,
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.Commits.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_IS_ORG) {
+                    type = NavType.BoolType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Commits.route
+
+            CommitsScreen(
+                isOrg = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_ORG)
+                    ?: return@composable,
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.Releases.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Releases.route
+
+            ReleasesScreen(
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.Commit.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REF) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Commit.route
+
+            CommitScreen(
+                owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                repo = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable,
+                ref = backStackEntry.arguments?.getString(Screen.ARG_REF)
+                    ?: return@composable
+            )
+        }
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+@Preview(
+    name = "MainDrawerContentPreview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFF
+)
 private fun MainDrawerContentPreview() {
     MainDrawerContent(
         currentRoute = Screen.Timeline.route,
-        coroutineScope = rememberCoroutineScope(),
-        drawerState = rememberDrawerState(DrawerValue.Open)
+        navigate = { }
+    )
+}
+
+@ExperimentalMaterialApi
+@Preview(
+    name = "MainNavigationRailPreview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFF
+)
+@Composable
+private fun MainNavigationRailPreview() {
+    MainNavigationRail(
+        currentRoute = Screen.Timeline.route,
+        navigate = { },
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding(bottom = false)
     )
 }

@@ -51,7 +51,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 @Composable
 @ExperimentalMaterialApi
-fun ExploreScreen(openDrawer: () -> Unit) {
+fun ExploreScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val exploreViewModel = viewModel<ExploreViewModel>(

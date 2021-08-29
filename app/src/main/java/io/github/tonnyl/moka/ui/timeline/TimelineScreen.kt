@@ -55,7 +55,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable
-fun TimelineScreen(openDrawer: () -> Unit) {
+fun TimelineScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val timelineViewModel = viewModel<TimelineViewModel>(

@@ -56,7 +56,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable
-fun InboxScreen(openDrawer: () -> Unit) {
+fun InboxScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
     val inboxViewModel = viewModel<InboxViewModel>(
         key = currentAccount.toString(),

@@ -33,7 +33,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
 fun MainSearchBar(
-    openDrawer: () -> Unit,
+    openDrawer: (() -> Unit)?,
     modifier: Modifier = Modifier
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -67,16 +67,21 @@ fun MainSearchBar(
 private fun MainSearchBarContent(
     modifier: Modifier,
     avatarUrl: String?,
-    onMenuClicked: () -> Unit,
+    onMenuClicked: (() -> Unit)?,
     onTextClicked: () -> Unit,
     onAvatarClicked: () -> Unit
 ) {
+    val displayMenuIcon = onMenuClicked != null
+
     Box(
         modifier = modifier
             .background(color = Color.Transparent)
             .height(height = 64.dp)
             .fillMaxWidth()
-            .padding(all = ContentPaddingMediumSize)
+            .padding(
+                vertical = ContentPaddingMediumSize,
+                horizontal = ContentPaddingLargeSize
+            )
     ) {
         Card(
             elevation = 3.dp,
@@ -101,10 +106,27 @@ private fun MainSearchBarContent(
                     )
                 }
             }
-            IconButton(onClick = onMenuClicked) {
+            IconButton(
+                enabled = displayMenuIcon,
+                onClick = {
+                    onMenuClicked?.invoke()
+                }
+            ) {
                 Icon(
-                    contentDescription = stringResource(id = R.string.navigation_header_avatar_desc),
-                    painter = painterResource(id = R.drawable.ic_menu_24)
+                    contentDescription = stringResource(
+                        id = if (displayMenuIcon) {
+                            R.string.navigation_drawer_open
+                        } else {
+                            R.string.search_input_hint
+                        }
+                    ),
+                    painter = painterResource(
+                        id = if (displayMenuIcon) {
+                            R.drawable.ic_menu_24
+                        } else {
+                            R.drawable.ic_menu_search_24
+                        }
+                    )
                 )
             }
             Image(

@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.repository
 
+import android.util.Base64
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,19 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.data.Repository
-import io.github.tonnyl.moka.data.toNonNullTreeEntry
 import io.github.tonnyl.moka.data.toNullableRepository
-import io.github.tonnyl.moka.fragment.Tree.Entry.Companion.treeEntry
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.addStar
 import io.github.tonnyl.moka.network.mutations.followUser
 import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.network.mutations.unfollowUser
-import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery
-import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery.Data.Repository.Object.Companion.tree
-import io.github.tonnyl.moka.queries.FileContentQuery
-import io.github.tonnyl.moka.queries.FileContentQuery.Data.Repository.Object.Companion.blob
 import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery
 import io.github.tonnyl.moka.queries.UsersRepositoryQuery
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -28,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import timber.log.Timber
-import java.util.*
+import java.nio.charset.StandardCharsets
 
 @ExperimentalSerializationApi
 class RepositoryViewModel(
@@ -86,68 +81,26 @@ class RepositoryViewModel(
             _readmeHtml.postValue(Resource.loading(null))
 
             try {
-                val response = accountInstance.apolloGraphQLClient
-                    .apolloClient
-                    .query(
-                        query = CurrentLevelTreeViewQuery(
-                            login = login,
-                            repoName = repositoryName,
-                            expression = "$branchName:"
-                        )
+                val response = accountInstance.repositoryContentApi
+                    .getReadme(
+                        owner = login,
+                        repo = repositoryName,
+                        ref = branchName
                     )
 
-                val readmeFileNames = mapOf(
-                    "readme.md" to "md",
-                    "readme.html" to "html",
-                    "readme.htm" to "html",
-                    "readme" to "plain"
+                _readmeHtml.postValue(
+                    Resource.success(
+                        HtmlHandler.toHtml(
+                            rawText = String(
+                                Base64.decode(response.content, Base64.DEFAULT),
+                                StandardCharsets.UTF_8
+                            ),
+                            login = login,
+                            repositoryName = repositoryName,
+                            branch = branchName
+                        )
+                    )
                 )
-
-                val readmeFile = response.data
-                    ?.repository
-                    ?.object_
-                    ?.tree()
-                    ?.entries
-                    ?.firstOrNull {
-                        readmeFileNames.contains(
-                            it.treeEntry()?.name?.lowercase(Locale.US)
-                        )
-                    }
-
-                val fileEntry = readmeFile
-                    ?.treeEntry()
-                    ?.toNonNullTreeEntry()
-
-                if (fileEntry != null) {
-                    val expression = "$branchName:${fileEntry.name}"
-                    val fileContentResponse = accountInstance.apolloGraphQLClient
-                        .apolloClient
-                        .query(
-                            query = FileContentQuery(
-                                login = login,
-                                repoName = repositoryName,
-                                expression = expression
-                            )
-                        )
-
-                    val html = fileContentResponse.data?.repository?.object_?.blob()?.text
-                    if (html.isNullOrEmpty()) {
-                        _readmeHtml.postValue(Resource.success(""))
-                    } else {
-                        _readmeHtml.postValue(
-                            Resource.success(
-                                HtmlHandler.toHtml(
-                                    rawText = html,
-                                    login = login,
-                                    repositoryName = repositoryName,
-                                    branch = branchName
-                                )
-                            )
-                        )
-                    }
-                } else {
-                    _readmeHtml.postValue(Resource.success(null))
-                }
             } catch (e: Exception) {
                 Timber.e(e)
 

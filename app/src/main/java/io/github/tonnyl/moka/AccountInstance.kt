@@ -33,6 +33,7 @@ class AccountInstance(
     val userApi = UserApi(ktorClient = authenticatedKtorClient)
     val notificationApi = NotificationApi(ktorClient = authenticatedKtorClient)
     val commitApi = CommitApi(ktorClient = unauthenticatedKtorClient)
+    val repositoryContentApi = RepositoryContentApi(ktorClient = unauthenticatedKtorClient)
 
     val database = MokaDataBase.getInstance(
         context = app,

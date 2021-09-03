@@ -548,4 +548,6 @@
         <item quantity="other">%1$d deletions</item>
     </plurals>
 
+    <string name="files">Files</string>
+
 </resources>

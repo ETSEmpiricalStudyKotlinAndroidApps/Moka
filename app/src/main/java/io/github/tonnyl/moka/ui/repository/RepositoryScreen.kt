@@ -280,6 +280,8 @@ private fun RepositoryScreenContent(
     var languageProgressBarShowState by remember { mutableStateOf(false) }
     val navController = LocalNavController.current
 
+    val login = usersRepository?.owner?.login ?: organizationsRepository?.owner?.login
+
     Column(
         modifier = Modifier
             .verticalScroll(state = rememberScrollState())
@@ -312,8 +314,6 @@ private fun RepositoryScreenContent(
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             Column(modifier = Modifier.weight(weight = 1f)) {
                 val ownerName = usersRepository?.ownerName ?: organizationsRepository?.ownerName
-                val ownerLogin =
-                    usersRepository?.owner?.login ?: organizationsRepository?.owner?.login
                 if (!ownerName.isNullOrEmpty()) {
                     Text(
                         text = ownerName,
@@ -326,13 +326,13 @@ private fun RepositoryScreenContent(
                         )
                     )
                 }
-                if (!ownerLogin.isNullOrEmpty()) {
+                if (!login.isNullOrEmpty()) {
                     if (enablePlaceholder) {
                         Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))
                     }
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                         Text(
-                            text = ownerLogin,
+                            text = login,
                             style = MaterialTheme.typography.body2,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -472,14 +472,25 @@ private fun RepositoryScreenContent(
             textRes = R.string.repository_basic_info,
             enablePlaceholder = enablePlaceholder
         )
+        val branch = usersRepository?.defaultBranchRef?.name
+            ?: organizationsRepository?.defaultBranchRef?.name ?: "master"
         InfoListItem(
             leadingRes = R.string.repository_branches,
-            trailing = usersRepository?.defaultBranchRef?.name
-                ?: organizationsRepository?.defaultBranchRef?.name ?: "",
+            trailing = branch,
             enablePlaceholder = enablePlaceholder,
             modifier = Modifier.clickable(
                 enabled = !enablePlaceholder,
-                onClick = {}
+                onClick = {
+                    navController.navigate(
+                        route = Screen.RepositoryFiles.route
+                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login ?: return@clickable)
+                            .replace(
+                                "{${Screen.ARG_REPOSITORY_NAME}}",
+                                repoName ?: return@clickable
+                            )
+                            .replace("{${Screen.ARG_EXPRESSION}}", "${branch}:")
+                    )
+                }
             )
         )
         InfoListItem(
@@ -548,8 +559,6 @@ private fun RepositoryScreenContent(
                 if (topics.orEmpty().size > MAX_DISPLAY_COUNT_OF_TOPICS) {
                     TextButton(
                         onClick = {
-                            val login = usersRepository?.owner?.login
-                                ?: organizationsRepository?.owner?.login
                             val isOrg = organizationsRepository != null
                             if (!login.isNullOrEmpty()
                                 && !repoName.isNullOrEmpty()

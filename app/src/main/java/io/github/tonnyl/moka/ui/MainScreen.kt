@@ -54,6 +54,7 @@ import io.github.tonnyl.moka.ui.releases.ReleasesScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoriesScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.repository.RepositoryScreen
+import io.github.tonnyl.moka.ui.repository.files.RepositoryFilesScreen
 import io.github.tonnyl.moka.ui.search.SearchScreen
 import io.github.tonnyl.moka.ui.settings.SettingScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
@@ -88,6 +89,9 @@ sealed class Screen(val route: String) {
 
     object Repository :
         Screen("repository/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_PROFILE_TYPE}}")
+
+    object RepositoryFiles :
+        Screen("repository_files?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_EXPRESSION}={${ARG_EXPRESSION}}")
 
     object Users : Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}")
 
@@ -181,6 +185,7 @@ sealed class Screen(val route: String) {
 
         const val ARG_REF = "arg_ref"
 
+        const val ARG_EXPRESSION = "arg_expression"
     }
 
 }
@@ -914,6 +919,31 @@ private fun MainNavHost(
                 repo = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
                     ?: return@composable,
                 ref = backStackEntry.arguments?.getString(Screen.ARG_REF)
+                    ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.RepositoryFiles.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_EXPRESSION) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.RepositoryFiles.route
+
+            RepositoryFilesScreen(
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable,
+                expression = backStackEntry.arguments?.getString(Screen.ARG_EXPRESSION)
                     ?: return@composable
             )
         }

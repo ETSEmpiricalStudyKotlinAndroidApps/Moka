@@ -5,6 +5,8 @@ import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.data.item.User
 import io.github.tonnyl.moka.fragment.ReleaseListItem
+import io.github.tonnyl.moka.fragment.TreeEntry
+import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery.Data.Repository.TreeObject.Entry
 import io.github.tonnyl.moka.queries.UsersRepositoryDefaultCommitsQuery.Data.User.Repository.DefaultBranchRef.CommitTarget.History.Node
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
@@ -1265,6 +1267,30 @@ class CommitFileProvider : PreviewParameterProvider<CommitFile> {
                 blobUrl = "https://github.com/TonnyL/PaperPlane/blob/deabc062ec138e29f8b34bcea164c8ef49881175/app/build.gradle",
                 rawUrl = "https://github.com/TonnyL/PaperPlane/raw/deabc062ec138e29f8b34bcea164c8ef49881175/app/build.gradle",
                 patch = "@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'"
+            )
+        )
+
+}
+
+class TreeEntryProvider : PreviewParameterProvider<TreeEntry> {
+
+    override val values: Sequence<TreeEntry>
+        get() = sequenceOf(
+            Entry(
+                __typename = "",
+                mode = 16384,
+                name = "settings.gradle",
+                object_ = Entry.CommitObject(
+                    __typename = "",
+                    abbreviatedOid = "e7b4def",
+                    commitResourcePath = "/TonnyL/PaperPlane/commit/e7b4def49cb53d9aa04228dd3edb14c9e635e003",
+                    commitUrl = "https://github.com/TonnyL/PaperPlane/commit/e7b4def49cb53d9aa04228dd3edb14c9e635e003",
+                    id = "MDQ6QmxvYjU0MjEyMzU1OmU3YjRkZWY0OWNiNTNkOWFhMDQyMjhkZDNlZGIxNGM5ZTYzNWUwMDM=",
+                    oid = "e7b4def49cb53d9aa04228dd3edb14c9e635e003",
+                    history = Entry.CommitObject.History(totalCount = 1)
+                ),
+                oid = "e7b4def49cb53d9aa04228dd3edb14c9e635e003",
+                type = "blob"
             )
         )
 

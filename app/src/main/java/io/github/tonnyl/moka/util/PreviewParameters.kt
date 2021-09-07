@@ -10,6 +10,8 @@ import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery.Data.Repository.T
 import io.github.tonnyl.moka.queries.UsersRepositoryDefaultCommitsQuery.Data.User.Repository.DefaultBranchRef.CommitTarget.History.Node
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
+import io.github.tonnyl.moka.fragment.Ref as Branch
+import io.github.tonnyl.moka.queries.RepositoryRefsQuery.Data.Repository.Refs.Node as BranchNode
 import io.github.tonnyl.moka.queries.RepositoryReleasesQuery.Data.Repository.Releases.Node as ReleaseNode
 
 class TimelineEventProvider : PreviewParameterProvider<Event> {
@@ -1291,6 +1293,21 @@ class TreeEntryProvider : PreviewParameterProvider<TreeEntry> {
                 ),
                 oid = "e7b4def49cb53d9aa04228dd3edb14c9e635e003",
                 type = "blob"
+            )
+        )
+
+}
+
+class BranchProvider : PreviewParameterProvider<Branch> {
+
+    override val values: Sequence<Branch>
+        get() = sequenceOf(
+            BranchNode(
+                __typename = "",
+                id = "MDM6UmVmNTQyMTIzNTU6cmVmcy9oZWFkcy9tYXN0ZXI=",
+                name = "master",
+                prefix = "refs/heads/",
+                target = null
             )
         )
 

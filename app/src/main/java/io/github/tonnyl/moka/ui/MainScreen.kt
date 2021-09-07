@@ -34,6 +34,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
+import io.github.tonnyl.moka.ui.branches.BranchesScreen
 import io.github.tonnyl.moka.ui.commit.CommitScreen
 import io.github.tonnyl.moka.ui.commits.CommitsScreen
 import io.github.tonnyl.moka.ui.emojis.EmojisScreen
@@ -135,6 +136,13 @@ sealed class Screen(val route: String) {
 
     object Commit : Screen("commit/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_REF}}")
 
+    object Branches :
+        Screen("branches?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_DEFAULT_BRANCH_NAME}={${ARG_DEFAULT_BRANCH_NAME}}&${ARG_SELECTED_BRANCH_NAME}={${ARG_SELECTED_BRANCH_NAME}}&${ARG_REF_PREFIX}={${ARG_REF_PREFIX}}") {
+
+        const val RESULT_BRANCH_NAME = "result_branch_name"
+
+    }
+
     object FAQ : Screen("faq")
 
     object Feedback : Screen("feedback")
@@ -186,6 +194,10 @@ sealed class Screen(val route: String) {
         const val ARG_REF = "arg_ref"
 
         const val ARG_EXPRESSION = "arg_expression"
+
+        const val ARG_DEFAULT_BRANCH_NAME = "arg_default_branch_name"
+        const val ARG_SELECTED_BRANCH_NAME = "arg_selected_branch_name"
+        const val ARG_REF_PREFIX = "arg_ref_prefix"
     }
 
 }
@@ -944,6 +956,41 @@ private fun MainNavHost(
                 repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
                     ?: return@composable,
                 expression = backStackEntry.arguments?.getString(Screen.ARG_EXPRESSION)
+                    ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.Branches.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_DEFAULT_BRANCH_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_SELECTED_BRANCH_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REF_PREFIX) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Branches.route
+
+            BranchesScreen(
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable,
+                refPrefix = backStackEntry.arguments?.getString(Screen.ARG_REF_PREFIX)
+                    ?: return@composable,
+                defaultBranchName = backStackEntry.arguments?.getString(Screen.ARG_DEFAULT_BRANCH_NAME)
+                    ?: return@composable,
+                selectedBranchName = backStackEntry.arguments?.getString(Screen.ARG_SELECTED_BRANCH_NAME)
                     ?: return@composable
             )
         }

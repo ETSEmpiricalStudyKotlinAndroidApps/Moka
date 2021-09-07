@@ -1,0 +1,14 @@
+# Fetch a list of refs from the repository.
+query RepositoryRefs($login: String!, $repoName: String!, $refPrefix: String!, $query: String, $after: String, $before: String, $perPage: Int!, $orderBy: RefOrder) {
+    repository(owner: $login, name: $repoName) {
+        refs(refPrefix: $refPrefix, first: $perPage, query: $query, after: $after, before: $before, orderBy: $orderBy) {
+            nodes {
+                ...Ref
+            }
+            pageInfo {
+                ...PageInfo
+            }
+            totalCount
+        }
+    }
+}

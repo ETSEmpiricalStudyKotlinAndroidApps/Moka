@@ -550,4 +550,8 @@
 
     <string name="files">Files</string>
 
+    <string name="branches">Branches</string>
+    <string name="branch_default">Default</string>
+    <string name="branch_selected">Checked</string>
+
 </resources>

@@ -185,7 +185,17 @@ fun RepositoryScreen(
                         backgroundColor = MaterialTheme.colors.background,
                         cutoutShape = CircleShape
                     ) {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = {
+                            navController.navigate(
+                                route = Screen.RepositoryFiles.route
+                                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                    .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                    .replace(
+                                        "{${Screen.ARG_EXPRESSION}}",
+                                        "${repo.defaultBranchRef?.name ?: return@IconButton}:"
+                                    )
+                            )
+                        }) {
                             Icon(
                                 contentDescription = stringResource(id = R.string.repository_view_code_image_content_description),
                                 painter = painterResource(id = R.drawable.ic_code_24)
@@ -472,23 +482,34 @@ private fun RepositoryScreenContent(
             textRes = R.string.repository_basic_info,
             enablePlaceholder = enablePlaceholder
         )
-        val branch = usersRepository?.defaultBranchRef?.name
-            ?: organizationsRepository?.defaultBranchRef?.name ?: "master"
+        val defaultBranchRef = usersRepository?.defaultBranchRef
+            ?: organizationsRepository?.defaultBranchRef
         InfoListItem(
             leadingRes = R.string.repository_branches,
-            trailing = branch,
+            trailing = defaultBranchRef?.name ?: "master",
             enablePlaceholder = enablePlaceholder,
             modifier = Modifier.clickable(
                 enabled = !enablePlaceholder,
                 onClick = {
                     navController.navigate(
-                        route = Screen.RepositoryFiles.route
+                        route = Screen.Branches.route
                             .replace("{${Screen.ARG_PROFILE_LOGIN}}", login ?: return@clickable)
                             .replace(
                                 "{${Screen.ARG_REPOSITORY_NAME}}",
                                 repoName ?: return@clickable
                             )
-                            .replace("{${Screen.ARG_EXPRESSION}}", "${branch}:")
+                            .replace(
+                                "{${Screen.ARG_REF_PREFIX}}",
+                                defaultBranchRef?.prefix ?: "refs/heads/"
+                            )
+                            .replace(
+                                "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
+                                defaultBranchRef?.name ?: return@clickable
+                            )
+                            .replace(
+                                "{${Screen.ARG_SELECTED_BRANCH_NAME}}",
+                                defaultBranchRef.name
+                            )
                     )
                 }
             )

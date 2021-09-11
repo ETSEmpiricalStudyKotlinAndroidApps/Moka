@@ -92,7 +92,7 @@ sealed class Screen(val route: String) {
         Screen("repository/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_PROFILE_TYPE}}")
 
     object RepositoryFiles :
-        Screen("repository_files?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_EXPRESSION}={${ARG_EXPRESSION}}")
+        Screen("repository_files?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_EXPRESSION}={${ARG_EXPRESSION}}&$ARG_REF_PREFIX={${ARG_REF_PREFIX}}&$ARG_DEFAULT_BRANCH_NAME={${ARG_DEFAULT_BRANCH_NAME}}")
 
     object Users : Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}")
 
@@ -943,19 +943,37 @@ private fun MainNavHost(
                 navArgument(name = Screen.ARG_REPOSITORY_NAME) {
                     type = NavType.StringType
                 },
-                navArgument(name = Screen.ARG_EXPRESSION) {
+                navArgument(name = Screen.ARG_SELECTED_BRANCH_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REF_PREFIX) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_DEFAULT_BRANCH_NAME) {
                     type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
             currentRoute.value = Screen.RepositoryFiles.route
 
+            val selectedBranchName = backStackEntry.savedStateHandle
+                .getLiveData<String>(Screen.Branches.RESULT_BRANCH_NAME)
+                .value
+
             RepositoryFilesScreen(
                 login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                     ?: return@composable,
                 repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
                     ?: return@composable,
-                expression = backStackEntry.arguments?.getString(Screen.ARG_EXPRESSION)
+                expression = if (!selectedBranchName.isNullOrEmpty()) {
+                    "${selectedBranchName}:"
+                } else {
+                    backStackEntry.arguments?.getString(Screen.ARG_EXPRESSION)
+                        ?: return@composable
+                },
+                refPrefix = backStackEntry.arguments?.getString(Screen.ARG_REF_PREFIX)
+                    ?: return@composable,
+                defaultBranchName = backStackEntry.arguments?.getString(Screen.ARG_DEFAULT_BRANCH_NAME)
                     ?: return@composable
             )
         }

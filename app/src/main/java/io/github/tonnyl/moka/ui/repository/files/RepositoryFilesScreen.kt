@@ -11,6 +11,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
@@ -43,7 +44,9 @@ import kotlinx.serialization.ExperimentalSerializationApi
 fun RepositoryFilesScreen(
     login: String,
     repoName: String,
-    expression: String
+    expression: String,
+    refPrefix: String,
+    defaultBranchName: String
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
@@ -53,7 +56,8 @@ fun RepositoryFilesScreen(
             login = login,
             repositoryName = repoName,
             expression = expression
-        )
+        ),
+        key = expression
     )
 
     val entries = viewModel.entry.observeAsState()
@@ -96,7 +100,8 @@ fun RepositoryFilesScreen(
                         enablePlaceholder = entries.value?.status == Status.LOADING && entries.value?.data.isNullOrEmpty(),
                         login = login,
                         repoName = repoName,
-                        expression = expression
+                        expression = expression,
+                        defaultBranchName = defaultBranchName
                     )
                 }
             }
@@ -119,6 +124,32 @@ fun RepositoryFilesScreen(
                     }
                 )
             },
+            actions = {
+                if (expression.endsWith(":")) {
+                    val branch = expression.substring(0, expression.length - 1)
+                    TextButton(
+                        onClick = {
+                            navController.navigate(
+                                route = Screen.Branches.route
+                                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                    .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                    .replace("{${Screen.ARG_REF_PREFIX}}", refPrefix)
+                                    .replace(
+                                        "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
+                                        defaultBranchName
+                                    )
+                                    .replace("{${Screen.ARG_SELECTED_BRANCH_NAME}}", branch)
+                            )
+                        }
+                    ) {
+                        Text(
+                            text = branch,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }
@@ -136,7 +167,8 @@ private fun RepositoryFilesScreenContent(
     enablePlaceholder: Boolean,
     login: String,
     repoName: String,
-    expression: String
+    expression: String,
+    defaultBranchName: String
 ) {
     val entryPlaceholder = remember {
         TreeEntryProvider().values.first()
@@ -162,7 +194,8 @@ private fun RepositoryFilesScreenContent(
                 enablePlaceholder = enablePlaceholder,
                 login = login,
                 repoName = repoName,
-                currentExpression = expression
+                currentExpression = expression,
+                defaultBranchName = defaultBranchName
             )
         }
 
@@ -179,7 +212,8 @@ private fun ItemTreeEntry(
     enablePlaceholder: Boolean,
     login: String,
     repoName: String,
-    currentExpression: String
+    currentExpression: String,
+    defaultBranchName: String
 ) {
     val navController = LocalNavController.current
 
@@ -225,6 +259,8 @@ private fun ItemTreeEntry(
                                 "${currentExpression}/${treeEntry.name}"
                             }
                         )
+                        .replace("{${Screen.ARG_REF_PREFIX}}", currentExpression.split(":").first())
+                        .replace("{${Screen.ARG_DEFAULT_BRANCH_NAME}}", defaultBranchName)
                 )
             }
         }
@@ -258,6 +294,7 @@ private fun ItemTreeEntryPreview(
         enablePlaceholder = false,
         login = "TonnyL",
         repoName = "PaperPlane",
-        currentExpression = "master:"
+        currentExpression = "master:",
+        defaultBranchName = "master"
     )
 }

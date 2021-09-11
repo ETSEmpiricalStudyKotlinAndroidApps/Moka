@@ -192,7 +192,15 @@ fun RepositoryScreen(
                                     .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
                                     .replace(
                                         "{${Screen.ARG_EXPRESSION}}",
-                                        "${repo.defaultBranchRef?.name ?: return@IconButton}:"
+                                        "${repo.defaultBranchRef?.name ?: "master"}:"
+                                    )
+                                    .replace(
+                                        "{${Screen.ARG_REF_PREFIX}}",
+                                        repo.defaultBranchRef?.prefix ?: "refs/heads/"
+                                    )
+                                    .replace(
+                                        "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
+                                        repo.defaultBranchRef?.name ?: "master"
                                     )
                             )
                         }) {

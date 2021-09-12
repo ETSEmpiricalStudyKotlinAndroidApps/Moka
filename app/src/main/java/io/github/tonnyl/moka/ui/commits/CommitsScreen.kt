@@ -36,7 +36,7 @@ import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.fragment.CommitListItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.github.tonnyl.moka.queries.UsersRepositoryDefaultCommitsQuery.Data.User.Repository.DefaultBranchRef.CommitTarget.History.Node
+import io.github.tonnyl.moka.queries.RepositoryCommitsQuery.Data.Repository.Ref.CommitTarget.History.Node
 import io.github.tonnyl.moka.type.StatusState
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.*
@@ -47,19 +47,23 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 @Composable
 fun CommitsScreen(
-    isOrg: Boolean,
     login: String,
-    repoName: String
+    repoName: String,
+    refPrefix: String,
+    defaultBranchName: String,
+    selectedBranchName: String
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
+    val qualifiedName = "${refPrefix}/${selectedBranchName}"
     val viewModel = viewModel<CommitsViewModel>(
         factory = ViewModelFactory(
             accountInstance = currentAccount,
-            isOrg = isOrg,
             login = login,
-            repoName = repoName
-        )
+            repoName = repoName,
+            qualifiedName = qualifiedName
+        ),
+        key = qualifiedName
     )
 
     val commitsPager = remember { viewModel.commitsFlow }
@@ -138,6 +142,29 @@ fun CommitsScreen(
                         )
                     }
                 )
+            },
+            actions = {
+                TextButton(
+                    onClick = {
+                        navController.navigate(
+                            route = Screen.Branches.route
+                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                .replace("{${Screen.ARG_REF_PREFIX}}", refPrefix)
+                                .replace(
+                                    "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
+                                    defaultBranchName
+                                )
+                                .replace("{${Screen.ARG_SELECTED_BRANCH_NAME}}", selectedBranchName)
+                        )
+                    }
+                ) {
+                    Text(
+                        text = selectedBranchName,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()

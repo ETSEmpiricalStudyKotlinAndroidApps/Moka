@@ -11,9 +11,9 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 class CommitsViewModel(
     accountInstance: AccountInstance,
-    isOrg: Boolean,
     login: String,
-    repoName: String
+    repoName: String,
+    qualifiedName: String
 ) : ViewModel() {
 
     val commitsFlow by lazy(LazyThreadSafetyMode.NONE) {
@@ -22,9 +22,9 @@ class CommitsViewModel(
             pagingSourceFactory = {
                 CommitsDataSource(
                     apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                    isOrg = isOrg,
                     login = login,
-                    repoName = repoName
+                    repoName = repoName,
+                    qualifiedName = qualifiedName
                 )
             }
         ).flow.cachedIn(viewModelScope)

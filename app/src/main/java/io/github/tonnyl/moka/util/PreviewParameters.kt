@@ -7,7 +7,7 @@ import io.github.tonnyl.moka.data.item.User
 import io.github.tonnyl.moka.fragment.ReleaseListItem
 import io.github.tonnyl.moka.fragment.TreeEntry
 import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery.Data.Repository.TreeObject.Entry
-import io.github.tonnyl.moka.queries.UsersRepositoryDefaultCommitsQuery.Data.User.Repository.DefaultBranchRef.CommitTarget.History.Node
+import io.github.tonnyl.moka.queries.RepositoryCommitsQuery.Data.Repository.Ref.CommitTarget.History.Node
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.fragment.Ref as Branch

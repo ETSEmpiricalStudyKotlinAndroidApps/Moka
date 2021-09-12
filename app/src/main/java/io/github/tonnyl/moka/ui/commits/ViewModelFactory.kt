@@ -8,18 +8,18 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 class ViewModelFactory(
     private val accountInstance: AccountInstance,
-    private val isOrg: Boolean,
     private val login: String,
-    private val repoName: String
+    private val repoName: String,
+    private val qualifiedName: String
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return CommitsViewModel(
             accountInstance = accountInstance,
-            isOrg = isOrg,
             login = login,
-            repoName = repoName
+            repoName = repoName,
+            qualifiedName = qualifiedName
         ) as T
     }
 

@@ -130,7 +130,7 @@ sealed class Screen(val route: String) {
         Screen("repository_topics/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_IS_ORG}}")
 
     object Commits :
-        Screen("commits/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_IS_ORG}}")
+        Screen("commits?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_DEFAULT_BRANCH_NAME}={${ARG_DEFAULT_BRANCH_NAME}}&${ARG_SELECTED_BRANCH_NAME}={${ARG_SELECTED_BRANCH_NAME}}&${ARG_REF_PREFIX}={${ARG_REF_PREFIX}}")
 
     object Releases : Screen("releases/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
@@ -873,20 +873,38 @@ private fun MainNavHost(
                 navArgument(name = Screen.ARG_REPOSITORY_NAME) {
                     type = NavType.StringType
                 },
-                navArgument(name = Screen.ARG_IS_ORG) {
-                    type = NavType.BoolType
+                navArgument(name = Screen.ARG_SELECTED_BRANCH_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REF_PREFIX) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_DEFAULT_BRANCH_NAME) {
+                    type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
             currentRoute.value = Screen.Commits.route
 
+            val selectedBranchName = backStackEntry.savedStateHandle
+                .getLiveData<String>(Screen.Branches.RESULT_BRANCH_NAME)
+                .value
+
             CommitsScreen(
-                isOrg = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_ORG)
-                    ?: return@composable,
                 login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                     ?: return@composable,
                 repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                    ?: return@composable
+                    ?: return@composable,
+                refPrefix = backStackEntry.arguments?.getString(Screen.ARG_REF_PREFIX)
+                    ?: return@composable,
+                defaultBranchName = backStackEntry.arguments?.getString(Screen.ARG_DEFAULT_BRANCH_NAME)
+                    ?: return@composable,
+                selectedBranchName = if (!selectedBranchName.isNullOrEmpty()) {
+                    selectedBranchName
+                } else {
+                    backStackEntry.arguments?.getString(Screen.ARG_SELECTED_BRANCH_NAME)
+                        ?: return@composable
+                }
             )
         }
         composable(

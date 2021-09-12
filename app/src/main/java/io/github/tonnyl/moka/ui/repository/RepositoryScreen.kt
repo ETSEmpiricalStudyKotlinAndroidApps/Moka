@@ -128,13 +128,22 @@ fun RepositoryScreen(
                                 )
                             },
                             onCommitsClicked = {
-                                val isOrg = profileType == ProfileType.ORGANIZATION
-                                        || organizationsRepositoryResource?.data != null
                                 navController.navigate(
                                     route = Screen.Commits.route
                                         .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
                                         .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                                        .replace("{${Screen.ARG_IS_ORG}}", isOrg.toString())
+                                        .replace(
+                                            "{${Screen.ARG_SELECTED_BRANCH_NAME}}",
+                                            repo?.defaultBranchRef?.name ?: "master"
+                                        )
+                                        .replace(
+                                            "{${Screen.ARG_REF_PREFIX}}",
+                                            repo?.defaultBranchRef?.prefix ?: "refs/heads/"
+                                        )
+                                        .replace(
+                                            "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
+                                            repo?.defaultBranchRef?.name ?: "master"
+                                        )
                                 )
                             },
                             onReleasesClicked = {

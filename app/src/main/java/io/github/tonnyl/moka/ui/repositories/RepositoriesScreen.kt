@@ -38,7 +38,6 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.RepositoryItemProvider
 import io.github.tonnyl.moka.util.formatWithSuffix
@@ -53,8 +52,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @Composable
 fun RepositoriesScreen(
     login: String,
-    repositoryType: RepositoryType,
-    profileType: ProfileType
+    repositoryType: RepositoryType
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
@@ -119,8 +117,7 @@ fun RepositoriesScreen(
                 else -> {
                     RepositoriesScreenContent(
                         contentTopPadding = contentPadding.calculateTopPadding(),
-                        repositories = repositories,
-                        profileType = profileType
+                        repositories = repositories
                     )
                 }
             }
@@ -166,8 +163,7 @@ fun RepositoriesScreen(
 @Composable
 private fun RepositoriesScreenContent(
     contentTopPadding: Dp,
-    repositories: LazyPagingItems<RepositoryItem>,
-    profileType: ProfileType
+    repositories: LazyPagingItems<RepositoryItem>
 ) {
     val repoPlaceholder = remember {
         RepositoryItemProvider().values.first()
@@ -185,7 +181,6 @@ private fun RepositoriesScreenContent(
             items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
                 ItemRepository(
                     repo = repoPlaceholder,
-                    profileType = ProfileType.USER,
                     enablePlaceholder = true
                 )
             }
@@ -199,7 +194,6 @@ private fun RepositoriesScreenContent(
                 if (item != null) {
                     ItemRepository(
                         repo = item,
-                        profileType = profileType,
                         enablePlaceholder = false
                     )
                 }
@@ -215,7 +209,6 @@ private fun RepositoriesScreenContent(
 @Composable
 fun ItemRepository(
     repo: RepositoryItem,
-    profileType: ProfileType,
     enablePlaceholder: Boolean
 ) {
     val navController = LocalNavController.current
@@ -229,10 +222,6 @@ fun ItemRepository(
                     route = Screen.Repository.route
                         .replace("{${Screen.ARG_PROFILE_LOGIN}}", repo.owner?.login ?: "ghost")
                         .replace("{${Screen.ARG_REPOSITORY_NAME}}", repo.name)
-                        .replace(
-                            "{${Screen.ARG_PROFILE_TYPE}}",
-                            profileType.name
-                        )
                 )
             }
             .padding(all = ContentPaddingLargeSize)
@@ -374,7 +363,6 @@ private fun ItemRepositoryPreview(
 ) {
     ItemRepository(
         repo = repo,
-        profileType = ProfileType.USER,
         enablePlaceholder = false
     )
 }

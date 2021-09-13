@@ -3,15 +3,13 @@ package io.github.tonnyl.moka.ui.repository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.github.tonnyl.moka.AccountInstance
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 class ViewModelFactory(
     private val accountInstance: AccountInstance,
     private val login: String,
-    private val repositoryName: String,
-    private val profileType: ProfileType
+    private val repositoryName: String
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
@@ -19,8 +17,7 @@ class ViewModelFactory(
         return RepositoryViewModel(
             accountInstance = accountInstance,
             login = login,
-            repositoryName = repositoryName,
-            profileType = profileType
+            repositoryName = repositoryName
         ) as T
     }
 

@@ -271,10 +271,6 @@ private fun ItemNotification(
                                         "{${Screen.ARG_REPOSITORY_NAME}}",
                                         item.repository.name
                                     )
-                                    .replace(
-                                        "{${Screen.ARG_PROFILE_TYPE}}",
-                                        getRepositoryOwnerType(item.repository.owner).name
-                                    )
                             )
                         }
                         .placeholder(

@@ -89,7 +89,7 @@ sealed class Screen(val route: String) {
         Screen("edit_profile?${ARG_EDIT_PROFILE_NAME}={${ARG_EDIT_PROFILE_NAME}}?${ARG_EDIT_PROFILE_BIO}={${ARG_EDIT_PROFILE_BIO}}?${ARG_EDIT_PROFILE_URL}={${ARG_EDIT_PROFILE_URL}}?${ARG_EDIT_PROFILE_COMPANY}={${ARG_EDIT_PROFILE_COMPANY}}?${ARG_EDIT_PROFILE_LOCATION}={${ARG_EDIT_PROFILE_LOCATION}}?${ARG_EDIT_PROFILE_TWITTER}={${ARG_EDIT_PROFILE_TWITTER}}")
 
     object Repository :
-        Screen("repository/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_PROFILE_TYPE}}")
+        Screen("repository/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
     object RepositoryFiles :
         Screen("repository_files?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_EXPRESSION}={${ARG_EXPRESSION}}&$ARG_REF_PREFIX={${ARG_REF_PREFIX}}&$ARG_DEFAULT_BRANCH_NAME={${ARG_DEFAULT_BRANCH_NAME}}")
@@ -97,7 +97,7 @@ sealed class Screen(val route: String) {
     object Users : Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}")
 
     object Repositories :
-        Screen("repositories/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_TYPE}}/{${ARG_PROFILE_TYPE}}")
+        Screen("repositories/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_TYPE}}")
 
     object Issues : Screen("issues/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
@@ -127,7 +127,7 @@ sealed class Screen(val route: String) {
     object Search : Screen("search?${ARG_INITIAL_SEARCH_KEYWORD}={${ARG_INITIAL_SEARCH_KEYWORD}}")
 
     object RepositoryTopics :
-        Screen("repository_topics/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_IS_ORG}}")
+        Screen("repository_topics/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
     object Commits :
         Screen("commits?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_DEFAULT_BRANCH_NAME}={${ARG_DEFAULT_BRANCH_NAME}}&${ARG_SELECTED_BRANCH_NAME}={${ARG_SELECTED_BRANCH_NAME}}&${ARG_REF_PREFIX}={${ARG_REF_PREFIX}}")
@@ -186,8 +186,6 @@ sealed class Screen(val route: String) {
         const val ARG_EDIT_STATUS_LIMIT_AVAILABILITY = "arg_edit_status_limit_availability"
 
         const val ARG_ISSUE_PR_NUMBER = "arg_issue_pr_number"
-
-        const val ARG_IS_ORG = "arg_is_org"
 
         const val ARG_INITIAL_SEARCH_KEYWORD = "arg_initial_search_keyword"
 
@@ -562,9 +560,6 @@ private fun MainNavHost(
                 },
                 navArgument(Screen.ARG_REPOSITORY_NAME) {
                     type = NavType.StringType
-                },
-                navArgument(Screen.ARG_EDIT_PROFILE_NAME) {
-                    type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
@@ -573,11 +568,7 @@ private fun MainNavHost(
                 login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                     ?: return@composable,
                 repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                    ?: return@composable,
-                profileType = ProfileType.valueOf(
-                    backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
-                        ?: ProfileType.NOT_SPECIFIED.name
-                )
+                    ?: return@composable
             )
         }
         composable(
@@ -700,9 +691,6 @@ private fun MainNavHost(
                 },
                 navArgument(name = Screen.ARG_REPOSITORY_TYPE) {
                     type = NavType.StringType
-                },
-                navArgument(name = Screen.ARG_PROFILE_TYPE) {
-                    type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
@@ -713,10 +701,6 @@ private fun MainNavHost(
                 repositoryType = RepositoryType.valueOf(
                     backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_TYPE)
                         ?: return@composable
-                ),
-                profileType = ProfileType.valueOf(
-                    backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
-                        ?: ProfileType.NOT_SPECIFIED.name
                 )
             )
         }
@@ -847,17 +831,12 @@ private fun MainNavHost(
                 },
                 navArgument(name = Screen.ARG_REPOSITORY_NAME) {
                     type = NavType.StringType
-                },
-                navArgument(name = Screen.ARG_IS_ORG) {
-                    type = NavType.BoolType
                 }
             )
         ) { backStackEntry ->
             currentRoute.value = Screen.RepositoryTopics.route
 
             RepositoryTopicsScreen(
-                isOrg = backStackEntry.arguments?.getBoolean(Screen.ARG_IS_ORG)
-                    ?: return@composable,
                 login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
                     ?: return@composable,
                 repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)

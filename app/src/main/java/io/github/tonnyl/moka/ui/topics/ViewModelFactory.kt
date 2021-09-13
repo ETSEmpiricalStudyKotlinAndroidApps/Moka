@@ -8,7 +8,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 class ViewModelFactory(
     private val accountInstance: AccountInstance,
-    private val isOrg: Boolean,
     private val login: String,
     private val repoName: String
 ) : ViewModelProvider.NewInstanceFactory() {
@@ -17,7 +16,6 @@ class ViewModelFactory(
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return RepositoryTopicsViewModel(
             accountInstance = accountInstance,
-            isOrg = isOrg,
             login = login,
             repoName = repoName
         ) as T

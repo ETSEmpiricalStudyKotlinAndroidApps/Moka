@@ -8,14 +8,11 @@ import io.github.tonnyl.moka.fragment.Repository.LicenseInfo.Companion.license
 import io.github.tonnyl.moka.fragment.Repository.Owner.Companion.repositoryOwner
 import io.github.tonnyl.moka.fragment.Repository.PrimaryLanguage.Companion.language
 import io.github.tonnyl.moka.fragment.Repository.RepositoryTopics.Node.Companion.repositoryTopic
-import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery
-import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery.Data.Organization.Repository.Companion.repository
-import io.github.tonnyl.moka.queries.UsersRepositoryQuery
-import io.github.tonnyl.moka.queries.UsersRepositoryQuery.Data.User.Repository.Companion.repository
 import io.github.tonnyl.moka.type.RepositoryLockReason
 import io.github.tonnyl.moka.type.RepositoryPermission
 import io.github.tonnyl.moka.type.SubscriptionState
 import kotlinx.datetime.Instant
+import io.github.tonnyl.moka.queries.RepositoryQuery.Data.Repository as RawRepository
 
 /**
  * A repository contains the content for a project.
@@ -250,14 +247,6 @@ data class Repository(
      */
     val viewerSubscription: SubscriptionState?,
 
-    val ownerName: String?,
-
-    val isViewer: Boolean,
-
-    val viewerIsFollowing: Boolean,
-
-    val viewerCanFollow: Boolean,
-
     val forksCount: Int,
 
     val stargazersCount: Int,
@@ -286,158 +275,76 @@ data class Repository(
 
 }
 
-fun UsersRepositoryQuery.Data?.toNullableRepository(): Repository? {
-    val user = this?.user ?: return null
-    val repository = user.repository?.repository() ?: return null
+fun RawRepository?.toNullableRepository(): Repository? {
+    if (this == null) {
+        return null
+    }
 
     return Repository(
-        repository.codeOfConduct?.codeOfConduct()?.toNonNullCodeOfConduct(),
-        repository.createdAt,
-        repository.defaultBranchRef?.ref()?.toNonNullRef(),
-        repository.description,
-        repository.descriptionHTML,
-        repository.diskUsage,
-        repository.forkCount,
-        repository.hasIssuesEnabled,
-        repository.hasWikiEnabled,
-        repository.homepageUrl,
-        repository.id,
-        repository.isArchived,
-        repository.isFork,
-        repository.isLocked,
-        repository.isMirror,
-        repository.isPrivate,
-        repository.isTemplate,
-        repository.licenseInfo?.license()?.toNonNullLicense(),
-        repository.lockReason,
-        repository.mergeCommitAllowed,
-        repository.mirrorUrl,
-        repository.name,
-        repository.nameWithOwner,
-        repository.openGraphImageUrl,
-        repository.owner.repositoryOwner()?.toNonNullRepositoryOwner(),
-        repository.primaryLanguage?.language()?.toNonNullLanguage(),
-        repository.languages?.totalSize,
-        repository.languages?.nodes?.mapNotNull {
+        codeOfConduct?.codeOfConduct()?.toNonNullCodeOfConduct(),
+        createdAt,
+        defaultBranchRef?.ref()?.toNonNullRef(),
+        description,
+        descriptionHTML,
+        diskUsage,
+        forkCount,
+        hasIssuesEnabled,
+        hasWikiEnabled,
+        homepageUrl,
+        id,
+        isArchived,
+        isFork,
+        isLocked,
+        isMirror,
+        isPrivate,
+        isTemplate,
+        licenseInfo?.license()?.toNonNullLicense(),
+        lockReason,
+        mergeCommitAllowed,
+        mirrorUrl,
+        name,
+        nameWithOwner,
+        openGraphImageUrl,
+        owner.repositoryOwner()?.toNonNullRepositoryOwner(),
+        primaryLanguage?.language()?.toNonNullLanguage(),
+        languages?.totalSize,
+        languages?.nodes?.mapNotNull {
             it?.toNonNullLanguage()
         },
-        repository.languages?.edges?.mapNotNull {
+        languages?.edges?.mapNotNull {
             it?.size
         },
-        if (repository.languages?.nodes.orEmpty().size > 20) {
-            (repository.languages?.edges?.sumOf {
+        if (languages?.nodes.orEmpty().size > 20) {
+            (languages?.edges?.sumOf {
                 (it?.size ?: 0).toDouble()
-            } ?: 0).toDouble() / (repository.languages?.totalSize ?: 1).toDouble()
+            } ?: 0).toDouble() / (languages?.totalSize ?: 1).toDouble()
         } else {
             null
         },
-        repository.pushedAt,
-        repository.rebaseMergeAllowed,
-        repository.resourcePath,
-        repository.shortDescriptionHTML,
-        repository.squashMergeAllowed,
-        repository.sshUrl,
-        repository.updatedAt,
-        repository.url,
-        repository.usesCustomOpenGraphImage,
-        repository.viewerCanAdminister,
-        repository.viewerCanSubscribe,
-        repository.viewerCanUpdateTopics,
-        repository.viewerHasStarred,
-        repository.viewerPermission,
-        repository.viewerSubscription,
-        user.name,
-        user.isViewer,
-        user.viewerIsFollowing,
-        user.viewerCanFollow,
-        repository.forks.totalCount,
-        repository.stargazers.totalCount,
-        repository.issues.totalCount,
-        repository.pullRequests.totalCount,
-        repository.watchers.totalCount,
-        repository.releases.totalCount,
-        repository.refs?.totalCount ?: 0,
-        repository.defaultBranchRef?.ref()?.target?.asCommit()?.history?.totalCount ?: 0,
-        repository.repositoryTopics.nodes?.map {
-            it?.repositoryTopic()?.toNonNullRepositoryTopic()
-        }
-    )
-}
-
-fun OrganizationsRepositoryQuery.Data?.toNullableRepository(): Repository? {
-    val organization = this?.organization ?: return null
-    val repository = organization.repository?.repository() ?: return null
-
-    return Repository(
-        repository.codeOfConduct?.codeOfConduct()?.toNonNullCodeOfConduct(),
-        repository.createdAt,
-        repository.defaultBranchRef?.ref()?.toNonNullRef(),
-        repository.description,
-        repository.descriptionHTML,
-        repository.diskUsage,
-        repository.forkCount,
-        repository.hasIssuesEnabled,
-        repository.hasWikiEnabled,
-        repository.homepageUrl,
-        repository.id,
-        repository.isArchived,
-        repository.isFork,
-        repository.isLocked,
-        repository.isMirror,
-        repository.isPrivate,
-        repository.isTemplate,
-        repository.licenseInfo?.license()?.toNonNullLicense(),
-        repository.lockReason,
-        repository.mergeCommitAllowed,
-        repository.mirrorUrl,
-        repository.name,
-        repository.nameWithOwner,
-        repository.openGraphImageUrl,
-        repository.owner.repositoryOwner()?.toNonNullRepositoryOwner(),
-        repository.primaryLanguage?.language()?.toNonNullLanguage(),
-        repository.languages?.totalSize,
-        repository.languages?.nodes?.mapNotNull {
-            it?.toNonNullLanguage()
-        },
-        repository.languages?.edges?.mapNotNull {
-            it?.size
-        },
-        if (repository.languages?.nodes.orEmpty().size > 20) {
-            (repository.languages?.edges?.sumOf {
-                (it?.size ?: 0).toDouble()
-            } ?: 0).toDouble() / (repository.languages?.totalSize ?: 1).toDouble()
-        } else {
-            null
-        },
-        repository.pushedAt,
-        repository.rebaseMergeAllowed,
-        repository.resourcePath,
-        repository.shortDescriptionHTML,
-        repository.squashMergeAllowed,
-        repository.sshUrl,
-        repository.updatedAt,
-        repository.url,
-        repository.usesCustomOpenGraphImage,
-        repository.viewerCanAdminister,
-        repository.viewerCanSubscribe,
-        repository.viewerCanUpdateTopics,
-        repository.viewerHasStarred,
-        repository.viewerPermission,
-        repository.viewerSubscription,
-        organization.name,
-        isViewer = false,
-        viewerIsFollowing = false,
-        viewerCanFollow = false,
-        forksCount = repository.forks.totalCount,
-        stargazersCount = repository.stargazers.totalCount,
-        issuesCount = repository.issues.totalCount,
-        pullRequestsCount = repository.pullRequests.totalCount,
-        watchersCount = repository.watchers.totalCount,
-        releasesCount = repository.releases.totalCount,
-        branchCount = repository.refs?.totalCount ?: 0,
-        commitsCount = repository.defaultBranchRef?.ref()?.target?.asCommit()?.history?.totalCount
-            ?: 0,
-        topics = repository.repositoryTopics.nodes?.map {
+        pushedAt,
+        rebaseMergeAllowed,
+        resourcePath,
+        shortDescriptionHTML,
+        squashMergeAllowed,
+        sshUrl,
+        updatedAt,
+        url,
+        usesCustomOpenGraphImage,
+        viewerCanAdminister,
+        viewerCanSubscribe,
+        viewerCanUpdateTopics,
+        viewerHasStarred,
+        viewerPermission,
+        viewerSubscription,
+        forks.totalCount,
+        stargazers.totalCount,
+        issues.totalCount,
+        pullRequests.totalCount,
+        watchers.totalCount,
+        releases.totalCount,
+        refs?.totalCount ?: 0,
+        defaultBranchRef?.ref()?.target?.asCommit()?.history?.totalCount ?: 0,
+        repositoryTopics.nodes?.map {
             it?.repositoryTopic()?.toNonNullRepositoryTopic()
         }
     )

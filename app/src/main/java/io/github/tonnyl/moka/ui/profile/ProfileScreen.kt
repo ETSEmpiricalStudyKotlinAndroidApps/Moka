@@ -733,10 +733,6 @@ private fun PinnedRepositoryCard(
                 route = Screen.Repository.route
                     .replace("{${Screen.ARG_PROFILE_LOGIN}}", repository.owner?.login ?: "ghost")
                     .replace("{${Screen.ARG_REPOSITORY_NAME}}", repository.name)
-                    .replace(
-                        "{${Screen.ARG_PROFILE_TYPE}}",
-                        ProfileType.NOT_SPECIFIED.name
-                    )
             )
         },
         avatarUrl = repository.owner?.avatarUrl,

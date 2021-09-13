@@ -1340,13 +1340,6 @@ private fun navigateToRepositoryScreen(
         route = Screen.Repository.route
             .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
             .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-            .replace(
-                "{${Screen.ARG_PROFILE_TYPE}}",
-                getUserProfileType(
-                    org = org,
-                    login = login
-                ).name
-            )
     )
 }
 
@@ -1360,14 +1353,6 @@ private fun navigateToProfileScreen(
             .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
             .replace("{${Screen.ARG_PROFILE_TYPE}}", profileType.name)
     )
-}
-
-private fun getUserProfileType(org: EventOrg?, login: String): ProfileType {
-    if (org?.login == login) {
-        return ProfileType.ORGANIZATION
-    }
-
-    return ProfileType.USER
 }
 
 @Preview(showBackground = true, name = "TimelineItemPreview")

@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.repository
 
 import android.util.Base64
-import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,12 +11,8 @@ import io.github.tonnyl.moka.data.toNullableRepository
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.addStar
-import io.github.tonnyl.moka.network.mutations.followUser
 import io.github.tonnyl.moka.network.mutations.removeStar
-import io.github.tonnyl.moka.network.mutations.unfollowUser
-import io.github.tonnyl.moka.queries.OrganizationsRepositoryQuery
-import io.github.tonnyl.moka.queries.UsersRepositoryQuery
-import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.queries.RepositoryQuery
 import io.github.tonnyl.moka.util.HtmlHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,17 +24,12 @@ import java.nio.charset.StandardCharsets
 class RepositoryViewModel(
     private val accountInstance: AccountInstance,
     private val login: String,
-    private val repositoryName: String,
-    private val profileType: ProfileType
+    private val repositoryName: String
 ) : ViewModel() {
 
-    private val _usersRepository = MutableLiveData<Resource<Repository>>()
-    val usersRepository: LiveData<Resource<Repository>>
-        get() = _usersRepository
-
-    private val _organizationsRepository = MutableLiveData<Resource<Repository>>()
-    val organizationsRepository: LiveData<Resource<Repository>>
-        get() = _organizationsRepository
+    private val _repository = MutableLiveData<Resource<Repository>>()
+    val repository: LiveData<Resource<Repository>>
+        get() = _repository
 
     private val _readmeHtml = MutableLiveData<Resource<String>>()
     val readmeHtml: LiveData<Resource<String>>
@@ -49,29 +39,29 @@ class RepositoryViewModel(
     val starState: LiveData<Resource<Boolean?>>
         get() = _starState
 
-    private val _followState = MutableLiveData<Resource<Boolean?>>()
-    val followState: LiveData<Resource<Boolean?>>
-        get() = _followState
-
     init {
-        refresh()
-    }
+        viewModelScope.launch(Dispatchers.IO) {
+            _repository.postValue(Resource.loading(null))
 
-    @MainThread
-    private fun refresh() {
-        when {
-            profileType == ProfileType.USER
-                    || _usersRepository.value?.data != null -> {
-                refreshUsersRepository()
-            }
-            profileType == ProfileType.ORGANIZATION
-                    || _organizationsRepository.value?.data != null -> {
-                refreshOrganizationsRepository()
-            }
-            // including ProfileType.NOT_SPECIFIED
-            else -> {
-                refreshUsersRepository()
-                refreshOrganizationsRepository()
+            try {
+                val repo = accountInstance.apolloGraphQLClient
+                    .apolloClient
+                    .query(
+                        query = RepositoryQuery(
+                            login = login,
+                            repoName = repositoryName
+                        )
+                    ).data?.repository.toNullableRepository()
+
+                _repository.postValue(Resource.success(repo))
+
+                repo?.defaultBranchRef?.let { ref ->
+                    updateBranchName(ref.name)
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "query repository error")
+
+                _repository.postValue(Resource.error(e.message, null))
             }
         }
     }
@@ -114,7 +104,7 @@ class RepositoryViewModel(
             return
         }
 
-        val repositoryId = _usersRepository.value?.data?.id ?: return
+        val repositoryId = repository.value?.data?.id ?: return
         val hasStarred = _starState.value?.data ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -138,108 +128,6 @@ class RepositoryViewModel(
                 Timber.e(e, "toggleStar error")
 
                 _starState.postValue(Resource.error(e.message, hasStarred))
-            }
-        }
-    }
-
-    fun toggleFollow() {
-        if (profileType == ProfileType.ORGANIZATION
-            || _usersRepository.value?.data?.viewerCanFollow != true
-            || _followState.value?.status == Status.LOADING
-        ) {
-            return
-        }
-
-        val userId = _usersRepository.value?.data?.id ?: return
-        val isFollowing = _followState.value?.data ?: return
-
-        viewModelScope.launch(Dispatchers.IO) {
-            _followState.postValue(Resource.loading(isFollowing))
-
-            try {
-                if (isFollowing) {
-                    unfollowUser(
-                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                        userId = userId
-                    )
-                } else {
-                    followUser(
-                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                        userId = userId
-                    )
-                }
-
-                _followState.postValue(Resource.success(!isFollowing))
-            } catch (e: Exception) {
-                Timber.e(e, "toggleFollow error")
-
-                _followState.postValue(Resource.error(e.message, isFollowing))
-            }
-        }
-    }
-
-    private fun refreshUsersRepository() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _usersRepository.postValue(Resource.loading(null))
-
-            try {
-                val repo = accountInstance.apolloGraphQLClient
-                    .apolloClient
-                    .query(
-                        query = UsersRepositoryQuery(
-                            login = login,
-                            repoName = repositoryName
-                        )
-                    ).data.toNullableRepository()
-
-                _usersRepository.postValue(Resource.success(repo))
-
-                repo?.defaultBranchRef?.let { ref ->
-                    updateBranchName(ref.name)
-                }
-
-                _followState.postValue(
-                    Resource.success(
-                        if (repo?.viewerCanFollow == true) {
-                            repo.viewerIsFollowing
-                        } else {
-                            null
-                        }
-                    )
-                )
-            } catch (e: Exception) {
-                Timber.e(e, "refreshUsersRepositoryData error")
-
-                _usersRepository.postValue(Resource.error(e.message, null))
-            }
-        }
-    }
-
-    private fun refreshOrganizationsRepository() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _organizationsRepository.postValue(Resource.loading(null))
-
-            try {
-                val repo = accountInstance.apolloGraphQLClient
-                    .apolloClient
-                    .query(
-                        query = OrganizationsRepositoryQuery(
-                            login = login,
-                            repoName = repositoryName
-                        )
-                    ).data.toNullableRepository()
-
-                _organizationsRepository.postValue(Resource.success(repo))
-
-                repo?.defaultBranchRef?.let {
-                    updateBranchName(it.name)
-                }
-
-                _followState.postValue(Resource.success(null))
-            } catch (e: Exception) {
-                Timber.e(e, "refreshOrganizationsRepository error")
-
-                _organizationsRepository.postValue(Resource.error(e.message, null))
             }
         }
     }

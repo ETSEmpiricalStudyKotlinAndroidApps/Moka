@@ -42,7 +42,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 @Composable
 fun RepositoryTopicsScreen(
-    isOrg: Boolean,
     login: String,
     repoName: String
 ) {
@@ -51,7 +50,6 @@ fun RepositoryTopicsScreen(
     val viewModel = viewModel<RepositoryTopicsViewModel>(
         factory = ViewModelFactory(
             accountInstance = currentAccount,
-            isOrg = isOrg,
             login = login,
             repoName = repoName
         )

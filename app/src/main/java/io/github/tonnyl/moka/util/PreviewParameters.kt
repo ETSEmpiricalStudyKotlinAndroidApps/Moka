@@ -991,10 +991,6 @@ class RepositoryProvider : PreviewParameterProvider<Repository> {
                 viewerHasStarred = false,
                 viewerPermission = RepositoryPermission.ADMIN,
                 viewerSubscription = SubscriptionState.SUBSCRIBED,
-                ownerName = "Li Zhao Tai Lang",
-                isViewer = true,
-                viewerIsFollowing = false,
-                viewerCanFollow = true, // fake value
                 forksCount = 22,
                 stargazersCount = 22,
                 issuesCount = 22,

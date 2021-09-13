@@ -1,0 +1,6 @@
+# A repository contains the content for a project.
+query Repository($login: String!, $repoName:String!) {
+    repository(owner: $login, name: $repoName) {
+        ... Repository
+    }
+}

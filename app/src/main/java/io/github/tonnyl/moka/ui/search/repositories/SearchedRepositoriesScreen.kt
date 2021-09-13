@@ -13,7 +13,6 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryItem
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repositories.ItemRepository
 import io.github.tonnyl.moka.util.RepositoryItemProvider
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
@@ -83,7 +82,6 @@ private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<Repo
             items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
                 ItemRepository(
                     repo = repoPlaceholder,
-                    profileType = ProfileType.USER,
                     enablePlaceholder = true
                 )
             }
@@ -97,7 +95,6 @@ private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<Repo
                 if (repo != null) {
                     ItemRepository(
                         repo = repo,
-                        profileType = ProfileType.NOT_SPECIFIED,
                         enablePlaceholder = false
                     )
                 }

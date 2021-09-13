@@ -11,7 +11,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 class RepositoryTopicsViewModel(
     accountInstance: AccountInstance,
-    isOrg: Boolean,
     login: String,
     repoName: String
 ) : ViewModel() {
@@ -22,7 +21,6 @@ class RepositoryTopicsViewModel(
             pagingSourceFactory = {
                 RepositoryTopicsDataSource(
                     apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                    isOrg = isOrg,
                     login = login,
                     name = repoName
                 )

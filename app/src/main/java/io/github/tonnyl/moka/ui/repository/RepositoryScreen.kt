@@ -40,7 +40,6 @@ import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.RepositoryProvider
 import io.github.tonnyl.moka.util.toColor
@@ -56,8 +55,7 @@ private const val MAX_DISPLAY_COUNT_OF_TOPICS = 8
 @Composable
 fun RepositoryScreen(
     login: String,
-    repoName: String,
-    profileType: ProfileType
+    repoName: String
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
@@ -67,19 +65,15 @@ fun RepositoryScreen(
         factory = ViewModelFactory(
             accountInstance = currentAccount,
             login = login,
-            repositoryName = repoName,
-            profileType = profileType
+            repositoryName = repoName
         )
     )
-    val usersRepositoryResource by viewModel.usersRepository.observeAsState()
-    val organizationsRepositoryResource by viewModel.organizationsRepository.observeAsState()
+    val repositoryResource by viewModel.repository.observeAsState()
     val readmeResource by viewModel.readmeHtml.observeAsState()
-    val isFollowing by viewModel.followState.observeAsState()
 
-    val repo = usersRepositoryResource?.data ?: organizationsRepositoryResource?.data
+    val repo = repositoryResource?.data
 
     val starredState by viewModel.starState.observeAsState()
-    val followState by viewModel.followState.observeAsState()
 
     val repositoryPlaceholder = remember {
         RepositoryProvider().values.first()
@@ -93,22 +87,15 @@ fun RepositoryScreen(
 
         val navController = LocalNavController.current
 
-        val isLoading = (usersRepositoryResource == null && organizationsRepositoryResource == null)
-                || usersRepositoryResource?.status == Status.LOADING
-                || organizationsRepositoryResource?.status == Status.LOADING
+        val isLoading = repositoryResource?.status == Status.LOADING
 
         Scaffold(
             content = {
                 when {
-                    isLoading
-                            || usersRepositoryResource?.data != null
-                            || organizationsRepositoryResource?.data != null -> {
+                    isLoading || repo != null -> {
                         RepositoryScreenContent(
                             topAppBarSize = topAppBarSize,
-                            usersRepository = repositoryPlaceholder.takeIf { isLoading }
-                                ?: usersRepositoryResource?.data,
-                            organizationsRepository = organizationsRepositoryResource?.data,
-                            isFollowing = isFollowing?.data == true,
+                            repository = repo ?: repositoryPlaceholder,
 
                             onWatchersClicked = { },
                             onStargazersClicked = { },
@@ -160,7 +147,7 @@ fun RepositoryScreen(
                     else -> {
                         EmptyScreenContent(
                             icon = R.drawable.ic_person_outline_24,
-                            title = if (usersRepositoryResource?.status == Status.ERROR) {
+                            title = if (repositoryResource?.status == Status.ERROR) {
                                 R.string.user_profile_content_empty_title
                             } else {
                                 R.string.common_error_requesting_data
@@ -171,12 +158,7 @@ fun RepositoryScreen(
                     }
                 }
 
-                if (followState?.status == Status.ERROR) {
-                    SnackBarErrorMessage(
-                        scaffoldState = scaffoldState,
-                        action = viewModel::toggleFollow
-                    )
-                } else if (starredState?.status == Status.ERROR) {
+                if (starredState?.status == Status.ERROR) {
                     SnackBarErrorMessage(
                         scaffoldState = scaffoldState,
                         action = viewModel::toggleStar
@@ -288,9 +270,7 @@ fun RepositoryScreen(
 @Composable
 private fun RepositoryScreenContent(
     topAppBarSize: Int,
-    usersRepository: Repository?,
-    organizationsRepository: Repository?,
-    isFollowing: Boolean,
+    repository: Repository,
 
     onWatchersClicked: () -> Unit,
     onStargazersClicked: () -> Unit,
@@ -307,7 +287,7 @@ private fun RepositoryScreenContent(
     var languageProgressBarShowState by remember { mutableStateOf(false) }
     val navController = LocalNavController.current
 
-    val login = usersRepository?.owner?.login ?: organizationsRepository?.owner?.login
+    val login = repository.owner?.login
 
     Column(
         modifier = Modifier
@@ -320,11 +300,13 @@ private fun RepositoryScreenContent(
                 )
             )
     ) {
-        Row(modifier = Modifier.padding(all = ContentPaddingLargeSize)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(all = ContentPaddingLargeSize)
+        ) {
             Image(
                 painter = rememberImagePainter(
-                    data = usersRepository?.owner?.avatarUrl
-                        ?: organizationsRepository?.owner?.avatarUrl,
+                    data = repository.owner?.avatarUrl,
                     builder = {
                         createAvatarLoadRequest()
                     }
@@ -339,12 +321,11 @@ private fun RepositoryScreenContent(
                     )
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
-            Column(modifier = Modifier.weight(weight = 1f)) {
-                val ownerName = usersRepository?.ownerName ?: organizationsRepository?.ownerName
-                if (!ownerName.isNullOrEmpty()) {
+            if (!login.isNullOrEmpty()) {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
-                        text = ownerName,
-                        style = MaterialTheme.typography.body1,
+                        text = login,
+                        style = MaterialTheme.typography.body2,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.placeholder(
@@ -353,51 +334,11 @@ private fun RepositoryScreenContent(
                         )
                     )
                 }
-                if (!login.isNullOrEmpty()) {
-                    if (enablePlaceholder) {
-                        Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))
-                    }
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Text(
-                            text = login,
-                            style = MaterialTheme.typography.body2,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.placeholder(
-                                visible = enablePlaceholder,
-                                highlight = PlaceholderHighlight.fade()
-                            )
-                        )
-                    }
-                }
-            }
-            if (usersRepository?.viewerCanFollow == true) {
-                Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
-                OutlinedButton(
-                    onClick = {
-
-                    },
-                    enabled = !enablePlaceholder,
-                    modifier = Modifier.placeholder(
-                        visible = enablePlaceholder,
-                        highlight = PlaceholderHighlight.fade()
-                    )
-                ) {
-                    Text(
-                        text = stringResource(
-                            id = if (isFollowing) {
-                                R.string.user_profile_unfollow
-                            } else {
-                                R.string.user_profile_follow
-                            }
-                        )
-                    )
-                }
             }
         }
 
-        val repoName = usersRepository?.name ?: organizationsRepository?.name
-        if (!repoName.isNullOrEmpty()) {
+        val repoName = repository.name
+        if (repoName.isNotEmpty()) {
             Text(
                 text = repoName,
                 style = MaterialTheme.typography.h6,
@@ -410,8 +351,7 @@ private fun RepositoryScreenContent(
             )
         }
 
-        val desc = usersRepository?.description
-            ?: organizationsRepository?.description
+        val desc = repository.description
             ?: stringResource(id = R.string.no_description_provided)
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
@@ -433,27 +373,21 @@ private fun RepositoryScreenContent(
 
         Row {
             NumberCategoryText(
-                number = usersRepository?.watchersCount
-                    ?: organizationsRepository?.watchersCount
-                    ?: 0,
+                number = repository.watchersCount,
                 category = stringResource(id = R.string.repository_watchers),
                 onClick = onWatchersClicked,
                 enablePlaceholder = enablePlaceholder,
                 modifier = Modifier.weight(weight = 1f)
             )
             NumberCategoryText(
-                number = usersRepository?.stargazersCount
-                    ?: organizationsRepository?.stargazersCount
-                    ?: 0,
+                number = repository.stargazersCount,
                 category = stringResource(id = R.string.repository_stargazers),
                 onClick = onStargazersClicked,
                 enablePlaceholder = enablePlaceholder,
                 modifier = Modifier.weight(weight = 1f)
             )
             NumberCategoryText(
-                number = usersRepository?.forksCount
-                    ?: organizationsRepository?.forksCount
-                    ?: 0,
+                number = repository.forksCount,
                 category = stringResource(id = R.string.repository_forks),
                 onClick = onForksClicked,
                 enablePlaceholder = enablePlaceholder,
@@ -463,26 +397,20 @@ private fun RepositoryScreenContent(
 
         Row {
             NumberCategoryText(
-                number = usersRepository?.issuesCount
-                    ?: organizationsRepository?.issuesCount
-                    ?: 0,
+                number = repository.issuesCount,
                 category = stringResource(id = R.string.repository_issues),
                 onClick = onIssuesClicked,
                 enablePlaceholder = enablePlaceholder,
                 modifier = Modifier.weight(weight = 1f)
             )
             NumberCategoryText(
-                number = usersRepository?.pullRequestsCount
-                    ?: organizationsRepository?.pullRequestsCount
-                    ?: 0,
+                number = repository.pullRequestsCount,
                 category = stringResource(id = R.string.repository_pull_requests),
                 onClick = onPrsClicked,
                 enablePlaceholder = enablePlaceholder,
                 modifier = Modifier.weight(weight = 1f)
             )
-            val commitsCount = usersRepository?.commitsCount
-                ?: organizationsRepository?.commitsCount
-                ?: 0
+            val commitsCount = repository.commitsCount
             NumberCategoryText(
                 number = commitsCount,
                 category = LocalContext.current.resources.getQuantityString(
@@ -499,8 +427,7 @@ private fun RepositoryScreenContent(
             textRes = R.string.repository_basic_info,
             enablePlaceholder = enablePlaceholder
         )
-        val defaultBranchRef = usersRepository?.defaultBranchRef
-            ?: organizationsRepository?.defaultBranchRef
+        val defaultBranchRef = repository.defaultBranchRef
         InfoListItem(
             leadingRes = R.string.repository_branches,
             trailing = defaultBranchRef?.name ?: "master",
@@ -511,10 +438,7 @@ private fun RepositoryScreenContent(
                     navController.navigate(
                         route = Screen.Branches.route
                             .replace("{${Screen.ARG_PROFILE_LOGIN}}", login ?: return@clickable)
-                            .replace(
-                                "{${Screen.ARG_REPOSITORY_NAME}}",
-                                repoName ?: return@clickable
-                            )
+                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
                             .replace(
                                 "{${Screen.ARG_REF_PREFIX}}",
                                 defaultBranchRef?.prefix ?: "refs/heads/"
@@ -533,9 +457,7 @@ private fun RepositoryScreenContent(
         )
         InfoListItem(
             leadingRes = R.string.repository_releases,
-            trailing = (usersRepository?.releasesCount
-                ?: organizationsRepository?.releasesCount
-                ?: 0).toString(),
+            trailing = repository.releasesCount.toString(),
             enablePlaceholder = enablePlaceholder,
             modifier = Modifier.clickable(
                 enabled = !enablePlaceholder,
@@ -544,8 +466,7 @@ private fun RepositoryScreenContent(
         )
         InfoListItem(
             leadingRes = R.string.repository_language,
-            trailing = usersRepository?.primaryLanguage?.name
-                ?: organizationsRepository?.primaryLanguage?.name
+            trailing = repository.primaryLanguage?.name
                 ?: stringResource(id = R.string.programming_language_unknown),
             enablePlaceholder = enablePlaceholder,
             modifier = Modifier.clickable(
@@ -556,9 +477,8 @@ private fun RepositoryScreenContent(
             )
         )
 
-        val repository = usersRepository ?: organizationsRepository
-        if (!repository?.languages.isNullOrEmpty()
-            && !repository?.languageEdges.isNullOrEmpty()
+        if (!repository.languages.isNullOrEmpty()
+            && !repository.languageEdges.isNullOrEmpty()
         ) {
             AnimatedVisibility(
                 visible = languageProgressBarShowState,
@@ -566,14 +486,14 @@ private fun RepositoryScreenContent(
                 exit = shrinkVertically() + fadeOut()
             ) {
                 LanguagesProgressBar(
-                    languages = repository?.languages.orEmpty(),
-                    languageEdges = repository?.languageEdges.orEmpty(),
-                    totalSize = repository?.languagesTotalSize ?: 1,
-                    remainingPercentage = repository?.otherLanguagePercentage?.toFloat() ?: 0f
+                    languages = repository.languages.orEmpty(),
+                    languageEdges = repository.languageEdges.orEmpty(),
+                    totalSize = repository.languagesTotalSize ?: 1,
+                    remainingPercentage = repository.otherLanguagePercentage?.toFloat() ?: 0f
                 )
             }
         }
-        val licenseInfo = usersRepository?.licenseInfo ?: organizationsRepository?.licenseInfo
+        val licenseInfo = repository.licenseInfo
         InfoListItem(
             leadingRes = R.string.repository_license,
             trailing = licenseInfo?.spdxId.takeIf {
@@ -586,7 +506,7 @@ private fun RepositoryScreenContent(
             )
         )
 
-        val topics = usersRepository?.topics ?: organizationsRepository?.topics
+        val topics = repository.topics
         if (!topics.isNullOrEmpty()) {
             Row {
                 CategoryText(
@@ -597,15 +517,13 @@ private fun RepositoryScreenContent(
                 if (topics.orEmpty().size > MAX_DISPLAY_COUNT_OF_TOPICS) {
                     TextButton(
                         onClick = {
-                            val isOrg = organizationsRepository != null
                             if (!login.isNullOrEmpty()
-                                && !repoName.isNullOrEmpty()
+                                && repoName.isNotEmpty()
                             ) {
                                 navController.navigate(
                                     route = Screen.RepositoryTopics.route
                                         .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
                                         .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                                        .replace("{${Screen.ARG_IS_ORG}}", isOrg.toString())
                                 )
                             }
                         },
@@ -689,29 +607,23 @@ private fun RepositoryScreenContent(
             }
         }
 
-        val createdAt = usersRepository?.createdAt ?: organizationsRepository?.createdAt
         CategoryText(
             textRes = R.string.repository_more_info,
             enablePlaceholder = enablePlaceholder
         )
-        if (createdAt != null) {
-            InfoListItem(
-                leadingRes = R.string.repository_created_at,
-                trailing = DateUtils.getRelativeTimeSpanString(createdAt.toEpochMilliseconds())
-                    .toString(),
-                enablePlaceholder = enablePlaceholder
-            )
-        }
+        InfoListItem(
+            leadingRes = R.string.repository_created_at,
+            trailing = DateUtils.getRelativeTimeSpanString(repository.createdAt.toEpochMilliseconds())
+                .toString(),
+            enablePlaceholder = enablePlaceholder
+        )
 
-        val updatedAt = usersRepository?.updatedAt ?: organizationsRepository?.updatedAt
-        if (updatedAt != null) {
-            InfoListItem(
-                leadingRes = R.string.repository_updated_at,
-                trailing = DateUtils.getRelativeTimeSpanString(updatedAt.toEpochMilliseconds())
-                    .toString(),
-                enablePlaceholder = enablePlaceholder
-            )
-        }
+        InfoListItem(
+            leadingRes = R.string.repository_updated_at,
+            trailing = DateUtils.getRelativeTimeSpanString(repository.updatedAt.toEpochMilliseconds())
+                .toString(),
+            enablePlaceholder = enablePlaceholder
+        )
 
         Spacer(modifier = Modifier.height(height = ContentPaddingLargeSize + 56.dp))
     }
@@ -845,9 +757,8 @@ private fun RepositoryScreenContentPreview(
 ) {
     RepositoryScreenContent(
         topAppBarSize = 0,
-        usersRepository = repository,
-        organizationsRepository = null,
-        isFollowing = false,
+
+        repository = repository,
 
         onWatchersClicked = {},
         onStargazersClicked = {},
@@ -863,7 +774,11 @@ private fun RepositoryScreenContentPreview(
     )
 }
 
-@Preview(showBackground = true, name = "LanguageProgressBarPreview")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFFFFF,
+    name = "LanguageProgressBarPreview"
+)
 @Composable
 private fun LanguageProgressBarPreview() {
     LanguagesProgressBar(

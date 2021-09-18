@@ -4,6 +4,7 @@ import io.github.tonnyl.moka.fragment.Organization.PinnedItems.Node.Companion.pi
 import io.github.tonnyl.moka.fragment.PinnableItem.Companion.asGist
 import io.github.tonnyl.moka.fragment.PinnableItem.Companion.repositoryListItemFragment
 import io.github.tonnyl.moka.queries.OrganizationQuery.Data.Organization.Companion.organization
+import kotlinx.datetime.Instant
 import io.github.tonnyl.moka.queries.OrganizationQuery.Data.Organization as RawOrganization
 
 data class Organization(
@@ -119,7 +120,11 @@ data class Organization(
 
     val projectsTotalCount: Int,
 
-    val pinnedItems: MutableList<PinnableItem>?
+    val pinnedItems: MutableList<PinnableItem>?,
+
+    val createdAt: Instant,
+
+    val updatedAt: Instant
 
 )
 
@@ -151,8 +156,8 @@ fun RawOrganization?.toNullableOrganization(): Organization? {
         org.newTeamResourcePath,
         org.newTeamUrl,
         org.pinnedItemsRemaining,
-        org.projectsResourcePath,
-        org.projectsUrl,
+        "",
+        "",
         org.resourcePath,
         org.url,
         org.viewerCanAdminister,
@@ -162,8 +167,10 @@ fun RawOrganization?.toNullableOrganization(): Organization? {
         org.viewerCanCreateTeams,
         org.viewerIsAMember,
         org.websiteUrl,
-        org.repositories.totalCount,
-        org.projects.totalCount,
-        pinnableItems
+        0,
+        0,
+        pinnableItems,
+        org.createdAt,
+        org.updatedAt
     )
 }

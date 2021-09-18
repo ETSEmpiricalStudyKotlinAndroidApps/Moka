@@ -401,7 +401,7 @@ data class EventRelease(
     var publishedAt: Instant,
 
     @ColumnInfo(name = "body")
-    var body: String
+    var body: String?
 
 )
 

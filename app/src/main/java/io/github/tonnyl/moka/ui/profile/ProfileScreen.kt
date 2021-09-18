@@ -435,23 +435,6 @@ private fun ProfileScreenContent(
                     modifier = Modifier.weight(weight = 1f)
                 )
             }
-        } else if (organization != null) {
-            Row(modifier = Modifier.padding(horizontal = ContentPaddingLargeSize)) {
-                NumberCategoryText(
-                    number = organization.repositoriesTotalCount,
-                    category = stringResource(id = R.string.profile_repositories),
-                    onClick = { },
-                    enablePlaceholder = enablePlaceholder,
-                    modifier = Modifier.weight(weight = 1f)
-                )
-                NumberCategoryText(
-                    number = organization.projectsTotalCount,
-                    category = stringResource(id = R.string.repository_projects),
-                    onClick = { },
-                    enablePlaceholder = enablePlaceholder,
-                    modifier = Modifier.weight(weight = 1f)
-                )
-            }
         }
 
         (user?.pinnedItems ?: organization?.pinnedItems)?.let { list ->
@@ -523,7 +506,7 @@ private fun ProfileScreenContent(
             ?: stringResource(id = R.string.no_description_provided),
             enablePlaceholder = enablePlaceholder
         )
-        if (user != null) {
+        if (user != null || organization != null) {
             CategoryText(
                 textRes = R.string.profile_info,
                 enablePlaceholder = enablePlaceholder
@@ -531,7 +514,7 @@ private fun ProfileScreenContent(
             InfoListItem(
                 leadingRes = R.string.profile_joined_on,
                 trailing = DateUtils.getRelativeTimeSpanString(
-                    user.createdAt.toEpochMilliseconds(),
+                    (user?.createdAt ?: organization?.createdAt)!!.toEpochMilliseconds(),
                     System.currentTimeMillis(),
                     DateUtils.MINUTE_IN_MILLIS
                 ).toString(),
@@ -540,7 +523,7 @@ private fun ProfileScreenContent(
             InfoListItem(
                 leadingRes = R.string.profile_updated_on,
                 trailing = DateUtils.getRelativeTimeSpanString(
-                    user.updatedAt.toEpochMilliseconds(),
+                    (user?.updatedAt ?: organization?.updatedAt)!!.toEpochMilliseconds(),
                     System.currentTimeMillis(),
                     DateUtils.MINUTE_IN_MILLIS
                 ).toString(),

@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.network.http.LoggingInterceptor
 import io.github.tonnyl.moka.type.Types.Date
 import io.github.tonnyl.moka.type.Types.DateTime
 import io.github.tonnyl.moka.type.Types.GitObjectID
@@ -48,7 +49,8 @@ class ApolloGraphQLClient(accessToken: String) {
                     "Accept" to "application/json",
                     "Content-Type" to "application/json",
                     "Authorization" to "Bearer $accessToken"
-                )
+                ),
+                interceptors = listOf(LoggingInterceptor())
             )
         ).withCustomScalarAdapter(
             graphqlName = GitTimestamp.name,

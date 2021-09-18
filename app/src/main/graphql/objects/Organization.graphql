@@ -27,9 +27,9 @@ fragment Organization on Organization {
     # Returns how many more items this profile owner can pin to their profile.
     pinnedItemsRemaining
     # The HTTP path listing organization's projects
-    projectsResourcePath
+    # projectsResourcePath
     # The HTTP URL listing organization's projects
-    projectsUrl
+    # projectsUrl
     # The HTTP path for this organization.
     resourcePath
     # Identifies the date and time when the object was last updated.
@@ -50,15 +50,20 @@ fragment Organization on Organization {
     viewerIsAMember
     # The organization's public profile URL.
     websiteUrl
-    projects {
-        totalCount
-    }
-    repositories {
-        totalCount
-    }
+    # Although you appear to have the correct authorization credentials, the organization has enabled OAuth App access restrictions,
+    # meaning that data access to third-parties is limited. For more information on these restrictions,
+    # including how to enable this app, visit https://docs.github.com/articles/restricting-access-to-your-organization-s-data/
+    # projects {
+    #    totalCount
+    # }
+    # repositories {
+    #     totalCount
+    # }
     pinnedItems(first: 6) {
         nodes {
             ... PinnableItem
         }
     }
+    createdAt
+    updatedAt
 }

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -44,6 +45,7 @@ import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalFoundationApi
 @Composable
@@ -96,6 +98,7 @@ fun EmojisScreen() {
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalFoundationApi
 @Composable
 private fun EmojisScreenContent(
@@ -286,6 +289,7 @@ private fun RowScope.EmojiCategoryButton(
     }
 }
 
+@ExperimentalCoilApi
 @Composable
 private fun ItemEmoji(
     emoji: Emoji?,
@@ -328,6 +332,7 @@ private fun ItemEmoji(
 /**
  * [LazyVerticalGrid] doesn't have any support for merging cells.
  */
+@ExperimentalCoilApi
 @Composable
 private fun ItemEmojiRow(
     emoji0: Emoji?,
@@ -392,7 +397,12 @@ private fun ItemEmojiCategory(category: EmojiCategory) {
     }
 }
 
-@Preview(name = "EmojiItemPreview", showBackground = true)
+@ExperimentalCoilApi
+@Preview(
+    name = "EmojiItemPreview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun EmojiItemPreview(
     @PreviewParameter(
@@ -407,7 +417,11 @@ private fun EmojiItemPreview(
     )
 }
 
-@Preview(name = "EmojiCategoryItemPreview", showBackground = true)
+@Preview(
+    name = "EmojiCategoryItemPreview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun EmojiCategoryItemPreview(
     @PreviewParameter(
@@ -419,7 +433,11 @@ private fun EmojiCategoryItemPreview(
     ItemEmojiCategory(category)
 }
 
-@Preview(name = "EmojiCategoryButtonsPreview", showBackground = true)
+@Preview(
+    name = "EmojiCategoryButtonsPreview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun EmojiCategoryButtonsPreview() {
     EmojiCategoryButtons(

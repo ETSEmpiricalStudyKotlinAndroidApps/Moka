@@ -28,6 +28,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -51,6 +52,7 @@ import io.github.tonnyl.moka.util.NotificationProvider
 import io.github.tonnyl.moka.widget.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
@@ -139,6 +141,7 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 private fun InboxScreenContent(
@@ -203,6 +206,7 @@ private fun InboxScreenContent(
     }
 }
 
+@ExperimentalCoilApi
 @Composable
 private fun ItemNotification(
     item: Notification,
@@ -385,7 +389,12 @@ private fun getRepositoryOwnerType(owner: NotificationRepositoryOwner): ProfileT
     }
 }
 
-@Preview(showBackground = true, name = "NotificationItemPreview")
+@ExperimentalCoilApi
+@Preview(
+    showBackground = true,
+    name = "NotificationItemPreview",
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun NotificationItemPreview(
     @PreviewParameter(

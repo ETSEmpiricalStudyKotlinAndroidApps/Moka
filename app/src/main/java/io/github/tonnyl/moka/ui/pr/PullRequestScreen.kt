@@ -31,6 +31,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -62,6 +63,7 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 import timber.log.Timber
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun PullRequestScreen(
@@ -165,6 +167,7 @@ fun PullRequestScreen(
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 private fun PullRequestScreenContent(
@@ -324,6 +327,7 @@ private fun PullRequestScreenContent(
     }
 }
 
+@ExperimentalCoilApi
 @Composable
 private fun ItemPullRequestTimelineEvent(
     timelineItem: PullRequestTimelineItem,
@@ -997,7 +1001,12 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
     }
 }
 
-@Preview(name = "PullRequestTimelineEventItemPreview", showBackground = true)
+@ExperimentalCoilApi
+@Preview(
+    name = "PullRequestTimelineEventItemPreview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun PullRequestTimelineEventItemPreview(
     @PreviewParameter(

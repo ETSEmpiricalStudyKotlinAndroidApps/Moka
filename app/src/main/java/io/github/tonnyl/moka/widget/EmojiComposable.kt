@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
@@ -23,6 +24,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 
+@ExperimentalCoilApi
 @Composable
 fun EmojiComponent(
     emoji: String?,
@@ -87,6 +89,7 @@ fun EmojiComponent(
     }
 }
 
+@ExperimentalCoilApi
 @Preview(showBackground = true, name = "EmojiContentPreview")
 @Composable
 private fun EmojiContentPreview() {

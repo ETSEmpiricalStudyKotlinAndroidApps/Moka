@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
@@ -45,6 +46,7 @@ import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.ItemLoadingState
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
@@ -91,6 +93,7 @@ fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgItem>) {
@@ -133,6 +136,7 @@ private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgI
     }
 }
 
+@ExperimentalCoilApi
 @Composable
 fun ItemSearchedOrganization(
     org: SearchedOrganizationItem,
@@ -208,7 +212,12 @@ fun ItemSearchedOrganization(
     }
 }
 
-@Preview(name = "ItemSearchedOrganizationPreview", showBackground = true)
+@ExperimentalCoilApi
+@Preview(
+    name = "ItemSearchedOrganizationPreview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun ItemSearchedOrganizationPreview(
     @PreviewParameter(

@@ -13,31 +13,14 @@ import io.github.tonnyl.moka.data.AccessToken
 import io.github.tonnyl.moka.data.AuthenticatedUser
 import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.ui.auth.Authenticator
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import okio.buffer
 import okio.source
 import timber.log.Timber
 
-fun Account.mapToAccountTokenUserTriple(
-    manager: AccountManager
-): Triple<Account, String, AuthenticatedUser>? {
-    val token = manager.blockingGetAuthToken(
-        this,
-        Authenticator.KEY_AUTH_TOKEN,
-        true
-    )
-    val user = runCatching {
-        json.decodeFromString<AuthenticatedUser>(
-            manager.getUserData(
-                this,
-                Authenticator.KEY_AUTH_USER_INFO
-            )
-        )
-    }.getOrNull() ?: return null
-    return Triple(this, token, user)
-}
-
+@ExperimentalSerializationApi
 fun AccountManager.insertNewAccount(token: AccessToken, user: AuthenticatedUser) {
     val userString = runCatching {
         json.encodeToString(user)
@@ -60,6 +43,7 @@ fun AccountManager.insertNewAccount(token: AccessToken, user: AuthenticatedUser)
 val Resources.isDarkModeOn: Boolean
     get() = (configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) == Configuration.UI_MODE_NIGHT_YES
 
+@ExperimentalSerializationApi
 fun Context.readEmojisFromAssets(): List<Emoji> {
     return assets.open("emojis.json").use { inputStream ->
         val jsonString = inputStream.source().buffer().readString(Charsets.UTF_8)

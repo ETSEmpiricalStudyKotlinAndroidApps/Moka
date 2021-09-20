@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -42,6 +43,7 @@ private enum class SearchType {
 
 }
 
+@ExperimentalCoilApi
 @ExperimentalPagerApi
 @ExperimentalSerializationApi
 @ExperimentalComposeUiApi
@@ -94,6 +96,7 @@ fun SearchScreen(initialSearchKeyword: String) {
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalPagerApi
 @Composable

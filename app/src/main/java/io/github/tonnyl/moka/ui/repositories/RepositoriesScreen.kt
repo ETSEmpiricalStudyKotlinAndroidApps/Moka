@@ -25,6 +25,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -48,6 +49,7 @@ import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun RepositoriesScreen(
@@ -159,6 +161,7 @@ fun RepositoriesScreen(
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 private fun RepositoriesScreenContent(
@@ -206,6 +209,7 @@ private fun RepositoriesScreenContent(
     }
 }
 
+@ExperimentalCoilApi
 @Composable
 fun ItemRepository(
     repo: RepositoryItem,
@@ -352,7 +356,12 @@ fun ItemRepository(
     }
 }
 
-@Preview(name = "ItemRepositoryPreview", showBackground = true)
+@ExperimentalCoilApi
+@Preview(
+    name = "ItemRepositoryPreview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun ItemRepositoryPreview(
     @PreviewParameter(

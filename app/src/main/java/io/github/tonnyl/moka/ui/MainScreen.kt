@@ -25,7 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navArgument
+import androidx.navigation.navArgument
 import androidx.paging.ExperimentalPagingApi
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.navigationBarsPadding
@@ -814,6 +814,7 @@ private fun MainNavHost(
             arguments = listOf(
                 navArgument(name = Screen.ARG_INITIAL_SEARCH_KEYWORD) {
                     type = NavType.StringType
+                    nullable = true
                 }
             )
         ) { backStackEntry ->

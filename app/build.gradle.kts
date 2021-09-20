@@ -141,6 +141,7 @@ dependencies {
     implementation(Deps.AndroidX.Lifecycle.liveDataKtx)
     implementation(Deps.AndroidX.Lifecycle.viewModelCompose)
     implementation(Deps.AndroidX.Lifecycle.runtimeKtx)
+    implementation(Deps.AndroidX.Navigation.common)
     implementation(Deps.AndroidX.Navigation.compose)
     implementation(Deps.AndroidX.WorkManager.runtime)
     implementation(Deps.AndroidX.Paging.runtime)

@@ -17,6 +17,7 @@ import io.github.tonnyl.moka.util.json
 import io.ktor.client.statement.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import timber.log.Timber
 
@@ -28,6 +29,7 @@ class EventRemoteMediator(
     private val isNeedDisplayPlaceholder: MutableLiveData<Boolean>
 ) : RemoteMediator<Int, Event>() {
 
+    @ExperimentalSerializationApi
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, Event>

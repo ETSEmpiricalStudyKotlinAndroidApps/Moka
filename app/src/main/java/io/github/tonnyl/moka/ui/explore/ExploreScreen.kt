@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -45,6 +46,7 @@ import io.github.tonnyl.moka.widget.MainSearchBar
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
@@ -134,6 +136,7 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalPagerApi
 @Composable
@@ -217,10 +220,15 @@ private fun ExploreScreenContent(
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalPagerApi
 @Composable
-@Preview(name = "ExploreScreenContentPreview", showBackground = true)
+@Preview(
+    name = "ExploreScreenContentPreview",
+    showBackground = true,
+    backgroundColor = 0xFFFFFF
+)
 private fun ExploreScreenContentPreview() {
     ExploreScreenContent(
         contentTopPadding = 0.dp,

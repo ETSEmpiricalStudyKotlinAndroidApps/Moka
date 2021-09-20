@@ -28,6 +28,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -50,6 +51,7 @@ import io.github.tonnyl.moka.util.TimelineEventProvider
 import io.github.tonnyl.moka.widget.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
@@ -139,6 +141,7 @@ fun TimelineScreen(openDrawer: (() -> Unit)?) {
 
 }
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun TimelineScreenContent(
@@ -202,6 +205,7 @@ fun TimelineScreenContent(
     }
 }
 
+@ExperimentalCoilApi
 @Composable
 private fun ItemTimelineEvent(
     event: Event,
@@ -1355,7 +1359,12 @@ private fun navigateToProfileScreen(
     )
 }
 
-@Preview(showBackground = true, name = "TimelineItemPreview")
+@ExperimentalCoilApi
+@Preview(
+    showBackground = true,
+    name = "TimelineItemPreview",
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun TimelineItemPreview(
     @PreviewParameter(

@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.insets.LocalWindowInsets
@@ -49,6 +50,7 @@ import kotlin.math.min
 
 private const val MAX_DISPLAY_COUNT_OF_TOPICS = 8
 
+@ExperimentalCoilApi
 @ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
@@ -266,6 +268,7 @@ fun RepositoryScreen(
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalAnimationApi
 @Composable
 private fun RepositoryScreenContent(
@@ -745,6 +748,7 @@ private fun LanguageLabel(
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalAnimationApi
 @Preview(showBackground = true, name = "RepositoryScreenContentPreview")
 @Composable

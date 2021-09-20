@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
@@ -28,6 +29,7 @@ import io.github.tonnyl.moka.ui.account.AccountDialogScreen
 import io.github.tonnyl.moka.ui.theme.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
@@ -49,13 +51,7 @@ fun MainSearchBar(
         avatarUrl = currentAccount.signedInAccount.account.avatarUrl,
         onMenuClicked = openDrawer,
         onTextClicked = {
-            navController.navigate(
-                route = Screen.Search.route
-                    .replace(
-                        "{${Screen.ARG_INITIAL_SEARCH_KEYWORD}}",
-                        ""
-                    )
-            )
+            navController.navigate(route = Screen.Search.route)
         },
         onAvatarClicked = {
             state.value = true
@@ -63,6 +59,7 @@ fun MainSearchBar(
     )
 }
 
+@ExperimentalCoilApi
 @Composable
 private fun MainSearchBarContent(
     modifier: Modifier,
@@ -155,7 +152,12 @@ private fun MainSearchBarContent(
     }
 }
 
-@Preview(showBackground = true, name = "MainSearchBarPreview")
+@ExperimentalCoilApi
+@Preview(
+    showBackground = true,
+    name = "MainSearchBarPreview",
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun MainSearchBarPreview() {
     MainSearchBarContent(

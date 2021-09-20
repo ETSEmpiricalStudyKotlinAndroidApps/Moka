@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -48,6 +49,7 @@ import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -159,6 +161,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -609,6 +612,7 @@ private fun PinnedItemIconifiedText(
     )
 }
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 private fun PinnedItemCard(
@@ -699,6 +703,7 @@ private fun PinnedItemCard(
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 private fun PinnedRepositoryCard(
@@ -772,6 +777,7 @@ private fun PinnedRepositoryCard(
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 private fun PinnedGistCard(
@@ -834,9 +840,14 @@ private fun PinnedGistCard(
 
 // Preview section start
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
-@Preview(showBackground = true, name = "ProfileScreen")
+@Preview(
+    showBackground = true,
+    name = "ProfileScreen",
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun ProfileScreenPreview(
     @PreviewParameter(

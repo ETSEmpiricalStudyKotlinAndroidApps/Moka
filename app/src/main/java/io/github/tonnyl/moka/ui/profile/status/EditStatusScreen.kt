@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -40,6 +41,7 @@ import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -140,6 +142,7 @@ fun EditStatusScreen(
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 private fun EditStatusScreenContent(
@@ -599,8 +602,13 @@ private fun ExpireAtDropdownMenu(
 
 // Preview section start
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
-@Preview(showBackground = true, name = "EditScreenContentPreview")
+@Preview(
+    showBackground = true,
+    name = "EditScreenContentPreview",
+    backgroundColor = 0xFFFFFF
+)
 @Composable
 private fun EditScreenContentPreview() {
     EditStatusScreenContent(

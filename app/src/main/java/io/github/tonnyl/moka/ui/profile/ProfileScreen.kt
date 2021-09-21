@@ -453,13 +453,18 @@ private fun ProfileScreenContent(
                             if (item is RepositoryItem) {
                                 PinnedRepositoryCard(
                                     navController = navController,
+                                    currentUserLogin = user?.login ?: organization?.login
+                                    ?: "ghost",
                                     repository = item,
                                     index = index,
                                     enablePlaceholder = enablePlaceholder
                                 )
                             } else if (item is Gist2) {
                                 PinnedGistCard(
+                                    navController = navController,
                                     gist = item,
+                                    currentUserLogin = user?.login ?: organization?.login
+                                    ?: "ghost",
                                     index = index,
                                     enablePlaceholder = enablePlaceholder
                                 )
@@ -616,6 +621,8 @@ private fun PinnedItemIconifiedText(
 @ExperimentalMaterialApi
 @Composable
 private fun PinnedItemCard(
+    navController: NavController,
+    currentUserLogin: String,
     onClick: () -> Unit,
     avatarUrl: String?,
     title: String,
@@ -657,6 +664,25 @@ private fun PinnedItemCard(
                 modifier = Modifier
                     .size(size = IconSize)
                     .clip(shape = CircleShape)
+                    .clickable(enabled = !enablePlaceholder) {
+                        if (title.contains("/")) {
+                            val login = title
+                                .split("/")
+                                .firstOrNull()
+                            if (!login.isNullOrEmpty()
+                                && currentUserLogin != login
+                            ) {
+                                navController.navigate(
+                                    route = Screen.Profile.route
+                                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                        .replace(
+                                            "{${Screen.ARG_PROFILE_TYPE}}",
+                                            ProfileType.NOT_SPECIFIED.name
+                                        )
+                                )
+                            }
+                        }
+                    }
                     .placeholder(
                         visible = enablePlaceholder,
                         highlight = PlaceholderHighlight.fade()
@@ -709,10 +735,13 @@ private fun PinnedItemCard(
 private fun PinnedRepositoryCard(
     navController: NavController,
     repository: RepositoryItem,
+    currentUserLogin: String,
     index: Int,
     enablePlaceholder: Boolean
 ) {
     PinnedItemCard(
+        navController = navController,
+        currentUserLogin = currentUserLogin,
         onClick = {
             if (enablePlaceholder) {
                 return@PinnedItemCard
@@ -781,12 +810,16 @@ private fun PinnedRepositoryCard(
 @ExperimentalMaterialApi
 @Composable
 private fun PinnedGistCard(
+    navController: NavController,
     gist: Gist2,
+    currentUserLogin: String,
     index: Int,
     enablePlaceholder: Boolean
 ) {
     val context = LocalContext.current
     PinnedItemCard(
+        navController = navController,
+        currentUserLogin = currentUserLogin,
         onClick = {
             context.safeStartActivity(
                 Intent(Intent.ACTION_VIEW, Uri.parse(gist.url)).apply {

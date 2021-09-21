@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.pr
 import android.text.format.DateUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -47,9 +48,11 @@ import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.type.LockReason
 import io.github.tonnyl.moka.type.PullRequestReviewState
+import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.issue.IssueOrPullRequestHeader
 import io.github.tonnyl.moka.ui.issue.IssuePullRequestEventData
 import io.github.tonnyl.moka.ui.issue.IssueTimelineCommentItem
+import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.PullRequestProvider
 import io.github.tonnyl.moka.util.PullRequestTimelineItemProvider
@@ -61,7 +64,6 @@ import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
 import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
-import timber.log.Timber
 
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
@@ -333,8 +335,20 @@ private fun ItemPullRequestTimelineEvent(
     timelineItem: PullRequestTimelineItem,
     enablePlaceholder: Boolean
 ) {
-    Timber.d("xxx, ItemPullRequestTimelineEvent: $enablePlaceholder data: ${eventData(timelineItem)}")
     val data = eventData(timelineItem) ?: return
+
+    val navController = LocalNavController.current
+    val navigateToProfile = {
+        navController.navigate(
+            route = Screen.Profile.route
+                .replace("{${Screen.ARG_PROFILE_LOGIN}}", data.login)
+                .replace(
+                    "{${Screen.ARG_PROFILE_TYPE}}",
+                    ProfileType.NOT_SPECIFIED.name
+                )
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -367,6 +381,9 @@ private fun ItemPullRequestTimelineEvent(
                 modifier = Modifier
                     .size(size = IssueTimelineEventAuthorAvatarSize)
                     .clip(shape = CircleShape)
+                    .clickable(enabled = !enablePlaceholder) {
+                        navigateToProfile.invoke()
+                    }
                     .placeholder(
                         visible = enablePlaceholder,
                         highlight = PlaceholderHighlight.fade()
@@ -380,6 +397,9 @@ private fun ItemPullRequestTimelineEvent(
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier
                     .weight(weight = 1f)
+                    .clickable(enabled = !enablePlaceholder) {
+                        navigateToProfile.invoke()
+                    }
                     .placeholder(
                         visible = enablePlaceholder,
                         highlight = PlaceholderHighlight.fade()

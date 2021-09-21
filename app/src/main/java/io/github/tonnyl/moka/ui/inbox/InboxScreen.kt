@@ -234,7 +234,7 @@ private fun ItemNotification(
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)
-                .clickable {
+                .clickable(enabled = !enablePlaceholder) {
                     navController.navigate(
                         route = Screen.Profile.route
                             .replace("{${Screen.ARG_PROFILE_LOGIN}}", item.repository.owner.login)

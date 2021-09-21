@@ -29,10 +29,9 @@ import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingRepository
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
-import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.TrendingRepositoryProvider
 import io.github.tonnyl.moka.util.formatWithSuffix
 import io.github.tonnyl.moka.util.toColor
@@ -46,11 +45,16 @@ fun TrendingRepositoryItem(
     timeSpanText: String,
     enablePlaceholder: Boolean
 ) {
+    val navController = LocalNavController.current
     Row(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = !enablePlaceholder) {
-
+                navController.navigate(
+                    route = Screen.Repository.route
+                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", repository.author)
+                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repository.name)
+                )
             }
             .padding(all = ContentPaddingLargeSize)
     ) {
@@ -65,8 +69,12 @@ fun TrendingRepositoryItem(
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)
-                .clickable {
-
+                .clickable(enabled = !enablePlaceholder) {
+                    navController.navigate(
+                        route = Screen.Profile.route
+                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", repository.author)
+                            .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.NOT_SPECIFIED.name)
+                    )
                 }
                 .placeholder(
                     visible = enablePlaceholder,
@@ -202,7 +210,8 @@ fun TrendingRepositoryItem(
 @ExperimentalSerializationApi
 @Preview(
     name = "TrendingRepositoriesScreenPreview",
-    showBackground = true
+    showBackground = true,
+    backgroundColor = 0xFFFFFF
 )
 @Composable
 private fun TrendingRepositoriesScreenPreview(

@@ -39,6 +39,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.RepositoryItemProvider
 import io.github.tonnyl.moka.util.formatWithSuffix
@@ -241,6 +242,13 @@ fun ItemRepository(
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)
+                .clickable(enabled = !enablePlaceholder) {
+                    navController.navigate(
+                        route = Screen.Profile.route
+                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", repo.owner?.login ?: "ghost")
+                            .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.NOT_SPECIFIED.name)
+                    )
+                }
                 .placeholder(
                     visible = enablePlaceholder,
                     highlight = PlaceholderHighlight.fade()

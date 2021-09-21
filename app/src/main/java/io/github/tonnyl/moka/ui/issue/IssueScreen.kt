@@ -56,6 +56,8 @@ import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.type.CommentAuthorAssociation
 import io.github.tonnyl.moka.type.LockReason
 import io.github.tonnyl.moka.type.ReactionContent
+import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.reaction.AddReactionDialogScreen
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.IssueProvider
@@ -332,6 +334,19 @@ private fun ItemIssueTimelineEvent(
     enablePlaceholder: Boolean
 ) {
     val data = eventData(event) ?: return
+
+    val navController = LocalNavController.current
+    val navigateToProfile = {
+        navController.navigate(
+            route = Screen.Profile.route
+                .replace("{${Screen.ARG_PROFILE_LOGIN}}", data.login)
+                .replace(
+                    "{${Screen.ARG_PROFILE_TYPE}}",
+                    ProfileType.NOT_SPECIFIED.name
+                )
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -377,6 +392,9 @@ private fun ItemIssueTimelineEvent(
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier
                     .weight(weight = 1f)
+                    .clickable(enabled = !enablePlaceholder) {
+                        navigateToProfile.invoke()
+                    }
                     .placeholder(
                         visible = enablePlaceholder,
                         highlight = PlaceholderHighlight.fade()
@@ -393,10 +411,14 @@ private fun ItemIssueTimelineEvent(
                     style = MaterialTheme.typography.body2,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.placeholder(
-                        visible = enablePlaceholder,
-                        highlight = PlaceholderHighlight.fade()
-                    )
+                    modifier = Modifier
+                        .clickable(enabled = !enablePlaceholder) {
+                            navigateToProfile.invoke()
+                        }
+                        .placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                 )
             }
         }
@@ -875,6 +897,18 @@ fun IssueTimelineCommentItem(
             .fillMaxWidth()
             .padding(all = ContentPaddingLargeSize)
     ) {
+        val navController = LocalNavController.current
+        val navigateToProfile = {
+            navController.navigate(
+                route = Screen.Profile.route
+                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", authorLogin ?: "ghost")
+                    .replace(
+                        "{${Screen.ARG_PROFILE_TYPE}}",
+                        ProfileType.NOT_SPECIFIED.name
+                    )
+            )
+        }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -890,6 +924,9 @@ fun IssueTimelineCommentItem(
                 modifier = Modifier
                     .size(size = IconSize)
                     .clip(shape = CircleShape)
+                    .clickable(enabled = !enablePlaceholder) {
+                        navigateToProfile.invoke()
+                    }
                     .placeholder(
                         visible = enablePlaceholder,
                         highlight = PlaceholderHighlight.fade()
@@ -897,6 +934,7 @@ fun IssueTimelineCommentItem(
             )
             Column(
                 horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .weight(weight = 1f)
                     .padding(horizontal = ContentPaddingLargeSize)
@@ -906,10 +944,14 @@ fun IssueTimelineCommentItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.body1,
-                    modifier = Modifier.placeholder(
-                        visible = enablePlaceholder,
-                        highlight = PlaceholderHighlight.fade()
-                    )
+                    modifier = Modifier
+                        .clickable(enabled = !enablePlaceholder) {
+                            navigateToProfile.invoke()
+                        }
+                        .placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                 )
                 if (enablePlaceholder) {
                     Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))

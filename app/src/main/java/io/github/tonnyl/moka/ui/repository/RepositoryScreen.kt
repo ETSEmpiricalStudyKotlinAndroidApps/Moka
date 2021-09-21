@@ -41,6 +41,7 @@ import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.RepositoryProvider
 import io.github.tonnyl.moka.util.toColor
@@ -307,6 +308,20 @@ private fun RepositoryScreenContent(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(all = ContentPaddingLargeSize)
         ) {
+            val navigateToProfile = {
+                navController.navigate(
+                    route = Screen.Profile.route
+                        .replace(
+                            "{${Screen.ARG_PROFILE_LOGIN}}",
+                            login ?: "ghost"
+                        )
+                        .replace(
+                            "{${Screen.ARG_PROFILE_TYPE}}",
+                            ProfileType.NOT_SPECIFIED.name
+                        )
+                )
+            }
+
             Image(
                 painter = rememberImagePainter(
                     data = repository.owner?.avatarUrl,
@@ -318,6 +333,9 @@ private fun RepositoryScreenContent(
                 modifier = Modifier
                     .size(size = IconSize)
                     .clip(shape = CircleShape)
+                    .clickable(enabled = !enablePlaceholder) {
+                        navigateToProfile.invoke()
+                    }
                     .placeholder(
                         visible = enablePlaceholder,
                         highlight = PlaceholderHighlight.fade()
@@ -331,10 +349,14 @@ private fun RepositoryScreenContent(
                         style = MaterialTheme.typography.body2,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.placeholder(
-                            visible = enablePlaceholder,
-                            highlight = PlaceholderHighlight.fade()
-                        )
+                        modifier = Modifier
+                            .clickable(enabled = !enablePlaceholder) {
+                                navigateToProfile.invoke()
+                            }
+                            .placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                     )
                 }
             }

@@ -28,9 +28,12 @@ import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
+import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.DividerSize
+import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.TrendingDeveloperProvider
 
 @ExperimentalCoilApi
@@ -40,6 +43,7 @@ fun TrendingDeveloperItem(
     developer: TrendingDeveloper,
     enablePlaceholder: Boolean
 ) {
+    val navController = LocalNavController.current
     Card(
         border = BorderStroke(
             width = DividerSize,
@@ -54,8 +58,12 @@ fun TrendingDeveloperItem(
                     0.dp
                 }
             )
-            .clickable {
-
+            .clickable(enabled = !enablePlaceholder) {
+                navController.navigate(
+                    route = Screen.Profile.route
+                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", developer.username)
+                        .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
+                )
             }
             .width(width = 180.dp)
             .height(height = 240.dp)

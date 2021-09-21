@@ -39,6 +39,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.PullRequestItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
@@ -297,8 +298,18 @@ private fun ItemPullRequest(
                     modifier = Modifier
                         .size(size = 24.dp)
                         .clip(shape = CircleShape)
-                        .clickable {
-
+                        .clickable(enabled = !enablePlaceholder) {
+                            navController.navigate(
+                                route = Screen.Profile.route
+                                    .replace(
+                                        "{${Screen.ARG_PROFILE_LOGIN}}",
+                                        pullRequest.actor?.login ?: "ghost"
+                                    )
+                                    .replace(
+                                        "{${Screen.ARG_PROFILE_TYPE}}",
+                                        ProfileType.NOT_SPECIFIED.name
+                                    )
+                            )
                         }
                         .placeholder(
                             visible = enablePlaceholder,

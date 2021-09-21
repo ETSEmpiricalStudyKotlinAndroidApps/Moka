@@ -39,6 +39,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
@@ -214,6 +215,17 @@ private fun ItemIssue(
 ) {
     val navController = LocalNavController.current
 
+    val navigateToProfile = {
+        navController.navigate(
+            route = Screen.Profile.route
+                .replace("{${Screen.ARG_PROFILE_LOGIN}}", owner)
+                .replace(
+                    "{${Screen.ARG_PROFILE_TYPE}}",
+                    ProfileType.NOT_SPECIFIED.name
+                )
+        )
+    }
+
     Column(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
@@ -291,8 +303,8 @@ private fun ItemIssue(
                     modifier = Modifier
                         .size(size = 24.dp)
                         .clip(shape = CircleShape)
-                        .clickable {
-
+                        .clickable(enabled = !enablePlaceholder) {
+                            navigateToProfile.invoke()
                         }
                         .placeholder(
                             visible = enablePlaceholder,
@@ -305,10 +317,14 @@ private fun ItemIssue(
                     style = MaterialTheme.typography.body2,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.placeholder(
-                        visible = enablePlaceholder,
-                        highlight = PlaceholderHighlight.fade()
-                    )
+                    modifier = Modifier
+                        .clickable(enabled = !enablePlaceholder) {
+                            navigateToProfile.invoke()
+                        }
+                        .placeholder(
+                            visible = enablePlaceholder,
+                            highlight = PlaceholderHighlight.fade()
+                        )
                 )
                 Spacer(modifier = Modifier.weight(weight = 1f))
                 Text(

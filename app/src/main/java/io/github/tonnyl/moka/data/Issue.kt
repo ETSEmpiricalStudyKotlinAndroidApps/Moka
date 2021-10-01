@@ -1,10 +1,10 @@
 package io.github.tonnyl.moka.data
 
+import io.github.tonnyl.moka.fragment.ReactionGroup
 import io.github.tonnyl.moka.queries.IssueQuery
 import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.Author.Companion.actor
 import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.Editor.Companion.actor
 import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.Milestone.Companion.milestone
-import io.github.tonnyl.moka.queries.IssueQuery.Data.Repository.Issue.ReactionGroup.Companion.reactionGroup
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
 
@@ -102,7 +102,7 @@ data class Issue(
     /**
      * A list of reactions grouped by content left on the subject.
      */
-    var reactionGroups: MutableList<ReactionGroup>?,
+    var reactionGroups: List<ReactionGroup>?,
 
     /**
      * The HTTP path for this issue.
@@ -181,11 +181,7 @@ fun IssueQuery.Data.Repository.Issue.toNonNullIssue(): Issue {
         milestone?.milestone()?.toNonNullMilestone(),
         number,
         publishedAt,
-        reactionGroups?.filter {
-            (it.reactionGroup()?.users?.totalCount ?: 0) > 0
-        }?.mapNotNull {
-            it.reactionGroup()?.toNonNullReactionGroup()
-        }?.toMutableList(),
+        reactionGroups,
         resourcePath,
         state,
         title,

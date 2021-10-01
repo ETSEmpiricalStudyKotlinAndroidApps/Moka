@@ -114,11 +114,13 @@ fun PullRequestScreen(
                 prTimelineItems.loadState.refresh is LoadState.NotLoading
                         && prTimelineItems.loadState.append is LoadState.NotLoading
                         && prTimelineItems.loadState.prepend is LoadState.NotLoading
-                        && prTimelineItems.itemCount == 0 -> {
+                        && prTimelineItems.itemCount == 0
+                        && pullRequest == null -> {
 
                 }
                 prTimelineItems.loadState.refresh is LoadState.NotLoading
-                        && prTimelineItems.itemCount == 0 -> {
+                        && prTimelineItems.itemCount == 0
+                        && pullRequest == null -> {
                     EmptyScreenContent(
                         icon = R.drawable.ic_menu_timeline_24,
                         title = R.string.timeline_content_empty_title,
@@ -127,7 +129,8 @@ fun PullRequestScreen(
                     )
                 }
                 prTimelineItems.loadState.refresh is LoadState.Error
-                        && prTimelineItems.itemCount == 0 -> {
+                        && prTimelineItems.itemCount == 0
+                        && pullRequest == null -> {
                     EmptyScreenContent(
                         icon = R.drawable.ic_menu_inbox_24,
                         title = R.string.common_error_requesting_data,

@@ -1,9 +1,7 @@
 package io.github.tonnyl.moka.data.item
 
 import io.github.tonnyl.moka.data.Actor
-import io.github.tonnyl.moka.data.ReactionGroup
 import io.github.tonnyl.moka.data.toNonNullActor
-import io.github.tonnyl.moka.data.toNonNullReactionGroup
 import io.github.tonnyl.moka.fragment.*
 import io.github.tonnyl.moka.fragment.AddedToProjectEventFragment.Actor.Companion.actor
 import io.github.tonnyl.moka.fragment.AssignedEventFragment.Actor.Companion.actor
@@ -36,7 +34,6 @@ import io.github.tonnyl.moka.fragment.HeadRefRestoredEventFragment.Actor.Compani
 import io.github.tonnyl.moka.fragment.HeadRefRestoredEventFragment.PullRequest.Companion.pullRequestTimelineItemPullRequest
 import io.github.tonnyl.moka.fragment.IssueCommentFragment.Author.Companion.actor
 import io.github.tonnyl.moka.fragment.IssueCommentFragment.Editor.Companion.actor
-import io.github.tonnyl.moka.fragment.IssueCommentFragment.ReactionGroup.Companion.reactionGroup
 import io.github.tonnyl.moka.fragment.IssuePullRequestTimelineItemAssigneeFragment.Companion.issuePullRequestTimelineItemBotFragment
 import io.github.tonnyl.moka.fragment.IssuePullRequestTimelineItemAssigneeFragment.Companion.issuePullRequestTimelineItemMannequinFragment
 import io.github.tonnyl.moka.fragment.IssuePullRequestTimelineItemAssigneeFragment.Companion.issuePullRequestTimelineItemOrganizationFragment
@@ -841,7 +838,7 @@ data class IssueComment(
     /**
      * A list of reactions grouped by content left on the subject.
      */
-    var reactionGroups: MutableList<ReactionGroup>?,
+    var reactionGroups: List<ReactionGroup>?,
 
     /**
      * Check if the current viewer can delete this object.
@@ -886,11 +883,7 @@ fun IssueCommentFragment.toNonNullIssueComment(
         body,
         id,
         editor?.actor()?.toNonNullActor(),
-        reactionGroups?.filter {
-            (it.reactionGroup()?.users?.totalCount ?: 0) > 0
-        }?.mapNotNull {
-            it.reactionGroup()?.toNonNullReactionGroup()
-        }?.toMutableList(),
+        reactionGroups,
         viewerCanDelete,
         viewerCanReact,
         viewerDidAuthor,

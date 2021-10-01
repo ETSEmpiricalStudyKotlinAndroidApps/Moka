@@ -6,7 +6,7 @@ fragment ReactionGroup on ReactionGroup {
     # Whether or not the authenticated user has left a reaction on the subject.
     viewerHasReacted
     # Users who have reacted to the reaction subject with the emotion represented by this reaction group
-    users {
+    reactors {
         # Identifies the total count of items in the connection.
         totalCount
     }

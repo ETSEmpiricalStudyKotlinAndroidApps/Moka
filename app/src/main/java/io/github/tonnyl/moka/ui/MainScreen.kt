@@ -941,7 +941,7 @@ private fun MainNavHost(
                 navArgument(name = Screen.ARG_REPOSITORY_NAME) {
                     type = NavType.StringType
                 },
-                navArgument(name = Screen.ARG_SELECTED_BRANCH_NAME) {
+                navArgument(name = Screen.ARG_EXPRESSION) {
                     type = NavType.StringType
                 },
                 navArgument(name = Screen.ARG_REF_PREFIX) {

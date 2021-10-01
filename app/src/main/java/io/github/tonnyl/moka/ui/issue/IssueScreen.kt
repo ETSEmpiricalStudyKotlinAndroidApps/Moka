@@ -6,9 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -24,14 +22,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
@@ -50,12 +45,11 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.Issue
-import io.github.tonnyl.moka.data.ReactionGroup
 import io.github.tonnyl.moka.data.item.*
+import io.github.tonnyl.moka.fragment.ReactionGroup
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.type.CommentAuthorAssociation
 import io.github.tonnyl.moka.type.LockReason
-import io.github.tonnyl.moka.type.ReactionContent
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.reaction.AddReactionDialogScreen
@@ -126,11 +120,13 @@ fun IssueScreen(
                 issueTimelineItems.loadState.refresh is LoadState.NotLoading
                         && issueTimelineItems.loadState.append is LoadState.NotLoading
                         && issueTimelineItems.loadState.prepend is LoadState.NotLoading
-                        && issueTimelineItems.itemCount == 0 -> {
+                        && issueTimelineItems.itemCount == 0
+                        && issue == null -> {
 
                 }
                 issueTimelineItems.loadState.refresh is LoadState.NotLoading
-                        && issueTimelineItems.itemCount == 0 -> {
+                        && issueTimelineItems.itemCount == 0
+                        && issue == null -> {
                     EmptyScreenContent(
                         icon = R.drawable.ic_menu_timeline_24,
                         title = R.string.timeline_content_empty_title,
@@ -139,7 +135,8 @@ fun IssueScreen(
                     )
                 }
                 issueTimelineItems.loadState.refresh is LoadState.Error
-                        && issueTimelineItems.itemCount == 0 -> {
+                        && issueTimelineItems.itemCount == 0
+                        && issue == null -> {
                     EmptyScreenContent(
                         icon = R.drawable.ic_menu_inbox_24,
                         title = R.string.common_error_requesting_data,
@@ -811,7 +808,7 @@ fun IssueOrPullRequestHeader(
     caption: String,
     avatarUrl: String?,
     viewerCanReact: Boolean,
-    reactionGroups: MutableList<ReactionGroup>?,
+    reactionGroups: List<ReactionGroup>?,
     authorLogin: String?,
     authorAssociation: CommentAuthorAssociation,
     displayHtml: String,
@@ -874,7 +871,7 @@ fun IssueOrPullRequestHeader(
 fun IssueTimelineCommentItem(
     avatarUrl: String?,
     viewerCanReact: Boolean,
-    reactionGroups: MutableList<ReactionGroup>?,
+    reactionGroups: List<ReactionGroup>?,
     authorLogin: String?,
     authorAssociation: CommentAuthorAssociation,
     displayHtml: String,
@@ -1060,80 +1057,13 @@ fun IssueTimelineCommentItem(
         ) {
             webView = it
         }
-        reactionGroups?.let { reactions ->
-            LazyRow {
-                items(count = reactions.size) { index ->
-                    if (reactions[index].usersTotalCount > 0) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .clickable(enabled = !enablePlaceholder && viewerCanReact) {
-
-                                }
-                                .clip(shape = RoundedCornerShape(percent = 50))
-                                .background(
-                                    color = if (reactions[index].viewerHasReacted) {
-                                        MaterialTheme.colors.primary
-                                    } else {
-                                        MaterialTheme.colors.onSurface
-                                    }.copy(alpha = .12f)
-                                )
-                                .padding(horizontal = 12.dp, vertical = ContentPaddingSmallSize)
-                        ) {
-                            Text(
-                                text = stringResource(
-                                    when (reactions[index].content) {
-                                        ReactionContent.CONFUSED -> {
-                                            R.string.emoji_confused
-                                        }
-                                        ReactionContent.EYES -> {
-                                            R.string.emoji_eyes
-                                        }
-                                        ReactionContent.HEART -> {
-                                            R.string.emoji_heart
-                                        }
-                                        ReactionContent.HOORAY -> {
-                                            R.string.emoji_hooray
-                                        }
-                                        ReactionContent.LAUGH -> {
-                                            R.string.emoji_laugh
-                                        }
-                                        ReactionContent.ROCKET -> {
-                                            R.string.emoji_rocket
-                                        }
-                                        ReactionContent.THUMBS_DOWN -> {
-                                            R.string.emoji_thumbs_down
-                                        }
-                                        ReactionContent.THUMBS_UP -> {
-                                            R.string.emoji_thumbs_up
-                                        }
-                                        is ReactionContent.UNKNOWN__ -> {
-                                            R.string.emoji_unknown
-                                        }
-                                    }
-                                ),
-                                textAlign = TextAlign.Center,
-                                fontSize = 20.sp,
-                                modifier = Modifier.placeholder(
-                                    visible = enablePlaceholder,
-                                    highlight = PlaceholderHighlight.fade()
-                                )
-                            )
-                            Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
-                            Text(
-                                text = reactions[index].usersTotalCount.toString(),
-                                style = MaterialTheme.typography.body2,
-                                modifier = Modifier.placeholder(
-                                    visible = enablePlaceholder,
-                                    highlight = PlaceholderHighlight.fade()
-                                )
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
-                    }
-                }
-            }
-        }
+        ReactionGroupComponent(
+            groups = reactionGroups.orEmpty(),
+            tailingReactButton = false,
+            viewerCanReact = viewerCanReact,
+            react = {},
+            enablePlaceholder = enablePlaceholder
+        )
     }
 }
 

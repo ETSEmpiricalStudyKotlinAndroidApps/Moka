@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.data
 
+import io.github.tonnyl.moka.fragment.ReactionGroup
 import io.github.tonnyl.moka.queries.PullRequestQuery
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.Author.Companion.actor
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.BaseRef.Companion.ref
@@ -8,7 +9,6 @@ import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullReques
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.HeadRepositoryOwner.Companion.repositoryOwner
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.MergedBy.Companion.actor
 import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.Milestone.Companion.milestone
-import io.github.tonnyl.moka.queries.PullRequestQuery.Data.Repository.PullRequest.ReactionGroup.Companion.reactionGroup
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
 
@@ -184,7 +184,7 @@ data class PullRequest(
     /**
      * A list of reactions grouped by content left on the subject.
      */
-    var reactionGroups: MutableList<ReactionGroup>?,
+    var reactionGroups: List<ReactionGroup>?,
 
     /**
      * The HTTP path for this pull request.
@@ -296,11 +296,7 @@ fun PullRequestQuery.Data.Repository.PullRequest?.toNullablePullRequest(): PullR
         number,
         permalink,
         publishedAt,
-        reactionGroups?.filter {
-            (it.reactionGroup()?.users?.totalCount ?: 0) > 0
-        }?.mapNotNull {
-            it.reactionGroup()?.toNonNullReactionGroup()
-        }?.toMutableList(),
+        reactionGroups,
         resourcePath,
         revertResourcePath,
         revertUrl,

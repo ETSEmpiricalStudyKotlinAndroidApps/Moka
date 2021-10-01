@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.ReactionGroup
+import io.github.tonnyl.moka.fragment.ReactionGroup
 import io.github.tonnyl.moka.type.ReactionContent
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
@@ -28,7 +28,7 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 @Composable
 fun AddReactionDialogScreen(
     showState: MutableState<Boolean>,
-    reactionGroups: MutableList<ReactionGroup>?,
+    reactionGroups: List<ReactionGroup>?,
     react: (ReactionContent, Boolean) -> Unit
 ) {
     val reactedMap = mutableMapOf<ReactionContent, Boolean>()

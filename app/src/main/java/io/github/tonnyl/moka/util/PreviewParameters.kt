@@ -7,6 +7,7 @@ import io.github.tonnyl.moka.data.item.User
 import io.github.tonnyl.moka.fragment.ReleaseListItem
 import io.github.tonnyl.moka.fragment.TreeEntry
 import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery.Data.Repository.TreeObject.Entry
+import io.github.tonnyl.moka.queries.IssueQuery
 import io.github.tonnyl.moka.queries.RepositoryCommitsQuery.Data.Repository.Ref.CommitTarget.History.Node
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
@@ -400,16 +401,18 @@ private val commentEvent = IssueComment(
     displayHtml = "Thanks for reporting. I'm planning to migrate this screen to use the new [`BottomSheetScaffold`](https://cs.android.com/androidx/platform/frameworks/support/+/androidx-master-dev:compose/material/material/src/commonMain/kotlin/androidx/compose/material/BottomSheetScaffold.kt;l=267) which should hopefully also address this.",
     id = "MDEyOklzc3VlQ29tbWVudDY5NjA3MjE3Nw==",
     editor = null,
-    reactionGroups = mutableListOf(
-        ReactionGroup(
+    reactionGroups = listOf(
+        IssueQuery.Data.Repository.Issue.ReactionGroup(
+            __typename = "",
             content = ReactionContent.THUMBS_UP,
-            viewerHasReacted = true,
-            usersTotalCount = 1
-        ),
-        ReactionGroup(
-            content = ReactionContent.THUMBS_DOWN,
             viewerHasReacted = false,
-            usersTotalCount = 1
+            reactors = IssueQuery.Data.Repository.Issue.ReactionGroup.Reactors(totalCount = 2)
+        ),
+        IssueQuery.Data.Repository.Issue.ReactionGroup(
+            __typename = "",
+            content = ReactionContent.HEART,
+            viewerHasReacted = true,
+            reactors = IssueQuery.Data.Repository.Issue.ReactionGroup.Reactors(totalCount = 2)
         )
     ),
     viewerCanDelete = false,

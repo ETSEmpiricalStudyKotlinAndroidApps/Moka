@@ -16,9 +16,11 @@ import io.github.tonnyl.moka.ui.auth.Authenticator
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 import okio.buffer
 import okio.source
-import timber.log.Timber
 
 @ExperimentalSerializationApi
 fun AccountManager.insertNewAccount(token: AccessToken, user: AuthenticatedUser) {
@@ -72,7 +74,7 @@ fun Context.safeStartActivity(
 
         actionWhenSuccess?.invoke()
     } catch (e: Exception) {
-        Timber.e(e)
+        logcat(priority = LogPriority.ERROR) { e.asLog() }
 
         actionWhenError?.invoke(e)
     }

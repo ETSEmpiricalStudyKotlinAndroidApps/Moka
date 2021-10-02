@@ -59,7 +59,9 @@ import io.github.tonnyl.moka.queries.IssueTimelineItemsQuery.Data.Repository.Iss
 import io.github.tonnyl.moka.queries.IssueTimelineItemsQuery.Data.Repository.Issue.TimelineItems.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class IssueTimelineDataSource(
     private val apolloClient: ApolloClient,
@@ -134,7 +136,7 @@ class IssueTimelineDataSource(
                     )
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 LoadResult.Error(e)
             }

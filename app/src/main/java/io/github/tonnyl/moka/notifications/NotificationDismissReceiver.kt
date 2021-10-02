@@ -7,7 +7,9 @@ import io.github.tonnyl.moka.MokaApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class NotificationDismissReceiver : BroadcastReceiver() {
 
@@ -36,7 +38,7 @@ class NotificationDismissReceiver : BroadcastReceiver() {
                         .markAsDisplayed(notificationId)
                 }
             } catch (e: Exception) {
-                Timber.e(e, "handle received event")
+                logcat(priority = LogPriority.ERROR) { "handle received event\n${e.asLog()}" }
             }
         }
     }

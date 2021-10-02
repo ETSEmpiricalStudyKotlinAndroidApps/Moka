@@ -19,7 +19,9 @@ import io.github.tonnyl.moka.queries.UserQuery.Data.User.Companion.user
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 @ExperimentalSerializationApi
 class ProfileViewModel(
@@ -78,7 +80,7 @@ class ProfileViewModel(
                     _followState.postValue(Resource.success(null))
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _userProfile.postValue(Resource.error(e.message, null))
             }
@@ -99,7 +101,7 @@ class ProfileViewModel(
 
                 _followState.postValue(Resource.success(null))
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _organizationProfile.postValue(Resource.error(e.message, null))
             }
@@ -132,7 +134,7 @@ class ProfileViewModel(
 
                 _followState.postValue(Resource.success(!isFollowing))
             } catch (e: Exception) {
-                Timber.e(e, "toggleFollow failed")
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _followState.postValue(Resource.error(e.message, isFollowing))
             }
@@ -207,7 +209,7 @@ class ProfileViewModel(
                     }
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
             }
         }
     }

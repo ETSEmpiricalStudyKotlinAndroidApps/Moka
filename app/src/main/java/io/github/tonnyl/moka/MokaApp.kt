@@ -34,9 +34,12 @@ import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
+import logcat.AndroidLogcatLogger
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 @ExperimentalSerializationApi
@@ -114,7 +117,7 @@ class MokaApp : Application(), ImageLoaderFactory {
                         )
                     }
                 } catch (e: Exception) {
-                    Timber.e(e)
+                    logcat(priority = LogPriority.ERROR) { e.asLog() }
                 }
             }
 
@@ -162,9 +165,10 @@ class MokaApp : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
+        AndroidLogcatLogger.installOnDebuggableApp(
+            application = this,
+            minPriority = LogPriority.VERBOSE
+        )
 
         accountManager.addOnAccountsUpdatedListener(
             accountListener,
@@ -231,7 +235,7 @@ class MokaApp : Application(), ImageLoaderFactory {
                     }
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
             }
         }
     }

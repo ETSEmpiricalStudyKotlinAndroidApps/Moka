@@ -14,7 +14,9 @@ import io.github.tonnyl.moka.queries.SearchRepositoriesQuery.Data.Search.Node.Co
 import io.github.tonnyl.moka.queries.SearchRepositoriesQuery.Data.Search.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class SearchedRepositoriesItemDataSource(
     private val apolloClient: ApolloClient,
@@ -51,7 +53,7 @@ class SearchedRepositoriesItemDataSource(
                     nextKey = pageInfo.checkedEndCursor
                 )
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 Error(e)
             }

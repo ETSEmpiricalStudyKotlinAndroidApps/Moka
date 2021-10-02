@@ -12,7 +12,9 @@ import io.github.tonnyl.moka.queries.StarredRepositoriesQuery.Data.User.StarredR
 import io.github.tonnyl.moka.queries.StarredRepositoriesQuery.Data.User.StarredRepositories.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class StarredRepositoriesDataSource(
     private val apolloClient: ApolloClient,
@@ -46,7 +48,7 @@ class StarredRepositoriesDataSource(
                     nextKey = pageInfo.checkedEndCursor
                 )
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 LoadResult.Error(e)
             }

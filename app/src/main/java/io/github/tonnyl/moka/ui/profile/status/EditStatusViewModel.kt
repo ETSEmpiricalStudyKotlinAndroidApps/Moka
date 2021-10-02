@@ -14,7 +14,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.*
 import kotlinx.serialization.ExperimentalSerializationApi
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 @ExperimentalSerializationApi
 class EditStatusViewModel(
@@ -63,7 +65,7 @@ class EditStatusViewModel(
 
                 _clearStatusState.value = Resource.success(null)
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _clearStatusState.value = Resource.error(e.message, null)
             }
@@ -131,7 +133,7 @@ class EditStatusViewModel(
                     )
                 )
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _updateStatusState.value = Resource.error(e.message, null)
             }

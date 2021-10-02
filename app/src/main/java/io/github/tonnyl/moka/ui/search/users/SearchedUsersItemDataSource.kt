@@ -16,7 +16,9 @@ import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.Node.Companion
 import io.github.tonnyl.moka.queries.SearchUsersQuery.Data.Search.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class SearchedUsersItemDataSource(
     private val apolloClient: ApolloClient,
@@ -52,7 +54,7 @@ class SearchedUsersItemDataSource(
                     nextKey = pageInfo.checkedEndCursor
                 )
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 Error(e)
             }

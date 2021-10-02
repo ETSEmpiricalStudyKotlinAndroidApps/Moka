@@ -37,7 +37,7 @@ object Versions {
     const val commonMark = "0.15.2"
     const val coil = "1.3.2"
     const val jsoup = "1.12.1"
-    const val timber = "4.7.1"
+    const val logcat = "0.1"
     const val ktor = "1.6.3"
     const val firebaseAnalyticsKtx = "19.0.0"
     const val firebaseCrashlytics = "18.0.0"
@@ -55,7 +55,7 @@ object Versions {
 object Deps {
 
     const val jsoup = "org.jsoup:jsoup:${Versions.jsoup}"
-    const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
+    const val logcat = "com.squareup.logcat:logcat:${Versions.logcat}"
     const val desugaring = "com.android.tools:desugar_jdk_libs:${Versions.desugaring}"
     const val coilCompose = "io.coil-kt:coil-compose:${Versions.coil}"
 

@@ -16,7 +16,9 @@ import io.ktor.client.statement.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 @ExperimentalPagingApi
 class NotificationRemoteMediator(
@@ -133,7 +135,8 @@ class NotificationRemoteMediator(
                     }
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
+
                 MediatorResult.Error(e)
             } finally {
                 updateIsNeedDisplayPlaceholderIfNeeded.invoke()

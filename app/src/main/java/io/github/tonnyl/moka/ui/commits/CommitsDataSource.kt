@@ -12,7 +12,9 @@ import io.github.tonnyl.moka.queries.RepositoryCommitsQuery.Data.Repository.Ref.
 import io.github.tonnyl.moka.queries.RepositoryCommitsQuery.Data.Repository.Ref.Target.Companion.asCommit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class CommitsDataSource(
     private val apolloClient: ApolloClient,
@@ -52,7 +54,7 @@ class CommitsDataSource(
                     nextKey = pageInfo.checkedEndCursor
                 )
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 LoadResult.Error(e)
             }

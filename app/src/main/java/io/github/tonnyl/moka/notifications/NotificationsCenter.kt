@@ -22,7 +22,9 @@ import io.github.tonnyl.moka.data.toDisplayContentText
 import io.github.tonnyl.moka.ui.MainActivity
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 import android.app.Notification as AndroidNotification
 
 object NotificationsCenter {
@@ -149,7 +151,7 @@ object NotificationsCenter {
                     }
                     notificationBuilder.setLargeIcon(bitmap)
                 } catch (e: Exception) {
-                    Timber.e(e, "get avatar error")
+                    logcat(priority = LogPriority.ERROR) { "get avatar error\n${e.asLog()}" }
                 }
             }
         }

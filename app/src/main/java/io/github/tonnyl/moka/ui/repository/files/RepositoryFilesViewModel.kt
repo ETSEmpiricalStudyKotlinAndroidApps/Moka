@@ -14,7 +14,9 @@ import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery.Data.Repository.O
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 @ExperimentalSerializationApi
 class RepositoryFilesViewModel(
@@ -55,7 +57,7 @@ class RepositoryFilesViewModel(
 
                 _entry.postValue(Resource.success(data = entries?.sortedBy { it.treeEntryType == TreeEntryType.BLOB }))
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _entry.postValue(Resource.error(msg = e.message, data = entry.value?.data))
             }

@@ -13,7 +13,9 @@ import io.github.tonnyl.moka.type.ReleaseOrder
 import io.github.tonnyl.moka.type.ReleaseOrderField
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class ReleasesDataSource(
     private val apolloClient: ApolloClient,
@@ -56,7 +58,7 @@ class ReleasesDataSource(
                     nextKey = pageInfo.checkedEndCursor
                 )
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 LoadResult.Error(e)
             }

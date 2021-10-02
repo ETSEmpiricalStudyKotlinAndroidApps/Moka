@@ -13,9 +13,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 import okio.buffer
 import okio.source
-import timber.log.Timber
 
 @ExperimentalSerializationApi
 class MainViewModel(
@@ -49,7 +51,7 @@ class MainViewModel(
                 }
             }
         } catch (e: Exception) {
-            Timber.e(e)
+            logcat(priority = LogPriority.ERROR) { e.asLog() }
         } finally {
             emit(emojis)
         }
@@ -66,7 +68,7 @@ class MainViewModel(
 
             emit(result)
         } catch (e: Exception) {
-            Timber.e(e)
+            logcat(priority = LogPriority.ERROR) { e.asLog() }
 
             emit(emptyList<ExploreLanguage>())
         }
@@ -89,7 +91,7 @@ class MainViewModel(
 
                 _searchableEmojis.postValue(allSearchableEmojis)
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _searchableEmojis.postValue(emptyList())
             }
@@ -133,7 +135,7 @@ class MainViewModel(
                     )
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
             }
         }
     }
@@ -161,7 +163,7 @@ class MainViewModel(
                     store.copy(accounts = newAccounts)
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
             }
         }
     }

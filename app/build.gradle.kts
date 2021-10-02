@@ -195,7 +195,7 @@ dependencies {
     implementation(Deps.CommonMark.yamlFrontMatter)
 
     implementation(Deps.jsoup)
-    implementation(Deps.timber)
+    implementation(Deps.logcat)
 
     implementation(Deps.Ktor.core)
     implementation(Deps.Ktor.logging)

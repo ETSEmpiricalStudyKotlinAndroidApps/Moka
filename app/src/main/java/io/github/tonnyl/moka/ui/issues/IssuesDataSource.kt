@@ -11,7 +11,9 @@ import io.github.tonnyl.moka.queries.IssuesQuery
 import io.github.tonnyl.moka.queries.IssuesQuery.Data.Repository.Issues.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class IssuesDataSource(
     private val apolloClient: ApolloClient,
@@ -47,7 +49,7 @@ class IssuesDataSource(
                     nextKey = pageInfo.checkedEndCursor
                 )
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 LoadResult.Error(e)
             }

@@ -11,7 +11,9 @@ import io.github.tonnyl.moka.serializers.store.data.urlParamValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 @ExperimentalSerializationApi
 class ExploreViewModel(
@@ -72,7 +74,7 @@ class ExploreViewModel(
 
                 _refreshDataStatus.postValue(Resource.success(data = countTrendingData.invoke()))
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _refreshDataStatus.postValue(Resource.error(e.message, null))
             }
@@ -100,7 +102,7 @@ class ExploreViewModel(
 
                 refreshTrendingData()
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
             }
         }
     }

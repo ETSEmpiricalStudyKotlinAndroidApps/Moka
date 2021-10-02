@@ -17,7 +17,9 @@ import io.github.tonnyl.moka.util.HtmlHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 import java.nio.charset.StandardCharsets
 
 @ExperimentalSerializationApi
@@ -59,7 +61,7 @@ class RepositoryViewModel(
                     updateBranchName(ref.name)
                 }
             } catch (e: Exception) {
-                Timber.e(e, "query repository error")
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _repository.postValue(Resource.error(e.message, null))
             }
@@ -92,7 +94,7 @@ class RepositoryViewModel(
                     )
                 )
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _readmeHtml.postValue(Resource.error(e.message, null))
             }
@@ -125,7 +127,7 @@ class RepositoryViewModel(
 
                 _starState.postValue(Resource.success(!hasStarred))
             } catch (e: Exception) {
-                Timber.e(e, "toggleStar error")
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _starState.postValue(Resource.error(e.message, hasStarred))
             }

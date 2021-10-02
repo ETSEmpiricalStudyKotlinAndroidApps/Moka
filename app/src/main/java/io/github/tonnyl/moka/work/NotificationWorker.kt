@@ -13,7 +13,9 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class NotificationWorker(
     appContext: Context,
@@ -22,12 +24,12 @@ class NotificationWorker(
 
     @ExperimentalSerializationApi
     override suspend fun doWork(): Result {
-        Timber.i("NotificationWorker do work")
+        logcat(priority = LogPriority.INFO) { "NotificationWorker do work" }
 
         val accountInstances = (applicationContext as MokaApp).accountInstancesLiveData.value
 
         if (accountInstances.isNullOrEmpty()) {
-            Timber.i("NotificationWorker no account, do nothing")
+            logcat(priority = LogPriority.INFO) { "NotificationWorker no account, do nothing" }
 
             return Result.success()
         }
@@ -53,7 +55,7 @@ class NotificationWorker(
 
                 Result.success()
             } catch (e: Exception) {
-                Timber.e(e, "pull data from server error")
+                logcat(priority = LogPriority.ERROR) { "pull data from server error\n${e.asLog()}" }
 
                 Result.failure()
             }
@@ -75,7 +77,7 @@ class NotificationWorker(
                         }
                     }
                 } catch (e: Exception) {
-                    Timber.e(e, "query data from db error")
+                    logcat(priority = LogPriority.ERROR) { "query data from db error\n${e.asLog()}" }
                 }
             }
         }

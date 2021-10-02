@@ -10,7 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 @ExperimentalSerializationApi
 class EditProfileViewModel(
@@ -99,7 +101,8 @@ class EditProfileViewModel(
 
                 _loadingStatus.value = Resource.success(null)
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
+
                 _loadingStatus.value = Resource.error(null, null)
             }
         }

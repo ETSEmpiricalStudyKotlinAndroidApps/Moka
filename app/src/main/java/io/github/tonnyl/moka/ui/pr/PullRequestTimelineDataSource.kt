@@ -91,7 +91,9 @@ import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Reposito
 import io.github.tonnyl.moka.queries.PullRequestTimelineItemsQuery.Data.Repository.PullRequest.TimelineItems.PageInfo.Companion.pageInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class PullRequestTimelineDataSource(
     private val apolloClient: ApolloClient,
@@ -166,7 +168,7 @@ class PullRequestTimelineDataSource(
                     )
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 LoadResult.Error(e)
             }

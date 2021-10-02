@@ -7,7 +7,9 @@ import io.github.tonnyl.moka.MokaApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 class NotificationCallbackReceiver : BroadcastReceiver() {
 
@@ -45,7 +47,7 @@ class NotificationCallbackReceiver : BroadcastReceiver() {
                         ACTION_UNSUBSCRIBE -> {
                             val threadId = notification.url.split("/").lastOrNull()
                             if (threadId.isNullOrEmpty()) {
-                                Timber.i("thread id is null or empty")
+                                logcat(priority = LogPriority.INFO) { "thread id is null or empty" }
                             } else {
                                 accountInstance.notificationApi.deleteAThreadSubscription(threadId)
                             }
@@ -55,7 +57,7 @@ class NotificationCallbackReceiver : BroadcastReceiver() {
                     NotificationsCenter.cancelNotification(context, notification.id.hashCode())
                 }
             } catch (e: Exception) {
-                Timber.e(e, "perform ${intent.action} error")
+                logcat(priority = LogPriority.ERROR) { "perform ${intent.action} error\n${e.asLog()}" }
             }
         }
     }

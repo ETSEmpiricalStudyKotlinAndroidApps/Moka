@@ -2,7 +2,9 @@ package io.github.tonnyl.moka.util
 
 import android.graphics.Color
 import androidx.annotation.ColorInt
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 fun String?.toShortOid(): String = if (this == null || this.length < 7) "" else this.substring(0, 7)
 
@@ -28,7 +30,7 @@ fun String.toColor(): Int? {
 
         return Color.parseColor(color)
     } catch (e: Exception) {
-        Timber.e(e, "string convert to color failed")
+        logcat(priority = LogPriority.ERROR) { "string convert to color failed\n${e.asLog()}" }
     }
 
     return null

@@ -51,6 +51,7 @@ import io.github.tonnyl.moka.ui.profile.edit.EditProfileScreen
 import io.github.tonnyl.moka.ui.profile.status.EditStatusScreen
 import io.github.tonnyl.moka.ui.profile.status.EditStatusViewModel
 import io.github.tonnyl.moka.ui.prs.PullRequestsScreen
+import io.github.tonnyl.moka.ui.release.ReleaseScreen
 import io.github.tonnyl.moka.ui.releases.ReleasesScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoriesScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
@@ -143,6 +144,9 @@ sealed class Screen(val route: String) {
 
     }
 
+    object Release :
+        Screen("release/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_TAG_NAME}}")
+
     object FAQ : Screen("faq")
 
     object Feedback : Screen("feedback")
@@ -196,6 +200,8 @@ sealed class Screen(val route: String) {
         const val ARG_DEFAULT_BRANCH_NAME = "arg_default_branch_name"
         const val ARG_SELECTED_BRANCH_NAME = "arg_selected_branch_name"
         const val ARG_REF_PREFIX = "arg_ref_prefix"
+
+        const val ARG_TAG_NAME = "arg_tag_name"
     }
 
 }
@@ -1007,6 +1013,31 @@ private fun MainNavHost(
                 defaultBranchName = backStackEntry.arguments?.getString(Screen.ARG_DEFAULT_BRANCH_NAME)
                     ?: return@composable,
                 selectedBranchName = backStackEntry.arguments?.getString(Screen.ARG_SELECTED_BRANCH_NAME)
+                    ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.Release.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_TAG_NAME) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.Release.route
+
+            ReleaseScreen(
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable,
+                tagName = backStackEntry.arguments?.getString(Screen.ARG_TAG_NAME)
                     ?: return@composable
             )
         }

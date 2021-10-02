@@ -42,4 +42,20 @@ class ThemedWebView @JvmOverloads constructor(
         )
     }
 
+    fun loadReleaseData(content: String) {
+        val data = if (resources.isDarkModeOn) {
+            content.replaceFirst("github_release_light.css", "github_release_dark.css")
+        } else {
+            content
+        }
+
+        loadDataWithBaseURL(
+            "file:///android_asset/",
+            data,
+            "text/html",
+            "UTF-8",
+            null
+        )
+    }
+
 }

@@ -554,4 +554,9 @@
     <string name="branch_default">Default</string>
     <string name="branch_selected">Checked</string>
 
+    <string name="release">Release</string>
+    <string name="released_by_and_when">released by %1$s %2$s</string>
+    <string name="release_tag">Tag</string>
+    <string name="release_assets">Assets</string>
+
 </resources>

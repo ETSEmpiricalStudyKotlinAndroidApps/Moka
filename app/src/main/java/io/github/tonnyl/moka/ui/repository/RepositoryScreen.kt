@@ -655,25 +655,6 @@ private fun RepositoryScreenContent(
 }
 
 @Composable
-private fun EmptyReadmeText(enablePlaceholder: Boolean) {
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Text(
-                text = stringResource(id = R.string.no_description_provided),
-                style = MaterialTheme.typography.caption,
-                modifier = Modifier.placeholder(
-                    visible = enablePlaceholder,
-                    highlight = PlaceholderHighlight.fade()
-                )
-            )
-        }
-    }
-}
-
-@Composable
 private fun LanguagesProgressBar(
     languages: List<Language>,
     languageEdges: List<Int>,

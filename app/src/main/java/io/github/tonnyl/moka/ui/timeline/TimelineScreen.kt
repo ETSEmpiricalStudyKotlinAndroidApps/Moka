@@ -308,7 +308,21 @@ private fun ItemTimelineEvent(
 
                     }
                     Event.RELEASE_EVENT -> {
+                        val repoFullName = (event.repo?.fullName
+                            ?: event.repo?.name
+                            ?: return@clickable
+                                ).split("/")
+                        if (repoFullName.size < 2) {
+                            return@clickable
+                        }
 
+                        val tagName = event.payload?.release?.tagName ?: return@clickable
+                        navController.navigate(
+                            route = Screen.Release.route
+                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", repoFullName[0])
+                                .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoFullName[1])
+                                .replace("{${Screen.ARG_TAG_NAME}}", tagName)
+                        )
                     }
                     Event.ORG_BLOCK_EVENT -> {
                         navigateToProfileScreen(

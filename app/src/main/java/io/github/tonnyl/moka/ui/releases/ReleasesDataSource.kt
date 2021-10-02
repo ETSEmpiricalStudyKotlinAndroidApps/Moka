@@ -37,8 +37,8 @@ class ReleasesDataSource(
                         repoName = name,
                         after = params.key,
                         before = params.key,
-                        first = null,
-                        last = params.loadSize,
+                        first = params.loadSize,
+                        last = null,
                         orderBy = ReleaseOrder(
                             direction = OrderDirection.DESC,
                             field_ = ReleaseOrderField.CREATED_AT

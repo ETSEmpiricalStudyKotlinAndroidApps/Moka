@@ -1,0 +1,31 @@
+fragment Release on Release {
+    author {
+        ...Actor
+    }
+    createdAt
+    descriptionHTML
+    isDraft
+    isLatest
+    isPrerelease
+    name
+    publishedAt
+    reactionGroups {
+        ...ReactionGroup
+    }
+    releaseAssets {
+        totalCount
+    }
+    repository {
+        owner {
+            ...RepositoryOwner
+        }
+    }
+    tagCommit {
+        oid
+        abbreviatedOid
+    }
+    tagName
+    url
+    updatedAt
+    viewerCanReact
+}

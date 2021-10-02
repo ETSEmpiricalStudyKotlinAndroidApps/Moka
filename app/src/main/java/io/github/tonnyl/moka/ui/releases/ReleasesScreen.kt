@@ -34,8 +34,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.fragment.ReleaseListItem
+import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.util.ReleaseProvider
+import io.github.tonnyl.moka.util.ReleaseListItemProvider
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -110,7 +111,9 @@ fun ReleasesScreen(
                 else -> {
                     ReleasesScreenContent(
                         contentTopPadding = contentPadding.calculateTopPadding(),
-                        releases = releases
+                        releases = releases,
+                        login = login,
+                        repoName = repoName
                     )
                 }
             }
@@ -144,10 +147,12 @@ fun ReleasesScreen(
 @Composable
 private fun ReleasesScreenContent(
     contentTopPadding: Dp,
+    login: String,
+    repoName: String,
     releases: LazyPagingItems<ReleaseListItem>
 ) {
     val releasePlaceholder = remember {
-        ReleaseProvider().values.first()
+        ReleaseListItemProvider().values.first()
     }
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
@@ -162,6 +167,8 @@ private fun ReleasesScreenContent(
         if (isInitialLoading) {
             items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
                 ItemRelease(
+                    login = login,
+                    repoName = repoName,
                     release = releasePlaceholder,
                     enablePlaceholder = true
                 )
@@ -173,6 +180,8 @@ private fun ReleasesScreenContent(
             ) { item ->
                 if (item != null) {
                     ItemRelease(
+                        login = login,
+                        repoName = repoName,
                         release = item,
                         enablePlaceholder = false
                     )
@@ -188,14 +197,25 @@ private fun ReleasesScreenContent(
 
 @Composable
 private fun ItemRelease(
+    login: String,
+    repoName: String,
     release: ReleaseListItem,
     enablePlaceholder: Boolean
 ) {
+    val navController = LocalNavController.current
+
     Column(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable(enabled = !enablePlaceholder) { }
+            .clickable(enabled = !enablePlaceholder) {
+                navController.navigate(
+                    route = Screen.Release.route
+                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                        .replace("{${Screen.ARG_TAG_NAME}}", release.tagName)
+                )
+            }
             .padding(all = ContentPaddingLargeSize)
             .fillMaxWidth()
     ) {
@@ -287,12 +307,14 @@ private fun ItemRelease(
 @Composable
 private fun ItemReleasePreview(
     @PreviewParameter(
-        provider = ReleaseProvider::class,
+        provider = ReleaseListItemProvider::class,
         limit = 1
     )
     release: ReleaseListItem
 ) {
     ItemRelease(
+        login = "TonnyL",
+        repoName = "PaperPlane",
         release = release,
         enablePlaceholder = false
     )

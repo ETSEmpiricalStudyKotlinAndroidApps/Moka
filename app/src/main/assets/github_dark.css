@@ -342,7 +342,7 @@ body span.float-right > span {
 }
 
 body code, body tt {
-    background-color: rgba(36, 37, 40, 0.4);
+    background-color: rgba(110, 118, 129, .4);
     border-radius: 3px;
     font-size: 85%;
     margin: 0;

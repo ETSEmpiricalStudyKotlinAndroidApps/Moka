@@ -4,10 +4,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.data.item.User
+import io.github.tonnyl.moka.fragment.Release
 import io.github.tonnyl.moka.fragment.ReleaseListItem
 import io.github.tonnyl.moka.fragment.TreeEntry
 import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery.Data.Repository.TreeObject.Entry
 import io.github.tonnyl.moka.queries.IssueQuery
+import io.github.tonnyl.moka.queries.ReleaseQuery
 import io.github.tonnyl.moka.queries.RepositoryCommitsQuery.Data.Repository.Ref.CommitTarget.History.Node
 import io.github.tonnyl.moka.type.*
 import kotlinx.datetime.Instant
@@ -1171,7 +1173,7 @@ class PullRequestProvider : PreviewParameterProvider<PullRequest> {
 
 }
 
-class ReleaseProvider : PreviewParameterProvider<ReleaseListItem> {
+class ReleaseListItemProvider : PreviewParameterProvider<ReleaseListItem> {
 
     override val values: Sequence<ReleaseListItem>
         get() = sequenceOf(
@@ -1307,6 +1309,67 @@ class BranchProvider : PreviewParameterProvider<Branch> {
                 name = "master",
                 prefix = "refs/heads/",
                 target = null
+            )
+        )
+
+}
+
+class ReleaseProvider : PreviewParameterProvider<Release> {
+
+    override val values: Sequence<Release>
+        get() = sequenceOf(
+            ReleaseQuery.Data.Repository.Release(
+                __typename = "",
+                author = ReleaseQuery.Data.Repository.Release.ActorAuthor(
+                    __typename = "",
+                    avatarUrl = "https://avatars.githubusercontent.com/u/1019875?u=34477b070af505986e26066dfa6a5d2d64f319b6&v=4",
+                    login = "onevcat",
+                    url = "https://github.com/onevcat"
+                ),
+                createdAt = Instant.parse("2021-09-21T12:54:24Z"),
+                descriptionHTML = "<h4>Add</h4>\n<ul>\n<li>Rewrite SwiftUI support based on <code>@StateObject</code> instead of the old <code>@ObservedObject</code>.",
+                isDraft = false,
+                isLatest = true,
+                isPrerelease = false,
+                name = "7.0.0 - Version 7",
+                publishedAt = Instant.parse("2021-09-21T12:56:18Z"),
+                reactionGroups = listOf(
+                    ReleaseQuery.Data.Repository.Release.ReactionGroup(
+                        __typename = "",
+                        ReactionContent.THUMBS_UP,
+                        viewerHasReacted = false,
+                        reactors = ReleaseQuery.Data.Repository.Release.ReactionGroup.Reactors(
+                            totalCount = 26
+                        )
+                    ),
+                    ReleaseQuery.Data.Repository.Release.ReactionGroup(
+                        __typename = "",
+                        ReactionContent.HEART,
+                        viewerHasReacted = false,
+                        reactors = ReleaseQuery.Data.Repository.Release.ReactionGroup.Reactors(
+                            totalCount = 23
+                        )
+                    )
+                ),
+                tagCommit = ReleaseQuery.Data.Repository.Release.TagCommit(
+                    oid = "8c65ddf756c633d01d9ae01092bf72f0c66dfc60",
+                    abbreviatedOid = "8c65ddf"
+                ),
+                tagName = "7.0.0",
+                url = "https://github.com/onevcat/Kingfisher/releases/tag/7.0.0",
+                updatedAt = Instant.parse("2021-09-21T12:56:18Z"),
+                viewerCanReact = true,
+                releaseAssets = ReleaseQuery.Data.Repository.Release.ReleaseAssets(totalCount = 1),
+                repository = ReleaseQuery.Data.Repository.Release.Repository(
+                    owner = ReleaseQuery.Data.Repository.Release.Repository.Owner(
+                        __typename = "",
+                        avatarUrl = "https://avatars.githubusercontent.com/u/1019875?u=34477b070af505986e26066dfa6a5d2d64f319b6&v=4",
+                        id = "MDQ6VXNlcjEwMTk4NzU=",
+                        login = "onevcat",
+                        url = "https://github.com/onevcat",
+                        resourcePath = ""
+                    )
+                )
             )
         )
 

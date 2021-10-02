@@ -38,6 +38,26 @@ object HtmlHandler {
         return wrapWithHtmlTemplate(renderer.render(document), login, repositoryName, branch)
     }
 
+    fun basicHtmlTemplate(
+        cssPath: String,
+        body: String
+    ): String {
+        return """
+            |<html>
+            |<head>
+            |<meta charset="UTF-8">
+            |<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            |<link rel="stylesheet" type="text/css" href=$cssPath>
+            |<script src="./intercept-hash.js"></script>
+            |</head>
+            |<body>
+            |$body
+            |<script src="./intercept-touch.js"></script>
+            |</body>
+            |</html>
+            """.trimMargin()
+    }
+
     private fun formatHtmlWithLink(
         raw: String,
         login: String,
@@ -99,20 +119,10 @@ object HtmlHandler {
         repositoryName: String,
         branch: String
     ): String {
-        return """
-            |<html>
-            |<head>
-            |<meta charset="UTF-8">
-            |<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-            |<link rel="stylesheet" type="text/css" href=${"./github_light.css"}>
-            |<script src="./intercept-hash.js"></script>
-            |</head>
-            |<body>
-            |${formatHtmlWithLink(raw, login, repositoryName, branch)}
-            |<script src="./intercept-touch.js"></script>
-            |</body>
-            |</html>
-            """.trimMargin()
+        return basicHtmlTemplate(
+            cssPath = "./github_light.css",
+            body = formatHtmlWithLink(raw, login, repositoryName, branch)
+        )
     }
 
 }

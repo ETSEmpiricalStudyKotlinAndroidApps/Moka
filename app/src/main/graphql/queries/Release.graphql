@@ -1,0 +1,7 @@
+query ReleaseQuery($login: String!, $repoName: String!, $tagName: String!) {
+    repository(owner: $login, name: $repoName) {
+        release(tagName: $tagName) {
+            ...Release
+        }
+    }
+}

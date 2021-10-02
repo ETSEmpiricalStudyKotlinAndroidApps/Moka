@@ -1,0 +1,17 @@
+query ReleaseAssetsQuery($login: String!, $repoName: String!, $tagName: String!, $after: String, $before: String, $perPage: Int!, $name: String) {
+    repository(owner: $login, name: $repoName) {
+        release(tagName: $tagName) {
+            releaseAssets(first: $perPage, before: $before, after: $after, name: $name) {
+                ... on ReleaseAssetConnection {
+                    nodes {
+                        ...ReleaseAsset
+                    }
+                    pageInfo {
+                        ...PageInfo
+                    }
+                    totalCount
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+fragment ReleaseAsset on ReleaseAsset {
+    contentType
+    createdAt
+    downloadCount
+    downloadUrl
+    name
+    id
+    size
+    updatedAt
+    uploadedBy {
+        ... Actor
+    }
+    url
+}

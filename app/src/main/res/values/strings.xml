@@ -559,4 +559,10 @@
     <string name="release_tag">Tag</string>
     <string name="release_assets">Assets</string>
 
+    <string name="download_release_asset_file">Download</string>
+    <string name="release_asset_size_in_bytes">%1$.1f B</string>
+    <string name="release_asset_size_kilobytes">%1$.1f KB</string>
+    <string name="release_asset_size_megabytes">%1$.1f MB</string>
+    <string name="release_asset_size_gigabytes">%1$.1f GB</string>
+
 </resources>

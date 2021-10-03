@@ -5,10 +5,12 @@ import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.data.item.User
 import io.github.tonnyl.moka.fragment.Release
+import io.github.tonnyl.moka.fragment.ReleaseAsset
 import io.github.tonnyl.moka.fragment.ReleaseListItem
 import io.github.tonnyl.moka.fragment.TreeEntry
 import io.github.tonnyl.moka.queries.CurrentLevelTreeViewQuery.Data.Repository.TreeObject.Entry
 import io.github.tonnyl.moka.queries.IssueQuery
+import io.github.tonnyl.moka.queries.ReleaseAssetsQuery
 import io.github.tonnyl.moka.queries.ReleaseQuery
 import io.github.tonnyl.moka.queries.RepositoryCommitsQuery.Data.Repository.Ref.CommitTarget.History.Node
 import io.github.tonnyl.moka.type.*
@@ -1370,6 +1372,32 @@ class ReleaseProvider : PreviewParameterProvider<Release> {
                         resourcePath = ""
                     )
                 )
+            )
+        )
+
+}
+
+class ReleaseAssetProvider : PreviewParameterProvider<ReleaseAsset> {
+
+    override val values: Sequence<ReleaseAsset>
+        get() = sequenceOf(
+            ReleaseAssetsQuery.Data.Repository.Release.ReleaseAssets.Node(
+                __typename = "",
+                contentType = "application/zip",
+                createdAt = Instant.parse("2021-09-20T06:22:09Z"),
+                downloadCount = 7503,
+                downloadUrl = "https://github.com/JetBrains/kotlin/releases/download/v1.5.31/kotlin-compiler-1.5.31.zip",
+                name = "kotlin-compiler-1.5.31.zip",
+                id = "RA_kwDOADRfSs4CsWT4",
+                size = 63536743,
+                updatedAt = Instant.parse("2021-09-20T06:22:28Z"),
+                uploadedBy = ReleaseAssetsQuery.Data.Repository.Release.ReleaseAssets.Node.ActorUploadedBy(
+                    avatarUrl = "https://avatars.githubusercontent.com/u/32216159?u=08901a2b45a5e78fec74226a3b6b5442c212d970&v=4",
+                    login = "woainikk",
+                    url = "https://github.com/woainikk",
+                    __typename = ""
+                ),
+                url = "https://github-releases.githubusercontent.com/3432266/ce3a513d-ff02-443b-b2b9-f4b4947d7c06?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20211003%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20211003T044640Z&X-Amz-Expires=300&X-Amz-Signature=b179ef345f91260d68363eddb8ec8e45dcafdadbb930afad7100119a685d0efd&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=3432266&response-content-disposition=attachment%3B%20filename%3Dkotlin-compiler-1.5.31.zip&response-content-type=application%2Foctet-stream"
             )
         )
 

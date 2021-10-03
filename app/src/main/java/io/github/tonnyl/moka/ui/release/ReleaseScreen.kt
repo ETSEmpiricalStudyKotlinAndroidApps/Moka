@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.annotation.ExperimentalCoilApi
@@ -274,7 +275,12 @@ private fun ReleaseScreenContent(
             modifier = Modifier.padding(
                 start = ContentPaddingLargeSize,
                 end = ContentPaddingLargeSize,
-                bottom = ContentPaddingLargeSize
+                bottom = ContentPaddingLargeSize,
+                top = if (enablePlaceholder) {
+                    ContentPaddingLargeSize
+                } else {
+                    0.dp
+                }
             )
         )
         InfoListItem(
@@ -302,7 +308,15 @@ private fun ReleaseScreenContent(
         InfoListItem(
             leadingRes = R.string.release_assets,
             trailing = release.releaseAssets.totalCount.toString(),
-            enablePlaceholder = enablePlaceholder
+            enablePlaceholder = enablePlaceholder,
+            modifier = Modifier.clickable(enabled = !enablePlaceholder) {
+                navController.navigate(
+                    route = Screen.ReleaseAssets.route
+                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                        .replace("{${Screen.ARG_TAG_NAME}}", release.tagName)
+                )
+            }
         )
     }
 }

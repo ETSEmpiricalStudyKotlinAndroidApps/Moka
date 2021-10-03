@@ -105,10 +105,7 @@ private fun SearchScreenContent(
     users: LazyPagingItems<SearchedUserOrOrgItem>?,
     repositories: LazyPagingItems<RepositoryItem>?
 ) {
-    val pagerState = rememberPagerState(
-        pageCount = SearchType.values().size,
-        initialOffscreenLimit = 2
-    )
+    val pagerState = rememberPagerState(initialPage = 0)
 
     Column(
         modifier = Modifier
@@ -175,7 +172,10 @@ private fun SearchScreenContent(
             }
         }
         Divider()
-        HorizontalPager(state = pagerState) { page ->
+        HorizontalPager(
+            state = pagerState,
+            count = SearchType.values().size
+        ) { page ->
             when (SearchType.values()[page]) {
                 SearchType.Users -> {
                     users?.let {

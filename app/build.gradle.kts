@@ -150,6 +150,7 @@ dependencies {
     implementation(Deps.AndroidX.Room.runtime)
     implementation(Deps.AndroidX.Room.migration)
     implementation(Deps.AndroidX.Room.ktx)
+    implementation(Deps.AndroidX.Room.paging)
     ksp(Deps.AndroidX.Room.compiler)
 
     implementation(Deps.AndroidX.UI.runtime)

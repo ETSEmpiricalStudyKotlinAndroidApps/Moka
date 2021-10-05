@@ -210,7 +210,6 @@
 
     <string name="repository" translation-description="repository">Repository</string>
     <string name="repository_view_code_image_content_description">View code</string>
-    <string name="repository_watch_image_content_description">Watch repository</string>
     <string name="repository_fork_image_content_description">Fork repository</string>
     <string name="repository_star_image_content_description">Star repository</string>
     <string name="repository_unstar_image_content_description">Unstar repository</string>
@@ -264,6 +263,14 @@
         <item quantity="other">@string/commits</item>
     </plurals>
     <string name="repository_update_time">Updated %1$s</string>
+    <string name="repository_subscription">Notifications</string>
+    <string name="repository_subscription_current_selection">Current selection</string>
+    <string name="repository_subscription_ignore">Ignore</string>
+    <string name="repository_subscription_ignore_desc">You will never be notified.</string>
+    <string name="repository_subscription_subscribe">Subscribe</string>
+    <string name="repository_subscription_subscribe_desc">You will be notified for all conversations.</string>
+    <string name="repository_subscription_unsubscribe">Unsubscribe</string>
+    <string name="repository_subscription_unsubscribe_desc">You will only be notified when participating or @mentioned.</string>
 
     <string name="reaction_group_and_count">%1$s %2$d</string><!-- 👍 10 -->
     <string name="add_reaction">React</string>

@@ -4,6 +4,7 @@ import android.text.format.DateUtils
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,9 +20,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,12 +43,14 @@ import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
+import io.github.tonnyl.moka.type.SubscriptionState
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.RepositoryProvider
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
+import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.math.min
 
@@ -77,196 +82,262 @@ fun RepositoryScreen(
     val repo = repositoryResource?.data
 
     val starredState by viewModel.starState.observeAsState()
+    val subscriptionState by viewModel.subscriptionState.observeAsState()
 
     val repositoryPlaceholder = remember {
         RepositoryProvider().values.first()
     }
 
-    Box(
-        modifier = Modifier
-            .navigationBarsPadding()
+    val bottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val coroutineScope = rememberCoroutineScope()
+
+    var topAppBarSize by remember { mutableStateOf(0) }
+
+    val contentPadding = rememberInsetsPaddingValues(
+        insets = LocalWindowInsets.current.systemBars,
+        applyTop = false,
+        additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
+    )
+
+    WatchOptionsBottomSheet(
+        currentState = subscriptionState?.data,
+        state = bottomSheetState,
+        bottomPadding = contentPadding.calculateBottomPadding(),
+        updateSubscription = {
+            viewModel.updateSubscription(it)
+            coroutineScope.launch {
+                bottomSheetState.hide()
+            }
+        }
     ) {
-        var topAppBarSize by remember { mutableStateOf(0) }
+        Box(
+            modifier = Modifier
+                .navigationBarsPadding()
+        ) {
+            val navController = LocalNavController.current
 
-        val navController = LocalNavController.current
+            val isLoading = repositoryResource?.status == Status.LOADING
 
-        val isLoading = repositoryResource?.status == Status.LOADING
+            Scaffold(
+                content = {
+                    when {
+                        isLoading || repo != null -> {
+                            RepositoryScreenContent(
+                                topAppBarSize = topAppBarSize,
+                                repository = repo ?: repositoryPlaceholder,
 
-        Scaffold(
-            content = {
-                when {
-                    isLoading || repo != null -> {
-                        RepositoryScreenContent(
-                            topAppBarSize = topAppBarSize,
-                            repository = repo ?: repositoryPlaceholder,
+                                onWatchersClicked = { },
+                                onStargazersClicked = { },
+                                onForksClicked = { },
+                                onPrsClicked = {
+                                    navController.navigate(
+                                        route = Screen.PullRequests.route
+                                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                    )
+                                },
+                                onIssuesClicked = {
+                                    navController.navigate(
+                                        route = Screen.Issues.route
+                                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                    )
+                                },
+                                onCommitsClicked = {
+                                    navController.navigate(
+                                        route = Screen.Commits.route
+                                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                            .replace(
+                                                "{${Screen.ARG_SELECTED_BRANCH_NAME}}",
+                                                repo?.defaultBranchRef?.name ?: "master"
+                                            )
+                                            .replace(
+                                                "{${Screen.ARG_REF_PREFIX}}",
+                                                repo?.defaultBranchRef?.prefix ?: "refs/heads/"
+                                            )
+                                            .replace(
+                                                "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
+                                                repo?.defaultBranchRef?.name ?: "master"
+                                            )
+                                    )
+                                },
+                                onReleasesClicked = {
+                                    navController.navigate(
+                                        route = Screen.Releases.route
+                                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                    )
+                                },
+                                readmeResource = readmeResource,
+                                enablePlaceholder = isLoading
+                            )
+                        }
+                        else -> {
+                            EmptyScreenContent(
+                                icon = R.drawable.ic_person_outline_24,
+                                title = if (repositoryResource?.status == Status.ERROR) {
+                                    R.string.user_profile_content_empty_title
+                                } else {
+                                    R.string.common_error_requesting_data
+                                },
+                                retry = R.string.common_retry,
+                                action = R.string.user_profile_content_empty_action
+                            )
+                        }
+                    }
 
-                            onWatchersClicked = { },
-                            onStargazersClicked = { },
-                            onForksClicked = { },
-                            onPrsClicked = {
+                    if (starredState?.status == Status.ERROR) {
+                        SnackBarErrorMessage(
+                            scaffoldState = scaffoldState,
+                            action = viewModel::toggleStar
+                        )
+                    } else if (subscriptionState?.status == Status.ERROR) {
+                        SnackBarErrorMessage(
+                            scaffoldState = scaffoldState,
+                            action = null,
+                            actionId = null
+                        )
+                    }
+                },
+                snackbarHost = {
+                    SnackbarHost(hostState = it) { data: SnackbarData ->
+                        Snackbar(snackbarData = data)
+                    }
+                },
+                bottomBar = {
+                    if (repo != null) {
+                        BottomAppBar(
+                            backgroundColor = MaterialTheme.colors.background,
+                            cutoutShape = CircleShape
+                        ) {
+                            IconButton(onClick = {
                                 navController.navigate(
-                                    route = Screen.PullRequests.route
-                                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                                )
-                            },
-                            onIssuesClicked = {
-                                navController.navigate(
-                                    route = Screen.Issues.route
-                                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                                )
-                            },
-                            onCommitsClicked = {
-                                navController.navigate(
-                                    route = Screen.Commits.route
+                                    route = Screen.RepositoryFiles.route
                                         .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
                                         .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
                                         .replace(
-                                            "{${Screen.ARG_SELECTED_BRANCH_NAME}}",
-                                            repo?.defaultBranchRef?.name ?: "master"
+                                            "{${Screen.ARG_EXPRESSION}}",
+                                            "${repo.defaultBranchRef?.name ?: "master"}:"
                                         )
                                         .replace(
                                             "{${Screen.ARG_REF_PREFIX}}",
-                                            repo?.defaultBranchRef?.prefix ?: "refs/heads/"
+                                            repo.defaultBranchRef?.prefix ?: "refs/heads/"
                                         )
                                         .replace(
                                             "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
-                                            repo?.defaultBranchRef?.name ?: "master"
+                                            repo.defaultBranchRef?.name ?: "master"
                                         )
                                 )
-                            },
-                            onReleasesClicked = {
-                                navController.navigate(
-                                    route = Screen.Releases.route
-                                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                            }) {
+                                Icon(
+                                    contentDescription = stringResource(id = R.string.repository_view_code_image_content_description),
+                                    painter = painterResource(id = R.drawable.ic_code_24)
                                 )
-                            },
-                            readmeResource = readmeResource,
-                            enablePlaceholder = isLoading
-                        )
+                            }
+                            AnimatedContent(
+                                targetState = subscriptionState?.data,
+                                contentAlignment = Alignment.Center,
+                                transitionSpec = {
+                                    scaleIn() with scaleOut()
+                                    fadeIn() with fadeOut()
+                                }
+                            ) {
+                                IconButton(onClick = {
+                                    if (!bottomSheetState.isVisible) {
+                                        coroutineScope.launch {
+                                            bottomSheetState.show()
+                                        }
+                                    }
+                                }) {
+                                    Icon(
+                                        contentDescription = stringResource(id = R.string.repository_subscription),
+                                        painter = painterResource(
+                                            id = when (subscriptionState?.data) {
+                                                SubscriptionState.IGNORED -> {
+                                                    R.drawable.ic_notifications_off
+                                                }
+                                                SubscriptionState.SUBSCRIBED -> {
+                                                    R.drawable.ic_eye_24
+                                                }
+                                                else -> {
+                                                    R.drawable.ic_visibility_off_24
+                                                }
+                                            }
+                                        )
+                                    )
+                                }
+                            }
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    contentDescription = stringResource(id = R.string.repository_fork_image_content_description),
+                                    painter = painterResource(id = R.drawable.ic_code_fork_24)
+                                )
+                            }
+                        }
                     }
-                    else -> {
-                        EmptyScreenContent(
-                            icon = R.drawable.ic_person_outline_24,
-                            title = if (repositoryResource?.status == Status.ERROR) {
-                                R.string.user_profile_content_empty_title
-                            } else {
-                                R.string.common_error_requesting_data
-                            },
-                            retry = R.string.common_retry,
-                            action = R.string.user_profile_content_empty_action
-                        )
+                },
+                floatingActionButton = {
+                    if (repo != null) {
+                        FloatingActionButton(
+                            onClick = { viewModel.toggleStar() },
+                            shape = CircleShape
+                        ) {
+                            AnimatedContent(
+                                targetState = starredState?.data,
+                                contentAlignment = Alignment.Center,
+                                transitionSpec = {
+                                    fadeIn() with fadeOut()
+                                    scaleIn() with scaleOut()
+                                }
+                            ) {
+                                Icon(
+                                    contentDescription = stringResource(
+                                        id = if (starredState?.data == true) {
+                                            R.string.repository_unstar_image_content_description
+                                        } else {
+                                            R.string.repository_star_image_content_description
+                                        }
+                                    ),
+                                    painter = painterResource(
+                                        id = if (starredState?.data == true) {
+                                            R.drawable.ic_star_24
+                                        } else {
+                                            R.drawable.ic_star_border_24
+                                        }
+                                    ),
+                                    tint = MaterialTheme.colors.onPrimary
+                                )
+                            }
+                        }
                     }
-                }
+                },
+                isFloatingActionButtonDocked = true,
+                floatingActionButtonPosition = FabPosition.End,
+                scaffoldState = scaffoldState
+            )
 
-                if (starredState?.status == Status.ERROR) {
-                    SnackBarErrorMessage(
-                        scaffoldState = scaffoldState,
-                        action = viewModel::toggleStar
+            InsetAwareTopAppBar(
+                title = { Text(text = stringResource(id = R.string.repository)) },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { navController.navigateUp() },
+                        content = {
+                            Icon(
+                                contentDescription = stringResource(id = R.string.navigate_up),
+                                painter = painterResource(id = R.drawable.ic_arrow_back_24)
+                            )
+                        }
                     )
-                }
-            },
-            snackbarHost = {
-                SnackbarHost(hostState = it) { data: SnackbarData ->
-                    Snackbar(snackbarData = data)
-                }
-            },
-            bottomBar = {
-                if (repo != null) {
-                    BottomAppBar(
-                        backgroundColor = MaterialTheme.colors.background,
-                        cutoutShape = CircleShape
-                    ) {
-                        IconButton(onClick = {
-                            navController.navigate(
-                                route = Screen.RepositoryFiles.route
-                                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                                    .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                                    .replace(
-                                        "{${Screen.ARG_EXPRESSION}}",
-                                        "${repo.defaultBranchRef?.name ?: "master"}:"
-                                    )
-                                    .replace(
-                                        "{${Screen.ARG_REF_PREFIX}}",
-                                        repo.defaultBranchRef?.prefix ?: "refs/heads/"
-                                    )
-                                    .replace(
-                                        "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
-                                        repo.defaultBranchRef?.name ?: "master"
-                                    )
-                            )
-                        }) {
-                            Icon(
-                                contentDescription = stringResource(id = R.string.repository_view_code_image_content_description),
-                                painter = painterResource(id = R.drawable.ic_code_24)
-                            )
-                        }
-                        IconButton(onClick = {}) {
-                            Icon(
-                                contentDescription = stringResource(id = R.string.repository_watch_image_content_description),
-                                painter = painterResource(id = R.drawable.ic_eye_24)
-                            )
-                        }
-                        IconButton(onClick = {}) {
-                            Icon(
-                                contentDescription = stringResource(id = R.string.repository_fork_image_content_description),
-                                painter = painterResource(id = R.drawable.ic_code_fork_24)
-                            )
-                        }
-                    }
-                }
-            },
-            floatingActionButton = {
-                if (repo != null) {
-                    FloatingActionButton(
-                        onClick = { viewModel.toggleStar() },
-                        shape = CircleShape
-                    ) {
-                        Icon(
-                            contentDescription = stringResource(
-                                id = if (starredState?.data == true) {
-                                    R.string.repository_unstar_image_content_description
-                                } else {
-                                    R.string.repository_star_image_content_description
-                                }
-                            ),
-                            painter = painterResource(
-                                id = if (starredState?.data == true) {
-                                    R.drawable.ic_star_24
-                                } else {
-                                    R.drawable.ic_star_border_24
-                                }
-                            ),
-                            tint = MaterialTheme.colors.onPrimary
-                        )
-                    }
-                }
-            },
-            isFloatingActionButtonDocked = true,
-            floatingActionButtonPosition = FabPosition.End,
-            scaffoldState = scaffoldState
-        )
-
-        InsetAwareTopAppBar(
-            title = { Text(text = stringResource(id = R.string.repository)) },
-            navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            painter = painterResource(id = R.drawable.ic_arrow_back_24)
-                        )
-                    }
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onSizeChanged { topAppBarSize = it.height }
-        )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onSizeChanged { topAppBarSize = it.height }
+            )
+        }
     }
+
 }
 
 @ExperimentalCoilApi
@@ -751,6 +822,128 @@ private fun LanguageLabel(
     }
 }
 
+@ExperimentalMaterialApi
+@Composable
+private fun WatchOptionsBottomSheet(
+    state: ModalBottomSheetState,
+    currentState: SubscriptionState?,
+    bottomPadding: Dp,
+    updateSubscription: (SubscriptionState) -> Unit,
+    content: @Composable () -> Unit
+) {
+    ModalBottomSheetLayout(
+        sheetState = state,
+        sheetShape = MaterialTheme.shapes.small,
+        sheetContent = {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                item {
+                    Text(
+                        text = stringResource(id = R.string.repository_subscription),
+                        style = MaterialTheme.typography.h6,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(
+                            start = ContentPaddingLargeSize + ContentPaddingSmallSize,
+                            top = ContentPaddingLargeSize,
+                            bottom = ContentPaddingLargeSize,
+                            end = ContentPaddingLargeSize
+                        )
+                    )
+                }
+
+                item {
+                    WatchOptionItem(
+                        state = SubscriptionState.SUBSCRIBED,
+                        selectedState = currentState,
+                        updateSubscription = updateSubscription
+                    )
+                }
+
+                item {
+                    WatchOptionItem(
+                        state = SubscriptionState.UNSUBSCRIBED,
+                        selectedState = currentState,
+                        updateSubscription = updateSubscription
+                    )
+                }
+
+                item {
+                    WatchOptionItem(
+                        state = SubscriptionState.IGNORED,
+                        selectedState = currentState,
+                        updateSubscription = updateSubscription
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(height = bottomPadding))
+                }
+            }
+        },
+        content = content
+    )
+}
+
+@ExperimentalMaterialApi
+@Composable
+private fun WatchOptionItem(
+    state: SubscriptionState,
+    selectedState: SubscriptionState?,
+    updateSubscription: (SubscriptionState) -> Unit
+) {
+    ListItem(
+        icon = {
+            if (selectedState == state) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_check_24),
+                    contentDescription = stringResource(id = R.string.repository_subscription_current_selection),
+                    tint = MaterialTheme.colors.primary,
+                    modifier = Modifier
+                        .size(size = IconSize)
+                        .padding(all = ContentPaddingSmallSize)
+                )
+            }
+        },
+        secondaryText = {
+            Text(
+                text = stringResource(
+                    id = when (state) {
+                        SubscriptionState.IGNORED -> {
+                            R.string.repository_subscription_ignore_desc
+                        }
+                        SubscriptionState.UNSUBSCRIBED -> {
+                            R.string.repository_subscription_unsubscribe_desc
+                        }
+                        else -> {
+                            R.string.repository_subscription_subscribe_desc
+                        }
+                    }
+                ),
+                style = MaterialTheme.typography.body2
+            )
+        },
+        modifier = Modifier.clickable(enabled = selectedState != null) {
+            updateSubscription.invoke(state)
+        }
+    ) {
+        Text(
+            text = stringResource(
+                id = when (state) {
+                    SubscriptionState.IGNORED -> {
+                        R.string.repository_subscription_ignore
+                    }
+                    SubscriptionState.UNSUBSCRIBED -> {
+                        R.string.repository_subscription_unsubscribe
+                    }
+                    else -> {
+                        R.string.repository_subscription_subscribe
+                    }
+                }
+            ),
+            style = MaterialTheme.typography.body1
+        )
+    }
+}
+
 @ExperimentalCoilApi
 @ExperimentalAnimationApi
 @Preview(showBackground = true, name = "RepositoryScreenContentPreview")
@@ -800,4 +993,20 @@ private fun LanguageProgressBarPreview() {
         totalSize = 50,
         remainingPercentage = .5f
     )
+}
+
+@ExperimentalMaterialApi
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFFFFF,
+    name = "WatchOptionItemPreview"
+)
+@Composable
+private fun WatchOptionItemPreview() {
+    WatchOptionItem(
+        state = SubscriptionState.SUBSCRIBED,
+        selectedState = SubscriptionState.SUBSCRIBED
+    ) {
+
+    }
 }

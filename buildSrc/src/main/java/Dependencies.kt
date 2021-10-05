@@ -4,7 +4,7 @@ object Versions {
     const val targetSdk = 31
     const val minSdk = 23
 
-    const val androidGradle = "7.0.2"
+    const val androidGradle = "7.0.3"
     const val gmsGoogleServiceGradle = "4.3.10"
     const val firebaseCrashlyticsGradle = "2.7.1"
     const val desugaring = "1.1.5"

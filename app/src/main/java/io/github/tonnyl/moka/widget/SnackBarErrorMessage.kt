@@ -14,15 +14,19 @@ import io.github.tonnyl.moka.R
 @Composable
 fun SnackBarErrorMessage(
     scaffoldState: ScaffoldState,
-    action: () -> Unit,
+    action: (() -> Unit)? = null,
     @StringRes
     messageId: Int = R.string.common_error_requesting_data,
     @StringRes
-    actionId: Int = R.string.common_retry,
+    actionId: Int? = R.string.common_retry,
     duration: SnackbarDuration = SnackbarDuration.Short
 ) {
     val message = stringResource(id = messageId)
-    val actionLabel = stringResource(id = actionId)
+    val actionLabel = if (actionId == null) {
+        null
+    } else {
+        stringResource(id = actionId)
+    }
 
     LaunchedEffect(messageId, actionId, duration, action) {
         val result = scaffoldState.snackbarHostState.showSnackbar(
@@ -31,7 +35,7 @@ fun SnackBarErrorMessage(
             duration = duration
         )
         if (result == SnackbarResult.ActionPerformed) {
-            action.invoke()
+            action?.invoke()
         }
     }
 }

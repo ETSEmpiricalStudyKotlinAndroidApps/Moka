@@ -8,11 +8,14 @@ import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.data.toNullableRepository
+import io.github.tonnyl.moka.mutations.UpdateSubscriptionMutation
 import io.github.tonnyl.moka.network.Resource
 import io.github.tonnyl.moka.network.Status
 import io.github.tonnyl.moka.network.mutations.addStar
 import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.queries.RepositoryQuery
+import io.github.tonnyl.moka.type.SubscriptionState
+import io.github.tonnyl.moka.type.UpdateSubscriptionInput
 import io.github.tonnyl.moka.util.HtmlHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,6 +44,10 @@ class RepositoryViewModel(
     val starState: LiveData<Resource<Boolean?>>
         get() = _starState
 
+    private val _subscriptionState = MutableLiveData<Resource<SubscriptionState?>>()
+    val subscriptionState: LiveData<Resource<SubscriptionState?>>
+        get() = _subscriptionState
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             _repository.postValue(Resource.loading(null))
@@ -56,6 +63,8 @@ class RepositoryViewModel(
                     ).data?.repository.toNullableRepository()
 
                 _repository.postValue(Resource.success(repo))
+                _starState.postValue(Resource.success(repo?.viewerHasStarred))
+                _subscriptionState.postValue(Resource.success(repo?.viewerSubscription))
 
                 repo?.defaultBranchRef?.let { ref ->
                     updateBranchName(ref.name)
@@ -130,6 +139,39 @@ class RepositoryViewModel(
                 logcat(priority = LogPriority.ERROR) { e.asLog() }
 
                 _starState.postValue(Resource.error(e.message, hasStarred))
+            }
+        }
+    }
+
+    fun updateSubscription(state: SubscriptionState) {
+        val repo = repository.value?.data ?: return
+        if (_subscriptionState.value?.status == Status.LOADING
+            || !repo.viewerCanSubscribe
+            || _subscriptionState.value?.data == state
+        ) {
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                _subscriptionState.postValue(Resource.loading(data = _subscriptionState.value?.data))
+
+                accountInstance.apolloGraphQLClient
+                    .apolloClient
+                    .mutate(
+                        mutation = UpdateSubscriptionMutation(
+                            input = UpdateSubscriptionInput(
+                                state = state,
+                                subscribableId = repo.id
+                            )
+                        )
+                    )
+
+                _subscriptionState.postValue(Resource.success(data = state))
+            } catch (e: Exception) {
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
+
+                _subscriptionState.postValue(Resource.error(msg = e.message, data = _subscriptionState.value?.data))
             }
         }
     }

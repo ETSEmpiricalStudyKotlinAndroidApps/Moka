@@ -6,6 +6,7 @@ import android.provider.Browser
 import android.text.format.DateUtils
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -49,6 +50,7 @@ import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalAnimationApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
@@ -161,6 +163,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
     }
 }
 
+@ExperimentalAnimationApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
@@ -251,29 +254,39 @@ private fun ProfileScreenContent(
                 && user.login != currentLoginUser
             ) {
                 Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
-                OutlinedButton(
-                    enabled = !enablePlaceholder,
-                    onClick = { viewModel?.toggleFollow() },
-                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                AnimatedContent(
+                    targetState = follow,
+                    contentAlignment = Alignment.Center,
+                    transitionSpec = {
+                        fadeIn() with fadeOut()
+                    }
                 ) {
-                    Text(
-                        text = stringResource(
-                            id = if (follow == true) {
-                                R.string.user_profile_unfollow
-                            } else {
-                                R.string.user_profile_follow
-                            }
-                        ),
-                        modifier = Modifier.placeholder(
-                            visible = enablePlaceholder,
-                            highlight = PlaceholderHighlight.fade()
+                    OutlinedButton(
+                        enabled = !enablePlaceholder,
+                        onClick = { viewModel?.toggleFollow() },
+                        modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            text = stringResource(
+                                id = if (follow == true) {
+                                    R.string.user_profile_unfollow
+                                } else {
+                                    R.string.user_profile_follow
+                                }
+                            ),
+                            modifier = Modifier.placeholder(
+                                visible = enablePlaceholder,
+                                highlight = PlaceholderHighlight.fade()
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
 
-        if (user != null) {
+        if (user != null
+            && (user.status != null || user.isViewer)
+        ) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -290,6 +303,7 @@ private fun ProfileScreenContent(
                     } else {
                         MaterialTheme.colors.surface
                     },
+                    enabled = !enablePlaceholder && user.isViewer,
                     onClick = {
                         if (enablePlaceholder) {
                             return@Card
@@ -873,6 +887,7 @@ private fun PinnedGistCard(
 
 // Preview section start
 
+@ExperimentalAnimationApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi

@@ -9,10 +9,10 @@ object Versions {
     const val firebaseCrashlyticsGradle = "2.7.1"
     const val desugaring = "1.1.5"
     const val kotlin = "1.5.31"
-    const val dateTime = "0.2.1"
+    const val dateTime = "0.3.0"
     const val coroutines = "1.5.2"
-    const val serializationJson = "1.2.2"
-    const val serializationProtoBuf = "1.2.2"
+    const val serializationJson = "1.3.0"
+    const val serializationProtoBuf = "1.3.0"
     const val browser = "1.4.0-beta01"
     const val lifecycle = "2.2.0"
     const val liveDataKtx = "2.4.0-rc01"
@@ -24,6 +24,7 @@ object Versions {
     const val workManager = "2.7.0-rc01"
     const val room = "2.4.0-alpha05"
     const val ui = "1.1.0-alpha05"
+    const val composeDesktop = "1.0.0-beta3"
     const val constraintLayoutCompose = "1.0.0-rc01"
     const val dataStore = "1.0.0"
     const val activityCompose = "1.4.0-beta01"
@@ -33,12 +34,13 @@ object Versions {
     const val kspApi = "1.5.31-1.0.0"
     const val lottie = "4.1.0"
     const val okhttpLoggingInterceptor = "4.7.2"
-    const val apollo = "3.0.0-dev12"
+    const val apollo = "3.0.0-beta01"
     const val commonMark = "0.15.2"
     const val coil = "1.3.2"
     const val jsoup = "1.12.1"
     const val logcat = "0.1"
-    const val ktor = "1.6.3"
+    const val ktor = "1.6.4"
+    const val logback = "1.3.0-alpha10"
     const val firebaseAnalyticsKtx = "19.0.0"
     const val firebaseCrashlytics = "18.0.0"
     const val junit = "4.13"
@@ -68,7 +70,7 @@ object Deps {
         const val firebaseCrashlyticsGradle =
             "com.google.firebase:firebase-crashlytics-gradle:${Versions.firebaseCrashlyticsGradle}"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}"
-        const val apollo = "com.apollographql.apollo3:apollo-gradle-plugin:${Versions.apollo}"
+        const val compose = "org.jetbrains.compose:compose-gradle-plugin:${Versions.composeDesktop}"
 
     }
 
@@ -191,8 +193,11 @@ object Deps {
 
         const val core = "io.ktor:ktor-client-core:${Versions.ktor}"
         const val logging = "io.ktor:ktor-client-logging:${Versions.ktor}"
-        const val okhttpClient = "io.ktor:ktor-client-okhttp:${Versions.ktor}"
         const val serialization = "io.ktor:ktor-client-serialization:${Versions.ktor}"
+        const val logback = "ch.qos.logback:logback-classic:${Versions.logback}"
+        const val auth = "io.ktor:ktor-client-auth:${Versions.ktor}"
+        const val cio = "io.ktor:ktor-client-cio:${Versions.ktor}"
+        const val ios = "io.ktor:ktor-client-ios:${Versions.ktor}"
 
     }
 
@@ -205,7 +210,8 @@ object Deps {
 
     object Apollo {
 
-        const val runtime = "com.apollographql.apollo3:apollo-runtime-kotlin:${Versions.apollo}"
+        const val runtime = "com.apollographql.apollo3:apollo-runtime:${Versions.apollo}"
+        const val adapters = "com.apollographql.apollo3:apollo-adapters:${Versions.apollo}"
 
     }
 

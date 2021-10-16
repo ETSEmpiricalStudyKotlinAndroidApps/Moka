@@ -1,0 +1,31 @@
+name: iOS
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: macOS-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_13.0.app
+
+      - name: Xcode version
+        run: /usr/bin/xcodebuild -version
+
+      - name: Xcode build
+        run: |
+          cd ios/
+          xcodebuild clean build -scheme ios -destination 'platform=iOS Simulator,name=iPhone 11,OS=15.0'

@@ -60,7 +60,7 @@ class RepositoryViewModel(
                             login = login,
                             repoName = repositoryName
                         )
-                    ).data?.repository.toNullableRepository()
+                    ).execute().data?.repository.toNullableRepository()
 
                 _repository.postValue(Resource.success(repo))
                 _starState.postValue(Resource.success(repo?.viewerHasStarred))

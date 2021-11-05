@@ -30,7 +30,7 @@ class FollowersDataSource(
                         before = params.key,
                         after = params.key
                     )
-                ).data?.user
+                ).execute().data?.user
 
                 list.addAll(
                     user?.followers?.nodes.orEmpty().mapNotNull { node ->

@@ -2,6 +2,7 @@ package io.tonnyl.moka.common.network
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.adapter.KotlinxInstantAdapter
+import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
@@ -39,7 +40,7 @@ class ApolloGraphQLClient(accessToken: String) {
             )
             .addCustomScalarAdapter(
                 customScalarType = Date.type,
-                customScalarAdapter = KotlinxInstantAdapter
+                customScalarAdapter = KotlinxLocalDateAdapter
             )
             .addCustomScalarAdapter(
                 customScalarType = HTML.type,

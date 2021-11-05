@@ -115,7 +115,7 @@ apollo {
                 "GitTimestamp" to "kotlinx.datetime.Instant",
                 "DateTime" to "kotlinx.datetime.Instant",
                 "PreciseDateTime" to "kotlinx.datetime.Instant",
-                "Date" to "kotlinx.datetime.Instant",
+                "Date" to "kotlinx.datetime.LocalDate",
                 "HTML" to "kotlin.String",
                 "URI" to "kotlin.String",
                 "GitObjectID" to "kotlin.String",

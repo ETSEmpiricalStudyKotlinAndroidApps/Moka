@@ -30,7 +30,7 @@ class StarredRepositoriesDataSource(
                         after = params.key,
                         before = params.key
                     )
-                ).data?.user
+                ).execute().data?.user
 
                 list.addAll(
                     user?.starredRepositories?.nodes.orEmpty().mapNotNull { node ->

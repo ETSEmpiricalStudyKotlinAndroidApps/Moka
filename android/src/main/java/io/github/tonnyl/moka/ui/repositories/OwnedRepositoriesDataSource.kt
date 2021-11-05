@@ -32,7 +32,7 @@ class OwnedRepositoriesDataSource(
                         after = params.key,
                         before = params.key
                     )
-                ).data?.user
+                ).execute().data?.user
 
                 list.addAll(
                     user?.repositories?.nodes.orEmpty().mapNotNull { node ->

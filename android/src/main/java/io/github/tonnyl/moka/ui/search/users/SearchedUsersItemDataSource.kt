@@ -34,7 +34,7 @@ class SearchedUsersItemDataSource(
                         after = params.key,
                         before = params.key
                     )
-                ).data?.search
+                ).execute().data?.search
 
                 list.addAll(
                     search?.nodes.orEmpty().mapNotNull { node ->

@@ -67,7 +67,7 @@ class ProfileViewModel(
             try {
                 val user = accountInstance.apolloGraphQLClient.apolloClient.query(
                     UserQuery(login)
-                ).data?.user?.user?.toNonNullUser()
+                ).execute().data?.user?.user?.toNonNullUser()
 
                 _userProfile.postValue(Resource.success(user))
 
@@ -92,7 +92,7 @@ class ProfileViewModel(
                 val org = accountInstance.apolloGraphQLClient
                     .apolloClient.query(
                         query = OrganizationQuery(login = login)
-                    ).data?.organization?.organization?.toNoneNullOrganization()
+                    ).execute().data?.organization?.organization?.toNoneNullOrganization()
 
                 _organizationProfile.postValue(Resource.success(org))
 

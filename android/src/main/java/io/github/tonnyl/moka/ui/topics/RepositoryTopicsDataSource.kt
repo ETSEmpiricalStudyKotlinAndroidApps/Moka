@@ -38,7 +38,7 @@ class RepositoryTopicsDataSource(
                         first = params.loadSize,
                         last = null
                     )
-                ).data?.repository?.repositoryTopics
+                ).execute().data?.repository?.repositoryTopics
 
                 list.addAll(
                     response?.nodes.orEmpty().mapNotNull { node ->

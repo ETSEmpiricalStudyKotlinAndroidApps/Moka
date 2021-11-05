@@ -43,7 +43,7 @@ class ReleasesDataSource(
                             field_ = ReleaseOrderField.CREATED_AT
                         )
                     )
-                ).data?.repository
+                ).execute().data?.repository
 
                 list.addAll(
                     repository?.releases?.nodes.orEmpty().mapNotNull { it?.releaseListItem }

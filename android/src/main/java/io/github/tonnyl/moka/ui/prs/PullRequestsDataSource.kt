@@ -32,7 +32,7 @@ class PullRequestsDataSource(
                         before = params.key,
                         perPage = params.loadSize
                     )
-                ).data?.repository
+                ).execute().data?.repository
 
                 list.addAll(
                     repository?.pullRequests?.nodes.orEmpty().mapNotNull { node ->

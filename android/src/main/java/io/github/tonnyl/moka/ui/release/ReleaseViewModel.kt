@@ -43,7 +43,7 @@ class ReleaseViewModel(
                         repoName = repoName,
                         tagName = tagName
                     )
-                ).data?.repository?.release
+                ).execute().data?.repository?.release
 
                 _release.postValue(
                     Resource.success(

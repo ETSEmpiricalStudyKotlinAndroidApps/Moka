@@ -32,7 +32,7 @@ class IssuesDataSource(
                         before = params.key,
                         perPage = params.loadSize
                     )
-                ).data?.repository
+                ).execute().data?.repository
 
                 repository?.issues?.nodes?.forEach { node ->
                     node?.let {

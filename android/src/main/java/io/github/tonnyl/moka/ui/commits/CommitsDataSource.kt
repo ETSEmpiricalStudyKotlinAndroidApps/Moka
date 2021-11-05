@@ -39,7 +39,7 @@ class CommitsDataSource(
                         first = params.loadSize,
                         last = null
                     )
-                ).data?.repository?.ref?.target?.onCommit?.history
+                ).execute().data?.repository?.ref?.target?.onCommit?.history
 
                 list.addAll(response?.nodes.orEmpty().mapNotNull { it?.commitListItem })
 

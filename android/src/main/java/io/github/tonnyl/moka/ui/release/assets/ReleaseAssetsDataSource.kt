@@ -38,7 +38,7 @@ class ReleaseAssetsDataSource(
                         before = params.key,
                         perPage = params.loadSize
                     )
-                ).data?.repository
+                ).execute().data?.repository
 
                 list.addAll(
                     repository?.release?.releaseAssets?.onReleaseAssetConnection?.nodes.orEmpty()

@@ -49,7 +49,7 @@ class BranchesDataSource(
                         refPrefix = refPrefix,
                         orderBy = sort
                     )
-                ).data?.repository?.refs
+                ).execute().data?.repository?.refs
 
                 list.addAll(response?.nodes?.mapNotNull { it?.ref }.orEmpty())
 

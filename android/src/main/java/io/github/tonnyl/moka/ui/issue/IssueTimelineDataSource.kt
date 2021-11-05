@@ -39,7 +39,7 @@ class IssueTimelineDataSource(
                             before = params.key,
                             perPage = params.loadSize
                         )
-                    ).data?.repository?.issue
+                    ).execute().data?.repository?.issue
 
                     issue?.toNonNullIssue()?.let {
                         issueData.postValue(it)
@@ -71,7 +71,7 @@ class IssueTimelineDataSource(
                                 before = params.key,
                                 perPage = params.loadSize
                             )
-                        ).data?.repository?.issue?.timelineItems
+                        ).execute().data?.repository?.issue?.timelineItems
 
                     list.addAll(
                         timeline?.nodes.orEmpty().mapNotNull { node ->

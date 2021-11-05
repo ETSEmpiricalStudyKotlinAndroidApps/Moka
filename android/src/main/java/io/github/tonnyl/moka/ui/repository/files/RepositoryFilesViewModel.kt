@@ -48,7 +48,7 @@ class RepositoryFilesViewModel(
                         )
                     )
 
-                val entries = response.data
+                val entries = response.execute().data
                     ?.repository
                     ?.object_
                     ?.tree

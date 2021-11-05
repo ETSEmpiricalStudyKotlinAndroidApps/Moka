@@ -40,7 +40,7 @@ class PullRequestTimelineDataSource(
                             before = params.key,
                             perPage = params.loadSize
                         )
-                    ).data?.repository?.pullRequest
+                    ).execute().data?.repository?.pullRequest
 
                     pullRequestData.postValue(pullRequest.toNullablePullRequest())
 
@@ -71,7 +71,7 @@ class PullRequestTimelineDataSource(
                            before = params.key,
                            perPage = params.loadSize
                        )
-                    ).data?.repository?.pullRequest?.timelineItems
+                    ).execute().data?.repository?.pullRequest?.timelineItems
 
                     list.addAll(
                         timeline?.nodes.orEmpty().mapNotNull { node ->

@@ -34,7 +34,7 @@ class SearchedRepositoriesItemDataSource(
                         after = params.key,
                         before = params.key
                     )
-                ).data?.search
+                ).execute().data?.search
 
                 search?.nodes?.forEach { node ->
                     node?.let {

@@ -30,8 +30,11 @@ import io.tonnyl.moka.graphql.fragment.ReactionGroup
 import io.tonnyl.moka.graphql.fragment.Release
 import io.tonnyl.moka.graphql.fragment.ReleaseAsset
 import io.tonnyl.moka.graphql.fragment.TreeEntry
+import io.tonnyl.moka.graphql.fragment.User.*
+import io.tonnyl.moka.graphql.fragment.User.ContributionCalendar
 import io.tonnyl.moka.graphql.type.*
 import kotlinx.datetime.Instant
+import kotlinx.datetime.toLocalDate
 import io.tonnyl.moka.graphql.fragment.Ref as Branch
 
 class TimelineEventProvider : PreviewParameterProvider<Event> {
@@ -933,7 +936,8 @@ class UserProvider : PreviewParameterProvider<io.github.tonnyl.moka.data.User> {
                         ),
                         repositoryListItemFragment = null
                     )
-                )
+                ),
+                contributionCalendar = ContributionCalendarProvider().values.first()
             )
         )
 
@@ -1400,7 +1404,7 @@ class ReleaseProvider : PreviewParameterProvider<Release> {
                     ),
                     Release.ReactionGroup(
                         __typename = "",
-                       reactionGroup = ReactionGroup(
+                        reactionGroup = ReactionGroup(
                             content = ReactionContent.HEART,
                             viewerHasReacted = false,
                             reactors = ReactionGroup.Reactors(
@@ -1457,6 +1461,88 @@ class ReleaseAssetProvider : PreviewParameterProvider<ReleaseAsset> {
                     )
                 ),
                 url = "https://github-releases.githubusercontent.com/3432266/ce3a513d-ff02-443b-b2b9-f4b4947d7c06?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20211003%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20211003T044640Z&X-Amz-Expires=300&X-Amz-Signature=b179ef345f91260d68363eddb8ec8e45dcafdadbb930afad7100119a685d0efd&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=3432266&response-content-disposition=attachment%3B%20filename%3Dkotlin-compiler-1.5.31.zip&response-content-type=application%2Foctet-stream"
+            )
+        )
+
+}
+
+class ContributionCalendarProvider : PreviewParameterProvider<ContributionCalendar> {
+
+    override val values: Sequence<ContributionCalendar>
+        get() = sequenceOf(
+            ContributionCalendar(
+                colors = listOf(
+                    "#9be9a8",
+                    "#40c463",
+                    "#30a14e",
+                    "#216e39"
+                ),
+                isHalloween = false,
+                months = listOf(
+                    Month(
+                        firstDay = "2020-11-01".toLocalDate(),
+                        name = "Nov",
+                        totalWeeks = 4,
+                        year = 2020
+                    )
+                ),
+                totalContributions = 1891,
+                weeks = listOf(
+                    Week(
+                        contributionDays = listOf(
+                            ContributionDay(
+                                color = "#9be9a8",
+                                contributionCount = 1,
+                                contributionLevel = ContributionLevel.FIRST_QUARTILE,
+                                date = "2020-11-08".toLocalDate(),
+                                weekday = 0
+                            ),
+                            ContributionDay(
+                                color = "#40c463",
+                                contributionCount = 6,
+                                contributionLevel = ContributionLevel.SECOND_QUARTILE,
+                                date = "2020-11-09".toLocalDate(),
+                                weekday = 1
+                            ),
+                            ContributionDay(
+                                color = "#40c463",
+                                contributionCount = 6,
+                                contributionLevel = ContributionLevel.SECOND_QUARTILE,
+                                date = "2020-11-10".toLocalDate(),
+                                weekday = 2
+                            ),
+                            ContributionDay(
+                                color = "#40c463",
+                                contributionCount = 6,
+                                contributionLevel = ContributionLevel.SECOND_QUARTILE,
+                                date = "2020-11-11".toLocalDate(),
+                                weekday = 3
+                            ),
+                            ContributionDay(
+                                color = "#30a14e",
+                                contributionCount = 14,
+                                contributionLevel = ContributionLevel.THIRD_QUARTILE,
+                                date = "2020-11-12".toLocalDate(),
+                                weekday = 4
+                            ),
+                            ContributionDay(
+                                color = "#30a14e",
+                                contributionCount = 13,
+                                contributionLevel = ContributionLevel.THIRD_QUARTILE,
+                                date = "2020-11-13".toLocalDate(),
+                                weekday = 5
+                            ),
+                            ContributionDay(
+                                color = "#40c463",
+                                contributionCount = 7,
+                                contributionLevel = ContributionLevel.SECOND_QUARTILE,
+                                date = "2020-11-14".toLocalDate(),
+                                weekday = 6
+                            )
+                        ),
+                        firstDay = "2020-11-08".toLocalDate()
+                    )
+                )
             )
         )
 

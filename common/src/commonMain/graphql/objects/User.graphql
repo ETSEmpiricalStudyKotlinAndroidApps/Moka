@@ -8,6 +8,33 @@ fragment User on User {
     # The user's public profile bio as HTML.
     bioHTML
     # The user's public profile company.
+    contributionsCollection {
+        contributionCalendar {
+          colors
+          isHalloween
+          months {
+            firstDay
+            name
+            totalWeeks
+            year
+          }
+          totalContributions
+          weeks {
+            contributionDays {
+              color
+              contributionCount
+              contributionLevel
+              date
+              weekday
+            }
+            firstDay
+          }
+        }
+        contributionYears
+        endedAt
+        hasAnyContributions
+        startedAt
+      }
     company
     # The user's public profile company as HTML.
     companyHTML

@@ -453,6 +453,10 @@ private fun ProfileScreenContent(
                     modifier = Modifier.weight(weight = 1f)
                 )
             }
+            ContributionCalendar(
+                calendar = user.contributionCalendar,
+                enablePlaceholder = enablePlaceholder
+            )
         }
 
         (user?.pinnedItems ?: organization?.pinnedItems)?.let { list ->

@@ -143,7 +143,9 @@ data class User(
 
     val projectsTotalCount: Int,
 
-    val pinnedItems: List<PinnableItem>?
+    val pinnedItems: List<PinnableItem>?,
+
+    val contributionCalendar: io.tonnyl.moka.graphql.fragment.User.ContributionCalendar
 
 )
 
@@ -180,6 +182,7 @@ fun RawUser.toNonNullUser(): User {
         following.totalCount,
         starredRepositories.totalCount,
         projects.totalCount,
-        pinnedItems.nodes?.mapNotNull { it?.pinnableItem }
+        pinnedItems.nodes?.mapNotNull { it?.pinnableItem },
+        contributionCalendar = contributionsCollection.contributionCalendar
     )
 }

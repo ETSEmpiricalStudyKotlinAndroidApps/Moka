@@ -281,25 +281,23 @@ fun ItemUser(
                 if (enablePlaceholder) {
                     Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
                 }
-                (user.bio ?: user.bioHTML).let {
-                    if (it.isNotEmpty()) {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.body2,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = if (enablePlaceholder) {
-                                Modifier
-                                    .height(height = ContentPaddingLargeSize)
-                                    .placeholder(
-                                        visible = enablePlaceholder,
-                                        highlight = PlaceholderHighlight.fade()
-                                    )
-                            } else {
-                                Modifier.wrapContentHeight()
-                            }
-                        )
-                    }
+                if (!user.bio.isNullOrEmpty()) {
+                    Text(
+                        text = user.bio,
+                        style = MaterialTheme.typography.body2,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = if (enablePlaceholder) {
+                            Modifier
+                                .height(height = ContentPaddingLargeSize)
+                                .placeholder(
+                                    visible = enablePlaceholder,
+                                    highlight = PlaceholderHighlight.fade()
+                                )
+                        } else {
+                            Modifier.wrapContentHeight()
+                        }
+                    )
                 }
             }
         }

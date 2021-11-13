@@ -272,7 +272,7 @@ fun ItemRepository(
                     Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))
                 }
                 Text(
-                    text = repo.description ?: repo.descriptionHTML,
+                    text = repo.description ?: stringResource(id = R.string.no_description_provided),
                     style = MaterialTheme.typography.body2,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,

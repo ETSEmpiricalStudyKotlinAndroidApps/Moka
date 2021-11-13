@@ -3,19 +3,9 @@ fragment UserListItemFragment on User {
     avatarUrl
     # The user's public profile bio.
     bio
-    # The user's public profile bio as HTML.
-    bioHTML
     id
-    # Whether or not this user is the viewing user.
-    isViewer
     # The username used to login.
     login
     # The user's public profile name.
     name
-    # The HTTP URL for this user
-    url
-    # Whether or not the viewer is able to follow the user.
-    viewerCanFollow
-    # Whether or not this user is followed by the viewer.
-    viewerIsFollowing
 }

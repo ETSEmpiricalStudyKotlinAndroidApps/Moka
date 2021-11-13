@@ -14,17 +14,7 @@ data class UserItem(
      */
     val bio: String?,
 
-    /**
-     * The user's public profile bio as HTML.
-     */
-    val bioHTML: String,
-
     val id: String,
-
-    /**
-     * Whether or not this user is the viewing user.
-     */
-    val isViewer: Boolean,
 
     /**
      * The username used to login.
@@ -34,22 +24,7 @@ data class UserItem(
     /**
      * The user's public profile name.
      */
-    val name: String?,
-
-    /**
-     * The HTTP URL for this user.
-     */
-    val url: String,
-
-    /**
-     * Whether or not the viewer is able to follow the user.
-     */
-    val viewerCanFollow: Boolean,
-
-    /**
-     * Whether or not this user is followed by the viewer.
-     */
-    val viewerIsFollowing: Boolean
+    val name: String?
 
 )
 
@@ -57,13 +32,8 @@ fun UserListItemFragment.toNonNullUserItem(): UserItem {
     return UserItem(
         avatarUrl,
         bio,
-        bioHTML,
         id,
-        isViewer,
         login,
-        name,
-        url,
-        viewerCanFollow,
-        viewerIsFollowing
+        name
     )
 }

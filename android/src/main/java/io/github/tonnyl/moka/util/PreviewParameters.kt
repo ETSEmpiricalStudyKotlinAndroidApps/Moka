@@ -548,15 +548,7 @@ class RepositoryItemProvider : PreviewParameterProvider<RepositoryItem> {
         get() = sequenceOf(
             RepositoryItem(
                 description = "🏀 An Android app for dribbble.com",
-                descriptionHTML = "<div>\n<g-emoji class=\"g-emoji\" alias=\"basketball\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f3c0.png\">🏀</g-emoji> An Android app for dribbble.com</div>",
-                homepageUrl = "",
                 id = "MDEwOlJlcG9zaXRvcnk5NjA2NzIxMQ==",
-                isArchived = false,
-                isFork = false,
-                isLocked = false,
-                isMirror = false,
-                isPrivate = false,
-                mirrorUrl = null,
                 name = "Mango",
                 nameWithOwner = "TonnyL/Mango",
                 owner = RepositoryOwner(
@@ -566,29 +558,17 @@ class RepositoryItemProvider : PreviewParameterProvider<RepositoryItem> {
                     resourcePath = "/TonnyL",
                     url = "https://github.com/TonnyL"
                 ),
-                parent = null,
                 primaryLanguage = Language(
                     color = "#F18E33",
                     id = "MDg6TGFuZ3VhZ2UyNzI=",
                     name = "Kotlin"
                 ),
-                shortDescriptionHTML = "<g-emoji class=\"g-emoji\" alias=\"basketball\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f3c0.png\">🏀</g-emoji> An Android app for dribbble.com",
-                url = "https://github.com/TonnyL/Mango",
-                viewerHasStarred = false,
                 forksCount = 98,
                 stargazersCount = 659
             ),
             RepositoryItem(
                 description = "A command-line tool for browsing GitHub trending written by Rust.",
-                descriptionHTML = "<div>A command-line tool for browsing GitHub trending written by Rust.</div>",
-                homepageUrl = "",
                 id = "MDEwOlJlcG9zaXRvcnkyMjIxMjU4MDk=",
-                isArchived = false,
-                isFork = false,
-                isLocked = false,
-                isMirror = false,
-                isPrivate = false,
-                mirrorUrl = null,
                 name = "wukong",
                 nameWithOwner = "TonnyL/wukong",
                 owner = RepositoryOwner(
@@ -598,15 +578,11 @@ class RepositoryItemProvider : PreviewParameterProvider<RepositoryItem> {
                     resourcePath = "/TonnyL",
                     url = "https://github.com/TonnyL"
                 ),
-                parent = null,
                 primaryLanguage = Language(
                     color = "#dea584",
                     id = "MDg6TGFuZ3VhZ2UyNDk=",
                     name = "Rust"
                 ),
-                shortDescriptionHTML = "A command-line tool for browsing GitHub trending written by Rust.",
-                url = "https://github.com/TonnyL/wukong",
-                viewerHasStarred = false,
                 forksCount = 3,
                 stargazersCount = 23
             )
@@ -621,26 +597,16 @@ class UserItemProvider : PreviewParameterProvider<UserItem> {
             UserItem(
                 avatarUrl = "https://avatars.githubusercontent.com/u/3777021?u=8c2f8d46ac442b51f925e353bef7d80005a249e9&v=4",
                 bio = "Passionate about Android development and product design. Ex Android Infrastructure Tech Lead @ Zhihu",
-                bioHTML = "<div>Passionate about Android development and product design. Ex Android Infrastructure Tech Lead @ Zhihu</div>",
                 id = "MDQ6VXNlcjM3NzcwMjE=",
-                isViewer = false,
                 login = "gejiaheng",
-                name = "Jiaheng",
-                url = "https://github.com/gejiaheng",
-                viewerCanFollow = true,
-                viewerIsFollowing = true
+                name = "Jiaheng"
             ),
             UserItem(
                 avatarUrl = "https://avatars.githubusercontent.com/u/352556?u=4c1ac7af0e0164029f36f8ecf262f3920d2e7b4f&v=4",
                 bio = "Android designer and developer.",
-                bioHTML = "<div>Android designer and developer.</div>",
                 id = "MDQ6VXNlcjM1MjU1Ng==",
-                isViewer = false,
                 login = "nickbutcher",
-                name = "Nick Butcher",
-                url = "https://github.com/nickbutcher",
-                viewerCanFollow = true,
-                viewerIsFollowing = true
+                name = "Nick Butcher"
             )
         )
 
@@ -852,15 +818,7 @@ class UserProvider : PreviewParameterProvider<io.github.tonnyl.moka.data.User> {
                         __typename = "",
                         repositoryListItemFragment = RepositoryListItemFragment(
                             description = "📚 PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. ",
-                            descriptionHTML = "<div>\n<g-emoji class=\"g-emoji\" alias=\"books\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f4da.png\">📚</g-emoji> PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. </div>",
-                            homepageUrl = null,
                             id = "MDEwOlJlcG9zaXRvcnk1NDIxMjM1NQ==",
-                            isArchived = false,
-                            isFork = false,
-                            isLocked = false,
-                            isMirror = false,
-                            isPrivate = false,
-                            mirrorUrl = null,
                             name = "PaperPlane",
                             nameWithOwner = "TonnyL/PaperPlane",
                             repositoryOwner = RepositoryListItemFragment.RepositoryOwner(
@@ -873,7 +831,6 @@ class UserProvider : PreviewParameterProvider<io.github.tonnyl.moka.data.User> {
                                     url = "https://github.com/TonnyL"
                                 )
                             ),
-                            parent = null,
                             primaryLanguage = RepositoryListItemFragment.PrimaryLanguage(
                                 __typename = "",
                                 language = io.tonnyl.moka.graphql.fragment.Language(
@@ -882,9 +839,6 @@ class UserProvider : PreviewParameterProvider<io.github.tonnyl.moka.data.User> {
                                     name = "Kotlin"
                                 )
                             ),
-                            shortDescriptionHTML = "<g-emoji class=\"g-emoji\" alias=\"books\" fallback-src=\"https://github.githubassets.com/images/icons/emoji/unicode/1f4da.png\">📚</g-emoji> PaperPlane - An Android reading app, including articles from Zhihu Daily, Guokr Handpick and Douban Moment. ",
-                            url = "https://github.com/TonnyL/PaperPlane",
-                            viewerHasStarred = false,
                             forks = RepositoryListItemFragment.Forks(
                                 totalCount = 22
                             ),

@@ -1,45 +1,14 @@
 fragment RepositoryListItemFragment on Repository {
-    # The description of the repository.
     description
-    # The description of the repository rendered to HTML.
-    descriptionHTML
-    # The repository's URL.
-    homepageUrl
     id
-    # Indicates if the repository is unmaintained.
-    isArchived
-    # Identifies if the repository is a fork.
-    isFork
-    # Indicates if the repository has been locked or not.
-    isLocked
-    # Identifies if the repository is a mirror.
-    isMirror
-    # Identifies if the repository is private.
-    isPrivate
-    # The repository's original mirror URL.
-    mirrorUrl
-    # The name of the repository.
     name
-    # The repository's name with owner.
     nameWithOwner
-    # The User owner of the repository.
-    repositoryOwner : owner {
-        ... RepositoryOwner
-    }
-    # The repository parent, if this is a fork.
-    parent {
-        ... ParentOfForkedRepository
-    }
-    # The primary language of the repository's code.
     primaryLanguage {
         ... Language
     }
-    # A description of the repository, rendered to HTML without any links in it.
-    shortDescriptionHTML
-    # The HTTP URL for this repository
-    url
-    # Returns a boolean indicating whether the viewing user has starred this starrable.
-    viewerHasStarred
+    repositoryOwner: owner {
+        ...RepositoryOwner
+    }
     forks {
         totalCount
     }

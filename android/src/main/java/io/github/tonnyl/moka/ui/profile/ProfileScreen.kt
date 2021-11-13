@@ -313,24 +313,19 @@ private fun ProfileScreenContent(
                         if (user.isViewer) {
                             var route = Screen.EditStatus.route
 
-                            user.status?.let { userStatus ->
-                                if (!userStatus.emoji.isNullOrEmpty()) {
-                                    route = route.replace(
-                                        "{${Screen.ARG_EDIT_STATUS_EMOJI}}",
-                                        userStatus.emoji
-                                    )
-                                }
-                                if (!userStatus.message.isNullOrEmpty()) {
-                                    route = route.replace(
-                                        "{${Screen.ARG_EDIT_STATUS_MESSAGE}}",
-                                        userStatus.message
-                                    )
-                                }
-                                route = route.replace(
-                                    "{${Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}",
-                                    user.status.indicatesLimitedAvailability.toString()
+                            val userStatus = user.status
+                            route = route.replace(
+                                "{${Screen.ARG_EDIT_STATUS_EMOJI}}",
+                                userStatus?.emoji.toString()
+                            )
+                                .replace(
+                                    "{${Screen.ARG_EDIT_STATUS_MESSAGE}}",
+                                    userStatus?.message ?: ""
                                 )
-                            }
+                                .replace(
+                                    "{${Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}",
+                                    (user.status?.indicatesLimitedAvailability ?: false).toString()
+                                )
                             navController.navigate(route = route)
                         }
                     },

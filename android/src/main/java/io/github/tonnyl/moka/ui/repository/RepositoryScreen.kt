@@ -46,6 +46,7 @@ import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.ui.users.UsersType
 import io.github.tonnyl.moka.util.RepositoryProvider
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
@@ -138,12 +139,28 @@ fun RepositoryScreen(
                 content = {
                     when {
                         isLoading || repo != null -> {
+                            fun navigateToUsersScreen(type: UsersType) {
+                                navController.navigate(
+                                    route = Screen.Users.route
+                                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                        .replace(
+                                            "{${Screen.ARG_USERS_TYPE}}",
+                                            type.name
+                                        )
+                                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                )
+                            }
+
                             RepositoryScreenContent(
                                 topAppBarSize = topAppBarSize,
                                 repository = repo ?: repositoryPlaceholder,
 
-                                onWatchersClicked = { },
-                                onStargazersClicked = { },
+                                onWatchersClicked = {
+                                    navigateToUsersScreen(type = UsersType.REPOSITORY_WATCHERS)
+                                },
+                                onStargazersClicked = {
+                                    navigateToUsersScreen(type = UsersType.REPOSITORY_STARGAZERS)
+                                },
                                 onForksClicked = {
                                     navController.navigate(
                                         route = Screen.Repositories.route

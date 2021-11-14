@@ -1,0 +1,13 @@
+query RepositoryWatchers($login: String!, $repo: String!, $perPage: Int!, $after: String, $before: String) {
+    repository(owner: $login, name: $repo) {
+        watchers(first: $perPage, after: $after, before: $before) {
+            nodes {
+                ...UserListItemFragment
+            }
+            pageInfo {
+                ...PageInfo
+            }
+            totalCount
+        }
+    }
+}

@@ -4,6 +4,10 @@ enum class UsersType {
 
     FOLLOWER,
 
-    FOLLOWING
+    FOLLOWING,
+
+    REPOSITORY_STARGAZERS,
+
+    REPOSITORY_WATCHERS,
 
 }

@@ -10,6 +10,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 class UsersViewModel(
     accountInstance: AccountInstance,
     login: String,
+    repoName: String?,
     usersType: UsersType
 ) : ViewModel() {
 
@@ -17,20 +18,12 @@ class UsersViewModel(
         Pager(
             config = MokaApp.defaultPagingConfig,
             pagingSourceFactory = {
-                when (usersType) {
-                    UsersType.FOLLOWER -> {
-                        FollowersDataSource(
-                            apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                            login = login
-                        )
-                    }
-                    UsersType.FOLLOWING -> {
-                        FollowingDataSource(
-                            apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                            login = login
-                        )
-                    }
-                }
+                UsersDataSource(
+                    apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                    login = login,
+                    repoName = repoName,
+                    usersType = usersType
+                )
             }
         ).flow
     }

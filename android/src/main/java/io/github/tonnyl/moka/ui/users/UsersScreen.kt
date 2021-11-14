@@ -50,6 +50,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @Composable
 fun UsersScreen(
     login: String,
+    repoName: String?,
     usersType: UsersType
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -58,6 +59,7 @@ fun UsersScreen(
         factory = ViewModelFactory(
             accountInstance = currentAccount,
             login = login,
+            repoName = repoName,
             usersType = usersType
         )
     )
@@ -126,17 +128,21 @@ fun UsersScreen(
         InsetAwareTopAppBar(
             title = {
                 Text(
-                    text = stringResource(
-                        id = when (usersType) {
-                            UsersType.FOLLOWER -> {
-                                R.string.users_followers_title
-                            }
-                            UsersType.FOLLOWING -> {
-                                R.string.users_following_title
-                            }
-                        },
-                        login
-                    )
+                    text =
+                    when (usersType) {
+                        UsersType.FOLLOWER -> {
+                            stringResource(id = R.string.users_followers_title, login)
+                        }
+                        UsersType.FOLLOWING -> {
+                            stringResource(id = R.string.users_following_title, login)
+                        }
+                        UsersType.REPOSITORY_STARGAZERS -> {
+                            stringResource(id = R.string.repository_stargazers)
+                        }
+                        UsersType.REPOSITORY_WATCHERS -> {
+                            stringResource(id = R.string.repository_watchers)
+                        }
+                    }
                 )
             },
             navigationIcon = {

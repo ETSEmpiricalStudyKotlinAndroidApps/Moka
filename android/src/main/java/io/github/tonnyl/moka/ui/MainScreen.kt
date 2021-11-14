@@ -96,7 +96,7 @@ sealed class Screen(val route: String) {
     object RepositoryFiles :
         Screen("repository_files?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_EXPRESSION}={${ARG_EXPRESSION}}&$ARG_REF_PREFIX={${ARG_REF_PREFIX}}&$ARG_DEFAULT_BRANCH_NAME={${ARG_DEFAULT_BRANCH_NAME}}")
 
-    object Users : Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}")
+    object Users : Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}")
 
     object Repositories :
         Screen("repositories/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}")
@@ -680,6 +680,10 @@ private fun MainNavHost(
                 },
                 navArgument(name = Screen.ARG_PROFILE_LOGIN) {
                     type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                    nullable = true
                 }
             )
         ) { backStackEntry ->
@@ -690,7 +694,8 @@ private fun MainNavHost(
                 usersType = UsersType.valueOf(
                     backStackEntry.arguments?.getString(Screen.ARG_USERS_TYPE)
                         ?: return@composable
-                )
+                ),
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
             )
         }
         composable(

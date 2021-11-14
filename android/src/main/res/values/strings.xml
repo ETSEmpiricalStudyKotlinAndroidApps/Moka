@@ -268,6 +268,10 @@
     <string name="repository_subscription_subscribe_desc">You will be notified for all conversations.</string>
     <string name="repository_subscription_unsubscribe">Unsubscribe</string>
     <string name="repository_subscription_unsubscribe_desc">You will only be notified when participating or @mentioned.</string>
+    <string name="repository_fork_alert_title">Fork %1$s?</string>
+    <string name="repository_fork_alert_message">This will create a fork for you.</string>
+    <string name="repository_fork_failed">Can\'t create a fork.</string>
+    <string name="repository_fork_succeeded">Forking a Repository happens asynchronously. You may have to wait a short period of time before you can access the git objects.</string>
 
     <string name="reaction_group_and_count">%1$s %2$d</string><!-- 👍 10 -->
     <string name="add_reaction">React</string>

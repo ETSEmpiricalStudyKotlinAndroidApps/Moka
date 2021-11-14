@@ -15,6 +15,7 @@ import io.tonnyl.moka.common.network.api.RepositoryContentApi
 import io.tonnyl.moka.common.network.api.UserApi
 import io.tonnyl.moka.common.network.api.CommitApi
 import io.tonnyl.moka.common.network.KtorClient
+import io.tonnyl.moka.common.network.api.RepositoryApi
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -36,6 +37,7 @@ class AccountInstance(
     val notificationApi = NotificationApi(ktorClient = authenticatedKtorClient)
     val commitApi = CommitApi(ktorClient = unauthenticatedKtorClient)
     val repositoryContentApi = RepositoryContentApi(ktorClient = unauthenticatedKtorClient)
+    val repositoryApi = RepositoryApi(ktorClient = authenticatedKtorClient)
 
     val database = MokaDataBase.getInstance(
         context = app,

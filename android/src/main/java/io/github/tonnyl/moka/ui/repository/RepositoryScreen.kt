@@ -12,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -57,6 +58,7 @@ import kotlin.math.min
 
 private const val MAX_DISPLAY_COUNT_OF_TOPICS = 8
 
+@ExperimentalComposeUiApi
 @ExperimentalCoilApi
 @ExperimentalAnimationApi
 @ExperimentalSerializationApi
@@ -85,6 +87,8 @@ fun RepositoryScreen(
     val starredState by viewModel.starState.observeAsState()
     val subscriptionState by viewModel.subscriptionState.observeAsState()
 
+    val forkState by viewModel.forkState.observeAsState()
+
     val repositoryPlaceholder = remember {
         RepositoryProvider().values.first()
     }
@@ -99,6 +103,16 @@ fun RepositoryScreen(
         insets = LocalWindowInsets.current.systemBars,
         applyTop = false,
         additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
+    )
+
+    val forkDialogState = remember {
+        mutableStateOf(false)
+    }
+
+    ForkRepoDialog(
+        showState = forkDialogState,
+        fork = viewModel::fork,
+        repoName = repoName
     )
 
     WatchOptionsBottomSheet(
@@ -280,11 +294,18 @@ fun RepositoryScreen(
                                     )
                                 }
                             }
-                            IconButton(onClick = {}) {
-                                Icon(
-                                    contentDescription = stringResource(id = R.string.repository_fork_image_content_description),
-                                    painter = painterResource(id = R.drawable.ic_code_fork_24)
-                                )
+                            if (repo.owner?.login != currentAccount.signedInAccount.account.login) {
+                                IconButton(
+                                    onClick = {
+                                        forkDialogState.value = true
+                                    },
+                                    enabled = !isLoading
+                                ) {
+                                    Icon(
+                                        contentDescription = stringResource(id = R.string.repository_fork_image_content_description),
+                                        painter = painterResource(id = R.drawable.ic_code_fork_24)
+                                    )
+                                }
                             }
                         }
                     }
@@ -345,6 +366,27 @@ fun RepositoryScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .onSizeChanged { topAppBarSize = it.height }
+            )
+        }
+
+        if (forkState?.status == Status.ERROR
+            && forkState?.data == true
+        ) {
+            SnackBarErrorMessage(
+                scaffoldState = scaffoldState,
+                action = viewModel::fork,
+                messageId = R.string.repository_fork_failed,
+                dismissAction = viewModel::clearForkState
+            )
+        } else if (forkState?.status == Status.SUCCESS
+            && forkState?.data == true
+        ) {
+            SnackBarErrorMessage(
+                scaffoldState = scaffoldState,
+                messageId = R.string.repository_fork_succeeded,
+                actionId = null,
+                duration = SnackbarDuration.Long,
+                dismissAction = viewModel::clearForkState
             )
         }
     }

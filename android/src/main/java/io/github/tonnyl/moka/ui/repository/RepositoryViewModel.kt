@@ -11,6 +11,7 @@ import io.github.tonnyl.moka.data.toNullableRepository
 import io.github.tonnyl.moka.network.mutations.addStar
 import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.util.HtmlHandler
+import io.github.tonnyl.moka.util.updateOnAnyThread
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.graphql.RepositoryQuery
@@ -47,6 +48,10 @@ class RepositoryViewModel(
     private val _subscriptionState = MutableLiveData<Resource<SubscriptionState?>>()
     val subscriptionState: LiveData<Resource<SubscriptionState?>>
         get() = _subscriptionState
+
+    private val _forkState = MutableLiveData<Resource<Boolean?>>()
+    val forkState: LiveData<Resource<Boolean?>>
+        get() = _forkState
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -178,6 +183,35 @@ class RepositoryViewModel(
                     )
                 )
             }
+        }
+    }
+
+    fun fork() {
+        if (forkState.value?.status == Status.LOADING) {
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _forkState.postValue(Resource.loading(data = null))
+
+                accountInstance.repositoryApi.createAFork(
+                    owner = login,
+                    repo = repositoryName
+                )
+
+                _forkState.postValue(Resource.success(data = true))
+            } catch (e: Exception) {
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
+
+                _forkState.postValue(Resource.error(exception = e, data = true))
+            }
+        }
+    }
+
+    fun clearForkState() {
+        _forkState.value?.let {
+            _forkState.updateOnAnyThread(newValue = it.copy(data = false))
         }
     }
 

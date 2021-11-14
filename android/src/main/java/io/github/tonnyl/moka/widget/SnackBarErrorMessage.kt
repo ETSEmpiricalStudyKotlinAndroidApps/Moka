@@ -19,7 +19,8 @@ fun SnackBarErrorMessage(
     messageId: Int = R.string.common_error_requesting_data,
     @StringRes
     actionId: Int? = R.string.common_retry,
-    duration: SnackbarDuration = SnackbarDuration.Short
+    duration: SnackbarDuration = SnackbarDuration.Short,
+    dismissAction: (() -> Unit)? = null
 ) {
     val message = stringResource(id = messageId)
     val actionLabel = if (actionId == null) {
@@ -34,8 +35,13 @@ fun SnackBarErrorMessage(
             actionLabel = actionLabel,
             duration = duration
         )
-        if (result == SnackbarResult.ActionPerformed) {
-            action?.invoke()
+        when (result) {
+            SnackbarResult.Dismissed -> {
+                dismissAction?.invoke()
+            }
+            SnackbarResult.ActionPerformed -> {
+                action?.invoke()
+            }
         }
     }
 }

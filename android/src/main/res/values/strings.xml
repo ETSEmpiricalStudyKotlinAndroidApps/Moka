@@ -205,9 +205,6 @@
     <string name="users_following_title" translation-description="Following list title of users page, for example: Tonny's following.">%1$s\'s following</string>
     <string name="users_followers_title" translation-description="Followers list title of users page, for example: Tonny's followers.">%1$s\'s followers</string>
 
-    <string name="repositories_owned" translation-description="The repositories list title when enter someone's owned repositories, for example: Tonny's repositories">%1$s\'s repositories</string>
-    <string name="repositories_stars" translation-description="The repositories list title when enter someone's starred repositories, for example: Tonny's stars">%1$s\'s stars</string>
-
     <string name="repository" translation-description="repository">Repository</string>
     <string name="repository_view_code_image_content_description">View code</string>
     <string name="repository_fork_image_content_description">Fork repository</string>

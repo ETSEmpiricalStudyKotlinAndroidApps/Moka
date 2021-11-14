@@ -99,7 +99,7 @@ sealed class Screen(val route: String) {
     object Users : Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}")
 
     object Repositories :
-        Screen("repositories/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_TYPE}}")
+        Screen("repositories/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}")
 
     object Issues : Screen("issues/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
@@ -148,7 +148,8 @@ sealed class Screen(val route: String) {
     object Release :
         Screen("release/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_TAG_NAME}}")
 
-    object ReleaseAssets : Screen("release_assets/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_TAG_NAME}}")
+    object ReleaseAssets :
+        Screen("release_assets/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_TAG_NAME}}")
 
     object FAQ : Screen("faq")
 
@@ -700,6 +701,10 @@ private fun MainNavHost(
                 },
                 navArgument(name = Screen.ARG_REPOSITORY_TYPE) {
                     type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                    nullable = true
                 }
             )
         ) { backStackEntry ->
@@ -710,7 +715,8 @@ private fun MainNavHost(
                 repositoryType = RepositoryType.valueOf(
                     backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_TYPE)
                         ?: return@composable
-                )
+                ),
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
             )
         }
         composable(

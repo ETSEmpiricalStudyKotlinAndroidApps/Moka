@@ -4,6 +4,8 @@ enum class RepositoryType {
 
     STARRED,
 
-    OWNED
+    OWNED,
+
+    FORKS,
 
 }

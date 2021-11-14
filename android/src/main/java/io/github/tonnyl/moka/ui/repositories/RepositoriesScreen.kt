@@ -55,6 +55,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @Composable
 fun RepositoriesScreen(
     login: String,
+    repoName: String?,
     repositoryType: RepositoryType
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -63,6 +64,7 @@ fun RepositoriesScreen(
         factory = ViewModelFactory(
             accountInstance = currentAccount,
             login = login,
+            repoName = repoName,
             repositoryType = repositoryType
         )
     )
@@ -134,13 +136,15 @@ fun RepositoriesScreen(
                     text = stringResource(
                         id = when (repositoryType) {
                             RepositoryType.STARRED -> {
-                                R.string.repositories_stars
+                                R.string.profile_stars
                             }
                             RepositoryType.OWNED -> {
-                                R.string.repositories_owned
+                                R.string.profile_repositories
                             }
-                        },
-                        login
+                            RepositoryType.FORKS -> {
+                                R.string.repository_forks
+                            }
+                        }
                     )
                 )
             },
@@ -272,7 +276,8 @@ fun ItemRepository(
                     Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))
                 }
                 Text(
-                    text = repo.description ?: stringResource(id = R.string.no_description_provided),
+                    text = repo.description
+                        ?: stringResource(id = R.string.no_description_provided),
                     style = MaterialTheme.typography.body2,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,

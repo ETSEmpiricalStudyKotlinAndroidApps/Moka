@@ -43,6 +43,7 @@ import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.RepositoryProvider
 import io.github.tonnyl.moka.util.toColor
@@ -129,7 +130,17 @@ fun RepositoryScreen(
 
                                 onWatchersClicked = { },
                                 onStargazersClicked = { },
-                                onForksClicked = { },
+                                onForksClicked = {
+                                    navController.navigate(
+                                        route = Screen.Repositories.route
+                                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                            .replace(
+                                                "{${Screen.ARG_REPOSITORY_TYPE}}",
+                                                RepositoryType.FORKS.name
+                                            )
+                                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                    )
+                                },
                                 onPrsClicked = {
                                     navController.navigate(
                                         route = Screen.PullRequests.route

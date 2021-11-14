@@ -12,6 +12,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 class RepositoriesViewModel(
     accountInstance: AccountInstance,
     login: String,
+    repoName: String?,
     repositoryType: RepositoryType
 ) : ViewModel() {
 
@@ -19,20 +20,12 @@ class RepositoriesViewModel(
         Pager(
             config = MokaApp.defaultPagingConfig,
             pagingSourceFactory = {
-                when (repositoryType) {
-                    RepositoryType.STARRED -> {
-                        StarredRepositoriesDataSource(
-                            apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                            login = login
-                        )
-                    }
-                    RepositoryType.OWNED -> {
-                        OwnedRepositoriesDataSource(
-                            apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                            login = login
-                        )
-                    }
-                }
+                RepositoriesDataSource(
+                    apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                    login = login,
+                    repoName = repoName,
+                    repositoryType = repositoryType
+                )
             }
         ).flow.cachedIn(viewModelScope)
     }

@@ -72,11 +72,18 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
--keep,includedescriptorclasses class io.github.tonnyl.moka.**$$serializer { *; } # <-- change package name to your app's
+-keep,includedescriptorclasses class io.github.tonnyl.moka.**$$serializer { *; }
 -keepclassmembers class io.github.tonnyl.moka.** {
     *** Companion;
 }
 -keepclasseswithmembers class io.github.tonnyl.moka.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+-keep,includedescriptorclasses class io.tonnyl.moka.common.**$$serializer { *; }
+-keepclassmembers class io.tonnyl.moka.common.** {
+    *** Companion;
+}
+-keepclasseswithmembers class io.tonnyl.moka.common.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 # ===== kotlin-serialization end =====

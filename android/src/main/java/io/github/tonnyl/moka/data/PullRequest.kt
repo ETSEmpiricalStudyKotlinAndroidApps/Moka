@@ -1,7 +1,8 @@
 package io.github.tonnyl.moka.data
 
-import io.tonnyl.moka.graphql.fragment.ReactionGroup
+import io.tonnyl.moka.common.data.Actor
 import io.tonnyl.moka.graphql.PullRequestQuery
+import io.tonnyl.moka.graphql.fragment.ReactionGroup
 import io.tonnyl.moka.graphql.type.*
 import kotlinx.datetime.Instant
 

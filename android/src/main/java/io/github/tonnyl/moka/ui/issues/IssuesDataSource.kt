@@ -2,50 +2,57 @@ package io.github.tonnyl.moka.ui.issues
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.apollographql.apollo3.ApolloClient
-import io.github.tonnyl.moka.data.extension.checkedEndCursor
-import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.github.tonnyl.moka.data.item.IssueItem
-import io.github.tonnyl.moka.data.item.toNonNullIssueItem
-import io.tonnyl.moka.graphql.IssuesQuery
+import io.ktor.client.statement.*
+import io.tonnyl.moka.common.data.IssueListItem
+import io.tonnyl.moka.common.network.PageLinks
+import io.tonnyl.moka.common.network.api.RepositoryApi
+import io.tonnyl.moka.common.serialization.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
 class IssuesDataSource(
-    private val apolloClient: ApolloClient,
+    private val api: RepositoryApi,
     private val owner: String,
     private val name: String
-) : PagingSource<String, IssueItem>() {
+) : PagingSource<String, IssueListItem>() {
 
-    override suspend fun load(params: LoadParams<String>): LoadResult<String, IssueItem> {
-        val list = mutableListOf<IssueItem>()
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, IssueListItem> {
         return withContext(Dispatchers.IO) {
             try {
-                val repository = apolloClient.query(
-                    query = IssuesQuery(
+                val isRefresh = params is LoadParams.Refresh
+                val response = if (isRefresh) {
+                    api.issues(
                         owner = owner,
-                        name = name,
-                        after = params.key,
-                        before = params.key,
-                        perPage = params.loadSize
+                        repo = name,
+                        perPage = params.loadSize,
+                        page = params.key?.toInt() ?: 1
                     )
-                ).execute().data?.repository
-
-                repository?.issues?.nodes?.forEach { node ->
-                    node?.let {
-                        list.add(node.toNonNullIssueItem())
+                } else {
+                    val key = params.key
+                    if (key.isNullOrEmpty()) {
+                        return@withContext LoadResult.Page(
+                            data = emptyList(),
+                            prevKey = null,
+                            nextKey = null
+                        )
+                    } else {
+                        api.issuesByUrl(url = key)
                     }
                 }
 
-                val pageInfo = repository?.issues?.pageInfo?.pageInfo
+                val issues =
+                    json.decodeFromString<List<IssueListItem>>(string = response.readText())
+
+                val pl = PageLinks(response)
 
                 LoadResult.Page(
-                    data = list,
-                    prevKey = pageInfo.checkedStartCursor,
-                    nextKey = pageInfo.checkedEndCursor
+                    data = issues.filter { it.pullRequest == null },
+                    prevKey = pl.prev,
+                    nextKey = pl.next
                 )
             } catch (e: Exception) {
                 logcat(priority = LogPriority.ERROR) { e.asLog() }
@@ -55,7 +62,7 @@ class IssuesDataSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<String, IssueItem>): String? {
+    override fun getRefreshKey(state: PagingState<String, IssueListItem>): String? {
         return null
     }
 

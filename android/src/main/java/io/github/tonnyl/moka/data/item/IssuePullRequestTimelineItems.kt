@@ -1,7 +1,7 @@
 package io.github.tonnyl.moka.data.item
 
-import io.github.tonnyl.moka.data.Actor
 import io.github.tonnyl.moka.data.toNonNullActor
+import io.tonnyl.moka.common.data.Actor
 import io.tonnyl.moka.graphql.fragment.*
 import io.tonnyl.moka.graphql.fragment.ReactionGroup
 import io.tonnyl.moka.graphql.type.*

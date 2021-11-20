@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.data
 
+import io.tonnyl.moka.common.data.Actor
 import io.tonnyl.moka.graphql.type.MilestoneState
 import kotlinx.datetime.Instant
 import io.tonnyl.moka.graphql.fragment.Milestone as RawMilestone

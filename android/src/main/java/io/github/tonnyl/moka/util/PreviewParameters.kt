@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.util
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.github.tonnyl.moka.data.*
-import io.github.tonnyl.moka.data.Actor
 import io.github.tonnyl.moka.data.Commit
 import io.github.tonnyl.moka.data.GitObject
 import io.github.tonnyl.moka.data.Issue
@@ -23,6 +22,10 @@ import io.github.tonnyl.moka.data.item.MilestonedEvent
 import io.github.tonnyl.moka.data.item.PullRequestCommit
 import io.github.tonnyl.moka.data.item.PullRequestTimelineItemPullRequest
 import io.github.tonnyl.moka.data.item.User
+import io.tonnyl.moka.common.data.Actor
+import io.tonnyl.moka.common.data.IssueListItem
+import io.tonnyl.moka.common.data.IssuePrState
+import io.tonnyl.moka.common.data.PullRequestListItem
 import io.tonnyl.moka.graphql.fragment.*
 import io.tonnyl.moka.graphql.fragment.Gist
 import io.tonnyl.moka.graphql.fragment.PinnableItem
@@ -33,6 +36,7 @@ import io.tonnyl.moka.graphql.fragment.TreeEntry
 import io.tonnyl.moka.graphql.fragment.User.*
 import io.tonnyl.moka.graphql.fragment.User.ContributionCalendar
 import io.tonnyl.moka.graphql.type.*
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toLocalDate
 import io.tonnyl.moka.graphql.fragment.Ref as Branch
@@ -314,12 +318,12 @@ class TrendingRepositoryProvider : PreviewParameterProvider<TrendingRepository> 
 
 }
 
-class IssueItemProvider : PreviewParameterProvider<IssueItem> {
+class IssueItemProvider : PreviewParameterProvider<IssueListItem> {
 
-    override val values: Sequence<IssueItem>
+    override val values: Sequence<IssueListItem>
         get() = sequenceOf(
-            IssueItem(
-                actor = Actor(
+            IssueListItem(
+                user = Actor(
                     avatarUrl = "https://avatars.githubusercontent.com/u/1776230?u=b99f29305efeed615ccbf10236f01a6a0bee739e&v=4",
                     login = "eneim",
                     url = "https://github.com/eneim"
@@ -328,10 +332,10 @@ class IssueItemProvider : PreviewParameterProvider<IssueItem> {
                 number = 1,
                 createdAt = Instant.parse("2019-11-12T01:24:24Z"),
                 title = "[Feature request] Adding version distribution",
-                closed = false
+                state = IssuePrState.Open
             ),
-            IssueItem(
-                actor = Actor(
+            IssueListItem(
+                user = Actor(
                     avatarUrl = "https://avatars.githubusercontent.com/u/11989916?u=496f5fa6421a661441ef6467a909be31cb7be9c6&v=4",
                     login = "caiyoufei",
                     url = "https://github.com/caiyoufei"
@@ -340,54 +344,57 @@ class IssueItemProvider : PreviewParameterProvider<IssueItem> {
                 number = 4,
                 createdAt = Instant.parse("2019-11-19T11:33:48Z"),
                 title = "A error version",
-                closed = true
+                state = IssuePrState.Closed
             )
         )
 
 }
 
-class PullRequestItemProvider : PreviewParameterProvider<PullRequestItem> {
+class PullRequestItemProvider : PreviewParameterProvider<PullRequestListItem> {
 
-    override val values: Sequence<PullRequestItem>
+    override val values: Sequence<PullRequestListItem>
         get() = sequenceOf(
-            PullRequestItem(
-                actor = Actor(
+            PullRequestListItem(
+                user = Actor(
                     avatarUrl = "https://avatars.githubusercontent.com/u/5749794?u=23b1d3479940253cd4848bf7c5b4520019a4c372&v=4",
                     login = "jshvarts",
                     url = "https://github.com/jshvarts"
                 ),
-                closed = true,
+                state = IssuePrState.Closed,
                 createdAt = Instant.parse("2019-11-15T03:41:07Z"),
                 id = "MDExOlB1bGxSZXF1ZXN0MzQxMjc5NzE5",
-                merged = true,
+                mergedAt = Clock.System.now(),
                 number = 2,
-                title = "Fix grammar"
+                title = "Fix grammar",
+                draft = false
             ),
-            PullRequestItem(
-                actor = Actor(
+            PullRequestListItem(
+                user = Actor(
                     avatarUrl = "https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4",
                     login = "TonnyL",
                     url = "https://github.com/TonnyL"
                 ),
-                closed = true,
+                state = IssuePrState.Closed,
                 createdAt = Instant.parse("2020-03-12T14:49:22Z"),
                 id = "MDExOlB1bGxSZXF1ZXN0Mzg3Mjg4MjUz",
-                merged = true,
+                mergedAt = Clock.System.now(),
                 number = 5,
-                title = "handle network request / json-parsing errors"
+                title = "handle network request / json-parsing errors",
+                draft = false
             ),
-            PullRequestItem(
-                actor = Actor(
+            PullRequestListItem(
+                user = Actor(
                     avatarUrl = "https://avatars.githubusercontent.com/u/13329148?u=5f2267ec07a7e93d6281173e865faeb2363ff658&v=4",
                     login = "TonnyL",
                     url = "https://github.com/TonnyL"
                 ),
-                closed = true,
+                state = IssuePrState.Closed,
                 createdAt = Instant.parse("2020-03-15T09:13:55Z"),
                 id = "MDExOlB1bGxSZXF1ZXN0Mzg4NjM2NTMw",
-                merged = false,
+                mergedAt = Clock.System.now(),
                 number = 6,
-                title = "add distribution data"
+                title = "add distribution data",
+                draft = false
             )
         )
 

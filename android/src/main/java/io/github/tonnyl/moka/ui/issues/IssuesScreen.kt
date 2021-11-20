@@ -36,7 +36,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.item.IssueItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -49,6 +48,8 @@ import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.tonnyl.moka.common.data.IssueListItem
+import io.tonnyl.moka.common.data.IssuePrState
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -158,7 +159,7 @@ fun IssuesScreenContent(
     contentTopPadding: Dp,
     owner: String,
     name: String,
-    prs: LazyPagingItems<IssueItem>,
+    prs: LazyPagingItems<IssueListItem>,
 ) {
     val issuePlaceholder = remember {
         IssueItemProvider().values.elementAt(1)
@@ -210,7 +211,7 @@ fun IssuesScreenContent(
 private fun ItemIssue(
     owner: String,
     name: String,
-    issue: IssueItem,
+    issue: IssueListItem,
     enablePlaceholder: Boolean
 ) {
     val navController = LocalNavController.current
@@ -242,7 +243,7 @@ private fun ItemIssue(
         Row(verticalAlignment = Alignment.Top) {
             Image(
                 contentDescription = stringResource(
-                    id = if (issue.closed) {
+                    id = if (issue.state == IssuePrState.Closed) {
                         R.string.issue_status_closed_image_content_description
                     } else {
                         R.string.issue_status_open_image_content_description
@@ -250,7 +251,7 @@ private fun ItemIssue(
                 ),
                 painter = painterResource(
                     id = R.drawable.ic_issue_closed_24.takeIf {
-                        issue.closed
+                        issue.state == IssuePrState.Closed
                     } ?: R.drawable.ic_issue_open_24
                 ),
                 modifier = Modifier
@@ -294,7 +295,7 @@ private fun ItemIssue(
             ) {
                 Image(
                     painter = rememberImagePainter(
-                        data = issue.actor?.avatarUrl,
+                        data = issue.user?.avatarUrl,
                         builder = {
                             createAvatarLoadRequest()
                         }
@@ -313,7 +314,7 @@ private fun ItemIssue(
                 )
                 Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                 Text(
-                    text = issue.actor?.login ?: "ghost",
+                    text = issue.user?.login ?: "ghost",
                     style = MaterialTheme.typography.body2,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -358,7 +359,7 @@ private fun IssueItemPreview(
         provider = IssueItemProvider::class,
         limit = 1
     )
-    issue: IssueItem
+    issue: IssueListItem
 ) {
     ItemIssue(
         owner = "wasabeef",

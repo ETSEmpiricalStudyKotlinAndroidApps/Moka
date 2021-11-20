@@ -20,7 +20,7 @@ class PullRequestsViewModel(
             config = MokaApp.defaultPagingConfig,
             pagingSourceFactory = {
                 PullRequestsDataSource(
-                    apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                    api = accountInstance.repositoryApi,
                     owner = owner,
                     name = name
                 )

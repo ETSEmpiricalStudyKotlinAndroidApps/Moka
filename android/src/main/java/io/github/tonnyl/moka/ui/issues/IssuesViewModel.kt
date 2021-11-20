@@ -20,7 +20,7 @@ class IssuesViewModel(
             config = MokaApp.defaultPagingConfig,
             pagingSourceFactory = {
                 IssuesDataSource(
-                    apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                    api = accountInstance.repositoryApi,
                     owner = owner,
                     name = name
                 )

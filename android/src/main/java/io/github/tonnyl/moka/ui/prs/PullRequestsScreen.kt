@@ -36,7 +36,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.item.PullRequestItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -49,6 +48,8 @@ import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.tonnyl.moka.common.data.IssuePrState
+import io.tonnyl.moka.common.data.PullRequestListItem
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -158,7 +159,7 @@ fun PullRequestsScreenContent(
     contentTopPadding: Dp,
     owner: String,
     name: String,
-    prs: LazyPagingItems<PullRequestItem>,
+    prs: LazyPagingItems<PullRequestListItem>,
 ) {
     val prPlaceholder = remember {
         PullRequestItemProvider().values.elementAt(2)
@@ -210,7 +211,7 @@ fun PullRequestsScreenContent(
 private fun ItemPullRequest(
     owner: String,
     name: String,
-    pullRequest: PullRequestItem,
+    pullRequest: PullRequestListItem,
     enablePlaceholder: Boolean
 ) {
     val navController = LocalNavController.current
@@ -232,11 +233,13 @@ private fun ItemPullRequest(
             val imageRes: Int
             val contentDescriptionRes: Int
             when {
-                pullRequest.merged -> {
+                pullRequest.state == IssuePrState.Closed
+                        && pullRequest.mergedAt != null -> {
                     imageRes = R.drawable.ic_pr_merged
                     contentDescriptionRes = R.string.pr_status_merged_image_content_description
                 }
-                pullRequest.closed -> {
+                pullRequest.state == IssuePrState.Closed
+                        && pullRequest.mergedAt == null -> {
                     imageRes = R.drawable.ic_pr_closed
                     contentDescriptionRes = R.string.pr_status_closed_image_content_description
                 }
@@ -289,7 +292,7 @@ private fun ItemPullRequest(
             ) {
                 Image(
                     painter = rememberImagePainter(
-                        data = pullRequest.actor?.avatarUrl,
+                        data = pullRequest.user?.avatarUrl,
                         builder = {
                             createAvatarLoadRequest()
                         }
@@ -303,7 +306,7 @@ private fun ItemPullRequest(
                                 route = Screen.Profile.route
                                     .replace(
                                         "{${Screen.ARG_PROFILE_LOGIN}}",
-                                        pullRequest.actor?.login ?: "ghost"
+                                        pullRequest.user?.login ?: "ghost"
                                     )
                                     .replace(
                                         "{${Screen.ARG_PROFILE_TYPE}}",
@@ -318,7 +321,7 @@ private fun ItemPullRequest(
                 )
                 Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                 Text(
-                    text = pullRequest.actor?.login ?: "ghost",
+                    text = pullRequest.user?.login ?: "ghost",
                     style = MaterialTheme.typography.body2,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -359,7 +362,7 @@ private fun PullRequestItemPreview(
         PullRequestItemProvider::class,
         limit = 1
     )
-    pullRequest: PullRequestItem
+    pullRequest: PullRequestListItem
 ) {
     ItemPullRequest(
         owner = "wasabeef",

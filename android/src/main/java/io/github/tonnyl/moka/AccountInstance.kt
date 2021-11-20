@@ -4,18 +4,20 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.api.*
+import io.github.tonnyl.moka.network.api.EventApi
+import io.github.tonnyl.moka.network.api.NotificationApi
+import io.github.tonnyl.moka.network.api.TrendingApi
 import io.github.tonnyl.moka.serializers.store.EmojiSerializer
 import io.github.tonnyl.moka.serializers.store.ExploreOptionsSerializer
 import io.github.tonnyl.moka.serializers.store.data.ExploreOptions
 import io.github.tonnyl.moka.serializers.store.data.RecentEmojis
 import io.github.tonnyl.moka.serializers.store.data.SignedInAccount
 import io.tonnyl.moka.common.network.ApolloGraphQLClient
+import io.tonnyl.moka.common.network.KtorClient
+import io.tonnyl.moka.common.network.api.CommitApi
+import io.tonnyl.moka.common.network.api.RepositoryApi
 import io.tonnyl.moka.common.network.api.RepositoryContentApi
 import io.tonnyl.moka.common.network.api.UserApi
-import io.tonnyl.moka.common.network.api.CommitApi
-import io.tonnyl.moka.common.network.KtorClient
-import io.tonnyl.moka.common.network.api.RepositoryApi
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -37,7 +39,10 @@ class AccountInstance(
     val notificationApi = NotificationApi(ktorClient = authenticatedKtorClient)
     val commitApi = CommitApi(ktorClient = unauthenticatedKtorClient)
     val repositoryContentApi = RepositoryContentApi(ktorClient = unauthenticatedKtorClient)
-    val repositoryApi = RepositoryApi(ktorClient = authenticatedKtorClient)
+    val repositoryApi = RepositoryApi(
+        authenticatedKtorClient = authenticatedKtorClient,
+        unauthenticatedKtorClient = unauthenticatedKtorClient
+    )
 
     val database = MokaDataBase.getInstance(
         context = app,

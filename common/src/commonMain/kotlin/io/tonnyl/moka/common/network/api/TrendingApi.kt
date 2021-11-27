@@ -2,7 +2,8 @@ package io.tonnyl.moka.common.network.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.tonnyl.moka.common.data.TrendingDeveloper
+import io.tonnyl.moka.common.data.TrendingRepository
 
 class TrendingApi(private val ktorClient: HttpClient) {
 
@@ -17,7 +18,7 @@ class TrendingApi(private val ktorClient: HttpClient) {
     suspend fun listTrendingRepositories(
         language: String?,
         since: String
-    ): HttpResponse {
+    ): List<TrendingRepository> {
         return ktorClient.get(
             urlString = "https://gtrending.yapie.me/repositories?language=${language.orEmpty()}&since=${since}"
         )
@@ -34,7 +35,7 @@ class TrendingApi(private val ktorClient: HttpClient) {
     suspend fun listTrendingDevelopers(
         language: String?,
         since: String
-    ): HttpResponse {
+    ): List<TrendingDeveloper> {
         return ktorClient.get(
             urlString = "https://gtrending.yapie.me/developers?language=${language.orEmpty()}&since=${since}"
         )

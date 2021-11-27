@@ -5,7 +5,7 @@ fragment PullRequestReviewThreadFragment on PullRequestReviewThread {
     isResolved
     # The user who resolved this thread
     resolvedBy {
-        ... IssuePullRequestTimelineItemUserFragment
+        ... UserListItemFragment
     }
     # Identifies the pull request associated with this thread.
     pullRequest {

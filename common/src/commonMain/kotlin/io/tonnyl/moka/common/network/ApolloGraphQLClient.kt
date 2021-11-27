@@ -7,7 +7,6 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.http.LoggingInterceptor
-import com.apollographql.apollo3.network.http.withDefaultHeaders
 import io.tonnyl.moka.graphql.type.*
 
 class ApolloGraphQLClient(accessToken: String) {
@@ -15,16 +14,17 @@ class ApolloGraphQLClient(accessToken: String) {
     val apolloClient: ApolloClient by lazy {
         ApolloClient.Builder()
             .networkTransport(
-                networkTransport = HttpNetworkTransport(
-                    serverUrl = SERVER_URL,
-                    interceptors = listOf(LoggingInterceptor())
-                ).withDefaultHeaders(
-                    headers = listOf(
-                        HttpHeader("Accept", "application/json"),
-                        HttpHeader("Content-Type", "application/json"),
-                        HttpHeader("Authorization", "Bearer $accessToken")
+                networkTransport = HttpNetworkTransport.Builder()
+                    .serverUrl(serverUrl = SERVER_URL)
+                    .interceptors(interceptors = listOf(LoggingInterceptor()))
+                    .httpHeaders(
+                        headers = listOf(
+                            HttpHeader("Accept", "application/json"),
+                            HttpHeader("Content-Type", "application/json"),
+                            HttpHeader("Authorization", "Bearer $accessToken")
+                        )
                     )
-                )
+                    .build()
             )
             .addCustomScalarAdapter(
                 customScalarType = GitTimestamp.type,

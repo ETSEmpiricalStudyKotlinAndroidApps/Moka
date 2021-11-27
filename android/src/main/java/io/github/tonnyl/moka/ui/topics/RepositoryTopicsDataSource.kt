@@ -3,11 +3,10 @@ package io.github.tonnyl.moka.ui.topics
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import io.github.tonnyl.moka.data.RepositoryTopic
-import io.github.tonnyl.moka.data.extension.checkedEndCursor
-import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.github.tonnyl.moka.data.toNonNullRepositoryTopic
+import io.tonnyl.moka.common.data.extension.checkedEndCursor
+import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.RepositoryTopicsQuery
+import io.tonnyl.moka.graphql.fragment.RepositoryTopic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import logcat.LogPriority
@@ -42,7 +41,7 @@ class RepositoryTopicsDataSource(
 
                 list.addAll(
                     response?.nodes.orEmpty().mapNotNull { node ->
-                        node?.repositoryTopic?.toNonNullRepositoryTopic()
+                        node?.repositoryTopic
                     }
                 )
 

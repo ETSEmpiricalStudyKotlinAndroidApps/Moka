@@ -52,8 +52,8 @@ data class UserStatus(
 
 ) : Parcelable
 
-fun RawUserStatus.toNonNullUserStatus(): UserStatus {
-    return UserStatus(
+fun UserStatus.toNonNullUserStatus(): RawUserStatus {
+    return RawUserStatus(
         createdAt,
         emoji,
         expiresAt,

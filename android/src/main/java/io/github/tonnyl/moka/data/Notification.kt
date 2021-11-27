@@ -11,14 +11,14 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.tonnyl.moka.common.data.NotificationReasons
 import kotlinx.datetime.Instant
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
+import io.tonnyl.moka.common.data.Notification as SerializableNotification
+import io.tonnyl.moka.common.data.NotificationRepository as SerializableNotificationRepository
+import io.tonnyl.moka.common.data.NotificationRepositoryOwner as SerializableNotificationRepositoryOwner
+import io.tonnyl.moka.common.data.NotificationRepositorySubject as SerializableNotificationRepositorySubject
 
 @Entity(tableName = "notification")
-@Serializable
 data class Notification(
 
     @ColumnInfo(name = "id")
@@ -26,11 +26,9 @@ data class Notification(
     var id: String,
 
     @Embedded(prefix = "repository_")
-    @Contextual
     var repository: NotificationRepository,
 
     @Embedded(prefix = "subject_")
-    @Contextual
     var subject: NotificationRepositorySubject,
 
     @ColumnInfo(name = "reason")
@@ -39,14 +37,10 @@ data class Notification(
     @ColumnInfo(name = "unread")
     var unread: Boolean,
 
-    @SerialName("updated_at")
     @ColumnInfo(name = "updated_at")
-    @Contextual
     var updatedAt: Instant,
 
-    @SerialName("last_read_at")
     @ColumnInfo(name = "last_read_at")
-    @Contextual
     var lastReadAt: Instant? = null,
 
     @ColumnInfo(name = "url")
@@ -60,33 +54,27 @@ data class Notification(
 
 )
 
-@Serializable
 data class NotificationRepository(
 
     @ColumnInfo(name = "id")
     var id: Long,
 
-    @SerialName("node_id")
     @ColumnInfo(name = "node_id")
     var nodeId: String,
 
     @ColumnInfo(name = "name")
     var name: String,
 
-    @SerialName("full_name")
     @ColumnInfo(name = "full_name")
     var fullName: String,
 
     @Embedded(prefix = "owner_")
-    @Contextual
     var owner: NotificationRepositoryOwner,
 
     // note the difference of serialized name, column name and field name
-    @SerialName("private")
     @ColumnInfo(name = "is_private")
     var isPrivate: Boolean,
 
-    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
@@ -101,7 +89,6 @@ data class NotificationRepository(
 
 )
 
-@Serializable
 data class NotificationRepositoryOwner(
 
     @ColumnInfo(name = "login")
@@ -110,71 +97,56 @@ data class NotificationRepositoryOwner(
     @ColumnInfo(name = "id")
     var id: Long,
 
-    @SerialName("node_id")
     @ColumnInfo(name = "node_id")
     var nodeId: String,
 
-    @SerialName("avatar_url")
     @ColumnInfo(name = "avatar_url")
     var avatarUrl: String,
 
-    @SerialName("gravatar_id")
     @ColumnInfo(name = "gravatar_id")
     var gravatarId: String,
 
     @ColumnInfo(name = "url")
     var url: String,
 
-    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String,
 
-    @SerialName("followers_url")
     @ColumnInfo(name = "followers_url")
     var followersUrl: String,
 
-    @SerialName("following_url")
     @ColumnInfo(name = "following_url")
     var followingUrl: String,
 
-    @SerialName("gists_url")
     @ColumnInfo(name = "gists_url")
     var gistsUrl: String,
 
-    @SerialName("starred_url")
     @ColumnInfo(name = "starred_url")
     var starredUrl: String,
 
-    @SerialName("subscriptions_url")
     @ColumnInfo(name = "subscriptions_url")
     var subscriptionsUrl: String,
 
-    @SerialName("organizations_url")
     @ColumnInfo(name = "organizations_url")
     var organizationsUrl: String,
 
-    @SerialName("repos_url")
     @ColumnInfo(name = "repos_url")
     var reposUrl: String,
 
-    @SerialName("events_url")
     @ColumnInfo(name = "events_url")
     var eventsUrl: String,
 
-    @SerialName("received_events_url")
     @ColumnInfo(name = "received_events_url")
     var receivedEventsUrl: String,
 
     @ColumnInfo(name = "type")
     var type: String,
 
-    @SerialName("site_admin")
     @ColumnInfo(name = "site_admin")
     var siteAdmin: Boolean
 
 )
 
-@Serializable
 data class NotificationRepositorySubject(
 
     @ColumnInfo(name = "title")
@@ -183,7 +155,6 @@ data class NotificationRepositorySubject(
     @ColumnInfo(name = "url")
     var url: String,
 
-    @SerialName("latest_comment_url")
     @ColumnInfo(name = "latest_comment_url")
     var latestCommentUrl: String? = null,
 
@@ -192,80 +163,61 @@ data class NotificationRepositorySubject(
 
 )
 
-/**
- * When retrieving responses from the Notifications API, each payload has a key titled reason.
- * These correspond to events that trigger a notification.
- */
-@Serializable
-enum class NotificationReasons {
+val SerializableNotification.dbModel: Notification
+    get() = Notification(
+        id = id,
+        repository = repository.dbModel,
+        subject = subject.toDbModel,
+        reason = reason,
+        unread = unread, updatedAt = updatedAt,
+        lastReadAt = lastReadAt,
+        url = url,
+        hasDisplayed = false
+    )
 
-    /**
-     * You were assigned to the Issue.
-     */
-    @SerialName("assign")
-    ASSIGN,
+val SerializableNotificationRepository.dbModel: NotificationRepository
+    get() = NotificationRepository(
+        id = id,
+        nodeId = nodeId,
+        name = name,
+        fullName = fullName,
+        owner = owner.toDbModel,
+        isPrivate = isPrivate,
+        htmlUrl = htmlUrl,
+        description = description,
+        fork = fork,
+        url = url
+    )
 
-    /**
-     * You created the thread.
-     */
-    @SerialName("author")
-    AUTHOR,
+val SerializableNotificationRepositoryOwner.toDbModel: NotificationRepositoryOwner
+    get() = NotificationRepositoryOwner(
+        login = login,
+        id = id,
+        nodeId = nodeId,
+        avatarUrl = avatarUrl,
+        gravatarId = gravatarId,
+        url = url,
+        htmlUrl = htmlUrl,
+        followersUrl = followersUrl,
+        followingUrl = followingUrl,
+        gistsUrl = gistsUrl,
+        starredUrl = starredUrl,
+        subscriptionsUrl = subscriptionsUrl,
+        organizationsUrl = organizationsUrl,
+        reposUrl = reposUrl,
+        eventsUrl = eventsUrl,
+        receivedEventsUrl = receivedEventsUrl,
+        type = type,
+        siteAdmin = siteAdmin
+    )
 
-    /**
-     * You commented on the thread.
-     */
-    @SerialName("comment")
-    COMMENT,
-
-    /**
-     * You accepted an invitation to contribute to the repository.
-     */
-    @SerialName("invitation")
-    INVITATION,
-
-    /**
-     * You subscribed to the thread (via an Issue or Pull Request).
-     */
-    @SerialName("manual")
-    MANUAL,
-
-    /**
-     * You were specifically @mentioned in the content.
-     */
-    @SerialName("mention")
-    MENTION,
-
-    /**
-     * You, or a team you're a member of, were requested to review a pull request.
-     */
-    @SerialName("review_requested")
-    REVIEW_REQUESTED,
-
-    /**
-     * You changed the thread state (for example, closing an Issue or merging a Pull Request).
-     */
-    @SerialName("state_change")
-    STATE_CHANGE,
-
-    /**
-     * You're watching the repository.
-     */
-    @SerialName("subscribed")
-    SUBSCRIBED,
-
-    /**
-     * You were on a team that was mentioned.
-     */
-    @SerialName("team_mention")
-    TEAM_MENTION,
-
-    /**
-     * LOCAL FALLBACK ONLY. You will never get an OTHER from server.
-     */
-    @SerialName("other")
-    OTHER,
-
-}
+val SerializableNotificationRepositorySubject.toDbModel: NotificationRepositorySubject
+    get() = NotificationRepositorySubject(
+        title = title,
+        url = url,
+        latestCommentUrl = latestCommentUrl,
+        type = type
+    )
 
 val NotificationRepositoryOwner.profileType: ProfileType
     get() = when (type) {

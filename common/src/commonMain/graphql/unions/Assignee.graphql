@@ -1,11 +1,10 @@
 fragment IssuePullRequestTimelineItemAssigneeFragment on Assignee {
-    __typename
     # A special type of user which takes actions on behalf of GitHub Apps.
     ... IssuePullRequestTimelineItemBotFragment
     # A placeholder user for attribution of imported data on GitHub.
     ... IssuePullRequestTimelineItemMannequinFragment
     # An account on GitHub, with one or more owners, that has repositories, members and teams.
-    ... IssuePullRequestTimelineItemOrganizationFragment
+    ... OrganizationListItemFragment
     # A user is an individual's account on GitHub that owns repositories and can make new content.
-    ... IssuePullRequestTimelineItemUserFragment
+    ... UserListItemFragment
 }

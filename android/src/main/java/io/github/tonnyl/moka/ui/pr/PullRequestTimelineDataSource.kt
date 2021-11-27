@@ -4,12 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import io.github.tonnyl.moka.data.PullRequest
-import io.github.tonnyl.moka.data.extension.checkedEndCursor
-import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.github.tonnyl.moka.data.item.*
-import io.github.tonnyl.moka.data.toNullablePullRequest
+import io.tonnyl.moka.common.data.PullRequestTimelineItem
+import io.tonnyl.moka.common.data.extension.checkedEndCursor
+import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.PullRequestQuery
+import io.tonnyl.moka.graphql.PullRequestQuery.PullRequest
 import io.tonnyl.moka.graphql.PullRequestTimelineItemsQuery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -42,7 +41,9 @@ class PullRequestTimelineDataSource(
                         )
                     ).execute().data?.repository?.pullRequest
 
-                    pullRequestData.postValue(pullRequest.toNullablePullRequest())
+                    pullRequest?.let {
+                        pullRequestData.postValue(it)
+                    }
 
                     val timeline = pullRequest?.timelineItems
 
@@ -63,14 +64,14 @@ class PullRequestTimelineDataSource(
                     )
                 } else {
                     val timeline = apolloClient.query(
-                       query =  PullRequestTimelineItemsQuery(
-                           owner = owner,
-                           name = name,
-                           number = number,
-                           after = params.key,
-                           before = params.key,
-                           perPage = params.loadSize
-                       )
+                        query = PullRequestTimelineItemsQuery(
+                            owner = owner,
+                            name = name,
+                            number = number,
+                            after = params.key,
+                            before = params.key,
+                            perPage = params.loadSize
+                        )
                     ).execute().data?.repository?.pullRequest?.timelineItems
 
                     list.addAll(
@@ -101,90 +102,90 @@ class PullRequestTimelineDataSource(
         return null
     }
 
-    private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Node): PullRequestTimelineItem? {
-        return node.addedToProjectEventFragment?.toNonNullAddedToProjectEvent()
-            ?: node.assignedEventFragment?.toNonNullAssignedEvent()
-            ?: node.baseRefChangedEventFragment?.toNonNullBaseRefChangedEvent()
-            ?: node.baseRefForcePushedEventFragment?.toNonNullBaseRefForcePushedEvent()
-            ?: node.closedEventFragment?.toNonNullClosedEvent()
-            ?: node.convertedNoteToIssueEventFragment?.toNonNullConvertedNoteToIssueEvent()
-            ?: node.crossReferencedEventFragment?.toNonNullCrossReferencedEvent()
-            ?: node.demilestonedEventFragment?.toNonNullDemilestonedEvent()
-            ?: node.deployedEventFragment?.toNonNullDeployedEvent()
-            ?: node.deploymentEnvironmentChangedEventFragment
-                ?.toNonNullDeploymentEnvironmentChangedEvent()
-            ?: node.headRefDeletedEventFragment?.toNonNullHeadRefDeletedEvent()
-            ?: node.headRefForcePushedEventFragment?.toNonNullHeadRefForcePushedEvent()
-            ?: node.headRefRestoredEventFragment?.toNonNullHeadRefRestoredEvent()
-            ?: node.issueCommentFragment?.toNonNullIssueComment(owner, name)
-            ?: node.labeledEventFragment?.toNonNullLabeledEvent()
-            ?: node.lockedEventFragment?.toNonNullLockedEvent()
-            ?: node.markedAsDuplicateEventFragment?.toNonNullMarkedAsDuplicateEvent()
-            ?: node.mergedEventFragment?.toNonNullMergedEvent()
-            ?: node.milestonedEventFragment?.toNonNullMilestonedEvent()
-            ?: node.movedColumnsInProjectEventFragment?.toNonNullMovedColumnsInProjectEvent()
-            ?: node.pinnedEventFragment?.toNonNullPinnedEvent()
-            ?: node.pullRequestCommitFragment?.toNonNullPullRequestCommit()
-            ?: node.pullRequestCommitCommentThreadFragment
-                ?.toNonNullPullRequestCommitCommentThread()
-            ?: node.pullRequestReviewFragment?.toNonNullPullRequestReview()
-            ?: node.pullRequestReviewThreadFragment?.toNonNullPullRequestReviewThread()
-            ?: node.readyForReviewEventFragment?.toNonNullReadyForReviewEvent()
-            ?: node.referencedEventFragment?.toNonNullReferencedEvent()
-            ?: node.removedFromProjectEventFragment?.toNonNullRemovedFromProjectEvent()
-            ?: node.renamedTitleEventFragment?.toNonNullRenamedTitleEvent()
-            ?: node.reopenedEventFragment?.toNonNullReopenedEvent()
-            ?: node.reviewDismissedEventFragment?.toNonNullReviewDismissedEvent()
-            ?: node.reviewRequestRemovedEventFragment?.toNonNullReviewRequestRemovedEvent()
-            ?: node.reviewRequestedEventFragment?.toNonNullReviewRequestedEvent()
-            ?: node.transferredEventFragment?.toNonNullTransferredEvent()
-            ?: node.unassignedEventFragment?.toNonNullUnassignedEvent()
-            ?: node.unlabeledEventFragment?.toNonNullUnlabeledEvent()
-            ?: node.unlockedEventFragment?.toNonNullUnlockedEvent()
-            ?: node.unpinnedEventFragment?.toNonNullUnpinnedEvent()
+    private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Node): PullRequestTimelineItem {
+        return PullRequestTimelineItem(
+            addedToProjectEvent = node.addedToProjectEventFragment,
+            assignedEvent = node.assignedEventFragment,
+            baseRefChangedEvent = node.baseRefChangedEventFragment,
+            baseRefForcePushedEvent = node.baseRefForcePushedEventFragment,
+            closedEvent = node.closedEventFragment,
+            convertedNoteToIssueEvent = node.convertedNoteToIssueEventFragment,
+            crossReferencedEvent = node.crossReferencedEventFragment,
+            demilestonedEvent = node.demilestonedEventFragment,
+            deployedEvent = node.deployedEventFragment,
+            deploymentEnvironmentChangedEvent = node.deploymentEnvironmentChangedEventFragment,
+            headRefDeletedEvent = node.headRefDeletedEventFragment,
+            headRefForcePushedEvent = node.headRefForcePushedEventFragment,
+            headRefRestoredEvent = node.headRefRestoredEventFragment,
+            issueComment = node.issueCommentFragment,
+            labeledEvent = node.labeledEventFragment,
+            lockedEvent = node.lockedEventFragment,
+            markedAsDuplicateEvent = node.markedAsDuplicateEventFragment,
+            mergedEvent = node.mergedEventFragment,
+            milestonedEvent = node.milestonedEventFragment,
+            movedColumnsInProjectEvent = node.movedColumnsInProjectEventFragment,
+            pinnedEvent = node.pinnedEventFragment,
+            pullRequestCommit = node.pullRequestCommitFragment,
+            pullRequestCommitCommentThread = node.pullRequestCommitCommentThreadFragment,
+            pullRequestReview = node.pullRequestReviewFragment,
+            pullRequestReviewThread = node.pullRequestReviewThreadFragment,
+            readyForReviewEvent = node.readyForReviewEventFragment,
+            referencedEvent = node.referencedEventFragment,
+            removedFromProjectEvent = node.removedFromProjectEventFragment,
+            renamedTitleEvent = node.renamedTitleEventFragment,
+            reopenedEvent = node.reopenedEventFragment,
+            reviewDismissedEvent = node.reviewDismissedEventFragment,
+            reviewRequestRemovedEvent = node.reviewRequestRemovedEventFragment,
+            reviewRequestedEvent = node.reviewRequestedEventFragment,
+            transferredEvent = node.transferredEventFragment,
+            unassignedEvent = node.unassignedEventFragment,
+            unlabeledEvent = node.unlabeledEventFragment,
+            unlockedEvent = node.unlockedEventFragment,
+            unpinnedEvent = node.unpinnedEventFragment
+        )
     }
 
-    private fun initTimelineItemWithRawData(node: PullRequestQuery.Node): PullRequestTimelineItem? {
-        return node.addedToProjectEventFragment?.toNonNullAddedToProjectEvent()
-            ?: node.assignedEventFragment?.toNonNullAssignedEvent()
-            ?: node.baseRefChangedEventFragment?.toNonNullBaseRefChangedEvent()
-            ?: node.baseRefForcePushedEventFragment?.toNonNullBaseRefForcePushedEvent()
-            ?: node.closedEventFragment?.toNonNullClosedEvent()
-            ?: node.convertedNoteToIssueEventFragment?.toNonNullConvertedNoteToIssueEvent()
-            ?: node.crossReferencedEventFragment?.toNonNullCrossReferencedEvent()
-            ?: node.demilestonedEventFragment?.toNonNullDemilestonedEvent()
-            ?: node.deployedEventFragment?.toNonNullDeployedEvent()
-            ?: node.deploymentEnvironmentChangedEventFragment
-                ?.toNonNullDeploymentEnvironmentChangedEvent()
-            ?: node.headRefDeletedEventFragment?.toNonNullHeadRefDeletedEvent()
-            ?: node.headRefForcePushedEventFragment?.toNonNullHeadRefForcePushedEvent()
-            ?: node.headRefRestoredEventFragment?.toNonNullHeadRefRestoredEvent()
-            ?: node.issueCommentFragment?.toNonNullIssueComment(owner, name)
-            ?: node.labeledEventFragment?.toNonNullLabeledEvent()
-            ?: node.lockedEventFragment?.toNonNullLockedEvent()
-            ?: node.markedAsDuplicateEventFragment?.toNonNullMarkedAsDuplicateEvent()
-            ?: node.mergedEventFragment?.toNonNullMergedEvent()
-            ?: node.milestonedEventFragment?.toNonNullMilestonedEvent()
-            ?: node.movedColumnsInProjectEventFragment?.toNonNullMovedColumnsInProjectEvent()
-            ?: node.pinnedEventFragment?.toNonNullPinnedEvent()
-            ?: node.pullRequestCommitFragment?.toNonNullPullRequestCommit()
-            ?: node.pullRequestCommitCommentThreadFragment
-                ?.toNonNullPullRequestCommitCommentThread()
-            ?: node.pullRequestReviewFragment?.toNonNullPullRequestReview()
-            ?: node.pullRequestReviewThreadFragment?.toNonNullPullRequestReviewThread()
-            ?: node.readyForReviewEventFragment?.toNonNullReadyForReviewEvent()
-            ?: node.referencedEventFragment?.toNonNullReferencedEvent()
-            ?: node.removedFromProjectEventFragment?.toNonNullRemovedFromProjectEvent()
-            ?: node.renamedTitleEventFragment?.toNonNullRenamedTitleEvent()
-            ?: node.reopenedEventFragment?.toNonNullReopenedEvent()
-            ?: node.reviewDismissedEventFragment?.toNonNullReviewDismissedEvent()
-            ?: node.reviewRequestRemovedEventFragment?.toNonNullReviewRequestRemovedEvent()
-            ?: node.reviewRequestedEventFragment?.toNonNullReviewRequestedEvent()
-            ?: node.transferredEventFragment?.toNonNullTransferredEvent()
-            ?: node.unassignedEventFragment?.toNonNullUnassignedEvent()
-            ?: node.unlabeledEventFragment?.toNonNullUnlabeledEvent()
-            ?: node.unlockedEventFragment?.toNonNullUnlockedEvent()
-            ?: node.unpinnedEventFragment?.toNonNullUnpinnedEvent()
+    private fun initTimelineItemWithRawData(node: PullRequestQuery.Node): PullRequestTimelineItem {
+        return PullRequestTimelineItem(
+            addedToProjectEvent = node.addedToProjectEventFragment,
+            assignedEvent = node.assignedEventFragment,
+            baseRefChangedEvent = node.baseRefChangedEventFragment,
+            baseRefForcePushedEvent = node.baseRefForcePushedEventFragment,
+            closedEvent = node.closedEventFragment,
+            convertedNoteToIssueEvent = node.convertedNoteToIssueEventFragment,
+            crossReferencedEvent = node.crossReferencedEventFragment,
+            demilestonedEvent = node.demilestonedEventFragment,
+            deployedEvent = node.deployedEventFragment,
+            deploymentEnvironmentChangedEvent = node.deploymentEnvironmentChangedEventFragment,
+            headRefDeletedEvent = node.headRefDeletedEventFragment,
+            headRefForcePushedEvent = node.headRefForcePushedEventFragment,
+            headRefRestoredEvent = node.headRefRestoredEventFragment,
+            issueComment = node.issueCommentFragment,
+            labeledEvent = node.labeledEventFragment,
+            lockedEvent = node.lockedEventFragment,
+            markedAsDuplicateEvent = node.markedAsDuplicateEventFragment,
+            mergedEvent = node.mergedEventFragment,
+            milestonedEvent = node.milestonedEventFragment,
+            movedColumnsInProjectEvent = node.movedColumnsInProjectEventFragment,
+            pinnedEvent = node.pinnedEventFragment,
+            pullRequestCommit = node.pullRequestCommitFragment,
+            pullRequestCommitCommentThread = node.pullRequestCommitCommentThreadFragment,
+            pullRequestReview = node.pullRequestReviewFragment,
+            pullRequestReviewThread = node.pullRequestReviewThreadFragment,
+            readyForReviewEvent = node.readyForReviewEventFragment,
+            referencedEvent = node.referencedEventFragment,
+            removedFromProjectEvent = node.removedFromProjectEventFragment,
+            renamedTitleEvent = node.renamedTitleEventFragment,
+            reopenedEvent = node.reopenedEventFragment,
+            reviewDismissedEvent = node.reviewDismissedEventFragment,
+            reviewRequestRemovedEvent = node.reviewRequestRemovedEventFragment,
+            reviewRequestedEvent = node.reviewRequestedEventFragment,
+            transferredEvent = node.transferredEventFragment,
+            unassignedEvent = node.unassignedEventFragment,
+            unlabeledEvent = node.unlabeledEventFragment,
+            unlockedEvent = node.unlockedEventFragment,
+            unpinnedEvent = node.unpinnedEventFragment
+        )
     }
 
 }

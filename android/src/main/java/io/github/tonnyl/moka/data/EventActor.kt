@@ -1,10 +1,8 @@
 package io.github.tonnyl.moka.data
 
 import androidx.room.ColumnInfo
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import io.tonnyl.moka.common.data.EventActor as SerializableEventActor
 
-@Serializable
 data class EventActor(
 
     @ColumnInfo(name = "id")
@@ -13,11 +11,9 @@ data class EventActor(
     @ColumnInfo(name = "login")
     var login: String,
 
-    @SerialName("avatar_url")
     @ColumnInfo(name = "avatar_url")
     var avatarUrl: String,
 
-    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String? = null,
 
@@ -25,3 +21,12 @@ data class EventActor(
     var type: String? = null
 
 )
+
+val SerializableEventActor.dbModel: EventActor
+    get() = EventActor(
+        id = id,
+        login = login,
+        avatarUrl = avatarUrl,
+        htmlUrl = htmlUrl,
+        type = type
+    )

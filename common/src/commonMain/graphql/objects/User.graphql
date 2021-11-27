@@ -93,11 +93,6 @@ fragment User on User {
     starredRepositories {
         totalCount
     }
-    organizations(first: 20) {
-        nodes {
-            avatarUrl
-        }
-    }
     projects {
         totalCount
     }

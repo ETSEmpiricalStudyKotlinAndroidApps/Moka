@@ -6,13 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.AccountInstance
-import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.mutations.followUser
 import io.github.tonnyl.moka.network.mutations.unfollowUser
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.graphql.OrganizationQuery
 import io.tonnyl.moka.graphql.UserQuery
+import io.tonnyl.moka.graphql.fragment.Organization
+import io.tonnyl.moka.graphql.fragment.User
+import io.tonnyl.moka.graphql.fragment.UserStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -67,7 +69,7 @@ class ProfileViewModel(
             try {
                 val user = accountInstance.apolloGraphQLClient.apolloClient.query(
                     UserQuery(login)
-                ).execute().data?.user?.user?.toNonNullUser()
+                ).execute().data?.user?.user
 
                 _userProfile.postValue(Resource.success(user))
 
@@ -92,7 +94,7 @@ class ProfileViewModel(
                 val org = accountInstance.apolloGraphQLClient
                     .apolloClient.query(
                         query = OrganizationQuery(login = login)
-                    ).execute().data?.organization?.organization?.toNoneNullOrganization()
+                    ).execute().data?.organization?.organization
 
                 _organizationProfile.postValue(Resource.success(org))
 
@@ -140,10 +142,19 @@ class ProfileViewModel(
     }
 
     @MainThread
-    fun updateUserStatusIfNeeded(status: UserStatus?) {
+    fun updateUserStatusIfNeeded(newStatus: UserStatus?) {
         _userProfile.value?.data?.let { user ->
-            if (user.status != status) {
-                _userProfile.value = Resource.success(user.copy(status = status))
+            if (user.status?.userStatus != newStatus) {
+                _userProfile.value =
+                    Resource.success(
+                        user.copy(
+                            status = if (newStatus != null) {
+                                user.status?.copy(userStatus = newStatus)
+                            } else {
+                                null
+                            }
+                        )
+                    )
             }
         }
     }

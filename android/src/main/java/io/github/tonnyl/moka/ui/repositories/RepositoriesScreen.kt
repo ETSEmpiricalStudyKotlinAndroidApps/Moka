@@ -36,7 +36,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -48,6 +47,7 @@ import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -171,7 +171,7 @@ fun RepositoriesScreen(
 @Composable
 private fun RepositoriesScreenContent(
     contentTopPadding: Dp,
-    repositories: LazyPagingItems<RepositoryItem>
+    repositories: LazyPagingItems<RepositoryListItemFragment>
 ) {
     val repoPlaceholder = remember {
         RepositoryItemProvider().values.first()
@@ -217,7 +217,7 @@ private fun RepositoriesScreenContent(
 @ExperimentalCoilApi
 @Composable
 fun ItemRepository(
-    repo: RepositoryItem,
+    repo: RepositoryListItemFragment,
     enablePlaceholder: Boolean
 ) {
     val navController = LocalNavController.current
@@ -229,7 +229,10 @@ fun ItemRepository(
             .clickable(enabled = !enablePlaceholder) {
                 navController.navigate(
                     route = Screen.Repository.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", repo.owner?.login ?: "ghost")
+                        .replace(
+                            "{${Screen.ARG_PROFILE_LOGIN}}",
+                            repo.repositoryOwner.repositoryOwner.login
+                        )
                         .replace("{${Screen.ARG_REPOSITORY_NAME}}", repo.name)
                 )
             }
@@ -237,7 +240,7 @@ fun ItemRepository(
     ) {
         Image(
             painter = rememberImagePainter(
-                data = repo.owner?.avatarUrl,
+                data = repo.repositoryOwner.repositoryOwner.avatarUrl,
                 builder = {
                     createAvatarLoadRequest()
                 }
@@ -249,7 +252,10 @@ fun ItemRepository(
                 .clickable(enabled = !enablePlaceholder) {
                     navController.navigate(
                         route = Screen.Profile.route
-                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", repo.owner?.login ?: "ghost")
+                            .replace(
+                                "{${Screen.ARG_PROFILE_LOGIN}}",
+                                repo.repositoryOwner.repositoryOwner.login
+                            )
                             .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.NOT_SPECIFIED.name)
                     )
                 }
@@ -296,7 +302,7 @@ fun ItemRepository(
                         modifier = Modifier
                             .size(size = RepositoryCardLanguageDotSize)
                             .background(
-                                color = repo.primaryLanguage?.color
+                                color = repo.primaryLanguage?.language?.color
                                     ?.toColor()
                                     ?.let { Color(it) }
                                     ?: MaterialTheme.colors.onBackground,
@@ -309,7 +315,7 @@ fun ItemRepository(
                     )
                     Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
                     Text(
-                        text = repo.primaryLanguage?.name
+                        text = repo.primaryLanguage?.language?.name
                             ?: stringResource(id = R.string.programming_language_unknown),
                         maxLines = 1,
                         style = MaterialTheme.typography.body2,
@@ -332,7 +338,7 @@ fun ItemRepository(
                     )
                     Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
                     Text(
-                        text = repo.stargazersCount.formatWithSuffix(),
+                        text = repo.stargazers.totalCount.formatWithSuffix(),
                         maxLines = 1,
                         style = MaterialTheme.typography.body2,
                         overflow = TextOverflow.Ellipsis,
@@ -354,7 +360,7 @@ fun ItemRepository(
                     )
                     Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
                     Text(
-                        text = repo.forksCount.formatWithSuffix(),
+                        text = repo.forks.totalCount.formatWithSuffix(),
                         maxLines = 1,
                         style = MaterialTheme.typography.body2,
                         overflow = TextOverflow.Ellipsis,
@@ -381,7 +387,7 @@ private fun ItemRepositoryPreview(
         provider = RepositoryItemProvider::class,
         limit = 1
     )
-    repo: RepositoryItem
+    repo: RepositoryListItemFragment
 ) {
     ItemRepository(
         repo = repo,

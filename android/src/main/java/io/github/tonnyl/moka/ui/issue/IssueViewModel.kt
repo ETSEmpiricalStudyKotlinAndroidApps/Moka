@@ -8,7 +8,7 @@ import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
-import io.github.tonnyl.moka.data.Issue
+import io.tonnyl.moka.graphql.IssueQuery.Issue
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi

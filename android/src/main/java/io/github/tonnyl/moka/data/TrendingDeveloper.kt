@@ -4,13 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
+import io.tonnyl.moka.common.data.TrendingDeveloper as SerializableTrendingDeveloper
+import io.tonnyl.moka.common.data.TrendingDeveloperRepository as SerializableTrendingDeveloperRepositoryData
 
 @Entity(tableName = "trending_developer")
-@Serializable
 data class TrendingDeveloper(
 
     @PrimaryKey(autoGenerate = true)
@@ -36,14 +33,11 @@ data class TrendingDeveloper(
     @ColumnInfo(name = "avatar")
     val avatar: String,
 
-    @SerialName("repo")
-    @Contextual
     @Embedded(prefix = "trending_developer_repository_")
     val repository: TrendingDeveloperRepository? = null
 
 )
 
-@Serializable
 data class TrendingDeveloperRepository(
 
     @ColumnInfo(name = "name")
@@ -56,3 +50,20 @@ data class TrendingDeveloperRepository(
     val url: String
 
 )
+
+val SerializableTrendingDeveloper.dbModel: TrendingDeveloper
+    get() = TrendingDeveloper(
+        username = username,
+        name = name,
+        type = type,
+        url = url,
+        avatar = avatar,
+        repository = repository?.dbModel
+    )
+
+val SerializableTrendingDeveloperRepositoryData.dbModel: TrendingDeveloperRepository
+    get() = TrendingDeveloperRepository(
+        name = name,
+        description = description,
+        url = url
+    )

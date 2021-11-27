@@ -33,6 +33,7 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserStatus
+import io.github.tonnyl.moka.data.toNonNullUserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
 import io.github.tonnyl.moka.ui.branches.BranchesScreen
 import io.github.tonnyl.moka.ui.commit.CommitScreen
@@ -557,7 +558,7 @@ private fun MainNavHost(
                 .getLiveData<UserStatus>(Screen.EditStatus.RESULT_UPDATE_STATUS)
                 .value
                 ?.let {
-                    viewModel.updateUserStatusIfNeeded(it)
+                    viewModel.updateUserStatusIfNeeded(it.toNonNullUserStatus())
                 }
 
             ProfileScreen(viewModel = viewModel)

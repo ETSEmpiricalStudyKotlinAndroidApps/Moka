@@ -6,6 +6,6 @@ fragment GitActorFragment on GitActor {
     # The name in the Git commit.
     name
     user {
-        ... IssuePullRequestTimelineItemUserFragment
+        ... UserListItemFragment
     }
 }

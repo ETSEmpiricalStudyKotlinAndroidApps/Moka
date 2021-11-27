@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.data
+package io.tonnyl.moka.common.data
 
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual

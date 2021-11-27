@@ -44,13 +44,13 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.CommitFile
-import io.github.tonnyl.moka.data.CommitResponse
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.CommitFileProvider
 import io.github.tonnyl.moka.util.CommitResponseProvider
 import io.github.tonnyl.moka.widget.*
+import io.tonnyl.moka.common.data.CommitFile
+import io.tonnyl.moka.common.data.CommitResponse
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -386,7 +386,7 @@ private fun ItemCommitDetails(
                 Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
 
                 CommitVerification(
-                    verified = resp.commit.verification.verified,
+                    verified = resp.commit.verification!!.verified,
                     enablePlaceholder = enablePlaceholder
                 )
             }

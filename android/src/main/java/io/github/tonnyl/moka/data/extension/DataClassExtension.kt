@@ -3,27 +3,8 @@ package io.github.tonnyl.moka.data.extension
 import io.github.tonnyl.moka.serializers.store.data.Account
 import io.tonnyl.moka.common.data.AccessToken
 import io.tonnyl.moka.common.data.AuthenticatedUser
-import io.tonnyl.moka.graphql.fragment.PageInfo
 import kotlinx.serialization.ExperimentalSerializationApi
 import io.github.tonnyl.moka.serializers.store.data.AccessToken as PBAccessToken
-
-val PageInfo?.checkedStartCursor: String?
-    get() {
-        return if (this?.hasPreviousPage == true) {
-            startCursor
-        } else {
-            null
-        }
-    }
-
-val PageInfo?.checkedEndCursor: String?
-    get() {
-        return if (this?.hasNextPage == true) {
-            endCursor
-        } else {
-            null
-        }
-    }
 
 @ExperimentalSerializationApi
 fun AuthenticatedUser.toPbAccount(): Account {

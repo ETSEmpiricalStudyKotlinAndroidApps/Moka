@@ -3,10 +3,10 @@ package io.github.tonnyl.moka.ui.branches
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import io.github.tonnyl.moka.data.extension.checkedEndCursor
-import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.tonnyl.moka.graphql.fragment.Ref
+import io.tonnyl.moka.common.data.extension.checkedEndCursor
+import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.RepositoryRefsQuery
+import io.tonnyl.moka.graphql.fragment.Ref
 import io.tonnyl.moka.graphql.type.OrderDirection
 import io.tonnyl.moka.graphql.type.RefOrder
 import io.tonnyl.moka.graphql.type.RefOrderField

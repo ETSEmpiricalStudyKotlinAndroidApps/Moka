@@ -3,14 +3,13 @@ package io.github.tonnyl.moka.ui.users
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import io.github.tonnyl.moka.data.UserItem
-import io.github.tonnyl.moka.data.extension.checkedEndCursor
-import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.github.tonnyl.moka.data.toNonNullUserItem
+import io.tonnyl.moka.common.data.extension.checkedEndCursor
+import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.FollowersQuery
 import io.tonnyl.moka.graphql.FollowingQuery
 import io.tonnyl.moka.graphql.RepositoryStargazersQuery
 import io.tonnyl.moka.graphql.RepositoryWatchersQuery
+import io.tonnyl.moka.graphql.fragment.UserListItemFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import logcat.LogPriority
@@ -22,14 +21,14 @@ class UsersDataSource(
     private val login: String,
     private val repoName: String?,
     private val usersType: UsersType
-) : PagingSource<String, UserItem>() {
+) : PagingSource<String, UserListItemFragment>() {
 
-    override fun getRefreshKey(state: PagingState<String, UserItem>): String? {
+    override fun getRefreshKey(state: PagingState<String, UserListItemFragment>): String? {
         return null
     }
 
-    override suspend fun load(params: LoadParams<String>): LoadResult<String, UserItem> {
-        val list = mutableListOf<UserItem>()
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, UserListItemFragment> {
+        val list = mutableListOf<UserListItemFragment>()
         return withContext(Dispatchers.IO) {
             try {
                 val pageInfo = when (usersType) {
@@ -45,7 +44,7 @@ class UsersDataSource(
 
                         list.addAll(
                             user?.followers?.nodes.orEmpty().mapNotNull { node ->
-                                node?.userListItemFragment?.toNonNullUserItem()
+                                node?.userListItemFragment
                             }
                         )
 
@@ -63,7 +62,7 @@ class UsersDataSource(
 
                         list.addAll(
                             user?.following?.nodes.orEmpty().mapNotNull { node ->
-                                node?.userListItemFragment?.toNonNullUserItem()
+                                node?.userListItemFragment
                             }
                         )
 
@@ -82,7 +81,7 @@ class UsersDataSource(
 
                         list.addAll(
                             repo?.stargazers?.nodes.orEmpty().mapNotNull { node ->
-                                node?.userListItemFragment?.toNonNullUserItem()
+                                node?.userListItemFragment
                             }
                         )
 
@@ -101,7 +100,7 @@ class UsersDataSource(
 
                         list.addAll(
                             repo?.watchers?.nodes.orEmpty().mapNotNull { node ->
-                                node?.userListItemFragment?.toNonNullUserItem()
+                                node?.userListItemFragment
                             }
                         )
 

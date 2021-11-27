@@ -3,12 +3,10 @@ package io.github.tonnyl.moka.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
+import io.tonnyl.moka.common.data.TrendingRepository as SerializableTrendingRepository
+import io.tonnyl.moka.common.data.TrendingRepositoryBuiltBy as SerializableTrendingRepositoryBuiltBy
 
 @Entity(tableName = "trending_repository")
-@Serializable
 data class TrendingRepository(
 
     @PrimaryKey(autoGenerate = true)
@@ -46,12 +44,10 @@ data class TrendingRepository(
     @ColumnInfo(name = "current_period_stars")
     val currentPeriodStars: Int,
 
-    @Contextual
-    val builtBy: List<TrendingRepositoryBuiltBy>
+    val builtBy: List<TrendingRepositoryBuiltBy>?
 
 )
 
-@Serializable
 data class TrendingRepositoryBuiltBy(
 
     @ColumnInfo(name = "href")
@@ -64,3 +60,25 @@ data class TrendingRepositoryBuiltBy(
     val username: String
 
 )
+
+val SerializableTrendingRepository.dbModel: TrendingRepository
+    get() = TrendingRepository(
+        author = author,
+        name = name,
+        avatar = avatar,
+        url = url,
+        description = description,
+        language = language,
+        languageColor = languageColor,
+        stars = stars,
+        forks = forks,
+        currentPeriodStars = currentPeriodStars,
+        builtBy = builtBy?.map { it.dbModel }
+    )
+
+val SerializableTrendingRepositoryBuiltBy.dbModel: TrendingRepositoryBuiltBy
+    get() = TrendingRepositoryBuiltBy(
+        href = href,
+        avatar = avatar,
+        username = username
+    )

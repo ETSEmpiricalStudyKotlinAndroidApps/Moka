@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.AccountInstance
-import io.github.tonnyl.moka.data.Repository
-import io.github.tonnyl.moka.data.toNullableRepository
 import io.github.tonnyl.moka.network.mutations.addStar
 import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.util.HtmlHandler
@@ -16,6 +14,7 @@ import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.graphql.RepositoryQuery
 import io.tonnyl.moka.graphql.UpdateSubscriptionMutation
+import io.tonnyl.moka.graphql.fragment.Repository
 import io.tonnyl.moka.graphql.type.SubscriptionState
 import io.tonnyl.moka.graphql.type.UpdateSubscriptionInput
 import kotlinx.coroutines.Dispatchers
@@ -65,14 +64,14 @@ class RepositoryViewModel(
                             login = login,
                             repoName = repositoryName
                         )
-                    ).execute().data?.repository.toNullableRepository()
+                    ).execute().data?.repository?.repository
 
                 _repository.postValue(Resource.success(repo))
                 _starState.postValue(Resource.success(repo?.viewerHasStarred))
                 _subscriptionState.postValue(Resource.success(repo?.viewerSubscription))
 
                 repo?.defaultBranchRef?.let { ref ->
-                    updateBranchName(ref.name)
+                    updateBranchName(ref.ref.name)
                 }
             } catch (e: Exception) {
                 logcat(priority = LogPriority.ERROR) { e.asLog() }

@@ -4,12 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import io.github.tonnyl.moka.data.Issue
-import io.github.tonnyl.moka.data.extension.checkedEndCursor
-import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.github.tonnyl.moka.data.item.*
-import io.github.tonnyl.moka.data.toNonNullIssue
+import io.tonnyl.moka.common.data.IssueTimelineItem
+import io.tonnyl.moka.common.data.extension.checkedEndCursor
+import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.IssueQuery
+import io.tonnyl.moka.graphql.IssueQuery.Issue
 import io.tonnyl.moka.graphql.IssueTimelineItemsQuery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -41,7 +40,7 @@ class IssueTimelineDataSource(
                         )
                     ).execute().data?.repository?.issue
 
-                    issue?.toNonNullIssue()?.let {
+                    issue?.let {
                         issueData.postValue(it)
                     }
 
@@ -97,54 +96,58 @@ class IssueTimelineDataSource(
         }
     }
 
-    private fun initTimelineItemWithRawData(node: IssueTimelineItemsQuery.Node): IssueTimelineItem? {
-        return node.addedToProjectEventFragment?.toNonNullAddedToProjectEvent()
-            ?: node.assignedEventFragment?.toNonNullAssignedEvent()
-            ?: node.closedEventFragment?.toNonNullClosedEvent()
-            ?: node.convertedNoteToIssueEventFragment?.toNonNullConvertedNoteToIssueEvent()
-            ?: node.crossReferencedEventFragment?.toNonNullCrossReferencedEvent()
-            ?: node.demilestonedEventFragment?.toNonNullDemilestonedEvent()
-            ?: node.issueCommentFragment?.toNonNullIssueComment(owner, name)
-            ?: node.labeledEventFragment?.toNonNullLabeledEvent()
-            ?: node.lockedEventFragment?.toNonNullLockedEvent()
-            ?: node.markedAsDuplicateEventFragment?.toNonNullMarkedAsDuplicateEvent()
-            ?: node.milestonedEventFragment?.toNonNullMilestonedEvent()
-            ?: node.movedColumnsInProjectEventFragment?.toNonNullMovedColumnsInProjectEvent()
-            ?: node.pinnedEventFragment?.toNonNullPinnedEvent()
-            ?: node.referencedEventFragment?.toNonNullReferencedEvent()
-            ?: node.removedFromProjectEventFragment?.toNonNullRemovedFromProjectEvent()
-            ?: node.renamedTitleEventFragment?.toNonNullRenamedTitleEvent()
-            ?: node.reopenedEventFragment?.toNonNullReopenedEvent()
-            ?: node.transferredEventFragment?.toNonNullTransferredEvent()
-            ?: node.unassignedEventFragment?.toNonNullUnassignedEvent()
-            ?: node.unlabeledEventFragment?.toNonNullUnlabeledEvent()
-            ?: node.unlockedEventFragment?.toNonNullUnlockedEvent()
-            ?: node.unpinnedEventFragment?.toNonNullUnpinnedEvent()
+    private fun initTimelineItemWithRawData(node: IssueTimelineItemsQuery.Node): IssueTimelineItem {
+        return IssueTimelineItem(
+            addedToProjectEvent = node.addedToProjectEventFragment,
+            assignedEvent = node.assignedEventFragment,
+            closedEvent = node.closedEventFragment,
+            convertedNoteToIssueEvent = node.convertedNoteToIssueEventFragment,
+            crossReferencedEvent = node.crossReferencedEventFragment,
+            demilestonedEvent = node.demilestonedEventFragment,
+            issueComment = node.issueCommentFragment,
+            labeledEvent = node.labeledEventFragment,
+            lockedEvent = node.lockedEventFragment,
+            markedAsDuplicateEvent = node.markedAsDuplicateEventFragment,
+            milestonedEvent = node.milestonedEventFragment,
+            movedColumnsInProjectEvent = node.movedColumnsInProjectEventFragment,
+            pinnedEvent = node.pinnedEventFragment,
+            referencedEvent = node.referencedEventFragment,
+            removedFromProjectEvent = node.removedFromProjectEventFragment,
+            renamedTitleEvent = node.renamedTitleEventFragment,
+            reopenedEvent = node.reopenedEventFragment,
+            transferredEvent = node.transferredEventFragment,
+            unassignedEvent = node.unassignedEventFragment,
+            unlabeledEvent = node.unlabeledEventFragment,
+            unlockedEvent = node.unlockedEventFragment,
+            unpinnedEvent = node.unpinnedEventFragment
+        )
     }
 
-    private fun initTimelineItemWithRawData(node: IssueQuery.Node): IssueTimelineItem? {
-        return node.addedToProjectEventFragment?.toNonNullAddedToProjectEvent()
-            ?: node.assignedEventFragment?.toNonNullAssignedEvent()
-            ?: node.closedEventFragment?.toNonNullClosedEvent()
-            ?: node.convertedNoteToIssueEventFragment?.toNonNullConvertedNoteToIssueEvent()
-            ?: node.crossReferencedEventFragment?.toNonNullCrossReferencedEvent()
-            ?: node.demilestonedEventFragment?.toNonNullDemilestonedEvent()
-            ?: node.issueCommentFragment?.toNonNullIssueComment(owner, name)
-            ?: node.labeledEventFragment?.toNonNullLabeledEvent()
-            ?: node.lockedEventFragment?.toNonNullLockedEvent()
-            ?: node.markedAsDuplicateEventFragment?.toNonNullMarkedAsDuplicateEvent()
-            ?: node.milestonedEventFragment?.toNonNullMilestonedEvent()
-            ?: node.movedColumnsInProjectEventFragment?.toNonNullMovedColumnsInProjectEvent()
-            ?: node.pinnedEventFragment?.toNonNullPinnedEvent()
-            ?: node.referencedEventFragment?.toNonNullReferencedEvent()
-            ?: node.removedFromProjectEventFragment?.toNonNullRemovedFromProjectEvent()
-            ?: node.renamedTitleEventFragment?.toNonNullRenamedTitleEvent()
-            ?: node.reopenedEventFragment?.toNonNullReopenedEvent()
-            ?: node.transferredEventFragment?.toNonNullTransferredEvent()
-            ?: node.unassignedEventFragment?.toNonNullUnassignedEvent()
-            ?: node.unlabeledEventFragment?.toNonNullUnlabeledEvent()
-            ?: node.unlockedEventFragment?.toNonNullUnlockedEvent()
-            ?: node.unpinnedEventFragment?.toNonNullUnpinnedEvent()
+    private fun initTimelineItemWithRawData(node: IssueQuery.Node): IssueTimelineItem {
+        return IssueTimelineItem(
+            addedToProjectEvent = node.addedToProjectEventFragment,
+            assignedEvent = node.assignedEventFragment,
+            closedEvent = node.closedEventFragment,
+            convertedNoteToIssueEvent = node.convertedNoteToIssueEventFragment,
+            crossReferencedEvent = node.crossReferencedEventFragment,
+            demilestonedEvent = node.demilestonedEventFragment,
+            issueComment = node.issueCommentFragment,
+            labeledEvent = node.labeledEventFragment,
+            lockedEvent = node.lockedEventFragment,
+            markedAsDuplicateEvent = node.markedAsDuplicateEventFragment,
+            milestonedEvent = node.milestonedEventFragment,
+            movedColumnsInProjectEvent = node.movedColumnsInProjectEventFragment,
+            pinnedEvent = node.pinnedEventFragment,
+            referencedEvent = node.referencedEventFragment,
+            removedFromProjectEvent = node.removedFromProjectEventFragment,
+            renamedTitleEvent = node.renamedTitleEventFragment,
+            reopenedEvent = node.reopenedEventFragment,
+            transferredEvent = node.transferredEventFragment,
+            unassignedEvent = node.unassignedEventFragment,
+            unlabeledEvent = node.unlabeledEventFragment,
+            unlockedEvent = node.unlockedEventFragment,
+            unpinnedEvent = node.unpinnedEventFragment
+        )
     }
 
     override fun getRefreshKey(state: PagingState<String, IssueTimelineItem>): String? {

@@ -49,6 +49,9 @@ import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.graphql.fragment.Gist
+import io.tonnyl.moka.graphql.fragment.Organization
+import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
+import io.tonnyl.moka.graphql.fragment.User
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalAnimationApi
@@ -299,7 +302,7 @@ private fun ProfileScreenContent(
                         color = MaterialTheme.colors.onBackground.copy(alpha = .12f)
                     ),
                     elevation = 0.dp,
-                    backgroundColor = if (user.status?.indicatesLimitedAvailability == true) {
+                    backgroundColor = if (user.status?.userStatus?.indicatesLimitedAvailability == true) {
                         userStatusDndYellow.copy(alpha = .2f)
                     } else {
                         MaterialTheme.colors.surface
@@ -316,15 +319,16 @@ private fun ProfileScreenContent(
                             val userStatus = user.status
                             route = route.replace(
                                 "{${Screen.ARG_EDIT_STATUS_EMOJI}}",
-                                userStatus?.emoji.toString()
+                                userStatus?.userStatus?.emoji.toString()
                             )
                                 .replace(
                                     "{${Screen.ARG_EDIT_STATUS_MESSAGE}}",
-                                    userStatus?.message ?: ""
+                                    userStatus?.userStatus?.message ?: ""
                                 )
                                 .replace(
                                     "{${Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}",
-                                    (user.status?.indicatesLimitedAvailability ?: false).toString()
+                                    (user.status?.userStatus?.indicatesLimitedAvailability
+                                        ?: false).toString()
                                 )
                             navController.navigate(route = route)
                         }
@@ -335,14 +339,14 @@ private fun ProfileScreenContent(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         EmojiComponent(
-                            emoji = user.status?.emoji,
+                            emoji = user.status?.userStatus?.emoji,
                             getEmojiByName = getEmojiByName,
                             enablePlaceholder = enablePlaceholder
                         )
                         val scrollState = rememberScrollState()
                         Row(modifier = Modifier.horizontalScroll(state = scrollState)) {
                             Text(
-                                text = user.status?.message.takeIf { !it.isNullOrEmpty() }
+                                text = user.status?.userStatus?.message.takeIf { !it.isNullOrEmpty() }
                                     ?: stringResource(id = R.string.edit_status_set_status),
                                 style = MaterialTheme.typography.body1,
                                 maxLines = 1,
@@ -379,7 +383,7 @@ private fun ProfileScreenContent(
         if (user != null) {
             Row(modifier = Modifier.padding(horizontal = ContentPaddingLargeSize)) {
                 NumberCategoryText(
-                    number = user.repositoriesTotalCount,
+                    number = user.repositories.totalCount,
                     category = stringResource(id = R.string.profile_repositories),
                     onClick = {
                         navController.navigate(
@@ -396,7 +400,7 @@ private fun ProfileScreenContent(
                     modifier = Modifier.weight(weight = 1f)
                 )
                 NumberCategoryText(
-                    number = user.starredRepositoriesTotalCount,
+                    number = user.starredRepositories.totalCount,
                     category = stringResource(id = R.string.profile_stars),
                     onClick = {
                         navController.navigate(
@@ -413,7 +417,7 @@ private fun ProfileScreenContent(
                     modifier = Modifier.weight(weight = 1f)
                 )
                 NumberCategoryText(
-                    number = user.followersTotalCount,
+                    number = user.followers.totalCount,
                     category = stringResource(id = R.string.profile_followers),
                     onClick = {
                         navController.navigate(
@@ -428,7 +432,7 @@ private fun ProfileScreenContent(
             }
             Row(modifier = Modifier.padding(horizontal = ContentPaddingLargeSize)) {
                 NumberCategoryText(
-                    number = user.followingTotalCount,
+                    number = user.following.totalCount,
                     category = stringResource(id = R.string.profile_following),
                     onClick = {
                         navController.navigate(
@@ -441,7 +445,7 @@ private fun ProfileScreenContent(
                     modifier = Modifier.weight(weight = 1f)
                 )
                 NumberCategoryText(
-                    number = user.projectsTotalCount,
+                    number = user.projects.totalCount,
                     category = stringResource(id = R.string.repository_projects),
                     onClick = { },
                     enablePlaceholder = enablePlaceholder,
@@ -449,12 +453,13 @@ private fun ProfileScreenContent(
                 )
             }
             ContributionCalendar(
-                calendar = user.contributionCalendar,
+                calendar = user.contributionsCollection.contributionCalendar,
                 enablePlaceholder = enablePlaceholder
             )
         }
 
-        (user?.pinnedItems ?: organization?.pinnedItems)?.let { list ->
+        (user?.pinnedItems?.nodes?.map { it?.pinnableItem }
+            ?: organization?.pinnedItems?.nodes?.map { it?.pinnableItem })?.let { list ->
             if (list.isNotEmpty()) {
                 Column {
                     CategoryText(
@@ -464,17 +469,17 @@ private fun ProfileScreenContent(
                     LazyRow {
                         items(count = list.size) { index ->
                             val item = list[index]
-                            item.repositoryListItemFragment?.let {
+                            item?.repositoryListItemFragment?.let {
                                 PinnedRepositoryCard(
                                     navController = navController,
                                     currentUserLogin = user?.login ?: organization?.login
                                     ?: "ghost",
-                                    repository = it.toNonNullRepositoryItem(),
+                                    repository = it,
                                     index = index,
                                     enablePlaceholder = enablePlaceholder
                                 )
                             }
-                            item.gist?.let {
+                            item?.gist?.let {
                                 PinnedGistCard(
                                     navController = navController,
                                     gist = it,
@@ -749,7 +754,7 @@ private fun PinnedItemCard(
 @Composable
 private fun PinnedRepositoryCard(
     navController: NavController,
-    repository: RepositoryItem,
+    repository: RepositoryListItemFragment,
     currentUserLogin: String,
     index: Int,
     enablePlaceholder: Boolean
@@ -763,11 +768,14 @@ private fun PinnedRepositoryCard(
             }
             navController.navigate(
                 route = Screen.Repository.route
-                    .replace("{${Screen.ARG_PROFILE_LOGIN}}", repository.owner?.login ?: "ghost")
+                    .replace(
+                        "{${Screen.ARG_PROFILE_LOGIN}}",
+                        repository.repositoryOwner.repositoryOwner.login
+                    )
                     .replace("{${Screen.ARG_REPOSITORY_NAME}}", repository.name)
             )
         },
-        avatarUrl = repository.owner?.avatarUrl,
+        avatarUrl = repository.repositoryOwner.repositoryOwner.avatarUrl,
         title = repository.nameWithOwner,
         caption = repository.description.takeIf {
             !it.isNullOrEmpty()
@@ -779,7 +787,7 @@ private fun PinnedRepositoryCard(
             modifier = Modifier
                 .size(size = RepositoryCardLanguageDotSize)
                 .background(
-                    color = repository.primaryLanguage?.color
+                    color = repository.primaryLanguage?.language?.color
                         ?.toColor()
                         ?.let { Color(it) }
                         ?: MaterialTheme.colors.onBackground,
@@ -792,7 +800,7 @@ private fun PinnedRepositoryCard(
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
         PinnedItemIconifiedText(
-            text = repository.primaryLanguage?.name
+            text = repository.primaryLanguage?.language?.name
                 ?: stringResource(id = R.string.programming_language_unknown),
             enablePlaceholder = enablePlaceholder
         )
@@ -804,7 +812,7 @@ private fun PinnedRepositoryCard(
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
         PinnedItemIconifiedText(
-            text = repository.stargazersCount.formatWithSuffix(),
+            text = repository.stargazers.totalCount.formatWithSuffix(),
             enablePlaceholder = enablePlaceholder
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
@@ -815,7 +823,7 @@ private fun PinnedRepositoryCard(
         )
         Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
         PinnedItemIconifiedText(
-            text = repository.forksCount.formatWithSuffix(),
+            text = repository.forks.totalCount.formatWithSuffix(),
             enablePlaceholder = enablePlaceholder
         )
     }

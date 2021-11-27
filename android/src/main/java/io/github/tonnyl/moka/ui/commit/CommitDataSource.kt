@@ -3,11 +3,11 @@ package io.github.tonnyl.moka.ui.commit
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import io.github.tonnyl.moka.data.CommitFile
-import io.github.tonnyl.moka.data.CommitResponse
 import io.ktor.client.statement.*
-import io.tonnyl.moka.common.network.api.CommitApi
+import io.tonnyl.moka.common.data.CommitFile
+import io.tonnyl.moka.common.data.CommitResponse
 import io.tonnyl.moka.common.network.PageLinks
+import io.tonnyl.moka.common.network.api.CommitApi
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

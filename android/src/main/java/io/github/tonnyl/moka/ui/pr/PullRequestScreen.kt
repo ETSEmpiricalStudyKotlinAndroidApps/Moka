@@ -43,11 +43,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.PullRequest
-import io.github.tonnyl.moka.data.item.*
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.tonnyl.moka.graphql.type.LockReason
-import io.tonnyl.moka.graphql.type.PullRequestReviewState
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.issue.IssueOrPullRequestHeader
 import io.github.tonnyl.moka.ui.issue.IssuePullRequestEventData
@@ -62,6 +58,12 @@ import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.tonnyl.moka.common.data.PullRequestTimelineItem
+import io.tonnyl.moka.common.data.extension.assigneeLogin
+import io.tonnyl.moka.common.data.extension.requestedReviewerLogin
+import io.tonnyl.moka.graphql.PullRequestQuery.PullRequest
+import io.tonnyl.moka.graphql.type.LockReason
+import io.tonnyl.moka.graphql.type.PullRequestReviewState
 import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -220,7 +222,7 @@ private fun PullRequestScreenContent(
                         ),
                         stringResource(
                             id = R.string.issue_pr_created_by,
-                            pullRequestPlaceholder.author?.login ?: "ghost"
+                            pullRequestPlaceholder.author?.actor?.login ?: "ghost"
                         ),
                         DateUtils.getRelativeTimeSpanString(
                             pullRequestPlaceholder.createdAt.toEpochMilliseconds(),
@@ -228,10 +230,10 @@ private fun PullRequestScreenContent(
                             DateUtils.MINUTE_IN_MILLIS
                         ) as String
                     ),
-                    avatarUrl = pullRequestPlaceholder.author?.avatarUrl,
+                    avatarUrl = pullRequestPlaceholder.author?.actor?.avatarUrl,
                     viewerCanReact = pullRequestPlaceholder.viewerCanReact,
-                    reactionGroups = pullRequestPlaceholder.reactionGroups,
-                    authorLogin = pullRequestPlaceholder.author?.login,
+                    reactionGroups = pullRequestPlaceholder.reactionGroups?.map { it.reactionGroup },
+                    authorLogin = pullRequestPlaceholder.author?.actor?.login,
                     authorAssociation = pullRequestPlaceholder.authorAssociation,
                     displayHtml = pullRequestPlaceholder.bodyHTML.takeIf { it.isNotEmpty() }
                         ?: stringResource(id = R.string.no_description_provided),
@@ -264,7 +266,7 @@ private fun PullRequestScreenContent(
                             ),
                             stringResource(
                                 id = R.string.issue_pr_created_by,
-                                pullRequest.author?.login ?: "ghost"
+                                pullRequest.author?.actor?.login ?: "ghost"
                             ),
                             DateUtils.getRelativeTimeSpanString(
                                 pullRequest.createdAt.toEpochMilliseconds(),
@@ -272,10 +274,10 @@ private fun PullRequestScreenContent(
                                 DateUtils.MINUTE_IN_MILLIS
                             ) as String
                         ),
-                        avatarUrl = pullRequest.author?.avatarUrl,
+                        avatarUrl = pullRequest.author?.actor?.avatarUrl,
                         viewerCanReact = pullRequest.viewerCanReact,
-                        reactionGroups = pullRequest.reactionGroups,
-                        authorLogin = pullRequest.author?.login,
+                        reactionGroups = pullRequest.reactionGroups?.map { it.reactionGroup },
+                        authorLogin = pullRequest.author?.actor?.login,
                         authorAssociation = pullRequest.authorAssociation,
                         displayHtml = pullRequest.bodyHTML.takeIf { it.isNotEmpty() }
                             ?: stringResource(id = R.string.no_description_provided),
@@ -301,19 +303,19 @@ private fun PullRequestScreenContent(
             itemsIndexed(
                 items = timelineItems,
                 key = { _, item ->
-                    item.id
+                    item.hashCode()
                 }
             ) { _, item ->
                 if (item != null) {
-                    if (item is IssueComment) {
+                    if (item.issueComment != null) {
                         IssueTimelineCommentItem(
-                            avatarUrl = item.author?.avatarUrl,
-                            viewerCanReact = item.viewerCanReact,
-                            reactionGroups = item.reactionGroups,
-                            authorLogin = item.author?.login,
-                            authorAssociation = item.authorAssociation,
-                            displayHtml = item.displayHtml,
-                            commentCreatedAt = item.createdAt,
+                            avatarUrl = item.issueComment!!.author?.actor?.avatarUrl,
+                            viewerCanReact = item.issueComment!!.viewerCanReact,
+                            reactionGroups = item.issueComment!!.reactionGroups?.map { it.reactionGroup },
+                            authorLogin = item.issueComment!!.author?.actor?.login,
+                            authorAssociation = item.issueComment!!.authorAssociation,
+                            displayHtml = item.issueComment!!.body,
+                            commentCreatedAt = item.issueComment!!.createdAt,
                             enablePlaceholder = false
                         )
                     } else {
@@ -446,30 +448,31 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
     val createdAt: Instant?
     val content: AnnotatedString?
 
-    when (event) {
-        is AddedToProjectEvent -> {
+    when {
+        event.addedToProjectEvent != null -> {
             iconResId = R.drawable.ic_dashboard_outline
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.addedToProjectEvent!!.actor?.actor?.avatarUrl
+            login = event.addedToProjectEvent!!.actor?.actor?.login
+            createdAt = event.addedToProjectEvent!!.createdAt
             content =
                 AnnotatedString(text = stringResource(id = R.string.issue_timeline_added_to_project))
         }
-        is AssignedEvent -> {
+        event.assignedEvent != null -> {
             iconResId = R.drawable.ic_person_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.assignedEvent!!.actor?.actor?.avatarUrl
+            login = event.assignedEvent!!.actor?.actor?.login
+            createdAt = event.assignedEvent!!.createdAt
             content = buildAnnotatedString {
-                if (event.actor?.login == event.assigneeLogin) {
+                if (event.assignedEvent!!.actor?.actor?.login == event.assignedEvent!!.assignee?.issuePullRequestTimelineItemAssigneeFragment?.assigneeLogin) {
                     append(text = stringResource(id = R.string.issue_timeline_assigned_event_self_assigned))
                 } else {
                     append(text = stringResource(id = R.string.issue_timeline_assigned_event_assigned_someone))
                     append(
                         text = AnnotatedString(
-                            text = event.assigneeLogin ?: "ghost",
+                            text = event.assignedEvent!!.assignee?.issuePullRequestTimelineItemAssigneeFragment?.assigneeLogin
+                                ?: "ghost",
                             spanStyle = SpanStyle(
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -478,61 +481,64 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 }
             }
         }
-        is BaseRefChangedEvent -> {
+        event.baseRefChangedEvent != null -> {
             iconResId = R.drawable.ic_book_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.baseRefChangedEvent!!.actor?.actor?.avatarUrl
+            login = event.baseRefChangedEvent!!.actor?.actor?.login
+            createdAt = event.baseRefChangedEvent!!.createdAt
             content =
                 AnnotatedString(text = stringResource(id = R.string.pull_request_base_ref_changed))
         }
-        is BaseRefForcePushedEvent -> {
+        event.baseRefForcePushedEvent != null -> {
             iconResId = R.drawable.ic_book_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.baseRefForcePushedEvent!!.actor?.actor?.avatarUrl
+            login = event.baseRefForcePushedEvent!!.actor?.actor?.login
+            createdAt = event.baseRefForcePushedEvent!!.createdAt
             content = AnnotatedString(
                 text = stringResource(
                     R.string.pull_request_force_pushed_branch,
-                    event.ref?.name ?: stringResource(id = R.string.pull_request_unknown),
-                    event.beforeCommit?.oid?.toShortOid()
+                    event.baseRefForcePushedEvent!!.ref?.pullRequestTimelineItemRefFragment?.name
                         ?: stringResource(id = R.string.pull_request_unknown),
-                    event.afterCommit?.oid?.toShortOid()
+                    event.baseRefForcePushedEvent!!.beforeCommit?.pullRequestTimelineItemCommitFragment?.oid?.toShortOid()
+                        ?: stringResource(id = R.string.pull_request_unknown),
+                    event.baseRefForcePushedEvent!!.afterCommit?.pullRequestTimelineItemCommitFragment?.oid?.toShortOid()
                         ?: stringResource(id = R.string.pull_request_unknown)
                 )
             )
         }
-        is ClosedEvent -> {
+        event.closedEvent != null -> {
             iconResId = R.drawable.ic_pr_issue_close_24
             backgroundColor = MaterialTheme.colors.error
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.closedEvent!!.actor?.actor?.avatarUrl
+            login = event.closedEvent!!.actor?.actor?.login
+            createdAt = event.closedEvent!!.createdAt
             content =
                 AnnotatedString(text = stringResource(id = R.string.issue_timeline_closed_event_closed))
         }
-        is ConvertedNoteToIssueEvent -> {
+        event.convertedNoteToIssueEvent != null -> {
             iconResId = R.drawable.ic_issue_open_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.convertedNoteToIssueEvent!!.actor?.actor?.avatarUrl
+            login = event.convertedNoteToIssueEvent!!.actor?.actor?.login
+            createdAt = event.convertedNoteToIssueEvent!!.createdAt
             content =
                 AnnotatedString(text = stringResource(id = R.string.issue_timeline_converted_note_to_issue))
         }
-        is CrossReferencedEvent -> {
+        event.crossReferencedEvent != null -> {
             iconResId = R.drawable.ic_bookmark_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.crossReferencedEvent!!.actor?.actor?.avatarUrl
+            login = event.crossReferencedEvent!!.actor?.actor?.login
+            createdAt = event.crossReferencedEvent!!.createdAt
             content = buildAnnotatedString {
                 append(stringResource(id = R.string.issue_timeline_cross_referenced_event_cross_referenced))
                 append(
                     AnnotatedString(
-                        text = event.issue?.title ?: event.pullRequest?.title ?: "",
+                        text = event.crossReferencedEvent!!.source.referencedEventIssueFragment?.title
+                            ?: event.crossReferencedEvent!!.source.referencedEventPullRequestFragment?.title
+                            ?: "",
                         spanStyle = SpanStyle(
                             fontWeight = FontWeight.SemiBold
                         )
@@ -541,108 +547,111 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 append(
                     stringResource(
                         R.string.issue_timeline_issue_pr_number_with_blank_prefix,
-                        event.issue?.number ?: event.pullRequest?.number ?: 0
+                        event.crossReferencedEvent!!.source.referencedEventIssueFragment?.number
+                            ?: event.crossReferencedEvent!!.source.referencedEventPullRequestFragment?.number
+                            ?: 0
                     )
                 )
             }
         }
-        is DemilestonedEvent -> {
+        event.demilestonedEvent != null -> {
             iconResId = R.drawable.ic_milestone_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.demilestonedEvent!!.actor?.actor?.avatarUrl
+            login = event.demilestonedEvent!!.actor?.actor?.login
+            createdAt = event.demilestonedEvent!!.createdAt
             content = buildAnnotatedString {
                 append(stringResource(id = R.string.issue_timeline_demilestoned_event_demilestoned))
-                append(event.milestoneTitle)
+                append(event.demilestonedEvent!!.milestoneTitle)
                 append(stringResource(id = R.string.issue_timeline_milestone_suffix))
             }
         }
-        is DeployedEvent -> {
+        event.deployedEvent != null -> {
             iconResId = R.drawable.ic_rocket_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.deployedEvent!!.actor?.actor?.avatarUrl
+            login = event.deployedEvent!!.actor?.actor?.login
+            createdAt = event.deployedEvent!!.createdAt
             content = AnnotatedString(
                 text = stringResource(
                     id = R.string.pull_request_deployed_to_branch,
-                    event.deploymentEnvironment
+                    event.deployedEvent!!.deployment.pullRequestTimelineItemDeploymentFragment.environment
                         ?: stringResource(id = R.string.pull_request_unknown)
                 )
             )
         }
-        is DeploymentEnvironmentChangedEvent -> {
+        event.deploymentEnvironmentChangedEvent != null -> {
             iconResId = R.drawable.ic_rocket_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.deploymentEnvironmentChangedEvent!!.actor?.actor?.avatarUrl
+            login = event.deploymentEnvironmentChangedEvent!!.actor?.actor?.login
+            createdAt = event.deploymentEnvironmentChangedEvent!!.createdAt
             content = AnnotatedString(
                 text = stringResource(
                     id = R.string.pull_request_deployed_to_branch,
-                    event.deployment.environment
+                    event.deploymentEnvironmentChangedEvent!!.deploymentStatus.deployment.pullRequestTimelineItemDeploymentFragment.environment
                         ?: stringResource(id = R.string.pull_request_unknown)
                 )
             )
         }
-        is HeadRefDeletedEvent -> {
+        event.headRefDeletedEvent != null -> {
             iconResId = R.drawable.ic_delete_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.headRefDeletedEvent!!.actor?.actor?.avatarUrl
+            login = event.headRefDeletedEvent!!.actor?.actor?.login
+            createdAt = event.headRefDeletedEvent!!.createdAt
             content = AnnotatedString(
                 text = stringResource(
                     R.string.pull_request_deleted_branch,
-                    event.headRefName
+                    event.headRefDeletedEvent!!.headRefName
                 )
             )
         }
-        is HeadRefForcePushedEvent -> {
+        event.headRefForcePushedEvent != null -> {
             iconResId = R.drawable.ic_book_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.headRefForcePushedEvent!!.actor?.actor?.avatarUrl
+            login = event.headRefForcePushedEvent!!.actor?.actor?.login
+            createdAt = event.headRefForcePushedEvent!!.createdAt
             content = AnnotatedString(
                 text = stringResource(
                     R.string.pull_request_force_pushed_branch,
-                    event.ref?.name ?: stringResource(id = R.string.pull_request_unknown),
-                    event.beforeCommitOid?.toShortOid()
+                    event.headRefForcePushedEvent!!.ref?.pullRequestTimelineItemRefFragment?.name
                         ?: stringResource(id = R.string.pull_request_unknown),
-                    event.afterCommitOid?.toShortOid()
+                    event.headRefForcePushedEvent!!.beforeCommit?.pullRequestTimelineItemCommitFragment?.oid?.toShortOid()
+                        ?: stringResource(id = R.string.pull_request_unknown),
+                    event.headRefForcePushedEvent!!.afterCommit?.pullRequestTimelineItemCommitFragment?.oid?.toShortOid()
                         ?: stringResource(id = R.string.pull_request_unknown)
                 )
             )
         }
-        is HeadRefRestoredEvent -> {
+        event.headRefRestoredEvent != null -> {
             iconResId = R.drawable.ic_restore_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.headRefRestoredEvent!!.actor?.actor?.avatarUrl
+            login = event.headRefRestoredEvent!!.actor?.actor?.login
+            createdAt = event.headRefRestoredEvent!!.createdAt
             content = AnnotatedString(
                 text = stringResource(
                     id = R.string.pull_request_restore_branch,
-                    event.pullRequestHeadRefName
+                    event.headRefRestoredEvent!!.pullRequest.headRefName
                 )
             )
         }
-        is LabeledEvent -> {
+        event.labeledEvent != null -> {
             iconResId = R.drawable.ic_label_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.labeledEvent!!.actor?.actor?.avatarUrl
+            login = event.labeledEvent!!.actor?.actor?.login
+            createdAt = event.labeledEvent!!.createdAt
             content = buildAnnotatedString {
-                append(text = stringResource(id = R.string.issue_timeline_labeled_event_labeled))
-                event.label?.color?.toColor()?.let {
+                event.labeledEvent!!.label.issuePrLabelFragment.color.toColor()?.let {
+                    append(text = stringResource(id = R.string.issue_timeline_labeled_event_labeled))
                     Color(it)
                 }?.let { bgColor ->
                     append(
                         AnnotatedString(
-                            text = event.label.name,
+                            text = event.labeledEvent!!.label.issuePrLabelFragment.name,
                             spanStyle = SpanStyle(
                                 background = bgColor,
                                 color = MaterialTheme.colors.onBackground
@@ -653,17 +662,17 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 append(text = stringResource(id = R.string.issue_timeline_label))
             }
         }
-        is LockedEvent -> {
+        event.lockedEvent != null -> {
             iconResId = R.drawable.ic_lock_outline_24dp
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.lockedEvent!!.actor?.actor?.avatarUrl
+            login = event.lockedEvent!!.actor?.actor?.login
+            createdAt = event.lockedEvent!!.createdAt
             content = buildAnnotatedString {
                 append(text = stringResource(id = R.string.issue_timeline_locked_event_locked_as_part_1))
                 append(
                     text = stringResource(
-                        id = when (event.lockReason) {
+                        id = when (event.lockedEvent!!.lockReason) {
                             LockReason.OFF_TOPIC -> {
                                 R.string.issue_lock_reason_off_topic
                             }
@@ -676,8 +685,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                             LockReason.TOO_HEATED -> {
                                 R.string.issue_lock_reason_too_heated
                             }
-                            is LockReason.UNKNOWN__,
-                            null -> {
+                            else -> {
                                 R.string.issue_lock_reason_unknown
                             }
                         }
@@ -686,40 +694,40 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 append(stringResource(id = R.string.issue_timeline_locked_event_locked_as_part_2))
             }
         }
-        is MarkedAsDuplicateEvent -> {
+        event.markedAsDuplicateEvent != null -> {
             iconResId = R.drawable.ic_copy_24dp
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.markedAsDuplicateEvent!!.actor?.actor?.avatarUrl
+            login = event.markedAsDuplicateEvent!!.actor?.actor?.login
+            createdAt = event.markedAsDuplicateEvent!!.createdAt
             content =
                 AnnotatedString(text = stringResource(id = R.string.issue_timeline_marked_as_duplicate))
         }
-        is MergedEvent -> {
+        event.mergedEvent != null -> {
             iconResId = R.drawable.ic_pr_merged
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.mergedEvent!!.actor?.actor?.avatarUrl
+            login = event.mergedEvent!!.actor?.actor?.login
+            createdAt = event.mergedEvent!!.createdAt
             content = AnnotatedString(
                 text = stringResource(
                     id = R.string.pull_request_merged_commit,
-                    event.commitOid.toShortOid(),
-                    event.mergeRefName
+                    event.mergedEvent!!.commit?.pullRequestTimelineItemCommitFragment?.oid.toShortOid(),
+                    event.mergedEvent!!.mergeRefName
                 )
             )
         }
-        is MilestonedEvent -> {
+        event.milestonedEvent != null -> {
             iconResId = R.drawable.ic_milestone_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.milestonedEvent!!.actor?.actor?.avatarUrl
+            login = event.milestonedEvent!!.actor?.actor?.login
+            createdAt = event.milestonedEvent!!.createdAt
             content = buildAnnotatedString {
                 append(text = stringResource(id = R.string.issue_timeline_milestoned_event_milestoned))
                 append(
                     text = AnnotatedString(
-                        text = event.milestoneTitle,
+                        text = event.milestonedEvent!!.milestoneTitle,
                         spanStyle = SpanStyle(
                             fontWeight = FontWeight.SemiBold
                         )
@@ -728,44 +736,48 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 append(text = stringResource(id = R.string.issue_timeline_milestone_suffix))
             }
         }
-        is MovedColumnsInProjectEvent -> {
+        event.movedColumnsInProjectEvent != null -> {
             iconResId = R.drawable.ic_dashboard_outline
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.movedColumnsInProjectEvent!!.actor?.actor?.avatarUrl
+            login = event.movedColumnsInProjectEvent!!.actor?.actor?.login
+            createdAt = event.movedColumnsInProjectEvent!!.createdAt
             content = AnnotatedString(
                 text = stringResource(id = R.string.issue_timeline_moved_columns_in_project)
             )
         }
-        is PinnedEvent -> {
+        event.pinnedEvent != null -> {
             iconResId = R.drawable.ic_pin_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.pinnedEvent!!.actor?.actor?.avatarUrl
+            login = event.pinnedEvent!!.actor?.actor?.login
+            createdAt = event.pinnedEvent!!.createdAt
             content =
                 AnnotatedString(text = stringResource(id = R.string.issue_timeline_pinned))
         }
-        is PullRequestCommit -> {
+        event.pullRequestCommit != null -> {
             iconResId = R.drawable.ic_commit_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.commit.author?.avatarUrl ?: event.commit.committer?.avatarUrl
-            login = event.commit.author?.user?.login
-                ?: event.commit.author?.name
-                        ?: event.commit.committer?.user?.login
-                        ?: event.commit.committer?.name
-                        ?: "ghost"
+            avatarUri =
+                event.pullRequestCommit!!.commit.pullRequestTimelineItemCommitFragment.author?.gitActorFragment?.avatarUrl
+                    ?: event.pullRequestCommit!!.commit.pullRequestTimelineItemCommitFragment.committer?.gitActorFragment?.avatarUrl
+            login =
+                event.pullRequestCommit!!.commit.pullRequestTimelineItemCommitFragment.author?.gitActorFragment?.user?.userListItemFragment?.login
+                    ?: event.pullRequestCommit!!.commit.pullRequestTimelineItemCommitFragment.author?.gitActorFragment?.name
+                            ?: event.pullRequestCommit!!.commit.pullRequestTimelineItemCommitFragment.committer?.gitActorFragment?.user?.userListItemFragment?.login
+                            ?: event.pullRequestCommit!!.commit.pullRequestTimelineItemCommitFragment.committer?.gitActorFragment?.user?.userListItemFragment?.name
+                            ?: "ghost"
             createdAt = null
-            content = AnnotatedString(text = event.commit.message)
+            content =
+                AnnotatedString(text = event.pullRequestCommit!!.commit.pullRequestTimelineItemCommitFragment.message)
         }
-        is PullRequestReview -> {
-            avatarUri = event.author?.avatarUrl
-            createdAt = event.createdAt
-            login = event.author?.login
+        event.pullRequestReview != null -> {
+            avatarUri = event.pullRequestReview!!.author?.actor?.avatarUrl
+            createdAt = event.pullRequestReview!!.createdAt
+            login = event.pullRequestReview!!.author?.actor?.login
             val stateString: String
 
-            when (event.state) {
+            when (event.pullRequestReview!!.state) {
                 PullRequestReviewState.APPROVED -> {
                     iconResId = R.drawable.ic_check_24
                     backgroundColor = issuePrGreen
@@ -791,7 +803,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 append(text = stringResource(id = R.string.pull_request_and_left_a_comment))
                 append(
                     text = AnnotatedString(
-                        text = event.body,
+                        text = event.pullRequestReview!!.body,
                         spanStyle = SpanStyle(
                             fontWeight = FontWeight.SemiBold
                         )
@@ -799,53 +811,59 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 )
             }
         }
-        is ReadyForReviewEvent -> {
+        event.readyForReviewEvent != null -> {
             iconResId = R.drawable.ic_eye_24
             backgroundColor = issuePrGreen
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.readyForReviewEvent!!.actor?.actor?.avatarUrl
+            login = event.readyForReviewEvent!!.actor?.actor?.login
+            createdAt = event.readyForReviewEvent!!.createdAt
             content =
                 AnnotatedString(text = stringResource(id = R.string.pull_request_marked_as_ready_for_review))
         }
-        is ReferencedEvent -> {
+        event.referencedEvent != null -> {
             iconResId = R.drawable.ic_bookmark_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.referencedEvent!!.actor?.actor?.avatarUrl
+            login = event.referencedEvent!!.actor?.actor?.login
+            createdAt = event.referencedEvent!!.createdAt
             content = buildAnnotatedString {
                 append(text = stringResource(id = R.string.issue_timeline_referenced_event_referenced))
-                append(text = event.issue?.title ?: event.pullRequest?.title ?: "")
+                append(
+                    text = event.referencedEvent!!.subject.referencedEventIssueFragment?.title
+                        ?: event.referencedEvent!!.subject.referencedEventPullRequestFragment?.title
+                        ?: ""
+                )
                 append(
                     text = stringResource(
                         id = R.string.issue_timeline_issue_pr_number_with_blank_prefix,
-                        event.issue?.number ?: event.pullRequest?.number ?: 0
+                        event.referencedEvent!!.subject.referencedEventIssueFragment?.number
+                            ?: event.referencedEvent!!.subject.referencedEventPullRequestFragment?.number
+                            ?: 0
                     )
                 )
             }
         }
-        is RemovedFromProjectEvent -> {
+        event.removedFromProjectEvent != null -> {
             iconResId = R.drawable.ic_dashboard_outline
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.removedFromProjectEvent!!.actor?.actor?.avatarUrl
+            login = event.removedFromProjectEvent!!.actor?.actor?.login
+            createdAt = event.removedFromProjectEvent!!.createdAt
             content = AnnotatedString(
                 text = stringResource(id = R.string.issue_timeline_removed_from_project)
             )
         }
-        is RenamedTitleEvent -> {
+        event.renamedTitleEvent != null -> {
             iconResId = R.drawable.ic_edit_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.renamedTitleEvent!!.actor?.actor?.avatarUrl
+            login = event.renamedTitleEvent!!.actor?.actor?.login
+            createdAt = event.renamedTitleEvent!!.createdAt
             content = buildAnnotatedString {
                 append(text = stringResource(id = R.string.issue_timeline_renamed_title_event_change_title_part_1))
                 append(
                     AnnotatedString(
-                        text = event.previousTitle,
+                        text = event.renamedTitleEvent!!.previousTitle,
                         spanStyle = SpanStyle(
                             fontWeight = FontWeight.SemiBold,
                             textDecoration = TextDecoration.LineThrough
@@ -855,7 +873,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 append(text = stringResource(id = R.string.issue_timeline_renamed_title_event_change_title_part_2))
                 append(
                     AnnotatedString(
-                        text = event.currentTitle,
+                        text = event.renamedTitleEvent!!.currentTitle,
                         spanStyle = SpanStyle(
                             fontWeight = FontWeight.SemiBold
                         )
@@ -863,86 +881,90 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 )
             }
         }
-        is ReopenedEvent -> {
+        event.reopenedEvent != null -> {
             iconResId = R.drawable.ic_dot_24
             backgroundColor = issuePrGreen
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.reopenedEvent!!.actor?.actor?.avatarUrl
+            login = event.reopenedEvent!!.actor?.actor?.login
+            createdAt = event.reopenedEvent!!.createdAt
             content = AnnotatedString(
                 text = stringResource(id = R.string.issue_timeline_reopened_event_reopened)
             )
         }
-        is ReviewDismissedEvent -> {
+        event.reviewDismissedEvent != null -> {
             iconResId = R.drawable.ic_close_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.reviewDismissedEvent!!.actor?.actor?.avatarUrl
+            login = event.reviewDismissedEvent!!.actor?.actor?.login
+            createdAt = event.reviewDismissedEvent!!.createdAt
             content = buildAnnotatedString {
                 append(text = stringResource(id = R.string.pull_request_dismiss_someones_review_part_1))
-                append(text = event.review?.author?.login ?: "ghost")
+                append(
+                    text = event.reviewDismissedEvent!!.review?.pullRequestReviewFragment?.author?.actor?.login
+                        ?: "ghost"
+                )
                 append(text = stringResource(id = R.string.pull_request_dismiss_someones_review_part_2))
 
-                if (!event.dismissalMessage.isNullOrEmpty()) {
+                if (!event.reviewDismissedEvent!!.dismissalMessage.isNullOrEmpty()) {
                     append(text = stringResource(id = R.string.pull_request_dismiss_someones_review_and_left_a_comment))
-                    append(text = event.dismissalMessage)
+                    append(text = event.reviewDismissedEvent!!.dismissalMessage ?: "")
                 }
             }
         }
-        is ReviewRequestRemovedEvent -> {
+        event.reviewRequestRemovedEvent != null -> {
             iconResId = R.drawable.ic_close_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.reviewRequestRemovedEvent!!.actor?.actor?.avatarUrl
+            login = event.reviewRequestRemovedEvent!!.actor?.actor?.login
+            createdAt = event.reviewRequestRemovedEvent!!.createdAt
             content = buildAnnotatedString {
                 append(text = stringResource(id = R.string.pull_request_removed_someones_review_request_part_1))
                 append(
-                    text = event.requestedReviewerUser?.login
-                        ?: event.requestedReviewerTeam?.combinedSlug
-                        ?: event.requestedReviewerMannequin?.login
+                    text = event.reviewRequestRemovedEvent!!.requestedReviewer?.requestedReviewerLogin
                         ?: "ghost"
                 )
                 append(text = stringResource(id = R.string.pull_request_removed_someones_review_request_part_2))
             }
         }
-        is ReviewRequestedEvent -> {
+        event.reviewRequestedEvent != null -> {
             iconResId = R.drawable.ic_eye_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
-            content = if (event.actor?.login == event.requestedReviewerLogin) {
-                AnnotatedString(text = stringResource(id = R.string.pull_request_self_requested_a_review))
-            } else {
-                buildAnnotatedString {
-                    append(text = stringResource(id = R.string.pull_request_requested_review_from))
-                    append(
-                        text = AnnotatedString(
-                            text = event.requestedReviewerLogin ?: "ghost",
-                            spanStyle = SpanStyle(
-                                fontWeight = FontWeight.SemiBold
+            avatarUri = event.reviewRequestedEvent!!.actor?.actor?.avatarUrl
+            login = event.reviewRequestedEvent!!.actor?.actor?.login
+            createdAt = event.reviewRequestedEvent!!.createdAt
+            content =
+                if (event.reviewRequestedEvent!!.actor?.actor?.login == event.reviewRequestedEvent!!.requestedReviewer?.requestedReviewerLogin) {
+                    AnnotatedString(text = stringResource(id = R.string.pull_request_self_requested_a_review))
+                } else {
+                    buildAnnotatedString {
+                        append(text = stringResource(id = R.string.pull_request_requested_review_from))
+                        append(
+                            text = AnnotatedString(
+                                text = event.reviewRequestedEvent!!.requestedReviewer?.requestedReviewerLogin
+                                    ?: "ghost",
+                                spanStyle = SpanStyle(
+                                    fontWeight = FontWeight.SemiBold
+                                )
                             )
                         )
-                    )
+                    }
                 }
-            }
         }
-        is UnassignedEvent -> {
+        event.unassignedEvent != null -> {
             iconResId = R.drawable.ic_person_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.unassignedEvent!!.actor?.actor?.avatarUrl
+            login = event.unassignedEvent!!.actor?.actor?.login
+            createdAt = event.unassignedEvent!!.createdAt
             content = buildAnnotatedString {
-                if (event.actor?.login == event.assignee.assigneeLogin) {
+                if (event.unassignedEvent!!.actor?.actor?.login == event.unassignedEvent!!.assignee?.issuePullRequestTimelineItemAssigneeFragment?.assigneeLogin) {
                     append(stringResource(id = R.string.issue_timeline_unassigned_event_self_unassigned))
                 } else {
                     append(stringResource(id = R.string.issue_timeline_unassigned_event_unassigned_someone))
                     append(
                         AnnotatedString(
-                            text = event.assignee.assigneeLogin ?: "ghost",
+                            text = event.unassignedEvent!!.assignee?.issuePullRequestTimelineItemAssigneeFragment?.assigneeLogin
+                                ?: "ghost",
                             spanStyle = SpanStyle(
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -951,20 +973,20 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 }
             }
         }
-        is UnlabeledEvent -> {
+        event.unlabeledEvent != null -> {
             iconResId = R.drawable.ic_label_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.unlabeledEvent!!.actor?.actor?.avatarUrl
+            login = event.unlabeledEvent!!.actor?.actor?.login
+            createdAt = event.unlabeledEvent!!.createdAt
             content = buildAnnotatedString {
                 append(stringResource(id = R.string.issue_timeline_labeled_event_labeled))
-                event.label?.color?.toColor()?.let {
+                event.unlabeledEvent!!.label.issuePrLabelFragment.color.toColor()?.let {
                     Color(it)
                 }?.let { bgColor ->
                     append(
                         AnnotatedString(
-                            text = event.label.name,
+                            text = event.unlabeledEvent!!.label.issuePrLabelFragment.name,
                             spanStyle = SpanStyle(
                                 background = bgColor,
                                 color = MaterialTheme.colors.onBackground
@@ -975,21 +997,21 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 append(stringResource(id = R.string.issue_timeline_label))
             }
         }
-        is UnlockedEvent -> {
+        event.unlockedEvent != null -> {
             iconResId = R.drawable.ic_key_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.unlockedEvent!!.actor?.actor?.avatarUrl
+            login = event.unlockedEvent!!.actor?.actor?.login
+            createdAt = event.unlockedEvent!!.createdAt
             content =
                 AnnotatedString(text = stringResource(id = R.string.issue_timeline_unlocked_event_unlocked))
         }
-        is UnpinnedEvent -> {
+        event.unpinnedEvent != null -> {
             iconResId = R.drawable.ic_pin_24
             backgroundColor = MaterialTheme.colors.primary
-            avatarUri = event.actor?.avatarUrl
-            login = event.actor?.login
-            createdAt = event.createdAt
+            avatarUri = event.unpinnedEvent!!.actor?.actor?.avatarUrl
+            login = event.unpinnedEvent!!.actor?.actor?.login
+            createdAt = event.unpinnedEvent!!.createdAt
             content =
                 AnnotatedString(text = stringResource(id = R.string.issue_timeline_unpinned))
         }

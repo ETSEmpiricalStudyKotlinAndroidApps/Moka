@@ -35,7 +35,7 @@ object Versions {
     const val kspApi = "1.5.31-1.0.0"
     const val lottie = "4.1.0"
     const val okhttpLoggingInterceptor = "4.7.2"
-    const val apollo = "3.0.0-beta03"
+    const val apollo = "3.0.0-beta04"
     const val commonMark = "0.15.2"
     const val coil = "1.4.0"
     const val jsoup = "1.12.1"

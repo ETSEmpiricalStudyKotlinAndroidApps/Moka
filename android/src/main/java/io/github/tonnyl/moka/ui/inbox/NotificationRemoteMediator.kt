@@ -8,10 +8,11 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.data.RemoteKeys
+import io.github.tonnyl.moka.data.dbModel
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.api.NotificationApi
 import io.ktor.client.statement.*
 import io.tonnyl.moka.common.network.PageLinks
+import io.tonnyl.moka.common.network.api.NotificationApi
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,6 +20,7 @@ import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
+import io.tonnyl.moka.common.data.Notification as SerializableNotification
 
 @ExperimentalPagingApi
 class NotificationRemoteMediator(
@@ -52,7 +54,10 @@ class NotificationRemoteMediator(
                         )
 
                         val notifications =
-                            json.decodeFromString<List<Notification>>(string = response.readText())
+                            json.decodeFromString<List<SerializableNotification>>(string = response.readText())
+                                .map {
+                                    it.dbModel
+                                }
                         val pl = PageLinks(response)
                         val keys = notifications.map {
                             RemoteKeys(RemoteKeys.NOTIFICATION_PREFIX + it.id, pl.prev, pl.next)
@@ -63,7 +68,8 @@ class NotificationRemoteMediator(
                                 .clearRemoteKeys("${RemoteKeys.NOTIFICATION_PREFIX}%")
                             database.notificationsDao().deleteAll()
 
-                            database.notificationsDao().insertAll(notifications)
+                            database.notificationsDao()
+                                .insertAll(notifications)
                             database.remoteKeysDao().insertAll(keys)
                         }
 
@@ -82,7 +88,10 @@ class NotificationRemoteMediator(
                             } else {
                                 val response = notificationsApi.listNotificationsByUrl(prev)
                                 val notifications =
-                                    json.decodeFromString<List<Notification>>(string = response.readText())
+                                    json.decodeFromString<List<SerializableNotification>>(string = response.readText())
+                                        .map {
+                                            it.dbModel
+                                        }
                                 val pl = PageLinks(response)
                                 val keys = notifications.map {
                                     RemoteKeys(
@@ -93,7 +102,8 @@ class NotificationRemoteMediator(
                                 }
 
                                 database.withTransaction {
-                                    database.notificationsDao().insertAll(notifications)
+                                    database.notificationsDao()
+                                        .insertAll(notifications)
                                     database.remoteKeysDao().insertAll(keys)
                                 }
 
@@ -114,7 +124,10 @@ class NotificationRemoteMediator(
                             } else {
                                 val response = notificationsApi.listNotificationsByUrl(next)
                                 val notifications =
-                                    json.decodeFromString<List<Notification>>(string = response.readText())
+                                    json.decodeFromString<List<SerializableNotification>>(string = response.readText())
+                                        .map {
+                                            it.dbModel
+                                        }
                                 val pl = PageLinks(response)
                                 val keys = notifications.map {
                                     RemoteKeys(
@@ -125,7 +138,8 @@ class NotificationRemoteMediator(
                                 }
 
                                 database.withTransaction {
-                                    database.notificationsDao().insertAll(notifications)
+                                    database.notificationsDao()
+                                        .insertAll(notifications)
                                     database.remoteKeysDao().insertAll(keys)
                                 }
 

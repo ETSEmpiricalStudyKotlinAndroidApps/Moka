@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.explore
 
 import androidx.lifecycle.*
 import io.github.tonnyl.moka.AccountInstance
+import io.github.tonnyl.moka.data.dbModel
 import io.github.tonnyl.moka.serializers.store.ExploreOptionsSerializer
 import io.github.tonnyl.moka.serializers.store.data.ExploreLanguage
 import io.github.tonnyl.moka.serializers.store.data.ExploreOptions
@@ -54,16 +55,21 @@ class ExploreViewModel(
                 val developers = accountInstance.trendingApi.listTrendingDevelopers(
                     since = queryDataValue.timeSpan.urlParamValue,
                     language = queryDataValue.exploreLanguage.urlParam
-                )
+                ).map {
+                    it.dbModel
+                }
 
                 val repositories = accountInstance.trendingApi.listTrendingRepositories(
                     since = queryDataValue.timeSpan.urlParamValue,
                     language = queryDataValue.exploreLanguage.urlParam
-                )
+                ).map {
+                    it.dbModel
+                }
 
                 if (!developers.isNullOrEmpty()) {
                     accountInstance.database.trendingDevelopersDao().deleteAll()
-                    accountInstance.database.trendingDevelopersDao().insert(developers = developers)
+                    accountInstance.database.trendingDevelopersDao()
+                        .insert(developers = developers)
                 }
 
                 if (!repositories.isNullOrEmpty()) {

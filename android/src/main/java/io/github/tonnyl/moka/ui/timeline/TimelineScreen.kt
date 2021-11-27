@@ -50,6 +50,7 @@ import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.TimelineEventProvider
 import io.github.tonnyl.moka.widget.*
 import kotlinx.serialization.ExperimentalSerializationApi
+import io.tonnyl.moka.common.data.Event as SerializableEvent
 
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
@@ -217,32 +218,32 @@ private fun ItemTimelineEvent(
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = !enablePlaceholder) {
                 when (event.type) {
-                    Event.WATCH_EVENT,
-                    Event.PUBLIC_EVENT,
-                    Event.CREATE_EVENT,
-                    Event.TEAM_ADD_EVENT,
-                    Event.DELETE_EVENT -> {
+                    SerializableEvent.WATCH_EVENT,
+                    SerializableEvent.PUBLIC_EVENT,
+                    SerializableEvent.CREATE_EVENT,
+                    SerializableEvent.TEAM_ADD_EVENT,
+                    SerializableEvent.DELETE_EVENT -> {
                         navigateToRepositoryScreen(
                             navController = navController,
                             fullName = event.repo?.name ?: return@clickable,
                             org = event.org
                         )
                     }
-                    Event.COMMIT_COMMENT_EVENT -> {
+                    SerializableEvent.COMMIT_COMMENT_EVENT -> {
 
                     }
-                    Event.FORK_EVENT -> {
+                    SerializableEvent.FORK_EVENT -> {
                         navigateToRepositoryScreen(
                             navController = navController,
                             fullName = event.payload?.forkee?.fullName ?: return@clickable,
                             org = event.org
                         )
                     }
-                    Event.GOLLUM_EVENT -> {
+                    SerializableEvent.GOLLUM_EVENT -> {
 
                     }
-                    Event.ISSUE_COMMENT_EVENT,
-                    Event.ISSUES_EVENT -> {
+                    SerializableEvent.ISSUE_COMMENT_EVENT,
+                    SerializableEvent.ISSUES_EVENT -> {
                         val issue = event.payload?.issue ?: return@clickable
                         val repoFullName = (event.repo?.fullName
                             ?: event.repo?.name
@@ -268,22 +269,22 @@ private fun ItemTimelineEvent(
                             )
                         }
                     }
-                    Event.MEMBER_EVENT -> {
+                    SerializableEvent.MEMBER_EVENT -> {
                         navigateToProfileScreen(
                             navController = navController,
                             login = event.payload?.member?.login ?: return@clickable,
                         )
                     }
-                    Event.PULL_REQUEST_EVENT -> {
+                    SerializableEvent.PULL_REQUEST_EVENT -> {
 
                     }
-                    Event.PULL_REQUEST_REVIEW_COMMENT_EVENT -> {
+                    SerializableEvent.PULL_REQUEST_REVIEW_COMMENT_EVENT -> {
 
                     }
-                    Event.PULL_REQUEST_REVIEW_EVENT -> {
+                    SerializableEvent.PULL_REQUEST_REVIEW_EVENT -> {
 
                     }
-                    Event.REPOSITORY_EVENT -> {
+                    SerializableEvent.REPOSITORY_EVENT -> {
                         when (event.payload?.action) {
                             "created",
                             "archived",
@@ -304,10 +305,10 @@ private fun ItemTimelineEvent(
                             }
                         }
                     }
-                    Event.PUSH_EVENT -> {
+                    SerializableEvent.PUSH_EVENT -> {
 
                     }
-                    Event.RELEASE_EVENT -> {
+                    SerializableEvent.RELEASE_EVENT -> {
                         val repoFullName = (event.repo?.fullName
                             ?: event.repo?.name
                             ?: return@clickable
@@ -324,32 +325,32 @@ private fun ItemTimelineEvent(
                                 .replace("{${Screen.ARG_TAG_NAME}}", tagName)
                         )
                     }
-                    Event.ORG_BLOCK_EVENT -> {
+                    SerializableEvent.ORG_BLOCK_EVENT -> {
                         navigateToProfileScreen(
                             navController = navController,
                             login = event.payload?.blockedUser?.login ?: return@clickable
                         )
                     }
-                    Event.PROJECT_CARD_EVENT -> {
+                    SerializableEvent.PROJECT_CARD_EVENT -> {
 
                     }
-                    Event.PROJECT_COLUMN_EVENT -> {
+                    SerializableEvent.PROJECT_COLUMN_EVENT -> {
 
                     }
-                    Event.ORGANIZATION_EVENT -> {
+                    SerializableEvent.ORGANIZATION_EVENT -> {
                         navigateToProfileScreen(
                             navController = navController,
                             login = event.payload?.organization?.login ?: return@clickable,
                             profileType = ProfileType.ORGANIZATION
                         )
                     }
-                    Event.PROJECT_EVENT -> {
+                    SerializableEvent.PROJECT_EVENT -> {
 
                     }
-                    Event.DOWNLOAD_EVENT,
-                    Event.FOLLOW_EVENT,
-                    Event.GIST_EVENT,
-                    Event.FORK_APPLY_EVENT -> {
+                    SerializableEvent.DOWNLOAD_EVENT,
+                    SerializableEvent.FOLLOW_EVENT,
+                    SerializableEvent.GIST_EVENT,
+                    SerializableEvent.FORK_APPLY_EVENT -> {
                         // Events of these types are no longer delivered, just ignore them.
                     }
                 }
@@ -433,7 +434,7 @@ private fun eventContent(event: Event): AnnotatedString {
         )
 
         when (event.type) {
-            Event.WATCH_EVENT -> {
+            SerializableEvent.WATCH_EVENT -> {
                 // Currently, event.payload.action can only be "started".
 
                 append(stringResource(id = R.string.event_star))
@@ -447,7 +448,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github starred github/github
             }
-            Event.CREATE_EVENT -> {
+            SerializableEvent.CREATE_EVENT -> {
                 // event.payload.refType -> The object that was created. Can be one of "repository", "branch", or "tag"
                 append(
                     stringResource(
@@ -484,7 +485,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github created repository github/github
             }
-            Event.COMMIT_COMMENT_EVENT -> {
+            SerializableEvent.COMMIT_COMMENT_EVENT -> {
                 append(stringResource(id = R.string.event_comment_on_commit))
 
                 event.payload?.commitComment?.commitId?.let {
@@ -502,7 +503,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github commented on commit ec7a2824 at github/github
             }
-            Event.DOWNLOAD_EVENT -> {
+            SerializableEvent.DOWNLOAD_EVENT -> {
                 append(stringResource(id = R.string.event_download))
 
                 event.payload?.download?.name?.let {
@@ -520,7 +521,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github downloaded logo.jpe at github/github
             }
-            Event.FOLLOW_EVENT -> {
+            SerializableEvent.FOLLOW_EVENT -> {
                 append(stringResource(id = R.string.event_follow))
 
                 event.payload?.target?.let {
@@ -532,7 +533,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github followed octocat
             }
-            Event.FORK_EVENT -> {
+            SerializableEvent.FORK_EVENT -> {
                 append(stringResource(id = R.string.event_fork))
 
                 event.repo?.let {
@@ -554,7 +555,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github forked actocat/Hello-World to github/Hello-World
             }
-            Event.GIST_EVENT -> {
+            SerializableEvent.GIST_EVENT -> {
                 // event.payload.action -> The action that was performed. Can be "create" or "update".
 
                 append(
@@ -583,7 +584,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github created Gist Hello World Examples
             }
-            Event.GOLLUM_EVENT -> {
+            SerializableEvent.GOLLUM_EVENT -> {
                 // event.payload.pages[][action] -> The action that was performed on the page. Can be "created" or "edited".
 
                 append(
@@ -612,7 +613,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github edit a wiki page at github/github
             }
-            Event.ISSUE_COMMENT_EVENT -> {
+            SerializableEvent.ISSUE_COMMENT_EVENT -> {
                 // event.payload.action -> The action that was performed on the comment.
 
                 append(
@@ -653,7 +654,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github commented on issue #1 at github/github
             }
-            Event.ISSUES_EVENT -> {
+            SerializableEvent.ISSUES_EVENT -> {
                 // event.payload.action -> The action that was performed. Can be one of "opened",
                 // "edited", "deleted", "transferred", "pinned", "unpinned", "closed", "reopened",
                 // "assigned", "unassigned", "labeled", "unlabeled", "milestoned", or "demilestoned".
@@ -729,7 +730,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github created issue #1 at github/github
             }
-            Event.MEMBER_EVENT -> {
+            SerializableEvent.MEMBER_EVENT -> {
                 val actionStringResId: Int
                 val toOrFromStringResId: Int
 
@@ -769,7 +770,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github added octocat at github/github
             }
-            Event.PUBLIC_EVENT -> {
+            SerializableEvent.PUBLIC_EVENT -> {
                 append(stringResource(id = R.string.event_publicized))
 
                 event.repo?.let {
@@ -781,7 +782,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github open-sourced github/github
             }
-            Event.PULL_REQUEST_EVENT -> {
+            SerializableEvent.PULL_REQUEST_EVENT -> {
                 append(
                     stringResource(
                         id = R.string.event_pull_request,
@@ -847,7 +848,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github opened a pull request #1 at github/github
             }
-            Event.PULL_REQUEST_REVIEW_COMMENT_EVENT -> {
+            SerializableEvent.PULL_REQUEST_REVIEW_COMMENT_EVENT -> {
                 append(
                     stringResource(
                         id = R.string.event_pull_request_review_comment,
@@ -888,7 +889,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github commented on pull request #1 at github/github
             }
-            Event.PULL_REQUEST_REVIEW_EVENT -> {
+            SerializableEvent.PULL_REQUEST_REVIEW_EVENT -> {
                 // event.payload.action -> The action that was performed.
                 // Can be "submitted", "edited", or "dismissed".
 
@@ -930,7 +931,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github reviewed pull request #1 at github/github
             }
-            Event.REPOSITORY_EVENT -> {
+            SerializableEvent.REPOSITORY_EVENT -> {
                 // event.payload.action -> The action that was performed.
                 // This can be one of "created", "deleted" (organization hooks only), "archived", "unarchived", "publicized", or "privatized".
 
@@ -972,7 +973,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github created repository github/github
             }
-            Event.PUSH_EVENT -> {
+            SerializableEvent.PUSH_EVENT -> {
                 append(stringResource(id = R.string.event_push))
 
                 // event.payload.ref -> The full Git ref that was pushed. Example: refs/heads/master.
@@ -1002,7 +1003,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github pushed 1 commit(s) to github/github
             }
-            Event.TEAM_ADD_EVENT -> {
+            SerializableEvent.TEAM_ADD_EVENT -> {
                 append(stringResource(id = R.string.event_team_add))
 
                 event.repo?.let {
@@ -1014,7 +1015,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github added repository github/github
             }
-            Event.DELETE_EVENT -> {
+            SerializableEvent.DELETE_EVENT -> {
                 // event.payload.refType -> The object that was deleted. Can be "branch" or "tag".
 
                 append(
@@ -1050,7 +1051,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github deleted branch dev at github/github
             }
-            Event.RELEASE_EVENT -> {
+            SerializableEvent.RELEASE_EVENT -> {
                 // event.payload.action -> The action that was performed. Currently, can only be "published".
 
                 append(stringResource(id = R.string.event_release))
@@ -1073,7 +1074,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github released v1.1 at github/github
             }
-            Event.FORK_APPLY_EVENT -> {
+            SerializableEvent.FORK_APPLY_EVENT -> {
                 append(stringResource(id = R.string.event_fork_apply))
 
                 event.repo?.let {
@@ -1085,7 +1086,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github applied a patch at github/github
             }
-            Event.ORG_BLOCK_EVENT -> {
+            SerializableEvent.ORG_BLOCK_EVENT -> {
                 // event.payload.action -> The action performed. Can be "blocked" or "unblocked".
                 append(
                     stringResource(
@@ -1111,7 +1112,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github blocked octocat
             }
-            Event.PROJECT_CARD_EVENT -> {
+            SerializableEvent.PROJECT_CARD_EVENT -> {
                 // event.payload.action -> The action performed on the project card.
                 // Can be "created", "updated", "moved", "converted", or "deleted".
                 append(
@@ -1153,7 +1154,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github created a project card to-do at github/github
             }
-            Event.PROJECT_COLUMN_EVENT -> {
+            SerializableEvent.PROJECT_COLUMN_EVENT -> {
                 // event.payload.action -> The action that was performed on the project column.
                 // Can be one of "created", "edited", "moved" or "deleted".
                 append(
@@ -1197,7 +1198,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: github created a project column Small bugfixes at github/github
             }
-            Event.ORGANIZATION_EVENT -> {
+            SerializableEvent.ORGANIZATION_EVENT -> {
                 val actionStringResId: Int
                 val toOrFromId: Int
 
@@ -1242,7 +1243,7 @@ private fun eventContent(event: Event): AnnotatedString {
 
                 // final string example: octocat invited tonnyl to github
             }
-            Event.PROJECT_EVENT -> {
+            SerializableEvent.PROJECT_EVENT -> {
                 // event.payload.action -> The action that was performed on the project.
                 // Can be one of "created", "edited", "closed", "reopened", or "deleted".
 
@@ -1312,22 +1313,22 @@ private fun EventDetailedText(
     enablePlaceholder: Boolean
 ) {
     when (event.type) {
-        Event.COMMIT_COMMENT_EVENT -> {
+        SerializableEvent.COMMIT_COMMENT_EVENT -> {
             event.payload?.commitComment?.body
         }
-        Event.ISSUE_COMMENT_EVENT -> {
+        SerializableEvent.ISSUE_COMMENT_EVENT -> {
             event.payload?.comment?.body
         }
-        Event.ISSUES_EVENT -> {
+        SerializableEvent.ISSUES_EVENT -> {
             event.payload?.issue?.title
         }
-        Event.PULL_REQUEST_EVENT -> {
+        SerializableEvent.PULL_REQUEST_EVENT -> {
             event.payload?.pullRequest?.title
         }
-        Event.PULL_REQUEST_REVIEW_COMMENT_EVENT -> {
+        SerializableEvent.PULL_REQUEST_REVIEW_COMMENT_EVENT -> {
             event.payload?.comment?.body
         }
-        Event.PULL_REQUEST_REVIEW_EVENT -> {
+        SerializableEvent.PULL_REQUEST_REVIEW_EVENT -> {
             event.payload?.review?.body
         }
         else -> {

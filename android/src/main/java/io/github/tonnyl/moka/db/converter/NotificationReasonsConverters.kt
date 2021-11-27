@@ -1,7 +1,7 @@
 package io.github.tonnyl.moka.db.converter
 
 import androidx.room.TypeConverter
-import io.github.tonnyl.moka.data.NotificationReasons
+import io.tonnyl.moka.common.data.NotificationReasons
 
 object NotificationReasonsConverters {
 

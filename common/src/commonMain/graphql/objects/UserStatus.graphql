@@ -5,8 +5,6 @@ fragment UserStatus on UserStatus {
     createdAt
     # An emoji summarizing the user's status.
     emoji
-    # The status emoji as HTML.
-    emojiHTML
     # If set, the status will not be shown after this date.
     expiresAt
     id

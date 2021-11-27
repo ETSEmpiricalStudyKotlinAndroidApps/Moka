@@ -5,11 +5,10 @@ import androidx.paging.PagingSource.LoadResult.Error
 import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import io.github.tonnyl.moka.data.RepositoryItem
-import io.github.tonnyl.moka.data.extension.checkedEndCursor
-import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.github.tonnyl.moka.data.toNonNullRepositoryItem
+import io.tonnyl.moka.common.data.extension.checkedEndCursor
+import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.SearchRepositoriesQuery
+import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import logcat.LogPriority
@@ -19,10 +18,10 @@ import logcat.logcat
 class SearchedRepositoriesItemDataSource(
     private val apolloClient: ApolloClient,
     private val query: String
-) : PagingSource<String, RepositoryItem>() {
+) : PagingSource<String, RepositoryListItemFragment>() {
 
-    override suspend fun load(params: LoadParams<String>): LoadResult<String, RepositoryItem> {
-        val list = mutableListOf<RepositoryItem>()
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, RepositoryListItemFragment> {
+        val list = mutableListOf<RepositoryListItemFragment>()
 
         return withContext(Dispatchers.IO) {
             try {
@@ -37,10 +36,8 @@ class SearchedRepositoriesItemDataSource(
                 ).execute().data?.search
 
                 search?.nodes?.forEach { node ->
-                    node?.let {
-                        convertRawDataRepositoryItem(node)?.let {
-                            list.add(it)
-                        }
+                    node?.repositoryListItemFragment?.let {
+                        list.add(it)
                     }
                 }
 
@@ -58,14 +55,8 @@ class SearchedRepositoriesItemDataSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<String, RepositoryItem>): String? {
+    override fun getRefreshKey(state: PagingState<String, RepositoryListItemFragment>): String? {
         return null
-    }
-
-    private fun convertRawDataRepositoryItem(
-        node: SearchRepositoriesQuery.Node
-    ): RepositoryItem? {
-        return node.repositoryListItemFragment?.toNonNullRepositoryItem()
     }
 
 }

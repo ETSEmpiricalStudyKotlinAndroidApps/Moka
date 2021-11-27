@@ -26,8 +26,6 @@ fragment Repository on Repository {
     id
     # Indicates if the repository is unmaintained.
     isArchived
-    # Returns whether or not this repository disabled.
-    isDisabled
     # Identifies if the repository is a fork.
     isFork
     # Indicates if the repository has been locked or not.
@@ -111,9 +109,6 @@ fragment Repository on Repository {
     viewerPermission
     # Identifies if the viewer is watching, not watching, or ignoring the subscribable entity.
     viewerSubscription
-    forks {
-        totalCount
-    }
     stargazers {
         totalCount
     }

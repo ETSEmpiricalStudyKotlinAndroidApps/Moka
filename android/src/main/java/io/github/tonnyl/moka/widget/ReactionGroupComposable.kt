@@ -26,10 +26,10 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
-import io.tonnyl.moka.graphql.fragment.ReactionGroup
-import io.tonnyl.moka.graphql.type.ReactionContent
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
+import io.tonnyl.moka.graphql.fragment.ReactionGroup
+import io.tonnyl.moka.graphql.type.ReactionContent
 
 @Composable
 fun ReactionGroupComponent(
@@ -100,7 +100,7 @@ fun ReactionGroupComponent(
                                     ReactionContent.THUMBS_UP -> {
                                         R.string.emoji_thumbs_up
                                     }
-                                    is ReactionContent.UNKNOWN__ -> {
+                                    ReactionContent.UNKNOWN__ -> {
                                         R.string.emoji_unknown
                                     }
                                 }

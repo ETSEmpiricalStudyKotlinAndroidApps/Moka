@@ -10,10 +10,11 @@ import androidx.paging.RemoteMediator.MediatorResult.Success
 import androidx.room.withTransaction
 import io.github.tonnyl.moka.data.Event
 import io.github.tonnyl.moka.data.RemoteKeys
+import io.github.tonnyl.moka.data.dbModel
 import io.github.tonnyl.moka.db.MokaDataBase
-import io.github.tonnyl.moka.network.api.EventApi
 import io.ktor.client.statement.*
 import io.tonnyl.moka.common.network.PageLinks
+import io.tonnyl.moka.common.network.api.EventApi
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,6 +23,7 @@ import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
+import io.tonnyl.moka.common.data.Event as SerializableEvent
 
 @ExperimentalPagingApi
 class EventRemoteMediator(
@@ -57,7 +59,10 @@ class EventRemoteMediator(
                         )
 
                         val events =
-                            json.decodeFromString<List<Event>>(string = response.readText())
+                            json.decodeFromString<List<SerializableEvent>>(string = response.readText())
+                                .map {
+                                    it.dbModel
+                                }
                         val pl = PageLinks(response)
                         val keys = events.map {
                             RemoteKeys(RemoteKeys.EVENT_PREFIX + it.id, pl.prev, pl.next)
@@ -88,7 +93,8 @@ class EventRemoteMediator(
                                 val response =
                                     eventApi.listPublicEventThatAUserHasReceivedByUrl(prev)
                                 val events =
-                                    json.decodeFromString<List<Event>>(string = response.readText())
+                                    json.decodeFromString<List<SerializableEvent>>(string = response.readText())
+                                        .map { it.dbModel }
                                 val pl = PageLinks(response)
                                 val keys = events.map {
                                     RemoteKeys(RemoteKeys.EVENT_PREFIX + it.id, pl.prev, pl.next)
@@ -117,7 +123,8 @@ class EventRemoteMediator(
                                 val response =
                                     eventApi.listPublicEventThatAUserHasReceivedByUrl(next)
                                 val events =
-                                    json.decodeFromString<List<Event>>(string = response.readText())
+                                    json.decodeFromString<List<SerializableEvent>>(string = response.readText())
+                                        .map { it.dbModel }
                                 val pl = PageLinks(response)
                                 val keys = events.map {
                                     RemoteKeys(RemoteKeys.EVENT_PREFIX + it.id, pl.prev, pl.next)

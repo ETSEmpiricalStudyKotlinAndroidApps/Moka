@@ -1,10 +1,8 @@
 package io.github.tonnyl.moka.data
 
 import androidx.room.ColumnInfo
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import io.tonnyl.moka.common.data.EventRepository as SerializableEventRepository
 
-@Serializable
 data class EventRepository(
 
     @ColumnInfo(name = "id")
@@ -13,15 +11,22 @@ data class EventRepository(
     @ColumnInfo(name = "name")
     var name: String,
 
-    @SerialName("full_name")
     @ColumnInfo(name = "full_name")
     var fullName: String? = null,
 
     @ColumnInfo(name = "url")
     var url: String,
 
-    @SerialName("html_url")
     @ColumnInfo(name = "html_url")
     var htmlUrl: String? = null
 
 )
+
+val SerializableEventRepository.dbModel: EventRepository
+    get() = EventRepository(
+        id = id,
+        name = name,
+        fullName = fullName,
+        url = url,
+        htmlUrl = htmlUrl
+    )

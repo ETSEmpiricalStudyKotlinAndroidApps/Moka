@@ -33,7 +33,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.UserItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -43,6 +42,7 @@ import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.tonnyl.moka.graphql.fragment.UserListItemFragment
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -168,7 +168,7 @@ fun UsersScreen(
 @Composable
 private fun UsersScreenScreen(
     contentTopPadding: Dp,
-    users: LazyPagingItems<UserItem>
+    users: LazyPagingItems<UserListItemFragment>
 ) {
     val userPlaceholder = remember {
         UserItemProvider().values.last()
@@ -214,7 +214,7 @@ private fun UsersScreenScreen(
 @ExperimentalCoilApi
 @Composable
 fun ItemUser(
-    user: UserItem,
+    user: UserListItemFragment,
     enablePlaceholder: Boolean
 ) {
     val navController = LocalNavController.current
@@ -252,7 +252,7 @@ fun ItemUser(
         Column {
             if (!user.name.isNullOrEmpty()) {
                 Text(
-                    text = user.name,
+                    text = user.name!!,
                     style = MaterialTheme.typography.body1,
                     modifier = if (enablePlaceholder) {
                         Modifier
@@ -289,7 +289,7 @@ fun ItemUser(
                 }
                 if (!user.bio.isNullOrEmpty()) {
                     Text(
-                        text = user.bio,
+                        text = user.bio!!,
                         style = MaterialTheme.typography.body2,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
@@ -322,7 +322,7 @@ private fun ItemUserPreview(
         provider = UserItemProvider::class,
         limit = 1
     )
-    user: UserItem
+    user: UserListItemFragment
 ) {
     ItemUser(
         user = user,

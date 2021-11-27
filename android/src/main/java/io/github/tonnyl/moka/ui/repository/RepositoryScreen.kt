@@ -39,8 +39,6 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.Language
-import io.github.tonnyl.moka.data.Repository
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -52,12 +50,15 @@ import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
+import io.tonnyl.moka.graphql.fragment.Language
+import io.tonnyl.moka.graphql.fragment.Repository
 import io.tonnyl.moka.graphql.type.SubscriptionState
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.math.min
 
 private const val MAX_DISPLAY_COUNT_OF_TOPICS = 8
+private const val MAX_LANGUAGE_DISPLAY_COUNT = 20
 
 @ExperimentalComposeUiApi
 @ExperimentalCoilApi
@@ -193,15 +194,15 @@ fun RepositoryScreen(
                                             .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
                                             .replace(
                                                 "{${Screen.ARG_SELECTED_BRANCH_NAME}}",
-                                                repo?.defaultBranchRef?.name ?: "master"
+                                                repo?.defaultBranchRef?.ref?.name ?: "master"
                                             )
                                             .replace(
                                                 "{${Screen.ARG_REF_PREFIX}}",
-                                                repo?.defaultBranchRef?.prefix ?: "refs/heads/"
+                                                repo?.defaultBranchRef?.ref?.prefix ?: "refs/heads/"
                                             )
                                             .replace(
                                                 "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
-                                                repo?.defaultBranchRef?.name ?: "master"
+                                                repo?.defaultBranchRef?.ref?.name ?: "master"
                                             )
                                     )
                                 },
@@ -261,15 +262,15 @@ fun RepositoryScreen(
                                         .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
                                         .replace(
                                             "{${Screen.ARG_EXPRESSION}}",
-                                            "${repo.defaultBranchRef?.name ?: "master"}:"
+                                            "${repo.defaultBranchRef?.ref?.name ?: "master"}:"
                                         )
                                         .replace(
                                             "{${Screen.ARG_REF_PREFIX}}",
-                                            repo.defaultBranchRef?.prefix ?: "refs/heads/"
+                                            repo.defaultBranchRef?.ref?.prefix ?: "refs/heads/"
                                         )
                                         .replace(
                                             "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
-                                            repo.defaultBranchRef?.name ?: "master"
+                                            repo.defaultBranchRef?.ref?.name ?: "master"
                                         )
                                 )
                             }) {
@@ -311,7 +312,7 @@ fun RepositoryScreen(
                                     )
                                 }
                             }
-                            if (repo.owner?.login != currentAccount.signedInAccount.account.login) {
+                            if (repo.owner.repositoryOwner.login != currentAccount.signedInAccount.account.login) {
                                 IconButton(
                                     onClick = {
                                         forkDialogState.value = true
@@ -432,7 +433,7 @@ private fun RepositoryScreenContent(
     var languageProgressBarShowState by remember { mutableStateOf(false) }
     val navController = LocalNavController.current
 
-    val login = repository.owner?.login
+    val login = repository.owner.repositoryOwner.login
 
     Column(
         modifier = Modifier
@@ -454,7 +455,7 @@ private fun RepositoryScreenContent(
                     route = Screen.Profile.route
                         .replace(
                             "{${Screen.ARG_PROFILE_LOGIN}}",
-                            login ?: "ghost"
+                            login
                         )
                         .replace(
                             "{${Screen.ARG_PROFILE_TYPE}}",
@@ -465,7 +466,7 @@ private fun RepositoryScreenContent(
 
             Image(
                 painter = rememberImagePainter(
-                    data = repository.owner?.avatarUrl,
+                    data = repository.owner.repositoryOwner.avatarUrl,
                     builder = {
                         createAvatarLoadRequest()
                     }
@@ -483,7 +484,7 @@ private fun RepositoryScreenContent(
                     )
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
-            if (!login.isNullOrEmpty()) {
+            if (login.isNotEmpty()) {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
                         text = login,
@@ -539,21 +540,21 @@ private fun RepositoryScreenContent(
 
         Row {
             NumberCategoryText(
-                number = repository.watchersCount,
+                number = repository.watchers.totalCount,
                 category = stringResource(id = R.string.repository_watchers),
                 onClick = onWatchersClicked,
                 enablePlaceholder = enablePlaceholder,
                 modifier = Modifier.weight(weight = 1f)
             )
             NumberCategoryText(
-                number = repository.stargazersCount,
+                number = repository.stargazers.totalCount,
                 category = stringResource(id = R.string.repository_stargazers),
                 onClick = onStargazersClicked,
                 enablePlaceholder = enablePlaceholder,
                 modifier = Modifier.weight(weight = 1f)
             )
             NumberCategoryText(
-                number = repository.forksCount,
+                number = repository.forkCount,
                 category = stringResource(id = R.string.repository_forks),
                 onClick = onForksClicked,
                 enablePlaceholder = enablePlaceholder,
@@ -563,20 +564,22 @@ private fun RepositoryScreenContent(
 
         Row {
             NumberCategoryText(
-                number = repository.issuesCount,
+                number = repository.issues.totalCount,
                 category = stringResource(id = R.string.repository_issues),
                 onClick = onIssuesClicked,
                 enablePlaceholder = enablePlaceholder,
                 modifier = Modifier.weight(weight = 1f)
             )
             NumberCategoryText(
-                number = repository.pullRequestsCount,
+                number = repository.pullRequests.totalCount,
                 category = stringResource(id = R.string.repository_pull_requests),
                 onClick = onPrsClicked,
                 enablePlaceholder = enablePlaceholder,
                 modifier = Modifier.weight(weight = 1f)
             )
-            val commitsCount = repository.commitsCount
+            val commitsCount =
+                repository.defaultBranchRef?.ref?.target?.gitObject?.onCommit?.history?.totalCount
+                    ?: 0
             NumberCategoryText(
                 number = commitsCount,
                 category = LocalContext.current.resources.getQuantityString(
@@ -596,26 +599,26 @@ private fun RepositoryScreenContent(
         val defaultBranchRef = repository.defaultBranchRef
         InfoListItem(
             leadingRes = R.string.repository_branches,
-            trailing = defaultBranchRef?.name ?: "master",
+            trailing = defaultBranchRef?.ref?.name ?: "master",
             enablePlaceholder = enablePlaceholder,
             modifier = Modifier.clickable(
                 enabled = !enablePlaceholder,
                 onClick = {
                     navController.navigate(
                         route = Screen.Branches.route
-                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login ?: return@clickable)
+                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
                             .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
                             .replace(
                                 "{${Screen.ARG_REF_PREFIX}}",
-                                defaultBranchRef?.prefix ?: "refs/heads/"
+                                defaultBranchRef?.ref?.prefix ?: "refs/heads/"
                             )
                             .replace(
                                 "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
-                                defaultBranchRef?.name ?: return@clickable
+                                defaultBranchRef?.ref?.name ?: return@clickable
                             )
                             .replace(
                                 "{${Screen.ARG_SELECTED_BRANCH_NAME}}",
-                                defaultBranchRef.name
+                                defaultBranchRef.ref.name
                             )
                     )
                 }
@@ -623,7 +626,7 @@ private fun RepositoryScreenContent(
         )
         InfoListItem(
             leadingRes = R.string.repository_releases,
-            trailing = repository.releasesCount.toString(),
+            trailing = repository.releases.totalCount.toString(),
             enablePlaceholder = enablePlaceholder,
             modifier = Modifier.clickable(
                 enabled = !enablePlaceholder,
@@ -632,7 +635,7 @@ private fun RepositoryScreenContent(
         )
         InfoListItem(
             leadingRes = R.string.repository_language,
-            trailing = repository.primaryLanguage?.name
+            trailing = repository.primaryLanguage?.language?.name
                 ?: stringResource(id = R.string.programming_language_unknown),
             enablePlaceholder = enablePlaceholder,
             modifier = Modifier.clickable(
@@ -643,8 +646,8 @@ private fun RepositoryScreenContent(
             )
         )
 
-        if (!repository.languages.isNullOrEmpty()
-            && !repository.languageEdges.isNullOrEmpty()
+        if (!repository.languages?.nodes.isNullOrEmpty()
+            && !repository.languages?.edges.isNullOrEmpty()
         ) {
             AnimatedVisibility(
                 visible = languageProgressBarShowState,
@@ -652,14 +655,22 @@ private fun RepositoryScreenContent(
                 exit = shrinkVertically() + fadeOut()
             ) {
                 LanguagesProgressBar(
-                    languages = repository.languages.orEmpty(),
-                    languageEdges = repository.languageEdges.orEmpty(),
-                    totalSize = repository.languagesTotalSize ?: 1,
-                    remainingPercentage = repository.otherLanguagePercentage?.toFloat() ?: 0f
+                    languages = repository.languages?.nodes?.mapNotNull { it?.language }.orEmpty(),
+                    languageEdges = repository.languages?.edges?.mapNotNull {
+                        it?.languageEdge?.size
+                    }.orEmpty(),
+                    totalSize = repository.languages?.totalSize ?: 1,
+                    remainingPercentage = if (repository.languages?.nodes.orEmpty().size > 20) {
+                        (repository.languages?.edges?.sumOf {
+                            (it?.languageEdge?.size ?: 0).toDouble()
+                        } ?: 0).toDouble() / (repository.languages?.totalSize ?: 1).toDouble()
+                    } else {
+                        null
+                    }?.toFloat() ?: 0f
                 )
             }
         }
-        val licenseInfo = repository.licenseInfo
+        val licenseInfo = repository.licenseInfo?.license
         InfoListItem(
             leadingRes = R.string.repository_license,
             trailing = licenseInfo?.spdxId.takeIf {
@@ -672,7 +683,7 @@ private fun RepositoryScreenContent(
             )
         )
 
-        val topics = repository.topics
+        val topics = repository.repositoryTopics.nodes?.mapNotNull { it?.repositoryTopic?.topic }
         if (!topics.isNullOrEmpty()) {
             Row {
                 CategoryText(
@@ -683,7 +694,7 @@ private fun RepositoryScreenContent(
                 if (topics.orEmpty().size > MAX_DISPLAY_COUNT_OF_TOPICS) {
                     TextButton(
                         onClick = {
-                            if (!login.isNullOrEmpty()
+                            if (login.isNotEmpty()
                                 && repoName.isNotEmpty()
                             ) {
                                 navController.navigate(
@@ -711,7 +722,7 @@ private fun RepositoryScreenContent(
                     Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                 }
                 items(count = min(topics.size, MAX_DISPLAY_COUNT_OF_TOPICS)) { index ->
-                    topics[index]?.topic?.let { topic ->
+                    topics[index].topic.let { topic ->
                         Chip(
                             text = topic.name,
                             onClick = {
@@ -822,7 +833,7 @@ private fun LanguagesProgressBar(
                         )
                 )
             }
-            if (languages.size > Repository.MAX_LANGUAGE_DISPLAY_COUNT) {
+            if (languages.size > MAX_LANGUAGE_DISPLAY_COUNT) {
                 Box(
                     modifier = Modifier
                         .weight(weight = remainingPercentage)
@@ -844,7 +855,7 @@ private fun LanguagesProgressBar(
                 )
             }
 
-            if (languages.size > Repository.MAX_LANGUAGE_DISPLAY_COUNT) {
+            if (languages.size > MAX_LANGUAGE_DISPLAY_COUNT) {
                 LanguageLabel(
                     color = MaterialTheme.colors.onBackground,
                     name = stringResource(id = R.string.repository_language_other),

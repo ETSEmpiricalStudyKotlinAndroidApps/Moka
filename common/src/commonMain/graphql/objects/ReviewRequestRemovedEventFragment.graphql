@@ -14,7 +14,7 @@ fragment ReviewRequestRemovedEventFragment on ReviewRequestRemovedEvent {
     # Identifies the reviewer whose review request was removed.
     requestedReviewer {
         ... IssuePullRequestTimelineItemTeamFragment
-        ... IssuePullRequestTimelineItemUserFragment
+        ... UserListItemFragment
         ... IssuePullRequestTimelineItemMannequinFragment
     }
 }

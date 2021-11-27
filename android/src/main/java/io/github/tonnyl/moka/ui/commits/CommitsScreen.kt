@@ -35,13 +35,13 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.tonnyl.moka.graphql.fragment.CommitListItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.tonnyl.moka.graphql.type.StatusState
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.CommitProvider
 import io.github.tonnyl.moka.widget.*
+import io.tonnyl.moka.graphql.fragment.CommitListItem
+import io.tonnyl.moka.graphql.type.StatusState
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -267,7 +267,7 @@ private fun ItemCommit(
                 Image(
                     painter = rememberImagePainter(
                         data = commit.author?.gitActorListItem?.avatarUrl
-                            ?: commit.committer?.gitActorListItem?.user?.avatarUrl,
+                            ?: commit.committer?.gitActorListItem?.user?.userListItemFragment?.avatarUrl,
                         builder = {
                             createAvatarLoadRequest()
                         }
@@ -283,8 +283,9 @@ private fun ItemCommit(
                 )
                 Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
                 Text(
-                    text = commit.author?.gitActorListItem?.user?.login
-                        ?: commit.committer?.gitActorListItem?.user?.login ?: "ghost",
+                    text = commit.author?.gitActorListItem?.user?.userListItemFragment?.login
+                        ?: commit.committer?.gitActorListItem?.user?.userListItemFragment?.login
+                        ?: "ghost",
                     style = MaterialTheme.typography.body2,
                     modifier = Modifier.placeholder(
                         visible = enablePlaceholder,

@@ -30,8 +30,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.item.SearchedOrganizationItem
-import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -44,6 +42,8 @@ import io.github.tonnyl.moka.util.UserItemProvider
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.tonnyl.moka.common.data.SearchedUserOrOrgItem
+import io.tonnyl.moka.graphql.fragment.OrganizationListItemFragment
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -118,13 +118,13 @@ private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgI
             ) { _, userOrOrg ->
                 if (userOrOrg?.user != null) {
                     ItemUser(
-                        user = userOrOrg.user,
+                        user = userOrOrg.user!!,
                         enablePlaceholder = false
                     )
                 }
                 if (userOrOrg?.org != null) {
                     ItemSearchedOrganization(
-                        org = userOrOrg.org,
+                        org = userOrOrg.org!!,
                         enablePlaceholder = false
                     )
                 }
@@ -139,7 +139,7 @@ private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgI
 @ExperimentalCoilApi
 @Composable
 fun ItemSearchedOrganization(
-    org: SearchedOrganizationItem,
+    org: OrganizationListItemFragment,
     enablePlaceholder: Boolean
 ) {
     val navController = LocalNavController.current
@@ -176,7 +176,7 @@ fun ItemSearchedOrganization(
         Column {
             if (!org.name.isNullOrEmpty()) {
                 Text(
-                    text = org.name,
+                    text = org.name!!,
                     style = MaterialTheme.typography.body1,
                     modifier = Modifier.placeholder(
                         visible = enablePlaceholder,
@@ -224,7 +224,7 @@ private fun ItemSearchedOrganizationPreview(
         provider = SearchedOrganizationItemProvider::class,
         limit = 1
     )
-    org: SearchedOrganizationItem
+    org: OrganizationListItemFragment
 ) {
     ItemSearchedOrganization(
         org = org,

@@ -3,10 +3,10 @@ package io.github.tonnyl.moka.ui.releases
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import io.github.tonnyl.moka.data.extension.checkedEndCursor
-import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.tonnyl.moka.graphql.fragment.ReleaseListItem
+import io.tonnyl.moka.common.data.extension.checkedEndCursor
+import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.RepositoryReleasesQuery
+import io.tonnyl.moka.graphql.fragment.ReleaseListItem
 import io.tonnyl.moka.graphql.type.OrderDirection
 import io.tonnyl.moka.graphql.type.ReleaseOrder
 import io.tonnyl.moka.graphql.type.ReleaseOrderField

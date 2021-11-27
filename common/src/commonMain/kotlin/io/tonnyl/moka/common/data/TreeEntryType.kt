@@ -1,6 +1,7 @@
-package io.github.tonnyl.moka.data
+package io.tonnyl.moka.common.data
 
 import io.tonnyl.moka.graphql.fragment.TreeEntry
+import kotlin.jvm.JvmInline
 
 @JvmInline
 value class TreeEntryType private constructor(val value: String) {

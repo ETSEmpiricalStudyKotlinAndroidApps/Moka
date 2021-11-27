@@ -11,8 +11,8 @@ fragment TransferredEventFragment on TransferredEvent {
         # The repository's name with owner.
         nameWithOwner
         owner {
-            ... IssuePullRequestTimelineItemOrganizationFragment
-            ... IssuePullRequestTimelineItemUserFragment
+            ... OrganizationListItemFragment
+            ... UserListItemFragment
         }
     }
 }

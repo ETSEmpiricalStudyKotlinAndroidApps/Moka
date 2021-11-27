@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.AccountInstance
-import io.github.tonnyl.moka.data.TreeEntryType
-import io.github.tonnyl.moka.data.treeEntryType
+import io.tonnyl.moka.common.data.TreeEntryType
+import io.tonnyl.moka.common.data.treeEntryType
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.graphql.CurrentLevelTreeViewQuery
 import io.tonnyl.moka.graphql.fragment.TreeEntry

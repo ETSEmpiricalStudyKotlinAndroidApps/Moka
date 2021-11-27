@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.search.repositories
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -13,18 +14,18 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.RepositoryItem
 import io.github.tonnyl.moka.ui.repositories.ItemRepository
 import io.github.tonnyl.moka.util.RepositoryItemProvider
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
-fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryItem>) {
+fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryListItemFragment>) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = repositories.loadState.refresh is LoadState.Loading),
         onRefresh = repositories::refresh,
@@ -71,7 +72,7 @@ fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryItem>) {
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
-private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<RepositoryItem>) {
+private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<RepositoryListItemFragment>) {
     val repoPlaceholder = remember {
         RepositoryItemProvider().values.first()
     }

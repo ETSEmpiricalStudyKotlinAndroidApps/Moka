@@ -3,13 +3,12 @@ package io.github.tonnyl.moka.ui.repositories
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import io.github.tonnyl.moka.data.RepositoryItem
-import io.github.tonnyl.moka.data.extension.checkedEndCursor
-import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.github.tonnyl.moka.data.toNonNullRepositoryItem
+import io.tonnyl.moka.common.data.extension.checkedEndCursor
+import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.OwnedRepositoriesQuery
 import io.tonnyl.moka.graphql.RepositoryForksQuery
 import io.tonnyl.moka.graphql.StarredRepositoriesQuery
+import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import logcat.LogPriority
@@ -21,14 +20,14 @@ class RepositoriesDataSource(
     private val login: String,
     private val repoName: String?,
     private val repositoryType: RepositoryType
-) : PagingSource<String, RepositoryItem>() {
+) : PagingSource<String, RepositoryListItemFragment>() {
 
-    override fun getRefreshKey(state: PagingState<String, RepositoryItem>): String? {
+    override fun getRefreshKey(state: PagingState<String, RepositoryListItemFragment>): String? {
         return null
     }
 
-    override suspend fun load(params: LoadParams<String>): LoadResult<String, RepositoryItem> {
-        val list = mutableListOf<RepositoryItem>()
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, RepositoryListItemFragment> {
+        val list = mutableListOf<RepositoryListItemFragment>()
         return withContext(Dispatchers.IO) {
             try {
                 val pageInfo = when (repositoryType) {
@@ -44,7 +43,7 @@ class RepositoriesDataSource(
 
                         list.addAll(
                             user?.starredRepositories?.nodes.orEmpty().mapNotNull { node ->
-                                node?.repositoryListItemFragment?.toNonNullRepositoryItem()
+                                node?.repositoryListItemFragment
                             }
                         )
 
@@ -62,7 +61,7 @@ class RepositoriesDataSource(
 
                         list.addAll(
                             user?.repositories?.nodes.orEmpty().mapNotNull { node ->
-                                node?.repositoryListItemFragment?.toNonNullRepositoryItem()
+                                node?.repositoryListItemFragment
                             }
                         )
 
@@ -81,7 +80,7 @@ class RepositoriesDataSource(
 
                         list.addAll(
                             repo?.forks?.nodes.orEmpty().mapNotNull { node ->
-                                node?.repositoryListItemFragment?.toNonNullRepositoryItem()
+                                node?.repositoryListItemFragment
                             }
                         )
 

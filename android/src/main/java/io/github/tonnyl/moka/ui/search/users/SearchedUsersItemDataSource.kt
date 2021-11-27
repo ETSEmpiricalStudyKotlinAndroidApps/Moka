@@ -5,11 +5,9 @@ import androidx.paging.PagingSource.LoadResult.Error
 import androidx.paging.PagingSource.LoadResult.Page
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
-import io.github.tonnyl.moka.data.extension.checkedEndCursor
-import io.github.tonnyl.moka.data.extension.checkedStartCursor
-import io.github.tonnyl.moka.data.item.SearchedUserOrOrgItem
-import io.github.tonnyl.moka.data.item.toNonNullSearchedOrganizationItem
-import io.github.tonnyl.moka.data.toNonNullUserItem
+import io.tonnyl.moka.common.data.SearchedUserOrOrgItem
+import io.tonnyl.moka.common.data.extension.checkedEndCursor
+import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.SearchUsersQuery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -63,9 +61,9 @@ class SearchedUsersItemDataSource(
     }
 
     private fun initSearchedUserOrOrgItemWithRawData(node: SearchUsersQuery.Node): SearchedUserOrOrgItem? {
-        return node.userListItemFragment?.toNonNullUserItem()?.let {
+        return node.userListItemFragment?.let {
             SearchedUserOrOrgItem(user = it)
-        } ?: node.organizationListItemFragment?.toNonNullSearchedOrganizationItem()?.let {
+        } ?: node.organizationListItemFragment?.let {
             SearchedUserOrOrgItem(org = it)
         }
     }

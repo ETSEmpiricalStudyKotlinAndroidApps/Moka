@@ -9,7 +9,6 @@ import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
 import io.github.tonnyl.moka.data.extension.toPbAccount
-import io.github.tonnyl.moka.network.api.AccessTokenApi
 import io.github.tonnyl.moka.serializers.store.data.SignedInAccount
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.ui.auth.AuthEvent.FinishAndGo
@@ -19,6 +18,7 @@ import io.tonnyl.moka.common.data.AuthenticatedUser
 import io.tonnyl.moka.common.network.KtorClient
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
+import io.tonnyl.moka.common.network.api.AccessTokenApi
 import io.tonnyl.moka.common.network.api.UserApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

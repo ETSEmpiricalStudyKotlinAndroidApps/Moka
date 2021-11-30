@@ -3,6 +3,7 @@ object Versions {
     const val compileSdk = 31
     const val targetSdk = 31
     const val minSdk = 23
+    const val wearOSMinSdk = 25
 
     const val androidGradle = "7.0.4"
     const val gmsGoogleServiceGradle = "4.3.10"
@@ -18,14 +19,15 @@ object Versions {
     const val liveDataKtx = "2.4.0-rc01"
     const val lifecycleRuntimeKtx = "2.4.0-rc01"
     const val viewModelCompose = "2.4.0"
-    const val navigation = "2.4.0-beta02"
-    const val paging = "3.1.0-beta01"
+    const val navigation = "2.4.0-rc01"
+    const val paging = "3.1.0"
     const val pagingCompose = "1.0.0-alpha14"
     const val workManager = "2.7.1"
-    const val room = "2.4.0-rc01"
-    const val ui = "1.1.0-beta04"
+    const val room = "2.4.0"
+    const val ui = "1.1.0-rc01"
     const val composeDesktop = "1.0.0"
     const val constraintLayoutCompose = "1.0.0-rc02"
+    const val wearOSCompose = "1.0.0-alpha13"
     const val dataStore = "1.0.0"
     const val activityCompose = "1.4.0"
     const val splashScreen = "1.0.0-alpha02"
@@ -33,9 +35,11 @@ object Versions {
     const val material = "1.6.0-alpha01"
     const val material3 = "1.0.0-alpha02"
     const val kspApi = "1.6.0-1.0.1"
+    const val wearOS = "17.1.0"
+    const val wear = "1.3.0-alpha01"
     const val lottie = "4.2.2"
     const val okhttpLoggingInterceptor = "4.7.2"
-    const val apollo = "3.0.0-rc02"
+    const val apollo = "3.0.0"
     const val commonMark = "0.15.2"
     const val coil = "1.4.0"
     const val jsoup = "1.12.1"
@@ -157,6 +161,12 @@ object Deps {
             const val liveData = "androidx.compose.runtime:runtime-livedata:${Versions.ui}"
             const val constraintLayout =
                 "androidx.constraintlayout:constraintlayout-compose:${Versions.constraintLayoutCompose}"
+            const val wearFoundation =
+                "androidx.wear.compose:compose-material:${Versions.wearOSCompose}"
+            const val wearMaterial =
+                "androidx.wear.compose:compose-foundation:${Versions.wearOSCompose}"
+            const val wearNavigation =
+                "androidx.wear.compose:compose-navigation:${Versions.wearOSCompose}"
 
         }
 
@@ -188,6 +198,8 @@ object Deps {
         const val material = "com.google.android.material:material:${Versions.material}"
         const val material3 = "androidx.compose.material3:material3:${Versions.material3}"
         const val kspApi = "com.google.devtools.ksp:symbol-processing-api:${Versions.kspApi}"
+        const val wearOS = "com.google.android.gms:play-services-wearable:${Versions.wearOS}"
+        const val wear = "androidx.wear:wear:${Versions.wear}"
 
     }
 

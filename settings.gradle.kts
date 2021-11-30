@@ -10,3 +10,4 @@ pluginManagement {
 include(":common")
 include(":android")
 include(":desktop")
+include(":wearos")

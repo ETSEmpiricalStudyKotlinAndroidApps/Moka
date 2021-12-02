@@ -11,8 +11,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 class SplashActivity : ComponentActivity() {
 
-    @ExperimentalSerializationApi
-    @ExperimentalAnimatedInsets
+    @OptIn(ExperimentalSerializationApi::class, ExperimentalAnimatedInsets::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

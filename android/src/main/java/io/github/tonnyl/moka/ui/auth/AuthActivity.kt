@@ -42,9 +42,11 @@ class AuthActivity : ComponentActivity() {
         ViewModelFactory(this)
     })
 
-    @ExperimentalSerializationApi
-    @ExperimentalAnimatedInsets
-    @ExperimentalMaterialApi
+    @OptIn(
+        ExperimentalSerializationApi::class,
+        ExperimentalAnimatedInsets::class,
+        ExperimentalMaterialApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

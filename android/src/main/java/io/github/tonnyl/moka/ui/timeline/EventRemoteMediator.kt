@@ -33,7 +33,7 @@ class EventRemoteMediator(
     private val isNeedDisplayPlaceholder: MutableLiveData<Boolean>
 ) : RemoteMediator<Int, Event>() {
 
-    @ExperimentalSerializationApi
+    @OptIn(ExperimentalSerializationApi::class)
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, Event>

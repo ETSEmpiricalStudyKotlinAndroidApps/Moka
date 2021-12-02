@@ -22,7 +22,7 @@ class NotificationWorker(
     params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
 
-    @ExperimentalSerializationApi
+    @OptIn(ExperimentalSerializationApi::class)
     override suspend fun doWork(): Result {
         logcat(priority = LogPriority.INFO) { "NotificationWorker do work" }
 

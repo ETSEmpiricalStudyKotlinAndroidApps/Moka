@@ -13,7 +13,7 @@ import logcat.logcat
 
 class NotificationCallbackReceiver : BroadcastReceiver() {
 
-    @ExperimentalSerializationApi
+    @OptIn(ExperimentalSerializationApi::class)
     override fun onReceive(context: Context?, intent: Intent?) {
         context ?: return
         intent ?: return

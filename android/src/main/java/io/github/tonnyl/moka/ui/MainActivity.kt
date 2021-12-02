@@ -33,14 +33,16 @@ class MainActivity : ComponentActivity() {
         MainViewModelFactory(applicationContext as MokaApp)
     }
 
-    @ExperimentalCoilApi
-    @ExperimentalAnimationApi
-    @ExperimentalPagerApi
-    @ExperimentalAnimatedInsets
-    @ExperimentalComposeUiApi
-    @ExperimentalFoundationApi
-    @ExperimentalMaterialApi
-    @ExperimentalPagingApi
+    @OptIn(
+        ExperimentalCoilApi::class,
+        ExperimentalAnimationApi::class,
+        ExperimentalPagerApi::class,
+        ExperimentalAnimatedInsets::class,
+        ExperimentalComposeUiApi::class,
+        ExperimentalFoundationApi::class,
+        ExperimentalMaterialApi::class,
+        ExperimentalPagingApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

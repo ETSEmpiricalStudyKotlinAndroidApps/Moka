@@ -1506,7 +1506,7 @@ class TreeEntryProvider : PreviewParameterProvider<TreeEntry> {
             TreeEntry(
                 mode = 16384,
                 name = "settings.gradle",
-                object_ = TreeEntry.Object(
+                `object` = TreeEntry.Object(
                     __typename = "",
                     gitObject = GitObject(
                         abbreviatedOid = "e7b4def",

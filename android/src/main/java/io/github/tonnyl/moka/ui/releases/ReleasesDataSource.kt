@@ -40,7 +40,7 @@ class ReleasesDataSource(
                         last = null,
                         orderBy = ReleaseOrder(
                             direction = OrderDirection.DESC,
-                            field_ = ReleaseOrderField.CREATED_AT
+                            field = ReleaseOrderField.CREATED_AT
                         )
                     )
                 ).execute().data?.repository

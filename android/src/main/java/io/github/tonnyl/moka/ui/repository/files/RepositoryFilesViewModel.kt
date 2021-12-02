@@ -50,7 +50,7 @@ class RepositoryFilesViewModel(
 
                 val entries = response.execute().data
                     ?.repository
-                    ?.object_
+                    ?.`object`
                     ?.tree
                     ?.entries
                     ?.map {

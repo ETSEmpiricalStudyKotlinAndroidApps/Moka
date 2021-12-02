@@ -1,9 +1,9 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://kotlin.bintray.com/kotlinx/")
-        maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
         maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven(url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
@@ -22,8 +22,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://kotlin.bintray.com/kotlinx/")
-        maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
         maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven(url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
@@ -32,4 +30,10 @@ allprojects {
 
 task<Delete>("clean") {
     delete(rootProject.buildDir)
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+    }
 }

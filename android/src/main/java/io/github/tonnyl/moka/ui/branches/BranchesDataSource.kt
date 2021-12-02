@@ -26,7 +26,7 @@ class BranchesDataSource(
     var query: String? = null
     var sort: RefOrder = RefOrder(
         direction = OrderDirection.ASC,
-        field_ = RefOrderField.ALPHABETICAL
+        field = RefOrderField.ALPHABETICAL
     )
 
     override fun getRefreshKey(state: PagingState<String, Ref>): String? {

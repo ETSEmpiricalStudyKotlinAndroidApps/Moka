@@ -72,8 +72,7 @@ fun CommitScreen(
         )
     )
 
-    val filesPager = remember { viewModel.commitFilesFlow }
-    val files = filesPager.collectAsLazyPagingItems()
+    val files = viewModel.commitFilesFlow.collectAsLazyPagingItems()
 
     val commitResp by viewModel.commitResp.observeAsState()
 

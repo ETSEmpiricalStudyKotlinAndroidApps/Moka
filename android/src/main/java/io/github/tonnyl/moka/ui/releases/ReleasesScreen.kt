@@ -33,7 +33,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.tonnyl.moka.graphql.fragment.ReleaseListItem
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.ReleaseListItemProvider
@@ -41,6 +40,7 @@ import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.tonnyl.moka.graphql.fragment.ReleaseListItem
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -59,8 +59,7 @@ fun ReleasesScreen(
         )
     )
 
-    val releasesPager = remember { viewModel.releasesFlow }
-    val releases = releasesPager.collectAsLazyPagingItems()
+    val releases = viewModel.releasesFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }

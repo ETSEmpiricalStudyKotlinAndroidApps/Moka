@@ -70,10 +70,7 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
 
     val isNeedDisplayPlaceholder by inboxViewModel.isNeedDisplayPlaceholderLiveData.observeAsState()
 
-    val notificationsPager = remember(key1 = currentAccount) {
-        inboxViewModel.notificationsFlow
-    }
-    val notifications = notificationsPager.collectAsLazyPagingItems()
+    val notifications = inboxViewModel.notificationsFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }

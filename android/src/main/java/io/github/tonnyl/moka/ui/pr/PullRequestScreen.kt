@@ -87,10 +87,7 @@ fun PullRequestScreen(
     )
 
     val pullRequest by viewModel.pullRequest.observeAsState()
-    val prTimelineItemsPager = remember {
-        viewModel.prTimelineFlow
-    }
-    val prTimelineItems = prTimelineItemsPager.collectAsLazyPagingItems()
+    val prTimelineItems = viewModel.prTimelineFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }

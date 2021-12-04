@@ -64,10 +64,7 @@ fun UsersScreen(
         )
     )
 
-    val usersPager by remember {
-        mutableStateOf(viewModel.usersFlow)
-    }
-    val users = usersPager.collectAsLazyPagingItems()
+    val users = viewModel.usersFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }

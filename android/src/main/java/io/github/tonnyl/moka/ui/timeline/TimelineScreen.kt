@@ -70,10 +70,7 @@ fun TimelineScreen(openDrawer: (() -> Unit)?) {
     )
     val isNeedDisplayPlaceholder by timelineViewModel.isNeedDisplayPlaceholderLiveData.observeAsState()
 
-    val eventsPager = remember(key1 = currentAccount) {
-        timelineViewModel.eventsFlow
-    }
-    val events = eventsPager.collectAsLazyPagingItems()
+    val events = timelineViewModel.eventsFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }

@@ -31,7 +31,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.tonnyl.moka.graphql.fragment.Ref
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
@@ -42,6 +41,7 @@ import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.tonnyl.moka.graphql.fragment.Ref
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalMaterialApi
@@ -65,8 +65,7 @@ fun BranchesScreen(
         )
     )
 
-    val branchesPager = remember { viewModel.branchesFlow }
-    val branches = branchesPager.collectAsLazyPagingItems()
+    val branches = viewModel.branchesFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }

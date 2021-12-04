@@ -69,10 +69,7 @@ fun RepositoriesScreen(
         )
     )
 
-    val repositoriesPager = remember {
-        viewModel.repositoriesFlow
-    }
-    val repositories = repositoriesPager.collectAsLazyPagingItems()
+    val repositories = viewModel.repositoriesFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }

@@ -67,8 +67,7 @@ fun CommitsScreen(
         key = qualifiedName
     )
 
-    val commitsPager = remember { viewModel.commitsFlow }
-    val commits = commitsPager.collectAsLazyPagingItems()
+    val commits = viewModel.commitsFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }

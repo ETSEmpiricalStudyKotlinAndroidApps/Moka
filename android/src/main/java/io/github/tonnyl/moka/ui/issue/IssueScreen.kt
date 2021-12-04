@@ -90,10 +90,7 @@ fun IssueScreen(
         )
     )
 
-    val issueTimelineItemsPager = remember {
-        viewModel.issueTimelineFlow
-    }
-    val issueTimelineItems = issueTimelineItemsPager.collectAsLazyPagingItems()
+    val issueTimelineItems = viewModel.issueTimelineFlow.collectAsLazyPagingItems()
 
     val issue by viewModel.issueLiveData.observeAsState()
 

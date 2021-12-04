@@ -55,8 +55,7 @@ fun RepositoryTopicsScreen(
         )
     )
 
-    val topicsPager = remember { viewModel.topicsFlow }
-    val topics = topicsPager.collectAsLazyPagingItems()
+    val topics = viewModel.topicsFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }

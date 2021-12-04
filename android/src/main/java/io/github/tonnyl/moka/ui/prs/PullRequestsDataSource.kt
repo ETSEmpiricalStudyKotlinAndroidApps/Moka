@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.prs
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import io.ktor.client.statement.*
+import io.tonnyl.moka.common.data.IssuePullRequestQueryState
 import io.tonnyl.moka.common.data.PullRequestListItem
 import io.tonnyl.moka.common.network.PageLinks
 import io.tonnyl.moka.common.network.api.RepositoryApi
@@ -17,7 +18,8 @@ import logcat.logcat
 class PullRequestsDataSource(
     private val api: RepositoryApi,
     private val owner: String,
-    private val name: String
+    private val name: String,
+    private val queryState: IssuePullRequestQueryState
 ) : PagingSource<String, PullRequestListItem>() {
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, PullRequestListItem> {
@@ -29,7 +31,8 @@ class PullRequestsDataSource(
                         owner = owner,
                         repo = name,
                         perPage = params.loadSize,
-                        page = params.key?.toInt() ?: 1
+                        page = params.key?.toInt() ?: 1,
+                        state = queryState
                     )
                 } else {
                     val key = params.key

@@ -6,13 +6,15 @@ import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
+import io.tonnyl.moka.common.data.IssuePullRequestQueryState
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 class IssuesViewModel(
     accountInstance: AccountInstance,
     owner: String,
-    name: String
+    name: String,
+    queryState: IssuePullRequestQueryState
 ) : ViewModel() {
 
     val issuesFlow by lazy(LazyThreadSafetyMode.NONE) {
@@ -22,7 +24,8 @@ class IssuesViewModel(
                 IssuesDataSource(
                     api = accountInstance.repositoryApi,
                     owner = owner,
-                    name = name
+                    name = name,
+                    queryState = queryState
                 )
             }
         ).flow.cachedIn(viewModelScope)

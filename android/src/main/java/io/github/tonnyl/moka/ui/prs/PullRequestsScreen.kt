@@ -44,11 +44,9 @@ import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.PullRequestItemProvider
-import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
-import io.github.tonnyl.moka.widget.EmptyScreenContent
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.IssuePrState
+import io.tonnyl.moka.common.data.IssuePullRequestQueryState
 import io.tonnyl.moka.common.data.PullRequestListItem
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -61,18 +59,21 @@ fun PullRequestsScreen(
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
+    val queryState = remember {
+        mutableStateOf(IssuePullRequestQueryState.All)
+    }
+
     val viewModel = viewModel<PullRequestsViewModel>(
+        key = queryState.value.rawValue,
         factory = ViewModelFactory(
             accountInstance = currentAccount,
             owner = owner,
-            name = name
+            name = name,
+            state = queryState.value
         )
     )
 
-    val prsPager = remember {
-        viewModel.prsFlow
-    }
-    val prs = prsPager.collectAsLazyPagingItems()
+    val prs = viewModel.prsFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
@@ -132,6 +133,10 @@ fun PullRequestsScreen(
 
         val navController = LocalNavController.current
 
+        val showMenuState = remember {
+            mutableStateOf(false)
+        }
+
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.pull_requests)) },
             navigationIcon = {
@@ -144,6 +149,28 @@ fun PullRequestsScreen(
                         )
                     }
                 )
+            },
+            actions = {
+                if (prs.loadState.refresh is LoadState.NotLoading
+                    && prs.itemCount > 0
+                ) {
+                    Box {
+                        IconButton(
+                            onClick = {
+                                showMenuState.value = true
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_filter_24),
+                                contentDescription = stringResource(id = R.string.notification_filters)
+                            )
+                        }
+                        IssuePrFiltersDropdownMenu(
+                            showMenu = showMenuState,
+                            queryState = queryState
+                        )
+                    }
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()

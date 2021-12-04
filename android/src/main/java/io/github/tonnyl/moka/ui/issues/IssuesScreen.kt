@@ -44,12 +44,10 @@ import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.IssueItemProvider
-import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
-import io.github.tonnyl.moka.widget.EmptyScreenContent
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.IssueListItem
 import io.tonnyl.moka.common.data.IssuePrState
+import io.tonnyl.moka.common.data.IssuePullRequestQueryState
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -61,18 +59,21 @@ fun IssuesScreen(
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
+    val queryState = remember {
+        mutableStateOf(IssuePullRequestQueryState.All)
+    }
+
     val viewModel = viewModel<IssuesViewModel>(
         factory = ViewModelFactory(
             accountInstance = currentAccount,
             owner = owner,
-            name = name
-        )
+            name = name,
+            queryState = queryState.value
+        ),
+        key = queryState.value.rawValue
     )
 
-    val issuesFlow = remember {
-        viewModel.issuesFlow
-    }
-    val issues = issuesFlow.collectAsLazyPagingItems()
+    val issues = viewModel.issuesFlow.collectAsLazyPagingItems()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
@@ -132,6 +133,10 @@ fun IssuesScreen(
 
         val navController = LocalNavController.current
 
+        val showMenuState = remember {
+            mutableStateOf(false)
+        }
+
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.issues)) },
             navigationIcon = {
@@ -144,6 +149,28 @@ fun IssuesScreen(
                         )
                     }
                 )
+            },
+            actions = {
+                if (issues.loadState.refresh is LoadState.NotLoading
+                    && issues.itemCount > 0
+                ) {
+                    Box {
+                        IconButton(
+                            onClick = {
+                                showMenuState.value = true
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_filter_24),
+                                contentDescription = stringResource(id = R.string.notification_filters)
+                            )
+                        }
+                        IssuePrFiltersDropdownMenu(
+                            showMenu = showMenuState,
+                            queryState = queryState
+                        )
+                    }
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()

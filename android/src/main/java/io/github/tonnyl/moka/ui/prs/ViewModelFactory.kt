@@ -3,13 +3,15 @@ package io.github.tonnyl.moka.ui.prs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.github.tonnyl.moka.AccountInstance
+import io.tonnyl.moka.common.data.IssuePullRequestQueryState
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 class ViewModelFactory(
     private val accountInstance: AccountInstance,
     private val owner: String,
-    private val name: String
+    private val name: String,
+    private val state: IssuePullRequestQueryState
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
@@ -17,7 +19,8 @@ class ViewModelFactory(
         return PullRequestsViewModel(
             accountInstance = accountInstance,
             owner = owner,
-            name = name
+            name = name,
+            state = state
         ) as T
     }
 

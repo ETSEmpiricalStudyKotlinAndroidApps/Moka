@@ -573,4 +573,8 @@
     <string name="release_asset_size_megabytes">%1$.1f MB</string>
     <string name="release_asset_size_gigabytes">%1$.1f GB</string>
 
+    <string name="issue_pr_filters_query_state_all">All</string>
+    <string name="issue_pr_filters_query_state_open">Open</string>
+    <string name="issue_pr_filters_query_state_closed">Closed</string>
+
 </resources>

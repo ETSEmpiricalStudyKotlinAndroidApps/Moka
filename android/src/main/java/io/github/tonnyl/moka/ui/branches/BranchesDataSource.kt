@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.branches
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import io.tonnyl.moka.common.data.extension.checkedEndCursor
 import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.RepositoryRefsQuery
@@ -42,12 +43,12 @@ class BranchesDataSource(
                     query = RepositoryRefsQuery(
                         login = login,
                         repoName = repoName,
-                        after = params.key,
-                        before = params.key,
+                        after = Optional.presentIfNotNull(params.key),
+                        before = Optional.presentIfNotNull(params.key),
                         perPage = params.loadSize,
-                        query = query,
+                        query = Optional.presentIfNotNull(query),
                         refPrefix = refPrefix,
-                        orderBy = sort
+                        orderBy = Optional.presentIfNotNull(sort)
                     )
                 ).execute().data?.repository?.refs
 

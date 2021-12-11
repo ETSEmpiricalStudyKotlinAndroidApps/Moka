@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.commits
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import io.tonnyl.moka.common.data.extension.checkedEndCursor
 import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.RepositoryCommitsQuery
@@ -34,10 +35,10 @@ class CommitsDataSource(
                         login = login,
                         repoName = repoName,
                         qualifiedName = qualifiedName,
-                        after = params.key,
-                        before = params.key,
-                        first = params.loadSize,
-                        last = null
+                        after = Optional.presentIfNotNull(params.key),
+                        before = Optional.presentIfNotNull(params.key),
+                        first = Optional.presentIfNotNull(params.loadSize),
+                        last = Optional.Absent
                     )
                 ).execute().data?.repository?.ref?.target?.onCommit?.history
 

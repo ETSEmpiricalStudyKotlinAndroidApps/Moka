@@ -6,15 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.AccountInstance
-import io.github.tonnyl.moka.network.mutations.addStar
-import io.github.tonnyl.moka.network.mutations.removeStar
 import io.github.tonnyl.moka.util.HtmlHandler
 import io.github.tonnyl.moka.util.updateOnAnyThread
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
+import io.tonnyl.moka.graphql.AddStarMutation
+import io.tonnyl.moka.graphql.RemoveStarMutation
 import io.tonnyl.moka.graphql.RepositoryQuery
 import io.tonnyl.moka.graphql.UpdateSubscriptionMutation
 import io.tonnyl.moka.graphql.fragment.Repository
+import io.tonnyl.moka.graphql.type.AddStarInput
+import io.tonnyl.moka.graphql.type.RemoveStarInput
 import io.tonnyl.moka.graphql.type.SubscriptionState
 import io.tonnyl.moka.graphql.type.UpdateSubscriptionInput
 import kotlinx.coroutines.Dispatchers
@@ -126,17 +128,14 @@ class RepositoryViewModel(
             _starState.postValue(Resource.loading(hasStarred))
 
             try {
-                if (hasStarred) {
-                    removeStar(
-                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                        starrableId = repositoryId
+                accountInstance.apolloGraphQLClient.apolloClient
+                    .mutation(
+                        mutation = if (hasStarred) {
+                            RemoveStarMutation(RemoveStarInput(starrableId = repositoryId))
+                        } else {
+                            AddStarMutation(AddStarInput(starrableId = repositoryId))
+                        }
                     )
-                } else {
-                    addStar(
-                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                        starrableId = repositoryId
-                    )
-                }
 
                 _starState.postValue(Resource.success(!hasStarred))
             } catch (e: Exception) {

@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.users
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import io.tonnyl.moka.common.data.extension.checkedEndCursor
 import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.FollowersQuery
@@ -37,8 +38,8 @@ class UsersDataSource(
                             query = FollowersQuery(
                                 login = login,
                                 perPage = params.loadSize,
-                                before = params.key,
-                                after = params.key
+                                before = Optional.presentIfNotNull(params.key),
+                                after = Optional.presentIfNotNull(params.key)
                             )
                         ).execute().data?.user
 
@@ -55,8 +56,8 @@ class UsersDataSource(
                             query = FollowingQuery(
                                 login = login,
                                 perPage = params.loadSize,
-                                before = params.key,
-                                after = params.key
+                                before = Optional.presentIfNotNull(params.key),
+                                after = Optional.presentIfNotNull(params.key)
                             )
                         ).execute().data?.user
 
@@ -74,8 +75,8 @@ class UsersDataSource(
                                 login = login,
                                 repo = repoName!!,
                                 perPage = params.loadSize,
-                                before = params.key,
-                                after = params.key
+                                before = Optional.presentIfNotNull(params.key),
+                                after = Optional.presentIfNotNull(params.key)
                             )
                         ).execute().data?.repository
 
@@ -93,8 +94,8 @@ class UsersDataSource(
                                 login = login,
                                 repo = repoName!!,
                                 perPage = params.loadSize,
-                                before = params.key,
-                                after = params.key
+                                before = Optional.presentIfNotNull(params.key),
+                                after = Optional.presentIfNotNull(params.key)
                             )
                         ).execute().data?.repository
 

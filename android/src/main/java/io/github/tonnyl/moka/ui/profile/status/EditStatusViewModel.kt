@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.apollographql.apollo3.api.Optional
 import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.data.UserStatus
-import io.github.tonnyl.moka.network.mutations.changeUserStatus
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
+import io.tonnyl.moka.graphql.ChangeUserStatusMutation
+import io.tonnyl.moka.graphql.type.ChangeUserStatusInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -60,7 +62,12 @@ class EditStatusViewModel(
                 _clearStatusState.value = Resource.loading(null)
 
                 withContext(Dispatchers.IO) {
-                    changeUserStatus(apolloClient = accountInstance.apolloGraphQLClient.apolloClient)
+                    accountInstance.apolloGraphQLClient.apolloClient
+                        .mutation(
+                            mutation = ChangeUserStatusMutation(
+                                ChangeUserStatusInput()
+                            )
+                        )
                 }
 
                 _clearStatusState.value = Resource.success(null)
@@ -112,13 +119,17 @@ class EditStatusViewModel(
                     }
                 }
                 withContext(Dispatchers.IO) {
-                    changeUserStatus(
-                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                        emoji = _emojiName.value,
-                        message = message.value,
-                        limitedAvailability = _limitedAvailability.value,
-                        expiresAt = instant
-                    )
+                    accountInstance.apolloGraphQLClient.apolloClient
+                        .mutation(
+                            mutation = ChangeUserStatusMutation(
+                                input = ChangeUserStatusInput(
+                                    emoji = Optional.Present(_emojiName.value),
+                                    message = Optional.Present(message.value),
+                                    limitedAvailability = Optional.Present(_limitedAvailability.value),
+                                    expiresAt = Optional.Present(instant)
+                                )
+                            )
+                        )
                 }
 
                 _updateStatusState.value = Resource.success(

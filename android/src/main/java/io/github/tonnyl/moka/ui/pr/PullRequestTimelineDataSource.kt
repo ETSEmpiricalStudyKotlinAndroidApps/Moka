@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import io.tonnyl.moka.common.data.PullRequestTimelineItem
 import io.tonnyl.moka.common.data.extension.checkedEndCursor
 import io.tonnyl.moka.common.data.extension.checkedStartCursor
@@ -35,8 +36,8 @@ class PullRequestTimelineDataSource(
                             owner = owner,
                             name = name,
                             number = number,
-                            after = params.key,
-                            before = params.key,
+                            after = Optional.presentIfNotNull(params.key),
+                            before = Optional.presentIfNotNull(params.key),
                             perPage = params.loadSize
                         )
                     ).execute().data?.repository?.pullRequest
@@ -68,8 +69,8 @@ class PullRequestTimelineDataSource(
                             owner = owner,
                             name = name,
                             number = number,
-                            after = params.key,
-                            before = params.key,
+                            after = Optional.presentIfNotNull(params.key),
+                            before = Optional.presentIfNotNull(params.key),
                             perPage = params.loadSize
                         )
                     ).execute().data?.repository?.pullRequest?.timelineItems

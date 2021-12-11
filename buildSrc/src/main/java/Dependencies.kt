@@ -4,7 +4,7 @@ object Versions {
     const val targetSdk = 31
     const val minSdk = 23
 
-    const val androidGradle = "7.0.3"
+    const val androidGradle = "7.0.4"
     const val gmsGoogleServiceGradle = "4.3.10"
     const val firebaseCrashlyticsGradle = "2.8.1"
     const val desugaring = "1.1.5"
@@ -35,7 +35,7 @@ object Versions {
     const val kspApi = "1.6.0-1.0.1"
     const val lottie = "4.2.2"
     const val okhttpLoggingInterceptor = "4.7.2"
-    const val apollo = "3.0.0-beta05"
+    const val apollo = "3.0.0-rc02"
     const val commonMark = "0.15.2"
     const val coil = "1.4.0"
     const val jsoup = "1.12.1"

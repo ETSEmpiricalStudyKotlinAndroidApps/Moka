@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.release.assets
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import io.tonnyl.moka.common.data.extension.checkedEndCursor
 import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.ReleaseAssetsQuery
@@ -33,9 +34,9 @@ class ReleaseAssetsDataSource(
                         login = owner,
                         repoName = name,
                         tagName = tagName,
-                        name = null,
-                        after = params.key,
-                        before = params.key,
+                        name = Optional.Absent,
+                        after = Optional.presentIfNotNull(params.key),
+                        before = Optional.presentIfNotNull(params.key),
                         perPage = params.loadSize
                     )
                 ).execute().data?.repository

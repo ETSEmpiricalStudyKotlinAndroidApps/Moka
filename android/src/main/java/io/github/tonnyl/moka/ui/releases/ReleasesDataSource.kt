@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.releases
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import io.tonnyl.moka.common.data.extension.checkedEndCursor
 import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.RepositoryReleasesQuery
@@ -34,13 +35,15 @@ class ReleasesDataSource(
                     query = RepositoryReleasesQuery(
                         login = owner,
                         repoName = name,
-                        after = params.key,
-                        before = params.key,
-                        first = params.loadSize,
-                        last = null,
-                        orderBy = ReleaseOrder(
-                            direction = OrderDirection.DESC,
-                            field = ReleaseOrderField.CREATED_AT
+                        after = Optional.presentIfNotNull(params.key),
+                        before = Optional.presentIfNotNull(params.key),
+                        first = Optional.presentIfNotNull(params.loadSize),
+                        last = Optional.Absent,
+                        orderBy = Optional.presentIfNotNull(
+                            ReleaseOrder(
+                                direction = OrderDirection.DESC,
+                                field = ReleaseOrderField.CREATED_AT
+                            )
                         )
                     )
                 ).execute().data?.repository

@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.repositories
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import io.tonnyl.moka.common.data.extension.checkedEndCursor
 import io.tonnyl.moka.common.data.extension.checkedStartCursor
 import io.tonnyl.moka.graphql.OwnedRepositoriesQuery
@@ -36,8 +37,8 @@ class RepositoriesDataSource(
                             query = StarredRepositoriesQuery(
                                 login = login,
                                 perPage = params.loadSize,
-                                after = params.key,
-                                before = params.key
+                                after = Optional.presentIfNotNull(params.key),
+                                before = Optional.presentIfNotNull(params.key)
                             )
                         ).execute().data?.user
 
@@ -54,8 +55,8 @@ class RepositoriesDataSource(
                             query = OwnedRepositoriesQuery(
                                 login = login,
                                 perPage = params.loadSize,
-                                after = params.key,
-                                before = params.key
+                                after = Optional.presentIfNotNull(params.key),
+                                before = Optional.presentIfNotNull(params.key)
                             )
                         ).execute().data?.user
 
@@ -73,8 +74,8 @@ class RepositoriesDataSource(
                                 login = login,
                                 repo = repoName!!,
                                 perPage = params.loadSize,
-                                after = params.key,
-                                before = params.key
+                                after = Optional.presentIfNotNull(params.key),
+                                before = Optional.presentIfNotNull(params.key)
                             )
                         ).execute().data?.repository
 

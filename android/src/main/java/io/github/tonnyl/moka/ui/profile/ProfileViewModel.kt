@@ -6,15 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.AccountInstance
-import io.github.tonnyl.moka.network.mutations.followUser
-import io.github.tonnyl.moka.network.mutations.unfollowUser
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
+import io.tonnyl.moka.graphql.FollowUserMutation
 import io.tonnyl.moka.graphql.OrganizationQuery
+import io.tonnyl.moka.graphql.UnfollowUserMutation
 import io.tonnyl.moka.graphql.UserQuery
 import io.tonnyl.moka.graphql.fragment.Organization
 import io.tonnyl.moka.graphql.fragment.User
 import io.tonnyl.moka.graphql.fragment.UserStatus
+import io.tonnyl.moka.graphql.type.FollowUserInput
+import io.tonnyl.moka.graphql.type.UnfollowUserInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -119,17 +121,14 @@ class ProfileViewModel(
             _followState.postValue(Resource.loading(isFollowing))
 
             try {
-                if (isFollowing) {
-                    unfollowUser(
-                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                        userId = user.id
+                accountInstance.apolloGraphQLClient.apolloClient
+                    .mutation(
+                        mutation = if (isFollowing) {
+                            UnfollowUserMutation(input = UnfollowUserInput(userId = user.id))
+                        } else {
+                            FollowUserMutation(input = FollowUserInput(userId = user.id))
+                        }
                     )
-                } else {
-                    followUser(
-                        apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                        userId = user.id
-                    )
-                }
 
                 _followState.postValue(Resource.success(!isFollowing))
             } catch (e: Exception) {

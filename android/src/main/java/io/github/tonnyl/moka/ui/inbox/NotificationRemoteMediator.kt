@@ -6,11 +6,11 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import io.github.tonnyl.moka.data.Notification
-import io.github.tonnyl.moka.data.RemoteKeys
-import io.github.tonnyl.moka.data.dbModel
-import io.github.tonnyl.moka.db.MokaDataBase
 import io.ktor.client.statement.*
+import io.tonnyl.moka.common.db.MokaDataBase
+import io.tonnyl.moka.common.db.data.Notification
+import io.tonnyl.moka.common.db.data.RemoteKeys
+import io.tonnyl.moka.common.db.data.dbModel
 import io.tonnyl.moka.common.network.PageLinks
 import io.tonnyl.moka.common.network.api.NotificationApi
 import io.tonnyl.moka.common.serialization.json

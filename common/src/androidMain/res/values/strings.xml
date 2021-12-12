@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Moka</string>
+    <string name="auth_get_started">GET STARTED</string>
+    <string name="auth_logo_image_content_description">Moka logo</string>
+    <string name="no_description_provided">No description provided.</string>
+</resources>

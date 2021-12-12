@@ -34,7 +34,6 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
@@ -43,11 +42,12 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.util.PullRequestItemProvider
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.IssuePrState
 import io.tonnyl.moka.common.data.IssuePullRequestQueryState
 import io.tonnyl.moka.common.data.PullRequestListItem
+import io.tonnyl.moka.common.ui.defaultPagingConfig
+import io.tonnyl.moka.common.util.PullRequestItemProvider
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -201,7 +201,7 @@ fun PullRequestsScreenContent(
         }
 
         if (prs.loadState.refresh is LoadState.Loading) {
-            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+            items(count = defaultPagingConfig.initialLoadSize) {
                 ItemPullRequest(
                     owner = "TonnyL",
                     name = "PaperPlane",

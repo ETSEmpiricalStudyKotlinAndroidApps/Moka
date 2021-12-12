@@ -30,10 +30,11 @@ import com.google.accompanist.insets.statusBarsPadding
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainActivity
-import io.github.tonnyl.moka.ui.auth.AuthEvent.FinishAndGo
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MokaTheme
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
+import io.tonnyl.moka.common.ui.auth.AuthEvent.FinishAndGo
+import io.tonnyl.moka.common.ui.auth.Screen
 import kotlinx.serialization.ExperimentalSerializationApi
 
 class AuthActivity : ComponentActivity() {
@@ -155,11 +156,5 @@ class AuthActivity : ComponentActivity() {
         })
 
     }
-
-}
-
-sealed class Screen(val route: String) {
-
-    object Auth : Screen("auth?code={code}&state={state}")
 
 }

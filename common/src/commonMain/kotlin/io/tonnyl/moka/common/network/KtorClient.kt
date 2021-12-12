@@ -1,19 +1,19 @@
 package io.tonnyl.moka.common.network
 
-import io.tonnyl.moka.common.serialization.json
 import io.ktor.client.*
+import io.ktor.client.features.auth.*
+import io.ktor.client.features.auth.providers.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
-import io.ktor.client.features.auth.*
-import io.ktor.client.features.auth.providers.*
+import io.tonnyl.moka.common.serialization.json
 
 class KtorClient(
     requireAuth: Boolean,
     accessToken: String?
 ) {
 
-    val httpClient = HttpClient() {
+    val httpClient = HttpClient {
         install(JsonFeature) {
             serializer = KotlinxSerializer(json)
         }
@@ -45,6 +45,11 @@ class KtorClient(
         // Scope
         const val SCOPE =
             "repo+admin:org+admin:public_key+admin:repo_hook+admin:org_hook+gist+notifications+user+delete_repo+write:discussion+admin:gpg_key"
+
+        val unauthenticatedKtorClient = KtorClient(
+            requireAuth = false,
+            accessToken = null
+        ).httpClient
 
     }
 

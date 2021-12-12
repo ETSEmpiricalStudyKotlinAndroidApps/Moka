@@ -9,9 +9,7 @@ import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
 import io.github.tonnyl.moka.data.extension.toPbAccount
-import io.github.tonnyl.moka.serializers.store.data.SignedInAccount
 import io.github.tonnyl.moka.ui.Event
-import io.github.tonnyl.moka.ui.auth.AuthEvent.FinishAndGo
 import io.github.tonnyl.moka.util.insertNewAccount
 import io.github.tonnyl.moka.util.updateOnAnyThread
 import io.tonnyl.moka.common.data.AuthenticatedUser
@@ -20,6 +18,9 @@ import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.network.api.AccessTokenApi
 import io.tonnyl.moka.common.network.api.UserApi
+import io.tonnyl.moka.common.store.data.SignedInAccount
+import io.tonnyl.moka.common.ui.auth.AuthEvent
+import io.tonnyl.moka.common.ui.auth.AuthEvent.FinishAndGo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -46,7 +47,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 _authTokenAndUserResult.value = Resource(Status.LOADING, null, null)
 
                 val accessTokenResp = withContext(Dispatchers.IO) {
-                    AccessTokenApi(ktorClient = getApplication<MokaApp>().unauthenticatedKtorClient).getAccessToken(
+                    AccessTokenApi(ktorClient = KtorClient.unauthenticatedKtorClient).getAccessToken(
                         clientId = BuildConfig.CLIENT_ID,
                         clientSecret = BuildConfig.CLIENT_SECRET,
                         code = code,
@@ -56,7 +57,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 }
 
                 val authenticatedUserResp = withContext(Dispatchers.IO) {
-                    UserApi(ktorClient = getApplication<MokaApp>().unauthenticatedKtorClient)
+                    UserApi(ktorClient = KtorClient.unauthenticatedKtorClient)
                         .getAuthenticatedUser(accessToken = accessTokenResp.accessToken)
                 }
 

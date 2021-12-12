@@ -42,12 +42,13 @@ import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.users.UsersType
-import io.github.tonnyl.moka.util.UserProvider
-import io.github.tonnyl.moka.util.formatWithSuffix
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
+import io.tonnyl.moka.common.data.SearchableEmoji
 import io.tonnyl.moka.common.network.Status
+import io.tonnyl.moka.common.util.UserProvider
+import io.tonnyl.moka.common.util.formatWithSuffix
 import io.tonnyl.moka.graphql.fragment.Gist
 import io.tonnyl.moka.graphql.fragment.Organization
 import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment

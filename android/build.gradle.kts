@@ -9,7 +9,6 @@ plugins {
     kotlin("kapt")
     id("kotlinx-serialization")
     id("com.google.firebase.crashlytics")
-    id("com.google.devtools.ksp").version(Versions.kspApi)
 }
 
 kapt {
@@ -99,32 +98,10 @@ dependencies {
 
     coreLibraryDesugaring(Deps.desugaring)
 
-    // Kotlin
-    implementation(Deps.Kotlin.stdlib)
-    implementation(Deps.Kotlin.coroutinesCore)
-    implementation(Deps.Kotlin.coroutinesAndroid)
-    implementation(Deps.Kotlin.serializationProtoBuf)
-
     // AndroidX
     implementation(Deps.AndroidX.browser)
-    implementation(Deps.AndroidX.dataStore)
-    implementation(Deps.AndroidX.activityCompose)
     implementation(Deps.AndroidX.splashScreen)
-    implementation(Deps.AndroidX.Lifecycle.lifecycleExtensions)
-    implementation(Deps.AndroidX.Lifecycle.liveDataKtx)
-    implementation(Deps.AndroidX.Lifecycle.viewModelCompose)
-    implementation(Deps.AndroidX.Lifecycle.runtimeKtx)
-    implementation(Deps.AndroidX.Navigation.common)
-    implementation(Deps.AndroidX.Navigation.compose)
     implementation(Deps.AndroidX.WorkManager.runtime)
-    implementation(Deps.AndroidX.Paging.runtime)
-    implementation(Deps.AndroidX.Paging.compose)
-    implementation(Deps.AndroidX.Room.common)
-    implementation(Deps.AndroidX.Room.runtime)
-    implementation(Deps.AndroidX.Room.migration)
-    implementation(Deps.AndroidX.Room.ktx)
-    implementation(Deps.AndroidX.Room.paging)
-    ksp(Deps.AndroidX.Room.compiler)
 
     implementation(Deps.AndroidX.UI.runtime)
     implementation(Deps.AndroidX.UI.animation)
@@ -133,7 +110,6 @@ dependencies {
     implementation(Deps.AndroidX.UI.material)
     implementation(Deps.AndroidX.UI.layout)
     implementation(Deps.AndroidX.UI.liveData)
-    implementation(Deps.AndroidX.UI.tooling)
     implementation(Deps.AndroidX.UI.constraintLayout)
 
     // Google
@@ -167,7 +143,6 @@ dependencies {
     implementation(Deps.CommonMark.yamlFrontMatter)
 
     implementation(Deps.jsoup)
-    implementation(Deps.logcat)
 
     testImplementation(Deps.Test.junit)
     testImplementation(Deps.Test.mockitoCore)

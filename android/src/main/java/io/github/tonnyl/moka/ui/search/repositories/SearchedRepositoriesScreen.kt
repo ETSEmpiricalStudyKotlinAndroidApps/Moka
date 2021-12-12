@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.ui.search.repositories
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -12,13 +11,13 @@ import androidx.paging.compose.itemsIndexed
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.repositories.ItemRepository
-import io.github.tonnyl.moka.util.RepositoryItemProvider
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.tonnyl.moka.common.ui.defaultPagingConfig
+import io.tonnyl.moka.common.util.RepositoryItemProvider
 import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -83,7 +82,7 @@ private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<Repo
         }
 
         if (repositories.loadState.refresh is LoadState.Loading) {
-            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+            items(count = defaultPagingConfig.initialLoadSize) {
                 ItemRepository(
                     repo = repoPlaceholder,
                     enablePlaceholder = true

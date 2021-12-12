@@ -26,7 +26,6 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.SearchableEmoji
 import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
@@ -37,6 +36,7 @@ import io.github.tonnyl.moka.widget.EmojiComponent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import io.tonnyl.moka.common.data.SearchableEmoji
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import kotlinx.serialization.ExperimentalSerializationApi

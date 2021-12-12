@@ -26,7 +26,6 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.TrendingDeveloper
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
@@ -34,7 +33,8 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.DividerSize
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.util.TrendingDeveloperProvider
+import io.tonnyl.moka.common.db.data.TrendingDeveloper
+import io.tonnyl.moka.common.util.TrendingDeveloperProvider
 
 @ExperimentalCoilApi
 @Composable
@@ -125,8 +125,8 @@ fun TrendingDeveloperItem(
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(
                         text = trendingDeveloperDescContent(
-                            developer.repository.name,
-                            developer.repository.description
+                            developer.repository!!.name,
+                            developer.repository!!.description
                         ),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.caption,

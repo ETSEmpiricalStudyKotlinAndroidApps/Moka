@@ -39,16 +39,18 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.Event
-import io.github.tonnyl.moka.data.EventOrg
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.util.TimelineEventProvider
 import io.github.tonnyl.moka.widget.*
+import io.tonnyl.moka.common.db.data.Event
+import io.tonnyl.moka.common.db.data.EventOrg
+import io.tonnyl.moka.common.ui.defaultPagingConfig
+import io.tonnyl.moka.common.ui.timeline.TimelineViewModel
+import io.tonnyl.moka.common.ui.timeline.ViewModelFactory
+import io.tonnyl.moka.common.util.TimelineEventProvider
 import kotlinx.serialization.ExperimentalSerializationApi
 import io.tonnyl.moka.common.data.Event as SerializableEvent
 
@@ -160,7 +162,7 @@ fun TimelineScreenContent(
         }
 
         if (enablePlaceholder) {
-            items(count = MokaApp.defaultPagingConfig.initialLoadSize) { index ->
+            items(count = defaultPagingConfig.initialLoadSize) { index ->
                 if (index == 0) {
                     ListSubheader(
                         text = stringResource(id = R.string.navigation_menu_timeline),

@@ -2,8 +2,8 @@ package io.github.tonnyl.moka.ui.users
 
 import androidx.lifecycle.ViewModel
 import androidx.paging.Pager
-import io.github.tonnyl.moka.AccountInstance
-import io.github.tonnyl.moka.MokaApp
+import io.tonnyl.moka.common.AccountInstance
+import io.tonnyl.moka.common.ui.defaultPagingConfig
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -16,7 +16,7 @@ class UsersViewModel(
 
     val usersFlow by lazy {
         Pager(
-            config = MokaApp.defaultPagingConfig,
+            config = defaultPagingConfig,
             pagingSourceFactory = {
                 UsersDataSource(
                     apolloClient = accountInstance.apolloGraphQLClient.apolloClient,

@@ -9,10 +9,10 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
-import io.github.tonnyl.moka.data.Emoji
 import io.github.tonnyl.moka.ui.auth.Authenticator
 import io.tonnyl.moka.common.data.AccessToken
 import io.tonnyl.moka.common.data.AuthenticatedUser
+import io.tonnyl.moka.common.data.Emoji
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString

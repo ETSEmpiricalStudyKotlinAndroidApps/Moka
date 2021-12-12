@@ -15,8 +15,8 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import io.github.tonnyl.moka.MokaApp
-import io.github.tonnyl.moka.serializers.store.SettingSerializer
-import io.github.tonnyl.moka.serializers.store.data.Theme
+import io.tonnyl.moka.common.store.SettingSerializer
+import io.tonnyl.moka.common.store.data.Theme
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi

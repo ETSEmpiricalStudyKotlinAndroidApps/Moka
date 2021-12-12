@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.cachedIn
-import io.github.tonnyl.moka.AccountInstance
-import io.github.tonnyl.moka.MokaApp
+import io.tonnyl.moka.common.AccountInstance
+import io.tonnyl.moka.common.ui.defaultPagingConfig
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -17,7 +17,7 @@ class ReleasesViewModel(
 
     val releasesFlow by lazy(LazyThreadSafetyMode.NONE) {
         Pager(
-            config = MokaApp.defaultPagingConfig,
+            config = defaultPagingConfig,
             pagingSourceFactory = {
                 ReleasesDataSource(
                     apolloClient = accountInstance.apolloGraphQLClient.apolloClient,

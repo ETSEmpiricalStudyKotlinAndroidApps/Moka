@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.tonnyl.moka.AccountInstance
+import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.TreeEntryType
 import io.tonnyl.moka.common.data.treeEntryType
 import io.tonnyl.moka.common.network.Resource

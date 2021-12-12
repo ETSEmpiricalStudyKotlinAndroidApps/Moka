@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.ExperimentalPagingApi
-import io.github.tonnyl.moka.AccountInstance
+import io.tonnyl.moka.common.AccountInstance
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi

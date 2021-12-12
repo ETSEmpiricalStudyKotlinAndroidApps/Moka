@@ -6,6 +6,7 @@ plugins {
     kotlin("native.cocoapods")
     id("kotlinx-serialization")
     id("com.apollographql.apollo3").version(Versions.apollo)
+    id("com.google.devtools.ksp").version(Versions.kspApi)
 }
 
 group = "io.tonnyl.moka"
@@ -63,6 +64,37 @@ kotlin {
         named("androidMain") {
             dependencies {
                 implementation(Deps.Ktor.cio)
+
+                // Kotlin
+                api(Deps.Kotlin.stdlib)
+                api(Deps.Kotlin.coroutinesCore)
+                api(Deps.Kotlin.coroutinesAndroid)
+
+                // compose common
+                api(Deps.AndroidX.UI.tooling)
+                api(Deps.AndroidX.UI.foundation)
+
+                api(Deps.AndroidX.activityCompose)
+                api(Deps.AndroidX.Paging.runtime)
+                api(Deps.AndroidX.Paging.compose)
+                api(Deps.AndroidX.Lifecycle.liveDataKtx)
+                api(Deps.AndroidX.Lifecycle.lifecycleExtensions)
+                api(Deps.AndroidX.Lifecycle.viewModelCompose)
+                api(Deps.AndroidX.Lifecycle.runtimeKtx)
+                api(Deps.AndroidX.Navigation.common)
+                api(Deps.AndroidX.Navigation.compose)
+
+                api(Deps.AndroidX.dataStore)
+
+                implementation(Deps.Kotlin.serializationProtoBuf)
+
+                api(Deps.AndroidX.Room.common)
+                api(Deps.AndroidX.Room.runtime)
+                api(Deps.AndroidX.Room.migration)
+                api(Deps.AndroidX.Room.ktx)
+                api(Deps.AndroidX.Room.paging)
+
+                api(Deps.logcat)
             }
         }
         named("androidTest") {
@@ -87,6 +119,10 @@ kotlin {
         }
         named("desktopTest") { }
     }
+}
+
+dependencies {
+    ksp(Deps.AndroidX.Room.compiler)
 }
 
 android {

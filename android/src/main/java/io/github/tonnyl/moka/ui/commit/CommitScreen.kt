@@ -42,15 +42,15 @@ import com.google.accompanist.placeholder.material.fadeHighlightColor
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.util.CommitFileProvider
-import io.github.tonnyl.moka.util.CommitResponseProvider
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.CommitFile
 import io.tonnyl.moka.common.data.CommitResponse
+import io.tonnyl.moka.common.ui.defaultPagingConfig
+import io.tonnyl.moka.common.util.CommitFileProvider
+import io.tonnyl.moka.common.util.CommitResponseProvider
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -196,7 +196,7 @@ private fun CommitScreenContent(
         }
 
         if (isInitialLoading) {
-            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+            items(count = defaultPagingConfig.initialLoadSize) {
                 CommitFileItem(
                     file = commitFilePlaceholder,
                     enablePlaceholder = true

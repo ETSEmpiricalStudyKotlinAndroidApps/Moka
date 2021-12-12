@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.util.HtmlHandler
+import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.graphql.ReleaseQuery
 import io.tonnyl.moka.graphql.fragment.Release

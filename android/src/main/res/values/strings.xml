@@ -1,11 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Moka</string>
-
-    <string name="no_description_provided">No description provided.</string>
-
-    <string name="auth_logo_image_content_description">Moka logo</string>
-    <string name="auth_get_started">GET STARTED</string>
-
     <string name="common_retry">Retry</string>
     <string name="common_error_requesting_data">Error while requesting data.</string>
     <string name="empty_screen_icon_content_description">No data</string>

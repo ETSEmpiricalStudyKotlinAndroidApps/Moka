@@ -17,9 +17,9 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.Notification
-import io.github.tonnyl.moka.data.toDisplayContentText
+import io.github.tonnyl.moka.data.extension.toDisplayContentText
 import io.github.tonnyl.moka.ui.MainActivity
+import io.tonnyl.moka.common.db.data.Notification
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority

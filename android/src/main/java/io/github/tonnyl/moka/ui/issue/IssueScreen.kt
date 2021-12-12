@@ -42,19 +42,19 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.reaction.AddReactionDialogScreen
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.util.IssueProvider
-import io.github.tonnyl.moka.util.IssueTimelineEventProvider
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.IssueTimelineItem
 import io.tonnyl.moka.common.data.extension.assigneeLogin
+import io.tonnyl.moka.common.ui.defaultPagingConfig
+import io.tonnyl.moka.common.util.IssueProvider
+import io.tonnyl.moka.common.util.IssueTimelineEventProvider
 import io.tonnyl.moka.graphql.IssueQuery.Issue
 import io.tonnyl.moka.graphql.fragment.ReactionGroup
 import io.tonnyl.moka.graphql.type.CommentAuthorAssociation
@@ -281,7 +281,7 @@ private fun IssueScreenContent(
         }
 
         if (enablePlaceholder) {
-            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+            items(count = defaultPagingConfig.initialLoadSize) {
                 ItemIssueTimelineEvent(
                     event = timelinePlaceholder,
                     enablePlaceholder = enablePlaceholder

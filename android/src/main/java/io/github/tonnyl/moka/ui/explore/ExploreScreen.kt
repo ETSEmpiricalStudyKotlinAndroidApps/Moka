@@ -27,22 +27,22 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.TrendingDeveloper
-import io.github.tonnyl.moka.data.TrendingRepository
-import io.github.tonnyl.moka.serializers.store.ExploreOptionsSerializer
-import io.github.tonnyl.moka.serializers.store.data.ExploreOptions
-import io.github.tonnyl.moka.serializers.store.data.displayStringResId
-import io.github.tonnyl.moka.serializers.store.data.urlParamValue
+import io.github.tonnyl.moka.data.extension.displayStringResId
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
-import io.github.tonnyl.moka.util.TrendingDeveloperProvider
-import io.github.tonnyl.moka.util.TrendingRepositoryProvider
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.ListSubheader
 import io.github.tonnyl.moka.widget.MainSearchBar
+import io.tonnyl.moka.common.db.data.TrendingDeveloper
+import io.tonnyl.moka.common.db.data.TrendingRepository
 import io.tonnyl.moka.common.network.Status
+import io.tonnyl.moka.common.store.ExploreOptionsSerializer
+import io.tonnyl.moka.common.store.data.ExploreOptions
+import io.tonnyl.moka.common.store.data.urlParamValue
+import io.tonnyl.moka.common.ui.defaultPagingConfig
+import io.tonnyl.moka.common.util.TrendingDeveloperProvider
+import io.tonnyl.moka.common.util.TrendingRepositoryProvider
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -178,7 +178,7 @@ private fun ExploreScreenContent(
             ) {
                 items(
                     count = if (enablePlaceholder) {
-                        MokaApp.defaultPagingConfig.initialLoadSize
+                        defaultPagingConfig.initialLoadSize
                     } else {
                         trendingDevelopers.size
                     }
@@ -202,7 +202,7 @@ private fun ExploreScreenContent(
 
         items(
             count = if (enablePlaceholder) {
-                MokaApp.defaultPagingConfig.initialLoadSize
+                defaultPagingConfig.initialLoadSize
             } else {
                 trendingRepositories.size
             }

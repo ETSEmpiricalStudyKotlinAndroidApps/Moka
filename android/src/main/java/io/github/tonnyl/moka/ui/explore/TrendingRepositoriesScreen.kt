@@ -27,14 +27,14 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.TrendingRepository
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.util.TrendingRepositoryProvider
-import io.github.tonnyl.moka.util.formatWithSuffix
 import io.github.tonnyl.moka.util.toColor
+import io.tonnyl.moka.common.db.data.TrendingRepository
+import io.tonnyl.moka.common.util.TrendingRepositoryProvider
+import io.tonnyl.moka.common.util.formatWithSuffix
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi

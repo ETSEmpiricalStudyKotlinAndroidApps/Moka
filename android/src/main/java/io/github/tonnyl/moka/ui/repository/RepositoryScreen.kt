@@ -45,11 +45,11 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.users.UsersType
-import io.github.tonnyl.moka.util.RepositoryProvider
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
+import io.tonnyl.moka.common.util.RepositoryProvider
 import io.tonnyl.moka.graphql.fragment.Language
 import io.tonnyl.moka.graphql.fragment.Repository
 import io.tonnyl.moka.graphql.type.SubscriptionState

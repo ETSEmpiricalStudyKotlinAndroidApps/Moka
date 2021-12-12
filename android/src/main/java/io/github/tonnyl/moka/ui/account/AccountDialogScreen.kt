@@ -27,7 +27,6 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
@@ -37,6 +36,7 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.OutlineChip
+import io.tonnyl.moka.common.AccountInstance
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi

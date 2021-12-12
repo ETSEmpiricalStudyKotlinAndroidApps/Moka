@@ -9,12 +9,10 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.WindowInsets
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.serializers.store.SettingSerializer
 import io.github.tonnyl.moka.ui.settings.*
 import io.github.tonnyl.moka.ui.theme.MokaTheme
+import io.tonnyl.moka.common.store.SettingSerializer
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
@@ -34,9 +32,8 @@ class SettingsScreenTest {
         composeTestRule.activityRule.scenario.onActivity { newActivity ->
             activity = newActivity
 
-            val windowInsets = WindowInsets()
             composeTestRule.setContent {
-                CompositionLocalProvider(LocalWindowInsets provides windowInsets) {
+                CompositionLocalProvider {
                     MokaTheme {
                         SettingScreenContent(
                             topAppBarSize = 0,

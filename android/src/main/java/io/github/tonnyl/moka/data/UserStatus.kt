@@ -1,7 +1,7 @@
 package io.github.tonnyl.moka.data
 
 import android.os.Parcelable
-import io.github.tonnyl.moka.serializers.parcelization.InstantParceler
+import io.github.tonnyl.moka.parcelization.InstantParceler
 import kotlinx.datetime.Instant
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.TypeParceler

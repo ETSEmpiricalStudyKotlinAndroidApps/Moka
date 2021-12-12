@@ -39,17 +39,17 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.Notification
-import io.github.tonnyl.moka.data.NotificationRepositoryOwner
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.util.NotificationProvider
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.NotificationReasons
+import io.tonnyl.moka.common.db.data.Notification
+import io.tonnyl.moka.common.db.data.NotificationRepositoryOwner
+import io.tonnyl.moka.common.ui.defaultPagingConfig
+import io.tonnyl.moka.common.util.NotificationProvider
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalCoilApi
@@ -160,7 +160,7 @@ private fun InboxScreenContent(
         }
 
         if (enablePlaceholder) {
-            items(count = MokaApp.defaultPagingConfig.initialLoadSize) { index ->
+            items(count = defaultPagingConfig.initialLoadSize) { index ->
                 if (index == 0) {
                     ListSubheader(
                         text = stringResource(id = R.string.navigation_menu_inbox),

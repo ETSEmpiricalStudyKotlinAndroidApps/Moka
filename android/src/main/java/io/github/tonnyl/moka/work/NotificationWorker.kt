@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.github.tonnyl.moka.MokaApp
-import io.github.tonnyl.moka.data.Notification
 import io.github.tonnyl.moka.notifications.NotificationsCenter
 import io.ktor.client.statement.*
+import io.tonnyl.moka.common.db.data.Notification
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone

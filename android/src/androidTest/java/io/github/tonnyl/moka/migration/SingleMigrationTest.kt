@@ -4,8 +4,8 @@ import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import io.github.tonnyl.moka.db.MIGRATION_1_2
-import io.github.tonnyl.moka.db.MokaDataBase
+import io.tonnyl.moka.common.db.MIGRATION_1_2
+import io.tonnyl.moka.common.db.MokaDataBase
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

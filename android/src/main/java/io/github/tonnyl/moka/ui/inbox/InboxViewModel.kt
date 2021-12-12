@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.cachedIn
-import io.github.tonnyl.moka.AccountInstance
-import io.github.tonnyl.moka.MokaApp
+import io.tonnyl.moka.common.AccountInstance
+import io.tonnyl.moka.common.ui.defaultPagingConfig
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -26,7 +26,7 @@ class InboxViewModel(
     @ExperimentalPagingApi
     val notificationsFlow by lazy(LazyThreadSafetyMode.NONE) {
         Pager(
-            config = MokaApp.defaultPagingConfig,
+            config = defaultPagingConfig,
             remoteMediator = NotificationRemoteMediator(
                 notificationsApi = accountInstance.notificationApi,
                 database = accountInstance.database,

@@ -18,7 +18,7 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.util.ContributionCalendarProvider
+import io.tonnyl.moka.common.util.ContributionCalendarProvider
 import io.tonnyl.moka.graphql.fragment.User
 
 @Composable

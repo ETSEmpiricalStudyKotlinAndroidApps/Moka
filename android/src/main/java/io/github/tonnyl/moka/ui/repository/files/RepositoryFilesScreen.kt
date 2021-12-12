@@ -23,18 +23,18 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.util.TreeEntryProvider
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.tonnyl.moka.common.data.TreeEntryType
 import io.tonnyl.moka.common.data.treeEntryType
 import io.tonnyl.moka.common.network.Status
+import io.tonnyl.moka.common.ui.defaultPagingConfig
+import io.tonnyl.moka.common.util.TreeEntryProvider
 import io.tonnyl.moka.graphql.fragment.TreeEntry
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -180,7 +180,7 @@ private fun RepositoryFilesScreenContent(
 
         items(
             count = if (enablePlaceholder) {
-                MokaApp.defaultPagingConfig.initialLoadSize
+                defaultPagingConfig.initialLoadSize
             } else {
                 entries.size
             }

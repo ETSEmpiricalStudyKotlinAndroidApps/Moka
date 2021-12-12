@@ -3,8 +3,8 @@ package io.github.tonnyl.moka.ui.theme
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavHostController
-import io.github.tonnyl.moka.AccountInstance
 import io.github.tonnyl.moka.ui.MainViewModel
+import io.tonnyl.moka.common.AccountInstance
 import kotlinx.serialization.ExperimentalSerializationApi
 
 val LocalWindowInsetsController = staticCompositionLocalOf<WindowInsetsControllerCompat?> { null }

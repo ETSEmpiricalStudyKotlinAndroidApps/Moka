@@ -2,7 +2,7 @@ package io.github.tonnyl.moka.ui.profile.edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.github.tonnyl.moka.AccountInstance
+import io.tonnyl.moka.common.AccountInstance
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi

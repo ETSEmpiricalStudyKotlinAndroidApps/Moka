@@ -6,25 +6,25 @@ import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import androidx.lifecycle.asLiveData
-import androidx.paging.PagingConfig
 import androidx.work.*
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.util.CoilUtils
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
 import io.github.tonnyl.moka.data.extension.toPbAccount
-import io.github.tonnyl.moka.serializers.store.AccountSerializer
-import io.github.tonnyl.moka.serializers.store.SettingSerializer
-import io.github.tonnyl.moka.serializers.store.data.NotificationSyncInterval
-import io.github.tonnyl.moka.serializers.store.data.Settings
-import io.github.tonnyl.moka.serializers.store.data.SignedInAccount
-import io.github.tonnyl.moka.serializers.store.data.SignedInAccounts
 import io.github.tonnyl.moka.ui.auth.Authenticator
 import io.github.tonnyl.moka.work.NotificationWorker
+import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.AccessToken
 import io.tonnyl.moka.common.data.AuthenticatedUser
 import io.tonnyl.moka.common.network.KtorClient
 import io.tonnyl.moka.common.serialization.json
+import io.tonnyl.moka.common.store.AccountSerializer
+import io.tonnyl.moka.common.store.SettingSerializer
+import io.tonnyl.moka.common.store.data.NotificationSyncInterval
+import io.tonnyl.moka.common.store.data.Settings
+import io.tonnyl.moka.common.store.data.SignedInAccount
+import io.tonnyl.moka.common.store.data.SignedInAccounts
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -138,27 +138,13 @@ class MokaApp : Application(), ImageLoaderFactory {
     val accountInstancesLiveData by lazy {
         accountsDataStore.data.map { accounts ->
             accounts.accounts.map { account ->
-                AccountInstance(this, account)
+                AccountInstance(
+                    application = this,
+                    unauthenticatedKtorClient = KtorClient.unauthenticatedKtorClient,
+                    signedInAccount = account
+                )
             }
         }.asLiveData(timeoutInMs = Long.MAX_VALUE)
-    }
-
-    val unauthenticatedKtorClient by lazy {
-        KtorClient(
-            requireAuth = false,
-            accessToken = null
-        ).httpClient
-    }
-
-    companion object {
-        private const val PER_PAGE = 16
-        private const val MAX_SIZE_OF_PAGED_LIST = 1024
-
-        val defaultPagingConfig = PagingConfig(
-            pageSize = PER_PAGE,
-            maxSize = MAX_SIZE_OF_PAGED_LIST,
-            enablePlaceholders = true
-        )
     }
 
     override fun onCreate() {

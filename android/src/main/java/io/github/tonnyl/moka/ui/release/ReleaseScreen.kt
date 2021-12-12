@@ -30,9 +30,9 @@ import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.util.ReleaseProvider
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
+import io.tonnyl.moka.common.util.ReleaseProvider
 import io.tonnyl.moka.graphql.fragment.Release
 import kotlinx.serialization.ExperimentalSerializationApi
 

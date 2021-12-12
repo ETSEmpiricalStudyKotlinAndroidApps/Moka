@@ -41,7 +41,6 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
@@ -50,10 +49,7 @@ import io.github.tonnyl.moka.ui.issue.IssuePullRequestEventData
 import io.github.tonnyl.moka.ui.issue.IssueTimelineCommentItem
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.util.PullRequestProvider
-import io.github.tonnyl.moka.util.PullRequestTimelineItemProvider
 import io.github.tonnyl.moka.util.toColor
-import io.github.tonnyl.moka.util.toShortOid
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -61,6 +57,10 @@ import io.github.tonnyl.moka.widget.ItemLoadingState
 import io.tonnyl.moka.common.data.PullRequestTimelineItem
 import io.tonnyl.moka.common.data.extension.assigneeLogin
 import io.tonnyl.moka.common.data.extension.requestedReviewerLogin
+import io.tonnyl.moka.common.ui.defaultPagingConfig
+import io.tonnyl.moka.common.util.PullRequestProvider
+import io.tonnyl.moka.common.util.PullRequestTimelineItemProvider
+import io.tonnyl.moka.common.util.toShortOid
 import io.tonnyl.moka.graphql.PullRequestQuery.PullRequest
 import io.tonnyl.moka.graphql.type.LockReason
 import io.tonnyl.moka.graphql.type.PullRequestReviewState
@@ -290,7 +290,7 @@ private fun PullRequestScreenContent(
         }
 
         if (enablePlaceholder) {
-            items(count = MokaApp.defaultPagingConfig.initialLoadSize) {
+            items(count = defaultPagingConfig.initialLoadSize) {
                 ItemPullRequestTimelineEvent(
                     timelineItem = timelinePlaceholder,
                     enablePlaceholder = true

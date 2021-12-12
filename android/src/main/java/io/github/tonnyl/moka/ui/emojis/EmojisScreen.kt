@@ -32,16 +32,16 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.Emoji
-import io.github.tonnyl.moka.data.EmojiCategory
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.util.EmojiCategoryProvider
-import io.github.tonnyl.moka.util.EmojiItemProvider
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
+import io.tonnyl.moka.common.data.Emoji
+import io.tonnyl.moka.common.data.EmojiCategory
+import io.tonnyl.moka.common.util.EmojiCategoryProvider
+import io.tonnyl.moka.common.util.EmojiItemProvider
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 

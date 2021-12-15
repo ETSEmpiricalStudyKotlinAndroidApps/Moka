@@ -20,29 +20,46 @@ android {
     val roomSchemaLocation = "$projectDir/schemas"
 
     compileSdk = Versions.compileSdk
+
+    val localProperties = Properties()
+    var hasPropertiesFile = false
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        hasPropertiesFile = true
+        localProperties.load(localPropertiesFile.inputStream())
+    }
+
+    val versionProperties = Properties()
+    val versionPropertiesFile = project.rootProject.file("version.properties")
+    versionProperties.load(versionPropertiesFile.inputStream())
+
     defaultConfig {
         applicationId = "io.github.tonnyl.moka"
         minSdk = Versions.minSdk
         targetSdk = Versions.targetSdk
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = versionProperties.getProperty("versionCode").toInt()
+        versionName = versionProperties.getProperty("versionName")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val properties = Properties()
-        var hasPropertiesFile = false
-        if (project.rootProject.file("local.properties").exists()) {
-            hasPropertiesFile = true
-            properties.load(project.rootProject.file("local.properties").inputStream())
-        }
-
         if (hasPropertiesFile) {
-            buildConfigField("String", "CLIENT_ID", "\"${properties["CLIENT_ID"]}\"")
-            buildConfigField("String", "CLIENT_SECRET", "\"${properties["CLIENT_SECRET"]}\"")
+            buildConfigField("String", "CLIENT_ID", "\"${localProperties["CLIENT_ID"]}\"")
+            buildConfigField("String", "CLIENT_SECRET", "\"${localProperties["CLIENT_SECRET"]}\"")
         } else { // CI
             buildConfigField("String", "CLIENT_ID", "\"client_id_placeholder\"")
             buildConfigField("String", "CLIENT_SECRET", "\"client_secret_placeholder\"")
         }
+    }
 
+    val releaseSignConfig = "release"
+    if (hasPropertiesFile) {
+        signingConfigs {
+            create(releaseSignConfig) {
+                storeFile = rootProject.file(localProperties.getProperty("STORE_FILE_PATH"))
+                storePassword = localProperties.getProperty("STORE_PASSWORD")
+                keyAlias = localProperties.getProperty("KEY_ALIAS")
+                keyPassword = localProperties.getProperty("KEY_PASSWORD")
+            }
+        }
     }
 
     sourceSets {
@@ -52,6 +69,9 @@ android {
     }
     buildTypes {
         getByName("release") {
+            if (hasPropertiesFile) {
+                signingConfig = signingConfigs.getByName(releaseSignConfig)
+            }
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

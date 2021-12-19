@@ -9,7 +9,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -48,8 +47,7 @@ fun AuthScreen(
 
         Image(
             contentDescription = stringResource(id = R.string.auth_logo_image_content_description),
-            painter = painterResource(id = R.drawable.ic_code_24),
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary),
+            painter = painterResource(id = R.drawable.ic_app_icon_24),
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .size(size = 128.dp)

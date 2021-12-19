@@ -28,7 +28,7 @@ fun AuthScreen() {
         ) {
             Image(
                 contentDescription = stringResource(id = R.string.auth_logo_image_content_description),
-                painter = painterResource(id = R.drawable.ic_code_24),
+                painter = painterResource(id = R.drawable.ic_app_icon_24),
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary),
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.size(size = 80.dp)

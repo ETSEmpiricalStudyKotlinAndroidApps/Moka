@@ -212,7 +212,7 @@ object NotificationsCenter {
         context: Context
     ): NotificationCompat.Builder {
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification_logo)
+            .setSmallIcon(R.drawable.ic_app_notification)
             .setDefaults(AndroidNotification.DEFAULT_ALL)
             .setAutoCancel(false)
             .setShowWhen(true)

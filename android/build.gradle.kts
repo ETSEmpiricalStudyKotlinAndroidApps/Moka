@@ -100,7 +100,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.ui
+        kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
 
     // https://github.com/Kotlin/kotlinx.coroutines/issues/2023

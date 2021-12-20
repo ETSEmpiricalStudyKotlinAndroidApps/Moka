@@ -80,7 +80,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.ui
+        kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
 
     sourceSets.forEach {

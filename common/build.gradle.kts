@@ -44,8 +44,9 @@ kotlin {
         named("commonMain") {
             dependencies {
                 api(Deps.Ktor.core)
-                api(Deps.Ktor.serialization)
+                api(Deps.Ktor.json)
                 api(Deps.Ktor.logging)
+                api(Deps.Ktor.contentNegotiation)
                 api(Deps.Ktor.auth)
                 api(Deps.Ktor.logback)
 

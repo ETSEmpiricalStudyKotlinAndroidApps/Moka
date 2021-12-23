@@ -59,7 +59,7 @@ class EventRemoteMediator(
                         )
 
                         val events =
-                            json.decodeFromString<List<SerializableEvent>>(string = response.readText())
+                            json.decodeFromString<List<SerializableEvent>>(string = response.bodyAsText())
                                 .map {
                                     it.dbModel
                                 }
@@ -93,7 +93,7 @@ class EventRemoteMediator(
                                 val response =
                                     eventApi.listPublicEventThatAUserHasReceivedByUrl(prev)
                                 val events =
-                                    json.decodeFromString<List<SerializableEvent>>(string = response.readText())
+                                    json.decodeFromString<List<SerializableEvent>>(string = response.bodyAsText())
                                         .map { it.dbModel }
                                 val pl = PageLinks(response)
                                 val keys = events.map {
@@ -123,7 +123,7 @@ class EventRemoteMediator(
                                 val response =
                                     eventApi.listPublicEventThatAUserHasReceivedByUrl(next)
                                 val events =
-                                    json.decodeFromString<List<SerializableEvent>>(string = response.readText())
+                                    json.decodeFromString<List<SerializableEvent>>(string = response.bodyAsText())
                                         .map { it.dbModel }
                                 val pl = PageLinks(response)
                                 val keys = events.map {

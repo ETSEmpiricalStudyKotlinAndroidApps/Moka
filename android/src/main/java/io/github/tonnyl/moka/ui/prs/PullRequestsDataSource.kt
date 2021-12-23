@@ -48,7 +48,7 @@ class PullRequestsDataSource(
                 }
 
                 val pullRequests =
-                    json.decodeFromString<List<PullRequestListItem>>(string = response.readText())
+                    json.decodeFromString<List<PullRequestListItem>>(string = response.bodyAsText())
 
                 val pl = PageLinks(response)
 

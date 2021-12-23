@@ -1,11 +1,11 @@
 package io.tonnyl.moka.common.network
 
 import io.ktor.client.*
-import io.ktor.client.features.auth.*
-import io.ktor.client.features.auth.providers.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.features.logging.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.auth.*
+import io.ktor.client.plugins.auth.providers.*
+import io.ktor.client.plugins.logging.*
+import io.ktor.serialization.kotlinx.json.*
 import io.tonnyl.moka.common.serialization.json
 
 class KtorClient(
@@ -14,8 +14,8 @@ class KtorClient(
 ) {
 
     val httpClient = HttpClient {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer(json)
+        install(ContentNegotiation) {
+            json(json = json)
         }
         install(Logging) {
             level = LogLevel.BODY

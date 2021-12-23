@@ -34,7 +34,7 @@ class NotificationApi(private val ktorClient: HttpClient) {
      * This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ. Default: Time.now
      */
     suspend fun markAsRead(lastReadAt: String) {
-        return ktorClient.put(urlString = "$GITHUB_V1_BASE_URL/notifications?last_read_at=${lastReadAt}")
+        ktorClient.put(urlString = "$GITHUB_V1_BASE_URL/notifications?last_read_at=${lastReadAt}")
     }
 
     /**
@@ -43,7 +43,7 @@ class NotificationApi(private val ktorClient: HttpClient) {
      * @param threadId thread id of notification.
      */
     suspend fun deleteAThreadSubscription(threadId: String) {
-        ktorClient.delete<Unit>(urlString = "$GITHUB_V1_BASE_URL/notifications/threads/${threadId}/subscription")
+        ktorClient.delete(urlString = "$GITHUB_V1_BASE_URL/notifications/threads/${threadId}/subscription")
     }
 
 }

@@ -48,7 +48,7 @@ class IssuesDataSource(
                 }
 
                 val issues =
-                    json.decodeFromString<List<IssueListItem>>(string = response.readText())
+                    json.decodeFromString<List<IssueListItem>>(string = response.bodyAsText())
 
                 val pl = PageLinks(response)
 

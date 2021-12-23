@@ -54,7 +54,7 @@ class NotificationRemoteMediator(
                         )
 
                         val notifications =
-                            json.decodeFromString<List<SerializableNotification>>(string = response.readText())
+                            json.decodeFromString<List<SerializableNotification>>(string = response.bodyAsText())
                                 .map {
                                     it.dbModel
                                 }
@@ -88,7 +88,7 @@ class NotificationRemoteMediator(
                             } else {
                                 val response = notificationsApi.listNotificationsByUrl(prev)
                                 val notifications =
-                                    json.decodeFromString<List<SerializableNotification>>(string = response.readText())
+                                    json.decodeFromString<List<SerializableNotification>>(string = response.bodyAsText())
                                         .map {
                                             it.dbModel
                                         }
@@ -124,7 +124,7 @@ class NotificationRemoteMediator(
                             } else {
                                 val response = notificationsApi.listNotificationsByUrl(next)
                                 val notifications =
-                                    json.decodeFromString<List<SerializableNotification>>(string = response.readText())
+                                    json.decodeFromString<List<SerializableNotification>>(string = response.bodyAsText())
                                         .map {
                                             it.dbModel
                                         }

@@ -43,7 +43,7 @@ class NotificationWorker(
                     perPage = MAX_ITEM_SIZE
                 )
 
-                val notifications = json.decodeFromString<List<Notification>>(response.readText())
+                val notifications = json.decodeFromString<List<Notification>>(response.bodyAsText())
                     .map {
                         it.hasDisplayed = false
                         it

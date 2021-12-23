@@ -57,7 +57,8 @@ class CommitDataSource(
                     }
                 }
 
-                val commitResp = json.decodeFromString<CommitResponse>(string = httpResp.readText())
+                val commitResp =
+                    json.decodeFromString<CommitResponse>(string = httpResp.bodyAsText())
 
                 if (isRefresh) {
                     initialResp.postValue(commitResp)

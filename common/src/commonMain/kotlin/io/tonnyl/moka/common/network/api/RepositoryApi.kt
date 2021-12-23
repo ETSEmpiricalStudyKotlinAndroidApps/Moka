@@ -23,7 +23,7 @@ class RepositoryApi(
         owner: String,
         repo: String
     ) {
-        return authenticatedKtorClient.post(
+        authenticatedKtorClient.post(
             urlString = "${KtorClient.GITHUB_V1_BASE_URL}/repos/$owner/$repo/forks"
         ) {
             header(HttpHeaders.Accept, "application/vnd.github.v3+json")

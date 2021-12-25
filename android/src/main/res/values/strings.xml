@@ -570,4 +570,6 @@
     <string name="issue_pr_filters_query_state_open">Open</string>
     <string name="issue_pr_filters_query_state_closed">Closed</string>
 
+    <string name="contribution_calendar_description">Contribution Calendar</string>
+
 </resources>

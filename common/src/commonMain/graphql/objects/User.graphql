@@ -9,32 +9,8 @@ fragment User on User {
     bioHTML
     # The user's public profile company.
     contributionsCollection {
-        contributionCalendar {
-          colors
-          isHalloween
-          months {
-            firstDay
-            name
-            totalWeeks
-            year
-          }
-          totalContributions
-          weeks {
-            contributionDays {
-              color
-              contributionCount
-              contributionLevel
-              date
-              weekday
-            }
-            firstDay
-          }
-        }
-        contributionYears
-        endedAt
-        hasAnyContributions
-        startedAt
-      }
+        ...ContributionsCollection
+    }
     company
     # The user's public profile company as HTML.
     companyHTML

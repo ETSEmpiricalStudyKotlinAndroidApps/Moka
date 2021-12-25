@@ -3,4 +3,10 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorSurface">#1A000000</color>
     <color name="splashBackground">#FFFFFF</color>
+
+    <color name="bg_contribution_calendar_grid_1">#9be9a8</color>
+    <color name="bg_contribution_calendar_grid_2">#40c463</color>
+    <color name="bg_contribution_calendar_grid_3">#30a14e</color>
+    <color name="bg_contribution_calendar_grid_4">#216e39</color>
+    <color name="bg_contribution_calendar_grid_5">#ebedf0</color>
 </resources>

@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.widget
+package io.github.tonnyl.moka.widget.contribution
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,11 +19,11 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.tonnyl.moka.common.util.ContributionCalendarProvider
-import io.tonnyl.moka.graphql.fragment.User
+import io.tonnyl.moka.graphql.fragment.ContributionsCollection.*
 
 @Composable
 fun ContributionCalendar(
-    calendar: User.ContributionCalendar,
+    calendar: ContributionCalendar,
     enablePlaceholder: Boolean
 ) {
     val contributionWeekPlaceholder = remember {
@@ -57,7 +57,7 @@ fun ContributionCalendar(
 
 @Composable
 private fun ContributionWeek(
-    week: User.Week,
+    week: Week,
     enablePlaceholder: Boolean
 ) {
     Column {
@@ -75,7 +75,7 @@ private fun ContributionWeek(
 
 @Composable
 private fun ContributionDay(
-    day: User.ContributionDay,
+    day: ContributionDay,
     enablePlaceholder: Boolean
 ) {
     Box(
@@ -106,7 +106,7 @@ private fun ContributionWeekPreview(
         provider = ContributionCalendarProvider::class,
         limit = 1
     )
-    calendar: User.ContributionCalendar
+    calendar: ContributionCalendar
 ) {
     ContributionCalendar(
         calendar = calendar,

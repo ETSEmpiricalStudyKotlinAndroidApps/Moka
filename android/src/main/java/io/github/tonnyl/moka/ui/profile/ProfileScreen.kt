@@ -45,6 +45,7 @@ import io.github.tonnyl.moka.ui.users.UsersType
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
+import io.github.tonnyl.moka.widget.contribution.ContributionCalendar
 import io.tonnyl.moka.common.data.SearchableEmoji
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.util.UserProvider
@@ -454,7 +455,7 @@ private fun ProfileScreenContent(
                 )
             }
             ContributionCalendar(
-                calendar = user.contributionsCollection.contributionCalendar,
+                calendar = user.contributionsCollection.contributionsCollection.contributionCalendar,
                 enablePlaceholder = enablePlaceholder
             )
         }

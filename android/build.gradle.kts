@@ -6,14 +6,8 @@ plugins {
     id("com.google.gms.google-services")
     kotlin("android")
     id("kotlin-parcelize")
-    kotlin("kapt")
     id("kotlinx-serialization")
     id("com.google.firebase.crashlytics")
-}
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
 }
 
 android {
@@ -122,6 +116,7 @@ dependencies {
     implementation(Deps.AndroidX.browser)
     implementation(Deps.AndroidX.splashScreen)
     implementation(Deps.AndroidX.WorkManager.runtime)
+    implementation(Deps.AndroidX.glance)
 
     implementation(Deps.AndroidX.UI.runtime)
     implementation(Deps.AndroidX.UI.animation)

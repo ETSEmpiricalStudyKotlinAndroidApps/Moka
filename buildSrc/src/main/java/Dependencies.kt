@@ -35,6 +35,7 @@ object Versions {
     const val accompanist = "0.22.0-rc"
     const val material = "1.6.0-alpha01"
     const val material3 = "1.0.0-alpha02"
+    const val glance = "1.0.0-alpha01"
     const val kspApi = "1.6.10-1.0.2"
     const val wearOS = "17.1.0"
     const val wear = "1.3.0-alpha01"
@@ -101,6 +102,7 @@ object Deps {
         const val dataStore = "androidx.datastore:datastore:${Versions.dataStore}"
         const val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
         const val splashScreen = "androidx.core:core-splashscreen:${Versions.splashScreen}"
+        const val glance = "androidx.glance:glance-appwidget:${Versions.glance}"
 
         object Lifecycle {
 

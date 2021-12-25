@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="contribution_calendar_widget_width">120dp</dimen>
+    <dimen name="contribution_calendar_widget_height">116dp</dimen>
+    <dimen name="contribution_calendar_widget_grid_padding">4dp</dimen>
+    <dimen name="contribution_calendar_widget_grid_size">10dp</dimen>
+    <dimen name="contribution_calendar_widget_padding">9dp</dimen>
+
+</resources>

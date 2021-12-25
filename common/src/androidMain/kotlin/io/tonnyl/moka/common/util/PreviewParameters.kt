@@ -22,6 +22,9 @@ import io.tonnyl.moka.graphql.IssueQuery.Issue
 import io.tonnyl.moka.graphql.PullRequestQuery
 import io.tonnyl.moka.graphql.PullRequestQuery.PullRequest
 import io.tonnyl.moka.graphql.fragment.*
+import io.tonnyl.moka.graphql.fragment.ContributionsCollection
+import io.tonnyl.moka.graphql.fragment.ContributionsCollection.*
+import io.tonnyl.moka.graphql.fragment.ContributionsCollection.ContributionCalendar
 import io.tonnyl.moka.graphql.fragment.Gist
 import io.tonnyl.moka.graphql.fragment.GitObject
 import io.tonnyl.moka.graphql.fragment.Language
@@ -41,7 +44,6 @@ import io.tonnyl.moka.graphql.fragment.Topic
 import io.tonnyl.moka.graphql.fragment.TreeEntry
 import io.tonnyl.moka.graphql.fragment.User
 import io.tonnyl.moka.graphql.fragment.User.*
-import io.tonnyl.moka.graphql.fragment.User.ContributionCalendar
 import io.tonnyl.moka.graphql.fragment.UserStatus
 import io.tonnyl.moka.graphql.type.*
 import kotlinx.datetime.Clock
@@ -1000,11 +1002,14 @@ class UserProvider : PreviewParameterProvider<User> {
                     )
                 ),
                 contributionsCollection = User.ContributionsCollection(
-                    contributionCalendar = ContributionCalendarProvider().values.first(),
-                    contributionYears = listOf(2015, 2016, 2017, 2018, 2019, 2020, 2021),
-                    endedAt = Clock.System.now(),
-                    hasAnyContributions = true,
-                    startedAt = Clock.System.now()
+                    __typename = "",
+                    contributionsCollection = ContributionsCollection(
+                        contributionCalendar = ContributionCalendarProvider().values.first(),
+                        contributionYears = listOf(2015, 2016, 2017, 2018, 2019, 2020, 2021),
+                        endedAt = Clock.System.now(),
+                        hasAnyContributions = true,
+                        startedAt = Clock.System.now()
+                    )
                 )
             )
         )

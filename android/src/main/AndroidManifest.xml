@@ -74,6 +74,21 @@
 
         <receiver android:name=".notifications.NotificationCallbackReceiver" />
 
+        <receiver
+            android:name=".widget.contribution.ContributionCalendarAppWidgetReceiver"
+            android:enabled="true"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/contribution_calendar_widget_info" />
+
+        </receiver>
+
     </application>
 
 </manifest>

@@ -25,6 +25,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.work.ContributionCalendarWorker
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -80,11 +81,15 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        (application as MokaApp).accountInstancesLiveData.observe(this) { accountInstances ->
+        val app = application as MokaApp
+        app.accountInstancesLiveData.observe(this) { accountInstances ->
             if (accountInstances.isEmpty()) {
                 startActivity(Intent(this, AuthActivity::class.java))
                 finish()
             }
+
+            ContributionCalendarWorker.startOrCancelWorker(this)
+            app.triggerNotificationWorker()
         }
     }
 

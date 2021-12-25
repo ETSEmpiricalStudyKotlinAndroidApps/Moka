@@ -14,4 +14,20 @@
         <item name="android:navigationBarColor">@color/splashBackground</item>
     </style>
 
+    <style name="ContributionCalendarWeek">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:divider">@drawable/divider_contribution_calendar_day_widget</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:showDividers">middle</item>
+        <item name="android:paddingTop">@dimen/contribution_calendar_widget_padding</item>
+        <item name="android:paddingBottom">@dimen/contribution_calendar_widget_padding</item>
+    </style>
+
+    <style name="ContributionCalendarDay">
+        <item name="android:layout_width">@dimen/contribution_calendar_widget_grid_size</item>
+        <item name="android:layout_height">@dimen/contribution_calendar_widget_grid_size</item>
+    </style>
+
 </resources>

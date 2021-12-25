@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/contribution_calendar_widget_width"
+    android:layout_height="@dimen/contribution_calendar_widget_height"
+    android:background="@color/splashBackground"
+    android:divider="@drawable/divider_contribution_calendar_week_widget"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/contribution_calendar_widget_padding"
+    android:paddingEnd="@dimen/contribution_calendar_widget_padding"
+    android:showDividers="middle">
+
+    <LinearLayout style="@style/ContributionCalendarWeek">
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_2" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_3" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_4" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_5" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/ContributionCalendarWeek">
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_2" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_3" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_4" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/ContributionCalendarWeek">
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_2" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_3" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_2" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_4" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_2" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/ContributionCalendarWeek">
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_5" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_2" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_3" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_2" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_4" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/ContributionCalendarWeek">
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_2" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_3" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_4" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_5" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/ContributionCalendarWeek">
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_2" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_3" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_1" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_4" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_4" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/ContributionCalendarWeek">
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_4" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_2" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_contribution_calendar_day_5" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@null" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@null" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@null" />
+
+        <ImageView
+            style="@style/ContributionCalendarDay"
+            android:contentDescription="@null"
+            android:src="@null" />
+
+    </LinearLayout>
+
+</LinearLayout>

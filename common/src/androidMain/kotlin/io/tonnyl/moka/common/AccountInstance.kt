@@ -9,8 +9,10 @@ import io.tonnyl.moka.common.db.MokaDataBase
 import io.tonnyl.moka.common.network.ApolloGraphQLClient
 import io.tonnyl.moka.common.network.KtorClient
 import io.tonnyl.moka.common.network.api.*
+import io.tonnyl.moka.common.store.ContributionCalendarSerializer
 import io.tonnyl.moka.common.store.EmojiSerializer
 import io.tonnyl.moka.common.store.ExploreOptionsSerializer
+import io.tonnyl.moka.common.store.data.ContributionCalendar
 import io.tonnyl.moka.common.store.data.ExploreOptions
 import io.tonnyl.moka.common.store.data.RecentEmojis
 import io.tonnyl.moka.common.store.data.SignedInAccount
@@ -51,6 +53,8 @@ actual class AccountInstance(
 
     val exploreOptionsDataStore: DataStore<ExploreOptions> by lazy { application.exploreOptionsDataStore }
 
+    val contributionCalendarDataStore: DataStore<ContributionCalendar> by lazy { application.contributionCalendarDataStore }
+
     @ExperimentalSerializationApi
     private val Context.recentEmojisDataStore: DataStore<RecentEmojis> by dataStore(
         fileName = "${signedInAccount.account.id}_recent_emojis.pb",
@@ -61,6 +65,12 @@ actual class AccountInstance(
     private val Context.exploreOptionsDataStore: DataStore<ExploreOptions> by dataStore(
         fileName = "${signedInAccount.account.id}_explore_options.pb",
         serializer = ExploreOptionsSerializer
+    )
+
+    @ExperimentalSerializationApi
+    private val Context.contributionCalendarDataStore: DataStore<ContributionCalendar> by dataStore(
+        fileName = "${signedInAccount.account.id}_contribution_calendar.pb",
+        serializer = ContributionCalendarSerializer
     )
 
 }

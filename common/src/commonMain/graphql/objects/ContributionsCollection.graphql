@@ -1,0 +1,27 @@
+fragment ContributionsCollection on ContributionsCollection {
+    contributionCalendar {
+        colors
+        isHalloween
+        months {
+            firstDay
+            name
+            totalWeeks
+            year
+        }
+        totalContributions
+        weeks {
+            contributionDays {
+                color
+                contributionCount
+                contributionLevel
+                date
+                weekday
+            }
+            firstDay
+        }
+    }
+    contributionYears
+    endedAt
+    hasAnyContributions
+    startedAt
+}

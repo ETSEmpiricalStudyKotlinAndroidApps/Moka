@@ -48,7 +48,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="tonnyl.io"
+                    android:host="lizhaotailang.works"
                     android:scheme="https" />
 
             </intent-filter>

@@ -38,7 +38,7 @@ class KtorClient(
         const val GITHUB_GET_ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token"
 
         // Callback urls
-        const val GITHUB_AUTHORIZE_CALLBACK_URI = "https://tonnyl.io/moka/callback"
+        const val GITHUB_AUTHORIZE_CALLBACK_URI = "https://lizhaotailang.works/moka/callback"
         const val GITHUB_AUTHORIZE_CALLBACK_URI_SCHEMA = "moka-app"
         const val GITHUB_AUTHORIZE_CALLBACK_URI_HOST = "callback"
 

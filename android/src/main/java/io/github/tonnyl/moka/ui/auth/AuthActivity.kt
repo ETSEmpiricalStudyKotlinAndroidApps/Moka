@@ -97,7 +97,7 @@ class AuthActivity : ComponentActivity() {
                                     deepLinks = listOf(
                                         navDeepLink {
                                             uriPattern =
-                                                "https://tonnyl.io/moka/callback?code={code}&state={state}"
+                                                "https://lizhaotailang.works/moka/callback?code={code}&state={state}"
                                         }
                                     )
                                 ) { backStackEntry ->

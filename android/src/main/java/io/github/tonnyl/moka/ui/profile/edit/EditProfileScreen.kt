@@ -402,7 +402,7 @@ private fun EditProfileScreenContentPreview() {
         topAppBarSize = 0,
         name = "Li Zhao Tai Lang",
         bio = "Rock/Post-rock/Electronic",
-        url = "tonnyl.io",
+        url = "lizhaotailang.works",
         company = "",
         location = "Guangzhou",
         twitterUsername = "@TonnyLZTL",

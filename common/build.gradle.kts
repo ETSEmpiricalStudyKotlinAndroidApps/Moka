@@ -47,7 +47,6 @@ kotlin {
                 api(Deps.Ktor.serialization)
                 api(Deps.Ktor.logging)
                 api(Deps.Ktor.auth)
-                api(Deps.Ktor.logback)
 
                 api(Deps.Kotlin.dateTime)
                 api(Deps.Kotlin.serializationJson)

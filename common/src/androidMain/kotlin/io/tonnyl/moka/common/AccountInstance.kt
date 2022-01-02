@@ -12,10 +12,8 @@ import io.tonnyl.moka.common.network.api.*
 import io.tonnyl.moka.common.store.ContributionCalendarSerializer
 import io.tonnyl.moka.common.store.EmojiSerializer
 import io.tonnyl.moka.common.store.ExploreOptionsSerializer
-import io.tonnyl.moka.common.store.data.ContributionCalendar
-import io.tonnyl.moka.common.store.data.ExploreOptions
-import io.tonnyl.moka.common.store.data.RecentEmojis
-import io.tonnyl.moka.common.store.data.SignedInAccount
+import io.tonnyl.moka.common.store.SearchHistorySerializer
+import io.tonnyl.moka.common.store.data.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -55,22 +53,26 @@ actual class AccountInstance(
 
     val contributionCalendarDataStore: DataStore<ContributionCalendar> by lazy { application.contributionCalendarDataStore }
 
-    @ExperimentalSerializationApi
+    val searchHistoryDataStore: DataStore<SearchHistory> by lazy { application.searchHistoryDataStore }
+
     private val Context.recentEmojisDataStore: DataStore<RecentEmojis> by dataStore(
         fileName = "${signedInAccount.account.id}_recent_emojis.pb",
         serializer = EmojiSerializer
     )
 
-    @ExperimentalSerializationApi
     private val Context.exploreOptionsDataStore: DataStore<ExploreOptions> by dataStore(
         fileName = "${signedInAccount.account.id}_explore_options.pb",
         serializer = ExploreOptionsSerializer
     )
 
-    @ExperimentalSerializationApi
     private val Context.contributionCalendarDataStore: DataStore<ContributionCalendar> by dataStore(
         fileName = "${signedInAccount.account.id}_contribution_calendar.pb",
         serializer = ContributionCalendarSerializer
+    )
+
+    private val Context.searchHistoryDataStore: DataStore<SearchHistory> by dataStore(
+        fileName = "${signedInAccount.account.id}_search_history.pb",
+        serializer = SearchHistorySerializer
     )
 
 }

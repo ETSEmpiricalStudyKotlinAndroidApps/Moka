@@ -572,4 +572,7 @@
 
     <string name="contribution_calendar_description">Contribution Calendar</string>
 
+    <string name="search_history">Search history</string>
+    <string name="search_history_action">Search</string>
+
 </resources>

@@ -17,6 +17,7 @@ import io.tonnyl.moka.common.db.data.TrendingDeveloper
 import io.tonnyl.moka.common.db.data.TrendingDeveloperRepository
 import io.tonnyl.moka.common.db.data.TrendingRepository
 import io.tonnyl.moka.common.db.data.TrendingRepositoryBuiltBy
+import io.tonnyl.moka.common.store.data.Query
 import io.tonnyl.moka.graphql.IssueQuery
 import io.tonnyl.moka.graphql.IssueQuery.Issue
 import io.tonnyl.moka.graphql.PullRequestQuery
@@ -49,6 +50,7 @@ import io.tonnyl.moka.graphql.type.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toLocalDate
+import kotlinx.serialization.ExperimentalSerializationApi
 
 class TimelineEventProvider : PreviewParameterProvider<Event> {
 
@@ -1720,6 +1722,17 @@ class ContributionCalendarProvider : PreviewParameterProvider<ContributionCalend
                     )
                 )
             )
+        )
+
+}
+
+@ExperimentalSerializationApi
+class HistoryQueriesProvider : PreviewParameterProvider<Query> {
+
+    override val values: Sequence<Query>
+        get() = sequenceOf(
+            Query(keyword = "GitHub", queryTime = Instant.parse("2022-01-01T00:00:00Z")),
+            Query(keyword = "Moka", queryTime = Instant.parse("2022-01-01T00:00:00Z"))
         )
 
 }

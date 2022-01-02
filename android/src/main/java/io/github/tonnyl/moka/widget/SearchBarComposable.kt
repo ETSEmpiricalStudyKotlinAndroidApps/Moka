@@ -20,6 +20,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,6 +41,7 @@ fun SearchBar(
     modifier: Modifier = Modifier,
     autoFocus: Boolean = true,
     textState: MutableState<TextFieldValue>,
+    onFocusChanged: (Boolean) -> Unit = { },
     onImeActionPerformed: () -> Unit = { },
     elevation: Dp = 4.dp
 ) {
@@ -48,6 +50,7 @@ fun SearchBar(
     InsetAwareTopAppBar(
         title = {
             val focusRequester = remember { FocusRequester() }
+            val focusManager = LocalFocusManager.current
             val keyboardController = LocalSoftwareKeyboardController.current
 
             LaunchedEffect(autoFocus) {
@@ -72,6 +75,7 @@ fun SearchBar(
                         imeAction = ImeAction.Search
                     ),
                     keyboardActions = KeyboardActions {
+                        focusManager.clearFocus(force = true)
                         onImeActionPerformed.invoke()
                     },
                     cursorBrush = SolidColor(MaterialTheme.colors.secondary),
@@ -82,7 +86,11 @@ fun SearchBar(
                         .onFocusChanged {
                             if (it.isFocused) {
                                 keyboardController?.show()
+                            } else {
+                                keyboardController?.hide()
                             }
+
+                            onFocusChanged.invoke(it.isFocused)
                         }
                         .fillMaxWidth()
                         .horizontalScroll(

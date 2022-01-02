@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.search
+package io.github.tonnyl.moka.ui.settings
 
 import android.app.Application
 import android.content.Context
@@ -9,17 +9,15 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 class ViewModelFactory(
-    private val context: Context,
     private val accountInstance: AccountInstance,
-    private val initialSearchKeyword: String
+    private val context: Context
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return SearchViewModel(
-            app = context.applicationContext as Application,
+        return SettingsViewModel(
             accountInstance = accountInstance,
-            initialSearchKeyword = initialSearchKeyword
+            app = context.applicationContext as Application
         ) as T
     }
 

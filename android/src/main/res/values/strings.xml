@@ -468,6 +468,11 @@
     <string name="keep_data_one_week">1 week</string>
     <string name="keep_data_one_month">1 month</string>
 
+    <string name="update_settings_failed">Failed to update settings</string>
+
+    <string name="clear_search_history_succeeded">Cleared</string>
+    <string name="clear_search_history_failed">Failed to clear search history</string>
+
     <string name="users_content_empty_title">No users found</string>
     <string name="users_content_empty_action">Back to profile</string>
 

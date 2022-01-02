@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -17,16 +18,19 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.PreferenceCategoryText
 import io.github.tonnyl.moka.widget.PreferenceDivider
+import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.store.SettingSerializer
 import io.tonnyl.moka.common.store.data.KeepData
 import io.tonnyl.moka.common.store.data.NotificationSyncInterval
@@ -34,7 +38,6 @@ import io.tonnyl.moka.common.store.data.Settings
 import io.tonnyl.moka.common.store.data.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
 const val SettingScreenTestTag = "SettingScreenTestTag"
@@ -61,70 +64,91 @@ data class OnSettingItemClick(
 @ExperimentalMaterialApi
 @Composable
 fun SettingScreen() {
-    val coroutineScope = rememberCoroutineScope()
-    val mokaApp = LocalContext.current.applicationContext as MokaApp
+    val currentAccount = LocalAccountInstance.current ?: return
+
+    val viewModel = viewModel<SettingsViewModel>(
+        factory = ViewModelFactory(
+            accountInstance = currentAccount,
+            context = LocalContext.current
+        )
+    )
+
+    val scaffoldState = rememberScaffoldState()
+
+    val clearHistoryState by viewModel.clearHistoryStatus.observeAsState()
+    val updateSettingsState by viewModel.updateSettingsStatus.observeAsState()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        SettingScreenContent(
-            topAppBarSize = topAppBarSize,
-            settingsFlow = mokaApp.settingsDataStore.data,
-            onSettingItemClick = OnSettingItemClick(
-                onThemeClick = { newTheme ->
-                    coroutineScope.launch {
-                        mokaApp.settingsDataStore.updateData {
-                            it.copy(theme = newTheme)
-                        }
+        Scaffold(
+            content = {
+                SettingScreenContent(
+                    topAppBarSize = topAppBarSize,
+                    settingsFlow = viewModel.settingsDataStore.data,
+                    onSettingItemClick = OnSettingItemClick(
+                        onThemeClick = { newTheme ->
+                            viewModel.updateSettings(theme = newTheme)
+                        },
+                        onEnableNotificationClick = { newEnableNotifications ->
+                            viewModel.updateSettings(enableNotifications = newEnableNotifications)
+                        },
+                        onSyncIntervalClick = { newNotificationSyncInterval ->
+                            viewModel.updateSettings(notificationSyncInterval = newNotificationSyncInterval)
+                        },
+                        onDndClick = { newDnd ->
+                            viewModel.updateSettings(dnd = newDnd)
+                        },
+                        onAutoSaveClick = { newAutoSave ->
+                            viewModel.updateSettings(autoSave = newAutoSave)
+                        },
+                        onDoNotKeepSearchHistoryClick = { newDoNotKeepSearchHistory ->
+                            viewModel.updateSettings(doNotKeepSearchHistory = newDoNotKeepSearchHistory)
+                            if (newDoNotKeepSearchHistory) {
+                                viewModel.clearSearchHistory(updateStatus = false)
+                            }
+                        },
+                        onKeepDataClick = { newKeepData ->
+                            viewModel.updateSettings(keepData = newKeepData)
+                        },
+                        onClearDraftsClick = {},
+                        onClearSearchHistory = viewModel::clearSearchHistory,
+                        onClearLocalData = {},
+                        onClearImageCacheClick = {}
+                    )
+                )
+
+                if (updateSettingsState == Status.ERROR) {
+                    SnackBarErrorMessage(
+                        scaffoldState = scaffoldState,
+                        messageId = R.string.update_settings_failed
+                    )
+                }
+
+                when (clearHistoryState) {
+                    Status.SUCCESS -> {
+                        SnackBarErrorMessage(
+                            scaffoldState = scaffoldState,
+                            messageId = R.string.clear_search_history_succeeded
+                        )
                     }
-                },
-                onEnableNotificationClick = { newEnableNotifications ->
-                    coroutineScope.launch {
-                        mokaApp.settingsDataStore.updateData {
-                            it.copy(enableNotifications = newEnableNotifications)
-                        }
+                    Status.ERROR -> {
+                        SnackBarErrorMessage(
+                            scaffoldState = scaffoldState,
+                            messageId = R.string.clear_search_history_failed
+                        )
                     }
-                },
-                onSyncIntervalClick = { newNotificationSyncInterval ->
-                    coroutineScope.launch {
-                        mokaApp.settingsDataStore.updateData {
-                            it.copy(notificationSyncInterval = newNotificationSyncInterval)
-                        }
+                    else -> {
+
                     }
-                },
-                onDndClick = { newDnd ->
-                    coroutineScope.launch {
-                        mokaApp.settingsDataStore.updateData {
-                            it.copy(dnd = newDnd)
-                        }
-                    }
-                },
-                onAutoSaveClick = { newAutoSave ->
-                    coroutineScope.launch {
-                        mokaApp.settingsDataStore.updateData {
-                            it.copy(autoSave = newAutoSave)
-                        }
-                    }
-                },
-                onDoNotKeepSearchHistoryClick = { newDoNotKeepSearchHistory ->
-                    coroutineScope.launch {
-                        mokaApp.settingsDataStore.updateData {
-                            it.copy(doNotKeepSearchHistory = newDoNotKeepSearchHistory)
-                        }
-                    }
-                },
-                onKeepDataClick = { newKeepData ->
-                    coroutineScope.launch {
-                        mokaApp.settingsDataStore.updateData {
-                            it.copy(keepData = newKeepData)
-                        }
-                    }
-                },
-                onClearDraftsClick = {},
-                onClearSearchHistory = {},
-                onClearLocalData = {},
-                onClearImageCacheClick = {}
-            )
+                }
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = it) { data: SnackbarData ->
+                    Snackbar(snackbarData = data)
+                }
+            },
+            scaffoldState = scaffoldState
         )
 
         val navController = LocalNavController.current
@@ -391,7 +415,7 @@ fun SettingScreenContent(
                         checked = settings.doNotKeepSearchHistory,
                         onCheckedChange = {
                             onSettingItemClick.onDoNotKeepSearchHistoryClick.invoke(
-                                settings.doNotKeepSearchHistory
+                                !settings.doNotKeepSearchHistory
                             )
                         }
                     )
@@ -401,11 +425,7 @@ fun SettingScreenContent(
             }
         }
         item {
-            ListItem(
-                modifier = Modifier.clickable {
-
-                }
-            ) {
+            ListItem(modifier = Modifier.clickable(onClick = onSettingItemClick.onClearSearchHistory)) {
                 Text(text = stringResource(id = R.string.settings_clear_search_history_title))
             }
             PreferenceDivider()

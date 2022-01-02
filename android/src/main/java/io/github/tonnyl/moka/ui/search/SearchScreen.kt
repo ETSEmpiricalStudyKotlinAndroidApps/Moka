@@ -11,6 +11,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -62,6 +63,7 @@ fun SearchScreen(initialSearchKeyword: String) {
 
     val viewModel = viewModel<SearchViewModel>(
         factory = ViewModelFactory(
+            context = LocalContext.current,
             accountInstance = currentAccount,
             initialSearchKeyword = initialSearchKeyword
         )

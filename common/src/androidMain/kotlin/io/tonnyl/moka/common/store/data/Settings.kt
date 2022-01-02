@@ -26,7 +26,7 @@ data class Settings(
 
     @ProtoNumber(5)
     // Keep user's search history.
-    val doNotKeepSearchHistory: Boolean = true,
+    val doNotKeepSearchHistory: Boolean = false,
 
     @ProtoNumber(6)
     // Time period of keeping local data.

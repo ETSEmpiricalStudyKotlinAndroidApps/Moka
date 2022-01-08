@@ -45,6 +45,7 @@ import io.github.tonnyl.moka.ui.inbox.InboxScreen
 import io.github.tonnyl.moka.ui.issue.IssueScreen
 import io.github.tonnyl.moka.ui.issues.IssuesScreen
 import io.github.tonnyl.moka.ui.pr.PullRequestScreen
+import io.github.tonnyl.moka.ui.pr.thread.CommentTreadScreen
 import io.github.tonnyl.moka.ui.profile.ProfileScreen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.profile.ProfileViewModel
@@ -97,7 +98,8 @@ sealed class Screen(val route: String) {
     object RepositoryFiles :
         Screen("repository_files?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_EXPRESSION}={${ARG_EXPRESSION}}&$ARG_REF_PREFIX={${ARG_REF_PREFIX}}&$ARG_DEFAULT_BRANCH_NAME={${ARG_DEFAULT_BRANCH_NAME}}")
 
-    object Users : Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}")
+    object Users :
+        Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}")
 
     object Repositories :
         Screen("repositories/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}")
@@ -151,6 +153,8 @@ sealed class Screen(val route: String) {
 
     object ReleaseAssets :
         Screen("release_assets/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_TAG_NAME}}")
+
+    object CommentThread : Screen(route = "comment_thread/{${ARG_NODE_ID}}")
 
     object FAQ : Screen("faq")
 
@@ -207,6 +211,8 @@ sealed class Screen(val route: String) {
         const val ARG_REF_PREFIX = "arg_ref_prefix"
 
         const val ARG_TAG_NAME = "arg_tag_name"
+
+        const val ARG_NODE_ID = "arg_node_id"
     }
 
 }
@@ -1078,6 +1084,21 @@ private fun MainNavHost(
                 repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
                     ?: return@composable,
                 tagName = backStackEntry.arguments?.getString(Screen.ARG_TAG_NAME)
+                    ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.CommentThread.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_NODE_ID) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.ReleaseAssets.route
+
+            CommentTreadScreen(
+                nodeId = backStackEntry.arguments?.getString(Screen.ARG_NODE_ID)
                     ?: return@composable
             )
         }

@@ -1,0 +1,26 @@
+fragment PullRequestReviewCommentFragment on PullRequestReviewComment {
+    author {
+        ...Actor
+    }
+    authorAssociation
+    bodyHTML
+    createdAt
+    createdViaEmail
+    diffHunk
+    isMinimized
+    minimizedReason
+    path
+    position
+    state
+    reactionGroups {
+        ...ReactionGroup
+    }
+    originalPosition
+    outdated
+    viewerCanDelete
+    viewerCanMinimize
+    viewerCanReact
+    viewerCanUpdate
+    viewerCannotUpdateReasons
+    viewerDidAuthor
+}

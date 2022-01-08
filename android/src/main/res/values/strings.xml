@@ -347,7 +347,7 @@
     <string name="pull_request_review_approved_changes">approved these changes</string>
     <string name="pull_request_reviewed">reviewed</string>
     <string name="pull_request_and_left_a_comment">&#160;and left a comment:&#160;</string>
-    <string name="pull_request_review_request_changes">request changes</string>
+    <string name="pull_request_review_request_changes">requested changes</string>
     <string name="pull_request_removed_someones_review_request">removed <![CDATA[<b>%1$s</b>]]>’s review request</string>
     <string name="pull_request_removed_someones_review_request_part_1">removed&#160;</string>
     <string name="pull_request_removed_someones_review_request_part_2">’s review request</string>
@@ -579,5 +579,8 @@
 
     <string name="search_history">Search history</string>
     <string name="search_history_action">Search</string>
+
+    <string name="thread">Thread</string>
+    <string name="outdated">Outdated</string>
 
 </resources>

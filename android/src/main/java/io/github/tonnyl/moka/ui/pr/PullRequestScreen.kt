@@ -299,8 +299,8 @@ private fun PullRequestScreenContent(
         } else {
             itemsIndexed(
                 items = timelineItems,
-                key = { _, item ->
-                    item.hashCode()
+                key = { index, _ ->
+                    index
                 }
             ) { _, item ->
                 if (item != null) {
@@ -433,6 +433,33 @@ private fun ItemPullRequestTimelineEvent(
                 highlight = PlaceholderHighlight.fade()
             )
         )
+        if (!data.nodeId.isNullOrEmpty()) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .align(alignment = Alignment.End)
+                    .clip(shape = MaterialTheme.shapes.medium)
+                    .clickable {
+                        navController.navigate(
+                            route = Screen.CommentThread.route
+                                .replace("{${Screen.ARG_NODE_ID}}", data.nodeId)
+                        )
+                    }
+                    .padding(all = ContentPaddingMediumSize)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.thread),
+                    style = MaterialTheme.typography.button,
+                    color = MaterialTheme.colors.primary
+                )
+                Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_chevron_right_24),
+                    contentDescription = stringResource(id = R.string.thread),
+                    tint = MaterialTheme.colors.primary
+                )
+            }
+        }
     }
 }
 
@@ -444,6 +471,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
     val login: String?
     val createdAt: Instant?
     val content: AnnotatedString?
+    var nodeId: String? = null
 
     when {
         event.addedToProjectEvent != null -> {
@@ -773,6 +801,8 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
             createdAt = event.pullRequestReview!!.createdAt
             login = event.pullRequestReview!!.author?.actor?.login
             val stateString: String
+            nodeId =
+                event.pullRequestReview!!.id.takeIf { event.pullRequestReview!!.comments.totalCount > 0 }
 
             when (event.pullRequestReview!!.state) {
                 PullRequestReviewState.APPROVED -> {
@@ -797,15 +827,6 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
 
             content = buildAnnotatedString {
                 append(text = stateString)
-                append(text = stringResource(id = R.string.pull_request_and_left_a_comment))
-                append(
-                    text = AnnotatedString(
-                        text = event.pullRequestReview!!.body,
-                        spanStyle = SpanStyle(
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    )
-                )
             }
         }
         event.readyForReviewEvent != null -> {
@@ -1035,7 +1056,8 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
             avatarUri,
             login ?: "ghost",
             createdAt,
-            content
+            content,
+            nodeId = nodeId
         )
     }
 }

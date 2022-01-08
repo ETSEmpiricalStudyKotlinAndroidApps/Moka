@@ -1,0 +1,14 @@
+query PullRequestReviewComments($id: ID!, $after: String, $before: String, $perPage: Int!) {
+    node(id: $id) {
+        ... on PullRequestReview {
+            comments(first: $perPage, after: $after, before: $before) {
+                nodes {
+                    ...PullRequestReviewCommentFragment
+                }
+                pageInfo {
+                    ...PageInfo
+                }
+            }
+        }
+    }
+}

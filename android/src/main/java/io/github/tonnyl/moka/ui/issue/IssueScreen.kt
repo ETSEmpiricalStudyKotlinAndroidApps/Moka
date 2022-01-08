@@ -68,7 +68,8 @@ data class IssuePullRequestEventData(
     val avatarUri: String?,
     val login: String,
     val createdAt: Instant,
-    val content: AnnotatedString
+    val content: AnnotatedString,
+    val nodeId: String? = null
 )
 
 @ExperimentalCoilApi
@@ -324,7 +325,7 @@ private fun IssueScreenContent(
 
 @ExperimentalCoilApi
 @Composable
-private fun ItemIssueTimelineEvent(
+fun ItemIssueTimelineEvent(
     event: IssueTimelineItem,
     enablePlaceholder: Boolean
 ) {

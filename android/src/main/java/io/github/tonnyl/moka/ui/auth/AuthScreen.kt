@@ -1,7 +1,9 @@
 package io.github.tonnyl.moka.ui.auth
 
+import android.app.Activity
 import android.content.Intent
-import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -20,7 +22,6 @@ import com.google.accompanist.insets.navigationBarsPadding
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.LottieLoadingAnimationSize
-import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import io.tonnyl.moka.common.data.AuthenticatedUser
@@ -33,7 +34,8 @@ import kotlinx.datetime.Clock
 @Composable
 fun AuthScreen(
     authTokenAndUserResource: Resource<Pair<String, AuthenticatedUser>>?,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    getAuthToken: (AuthParameter) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -67,23 +69,26 @@ fun AuthScreen(
             style = MaterialTheme.typography.h6
         )
 
-        val getStarted = {
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(
-                    """
-                        |${KtorClient.GITHUB_AUTHORIZE_URL}
-                        |?client_id=${BuildConfig.CLIENT_ID}
-                        |&redirect_uri=${KtorClient.GITHUB_AUTHORIZE_CALLBACK_URI}
-                        |&scope=${KtorClient.SCOPE}
-                        |&state=${Clock.System.now().toEpochMilliseconds()}
-                        """.trimMargin()
-                )
+        val launcher =
+            rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val authResult =
+                        result.data?.getParcelableExtra<AuthParameter>(AuthBrowserActivity.RESULT_AUTH_RESULT)
+                    if (authResult != null) {
+                        getAuthToken.invoke(authResult)
+                    }
+                }
             }
-            context.safeStartActivity(
-                intent = intent,
-                actionWhenSuccess = null,
-                actionWhenError = null
-            )
+
+        val getStarted = {
+            launcher.launch(Intent(context, AuthBrowserActivity::class.java).apply {
+                putExtra(
+                    AuthBrowserActivity.ARG_URL,
+                    "${KtorClient.GITHUB_AUTHORIZE_URL}?client_id=${BuildConfig.CLIENT_ID}&redirect_uri=${KtorClient.GITHUB_AUTHORIZE_CALLBACK_URI}&scope=${KtorClient.SCOPE}&state=${
+                        Clock.System.now().toEpochMilliseconds()
+                    }"
+                )
+            })
         }
 
         Button(
@@ -132,6 +137,7 @@ fun AuthScreen(
 private fun AuthScreenContentPreview() {
     AuthScreen(
         authTokenAndUserResource = Resource.error(null, null),
-        scaffoldState = rememberScaffoldState()
+        scaffoldState = rememberScaffoldState(),
+        getAuthToken = {}
     )
 }

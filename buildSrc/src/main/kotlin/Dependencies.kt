@@ -39,6 +39,7 @@ object Versions {
     const val kspApi = "1.6.10-1.0.2"
     const val wearOS = "17.1.0"
     const val wear = "1.3.0-alpha01"
+    const val swipeRefresh = "1.2.0-alpha01"
     const val lottie = "4.2.2"
     const val okhttpLoggingInterceptor = "4.7.2"
     const val apollo = "3.0.0"
@@ -102,6 +103,8 @@ object Deps {
         const val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
         const val splashScreen = "androidx.core:core-splashscreen:${Versions.splashScreen}"
         const val glance = "androidx.glance:glance-appwidget:${Versions.glance}"
+        const val swipeRefresh =
+            "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swipeRefresh}"
 
         object Lifecycle {
 
@@ -161,6 +164,7 @@ object Deps {
             const val animation = "androidx.compose.animation:animation:${Versions.ui}"
             const val tooling = "androidx.compose.ui:ui-tooling:${Versions.ui}"
             const val liveData = "androidx.compose.runtime:runtime-livedata:${Versions.ui}"
+            const val viewBinding = "androidx.compose.ui:ui-viewbinding:${Versions.ui}"
             const val constraintLayout =
                 "androidx.constraintlayout:constraintlayout-compose:${Versions.constraintLayoutCompose}"
             const val wearFoundation =

@@ -91,6 +91,7 @@ android {
 
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 
     composeOptions {
@@ -117,6 +118,7 @@ dependencies {
     implementation(Deps.AndroidX.splashScreen)
     implementation(Deps.AndroidX.WorkManager.runtime)
     implementation(Deps.AndroidX.glance)
+    implementation(Deps.AndroidX.swipeRefresh)
 
     implementation(Deps.AndroidX.UI.runtime)
     implementation(Deps.AndroidX.UI.animation)
@@ -125,6 +127,7 @@ dependencies {
     implementation(Deps.AndroidX.UI.material)
     implementation(Deps.AndroidX.UI.layout)
     implementation(Deps.AndroidX.UI.liveData)
+    implementation(Deps.AndroidX.UI.viewBinding)
     implementation(Deps.AndroidX.UI.constraintLayout)
 
     // Google

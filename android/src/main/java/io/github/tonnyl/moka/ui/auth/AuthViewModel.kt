@@ -41,7 +41,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         get() = _event
 
     @ExperimentalSerializationApi
-    fun getAccessToken(code: String, state: String) {
+    fun getAccessToken(param: AuthParameter) {
         viewModelScope.launch {
             try {
                 _authTokenAndUserResult.value = Resource(Status.LOADING, null, null)
@@ -50,9 +50,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     AccessTokenApi(ktorClient = KtorClient.unauthenticatedKtorClient).getAccessToken(
                         clientId = BuildConfig.CLIENT_ID,
                         clientSecret = BuildConfig.CLIENT_SECRET,
-                        code = code,
+                        code = param.code,
                         redirectUrl = KtorClient.GITHUB_AUTHORIZE_CALLBACK_URI,
-                        state = state
+                        state = param.state
                     )
                 }
 

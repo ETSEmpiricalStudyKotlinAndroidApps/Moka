@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/contribution_calendar_widget_width"
     android:layout_height="@dimen/contribution_calendar_widget_height"
     android:background="@color/splashBackground"
@@ -8,7 +9,8 @@
     android:orientation="horizontal"
     android:paddingStart="@dimen/contribution_calendar_widget_padding"
     android:paddingEnd="@dimen/contribution_calendar_widget_padding"
-    android:showDividers="middle">
+    android:showDividers="middle"
+    tools:viewBindingIgnore="true">
 
     <LinearLayout style="@style/ContributionCalendarWeek">
 

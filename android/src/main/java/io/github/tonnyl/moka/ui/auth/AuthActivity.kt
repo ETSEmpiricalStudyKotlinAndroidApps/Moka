@@ -18,12 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import androidx.navigation.navDeepLink
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -34,7 +29,6 @@ import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MokaTheme
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.tonnyl.moka.common.ui.auth.AuthEvent.FinishAndGo
-import io.tonnyl.moka.common.ui.auth.Screen
 import kotlinx.serialization.ExperimentalSerializationApi
 
 class AuthActivity : ComponentActivity() {
@@ -52,8 +46,6 @@ class AuthActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        var argsHaveBeenHandled = false
 
         setContent {
             val navController = rememberNavController()
@@ -76,50 +68,12 @@ class AuthActivity : ComponentActivity() {
                                 .statusBarsPadding()
                                 .navigationBarsPadding()
                         ) {
-                            NavHost(
-                                navController = navController,
-                                startDestination = Screen.Auth.route
-                            ) {
-                                composable(
-                                    route = Screen.Auth.route,
-                                    arguments = listOf(
-                                        navArgument("code") {
-                                            nullable = true
-                                            type = NavType.StringType
-                                            defaultValue = null
-                                        },
-                                        navArgument("state") {
-                                            nullable = true
-                                            type = NavType.StringType
-                                            defaultValue = null
-                                        }
-                                    ),
-                                    deepLinks = listOf(
-                                        navDeepLink {
-                                            uriPattern =
-                                                "https://lizhaotailang.works/moka/callback?code={code}&state={state}"
-                                        }
-                                    )
-                                ) { backStackEntry ->
-                                    val codeArg = backStackEntry.arguments?.getString("code")
-                                    val stateArg = backStackEntry.arguments?.getString("state")
-
-                                    if (!argsHaveBeenHandled
-                                        && !codeArg.isNullOrEmpty()
-                                        && !stateArg.isNullOrEmpty()
-                                    ) {
-                                        viewModel.getAccessToken(codeArg, stateArg)
-
-                                        argsHaveBeenHandled = true
-                                    }
-
-                                    val authTokenAndUserResource by viewModel.authTokenAndUserResult.observeAsState()
-                                    AuthScreen(
-                                        authTokenAndUserResource = authTokenAndUserResource,
-                                        scaffoldState = scaffoldState
-                                    )
-                                }
-                            }
+                            val authTokenAndUserResource by viewModel.authTokenAndUserResult.observeAsState()
+                            AuthScreen(
+                                authTokenAndUserResource = authTokenAndUserResource,
+                                scaffoldState = scaffoldState,
+                                getAuthToken = viewModel::getAccessToken
+                            )
                         }
 
                         InsetAwareTopAppBar(

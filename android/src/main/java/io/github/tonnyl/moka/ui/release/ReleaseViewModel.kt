@@ -47,16 +47,12 @@ class ReleaseViewModel(
 
                 _release.postValue(
                     Resource.success(
-                        data = if (resp?.release?.descriptionHTML.isNullOrEmpty()) {
-                            null
-                        } else {
-                            resp?.release?.copy(
-                                descriptionHTML = HtmlHandler.basicHtmlTemplate(
-                                    cssPath = "./github_release_light.css",
-                                    body = resp.release.descriptionHTML!!
-                                )
+                        data = resp?.release?.copy(
+                            descriptionHTML = HtmlHandler.basicHtmlTemplate(
+                                cssPath = "./github_release_light.css",
+                                body = resp.release.descriptionHTML ?: ""
                             )
-                        }
+                        )
                     )
                 )
             } catch (e: Exception) {

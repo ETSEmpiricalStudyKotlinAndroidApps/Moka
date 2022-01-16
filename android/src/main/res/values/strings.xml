@@ -10,6 +10,9 @@
 
     <string name="see_all">See all</string>
 
+    <string name="share">Share</string>
+    <string name="open_in_browser">Open in browser</string>
+
     <string name="notification_channel_github_notifications">GitHub notifications</string>
     <string name="notification_subtext_format">%1$s %2$s</string><!-- 2 new notification from 1 repository -->
     <plurals name="new_notifications_count">

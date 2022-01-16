@@ -20,4 +20,12 @@ class RepositoryContentApi(private val ktorClient: HttpClient) {
         }
     }
 
+    suspend fun getFile(url: String): String {
+        return ktorClient.get(
+            urlString = url
+        ) {
+            header(HttpHeaders.Accept, "application/vnd.github.VERSION.raw")
+        }
+    }
+
 }

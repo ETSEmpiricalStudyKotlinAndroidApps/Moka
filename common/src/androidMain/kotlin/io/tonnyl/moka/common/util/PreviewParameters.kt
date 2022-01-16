@@ -1510,25 +1510,8 @@ class TreeEntryProvider : PreviewParameterProvider<TreeEntry> {
     override val values: Sequence<TreeEntry>
         get() = sequenceOf(
             TreeEntry(
-                mode = 16384,
+                extension = ".gradle",
                 name = "settings.gradle",
-                `object` = TreeEntry.Object(
-                    __typename = "",
-                    gitObject = GitObject(
-                        abbreviatedOid = "e7b4def",
-                        commitResourcePath = "/TonnyL/PaperPlane/commit/e7b4def49cb53d9aa04228dd3edb14c9e635e003",
-                        commitUrl = "https://github.com/TonnyL/PaperPlane/commit/e7b4def49cb53d9aa04228dd3edb14c9e635e003",
-                        id = "MDQ6QmxvYjU0MjEyMzU1OmU3YjRkZWY0OWNiNTNkOWFhMDQyMjhkZDNlZGIxNGM5ZTYzNWUwMDM=",
-                        oid = "e7b4def49cb53d9aa04228dd3edb14c9e635e003",
-                        __typename = "",
-                        onCommit = GitObject.OnCommit(
-                            history = GitObject.History(
-                                totalCount = 1
-                            )
-                        )
-                    )
-                ),
-                oid = "e7b4def49cb53d9aa04228dd3edb14c9e635e003",
                 type = "blob"
             )
         )

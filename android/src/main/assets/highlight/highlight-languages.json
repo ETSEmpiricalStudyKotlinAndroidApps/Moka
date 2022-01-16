@@ -1,0 +1,801 @@
+[
+  {
+    "lang": "bash",
+    "extensions": [
+      ".sh",
+      ".bash",
+      ".bats",
+      ".cgi",
+      ".command",
+      ".env",
+      ".fcgi",
+      ".ksh",
+      ".sh.in",
+      ".tmux",
+      ".tool",
+      ".zsh"
+    ],
+    "filenames": [
+      ".bash_aliases",
+      ".bash_history",
+      ".bash_logout",
+      ".bash_profile",
+      ".bashrc",
+      ".cshrc",
+      ".env",
+      ".env.example",
+      ".flaskenv",
+      ".kshrc",
+      ".login",
+      ".profile",
+      ".zlogin",
+      ".zlogout",
+      ".zprofile",
+      ".zshenv",
+      ".zshrc",
+      "9fs",
+      "PKGBUILD",
+      "bash_aliases",
+      "bash_logout",
+      "bash_profile",
+      "bashrc",
+      "cshrc",
+      "gradlew",
+      "kshrc",
+      "login",
+      "man",
+      "profile",
+      "zlogin",
+      "zlogout",
+      "zprofile",
+      "zshenv",
+      "zshrc"
+    ]
+  },
+  {
+    "lang": "c",
+    "extensions": [
+      ".c",
+      ".cats",
+      ".h",
+      ".idc"
+    ]
+  },
+  {
+    "lang": "cpp",
+    "extensions": [
+      ".cpp",
+      ".c++",
+      ".cc",
+      ".cp",
+      ".cxx",
+      ".h",
+      ".h++",
+      ".hh",
+      ".hpp",
+      ".hxx",
+      ".inc",
+      ".inl",
+      ".ino",
+      ".ipp",
+      ".ixx",
+      ".re",
+      ".tcc",
+      ".tpp"
+    ]
+  },
+  {
+    "lang": "csharp",
+    "extensions": [
+      ".cs",
+      ".cake",
+      ".csx",
+      ".linq"
+    ]
+  },
+  {
+    "lang": "css",
+    "extensions": [
+      ".css"
+    ]
+  },
+  {
+    "lang": "dart",
+    "extensions": [
+      ".dart"
+    ]
+  },
+  {
+    "lang": "diff",
+    "extensions": [
+      ".diff",
+      ".patch"
+    ]
+  },
+  {
+    "lang": "dockerfile",
+    "extensions": [
+      ".dockerfile"
+    ],
+    "filenames": [
+      "Containerfile",
+      "Dockerfile"
+    ]
+  },
+  {
+    "lang": "fsharp",
+    "extensions": [
+      ".fs",
+      ".fsi",
+      ".fsx"
+    ]
+  },
+  {
+    "lang": "go",
+    "extensions": [
+      ".go"
+    ]
+  },
+  {
+    "lang": "gradle",
+    "extensions": [
+      ".gradle"
+    ]
+  },
+  {
+    "lang": "groovy",
+    "extensions": [
+      ".groovy",
+      ".grt",
+      ".gtpl",
+      ".gvy"
+    ],
+    "filenames": [
+      "Jenkinsfile"
+    ]
+  },
+  {
+    "lang": "haskell",
+    "extensions": [
+      ".hs",
+      ".hs-boot",
+      ".hsc"
+    ]
+  },
+  {
+    "lang": "java",
+    "extensions": [
+      ".java",
+      ".jav"
+    ]
+  },
+  {
+    "lang": "javascript",
+    "extensions": [
+      ".js",
+      "._js",
+      ".bones",
+      ".cjs",
+      ".es",
+      ".es6",
+      ".frag",
+      ".gs",
+      ".jake",
+      ".javascript",
+      ".jsb",
+      ".jscad",
+      ".jsfl",
+      ".jsm",
+      ".jss",
+      ".jsx",
+      ".mjs",
+      ".njs",
+      ".pac",
+      ".sjs",
+      ".ssjs",
+      ".xsjs",
+      ".xsjslib"
+    ],
+    "filenames": [
+      "Jakefile"
+    ]
+  },
+  {
+    "lang": "json",
+    "extensions": [
+      ".json",
+      ".avsc",
+      ".geojson",
+      ".gltf",
+      ".har",
+      ".ice",
+      ".JSON-tmLanguage",
+      ".jsonl",
+      ".mcmeta",
+      ".tfstate",
+      ".tfstate.backup",
+      ".topojson",
+      ".webapp",
+      ".webmanifest",
+      ".yy",
+      ".yyp"
+    ],
+    "filenames": [
+      ".arcconfig",
+      ".auto-changelog",
+      ".c8rc",
+      ".htmlhintrc",
+      ".imgbotconfig",
+      ".nycrc",
+      ".tern-config",
+      ".tern-project",
+      ".watchmanconfig",
+      "Pipfile.lock",
+      "composer.lock",
+      "mcmod.info"
+    ]
+  },
+  {
+    "lang": "julia",
+    "extensions": [
+      ".jl"
+    ]
+  },
+  {
+    "lang": "kotlin",
+    "extensions": [
+      ".kt",
+      ".ktm",
+      ".kts"
+    ]
+  },
+  {
+    "lang": "latex",
+    "extensions": [
+      ".tex",
+      ".aux",
+      ".bbx",
+      ".cbx",
+      ".cls",
+      ".dtx",
+      ".ins",
+      ".lbx",
+      ".ltx",
+      ".mkii",
+      ".mkiv",
+      ".mkvi",
+      ".sty",
+      ".toc"
+    ]
+  },
+  {
+    "lang": "less",
+    "extensions": [
+      ".less"
+    ]
+  },
+  {
+    "lang": "lisp",
+    "extensions": [
+      ".lisp",
+      ".asd",
+      ".cl",
+      ".l",
+      ".lsp",
+      ".ny",
+      ".podsl",
+      ".sexp"
+    ]
+  },
+  {
+    "lang": "lua",
+    "extensions": [
+      ".lua",
+      ".fcgi",
+      ".nse",
+      ".p8",
+      ".pd_lua",
+      ".rbxs",
+      ".rockspec",
+      ".wlua"
+    ],
+    "filenames": [
+      ".luacheckrc"
+    ]
+  },
+  {
+    "lang": "makefile",
+    "extensions": [
+      ".mak",
+      ".d",
+      ".make",
+      ".makefile",
+      ".mk",
+      ".mkfile"
+    ],
+    "filenames": [
+      "BSDmakefile",
+      "GNUmakefile",
+      "Kbuild",
+      "Makefile",
+      "Makefile.am",
+      "Makefile.boot",
+      "Makefile.frag",
+      "Makefile.in",
+      "Makefile.inc",
+      "Makefile.wat",
+      "makefile",
+      "makefile.sco",
+      "mkfile"
+    ]
+  },
+  {
+    "lang": "markdown",
+    "extensions": [
+      ".md",
+      ".markdown",
+      ".mdown",
+      ".mdwn",
+      ".mdx",
+      ".mkd",
+      ".mkdn",
+      ".mkdown",
+      ".ronn",
+      ".scd",
+      ".workbook"
+    ],
+    "filenames": [
+      "contents.lr"
+    ]
+  },
+  {
+    "lang": "nginx",
+    "extensions": [
+      ".nginx",
+      ".nginxconf",
+      ".vhost"
+    ],
+    "filenames": [
+      "nginx.conf"
+    ]
+  },
+  {
+    "lang": "objectivec",
+    "extensions": [
+      ".m",
+      ".h"
+    ]
+  },
+  {
+    "lang": "perl",
+    "extensions": [
+      ".pl",
+      ".al",
+      ".cgi",
+      ".fcgi",
+      ".perl",
+      ".ph",
+      ".plx",
+      ".pm",
+      ".psgi",
+      ".t"
+    ],
+    "filenames": [
+      "Makefile.PL",
+      "Rexfile",
+      "ack",
+      "cpanfile"
+    ]
+  },
+  {
+    "lang": "php",
+    "extensions": [
+      ".php",
+      ".aw",
+      ".ctp",
+      ".fcgi",
+      ".inc",
+      ".php3",
+      ".php4",
+      ".php5",
+      ".phps",
+      ".phpt"
+    ],
+    "filenames": [
+      ".php",
+      ".php_cs",
+      ".php_cs.dist",
+      "Phakefile"
+    ]
+  },
+  {
+    "lang": "properties",
+    "extensions": [
+      ".properties"
+    ]
+  },
+  {
+    "lang": "protobuf",
+    "extensions": [
+      ".proto"
+    ]
+  },
+  {
+    "lang": "python",
+    "extensions": [
+      ".py",
+      ".cgi",
+      ".fcgi",
+      ".gyp",
+      ".gypi",
+      ".lmi",
+      ".py3",
+      ".pyde",
+      ".pyi",
+      ".pyp",
+      ".pyt",
+      ".pyw",
+      ".rpy",
+      ".smk",
+      ".spec",
+      ".tac",
+      ".wsgi",
+      ".xpy"
+    ],
+    "filenames": [
+      ".gclient",
+      "DEPS",
+      "SConscript",
+      "SConstruct",
+      "Snakefile",
+      "wscript"
+    ]
+  },
+  {
+    "lang": "r",
+    "extensions": [
+      ".r",
+      ".rd",
+      ".rsx"
+    ],
+    "filenames": [
+      ".Rprofile",
+      "expr-dist"
+    ]
+  },
+  {
+    "lang": "ruby",
+    "extensions": [
+      ".rb",
+      ".builder",
+      ".eye",
+      ".fcgi",
+      ".gemspec",
+      ".god",
+      ".jbuilder",
+      ".mspec",
+      ".pluginspec",
+      ".podspec",
+      ".prawn",
+      ".rabl",
+      ".rake",
+      ".rbi",
+      ".rbuild",
+      ".rbw",
+      ".rbx",
+      ".ru",
+      ".ruby",
+      ".spec",
+      ".thor",
+      ".watchr"
+    ],
+    "filenames": [
+      ".irbrc",
+      ".pryrc",
+      ".simplecov",
+      "Appraisals",
+      "Berksfile",
+      "Brewfile",
+      "Buildfile",
+      "Capfile",
+      "Dangerfile",
+      "Deliverfile",
+      "Fastfile",
+      "Gemfile",
+      "Guardfile",
+      "Jarfile",
+      "Mavenfile",
+      "Podfile",
+      "Puppetfile",
+      "Rakefile",
+      "Snapfile",
+      "Thorfile",
+      "Vagrantfile",
+      "buildfile"
+    ]
+  },
+  {
+    "lang": "rust",
+    "extensions": [
+      ".rs",
+      ".rs.in"
+    ]
+  },
+  {
+    "lang": "scss",
+    "extensions": [
+      ".scss"
+    ]
+  },
+  {
+    "lang": "sql",
+    "extensions": [
+      ".sql",
+      ".cql",
+      ".ddl",
+      ".inc",
+      ".mysql",
+      ".prc",
+      ".tab",
+      ".udf",
+      ".viw"
+    ]
+  },
+  {
+    "lang": "swift",
+    "extensions": [
+      ".swift"
+    ]
+  },
+  {
+    "lang": "toml",
+    "extensions": [
+      ".toml"
+    ],
+    "filenames": [
+      "Cargo.lock",
+      "Gopkg.lock",
+      "Pipfile",
+      "poetry.lock"
+    ]
+  },
+  {
+    "lang": "ini",
+    "extensions": [
+      ".ini",
+      ".cfg",
+      ".dof",
+      ".lektorproject",
+      ".prefs",
+      ".pro",
+      ".properties"
+    ],
+    "filenames": [
+      ".flake8",
+      "buildozer.spec"
+    ]
+  },
+  {
+    "lang": "typescript",
+    "extensions": [
+      ".ts"
+    ]
+  },
+  {
+    "lang": "vbnet",
+    "extensions": [
+      ".vb",
+      ".vbhtml"
+    ]
+  },
+  {
+    "lang": "yaml",
+    "extensions": [
+      ".yml",
+      ".mir",
+      ".reek",
+      ".rviz",
+      ".sublime-syntax",
+      ".syntax",
+      ".yaml",
+      ".yaml-tmlanguage",
+      ".yaml.sed",
+      ".yml.mysql"
+    ],
+    "filenames": [
+      ".clang-format",
+      ".clang-tidy",
+      ".gemrc",
+      "CITATION.cff",
+      "glide.lock",
+      "yarn.lock"
+    ]
+  },
+  {
+    "lang": "wasm",
+    "extensions": [
+      ".wast",
+      ".wat"
+    ]
+  },
+  {
+    "lang": "xml",
+    "extensions": [
+      ".xml",
+      ".adml",
+      ".admx",
+      ".ant",
+      ".axml",
+      ".builds",
+      ".ccproj",
+      ".ccxml",
+      ".clixml",
+      ".cproject",
+      ".cscfg",
+      ".csdef",
+      ".csl",
+      ".csproj",
+      ".ct",
+      ".depproj",
+      ".dita",
+      ".ditamap",
+      ".ditaval",
+      ".dll.config",
+      ".dotsettings",
+      ".filters",
+      ".fsproj",
+      ".fxml",
+      ".glade",
+      ".gml",
+      ".gmx",
+      ".grxml",
+      ".gst",
+      ".hzp",
+      ".iml",
+      ".ivy",
+      ".jelly",
+      ".jsproj",
+      ".kml",
+      ".launch",
+      ".mdpolicy",
+      ".mjml",
+      ".mm",
+      ".mod",
+      ".mxml",
+      ".natvis",
+      ".ncl",
+      ".ndproj",
+      ".nproj",
+      ".nuspec",
+      ".odd",
+      ".osm",
+      ".pkgproj",
+      ".pluginspec",
+      ".proj",
+      ".props",
+      ".ps1xml",
+      ".psc1",
+      ".pt",
+      ".rdf",
+      ".res",
+      ".resx",
+      ".rs",
+      ".rss",
+      ".sch",
+      ".scxml",
+      ".sfproj",
+      ".shproj",
+      ".srdf",
+      ".storyboard",
+      ".sublime-snippet",
+      ".targets",
+      ".tml",
+      ".ts",
+      ".tsx",
+      ".ui",
+      ".urdf",
+      ".ux",
+      ".vbproj",
+      ".vcxproj",
+      ".vsixmanifest",
+      ".vssettings",
+      ".vstemplate",
+      ".vxml",
+      ".wixproj",
+      ".workflow",
+      ".wsdl",
+      ".wsf",
+      ".wxi",
+      ".wxl",
+      ".wxs",
+      ".x3d",
+      ".xacro",
+      ".xaml",
+      ".xib",
+      ".xlf",
+      ".xliff",
+      ".xmi",
+      ".xml.dist",
+      ".xmp",
+      ".xproj",
+      ".xsd",
+      ".xspec",
+      ".xul",
+      ".zcml"
+    ],
+    "filenames": [
+      ".classpath",
+      ".cproject",
+      ".project",
+      "App.config",
+      "NuGet.config",
+      "Settings.StyleCop",
+      "Web.Debug.config",
+      "Web.Release.config",
+      "Web.config",
+      "packages.config"
+    ]
+  },
+  {
+    "lang": "scala",
+    "extensions": [
+      ".scala",
+      ".kojo",
+      ".sbt",
+      ".sc"
+    ]
+  },
+  {
+    "lang": "shell",
+    "extensions": [
+      ".sh",
+      ".bash",
+      ".bats",
+      ".cgi",
+      ".command",
+      ".env",
+      ".fcgi",
+      ".ksh",
+      ".sh.in",
+      ".tmux",
+      ".tool",
+      ".zsh"
+    ],
+    "filenames": [
+      ".bash_aliases",
+      ".bash_history",
+      ".bash_logout",
+      ".bash_profile",
+      ".bashrc",
+      ".cshrc",
+      ".env",
+      ".env.example",
+      ".flaskenv",
+      ".kshrc",
+      ".login",
+      ".profile",
+      ".zlogin",
+      ".zlogout",
+      ".zprofile",
+      ".zshenv",
+      ".zshrc",
+      "9fs",
+      "PKGBUILD",
+      "bash_aliases",
+      "bash_logout",
+      "bash_profile",
+      "bashrc",
+      "cshrc",
+      "gradlew",
+      "kshrc",
+      "login",
+      "man",
+      "profile",
+      "zlogin",
+      "zlogout",
+      "zprofile",
+      "zshenv",
+      "zshrc"
+    ]
+  }
+]

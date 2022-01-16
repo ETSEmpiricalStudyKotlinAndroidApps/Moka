@@ -41,6 +41,7 @@ import io.github.tonnyl.moka.ui.commits.CommitsScreen
 import io.github.tonnyl.moka.ui.emojis.EmojisScreen
 import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiScreen
 import io.github.tonnyl.moka.ui.explore.ExploreScreen
+import io.github.tonnyl.moka.ui.file.FileScreen
 import io.github.tonnyl.moka.ui.inbox.InboxScreen
 import io.github.tonnyl.moka.ui.issue.IssueScreen
 import io.github.tonnyl.moka.ui.issues.IssuesScreen
@@ -97,6 +98,9 @@ sealed class Screen(val route: String) {
 
     object RepositoryFiles :
         Screen("repository_files?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_EXPRESSION}={${ARG_EXPRESSION}}&$ARG_REF_PREFIX={${ARG_REF_PREFIX}}&$ARG_DEFAULT_BRANCH_NAME={${ARG_DEFAULT_BRANCH_NAME}}")
+
+    object File :
+        Screen("file?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_FILE_PATH}={${ARG_FILE_PATH}}&${ARG_FILE_NAME}={${ARG_FILE_NAME}}&${ARG_FILE_EXTENSION}={${ARG_FILE_EXTENSION}}")
 
     object Users :
         Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}")
@@ -213,6 +217,10 @@ sealed class Screen(val route: String) {
         const val ARG_TAG_NAME = "arg_tag_name"
 
         const val ARG_NODE_ID = "arg_node_id"
+
+        const val ARG_FILE_PATH = "arg_file_path"
+        const val ARG_FILE_EXTENSION = "arg_file_extension"
+        const val ARG_FILE_NAME = "arg_file_name"
     }
 
 }
@@ -1100,6 +1108,41 @@ private fun MainNavHost(
             CommentTreadScreen(
                 nodeId = backStackEntry.arguments?.getString(Screen.ARG_NODE_ID)
                     ?: return@composable
+            )
+        }
+        composable(
+            route = Screen.File.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_PROFILE_LOGIN) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPOSITORY_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_FILE_PATH) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_FILE_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_FILE_EXTENSION) {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.File.route
+
+            FileScreen(
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable,
+                filePath = backStackEntry.arguments?.getString(Screen.ARG_FILE_PATH)
+                    ?: return@composable,
+                filename = backStackEntry.arguments?.getString(Screen.ARG_FILE_NAME)
+                    ?: return@composable,
+                fileExtension = backStackEntry.arguments?.getString(Screen.ARG_FILE_EXTENSION)
             )
         }
     }

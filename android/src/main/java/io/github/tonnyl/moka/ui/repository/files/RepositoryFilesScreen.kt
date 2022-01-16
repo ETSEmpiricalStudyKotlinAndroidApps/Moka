@@ -246,22 +246,35 @@ private fun ItemTreeEntry(
             )
         },
         modifier = Modifier.clickable {
-            if (treeEntry.treeEntryType == TreeEntryType.TREE) {
-                navController.navigate(
-                    route = Screen.RepositoryFiles.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                        .replace(
-                            "{${Screen.ARG_EXPRESSION}}",
-                            if (currentExpression.endsWith(":")) {
-                                "${currentExpression}${treeEntry.name}"
-                            } else {
-                                "${currentExpression}/${treeEntry.name}"
-                            }
-                        )
-                        .replace("{${Screen.ARG_REF_PREFIX}}", currentExpression.split(":").first())
-                        .replace("{${Screen.ARG_DEFAULT_BRANCH_NAME}}", defaultBranchName)
-                )
+            val currentBranch = currentExpression.split(":").first()
+            when (treeEntry.treeEntryType) {
+                TreeEntryType.TREE -> {
+                    navController.navigate(
+                        route = Screen.RepositoryFiles.route
+                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                            .replace(
+                                "{${Screen.ARG_EXPRESSION}}",
+                                if (currentExpression.endsWith(":")) {
+                                    "${currentExpression}${treeEntry.name}"
+                                } else {
+                                    "${currentExpression}/${treeEntry.name}"
+                                }
+                            )
+                            .replace("{${Screen.ARG_REF_PREFIX}}", currentBranch)
+                            .replace("{${Screen.ARG_DEFAULT_BRANCH_NAME}}", defaultBranchName)
+                    )
+                }
+                TreeEntryType.BLOB -> {
+                    navController.navigate(
+                        route = Screen.File.route
+                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                            .replace("{${Screen.ARG_FILE_PATH}}", currentExpression.replace(":", "/"))
+                            .replace("{${Screen.ARG_FILE_NAME}}", treeEntry.name)
+                            .replace("{${Screen.ARG_FILE_EXTENSION}}", treeEntry.extension.orEmpty())
+                    )
+                }
             }
         }
     ) {

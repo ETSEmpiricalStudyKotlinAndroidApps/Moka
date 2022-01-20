@@ -30,7 +30,7 @@ object Versions {
     const val dataStore = "1.0.0"
     const val activityCompose = "1.4.0"
     const val splashScreen = "1.0.0-beta01"
-    const val accompanist = "0.22.0-rc"
+    const val accompanist = "0.24.0-alpha"
     const val material = "1.6.0-alpha01"
     const val material3 = "1.0.0-alpha03"
     const val glance = "1.0.0-alpha01"

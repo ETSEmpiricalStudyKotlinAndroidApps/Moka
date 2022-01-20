@@ -1,7 +1,9 @@
 package io.github.tonnyl.moka.ui
 
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -15,6 +17,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +38,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.data.toNonNullUserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
+import io.github.tonnyl.moka.ui.about.URL_OF_FAQ
 import io.github.tonnyl.moka.ui.branches.BranchesScreen
 import io.github.tonnyl.moka.ui.commit.CommitScreen
 import io.github.tonnyl.moka.ui.commits.CommitsScreen
@@ -242,11 +246,25 @@ fun MainScreen() {
 
     val navController = LocalNavController.current
 
+    val context = LocalContext.current
+
     val navigate: (String) -> Unit = { route ->
-        navController.navigateUp()
-        navController.navigate(route = route) {
-            popUpTo(route = route)
-            launchSingleTop = true
+        when(route) {
+            Screen.FAQ.route -> {
+                CustomTabsIntent.Builder()
+                    .build()
+                    .launchUrl(context, Uri.parse(URL_OF_FAQ))
+            }
+            Screen.Feedback.route -> {
+
+            }
+            else -> {
+                navController.navigateUp()
+                navController.navigate(route = route) {
+                    popUpTo(route = route)
+                    launchSingleTop = true
+                }
+            }
         }
 
         coroutineScope.launch {
@@ -358,17 +376,24 @@ fun MainDrawerContent(
             )
         }
         item {
+            val context = LocalContext.current
             MainDrawerMenuItem(
                 vectorRes = R.drawable.ic_help_24,
                 textRes = R.string.navigation_menu_faq_help,
-                selected = false
+                selected = false,
+                onClick = {
+                    navigate.invoke(Screen.FAQ.route)
+                }
             )
         }
         item {
             MainDrawerMenuItem(
                 vectorRes = R.drawable.ic_feedback_24,
                 textRes = R.string.navigation_menu_feedback,
-                selected = false
+                selected = false,
+                onClick = {
+                    navigate.invoke(Screen.Feedback.route)
+                }
             )
         }
     }
@@ -491,11 +516,7 @@ private fun MainNavigationRail(
                 label = { Text(text = text) },
                 icon = { Icon(icon, contentDescription = text) },
                 onClick = {
-                    if (screen != Screen.Feedback
-                        && screen != Screen.FAQ
-                    ) {
-                        navigate.invoke(screen.route)
-                    }
+                    navigate.invoke(screen.route)
                 },
                 alwaysShowLabel = false
             )

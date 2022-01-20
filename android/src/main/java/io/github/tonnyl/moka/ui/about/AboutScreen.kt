@@ -1,5 +1,7 @@
 package io.github.tonnyl.moka.ui.about
 
+import android.net.Uri
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -34,7 +37,6 @@ data class OnAboutItemClick(
     val onJoinBetaClick: () -> Unit,
     val onPrivacyPolicyClick: () -> Unit,
     val onTermsOfServiceClick: () -> Unit,
-    val onViewSourceCodeClick: () -> Unit,
     val onOpenSourceLicensesClick: () -> Unit,
     val onFaqClick: () -> Unit,
     val onFeedbackClick: () -> Unit
@@ -46,17 +48,33 @@ fun AboutScreen() {
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
+        val context = LocalContext.current
+        val customTabsIntent = CustomTabsIntent.Builder()
+            .build()
         AboutScreenContent(
             topAppBarSize = topAppBarSize,
             onItemClick = OnAboutItemClick(
-                onWhatsNewClick = {},
-                onViewInStoreClick = {},
-                onJoinBetaClick = {},
-                onPrivacyPolicyClick = {},
-                onTermsOfServiceClick = {},
-                onViewSourceCodeClick = {},
-                onOpenSourceLicensesClick = {},
-                onFaqClick = {},
+                onWhatsNewClick = {
+                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_CHANGELOG))
+                },
+                onViewInStoreClick = {
+                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_GOOGLE_PLAY))
+                },
+                onJoinBetaClick = {
+                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_JOINING_BETA))
+                },
+                onPrivacyPolicyClick = {
+                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_PRIVACY_POLICY))
+                },
+                onTermsOfServiceClick = {
+                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_TERMS_OF_SERVICE))
+                },
+                onOpenSourceLicensesClick = {
+                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_OPEN_SOURCE_LICENSES))
+                },
+                onFaqClick = {
+                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_FAQ))
+                },
                 onFeedbackClick = {}
             )
         )
@@ -163,34 +181,16 @@ fun AboutScreenContent(
             PreferenceDivider()
         }
         item {
-            PreferenceCategoryText(text = stringResource(id = R.string.about_open_source_category))
+            PreferenceCategoryText(text = stringResource(id = R.string.about_others_category))
         }
         item {
             ListItem(
-                modifier = Modifier.clickable {
-                    onItemClick.onViewSourceCodeClick.invoke()
-                }
-            ) {
-                Text(text = stringResource(id = R.string.about_view_source_code_title))
-            }
-        }
-        item {
-            ListItem(
-                secondaryText = {
-                    Text(text = stringResource(id = R.string.about_open_source_licenses_summary))
-                },
                 modifier = Modifier.clickable {
                     onItemClick.onOpenSourceLicensesClick.invoke()
                 }
             ) {
                 Text(text = stringResource(id = R.string.about_open_source_licenses_title))
             }
-            PreferenceDivider()
-        }
-        item {
-            PreferenceCategoryText(text = stringResource(id = R.string.about_others_category))
-        }
-        item {
             ListItem(
                 modifier = Modifier.clickable {
                     onItemClick.onFaqClick.invoke()
@@ -231,10 +231,21 @@ private fun AboutScreenContentPreview() {
             onJoinBetaClick = {},
             onPrivacyPolicyClick = {},
             onTermsOfServiceClick = {},
-            onViewSourceCodeClick = {},
             onOpenSourceLicensesClick = {},
             onFaqClick = {},
             onFeedbackClick = {}
         )
     )
 }
+
+private const val URL_OF_PRIVACY_POLICY = "https://tonnyl.github.io/android/privacy-policy.html"
+private const val URL_OF_TERMS_OF_SERVICE = "https://tonnyl.github.io/android/terms-conditions.html"
+private const val URL_OF_OPEN_SOURCE_LICENSES =
+    "https://tonnyl.github.io/android/open-source-licenses.html"
+const val URL_OF_FAQ = "https://tonnyl.github.io/guide/general.html"
+private const val URL_OF_CHANGELOG = "https://tonnyl.github.io/android/changelog.html"
+private const val URL_OF_GOOGLE_PLAY =
+    "https://play.google.com/store/apps/details?id=io.github.tonnyl.moka"
+// todo replace with formal link
+private const val URL_OF_JOINING_BETA =
+    "https://play.google.com/apps/internaltest/4699138972138868013"

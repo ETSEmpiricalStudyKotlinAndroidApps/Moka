@@ -45,7 +45,6 @@ class AboutScreenTest {
                                 onJoinBetaClick = {},
                                 onPrivacyPolicyClick = {},
                                 onTermsOfServiceClick = {},
-                                onViewSourceCodeClick = {},
                                 onOpenSourceLicensesClick = {},
                                 onFaqClick = {},
                                 onFeedbackClick = {}

@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.theme.DropDownMenuAppBarOffset
 import io.tonnyl.moka.common.data.IssuePullRequestQueryState
 
 @Composable
@@ -22,7 +23,8 @@ fun IssuePrFiltersDropdownMenu(
         expanded = showMenu.value,
         onDismissRequest = {
             showMenu.value = false
-        }
+        },
+        offset = DropDownMenuAppBarOffset
     ) {
         fun choose(state: IssuePullRequestQueryState) {
             queryState.value = state

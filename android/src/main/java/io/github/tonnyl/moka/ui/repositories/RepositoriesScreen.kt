@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.repositories
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +39,8 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
+import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption.*
+import io.github.tonnyl.moka.ui.repositories.filters.RepositoryFiltersSheet
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
@@ -48,8 +51,11 @@ import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.RepositoryItemProvider
 import io.tonnyl.moka.common.util.formatWithSuffix
 import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
+import io.tonnyl.moka.graphql.type.*
+import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
@@ -60,106 +66,227 @@ fun RepositoriesScreen(
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
+    val queryOptionState = remember {
+        mutableStateOf(
+            when (repositoryType) {
+                RepositoryType.STARRED -> {
+                    Starred(
+                        order = StarOrder(
+                            direction = OrderDirection.DESC,
+                            field = StarOrderField.STARRED_AT
+                        )
+                    )
+                }
+                RepositoryType.OWNED -> {
+                    Owned(
+                        isAffiliationCollaborator = false,
+                        isAffiliationOwner = true,
+                        order = RepositoryOrder(
+                            direction = OrderDirection.DESC,
+                            field = RepositoryOrderField.PUSHED_AT
+                        ),
+                        privacy = null
+                    )
+                }
+                RepositoryType.FORKS -> {
+                    Forks(
+                        order = RepositoryOrder(
+                            direction = OrderDirection.DESC,
+                            field = RepositoryOrderField.PUSHED_AT
+                        )
+                    )
+                }
+            }
+        )
+    }
+    val queryOption by queryOptionState
+
     val viewModel = viewModel<RepositoriesViewModel>(
         factory = ViewModelFactory(
             accountInstance = currentAccount,
             login = login,
             repoName = repoName,
-            repositoryType = repositoryType
-        )
+            queryOption = queryOption
+        ),
+        key = queryOption.toString()
     )
 
     val repositories = viewModel.repositoriesFlow.collectAsLazyPagingItems()
 
-    Box {
-        var topAppBarSize by remember { mutableStateOf(0) }
+    // only for ui
+    val affiliationCollaboratorState =
+        remember { mutableStateOf((queryOption as? Owned)?.isAffiliationCollaborator == true) }
+    val affiliationOwnerState =
+        remember { mutableStateOf((queryOption as? Owned)?.isAffiliationOwner == true) }
+    val repositoryOrderDirectionState =
+        remember {
+            mutableStateOf(
+                (queryOption as? Owned)?.order?.direction
+                    ?: (queryOption as? Forks)?.order?.direction
+            )
+        }
+    val orderFieldState =
+        remember {
+            mutableStateOf(
+                (queryOption as? Owned)?.order?.field ?: (queryOption as? Forks)?.order?.field
+            )
+        }
+    val privacyState =
+        remember { mutableStateOf((queryOption as? Owned)?.privacy) }
+    val starOrderDirectionState =
+        remember { mutableStateOf((queryOption as? Starred)?.order?.direction) }
 
-        val contentPadding = rememberInsetsPaddingValues(
-            insets = LocalWindowInsets.current.systemBars,
-            applyTop = false,
-            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
-        )
+    val bottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true,
+        confirmStateChange = {
+            affiliationCollaboratorState.value =
+                (queryOption as? Owned)?.isAffiliationCollaborator == true
+            affiliationOwnerState.value =
+                (queryOption as? Owned)?.isAffiliationOwner == true
+            repositoryOrderDirectionState.value =
+                (queryOption as? Owned)?.order?.direction
+                    ?: (queryOption as? Forks)?.order?.direction
+            orderFieldState.value =
+                (queryOption as? Owned)?.order?.field ?: (queryOption as? Forks)?.order?.field
+            privacyState.value = (queryOption as? Owned)?.privacy
+            starOrderDirectionState.value = (queryOption as? Starred)?.order?.direction
 
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = repositories.loadState.refresh is LoadState.Loading),
-            onRefresh = repositories::refresh,
-            indicatorPadding = contentPadding,
-            indicator = { state, refreshTriggerDistance ->
-                DefaultSwipeRefreshIndicator(
-                    state = state,
-                    refreshTriggerDistance = refreshTriggerDistance
-                )
+            true
+        }
+    )
+    val coroutineScope = rememberCoroutineScope()
+
+    var topAppBarSize by remember { mutableStateOf(0) }
+
+    val contentPadding = rememberInsetsPaddingValues(
+        insets = LocalWindowInsets.current.systemBars,
+        applyTop = false,
+        additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
+    )
+
+    ModalBottomSheetLayout(
+        sheetState = bottomSheetState,
+        sheetContent = {
+            RepositoryFiltersSheet(
+                coroutineScope = coroutineScope,
+                bottomSheetState = bottomSheetState,
+                queryOptionState = queryOptionState,
+                affiliationCollaboratorState = affiliationCollaboratorState,
+                affiliationOwnerState = affiliationOwnerState,
+                ownedOrderDirectionState = repositoryOrderDirectionState,
+                orderFieldState = orderFieldState,
+                privacyState = privacyState,
+                starOrderDirectionState = starOrderDirectionState
+            )
+        }
+    ) {
+        Box {
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing = repositories.loadState.refresh is LoadState.Loading),
+                onRefresh = repositories::refresh,
+                indicatorPadding = contentPadding,
+                indicator = { state, refreshTriggerDistance ->
+                    DefaultSwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = refreshTriggerDistance
+                    )
+                }
+            ) {
+                when {
+                    repositories.loadState.refresh is LoadState.NotLoading
+                            && repositories.loadState.append is LoadState.NotLoading
+                            && repositories.loadState.prepend is LoadState.NotLoading
+                            && repositories.itemCount == 0 -> {
+
+                    }
+                    repositories.loadState.refresh is LoadState.NotLoading
+                            && repositories.itemCount == 0 -> {
+                        EmptyScreenContent(
+                            icon = R.drawable.ic_menu_timeline_24,
+                            title = R.string.timeline_content_empty_title,
+                            retry = R.string.common_retry,
+                            action = R.string.timeline_content_empty_action
+                        )
+                    }
+                    repositories.loadState.refresh is LoadState.Error
+                            && repositories.itemCount == 0 -> {
+                        EmptyScreenContent(
+                            icon = R.drawable.ic_menu_inbox_24,
+                            title = R.string.common_error_requesting_data,
+                            retry = R.string.common_retry,
+                            action = R.string.notification_content_empty_action
+                        )
+                    }
+                    else -> {
+                        RepositoriesScreenContent(
+                            contentTopPadding = contentPadding.calculateTopPadding(),
+                            repositories = repositories
+                        )
+                    }
+                }
             }
-        ) {
-            when {
-                repositories.loadState.refresh is LoadState.NotLoading
-                        && repositories.loadState.append is LoadState.NotLoading
-                        && repositories.loadState.prepend is LoadState.NotLoading
-                        && repositories.itemCount == 0 -> {
 
-                }
-                repositories.loadState.refresh is LoadState.NotLoading
-                        && repositories.itemCount == 0 -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_timeline_24,
-                        title = R.string.timeline_content_empty_title,
-                        retry = R.string.common_retry,
-                        action = R.string.timeline_content_empty_action
+            val navController = LocalNavController.current
+
+            InsetAwareTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(
+                            id = when (repositoryType) {
+                                RepositoryType.STARRED -> {
+                                    R.string.profile_stars
+                                }
+                                RepositoryType.OWNED -> {
+                                    R.string.profile_repositories
+                                }
+                                RepositoryType.FORKS -> {
+                                    R.string.repository_forks
+                                }
+                            }
+                        )
                     )
-                }
-                repositories.loadState.refresh is LoadState.Error
-                        && repositories.itemCount == 0 -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_inbox_24,
-                        title = R.string.common_error_requesting_data,
-                        retry = R.string.common_retry,
-                        action = R.string.notification_content_empty_action
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { navController.navigateUp() },
+                        content = {
+                            Icon(
+                                contentDescription = stringResource(id = R.string.navigate_up),
+                                painter = painterResource(id = R.drawable.ic_arrow_back_24)
+                            )
+                        }
                     )
-                }
-                else -> {
-                    RepositoriesScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
-                        repositories = repositories
-                    )
+                },
+                actions = {
+                    if (repositories.itemCount > 0) {
+                        IconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    bottomSheetState.show()
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_filter_24),
+                                contentDescription = stringResource(id = R.string.notification_filters)
+                            )
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onSizeChanged { topAppBarSize = it.height }
+            )
+        }
+
+        if (bottomSheetState.isVisible) {
+            BackHandler {
+                coroutineScope.launch {
+                    bottomSheetState.hide()
                 }
             }
         }
-
-        val navController = LocalNavController.current
-
-        InsetAwareTopAppBar(
-            title = {
-                Text(
-                    text = stringResource(
-                        id = when (repositoryType) {
-                            RepositoryType.STARRED -> {
-                                R.string.profile_stars
-                            }
-                            RepositoryType.OWNED -> {
-                                R.string.profile_repositories
-                            }
-                            RepositoryType.FORKS -> {
-                                R.string.repository_forks
-                            }
-                        }
-                    )
-                )
-            },
-            navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            painter = painterResource(id = R.drawable.ic_arrow_back_24)
-                        )
-                    }
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onSizeChanged { topAppBarSize = it.height }
-        )
     }
 }
 

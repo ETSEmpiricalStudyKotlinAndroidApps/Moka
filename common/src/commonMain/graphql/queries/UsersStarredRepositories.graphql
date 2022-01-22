@@ -1,11 +1,11 @@
 # Repositories that the user has starred.
-query StarredRepositories($login: String!, $perPage: Int!, $after: String, $before: String) {
+query StarredRepositories($login: String!, $perPage: Int!, $after: String, $before: String, $orderBy: StarOrder) {
     user(login: $login) {
         # A URL pointing to the user's public avatar.
         avatarUrl
         id
         # Repositories the user has starred.
-        starredRepositories(first: $perPage,after: $after,before: $before) {
+        starredRepositories(first: $perPage, after: $after, before: $before, orderBy: $orderBy) {
             # A list of nodes.
             nodes {
                 ... RepositoryListItemFragment

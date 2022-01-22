@@ -13,7 +13,7 @@ class RepositoriesViewModel(
     accountInstance: AccountInstance,
     login: String,
     repoName: String?,
-    repositoryType: RepositoryType
+    queryOption: RepositoriesQueryOption
 ) : ViewModel() {
 
     val repositoriesFlow by lazy(LazyThreadSafetyMode.NONE) {
@@ -24,7 +24,7 @@ class RepositoriesViewModel(
                     apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
                     login = login,
                     repoName = repoName,
-                    repositoryType = repositoryType
+                    queryOption = queryOption
                 )
             }
         ).flow.cachedIn(viewModelScope)

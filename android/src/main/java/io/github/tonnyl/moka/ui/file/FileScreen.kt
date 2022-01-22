@@ -17,8 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
@@ -26,6 +24,7 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.theme.DropDownMenuAppBarOffset
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.isDarkModeOn
@@ -131,10 +130,7 @@ fun FileScreen(
                         onDismissRequest = {
                             showMenuState.value = false
                         },
-                        offset = DpOffset(
-                            x = 0.dp,
-                            y = (-56).dp // @see AppBarHeight
-                        )
+                        offset = DropDownMenuAppBarOffset
                     ) {
                         val context = LocalContext.current
                         val fullUrl =

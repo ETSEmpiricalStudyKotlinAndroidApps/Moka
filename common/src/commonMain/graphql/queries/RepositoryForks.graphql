@@ -1,6 +1,6 @@
-query RepositoryForks($login: String!, $repo: String!, $perPage: Int!, $after: String, $before: String) {
+query RepositoryForks($login: String!, $repo: String!, $perPage: Int!, $after: String, $before: String, $orderBy: RepositoryOrder) {
     repository(owner: $login, name: $repo) {
-        forks(first: $perPage, after: $after, before: $before) {
+        forks(first: $perPage, after: $after, before: $before, orderBy: $orderBy) {
             nodes {
                 ...RepositoryListItemFragment
             }

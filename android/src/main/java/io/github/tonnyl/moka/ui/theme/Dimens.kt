@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.theme
 
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 
 val IconSize = 40.dp
@@ -20,3 +21,8 @@ val IssueTimelineEventAuthorAvatarSize = 24.dp
 val DefaultIconButtonSizeModifier = 48.dp
 
 val LottieLoadingAnimationSize = 196.dp
+
+/**
+ * @see [androidx.compose.material.AppBarHeight]
+ */
+val DropDownMenuAppBarOffset = DpOffset(x = 0.dp, y = (-56).dp)

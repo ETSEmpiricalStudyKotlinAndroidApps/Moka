@@ -1,11 +1,11 @@
 # A list of repositories that the user owns.
-query OwnedRepositories($login: String!, $perPage: Int!, $after: String, $before: String) {
+query OwnedRepositories($login: String!, $perPage: Int!, $after: String, $before: String, $affiliations: [RepositoryAffiliation], $orderBy: RepositoryOrder, $privacy: RepositoryPrivacy) {
     user(login: $login) {
         # A URL pointing to the user's public avatar.
         avatarUrl
         id
         # A list of repositories that the user owns.
-        repositories(first: $perPage,after: $after,before: $before) {
+        repositories(first: $perPage, after: $after, before: $before, affiliations: $affiliations, orderBy: $orderBy, privacy: $privacy) {
             # A list of nodes.
             nodes {
                 ... RepositoryListItemFragment

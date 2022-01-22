@@ -10,7 +10,7 @@ class ViewModelFactory(
     private val accountInstance: AccountInstance,
     private val login: String,
     private val repoName: String?,
-    private val repositoryType: RepositoryType
+    private val queryOption: RepositoriesQueryOption
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
@@ -19,7 +19,7 @@ class ViewModelFactory(
             accountInstance = accountInstance,
             login = login,
             repoName = repoName,
-            repositoryType = repositoryType
+            queryOption = queryOption
         ) as T
     }
 

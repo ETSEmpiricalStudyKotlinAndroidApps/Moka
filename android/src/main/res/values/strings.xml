@@ -584,4 +584,23 @@
     <string name="thread">Thread</string>
     <string name="outdated">Outdated</string>
 
+    <string name="sort_order_ascending">Ascending</string>
+    <string name="sort_order_descending">Descending</string>
+
+    <string name="repositories_affiliation">Affiliation</string>
+    <string name="repositories_affiliation_owner">Owner</string>
+    <string name="repositories_affiliation_collaborator">Collaborator</string>
+    <string name="repositories_order_field">Order field</string>
+    <string name="repositories_order_field_pushed_at">Pushed at</string>
+    <string name="repositories_order_field_created_at">Created at</string>
+    <string name="repositories_order_field_updated_at">Updated at</string>
+    <string name="repositories_order_field_name">Name</string>
+    <string name="repositories_order_field_stars">Stars</string>
+    <string name="repositories_order">Order</string>
+    <string name="repositories_privacy">Privacy</string>
+    <string name="repositories_privacy_all">All</string>
+    <string name="repositories_privacy_public">Public</string>
+    <string name="repositories_privacy_private">Private</string>
+    <string name="repositories_order_field_starred_at">Starred at</string>
+
 </resources>

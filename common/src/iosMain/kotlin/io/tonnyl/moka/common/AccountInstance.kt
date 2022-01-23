@@ -16,8 +16,7 @@ actual class AccountInstance(private val accessToken: String) {
     actual val userApi = UserApi(ktorClient = authenticatedKtorClient)
     actual val notificationApi = NotificationApi(ktorClient = authenticatedKtorClient)
     actual val commitApi = CommitApi(ktorClient = KtorClient.unauthenticatedKtorClient)
-    actual val repositoryContentApi =
-        RepositoryContentApi(ktorClient = KtorClient.unauthenticatedKtorClient)
+    actual val repositoryContentApi = RepositoryContentApi(ktorClient = authenticatedKtorClient)
     actual val repositoryApi = RepositoryApi(
         authenticatedKtorClient = authenticatedKtorClient,
         unauthenticatedKtorClient = KtorClient.unauthenticatedKtorClient

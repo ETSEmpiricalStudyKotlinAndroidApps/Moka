@@ -602,5 +602,6 @@
     <string name="repositories_privacy_public">Public</string>
     <string name="repositories_privacy_private">Private</string>
     <string name="repositories_order_field_starred_at">Starred at</string>
+    <string name="repositories_affiliation_warning">At least one of owner or collaborator should be checked.</string>
 
 </resources>

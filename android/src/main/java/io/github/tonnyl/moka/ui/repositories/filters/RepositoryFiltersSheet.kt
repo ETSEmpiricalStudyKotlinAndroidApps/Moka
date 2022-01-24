@@ -22,6 +22,7 @@ import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption
 import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption.*
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
+import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import io.tonnyl.moka.graphql.type.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -52,6 +53,8 @@ fun RepositoryFiltersSheet(
         var orderField by orderFieldState
         var privacy by privacyState
         var starOrderDirection by starOrderDirectionState
+
+        var warn by remember { mutableStateOf(false) }
 
         val contentPadding = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
@@ -162,7 +165,11 @@ fun RepositoryFiltersSheet(
                                 CheckBoxOption(
                                     isChecked = affiliationOwner,
                                     onCheckedChanged = {
-                                        affiliationOwner = !affiliationOwner
+                                        if (!affiliationCollaborator) {
+                                            warn = true
+                                        } else {
+                                            affiliationOwner = !affiliationOwner
+                                        }
                                     },
                                     textResId = R.string.repositories_affiliation_owner
                                 )
@@ -172,7 +179,11 @@ fun RepositoryFiltersSheet(
                                 CheckBoxOption(
                                     isChecked = affiliationCollaborator,
                                     onCheckedChanged = {
-                                        affiliationCollaborator = !affiliationCollaborator
+                                        if (!affiliationOwner) {
+                                            warn = true
+                                        } else {
+                                            affiliationCollaborator = !affiliationCollaborator
+                                        }
                                     },
                                     textResId = R.string.repositories_affiliation_collaborator
                                 )
@@ -329,6 +340,17 @@ fun RepositoryFiltersSheet(
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }
         )
+
+        if (warn) {
+            SnackBarErrorMessage(
+                scaffoldState = scaffoldState,
+                messageId = R.string.repositories_affiliation_warning,
+                actionId = null,
+                dismissAction = {
+                    warn = false
+                }
+            )
+        }
     }
 }
 

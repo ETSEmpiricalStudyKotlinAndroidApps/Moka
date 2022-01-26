@@ -11,11 +11,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -249,7 +254,7 @@ fun MainScreen() {
     val context = LocalContext.current
 
     val navigate: (String) -> Unit = { route ->
-        when(route) {
+        when (route) {
             Screen.FAQ.route -> {
                 CustomTabsIntent.Builder()
                     .build()
@@ -357,7 +362,7 @@ fun MainDrawerContent(
         }
         item {
             MainDrawerMenuItem(
-                vectorRes = R.drawable.ic_menu_settings_24,
+                vector = Icons.Outlined.Settings,
                 textRes = R.string.navigation_menu_settings,
                 selected = false,
                 onClick = {
@@ -367,7 +372,7 @@ fun MainDrawerContent(
         }
         item {
             MainDrawerMenuItem(
-                vectorRes = R.drawable.ic_info_24,
+                vector = Icons.Outlined.Info,
                 textRes = R.string.navigation_menu_about,
                 selected = false,
                 onClick = {
@@ -376,7 +381,6 @@ fun MainDrawerContent(
             )
         }
         item {
-            val context = LocalContext.current
             MainDrawerMenuItem(
                 vectorRes = R.drawable.ic_help_24,
                 textRes = R.string.navigation_menu_faq_help,
@@ -414,7 +418,8 @@ private fun MainDrawerHeader() {
 @ExperimentalMaterialApi
 @Composable
 private fun MainDrawerMenuItem(
-    @DrawableRes vectorRes: Int,
+    @DrawableRes vectorRes: Int? = null,
+    vector: ImageVector? = null,
     @StringRes textRes: Int,
     selected: Boolean,
     onClick: (() -> Unit)? = null
@@ -446,11 +451,19 @@ private fun MainDrawerMenuItem(
 
         ListItem(
             icon = {
-                Icon(
-                    contentDescription = stringResource(textRes),
-                    painter = painterResource(id = vectorRes),
-                    tint = textIconColor
-                )
+                if (vectorRes != null) {
+                    Icon(
+                        contentDescription = stringResource(textRes),
+                        painter = painterResource(id = vectorRes),
+                        tint = textIconColor
+                    )
+                } else if (vector != null) {
+                    Icon(
+                        contentDescription = stringResource(textRes),
+                        imageVector = vector,
+                        tint = textIconColor
+                    )
+                }
             },
             modifier = Modifier.height(height = 48.dp)
         ) {
@@ -465,6 +478,13 @@ private fun MainDrawerMenuItem(
     }
 }
 
+private data class MainNavigationRailMenu(
+    val screen: Screen,
+    val menuText: String,
+    val menuIconPainter: Painter? = null,
+    val menuIconVector: ImageVector? = null
+)
+
 @ExperimentalMaterialApi
 @Composable
 private fun MainNavigationRail(
@@ -473,48 +493,60 @@ private fun MainNavigationRail(
     modifier: Modifier = Modifier
 ) {
     val screens = listOf(
-        Triple(
-            Screen.Timeline,
-            stringResource(id = R.string.navigation_menu_timeline),
-            painterResource(id = R.drawable.ic_menu_timeline_24)
+        MainNavigationRailMenu(
+            screen = Screen.Timeline,
+            menuText = stringResource(id = R.string.navigation_menu_timeline),
+            menuIconPainter = painterResource(id = R.drawable.ic_menu_timeline_24)
         ),
-        Triple(
-            Screen.Explore,
-            stringResource(id = R.string.navigation_menu_explore),
-            painterResource(id = R.drawable.ic_menu_explore_24)
+        MainNavigationRailMenu(
+            screen = Screen.Explore,
+            menuText = stringResource(id = R.string.navigation_menu_explore),
+            menuIconPainter = painterResource(id = R.drawable.ic_menu_explore_24)
         ),
-        Triple(
-            Screen.Inbox,
-            stringResource(id = R.string.navigation_menu_inbox),
-            painterResource(id = R.drawable.ic_menu_inbox_24)
+        MainNavigationRailMenu(
+            screen = Screen.Inbox,
+            menuText = stringResource(id = R.string.navigation_menu_inbox),
+            menuIconPainter = painterResource(id = R.drawable.ic_menu_inbox_24)
         ),
-        Triple(
-            Screen.Settings,
-            stringResource(id = R.string.navigation_menu_settings),
-            painterResource(id = R.drawable.ic_menu_settings_24)
+        MainNavigationRailMenu(
+            screen = Screen.Settings,
+            menuText = stringResource(id = R.string.navigation_menu_settings),
+            menuIconVector = Icons.Outlined.Settings
         ),
-        Triple(
-            Screen.About,
-            stringResource(id = R.string.navigation_menu_about),
-            painterResource(id = R.drawable.ic_info_24)
+        MainNavigationRailMenu(
+            screen = Screen.About,
+            menuText = stringResource(id = R.string.navigation_menu_about),
+            menuIconVector = Icons.Outlined.Info
         ),
-        Triple(
-            Screen.FAQ,
-            stringResource(id = R.string.navigation_menu_faq_help),
-            painterResource(id = R.drawable.ic_help_24)
+        MainNavigationRailMenu(
+            screen = Screen.FAQ,
+            menuText = stringResource(id = R.string.navigation_menu_faq_help),
+            menuIconPainter = painterResource(id = R.drawable.ic_help_24)
         ),
-        Triple(
-            Screen.Feedback,
-            stringResource(id = R.string.navigation_menu_feedback),
-            painterResource(id = R.drawable.ic_feedback_24)
+        MainNavigationRailMenu(
+            screen = Screen.Feedback,
+            menuText = stringResource(id = R.string.navigation_menu_feedback),
+            menuIconPainter = painterResource(id = R.drawable.ic_feedback_24)
         )
     )
     NavigationRail(modifier = modifier) {
-        screens.forEach { (screen, text, icon) ->
+        screens.forEach { (screen, menuText, menuIconPainter, menuIconVector) ->
             NavigationRailItem(
                 selected = currentRoute == screen.route,
-                label = { Text(text = text) },
-                icon = { Icon(icon, contentDescription = text) },
+                label = { Text(text = menuText) },
+                icon = {
+                    if (menuIconPainter != null) {
+                        Icon(
+                            painter = menuIconPainter,
+                            contentDescription = menuText
+                        )
+                    } else if (menuIconVector != null) {
+                        Icon(
+                            imageVector = menuIconVector,
+                            contentDescription = menuText
+                        )
+                    }
+                },
                 onClick = {
                     navigate.invoke(screen.route)
                 },

@@ -10,6 +10,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,7 +22,8 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 
 @Composable
 fun EmptyScreenContent(
-    @DrawableRes icon: Int,
+    @DrawableRes icon: Int? = null,
+    iconVector: ImageVector? = null,
     @StringRes title: Int,
     @StringRes retry: Int,
     @StringRes action: Int
@@ -33,16 +35,35 @@ fun EmptyScreenContent(
     ) {
         Spacer(modifier = Modifier.weight(weight = 1f))
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Image(
-                contentDescription = stringResource(id = R.string.empty_screen_icon_content_description),
-                painter = painterResource(id = icon),
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onBackground.copy(alpha = LocalContentAlpha.current)),
-                modifier = Modifier
-                    .size(size = 72.dp)
-                    .align(alignment = Alignment.CenterHorizontally)
-                    .padding(all = ContentPaddingMediumSize)
-            )
+            val modifier = Modifier
+                .size(size = 72.dp)
+                .align(alignment = Alignment.CenterHorizontally)
+                .padding(all = ContentPaddingMediumSize)
+            if (icon != null) {
+                Image(
+                    contentDescription = stringResource(id = R.string.empty_screen_icon_content_description),
+                    painter = painterResource(id = icon),
+                    contentScale = ContentScale.Fit,
+                    colorFilter = ColorFilter.tint(
+                        color = MaterialTheme.colors.onBackground.copy(
+                            alpha = LocalContentAlpha.current
+                        )
+                    ),
+                    modifier = modifier
+                )
+            } else if (iconVector != null) {
+                Image(
+                    contentDescription = stringResource(id = R.string.empty_screen_icon_content_description),
+                    imageVector = iconVector,
+                    contentScale = ContentScale.Fit,
+                    colorFilter = ColorFilter.tint(
+                        color = MaterialTheme.colors.onBackground.copy(
+                            alpha = LocalContentAlpha.current
+                        )
+                    ),
+                    modifier = modifier
+                )
+            }
             Text(
                 text = stringResource(id = title),
                 style = MaterialTheme.typography.h6,

@@ -5,6 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -12,7 +15,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -164,7 +166,7 @@ fun SettingScreen() {
                     content = {
                         Icon(
                             contentDescription = stringResource(id = R.string.navigate_up),
-                            painter = painterResource(id = R.drawable.ic_arrow_back_24)
+                            imageVector = Icons.Outlined.ArrowBack
                         )
                     }
                 )
@@ -354,7 +356,7 @@ fun SettingScreenContent(
                         icon = {
                             Icon(
                                 contentDescription = null,
-                                painter = painterResource(id = R.drawable.ic_info_24),
+                                imageVector = Icons.Outlined.Info,
                                 tint = MaterialTheme.colors.onBackground.copy(LocalContentAlpha.current),
                                 modifier = Modifier
                                     .size(size = 40.dp)

@@ -9,6 +9,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -219,7 +223,7 @@ fun RepositoryScreen(
                         }
                         else -> {
                             EmptyScreenContent(
-                                icon = R.drawable.ic_person_outline_24,
+                                iconVector = Icons.Outlined.Person,
                                 title = if (repositoryResource?.status == Status.ERROR) {
                                     R.string.user_profile_content_empty_title
                                 } else {
@@ -376,7 +380,7 @@ fun RepositoryScreen(
                         content = {
                             Icon(
                                 contentDescription = stringResource(id = R.string.navigate_up),
-                                painter = painterResource(id = R.drawable.ic_arrow_back_24)
+                                imageVector = Icons.Outlined.ArrowBack
                             )
                         }
                     )
@@ -975,7 +979,7 @@ private fun WatchOptionItem(
         icon = {
             if (selectedState == state) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_check_24),
+                    imageVector = Icons.Outlined.Check,
                     contentDescription = stringResource(id = R.string.repository_subscription_current_selection),
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier

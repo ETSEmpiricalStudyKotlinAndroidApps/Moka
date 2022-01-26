@@ -12,12 +12,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -36,7 +39,6 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.*
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
@@ -95,7 +97,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
             }
             else -> {
                 EmptyScreenContent(
-                    icon = R.drawable.ic_person_outline_24,
+                    iconVector = Icons.Outlined.Person,
                     title = if (user?.status == Status.ERROR) {
                         R.string.user_profile_content_empty_title
                     } else {
@@ -116,7 +118,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                     content = {
                         Icon(
                             contentDescription = stringResource(id = R.string.navigate_up),
-                            painter = painterResource(id = R.drawable.ic_arrow_back_24)
+                            imageVector = Icons.Outlined.ArrowBack
                         )
                     }
                 )
@@ -157,7 +159,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                     ) {
                         Icon(
                             contentDescription = stringResource(id = R.string.edit_profile_title),
-                            painter = painterResource(id = R.drawable.ic_edit_24)
+                            imageVector = Icons.Outlined.Edit
                         )
                     }
                 }
@@ -513,7 +515,7 @@ private fun ProfileScreenContent(
         }
 
         ContactListItem(
-            iconRes = R.drawable.ic_email_24,
+            iconVector = Icons.Outlined.Email,
             primaryTextRes = R.string.profile_email,
             secondaryText = user?.email
                 ?: organization?.email
@@ -522,7 +524,7 @@ private fun ProfileScreenContent(
         )
 
         ContactListItem(
-            iconRes = R.drawable.ic_location_on_24,
+            iconVector = Icons.Outlined.LocationOn,
             primaryTextRes = R.string.profile_location,
             secondaryText = user?.location
                 ?: organization?.location
@@ -566,24 +568,34 @@ private fun ProfileScreenContent(
 @ExperimentalMaterialApi
 @Composable
 private fun ContactListItem(
-    @DrawableRes iconRes: Int,
+    @DrawableRes iconRes: Int? = null,
+    iconVector: ImageVector? = null,
     @StringRes primaryTextRes: Int,
     secondaryText: String,
     enablePlaceholder: Boolean
 ) {
     ListItem(
         icon = {
-            Icon(
-                contentDescription = stringResource(id = primaryTextRes),
-                painter = painterResource(id = iconRes),
-                modifier = Modifier
-                    .size(size = IconSize)
-                    .padding(all = ContentPaddingMediumSize)
-                    .placeholder(
-                        visible = enablePlaceholder,
-                        highlight = PlaceholderHighlight.fade()
-                    )
-            )
+            val modifier = Modifier
+                .size(size = IconSize)
+                .padding(all = ContentPaddingMediumSize)
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
+            if (iconRes != null) {
+                Icon(
+                    contentDescription = stringResource(id = primaryTextRes),
+                    painter = painterResource(id = iconRes),
+                    modifier = modifier
+                )
+            } else if (iconVector != null) {
+                Icon(
+                    contentDescription = stringResource(id = primaryTextRes),
+                    imageVector = iconVector,
+                    modifier = modifier
+                )
+            }
         },
         secondaryText = {
             Text(

@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -118,7 +120,7 @@ fun EditProfileScreen(
                     content = {
                         Icon(
                             contentDescription = stringResource(id = R.string.navigate_up),
-                            painter = painterResource(id = R.drawable.ic_close_24)
+                            imageVector = Icons.Outlined.Close
                         )
                     }
                 )
@@ -147,7 +149,7 @@ fun EditProfileScreen(
                     } else {
                         Icon(
                             contentDescription = stringResource(id = R.string.done_image_description),
-                            painter = painterResource(id = R.drawable.ic_check_24)
+                            imageVector = Icons.Outlined.Check
                         )
                     }
                 }
@@ -199,7 +201,7 @@ private fun EditProfileScreenContent(
             ) {
                 Icon(
                     contentDescription = stringResource(id = R.string.edit_profile_name),
-                    painter = painterResource(id = R.drawable.ic_person_24),
+                    imageVector = Icons.Outlined.Person,
                     modifier = Modifier
                         .size(size = IconSize)
                         .align(alignment = Alignment.CenterVertically)
@@ -229,7 +231,7 @@ private fun EditProfileScreenContent(
             ) {
                 Icon(
                     contentDescription = stringResource(id = R.string.edit_profile_bio),
-                    painter = painterResource(id = R.drawable.ic_info_24),
+                    imageVector = Icons.Outlined.Info,
                     modifier = Modifier
                         .size(size = IconSize)
                         .align(alignment = Alignment.CenterVertically)
@@ -326,7 +328,7 @@ private fun EditProfileScreenContent(
             ) {
                 Icon(
                     contentDescription = stringResource(id = R.string.edit_profile_location),
-                    painter = painterResource(id = R.drawable.ic_location_on_24),
+                    imageVector = Icons.Outlined.LocationOn,
                     modifier = Modifier
                         .size(size = IconSize)
                         .align(alignment = Alignment.CenterVertically)

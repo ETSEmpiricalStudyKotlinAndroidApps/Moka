@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -254,7 +256,7 @@ private fun ItemSearchHistory(
         },
         trailing = {
             Icon(
-                painter = painterResource(id = R.drawable.ic_close_24),
+                imageVector = Icons.Outlined.Close,
                 contentDescription = stringResource(id = R.string.search_history_action),
                 modifier = Modifier.clickable {
                     removeQuery.invoke(query)

@@ -8,12 +8,13 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -84,7 +85,7 @@ class AuthActivity : ComponentActivity() {
                                     content = {
                                         Icon(
                                             contentDescription = stringResource(id = R.string.navigate_up),
-                                            painter = painterResource(id = R.drawable.ic_close_24)
+                                            imageVector = Icons.Outlined.Close
                                         )
                                     }
                                 )

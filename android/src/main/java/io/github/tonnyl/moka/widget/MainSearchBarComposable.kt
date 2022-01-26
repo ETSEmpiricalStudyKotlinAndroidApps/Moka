@@ -6,6 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -15,7 +18,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -117,13 +119,11 @@ private fun MainSearchBarContent(
                             R.string.search_input_hint
                         }
                     ),
-                    painter = painterResource(
-                        id = if (displayMenuIcon) {
-                            R.drawable.ic_menu_24
-                        } else {
-                            R.drawable.ic_menu_search_24
-                        }
-                    )
+                    imageVector = if (displayMenuIcon) {
+                        Icons.Outlined.Menu
+                    } else {
+                        Icons.Outlined.Search
+                    }
                 )
             }
             Image(

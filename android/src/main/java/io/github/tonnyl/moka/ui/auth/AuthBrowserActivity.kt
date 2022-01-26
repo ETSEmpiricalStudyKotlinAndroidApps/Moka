@@ -8,11 +8,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -117,7 +118,7 @@ class AuthBrowserActivity : ComponentActivity() {
                                         content = {
                                             Icon(
                                                 contentDescription = stringResource(id = R.string.navigate_up),
-                                                painter = painterResource(id = R.drawable.ic_close_24)
+                                                imageVector = Icons.Outlined.Close
                                             )
                                         }
                                     )

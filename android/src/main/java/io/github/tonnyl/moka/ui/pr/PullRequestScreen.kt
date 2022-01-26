@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -159,7 +162,7 @@ fun PullRequestScreen(
                     content = {
                         Icon(
                             contentDescription = stringResource(id = R.string.navigate_up),
-                            painter = painterResource(id = R.drawable.ic_arrow_back_24)
+                            imageVector = Icons.Outlined.ArrowBack
                         )
                     }
                 )
@@ -357,20 +360,30 @@ private fun ItemPullRequestTimelineEvent(
             .padding(all = ContentPaddingLargeSize)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                contentDescription = stringResource(id = R.string.issue_pr_timeline_event_image_content_description),
-                painter = painterResource(id = data.iconResId),
-                tint = MaterialTheme.colors.onPrimary,
-                modifier = Modifier
-                    .size(size = IconSize)
-                    .clip(shape = CircleShape)
-                    .background(color = data.backgroundColor)
-                    .placeholder(
-                        visible = enablePlaceholder,
-                        highlight = PlaceholderHighlight.fade()
-                    )
-                    .padding(all = ContentPaddingMediumSize)
-            )
+            val modifier = Modifier
+                .size(size = IconSize)
+                .clip(shape = CircleShape)
+                .background(color = data.backgroundColor)
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
+                .padding(all = ContentPaddingMediumSize)
+            if (data.iconResId != null) {
+                Icon(
+                    contentDescription = stringResource(id = R.string.issue_pr_timeline_event_image_content_description),
+                    painter = painterResource(id = data.iconResId),
+                    tint = MaterialTheme.colors.onPrimary,
+                    modifier = modifier
+                )
+            } else if (data.iconVector != null) {
+                Icon(
+                    contentDescription = stringResource(id = R.string.issue_pr_timeline_event_image_content_description),
+                    imageVector = data.iconVector,
+                    tint = MaterialTheme.colors.onPrimary,
+                    modifier = modifier
+                )
+            }
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             Image(
                 painter = rememberImagePainter(
@@ -454,7 +467,7 @@ private fun ItemPullRequestTimelineEvent(
                 )
                 Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_chevron_right_24),
+                    imageVector = Icons.Outlined.KeyboardArrowRight,
                     contentDescription = stringResource(id = R.string.thread),
                     tint = MaterialTheme.colors.primary
                 )
@@ -465,7 +478,8 @@ private fun ItemPullRequestTimelineEvent(
 
 @Composable
 private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData? {
-    val iconResId: Int?
+    var iconResId: Int? = null
+    var iconVector: ImageVector? = null
     val backgroundColor: Color?
     val avatarUri: String?
     val login: String?
@@ -484,7 +498,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 AnnotatedString(text = stringResource(id = R.string.issue_timeline_added_to_project))
         }
         event.assignedEvent != null -> {
-            iconResId = R.drawable.ic_person_24
+            iconVector = Icons.Outlined.Person
             backgroundColor = MaterialTheme.colors.primary
             avatarUri = event.assignedEvent!!.actor?.actor?.avatarUrl
             login = event.assignedEvent!!.actor?.actor?.login
@@ -806,13 +820,13 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
 
             when (event.pullRequestReview!!.state) {
                 PullRequestReviewState.APPROVED -> {
-                    iconResId = R.drawable.ic_check_24
+                    iconVector = Icons.Outlined.Check
                     backgroundColor = issuePrGreen
                     stateString =
                         stringResource(id = R.string.pull_request_review_approved_changes)
                 }
                 PullRequestReviewState.CHANGES_REQUESTED -> {
-                    iconResId = R.drawable.ic_close_24
+                    iconVector = Icons.Outlined.Close
                     backgroundColor = MaterialTheme.colors.primary
                     stateString =
                         stringResource(id = R.string.pull_request_review_request_changes)
@@ -872,7 +886,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
             )
         }
         event.renamedTitleEvent != null -> {
-            iconResId = R.drawable.ic_edit_24
+            iconVector = Icons.Outlined.Edit
             backgroundColor = MaterialTheme.colors.primary
             avatarUri = event.renamedTitleEvent!!.actor?.actor?.avatarUrl
             login = event.renamedTitleEvent!!.actor?.actor?.login
@@ -910,7 +924,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
             )
         }
         event.reviewDismissedEvent != null -> {
-            iconResId = R.drawable.ic_close_24
+            iconVector = Icons.Outlined.Close
             backgroundColor = MaterialTheme.colors.primary
             avatarUri = event.reviewDismissedEvent!!.actor?.actor?.avatarUrl
             login = event.reviewDismissedEvent!!.actor?.actor?.login
@@ -930,7 +944,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
             }
         }
         event.reviewRequestRemovedEvent != null -> {
-            iconResId = R.drawable.ic_close_24
+            iconVector = Icons.Outlined.Close
             backgroundColor = MaterialTheme.colors.primary
             avatarUri = event.reviewRequestRemovedEvent!!.actor?.actor?.avatarUrl
             login = event.reviewRequestRemovedEvent!!.actor?.actor?.login
@@ -969,7 +983,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                 }
         }
         event.unassignedEvent != null -> {
-            iconResId = R.drawable.ic_person_24
+            iconVector = Icons.Outlined.Person
             backgroundColor = MaterialTheme.colors.primary
             avatarUri = event.unassignedEvent!!.actor?.actor?.avatarUrl
             login = event.unassignedEvent!!.actor?.actor?.login
@@ -1043,7 +1057,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
         }
     }
 
-    return if (iconResId == null
+    return if ((iconResId == null && iconVector == null)
         || backgroundColor == null
         || createdAt == null
         || content == null
@@ -1052,6 +1066,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
     } else {
         IssuePullRequestEventData(
             iconResId,
+            iconVector = iconVector,
             backgroundColor,
             avatarUri,
             login ?: "ghost",

@@ -2,10 +2,12 @@ package io.github.tonnyl.moka.widget
 
 import androidx.compose.foundation.Image
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.placeholder.material.placeholder
@@ -19,13 +21,11 @@ fun CommitVerification(
     modifier: Modifier = Modifier
 ) {
     Image(
-        painter = painterResource(
-            id = if (verified) {
-                R.drawable.ic_check_24
-            } else {
-                R.drawable.ic_close_24
-            }
-        ),
+        imageVector = if (verified) {
+            Icons.Outlined.Check
+        } else {
+            Icons.Outlined.Close
+        },
         contentDescription = stringResource(
             id = if (verified) {
                 R.string.commit_status_success

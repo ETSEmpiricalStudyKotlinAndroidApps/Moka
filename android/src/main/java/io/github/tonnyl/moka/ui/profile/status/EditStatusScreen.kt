@@ -7,6 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -15,7 +18,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -130,7 +132,7 @@ fun EditStatusScreen(
                     content = {
                         Icon(
                             contentDescription = stringResource(id = R.string.navigate_up),
-                            painter = painterResource(id = R.drawable.ic_close_24)
+                            imageVector = Icons.Outlined.Close
                         )
                     }
                 )
@@ -411,7 +413,7 @@ private fun EditStatusScreenContent(
                         )
                         Icon(
                             contentDescription = stringResource(id = R.string.edit_status_clear_status_image_content_description),
-                            painter = painterResource(id = R.drawable.ic_arrow_drop_down_24)
+                            imageVector = Icons.Outlined.ArrowDropDown
                         )
                         Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                     }

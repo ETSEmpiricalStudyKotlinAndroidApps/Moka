@@ -11,6 +11,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -72,7 +75,7 @@ fun EmojisScreen() {
                     content = {
                         Icon(
                             contentDescription = stringResource(id = R.string.navigate_up),
-                            painter = painterResource(id = R.drawable.ic_arrow_back_24)
+                            imageVector = Icons.Outlined.ArrowBack
                         )
                     }
                 )
@@ -87,7 +90,7 @@ fun EmojisScreen() {
                 ) {
                     Icon(
                         contentDescription = stringResource(id = R.string.search_emoji),
-                        painter = painterResource(id = R.drawable.ic_menu_search_24)
+                        imageVector = Icons.Outlined.Search
                     )
                 }
             },

@@ -8,12 +8,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -63,7 +69,8 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 
 data class IssuePullRequestEventData(
-    val iconResId: Int,
+    val iconResId: Int?,
+    val iconVector: ImageVector?,
     val backgroundColor: Color,
     val avatarUri: String?,
     val login: String,
@@ -165,7 +172,7 @@ fun IssueScreen(
                     content = {
                         Icon(
                             contentDescription = stringResource(id = R.string.navigate_up),
-                            painter = painterResource(id = R.drawable.ic_arrow_back_24)
+                            imageVector = Icons.Outlined.ArrowBack
                         )
                     }
                 )
@@ -349,20 +356,30 @@ fun ItemIssueTimelineEvent(
             .padding(all = ContentPaddingLargeSize)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                contentDescription = stringResource(id = R.string.issue_pr_timeline_event_image_content_description),
-                painter = painterResource(id = data.iconResId),
-                tint = MaterialTheme.colors.onPrimary,
-                modifier = Modifier
-                    .size(size = IconSize)
-                    .clip(shape = CircleShape)
-                    .placeholder(
-                        visible = enablePlaceholder,
-                        highlight = PlaceholderHighlight.fade()
-                    )
-                    .background(color = data.backgroundColor)
-                    .padding(all = ContentPaddingMediumSize)
-            )
+            val modifier = Modifier
+                .size(size = IconSize)
+                .clip(shape = CircleShape)
+                .placeholder(
+                    visible = enablePlaceholder,
+                    highlight = PlaceholderHighlight.fade()
+                )
+                .background(color = data.backgroundColor)
+                .padding(all = ContentPaddingMediumSize)
+            if (data.iconResId != null) {
+                Icon(
+                    contentDescription = stringResource(id = R.string.issue_pr_timeline_event_image_content_description),
+                    painter = painterResource(id = data.iconResId),
+                    tint = MaterialTheme.colors.onPrimary,
+                    modifier = modifier
+                )
+            } else if (data.iconVector != null) {
+                Icon(
+                    contentDescription = stringResource(id = R.string.issue_pr_timeline_event_image_content_description),
+                    imageVector = data.iconVector,
+                    tint = MaterialTheme.colors.onPrimary,
+                    modifier = modifier
+                )
+            }
             Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
             Image(
                 painter = rememberImagePainter(
@@ -431,7 +448,8 @@ fun ItemIssueTimelineEvent(
 
 @Composable
 private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
-    val iconResId: Int?
+    var iconResId: Int? = null
+    var iconVector: ImageVector? = null
     val backgroundColor: Color?
     val avatarUri: String?
     val login: String?
@@ -448,7 +466,7 @@ private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
             content = AnnotatedString(stringResource(id = R.string.issue_timeline_added_to_project))
         }
         event.assignedEvent != null -> {
-            iconResId = R.drawable.ic_person_24
+            iconVector = Icons.Outlined.Person
             backgroundColor = MaterialTheme.colors.primary
             login = event.assignedEvent!!.actor?.actor?.login
             avatarUri = event.assignedEvent!!.actor?.actor?.avatarUrl
@@ -664,7 +682,7 @@ private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
             )
         }
         event.renamedTitleEvent != null -> {
-            iconResId = R.drawable.ic_edit_24
+            iconVector = Icons.Outlined.Edit
             backgroundColor = MaterialTheme.colors.primary
             login = event.renamedTitleEvent!!.actor?.actor?.login
             avatarUri = event.renamedTitleEvent!!.actor?.actor?.avatarUrl
@@ -715,7 +733,7 @@ private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
             )
         }
         event.unassignedEvent != null -> {
-            iconResId = R.drawable.ic_person_24
+            iconVector = Icons.Outlined.Person
             backgroundColor = MaterialTheme.colors.primary
             login = event.unassignedEvent!!.actor?.actor?.login
             avatarUri = event.unassignedEvent!!.actor?.actor?.avatarUrl
@@ -799,6 +817,7 @@ private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
     } else {
         IssuePullRequestEventData(
             iconResId,
+            iconVector = iconVector,
             backgroundColor,
             avatarUri,
             login,
@@ -1032,7 +1051,7 @@ fun IssueTimelineCommentItem(
                 )
                 Icon(
                     contentDescription = stringResource(id = R.string.more_actions_image_content_description),
-                    painter = painterResource(id = R.drawable.ic_more_vert_24),
+                    imageVector = Icons.Outlined.MoreVert,
                     modifier = Modifier
                         .size(size = IconSize)
                         .clickable(enabled = !enablePlaceholder) {

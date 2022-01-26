@@ -9,13 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -90,7 +91,7 @@ fun AboutScreen() {
                     content = {
                         Icon(
                             contentDescription = stringResource(id = R.string.navigate_up),
-                            painter = painterResource(id = R.drawable.ic_arrow_back_24)
+                            imageVector = Icons.Outlined.ArrowBack
                         )
                     }
                 )
@@ -246,6 +247,7 @@ const val URL_OF_FAQ = "https://tonnyl.github.io/guide/general.html"
 private const val URL_OF_CHANGELOG = "https://tonnyl.github.io/android/changelog.html"
 private const val URL_OF_GOOGLE_PLAY =
     "https://play.google.com/store/apps/details?id=io.github.tonnyl.moka"
+
 // todo replace with formal link
 private const val URL_OF_JOINING_BETA =
     "https://play.google.com/apps/internaltest/4699138972138868013"

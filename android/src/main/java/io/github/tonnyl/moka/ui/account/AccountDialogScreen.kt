@@ -46,7 +46,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
-fun AccountDialogScreen(showState: MutableState<Boolean>) {
+fun AccountDialogScreen() {
     val accounts by LocalMainViewModel.current.getApplication<MokaApp>().accountInstancesLiveData.observeAsState(
         initial = emptyList()
     )
@@ -54,18 +54,14 @@ fun AccountDialogScreen(showState: MutableState<Boolean>) {
         return
     }
 
-    if (showState.value) {
-        Dialog(
-            onDismissRequest = {
-                showState.value = false
-            },
-            properties = DialogProperties(usePlatformDefaultWidth = true)
-        ) {
-            AccountDialogScreenContent(
-                accounts = accounts,
-                showState = showState
-            )
-        }
+    val navController = LocalNavController.current
+    Dialog(
+        onDismissRequest = {
+            navController.navigateUp()
+        },
+        properties = DialogProperties(usePlatformDefaultWidth = true)
+    ) {
+        AccountDialogScreenContent(accounts = accounts)
     }
 }
 
@@ -74,12 +70,10 @@ fun AccountDialogScreen(showState: MutableState<Boolean>) {
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
-private fun AccountDialogScreenContent(
-    accounts: List<AccountInstance>,
-    showState: MutableState<Boolean>
-) {
+private fun AccountDialogScreenContent(accounts: List<AccountInstance>) {
     val context = LocalContext.current
     val currentAccount = LocalAccountInstance.current ?: return
+    val navController = LocalNavController.current
 
     ConstraintLayout(
         modifier = Modifier
@@ -96,7 +90,6 @@ private fun AccountDialogScreenContent(
             items(count = accounts.size) { index ->
                 ItemAccount(
                     isCurrentLoginUser = currentAccount.signedInAccount.account.id == accounts[index].signedInAccount.account.id,
-                    showState = showState,
                     account = accounts[index],
                     accountIndex = index
                 )
@@ -129,7 +122,8 @@ private fun AccountDialogScreenContent(
                 .fillMaxWidth()
                 .clickable {
                     context.startActivity(Intent(context, AuthActivity::class.java))
-                    showState.value = false
+
+                    navController.navigateUp()
                 }
         )
         ListItem(
@@ -153,7 +147,8 @@ private fun AccountDialogScreenContent(
                 .fillMaxWidth()
                 .clickable {
                     context.safeStartActivity(Intent(Settings.ACTION_SYNC_SETTINGS))
-                    showState.value = false
+
+                    navController.navigateUp()
                 }
         )
         Divider(
@@ -191,7 +186,7 @@ private fun AccountDialogScreenContent(
                     }
                     .clip(shape = MaterialTheme.shapes.medium)
                     .clickable {
-                        showState.value = false
+                        navController.navigateUp()
                     }
                     .padding(all = ContentPaddingMediumSize)
             )
@@ -206,7 +201,7 @@ private fun AccountDialogScreenContent(
                     }
                     .clip(shape = MaterialTheme.shapes.medium)
                     .clickable {
-                        showState.value = false
+                        navController.navigateUp()
                     }
                     .padding(all = ContentPaddingMediumSize)
             )
@@ -220,11 +215,11 @@ private fun AccountDialogScreenContent(
 @Composable
 private fun ItemAccount(
     isCurrentLoginUser: Boolean,
-    showState: MutableState<Boolean>,
     account: AccountInstance,
     accountIndex: Int
 ) {
     val mainViewModel = LocalMainViewModel.current
+    val navController = LocalNavController.current
     Row(
         verticalAlignment = Alignment.Top,
         modifier = Modifier
@@ -234,7 +229,7 @@ private fun ItemAccount(
                     index = accountIndex
                 )
 
-                showState.value = false
+                navController.navigateUp()
             }
             .padding(
                 start = ContentPaddingLargeSize,
@@ -275,7 +270,6 @@ private fun ItemAccount(
             }
             if (isCurrentLoginUser) {
                 Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
-                val navController = LocalNavController.current
                 OutlineChip(
                     text = stringResource(id = R.string.accounts_view_profile),
                     onClick = {
@@ -306,8 +300,5 @@ private fun ItemAccount(
 )
 @Composable
 private fun AccountDialogScreenContentPreview() {
-    AccountDialogScreenContent(
-        accounts = emptyList(),
-        showState = mutableStateOf(false)
-    )
+    AccountDialogScreenContent(accounts = emptyList())
 }

@@ -33,6 +33,7 @@ import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import androidx.paging.ExperimentalPagingApi
 import coil.annotation.ExperimentalCoilApi
@@ -44,6 +45,7 @@ import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.data.toNonNullUserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
 import io.github.tonnyl.moka.ui.about.URL_OF_FAQ
+import io.github.tonnyl.moka.ui.account.AccountDialogScreen
 import io.github.tonnyl.moka.ui.branches.BranchesScreen
 import io.github.tonnyl.moka.ui.commit.CommitScreen
 import io.github.tonnyl.moka.ui.commits.CommitsScreen
@@ -172,6 +174,8 @@ sealed class Screen(val route: String) {
     object FAQ : Screen("faq")
 
     object Feedback : Screen("feedback")
+
+    object AccountDialog: Screen("account_dialog")
 
     companion object {
 
@@ -1205,6 +1209,10 @@ private fun MainNavHost(
                     ?: return@composable,
                 fileExtension = backStackEntry.arguments?.getString(Screen.ARG_FILE_EXTENSION)
             )
+        }
+        dialog(route = Screen.AccountDialog.route) {
+            currentRoute.value = Screen.AccountDialog.route
+            AccountDialogScreen()
         }
     }
 }

@@ -43,11 +43,6 @@ fun MainSearchBar(
     modifier: Modifier = Modifier
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
-    val state = remember {
-        mutableStateOf(false)
-    }
-
-    AccountDialogScreen(showState = state)
 
     val navController = LocalNavController.current
     MainSearchBarContent(
@@ -58,7 +53,7 @@ fun MainSearchBar(
             navController.navigate(route = Screen.Search.route)
         },
         onAvatarClicked = {
-            state.value = true
+            navController.navigate(route = Screen.AccountDialog.route)
         }
     )
 }

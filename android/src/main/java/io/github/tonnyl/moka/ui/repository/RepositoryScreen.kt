@@ -32,7 +32,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.flowlayout.FlowRow
@@ -45,10 +46,13 @@ import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
+import io.github.tonnyl.moka.ui.repository.RepositoryViewModel.Companion.REPOSITORY_VIEW_MODEL_EXTRA_KEY
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.users.UsersType
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Resource
@@ -64,6 +68,7 @@ import kotlin.math.min
 private const val MAX_DISPLAY_COUNT_OF_TOPICS = 8
 private const val MAX_LANGUAGE_DISPLAY_COUNT = 20
 
+@ExperimentalPagingApi
 @ExperimentalComposeUiApi
 @ExperimentalCoilApi
 @ExperimentalAnimationApi
@@ -79,11 +84,14 @@ fun RepositoryScreen(
     val scaffoldState = rememberScaffoldState()
 
     val viewModel = viewModel<RepositoryViewModel>(
-        factory = ViewModelFactory(
-            accountInstance = currentAccount,
-            login = login,
-            repositoryName = repoName
-        )
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[REPOSITORY_VIEW_MODEL_EXTRA_KEY] = RepositoryViewModelExtra(
+                accountInstance = currentAccount,
+                login = login,
+                repositoryName = repoName
+            )
+        }
     )
     val repositoryResource by viewModel.repository.observeAsState()
     val readmeResource by viewModel.readmeHtml.observeAsState()

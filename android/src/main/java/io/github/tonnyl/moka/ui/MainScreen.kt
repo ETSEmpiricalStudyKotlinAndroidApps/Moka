@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -59,9 +59,11 @@ import io.github.tonnyl.moka.ui.pr.thread.CommentTreadScreen
 import io.github.tonnyl.moka.ui.profile.ProfileScreen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.profile.ProfileViewModel
+import io.github.tonnyl.moka.ui.profile.ProfileViewModelExtra
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileScreen
 import io.github.tonnyl.moka.ui.profile.status.EditStatusScreen
 import io.github.tonnyl.moka.ui.profile.status.EditStatusViewModel
+import io.github.tonnyl.moka.ui.profile.status.EditStatusViewModelExtra
 import io.github.tonnyl.moka.ui.prs.PullRequestsScreen
 import io.github.tonnyl.moka.ui.release.ReleaseScreen
 import io.github.tonnyl.moka.ui.release.assets.ReleaseAssetsScreen
@@ -82,8 +84,6 @@ import io.github.tonnyl.moka.ui.users.UsersScreen
 import io.github.tonnyl.moka.ui.users.UsersType
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
-import io.github.tonnyl.moka.ui.profile.ViewModelFactory as ProfileViewModelFactory
-import io.github.tonnyl.moka.ui.profile.status.ViewModelFactory as EditStatusViewModelFactory
 
 sealed class Screen(val route: String) {
 
@@ -604,21 +604,25 @@ private fun MainNavHost(
                 }
             )
         ) { backStackEntry ->
+            backStackEntry.defaultViewModelCreationExtras
             currentRoute.value = Screen.Profile.route
 
             val currentAccount = LocalAccountInstance.current ?: return@composable
 
             val viewModel = viewModel<ProfileViewModel>(
                 key = currentAccount.signedInAccount.account.login,
-                factory = ProfileViewModelFactory(
-                    accountInstance = currentAccount,
-                    login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                        ?: return@composable,
-                    profileType = ProfileType.valueOf(
-                        backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
-                            ?: ProfileType.NOT_SPECIFIED.name
+                factory = ViewModelFactory(),
+                defaultCreationExtras = MutableCreationExtras().apply {
+                    this[ProfileViewModel.PROFILE_VIEW_MODEL_EXTRA_KEY] = ProfileViewModelExtra(
+                        accountInstance = currentAccount,
+                        login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                            ?: return@composable,
+                        profileType = ProfileType.valueOf(
+                            backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
+                                ?: ProfileType.NOT_SPECIFIED.name
+                        )
                     )
-                )
+                }
             )
 
             backStackEntry.savedStateHandle
@@ -716,12 +720,16 @@ private fun MainNavHost(
                 Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY
             )
             val viewModel = viewModel<EditStatusViewModel>(
-                factory = EditStatusViewModelFactory(
-                    accountInstance = currentAccount,
-                    emoji = initialEmoji,
-                    message = initialMessage,
-                    indicatesLimitedAvailability = initialIndicatesLimitedAvailability
-                )
+                factory = ViewModelFactory(),
+                defaultCreationExtras = MutableCreationExtras().apply {
+                    this[EditStatusViewModel.EDIT_STATUS_VIEW_MODEL_EXTRA_KEY] =
+                        EditStatusViewModelExtra(
+                            accountInstance = currentAccount,
+                            initialEmoji = initialEmoji,
+                            initialMessage = initialMessage,
+                            initialIndicatesLimitedAvailability = initialIndicatesLimitedAvailability
+                        )
+                }
             )
 
             backStackEntry.savedStateHandle

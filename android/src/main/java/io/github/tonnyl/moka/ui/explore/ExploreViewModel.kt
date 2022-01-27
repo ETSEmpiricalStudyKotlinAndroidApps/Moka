@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.explore
 
 import androidx.lifecycle.*
+import androidx.lifecycle.viewmodel.CreationExtras
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.db.data.dbModel
 import io.tonnyl.moka.common.network.Resource
@@ -17,12 +18,15 @@ import logcat.asLog
 import logcat.logcat
 
 @ExperimentalSerializationApi
-class ExploreViewModel(
-    private val accountInstance: AccountInstance
-) : ViewModel() {
+data class ExploreViewModelExtra(
+    val accountInstance: AccountInstance
+)
+
+@ExperimentalSerializationApi
+class ExploreViewModel(private val extra: ExploreViewModelExtra) : ViewModel() {
 
     private val _queryData =
-        accountInstance.exploreOptionsDataStore.data.asLiveData(context = viewModelScope.coroutineContext)
+        extra.accountInstance.exploreOptionsDataStore.data.asLiveData(context = viewModelScope.coroutineContext)
     val queryData: LiveData<ExploreOptions>
         get() = _queryData
 
@@ -31,8 +35,9 @@ class ExploreViewModel(
         get() = _refreshDataStatus
 
     val repositoriesLocalData =
-        accountInstance.database.trendingRepositoriesDao().trendingRepositories()
-    val developersLocalData = accountInstance.database.trendingDevelopersDao().trendingDevelopers()
+        extra.accountInstance.database.trendingRepositoriesDao().trendingRepositories()
+    val developersLocalData =
+        extra.accountInstance.database.trendingDevelopersDao().trendingDevelopers()
 
     init {
         refreshTrendingData()
@@ -42,9 +47,9 @@ class ExploreViewModel(
         val queryDataValue = queryData.value ?: ExploreOptionsSerializer.defaultValue
 
         val countTrendingData: () -> Boolean = {
-            accountInstance.database.trendingDevelopersDao()
+            extra.accountInstance.database.trendingDevelopersDao()
                 .trendingDevelopersCount() == 0
-                    && accountInstance.database.trendingRepositoriesDao()
+                    && extra.accountInstance.database.trendingRepositoriesDao()
                 .trendingRepositoriesCount() == 0
         }
 
@@ -52,14 +57,14 @@ class ExploreViewModel(
             try {
                 _refreshDataStatus.postValue(Resource.loading(data = countTrendingData.invoke()))
 
-                val developers = accountInstance.trendingApi.listTrendingDevelopers(
+                val developers = extra.accountInstance.trendingApi.listTrendingDevelopers(
                     since = queryDataValue.timeSpan.urlParamValue,
                     language = queryDataValue.exploreLanguage.urlParam
                 ).map {
                     it.dbModel
                 }
 
-                val repositories = accountInstance.trendingApi.listTrendingRepositories(
+                val repositories = extra.accountInstance.trendingApi.listTrendingRepositories(
                     since = queryDataValue.timeSpan.urlParamValue,
                     language = queryDataValue.exploreLanguage.urlParam
                 ).map {
@@ -67,14 +72,14 @@ class ExploreViewModel(
                 }
 
                 if (!developers.isNullOrEmpty()) {
-                    accountInstance.database.trendingDevelopersDao().deleteAll()
-                    accountInstance.database.trendingDevelopersDao()
+                    extra.accountInstance.database.trendingDevelopersDao().deleteAll()
+                    extra.accountInstance.database.trendingDevelopersDao()
                         .insert(developers = developers)
                 }
 
                 if (!repositories.isNullOrEmpty()) {
-                    accountInstance.database.trendingRepositoriesDao().deleteAll()
-                    accountInstance.database.trendingRepositoriesDao()
+                    extra.accountInstance.database.trendingRepositoriesDao().deleteAll()
+                    extra.accountInstance.database.trendingRepositoriesDao()
                         .insert(repositories = repositories)
                 }
 
@@ -99,7 +104,7 @@ class ExploreViewModel(
 
         viewModelScope.launch {
             try {
-                accountInstance.exploreOptionsDataStore.updateData {
+                extra.accountInstance.exploreOptionsDataStore.updateData {
                     ExploreOptions(
                         timeSpan = timeSpan,
                         exploreLanguage = exploreLanguage
@@ -111,6 +116,15 @@ class ExploreViewModel(
                 logcat(priority = LogPriority.ERROR) { e.asLog() }
             }
         }
+    }
+
+    companion object {
+
+        private object ExploreViewModelExtraKeyImpl : CreationExtras.Key<ExploreViewModelExtra>
+
+        val EXPLORE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<ExploreViewModelExtra> =
+            ExploreViewModelExtraKeyImpl
+
     }
 
 }

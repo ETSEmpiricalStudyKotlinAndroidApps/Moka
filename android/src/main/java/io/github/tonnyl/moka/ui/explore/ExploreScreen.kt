@@ -18,7 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -29,8 +30,10 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.extension.displayStringResId
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.ListSubheader
 import io.github.tonnyl.moka.widget.MainSearchBar
@@ -46,6 +49,7 @@ import io.tonnyl.moka.common.util.TrendingRepositoryProvider
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
@@ -58,7 +62,12 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
 
     val exploreViewModel = viewModel<ExploreViewModel>(
         key = LocalAccountInstance.current.toString(),
-        factory = ViewModelFactory(accountInstance = currentAccount)
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[ExploreViewModel.EXPLORE_VIEW_MODEL_EXTRA_KEY] = ExploreViewModelExtra(
+                accountInstance = currentAccount
+            )
+        }
     )
 
     val exploreOptions by exploreViewModel.queryData.observeAsState(initial = ExploreOptionsSerializer.defaultValue)

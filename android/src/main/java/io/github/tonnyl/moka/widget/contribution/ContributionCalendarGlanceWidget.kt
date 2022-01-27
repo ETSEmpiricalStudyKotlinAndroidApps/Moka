@@ -16,6 +16,7 @@ import androidx.glance.appwidget.unit.ColorProvider
 import androidx.glance.layout.*
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.MainActivity
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 class ContributionCalendarGlanceWidget : GlanceAppWidget() {
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -76,6 +78,7 @@ class ContributionCalendarGlanceWidget : GlanceAppWidget() {
 
 }
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 @Composable
 private fun EmptyWidget(context: Context) {
@@ -127,6 +130,7 @@ private fun EmptyWidget(context: Context) {
     }
 }
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 @Composable
 private fun ContributionWeek(
@@ -145,6 +149,7 @@ private fun ContributionWeek(
     }
 }
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 @Composable
 private fun ContributionDay(day: ContributionCalendarDay?) {

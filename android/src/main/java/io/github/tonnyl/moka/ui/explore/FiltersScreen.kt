@@ -29,12 +29,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.extension.displayStringResId
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.tonnyl.moka.common.store.ExploreOptionsSerializer
@@ -43,6 +46,7 @@ import io.tonnyl.moka.common.store.data.ExploreTimeSpan
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @Composable
@@ -67,6 +71,7 @@ fun ExploreFiltersScreen(
     )
 }
 
+@ExperimentalPagingApi
 @ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
@@ -76,9 +81,16 @@ private fun ExploreFiltersScreenContent(
     lazyListState: LazyListState,
     languages: List<ExploreLanguage>
 ) {
+    val currentAccount = LocalAccountInstance.current ?: return
+
     val exploreViewModel = viewModel<ExploreViewModel>(
         key = LocalAccountInstance.current.toString(),
-        factory = ViewModelFactory(accountInstance = LocalAccountInstance.current ?: return)
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[ExploreViewModel.EXPLORE_VIEW_MODEL_EXTRA_KEY] = ExploreViewModelExtra(
+                accountInstance = currentAccount
+            )
+        }
     )
     val exploreOptions by exploreViewModel.queryData.observeAsState(initial = ExploreOptionsSerializer.defaultValue)
 

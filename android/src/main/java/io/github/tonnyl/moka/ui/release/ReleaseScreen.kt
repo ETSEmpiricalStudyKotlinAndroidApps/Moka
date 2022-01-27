@@ -22,7 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -31,13 +32,16 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.util.ReleaseProvider
 import io.tonnyl.moka.graphql.fragment.Release
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
@@ -49,12 +53,15 @@ fun ReleaseScreen(
     val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel<ReleaseViewModel>(
-        factory = ViewModelFactory(
-            accountInstance = currentAccount,
-            login = login,
-            repoName = repoName,
-            tagName = tagName
-        )
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[ReleaseViewModel.RELEASE_VIEW_MODEL_EXTRA_KEY] = ReleaseViewModelExtra(
+                accountInstance = currentAccount,
+                login = login,
+                repoName = repoName,
+                tagName = tagName
+            )
+        }
     )
 
     val releaseResource by viewModel.release.observeAsState()
@@ -144,7 +151,7 @@ private fun ReleaseScreenContent(
             )
     ) {
         RepositoryOwner(
-            avatarUrl = release.repository.owner.repositoryOwner .avatarUrl,
+            avatarUrl = release.repository.owner.repositoryOwner.avatarUrl,
             login = login,
             repoName = repoName,
             enablePlaceholder = enablePlaceholder

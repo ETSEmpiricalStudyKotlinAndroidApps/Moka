@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.paging.ExperimentalPagingApi
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.tonnyl.moka.MokaApp
@@ -39,6 +40,7 @@ import io.github.tonnyl.moka.widget.OutlineChip
 import io.tonnyl.moka.common.AccountInstance
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalSerializationApi
@@ -67,6 +69,7 @@ fun AccountDialogScreen(showState: MutableState<Boolean>) {
     }
 }
 
+@ExperimentalPagingApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
@@ -211,6 +214,7 @@ private fun AccountDialogScreenContent(
     }
 }
 
+@ExperimentalPagingApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
@@ -291,6 +295,7 @@ private fun ItemAccount(
 }
 
 
+@ExperimentalPagingApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @SuppressLint("UnrememberedMutableState")

@@ -28,11 +28,12 @@ import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.work.ContributionCalendarWorker
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel> {
-        MainViewModelFactory(applicationContext as MokaApp)
+        ViewModelFactory()
     }
 
     @OptIn(

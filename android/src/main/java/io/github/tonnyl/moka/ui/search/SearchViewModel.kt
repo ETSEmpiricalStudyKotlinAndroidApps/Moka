@@ -2,7 +2,12 @@ package io.github.tonnyl.moka.ui.search
 
 import android.app.Application
 import androidx.datastore.core.DataStore
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -27,10 +32,16 @@ import logcat.asLog
 import logcat.logcat
 
 @ExperimentalSerializationApi
+data class SearchScreenViewModelExtra(
+    val accountInstance: AccountInstance,
+    val initialSearchKeyword: String
+)
+
+@ExperimentalPagingApi
+@ExperimentalSerializationApi
 class SearchViewModel(
     app: Application,
-    private val accountInstance: AccountInstance,
-    private val initialSearchKeyword: String
+    private val extra: SearchScreenViewModelExtra
 ) : AndroidViewModel(app) {
 
     private val _userInput = MutableLiveData<String>()
@@ -42,11 +53,11 @@ class SearchViewModel(
     var repositoriesFlow: Flow<PagingData<RepositoryListItemFragment>>? = null
         private set
 
-    val queryHistoryStore: DataStore<SearchHistory> = accountInstance.searchHistoryDataStore
+    val queryHistoryStore: DataStore<SearchHistory> = extra.accountInstance.searchHistoryDataStore
 
     init {
-        if (initialSearchKeyword.isNotEmpty()) {
-            updateInput(initialSearchKeyword)
+        if (extra.initialSearchKeyword.isNotEmpty()) {
+            updateInput(extra.initialSearchKeyword)
         }
     }
 
@@ -61,7 +72,7 @@ class SearchViewModel(
             config = defaultPagingConfig,
             pagingSourceFactory = {
                 SearchedUsersItemDataSource(
-                    apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                    apolloClient = extra.accountInstance.apolloGraphQLClient.apolloClient,
                     query = newInput
                 )
             }
@@ -71,7 +82,7 @@ class SearchViewModel(
             config = defaultPagingConfig,
             pagingSourceFactory = {
                 SearchedRepositoriesItemDataSource(
-                    apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
+                    apolloClient = extra.accountInstance.apolloGraphQLClient.apolloClient,
                     query = newInput
                 )
             }
@@ -129,6 +140,11 @@ class SearchViewModel(
     companion object {
 
         private const val MAX_SEARCH_HISTORY_SIZE = 3
+
+        private object SearchViewModelExtraKeyImpl : CreationExtras.Key<SearchScreenViewModelExtra>
+
+        val SEARCH_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<SearchScreenViewModelExtra> =
+            SearchViewModelExtraKeyImpl
 
     }
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -30,6 +31,7 @@ import io.github.tonnyl.moka.widget.WebViewComposable
 import io.tonnyl.moka.common.network.KtorClient
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 class AuthBrowserActivity : ComponentActivity() {
 
     @OptIn(

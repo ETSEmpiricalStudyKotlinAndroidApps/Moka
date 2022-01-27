@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import androidx.paging.ExperimentalPagingApi
 import androidx.work.*
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.widget.contribution.ContributionCalendarAppWidgetReceiver
@@ -18,6 +19,7 @@ import logcat.asLog
 import logcat.logcat
 import java.util.concurrent.TimeUnit
 
+@ExperimentalPagingApi
 class ContributionCalendarWorker(
     appContext: Context,
     params: WorkerParameters
@@ -104,6 +106,7 @@ class ContributionCalendarWorker(
         applicationContext.sendBroadcast(intent)
     }
 
+    @ExperimentalPagingApi
     companion object {
 
         const val TAG = "ContributionCalendarWorker"

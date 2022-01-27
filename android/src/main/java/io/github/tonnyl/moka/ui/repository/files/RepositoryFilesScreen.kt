@@ -17,7 +17,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -27,8 +28,10 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -40,6 +43,7 @@ import io.tonnyl.moka.common.util.TreeEntryProvider
 import io.tonnyl.moka.graphql.fragment.TreeEntry
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalMaterialApi
 @ExperimentalSerializationApi
 @Composable
@@ -53,12 +57,16 @@ fun RepositoryFilesScreen(
     val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel<RepositoryFilesViewModel>(
-        factory = ViewModelFactory(
-            accountInstance = currentAccount,
-            login = login,
-            repositoryName = repoName,
-            expression = expression
-        ),
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[RepositoryFilesViewModel.REPOSITORY_FILES_VIEW_MODEL_EXTRA_KEY] =
+                RepositoryFilesViewModelExtra(
+                    accountInstance = currentAccount,
+                    login = login,
+                    repositoryName = repoName,
+                    expression = expression
+                )
+        },
         key = expression
     )
 
@@ -272,9 +280,15 @@ private fun ItemTreeEntry(
                         route = Screen.File.route
                             .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
                             .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                            .replace("{${Screen.ARG_FILE_PATH}}", currentExpression.replace(":", "/"))
+                            .replace(
+                                "{${Screen.ARG_FILE_PATH}}",
+                                currentExpression.replace(":", "/")
+                            )
                             .replace("{${Screen.ARG_FILE_NAME}}", treeEntry.name)
-                            .replace("{${Screen.ARG_FILE_EXTENSION}}", treeEntry.extension.orEmpty())
+                            .replace(
+                                "{${Screen.ARG_FILE_EXTENSION}}",
+                                treeEntry.extension.orEmpty()
+                            )
                     )
                 }
             }

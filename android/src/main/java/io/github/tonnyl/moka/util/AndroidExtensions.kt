@@ -9,6 +9,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.ui.auth.Authenticator
 import io.tonnyl.moka.common.data.AccessToken
 import io.tonnyl.moka.common.data.AuthenticatedUser
@@ -23,6 +24,7 @@ import logcat.logcat
 import okio.buffer
 import okio.source
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 fun AccountManager.insertNewAccount(token: AccessToken, user: AuthenticatedUser) {
     val userString = runCatching {

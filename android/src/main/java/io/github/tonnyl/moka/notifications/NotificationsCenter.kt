@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavDeepLinkBuilder
+import androidx.paging.ExperimentalPagingApi
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -27,6 +28,7 @@ import logcat.asLog
 import logcat.logcat
 import android.app.Notification as AndroidNotification
 
+@ExperimentalPagingApi
 object NotificationsCenter {
 
     private const val NOTIFICATION_CHANNEL_ID = "notification_channel_id"

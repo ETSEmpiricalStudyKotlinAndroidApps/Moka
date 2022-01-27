@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
@@ -29,6 +30,7 @@ import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
+@ExperimentalPagingApi
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _authTokenAndUserResult =

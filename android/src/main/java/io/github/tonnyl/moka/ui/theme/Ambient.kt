@@ -3,6 +3,7 @@ package io.github.tonnyl.moka.ui.theme
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavHostController
+import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.tonnyl.moka.common.AccountInstance
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -13,5 +14,6 @@ val LocalWindowInsetsController = staticCompositionLocalOf<WindowInsetsControlle
 val LocalAccountInstance = staticCompositionLocalOf<AccountInstance?> { null }
 val LocalNavController = staticCompositionLocalOf<NavHostController> { error("No NavController") }
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 val LocalMainViewModel = staticCompositionLocalOf<MainViewModel> { error("No MainViewModel") }

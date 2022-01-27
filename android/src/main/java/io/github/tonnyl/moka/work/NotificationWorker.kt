@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.work
 
 import android.content.Context
+import androidx.paging.ExperimentalPagingApi
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.github.tonnyl.moka.MokaApp
@@ -17,6 +18,7 @@ import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
+@ExperimentalPagingApi
 class NotificationWorker(
     appContext: Context,
     params: WorkerParameters

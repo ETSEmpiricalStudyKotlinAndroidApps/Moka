@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.settings
 
+import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,14 +21,19 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.ViewModelFactory
+import io.github.tonnyl.moka.ui.settings.SettingsViewModel.Companion.SETTINGS_VIEW_MODEL_EXTRA_KEY
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.PreferenceCategoryText
 import io.github.tonnyl.moka.widget.PreferenceDivider
@@ -62,6 +68,7 @@ data class OnSettingItemClick(
     val onClearImageCacheClick: () -> Unit
 )
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -69,10 +76,12 @@ fun SettingScreen() {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel<SettingsViewModel>(
-        factory = ViewModelFactory(
-            accountInstance = currentAccount,
-            context = LocalContext.current
-        )
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[APPLICATION_KEY] = LocalContext.current.applicationContext as Application
+            this[SETTINGS_VIEW_MODEL_EXTRA_KEY] =
+                SettingsViewModelExtra(accountInstance = currentAccount)
+        }
     )
 
     val scaffoldState = rememberScaffoldState()

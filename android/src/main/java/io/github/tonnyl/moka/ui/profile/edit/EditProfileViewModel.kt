@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Resource
 import kotlinx.coroutines.Dispatchers
@@ -15,41 +16,44 @@ import logcat.asLog
 import logcat.logcat
 
 @ExperimentalSerializationApi
-class EditProfileViewModel(
-    private val accountInstance: AccountInstance,
-    initialName: String?,
-    initialBio: String?,
-    initialUrl: String?,
-    initialCompany: String?,
-    initialLocation: String?,
-    initialTwitter: String?
-) : ViewModel() {
+data class EditProfileViewModelExtra(
+    val accountInstance: AccountInstance,
+    val initialName: String?,
+    val initialBio: String?,
+    val initialUrl: String?,
+    val initialCompany: String?,
+    val initialLocation: String?,
+    val initialTwitter: String?
+)
+
+@ExperimentalSerializationApi
+class EditProfileViewModel(private val extra: EditProfileViewModelExtra) : ViewModel() {
 
     private val _loadingStatus = MutableLiveData<Resource<Unit>>()
     val loadingStatus: LiveData<Resource<Unit>>
         get() = _loadingStatus
 
-    private val _name = MutableLiveData(initialName)
+    private val _name = MutableLiveData(extra.initialName)
     val name: LiveData<String?>
         get() = _name
 
-    private val _bio = MutableLiveData(initialBio)
+    private val _bio = MutableLiveData(extra.initialBio)
     val bio: LiveData<String?>
         get() = _bio
 
-    private val _url = MutableLiveData(initialUrl)
+    private val _url = MutableLiveData(extra.initialUrl)
     val url: LiveData<String?>
         get() = _url
 
-    private val _company = MutableLiveData(initialCompany)
+    private val _company = MutableLiveData(extra.initialCompany)
     val company: LiveData<String?>
         get() = _company
 
-    private val _location = MutableLiveData(initialLocation)
+    private val _location = MutableLiveData(extra.initialLocation)
     val location: LiveData<String?>
         get() = _location
 
-    private val _twitterUsername = MutableLiveData(initialTwitter)
+    private val _twitterUsername = MutableLiveData(extra.initialTwitter)
     val twitterUsername: LiveData<String?>
         get() = _twitterUsername
 
@@ -96,7 +100,7 @@ class EditProfileViewModel(
                 )
 
                 val updateResponse = withContext(Dispatchers.IO) {
-                    accountInstance.userApi.updateUseInformation(body)
+                    extra.accountInstance.userApi.updateUseInformation(body)
                 }
 
                 _loadingStatus.value = Resource.success(null)
@@ -106,6 +110,16 @@ class EditProfileViewModel(
                 _loadingStatus.value = Resource.error(null, null)
             }
         }
+    }
+
+    companion object {
+
+        private object EditProfileViewModelExtraKeyImpl :
+            CreationExtras.Key<EditProfileViewModelExtra>
+
+        val EDIT_PROFILE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<EditProfileViewModelExtra> =
+            EditProfileViewModelExtraKeyImpl
+
     }
 
 }

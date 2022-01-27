@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.branches
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
@@ -10,19 +11,22 @@ import io.tonnyl.moka.graphql.type.RefOrder
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
-class BranchesViewModel(
-    accountInstance: AccountInstance,
-    login: String,
-    repoName: String,
-    refPrefix: String
-) : ViewModel() {
+data class BranchesViewModelExtra(
+    val accountInstance: AccountInstance,
+    val login: String,
+    val repoName: String,
+    val refPrefix: String
+)
+
+@ExperimentalSerializationApi
+class BranchesViewModel(extra: BranchesViewModelExtra) : ViewModel() {
 
     private val dataSource by lazy(LazyThreadSafetyMode.NONE) {
         BranchesDataSource(
-            apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-            login = login,
-            repoName = repoName,
-            refPrefix = refPrefix
+            apolloClient = extra.accountInstance.apolloGraphQLClient.apolloClient,
+            login = extra.login,
+            repoName = extra.repoName,
+            refPrefix = extra.refPrefix
         )
     }
 
@@ -36,6 +40,16 @@ class BranchesViewModel(
     fun invalidateDataSource(sort: RefOrder) {
         dataSource.sort = sort
         dataSource.invalidate()
+    }
+
+    companion object {
+
+        private object BranchesViewModelExtraKeyImpl :
+            CreationExtras.Key<BranchesViewModelExtra>
+
+        val BRANCHES_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<BranchesViewModelExtra> =
+            BranchesViewModelExtraKeyImpl
+
     }
 
 }

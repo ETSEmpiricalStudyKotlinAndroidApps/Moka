@@ -14,7 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -28,8 +29,11 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.ui.topics.RepositoryTopicsViewModel.Companion.REPOSITORY_TOPICS_VIEW_MODEL_EXTRA_KEY
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -39,6 +43,7 @@ import io.tonnyl.moka.common.util.RepositoryTopicProvider
 import io.tonnyl.moka.graphql.fragment.RepositoryTopic
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalMaterialApi
 @ExperimentalSerializationApi
 @Composable
@@ -49,11 +54,14 @@ fun RepositoryTopicsScreen(
     val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel<RepositoryTopicsViewModel>(
-        factory = ViewModelFactory(
-            accountInstance = currentAccount,
-            login = login,
-            repoName = repoName
-        )
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[REPOSITORY_TOPICS_VIEW_MODEL_EXTRA_KEY] = RepositoryTopicsViewModelExtra(
+                accountInstance = currentAccount,
+                login = login,
+                repoName = repoName
+            )
+        }
     )
 
     val topics = viewModel.topicsFlow.collectAsLazyPagingItems()

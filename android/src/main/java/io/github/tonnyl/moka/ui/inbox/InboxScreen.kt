@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.inbox
 
+import android.app.Application
 import android.text.format.DateUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -22,7 +24,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -42,8 +45,10 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.NotificationReasons
 import io.tonnyl.moka.common.db.data.Notification
@@ -62,10 +67,13 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
     val inboxViewModel = viewModel<InboxViewModel>(
         key = currentAccount.toString(),
-        factory = ViewModelFactory(
-            accountInstance = currentAccount,
-            app = LocalMainViewModel.current.getApplication()
-        )
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[APPLICATION_KEY] = LocalContext.current.applicationContext as Application
+            this[InboxViewModel.INBOX_VIEW_MODEL_EXTRA_KEY] = InboxViewModelExtra(
+                accountInstance = currentAccount
+            )
+        }
     )
 
     val isNeedDisplayPlaceholder by inboxViewModel.isNeedDisplayPlaceholderLiveData.observeAsState()

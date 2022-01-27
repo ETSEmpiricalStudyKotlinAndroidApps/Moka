@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import io.github.tonnyl.moka.util.HtmlHandler
 import io.github.tonnyl.moka.util.updateOnAnyThread
 import io.tonnyl.moka.common.AccountInstance
@@ -28,11 +29,14 @@ import logcat.logcat
 import java.nio.charset.StandardCharsets
 
 @ExperimentalSerializationApi
-class RepositoryViewModel(
-    private val accountInstance: AccountInstance,
-    private val login: String,
-    private val repositoryName: String
-) : ViewModel() {
+data class RepositoryViewModelExtra(
+    val accountInstance: AccountInstance,
+    val login: String,
+    val repositoryName: String
+)
+
+@ExperimentalSerializationApi
+class RepositoryViewModel(private val extra: RepositoryViewModelExtra) : ViewModel() {
 
     private val _repository = MutableLiveData<Resource<Repository>>()
     val repository: LiveData<Resource<Repository>>
@@ -59,12 +63,12 @@ class RepositoryViewModel(
             _repository.postValue(Resource.loading(null))
 
             try {
-                val repo = accountInstance.apolloGraphQLClient
+                val repo = extra.accountInstance.apolloGraphQLClient
                     .apolloClient
                     .query(
                         query = RepositoryQuery(
-                            login = login,
-                            repoName = repositoryName
+                            login = extra.login,
+                            repoName = extra.repositoryName
                         )
                     ).execute().data?.repository?.repository
 
@@ -88,10 +92,10 @@ class RepositoryViewModel(
             _readmeHtml.postValue(Resource.loading(null))
 
             try {
-                val response = accountInstance.repositoryContentApi
+                val response = extra.accountInstance.repositoryContentApi
                     .getReadme(
-                        owner = login,
-                        repo = repositoryName,
+                        owner = extra.login,
+                        repo = extra.repositoryName,
                         ref = branchName
                     )
 
@@ -102,8 +106,8 @@ class RepositoryViewModel(
                                 Base64.decode(response.content, Base64.DEFAULT),
                                 StandardCharsets.UTF_8
                             ),
-                            login = login,
-                            repositoryName = repositoryName,
+                            login = extra.login,
+                            repositoryName = extra.repositoryName,
                             branch = branchName
                         )
                     )
@@ -128,7 +132,7 @@ class RepositoryViewModel(
             _starState.postValue(Resource.loading(hasStarred))
 
             try {
-                accountInstance.apolloGraphQLClient.apolloClient
+                extra.accountInstance.apolloGraphQLClient.apolloClient
                     .mutation(
                         mutation = if (hasStarred) {
                             RemoveStarMutation(RemoveStarInput(starrableId = repositoryId))
@@ -159,7 +163,7 @@ class RepositoryViewModel(
             try {
                 _subscriptionState.postValue(Resource.loading(data = _subscriptionState.value?.data))
 
-                accountInstance.apolloGraphQLClient
+                extra.accountInstance.apolloGraphQLClient
                     .apolloClient
                     .mutate(
                         mutation = UpdateSubscriptionMutation(
@@ -193,9 +197,9 @@ class RepositoryViewModel(
             try {
                 _forkState.postValue(Resource.loading(data = null))
 
-                accountInstance.repositoryApi.createAFork(
-                    owner = login,
-                    repo = repositoryName
+                extra.accountInstance.repositoryApi.createAFork(
+                    owner = extra.login,
+                    repo = extra.repositoryName
                 )
 
                 _forkState.postValue(Resource.success(data = true))
@@ -211,6 +215,16 @@ class RepositoryViewModel(
         _forkState.value?.let {
             _forkState.updateOnAnyThread(newValue = it.copy(data = false))
         }
+    }
+
+    companion object {
+
+        private object RepositoryViewModelExtraKeyImpl :
+            CreationExtras.Key<RepositoryViewModelExtra>
+
+        val REPOSITORY_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<RepositoryViewModelExtra> =
+            RepositoryViewModelExtraKeyImpl
+
     }
 
 }

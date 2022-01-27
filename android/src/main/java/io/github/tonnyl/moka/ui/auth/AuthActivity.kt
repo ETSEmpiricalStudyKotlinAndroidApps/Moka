@@ -19,24 +19,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.navigation.compose.rememberNavController
+import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainActivity
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MokaTheme
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.tonnyl.moka.common.ui.auth.AuthEvent.FinishAndGo
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 class AuthActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<AuthViewModel>(factoryProducer = {
-        ViewModelFactory(this)
-    })
+    @OptIn(ExperimentalSerializationApi::class)
+    private val viewModel by viewModels<AuthViewModel>(
+        factoryProducer = {
+            ViewModelFactory()
+        }
+    )
 
     @OptIn(
         ExperimentalSerializationApi::class,
@@ -49,7 +54,6 @@ class AuthActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            val navController = rememberNavController()
             val scaffoldState = rememberScaffoldState()
 
             val windowInsetsControllerCompat =

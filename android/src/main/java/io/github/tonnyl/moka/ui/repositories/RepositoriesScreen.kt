@@ -23,7 +23,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -40,10 +41,13 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption.*
+import io.github.tonnyl.moka.ui.repositories.RepositoriesViewModel.Companion.REPOSITORIES_VIEW_MODEL_EXTRA_KEY
 import io.github.tonnyl.moka.ui.repositories.filters.RepositoryFiltersSheet
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
@@ -57,6 +61,7 @@ import io.tonnyl.moka.graphql.type.*
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
@@ -104,12 +109,15 @@ fun RepositoriesScreen(
     val queryOption by queryOptionState
 
     val viewModel = viewModel<RepositoriesViewModel>(
-        factory = ViewModelFactory(
-            accountInstance = currentAccount,
-            login = login,
-            repoName = repoName,
-            queryOption = queryOption
-        ),
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[REPOSITORIES_VIEW_MODEL_EXTRA_KEY] = RepositoriesViewModelExtra(
+                accountInstance = currentAccount,
+                login = login,
+                repoName = repoName,
+                queryOption = queryOption
+            )
+        },
         key = queryOption.toString()
     )
 

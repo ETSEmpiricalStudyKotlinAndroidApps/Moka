@@ -16,24 +16,24 @@ object Versions {
     const val serializationProtoBuf = "1.3.1"
     const val browser = "1.4.0"
     const val lifecycle = "2.2.0"
-    const val liveDataKtx = "2.4.0"
-    const val viewModelCompose = "2.4.0"
-    const val navigation = "2.4.0-rc01"
+    const val liveData = "2.5.0-alpha01"
+    const val viewModelCompose = "2.5.0-alpha01"
+    const val navigation = "2.5.0-alpha01"
     const val paging = "3.1.0"
     const val pagingCompose = "1.0.0-alpha14"
     const val workManager = "2.8.0-alpha01"
     const val room = "2.4.1"
-    const val ui = "1.2.0-alpha01"
+    const val ui = "1.2.0-alpha02"
     const val composeDesktop = "1.1.0-alpha1-dev550"
     const val constraintLayoutCompose = "1.0.0"
-    const val wearOSCompose = "1.0.0-alpha14"
+    const val wearOSCompose = "1.0.0-alpha15"
     const val dataStore = "1.0.0"
-    const val activityCompose = "1.4.0"
+    const val activityCompose = "1.5.0-alpha01"
     const val splashScreen = "1.0.0-beta01"
-    const val accompanist = "0.24.0-alpha"
+    const val accompanist = "0.24.1-alpha"
     const val material = "1.6.0-alpha01"
-    const val material3 = "1.0.0-alpha03"
-    const val glance = "1.0.0-alpha01"
+    const val material3 = "1.0.0-alpha04"
+    const val glance = "1.0.0-alpha02"
     const val kspApi = "1.6.10-1.0.2"
     const val wearOS = "17.1.0"
     const val wear = "1.3.0-alpha01"
@@ -109,11 +109,11 @@ object Deps {
             const val lifecycleExtensions =
                 "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
             const val liveDataKtx =
-                "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.liveDataKtx}"
+                "androidx.lifecycle:lifecycle-livedata:${Versions.liveData}"
             const val viewModelCompose =
                 "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.viewModelCompose}"
             const val runtimeKtx =
-                "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
+                "androidx.lifecycle:lifecycle-runtime:${Versions.lifecycle}"
 
         }
 

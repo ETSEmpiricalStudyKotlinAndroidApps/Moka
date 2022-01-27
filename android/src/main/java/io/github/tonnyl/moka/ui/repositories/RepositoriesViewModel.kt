@@ -2,6 +2,7 @@ package io.github.tonnyl.moka.ui.repositories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
@@ -9,25 +10,37 @@ import io.tonnyl.moka.common.ui.defaultPagingConfig
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
-class RepositoriesViewModel(
-    accountInstance: AccountInstance,
-    login: String,
-    repoName: String?,
-    queryOption: RepositoriesQueryOption
-) : ViewModel() {
+data class RepositoriesViewModelExtra(
+    val accountInstance: AccountInstance,
+    val login: String,
+    val repoName: String?,
+    val queryOption: RepositoriesQueryOption
+)
+
+@ExperimentalSerializationApi
+class RepositoriesViewModel(extra: RepositoriesViewModelExtra) : ViewModel() {
 
     val repositoriesFlow by lazy(LazyThreadSafetyMode.NONE) {
         Pager(
             config = defaultPagingConfig,
             pagingSourceFactory = {
                 RepositoriesDataSource(
-                    apolloClient = accountInstance.apolloGraphQLClient.apolloClient,
-                    login = login,
-                    repoName = repoName,
-                    queryOption = queryOption
+                    apolloClient = extra.accountInstance.apolloGraphQLClient.apolloClient,
+                    login = extra.login,
+                    repoName = extra.repoName,
+                    queryOption = extra.queryOption
                 )
             }
         ).flow.cachedIn(viewModelScope)
+    }
+
+    companion object {
+
+        private object RepositoriesViewModelKeyImpl : CreationExtras.Key<RepositoriesViewModelExtra>
+
+        val REPOSITORIES_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<RepositoriesViewModelExtra> =
+            RepositoriesViewModelKeyImpl
+
     }
 
 }

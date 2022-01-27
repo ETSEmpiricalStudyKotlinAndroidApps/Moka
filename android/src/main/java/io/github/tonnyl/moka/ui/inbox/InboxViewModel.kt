@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.cachedIn
@@ -13,9 +14,14 @@ import io.tonnyl.moka.common.ui.defaultPagingConfig
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
+data class InboxViewModelExtra(
+    val accountInstance: AccountInstance,
+)
+
+@ExperimentalSerializationApi
 @ExperimentalPagingApi
 class InboxViewModel(
-    accountInstance: AccountInstance,
+    extra: InboxViewModelExtra,
     app: Application
 ) : AndroidViewModel(app) {
 
@@ -28,14 +34,23 @@ class InboxViewModel(
         Pager(
             config = defaultPagingConfig,
             remoteMediator = NotificationRemoteMediator(
-                notificationsApi = accountInstance.notificationApi,
-                database = accountInstance.database,
+                notificationsApi = extra.accountInstance.notificationApi,
+                database = extra.accountInstance.database,
                 isNeedDisplayPlaceholder = _isNeedDisplayPlaceholderLiveData
             ),
             pagingSourceFactory = {
-                accountInstance.database.notificationsDao().notificationsByDate()
+                extra.accountInstance.database.notificationsDao().notificationsByDate()
             }
         ).flow.cachedIn(viewModelScope)
+    }
+
+    companion object {
+
+        private object InboxViewModelExtraKeyImpl : CreationExtras.Key<InboxViewModelExtra>
+
+        val INBOX_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<InboxViewModelExtra> =
+            InboxViewModelExtraKeyImpl
+
     }
 
 }

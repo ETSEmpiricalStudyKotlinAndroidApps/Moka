@@ -18,7 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -29,9 +30,11 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.issue.IssueTimelineCommentItem
 import io.github.tonnyl.moka.ui.issue.ItemIssueTimelineEvent
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -39,6 +42,7 @@ import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.IssueTimelineEventProvider
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
@@ -46,10 +50,14 @@ fun CommentTreadScreen(nodeId: String) {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel<CommentThreadViewModel>(
-        factory = ViewModelFactory(
-            accountInstance = currentAccount,
-            nodeId = nodeId
-        )
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[CommentThreadViewModel.COMMENT_THREAD_VIEW_MODEL_EXTRA_KEY] =
+                CommentThreadViewModelExtra(
+                    accountInstance = currentAccount,
+                    nodeId = nodeId
+                )
+        }
     )
 
     val thread = viewModel.threadFlow.collectAsLazyPagingItems()

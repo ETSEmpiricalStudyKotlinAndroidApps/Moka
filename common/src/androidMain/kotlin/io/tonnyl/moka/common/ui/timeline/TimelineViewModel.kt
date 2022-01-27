@@ -1,10 +1,7 @@
 package io.tonnyl.moka.common.ui.timeline
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.cachedIn
@@ -13,11 +10,13 @@ import io.tonnyl.moka.common.ui.defaultPagingConfig
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
+data class TimelineViewModelExtra(
+    val accountInstance: AccountInstance
+)
+
+@ExperimentalSerializationApi
 @ExperimentalPagingApi
-class TimelineViewModel(
-    accountInstance: AccountInstance,
-    app: Application
-) : AndroidViewModel(app) {
+class TimelineViewModel(extra: TimelineViewModelExtra) : ViewModel() {
 
     private val _isNeedDisplayPlaceholderLiveData = MutableLiveData<Boolean>()
     val isNeedDisplayPlaceholderLiveData: LiveData<Boolean>
@@ -28,17 +27,26 @@ class TimelineViewModel(
         Pager(
             config = defaultPagingConfig,
             remoteMediator = EventRemoteMediator(
-                login = accountInstance.signedInAccount.account.login,
-                eventApi = accountInstance.eventApi,
-                database = accountInstance.database,
+                login = extra.accountInstance.signedInAccount.account.login,
+                eventApi = extra.accountInstance.eventApi,
+                database = extra.accountInstance.database,
                 isNeedDisplayPlaceholder = _isNeedDisplayPlaceholderLiveData
             ),
             pagingSourceFactory = {
-                accountInstance.database
+                extra.accountInstance.database
                     .eventDao()
                     .eventsByCreatedAt()
             }
         ).flow.cachedIn(viewModelScope)
+    }
+
+    companion object {
+
+        private object TimelineViewModelExtraKeyImpl : CreationExtras.Key<TimelineViewModelExtra>
+
+        val TIMELINE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<TimelineViewModelExtra> =
+            TimelineViewModelExtraKeyImpl
+
     }
 
 }

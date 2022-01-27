@@ -1,6 +1,8 @@
 package io.github.tonnyl.moka.ui
 
+import android.app.Application
 import androidx.lifecycle.*
+import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.util.readEmojisFromAssets
 import io.tonnyl.moka.common.data.Emoji
@@ -19,9 +21,10 @@ import logcat.logcat
 import okio.buffer
 import okio.source
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 class MainViewModel(
-    app: MokaApp
+    app: Application
 ) : AndroidViewModel(app) {
 
     private var allSearchableEmojis = mutableListOf<SearchableEmoji>()

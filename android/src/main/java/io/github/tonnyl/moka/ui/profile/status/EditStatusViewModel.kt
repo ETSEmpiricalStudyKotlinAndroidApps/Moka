@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.apollographql.apollo3.api.Optional
 import io.github.tonnyl.moka.data.UserStatus
 import io.tonnyl.moka.common.AccountInstance
@@ -21,12 +22,15 @@ import logcat.asLog
 import logcat.logcat
 
 @ExperimentalSerializationApi
-class EditStatusViewModel(
-    private val accountInstance: AccountInstance,
-    initialEmoji: String?,
-    initialMessage: String?,
-    initialIndicatesLimitedAvailability: Boolean?
-) : ViewModel() {
+data class EditStatusViewModelExtra(
+    val accountInstance: AccountInstance,
+    val initialEmoji: String?,
+    val initialMessage: String?,
+    val initialIndicatesLimitedAvailability: Boolean?
+)
+
+@ExperimentalSerializationApi
+class EditStatusViewModel(private val extra: EditStatusViewModelExtra) : ViewModel() {
 
     private val _updateStatusState = MutableLiveData<Resource<UserStatus?>>()
     val updateStatusState: LiveData<Resource<UserStatus?>>
@@ -36,15 +40,16 @@ class EditStatusViewModel(
     val clearStatusState: LiveData<Resource<UserStatus?>>
         get() = _clearStatusState
 
-    private val _emojiName = MutableLiveData<String?>(initialEmoji)
+    private val _emojiName = MutableLiveData<String?>(extra.initialEmoji)
     val emojiName: LiveData<String?>
         get() = _emojiName
 
-    private val _message = MutableLiveData<String?>(initialMessage)
+    private val _message = MutableLiveData<String?>(extra.initialMessage)
     val message: LiveData<String?>
         get() = _message
 
-    private val _limitedAvailability = MutableLiveData<Boolean>(initialIndicatesLimitedAvailability)
+    private val _limitedAvailability =
+        MutableLiveData<Boolean>(extra.initialIndicatesLimitedAvailability)
     val limitedAvailability: LiveData<Boolean>
         get() = _limitedAvailability
 
@@ -62,7 +67,7 @@ class EditStatusViewModel(
                 _clearStatusState.value = Resource.loading(null)
 
                 withContext(Dispatchers.IO) {
-                    accountInstance.apolloGraphQLClient.apolloClient
+                    extra.accountInstance.apolloGraphQLClient.apolloClient
                         .mutation(
                             mutation = ChangeUserStatusMutation(
                                 ChangeUserStatusInput()
@@ -119,7 +124,7 @@ class EditStatusViewModel(
                     }
                 }
                 withContext(Dispatchers.IO) {
-                    accountInstance.apolloGraphQLClient.apolloClient
+                    extra.accountInstance.apolloGraphQLClient.apolloClient
                         .mutation(
                             mutation = ChangeUserStatusMutation(
                                 input = ChangeUserStatusInput(
@@ -165,6 +170,16 @@ class EditStatusViewModel(
 
     fun updateExpireAt(expireAt: ExpireAt) {
         _expiresAt.value = expireAt
+    }
+
+    companion object {
+
+        private object EditStatusViewModelExtraKeyImpl :
+            CreationExtras.Key<EditStatusViewModelExtra>
+
+        val EDIT_STATUS_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<EditStatusViewModelExtra> =
+            EditStatusViewModelExtraKeyImpl
+
     }
 
 }

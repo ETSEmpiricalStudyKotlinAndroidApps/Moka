@@ -19,7 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -32,10 +33,12 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -48,6 +51,7 @@ import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
+@ExperimentalPagingApi
 @ExperimentalMaterialApi
 @ExperimentalSerializationApi
 @Composable
@@ -59,12 +63,16 @@ fun ReleaseAssetsScreen(
     val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel<ReleaseAssetsViewModel>(
-        factory = ViewModelFactory(
-            accountInstance = currentAccount,
-            login = login,
-            repoName = repoName,
-            tagName = tagName
-        )
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[ReleaseAssetsViewModel.RELEASES_VIEW_MODEL_EXTRA_KEY] =
+                ReleaseAssetsViewModelExtra(
+                    accountInstance = currentAccount,
+                    login = login,
+                    repoName = repoName,
+                    tagName = tagName
+                )
+        }
     )
 
     val assets = viewModel.assets.collectAsLazyPagingItems()
@@ -221,7 +229,10 @@ private fun ItemReleaseAsset(
                 onClick = {
                     try {
                         context.startActivity(
-                            Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER).apply {
+                            Intent.makeMainSelectorActivity(
+                                Intent.ACTION_MAIN,
+                                Intent.CATEGORY_APP_BROWSER
+                            ).apply {
                                 data = Uri.parse(asset.downloadUrl)
                                 flags = Intent.FLAG_ACTIVITY_NEW_DOCUMENT
                             }
@@ -266,13 +277,22 @@ private fun ItemReleaseAsset(
                             stringResource(id = R.string.release_asset_size_in_bytes, asset.size)
                         }
                         sizeInB in (1 until 1024) -> { // [1KB, 1024KB)
-                            stringResource(id = R.string.release_asset_size_kilobytes, asset.size / (1024.0f))
+                            stringResource(
+                                id = R.string.release_asset_size_kilobytes,
+                                asset.size / (1024.0f)
+                            )
                         }
                         sizeInB in (1024 until 1024 * 1024) -> {
-                            stringResource(id = R.string.release_asset_size_megabytes, asset.size / (1024 * 1024.0f))
+                            stringResource(
+                                id = R.string.release_asset_size_megabytes,
+                                asset.size / (1024 * 1024.0f)
+                            )
                         }
                         else -> {
-                            stringResource(id = R.string.release_asset_size_gigabytes, asset.size / (1024 * 1024 * 1024.0f))
+                            stringResource(
+                                id = R.string.release_asset_size_gigabytes,
+                                asset.size / (1024 * 1024 * 1024.0f)
+                            )
                         }
                     },
                     style = MaterialTheme.typography.body2,

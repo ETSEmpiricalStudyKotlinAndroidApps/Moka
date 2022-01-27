@@ -3,7 +3,9 @@ package io.github.tonnyl.moka.ui.auth
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import androidx.paging.ExperimentalPagingApi
 
+@ExperimentalPagingApi
 class AuthenticationService : Service() {
 
     private lateinit var authenticator: Authenticator

@@ -17,17 +17,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import io.tonnyl.moka.common.network.Status
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -42,15 +46,19 @@ fun EditProfileScreen(
     val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel<EditProfileViewModel>(
-        factory = ViewModelFactory(
-            accountInstance = currentAccount,
-            name = initialName,
-            bio = initialBio,
-            url = initialUrl,
-            company = initialCompany,
-            location = initialLocation,
-            twitter = initialTwitter
-        )
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[EditProfileViewModel.EDIT_PROFILE_VIEW_MODEL_EXTRA_KEY] =
+                EditProfileViewModelExtra(
+                    accountInstance = currentAccount,
+                    initialName = initialName,
+                    initialBio = initialBio,
+                    initialUrl = initialUrl,
+                    initialCompany = initialCompany,
+                    initialLocation = initialLocation,
+                    initialTwitter = initialTwitter
+                )
+        }
     )
 
     val scaffoldState = rememberScaffoldState()

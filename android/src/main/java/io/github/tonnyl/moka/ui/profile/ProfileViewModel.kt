@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
@@ -25,11 +26,14 @@ import logcat.asLog
 import logcat.logcat
 
 @ExperimentalSerializationApi
-class ProfileViewModel(
-    private val accountInstance: AccountInstance,
-    private val login: String,
-    private val profileType: ProfileType
-) : ViewModel() {
+data class ProfileViewModelExtra(
+    val accountInstance: AccountInstance,
+    val login: String,
+    val profileType: ProfileType
+)
+
+@ExperimentalSerializationApi
+class ProfileViewModel(private val extra: ProfileViewModelExtra) : ViewModel() {
 
     private val _userProfile = MutableLiveData<Resource<User>>()
     val userProfile: LiveData<Resource<User>>
@@ -49,11 +53,11 @@ class ProfileViewModel(
 
     fun refreshData() {
         when {
-            profileType == ProfileType.USER
+            extra.profileType == ProfileType.USER
                     || _userProfile.value?.data != null -> {
                 refreshUserProfile()
             }
-            profileType == ProfileType.ORGANIZATION
+            extra.profileType == ProfileType.ORGANIZATION
                     || _organizationProfile.value?.data != null -> {
                 refreshOrganization()
             }
@@ -69,8 +73,8 @@ class ProfileViewModel(
             _userProfile.postValue(Resource.loading(null))
 
             try {
-                val user = accountInstance.apolloGraphQLClient.apolloClient.query(
-                    UserQuery(login)
+                val user = extra.accountInstance.apolloGraphQLClient.apolloClient.query(
+                    UserQuery(extra.login)
                 ).execute().data?.user?.user
 
                 _userProfile.postValue(Resource.success(user))
@@ -93,9 +97,9 @@ class ProfileViewModel(
             _organizationProfile.postValue(Resource.loading(null))
 
             try {
-                val org = accountInstance.apolloGraphQLClient
+                val org = extra.accountInstance.apolloGraphQLClient
                     .apolloClient.query(
-                        query = OrganizationQuery(login = login)
+                        query = OrganizationQuery(login = extra.login)
                     ).execute().data?.organization?.organization
 
                 _organizationProfile.postValue(Resource.success(org))
@@ -121,7 +125,7 @@ class ProfileViewModel(
             _followState.postValue(Resource.loading(isFollowing))
 
             try {
-                accountInstance.apolloGraphQLClient.apolloClient
+                extra.accountInstance.apolloGraphQLClient.apolloClient
                     .mutation(
                         mutation = if (isFollowing) {
                             UnfollowUserMutation(input = UnfollowUserInput(userId = user.id))
@@ -156,6 +160,15 @@ class ProfileViewModel(
                     )
             }
         }
+    }
+
+    companion object {
+
+        private object ProfileViewModelExtraKeyImpl : CreationExtras.Key<ProfileViewModelExtra>
+
+        val PROFILE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<ProfileViewModelExtra> =
+            ProfileViewModelExtraKeyImpl
+
     }
 
 }

@@ -5,6 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Status
@@ -18,12 +20,16 @@ import logcat.asLog
 import logcat.logcat
 
 @ExperimentalSerializationApi
-class SettingsViewModel(
-    private val accountInstance: AccountInstance,
-    app: Application
-) : AndroidViewModel(app) {
+data class SettingsViewModelExtra(
+    val accountInstance: AccountInstance,
+)
 
-    private val mokaApp = app as MokaApp
+@ExperimentalPagingApi
+@ExperimentalSerializationApi
+class SettingsViewModel(
+    app: Application,
+    private val extra: SettingsViewModelExtra
+) : AndroidViewModel(app) {
 
     private val _updateSettingsStatus = MutableLiveData<Status>()
     val updateSettingsStatus: LiveData<Status>
@@ -33,7 +39,7 @@ class SettingsViewModel(
     val clearHistoryStatus: LiveData<Status>
         get() = _clearHistoryStatus
 
-    val settingsDataStore = mokaApp.settingsDataStore
+    val settingsDataStore = getApplication<MokaApp>().settingsDataStore
 
     fun updateSettings(
         theme: Theme? = null,
@@ -80,7 +86,7 @@ class SettingsViewModel(
                     _clearHistoryStatus.value = Status.LOADING
                 }
 
-                accountInstance.searchHistoryDataStore.updateData {
+                extra.accountInstance.searchHistoryDataStore.updateData {
                     it.copy(queries = emptyList())
                 }
 
@@ -97,6 +103,15 @@ class SettingsViewModel(
                 }
             }
         }
+    }
+
+    companion object {
+
+        private object SettingsViewModelExtraKeyImpl : CreationExtras.Key<SettingsViewModelExtra>
+
+        val SETTINGS_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<SettingsViewModelExtra> =
+            SettingsViewModelExtraKeyImpl
+
     }
 
 }

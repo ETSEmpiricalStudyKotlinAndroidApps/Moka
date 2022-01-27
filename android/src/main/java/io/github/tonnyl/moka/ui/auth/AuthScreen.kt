@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.navigationBarsPadding
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.R
@@ -30,6 +31,7 @@ import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import kotlinx.datetime.Clock
 
+@ExperimentalPagingApi
 @ExperimentalMaterialApi
 @Composable
 fun AuthScreen(
@@ -131,6 +133,7 @@ fun AuthScreen(
     }
 }
 
+@ExperimentalPagingApi
 @ExperimentalMaterialApi
 @Preview(name = "AuthScreen", showBackground = true)
 @Composable

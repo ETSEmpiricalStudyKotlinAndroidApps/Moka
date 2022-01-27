@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import io.github.tonnyl.moka.util.HtmlHandler
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Resource
@@ -17,12 +18,15 @@ import logcat.asLog
 import logcat.logcat
 
 @ExperimentalSerializationApi
-class ReleaseViewModel(
-    private val accountInstance: AccountInstance,
-    private val login: String,
-    private val repoName: String,
-    private val tagName: String
-) : ViewModel() {
+data class ReleaseViewModelExtra(
+    val accountInstance: AccountInstance,
+    val login: String,
+    val repoName: String,
+    val tagName: String
+)
+
+@ExperimentalSerializationApi
+class ReleaseViewModel(private val extra: ReleaseViewModelExtra) : ViewModel() {
 
     private val _release = MutableLiveData<Resource<Release>>()
     val release: LiveData<Resource<Release>>
@@ -37,11 +41,11 @@ class ReleaseViewModel(
             try {
                 _release.postValue(Resource.loading(release.value?.data))
 
-                val resp = accountInstance.apolloGraphQLClient.apolloClient.query(
+                val resp = extra.accountInstance.apolloGraphQLClient.apolloClient.query(
                     query = ReleaseQuery(
-                        login = login,
-                        repoName = repoName,
-                        tagName = tagName
+                        login = extra.login,
+                        repoName = extra.repoName,
+                        tagName = extra.tagName
                     )
                 ).execute().data?.repository?.release
 
@@ -61,6 +65,15 @@ class ReleaseViewModel(
                 _release.postValue(Resource.error(e, release.value?.data))
             }
         }
+    }
+
+    companion object {
+
+        private object ReleaseViewModelExtraKeyImpl : CreationExtras.Key<ReleaseViewModelExtra>
+
+        val RELEASE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<ReleaseViewModelExtra> =
+            ReleaseViewModelExtraKeyImpl
+
     }
 
 }

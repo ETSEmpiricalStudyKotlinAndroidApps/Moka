@@ -1,11 +1,12 @@
 package io.github.tonnyl.moka.ui.file
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.HighlightLanguage
 import io.tonnyl.moka.common.AccountInstance
@@ -23,13 +24,19 @@ import okio.buffer
 import okio.source
 
 @ExperimentalSerializationApi
+data class FileViewModelExtra(
+    val accountInstance: AccountInstance,
+    val url: String,
+    val filename: String,
+    val fileExtension: String?
+)
+
+@ExperimentalPagingApi
+@ExperimentalSerializationApi
 class FileViewModel(
-    context: Context,
-    private val accountInstance: AccountInstance,
-    private val url: String,
-    private val filename: String,
-    private val fileExtension: String?
-) : AndroidViewModel(context.applicationContext as Application) {
+    app: Application,
+    private val extra: FileViewModelExtra
+) : AndroidViewModel(app) {
 
     private val _file = MutableLiveData<Resource<Pair<String, String?>>>()
     val file: LiveData<Resource<Pair<String, String?>>>
@@ -45,7 +52,8 @@ class FileViewModel(
                 _file.value = Resource.loading(data = null)
 
                 val result = withContext(Dispatchers.IO) {
-                    val fileContent = accountInstance.repositoryContentApi.getFile(url = url)
+                    val fileContent =
+                        extra.accountInstance.repositoryContentApi.getFile(url = extra.url)
 
                     // highlight.js' language auto-detection is not accurate enough,
                     // so we need a way to improve.
@@ -58,9 +66,9 @@ class FileViewModel(
                             }
 
                     val language = result.firstOrNull { highlightLanguage ->
-                        highlightLanguage.filenames?.firstOrNull { it.endsWith(filename) } != null
-                                || (fileExtension != null && highlightLanguage.extensions.contains(
-                            fileExtension
+                        highlightLanguage.filenames?.firstOrNull { it.endsWith(extra.filename) } != null
+                                || (extra.fileExtension != null && highlightLanguage.extensions.contains(
+                            extra.fileExtension
                         ))
                     }
 
@@ -76,6 +84,15 @@ class FileViewModel(
                 _file.value = Resource.error(exception = e, data = null)
             }
         }
+    }
+
+    companion object {
+
+        private object FileViewModelExtraKeyImpl : CreationExtras.Key<FileViewModelExtra>
+
+        val FILE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<FileViewModelExtra> =
+            FileViewModelExtraKeyImpl
+
     }
 
 }

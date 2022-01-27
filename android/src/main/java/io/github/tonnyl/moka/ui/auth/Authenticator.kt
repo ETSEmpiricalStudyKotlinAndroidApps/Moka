@@ -4,7 +4,9 @@ import android.accounts.*
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.paging.ExperimentalPagingApi
 
+@ExperimentalPagingApi
 class Authenticator(
     private val context: Context
 ) : AbstractAccountAuthenticator(context) {

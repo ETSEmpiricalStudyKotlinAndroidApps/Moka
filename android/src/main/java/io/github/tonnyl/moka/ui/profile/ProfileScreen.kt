@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.ExperimentalPagingApi
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
@@ -58,6 +59,7 @@ import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
 import io.tonnyl.moka.graphql.fragment.User
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalAnimationApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi

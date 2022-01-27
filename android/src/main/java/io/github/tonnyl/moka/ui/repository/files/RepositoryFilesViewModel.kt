@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.TreeEntryType
 import io.tonnyl.moka.common.data.treeEntryType
@@ -18,12 +19,15 @@ import logcat.asLog
 import logcat.logcat
 
 @ExperimentalSerializationApi
-class RepositoryFilesViewModel(
-    private val accountInstance: AccountInstance,
-    private val login: String,
-    private val repositoryName: String,
-    private val expression: String
-) : ViewModel() {
+data class RepositoryFilesViewModelExtra(
+    val accountInstance: AccountInstance,
+    val login: String,
+    val repositoryName: String,
+    val expression: String
+)
+
+@ExperimentalSerializationApi
+class RepositoryFilesViewModel(private val extra: RepositoryFilesViewModelExtra) : ViewModel() {
 
     private val _entry = MutableLiveData<Resource<List<TreeEntry>>>()
     val entry: LiveData<Resource<List<TreeEntry>>>
@@ -38,13 +42,13 @@ class RepositoryFilesViewModel(
             _entry.postValue(Resource.loading(data = entry.value?.data))
 
             try {
-                val response = accountInstance.apolloGraphQLClient
+                val response = extra.accountInstance.apolloGraphQLClient
                     .apolloClient
                     .query(
                         query = CurrentLevelTreeViewQuery(
-                            login = login,
-                            repoName = repositoryName,
-                            expression = expression
+                            login = extra.login,
+                            repoName = extra.repositoryName,
+                            expression = extra.expression
                         )
                     )
 
@@ -64,6 +68,16 @@ class RepositoryFilesViewModel(
                 _entry.postValue(Resource.error(exception = e, data = entry.value?.data))
             }
         }
+    }
+
+    companion object {
+
+        private object RepositoryFilesViewModelExtraKeyImpl :
+            CreationExtras.Key<RepositoryFilesViewModelExtra>
+
+        val REPOSITORY_FILES_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<RepositoryFilesViewModelExtra> =
+            RepositoryFilesViewModelExtraKeyImpl
+
     }
 
 }

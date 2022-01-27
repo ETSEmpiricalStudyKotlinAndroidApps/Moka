@@ -6,6 +6,7 @@ import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import androidx.lifecycle.asLiveData
+import androidx.paging.ExperimentalPagingApi
 import androidx.work.*
 import coil.ImageLoader
 import coil.ImageLoaderFactory
@@ -41,6 +42,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 class MokaApp : Application(), ImageLoaderFactory {
 

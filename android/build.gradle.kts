@@ -85,10 +85,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-
     buildFeatures {
         compose = true
         viewBinding = true
@@ -185,7 +181,8 @@ tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs = listOf(
-            "-Xskip-prerelease-check"
+            "-Xskip-prerelease-check",
+            "-Xjvm-default=compatibility"
         )
     }
 }

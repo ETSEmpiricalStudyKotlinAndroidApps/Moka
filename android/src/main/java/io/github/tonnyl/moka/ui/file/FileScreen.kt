@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.file
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.webkit.WebView
@@ -20,15 +21,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.ViewModelFactory
+import io.github.tonnyl.moka.ui.file.FileViewModel.Companion.FILE_VIEW_MODEL_EXTRA_KEY
 import io.github.tonnyl.moka.ui.theme.DropDownMenuAppBarOffset
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.isDarkModeOn
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
@@ -37,6 +43,7 @@ import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.tonnyl.moka.common.network.Status
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 @Composable
 fun FileScreen(
@@ -50,13 +57,16 @@ fun FileScreen(
 
     val requestUrl = "https://raw.githubusercontent.com/$login/$repoName/${filePath}/${filename}"
     val viewModel = viewModel<FileViewModel>(
-        factory = ViewModelFactory(
-            context = LocalContext.current,
-            accountInstance = currentAccount,
-            url = requestUrl,
-            filename = filename,
-            fileExtension = fileExtension
-        ),
+        factory = ViewModelFactory(),
+        defaultCreationExtras = MutableCreationExtras().apply {
+            this[FILE_VIEW_MODEL_EXTRA_KEY] = FileViewModelExtra(
+                accountInstance = currentAccount,
+                url = requestUrl,
+                filename = filename,
+                fileExtension = fileExtension
+            )
+            this[APPLICATION_KEY] = LocalContext.current.applicationContext as Application
+        },
         key = requestUrl
     )
 

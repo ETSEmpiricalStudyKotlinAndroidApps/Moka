@@ -3,6 +3,7 @@ package io.github.tonnyl.moka
 import android.accounts.AccountManager
 import android.accounts.OnAccountsUpdateListener
 import android.app.Application
+import android.os.Build.VERSION.SDK_INT
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import androidx.lifecycle.asLiveData
@@ -10,6 +11,9 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.work.*
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.decode.SvgDecoder
 import coil.util.CoilUtils
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
 import io.github.tonnyl.moka.data.extension.toPbAccount
@@ -165,6 +169,14 @@ class MokaApp : Application(), ImageLoaderFactory {
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(applicationContext)
+            .componentRegistry {
+                add(SvgDecoder(applicationContext))
+                if (SDK_INT >= 28) {
+                    add(ImageDecoderDecoder(applicationContext))
+                } else {
+                    add(GifDecoder())
+                }
+            }
             .crossfade(enable = true)
             .okHttpClient {
                 okHttpClient

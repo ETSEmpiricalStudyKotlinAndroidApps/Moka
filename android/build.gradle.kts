@@ -145,7 +145,9 @@ dependencies {
     // Airbnb
     implementation(Deps.Airbnb.lottie)
 
-    implementation(Deps.coilCompose)
+    implementation(Deps.Coil.compose)
+    implementation(Deps.Coil.gif)
+    implementation(Deps.Coil.svg)
 
     // CommonMark
     implementation(Deps.CommonMark.commonMark)

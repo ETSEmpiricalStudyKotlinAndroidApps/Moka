@@ -50,7 +50,52 @@ fun MokaTheme(content: @Composable () -> Unit) {
                 val gestureInsets = LocalWindowInsets.current.navigationBars
                 val systemUiController = rememberSystemUiController()
                 val useDarkIcons = MaterialTheme.colors.isLight
-                val statusScrimColor = MaterialTheme.colors.background.copy(alpha = .9f)
+                val statusScrimColor = MaterialTheme.colors.background.copy(alpha = 0f)
+
+                // https://medium.com/androiddevelopers/gesture-navigation-handling-visual-overlaps-4aed565c134c
+                // Hardcoding a height value is not a good idea. But no better idea was found.
+                val defaultNavigationBarHeight = with(LocalDensity.current) {
+                    48.dp.toPx()
+                }
+                val gestureNavigationEnabled = !(gestureInsets.bottom >= defaultNavigationBarHeight
+                        || gestureInsets.left >= defaultNavigationBarHeight
+                        || gestureInsets.right >= defaultNavigationBarHeight)
+
+                SideEffect {
+                    systemUiController.setStatusBarColor(
+                        color = statusScrimColor,
+                        darkIcons = useDarkIcons
+                    )
+
+                    systemUiController.setNavigationBarColor(
+                        color = if (gestureNavigationEnabled) {
+                            Color.Transparent
+                        } else {
+                            statusScrimColor
+                        },
+                        darkIcons = useDarkIcons,
+                        navigationBarContrastEnforced = gestureNavigationEnabled,
+                        transformColorForLightContent = { statusScrimColor }
+                    )
+                }
+
+                content()
+            }
+        }
+    )
+}
+
+@Composable
+fun MediaTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        shapes = MokaShapes,
+        colors = DarkThemeColors,
+        content = {
+            ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
+                val gestureInsets = LocalWindowInsets.current.navigationBars
+                val systemUiController = rememberSystemUiController()
+                val useDarkIcons = MaterialTheme.colors.isLight
+                val statusScrimColor = MaterialTheme.colors.background.copy(alpha = 0f)
 
                 // https://medium.com/androiddevelopers/gesture-navigation-handling-visual-overlaps-4aed565c134c
                 // Hardcoding a height value is not a good idea. But no better idea was found.

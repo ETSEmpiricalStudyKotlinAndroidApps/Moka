@@ -5,6 +5,9 @@ import androidx.annotation.ColorInt
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
+import java.io.File
+import java.math.BigInteger
+import java.security.MessageDigest
 
 /**
  * Convert a string to a color int value. If failed, return null.
@@ -33,3 +36,18 @@ fun String.toColor(): Int? {
 
     return null
 }
+
+fun String.mkdirs(): String {
+    File(this).apply {
+        if (!exists()) {
+            mkdirs()
+        }
+    }
+    return this
+}
+
+val String.md5: String
+   get() {
+       val digest = MessageDigest.getInstance("MD5")
+       return BigInteger(1, digest.digest(this.toByteArray())).toString(16).padStart(32, '0')
+   }

@@ -45,6 +45,11 @@
             android:exported="false"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name=".ui.media.MediaActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme" />
+
         <service
             android:name=".ui.auth.AuthenticationService"
             android:enabled="true"
@@ -78,6 +83,16 @@
                 android:resource="@xml/contribution_calendar_widget_info" />
 
         </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/files_provider_path" />
+        </provider>
 
     </application>
 

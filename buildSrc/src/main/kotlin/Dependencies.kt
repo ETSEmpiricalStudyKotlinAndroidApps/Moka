@@ -64,7 +64,6 @@ object Deps {
     const val jsoup = "org.jsoup:jsoup:${Versions.jsoup}"
     const val logcat = "com.squareup.logcat:logcat:${Versions.logcat}"
     const val desugaring = "com.android.tools:desugar_jdk_libs:${Versions.desugaring}"
-    const val coilCompose = "io.coil-kt:coil-compose:${Versions.coil}"
 
     object GradlePlugin {
 
@@ -252,6 +251,14 @@ object Deps {
             "com.atlassian.commonmark:commonmark-ext-heading-anchor:${Versions.commonMark}"
         const val yamlFrontMatter =
             "com.atlassian.commonmark:commonmark-ext-yaml-front-matter:${Versions.commonMark}"
+
+    }
+
+    object Coil {
+
+        const val compose = "io.coil-kt:coil-compose:${Versions.coil}"
+        const val gif = "io.coil-kt:coil-gif:${Versions.coil}"
+        const val svg = "io.coil-kt:coil-svg:${Versions.coil}"
 
     }
 

@@ -2,12 +2,16 @@ package io.github.tonnyl.moka.util
 
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.ui.auth.Authenticator
@@ -81,4 +85,31 @@ fun Context.safeStartActivity(
 
         actionWhenError?.invoke(e)
     }
+}
+
+fun Context.shareMedia(
+    uri: Uri,
+    mimeType: String?
+) {
+    safeStartActivity(
+        Intent.createChooser(
+            Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_STREAM, uri)
+                type = mimeType
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            },
+            null
+        ).apply {
+            if (this@shareMedia !is Activity) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+    )
+}
+
+fun Context.isPermissionGranted(permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 }

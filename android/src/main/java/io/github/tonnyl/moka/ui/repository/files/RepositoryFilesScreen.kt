@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.repository.files
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -19,6 +21,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
+import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -29,9 +32,11 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.ViewModelFactory
+import io.github.tonnyl.moka.ui.media.MediaActivity
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.viewModel
+import io.github.tonnyl.moka.util.FileUtils
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -43,6 +48,7 @@ import io.tonnyl.moka.common.util.TreeEntryProvider
 import io.tonnyl.moka.graphql.fragment.TreeEntry
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalCoilApi
 @ExperimentalPagingApi
 @ExperimentalMaterialApi
 @ExperimentalSerializationApi
@@ -167,6 +173,8 @@ fun RepositoryFilesScreen(
     }
 }
 
+@ExperimentalCoilApi
+@ExperimentalPagingApi
 @ExperimentalMaterialApi
 @ExperimentalSerializationApi
 @Composable
@@ -215,6 +223,9 @@ private fun RepositoryFilesScreenContent(
     }
 }
 
+@ExperimentalSerializationApi
+@ExperimentalCoilApi
+@ExperimentalPagingApi
 @ExperimentalMaterialApi
 @Composable
 private fun ItemTreeEntry(
@@ -226,6 +237,7 @@ private fun ItemTreeEntry(
     defaultBranchName: String
 ) {
     val navController = LocalNavController.current
+    val context = LocalContext.current
 
     ListItem(
         icon = {
@@ -276,20 +288,31 @@ private fun ItemTreeEntry(
                     )
                 }
                 TreeEntryType.BLOB -> {
-                    navController.navigate(
-                        route = Screen.File.route
-                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                            .replace(
-                                "{${Screen.ARG_FILE_PATH}}",
-                                currentExpression.replace(":", "/")
-                            )
-                            .replace("{${Screen.ARG_FILE_NAME}}", treeEntry.name)
-                            .replace(
-                                "{${Screen.ARG_FILE_EXTENSION}}",
-                                treeEntry.extension.orEmpty()
-                            )
-                    )
+                    val isImage = FileUtils.isImage(treeEntry.name)
+
+                    val filePath = currentExpression.replace(":", "/")
+                    val filename = treeEntry.name
+
+                    if (isImage) {
+                        val url =
+                            "https://raw.githubusercontent.com/$login/$repoName/${filePath}/${filename}"
+                        context.startActivity(Intent(context, MediaActivity::class.java).apply {
+                            putExtra(MediaActivity.ARG_URL, url)
+                            putExtra(MediaActivity.ARG_FILENAME, filename)
+                        })
+                    } else {
+                        navController.navigate(
+                            route = Screen.File.route
+                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                .replace("{${Screen.ARG_FILE_PATH}}", filePath)
+                                .replace("{${Screen.ARG_FILE_NAME}}", filename)
+                                .replace(
+                                    "{${Screen.ARG_FILE_EXTENSION}}",
+                                    treeEntry.extension.orEmpty()
+                                )
+                        )
+                    }
                 }
             }
         }
@@ -304,6 +327,9 @@ private fun ItemTreeEntry(
     }
 }
 
+@ExperimentalCoilApi
+@ExperimentalSerializationApi
+@ExperimentalPagingApi
 @ExperimentalMaterialApi
 @Composable
 @Preview(

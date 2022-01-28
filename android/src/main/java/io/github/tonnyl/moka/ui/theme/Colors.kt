@@ -20,7 +20,7 @@ val LightThemeColors = lightColors(
 )
 
 val DarkThemeColors = darkColors(
-    primary = Color(0xffebedf0),
+    primary = Color(0xfffce548),
     primaryVariant = Color(0xffc6b300),
     onPrimary = Color(0xff000000),
     secondary = Color(0xff407bfa),

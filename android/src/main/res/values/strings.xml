@@ -604,4 +604,7 @@
     <string name="repositories_order_field_starred_at">Starred at</string>
     <string name="repositories_affiliation_warning">At least one of owner or collaborator should be checked.</string>
 
+    <string name="media_save">Save</string>
+    <string name="media_save_failed">Failed to save file.</string>
+
 </resources>

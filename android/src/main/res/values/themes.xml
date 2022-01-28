@@ -6,6 +6,8 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_screen_logo</item>
         <item name="windowSplashScreenAnimationDuration">800</item>
         <item name="postSplashScreenTheme">@style/AppTheme.PostSplashScreenTheme</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.PostSplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">

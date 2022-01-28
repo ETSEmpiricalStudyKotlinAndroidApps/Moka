@@ -23,7 +23,7 @@ actual class AccountInstance(
     val signedInAccount: SignedInAccount,
 ) {
 
-    private val authenticatedKtorClient = KtorClient(
+    val authenticatedKtorClient = KtorClient(
         requireAuth = true,
         accessToken = signedInAccount.accessToken.accessToken
     ).httpClient

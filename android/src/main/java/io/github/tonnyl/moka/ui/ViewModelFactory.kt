@@ -13,6 +13,7 @@ import io.github.tonnyl.moka.ui.file.FileViewModel
 import io.github.tonnyl.moka.ui.inbox.InboxViewModel
 import io.github.tonnyl.moka.ui.issue.IssueViewModel
 import io.github.tonnyl.moka.ui.issues.IssuesViewModel
+import io.github.tonnyl.moka.ui.media.MediaViewModel
 import io.github.tonnyl.moka.ui.pr.PullRequestViewModel
 import io.github.tonnyl.moka.ui.pr.thread.CommentThreadViewModel
 import io.github.tonnyl.moka.ui.profile.ProfileViewModel
@@ -129,6 +130,12 @@ class ViewModelFactory : ViewModelProvider.Factory {
             }
             ReleaseAssetsViewModel::class.java -> {
                 ReleaseAssetsViewModel(extra = extras.getExtra(key = ReleaseAssetsViewModel.RELEASES_VIEW_MODEL_EXTRA_KEY))
+            }
+            MediaViewModel::class.java -> {
+                MediaViewModel(
+                    app = extras.getApplication(),
+                    extra = extras.getExtra(key = MediaViewModel.MEDIA_VIEW_MODEL_EXTRA_KEY)
+                )
             }
             else -> {
                 throw IllegalArgumentException("Unknown class $modelClass")

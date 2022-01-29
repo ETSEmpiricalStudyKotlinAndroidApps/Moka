@@ -17,8 +17,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -57,7 +57,7 @@ class AuthActivity : ComponentActivity() {
             val scaffoldState = rememberScaffoldState()
 
             val windowInsetsControllerCompat =
-                remember { WindowInsetsControllerCompat(window, window.decorView) }
+                remember { ViewCompat.getWindowInsetsController(window.decorView) }
             CompositionLocalProvider(LocalWindowInsetsController provides windowInsetsControllerCompat) {
                 MokaTheme {
                     Surface {

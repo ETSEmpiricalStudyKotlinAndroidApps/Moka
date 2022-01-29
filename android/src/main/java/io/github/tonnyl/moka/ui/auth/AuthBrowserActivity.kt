@@ -17,8 +17,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.LocalWindowInsets
@@ -49,7 +49,7 @@ class AuthBrowserActivity : ComponentActivity() {
 
         setContent {
             val windowInsetsControllerCompat =
-                remember { WindowInsetsControllerCompat(window, window.decorView) }
+                remember { ViewCompat.getWindowInsetsController(window.decorView) }
 
             CompositionLocalProvider(LocalWindowInsetsController provides windowInsetsControllerCompat) {
                 MokaTheme {

@@ -48,7 +48,8 @@
         <activity
             android:name=".ui.media.MediaActivity"
             android:exported="false"
-            android:theme="@style/AppTheme" />
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:theme="@style/AppTheme.PostSplashScreenTheme" />
 
         <service
             android:name=".ui.auth.AuthenticationService"

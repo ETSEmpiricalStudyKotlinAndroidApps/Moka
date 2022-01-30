@@ -43,6 +43,7 @@ object Versions {
     const val apollo = "3.0.0"
     const val commonMark = "0.15.2"
     const val coil = "1.4.0"
+    const val exoPlayer = "2.16.1"
     const val jsoup = "1.12.1"
     const val logcat = "0.1"
     const val ktor = "1.6.7"
@@ -191,6 +192,13 @@ object Deps {
                 "com.google.accompanist:accompanist-placeholder-material:${Versions.accompanist}"
             const val systemUiController =
                 "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}"
+
+        }
+
+        object ExoPlayer {
+
+            const val core = "com.google.android.exoplayer:exoplayer-core:${Versions.exoPlayer}"
+            const val ui = "com.google.android.exoplayer:exoplayer-ui:${Versions.exoPlayer}"
 
         }
 

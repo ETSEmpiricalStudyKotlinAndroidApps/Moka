@@ -133,7 +133,7 @@ fun FileScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.MoreVert,
-                            contentDescription = stringResource(id = R.string.notification_filters)
+                            contentDescription = stringResource(id = R.string.more_actions_image_content_description)
                         )
                     }
 

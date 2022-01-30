@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.runtime.CompositionLocalProvider
@@ -23,6 +24,7 @@ import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MediaTheme
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalAnimationApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalPagingApi
@@ -38,6 +40,7 @@ class MediaActivity : ComponentActivity() {
 
         val url = requireNotNull(intent.extras?.getString(ARG_URL))
         val filename = requireNotNull(intent.extras?.getString(ARG_FILENAME))
+        val mediaType = MediaType.valueOf(requireNotNull(intent.extras?.getString(ARG_MEDIA_TYPE)))
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -64,7 +67,8 @@ class MediaActivity : ComponentActivity() {
                         MediaScreen(
                             activity = this,
                             url = url,
-                            filename = filename
+                            filename = filename,
+                            mediaType = mediaType
                         )
                     }
                 }
@@ -77,6 +81,7 @@ class MediaActivity : ComponentActivity() {
 
         const val ARG_URL = "arg_url"
         const val ARG_FILENAME = "arg_filename"
+        const val ARG_MEDIA_TYPE = "arg_media_type"
 
     }
 

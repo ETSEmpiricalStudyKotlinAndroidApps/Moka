@@ -7,25 +7,31 @@ import java.io.OutputStream
 
 object FileUtils {
 
-    private val EXTENSIONS = listOf(
+    private val SUPPORTED_IMAGE_EXTENSIONS = listOf(
         ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".bmp", ".heic", ".heif"
+    )
+    private val SUPPORTED_VIDEO_EXTENSIONS = listOf(
+        ".mp4", ".m4a", ".m4s", ".webm", ".mkv"
     )
 
     const val ROOT_FILE_DIR_NAME = "Moka"
 
-    fun isImage(filename: String): Boolean {
-        if (filename.isEmpty()
-            || filename.isBlank()
-        ) {
+    fun isSupportedImage(filename: String): Boolean {
+        val mimeType = getMimeType(filename)
+        if (mimeType.isNullOrEmpty()) {
             return false
         }
 
-        val fileExtension = MimeTypeMap.getFileExtensionFromUrl(filename)
-        if (fileExtension.isNullOrEmpty()) {
+        return SUPPORTED_IMAGE_EXTENSIONS.find { it.endsWith(mimeType) } != null
+    }
+
+    fun isSupportedVideo(filename: String): Boolean {
+        val mimeType = getMimeType(filename)
+        if (mimeType.isNullOrEmpty()) {
             return false
         }
 
-        return EXTENSIONS.find { it.endsWith(fileExtension) } != null
+        return SUPPORTED_VIDEO_EXTENSIONS.find { it.endsWith(mimeType) } != null
     }
 
     @Throws(IOException::class)
@@ -38,6 +44,16 @@ object FileUtils {
         }
         out.close()
         return true
+    }
+
+    private fun getMimeType(filename: String): String? {
+        if (filename.isEmpty()
+            || filename.isBlank()
+        ) {
+            return null
+        }
+
+        return MimeTypeMap.getFileExtensionFromUrl(filename)
     }
 
 }

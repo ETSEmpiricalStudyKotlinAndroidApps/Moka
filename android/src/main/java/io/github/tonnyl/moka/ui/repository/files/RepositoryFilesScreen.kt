@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.repository.files
 
 import android.content.Intent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,6 +34,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.media.MediaActivity
+import io.github.tonnyl.moka.ui.media.MediaType
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.viewModel
@@ -48,6 +50,7 @@ import io.tonnyl.moka.common.util.TreeEntryProvider
 import io.tonnyl.moka.graphql.fragment.TreeEntry
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalAnimationApi
 @ExperimentalCoilApi
 @ExperimentalPagingApi
 @ExperimentalMaterialApi
@@ -173,6 +176,7 @@ fun RepositoryFilesScreen(
     }
 }
 
+@ExperimentalAnimationApi
 @ExperimentalCoilApi
 @ExperimentalPagingApi
 @ExperimentalMaterialApi
@@ -223,6 +227,7 @@ private fun RepositoryFilesScreenContent(
     }
 }
 
+@ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @ExperimentalCoilApi
 @ExperimentalPagingApi
@@ -288,17 +293,28 @@ private fun ItemTreeEntry(
                     )
                 }
                 TreeEntryType.BLOB -> {
-                    val isImage = FileUtils.isImage(treeEntry.name)
-
-                    val filePath = currentExpression.replace(":", "/")
                     val filename = treeEntry.name
 
-                    if (isImage) {
-                        val url =
-                            "https://raw.githubusercontent.com/$login/$repoName/${filePath}/${filename}"
+                    val isImage = FileUtils.isSupportedImage(filename)
+                    val isVideo = FileUtils.isSupportedVideo(filename)
+
+                    val filePath = currentExpression.replace(":", "/")
+
+                    if (isImage
+                        || isVideo
+                    ) {
+                        val url = "https://raw.githubusercontent.com/$login/$repoName/${filePath}/${filename}"
                         context.startActivity(Intent(context, MediaActivity::class.java).apply {
                             putExtra(MediaActivity.ARG_URL, url)
                             putExtra(MediaActivity.ARG_FILENAME, filename)
+                            putExtra(
+                                MediaActivity.ARG_MEDIA_TYPE,
+                                if (isImage) {
+                                    MediaType.Image.name
+                                } else {
+                                    MediaType.Video.name
+                                }
+                            )
                         })
                     } else {
                         navController.navigate(
@@ -327,6 +343,7 @@ private fun ItemTreeEntry(
     }
 }
 
+@ExperimentalAnimationApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalPagingApi

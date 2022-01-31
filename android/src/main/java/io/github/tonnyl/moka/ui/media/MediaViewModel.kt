@@ -11,7 +11,7 @@ import androidx.work.*
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSource
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import io.github.tonnyl.moka.util.md5
 import io.github.tonnyl.moka.work.DownloadMediaWorker
 import io.github.tonnyl.moka.work.SaveMediaWorker
@@ -58,8 +58,15 @@ class MediaViewModel(
     val saveWorkerInfo = workManager.getWorkInfosForUniqueWorkLiveData(saveWorkerName)
     val shareWorkerInfo = workManager.getWorkInfosForUniqueWorkLiveData(shareWorkerName)
 
-    val mediaSource = ProgressiveMediaSource.Factory(DefaultDataSource.Factory(getApplication()))
-        .createMediaSource(MediaItem.fromUri(extra.url))
+    val mediaSource = ProgressiveMediaSource.Factory(
+        DefaultHttpDataSource.Factory()
+            .setDefaultRequestProperties(
+                mapOf(
+                    "Authorization" to "Bearer ${extra.accountInstance.signedInAccount.accessToken.accessToken}"
+                )
+            )
+
+    ).createMediaSource(MediaItem.fromUri(extra.url))
 
     private val _playerProgress = MutableLiveData(0L)
     val playerProgress: LiveData<Long>

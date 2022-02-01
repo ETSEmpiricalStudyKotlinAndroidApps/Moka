@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.util
 
+import android.net.Uri
 import android.webkit.MimeTypeMap
 import java.io.IOException
 import java.io.InputStream
@@ -47,13 +48,14 @@ object FileUtils {
     }
 
     private fun getMimeType(filename: String): String? {
-        if (filename.isEmpty()
-            || filename.isBlank()
+        val encodedFilename = Uri.encode(filename)
+        if (encodedFilename.isEmpty()
+            || encodedFilename.isBlank()
         ) {
             return null
         }
 
-        return MimeTypeMap.getFileExtensionFromUrl(filename)
+        return MimeTypeMap.getFileExtensionFromUrl(encodedFilename)
     }
 
 }

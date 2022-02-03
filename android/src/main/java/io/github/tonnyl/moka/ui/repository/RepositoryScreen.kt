@@ -119,16 +119,6 @@ fun RepositoryScreen(
         additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
     )
 
-    val forkDialogState = remember {
-        mutableStateOf(false)
-    }
-
-    ForkRepoDialog(
-        showState = forkDialogState,
-        fork = viewModel::fork,
-        repoName = repoName
-    )
-
     WatchOptionsBottomSheet(
         currentState = subscriptionState?.data,
         state = bottomSheetState,
@@ -327,7 +317,11 @@ fun RepositoryScreen(
                             if (repo.owner.repositoryOwner.login != currentAccount.signedInAccount.account.login) {
                                 IconButton(
                                     onClick = {
-                                        forkDialogState.value = true
+                                        navController.navigate(
+                                            route = Screen.ForkRepoDialog.route
+                                                .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
+                                        )
                                     },
                                     enabled = !isLoading
                                 ) {

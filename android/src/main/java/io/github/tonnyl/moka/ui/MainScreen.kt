@@ -72,6 +72,7 @@ import io.github.tonnyl.moka.ui.release.assets.ReleaseAssetsScreen
 import io.github.tonnyl.moka.ui.releases.ReleasesScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoriesScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoryType
+import io.github.tonnyl.moka.ui.repository.ForkRepoDialog
 import io.github.tonnyl.moka.ui.repository.RepositoryScreen
 import io.github.tonnyl.moka.ui.repository.files.RepositoryFilesScreen
 import io.github.tonnyl.moka.ui.search.SearchScreen
@@ -176,6 +177,8 @@ sealed class Screen(val route: String) {
     object Feedback : Screen("feedback")
 
     object AccountDialog: Screen("account_dialog")
+
+    object ForkRepoDialog: Screen("fork_repo_dialog/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
     companion object {
 
@@ -1213,6 +1216,14 @@ private fun MainNavHost(
         dialog(route = Screen.AccountDialog.route) {
             currentRoute.value = Screen.AccountDialog.route
             AccountDialogScreen()
+        }
+        dialog(route = Screen.ForkRepoDialog.route) { backStackEntry ->
+            currentRoute.value = Screen.ForkRepoDialog.route
+
+            ForkRepoDialog(
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN) ?: return@dialog,
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME) ?: return@dialog
+            )
         }
     }
 }

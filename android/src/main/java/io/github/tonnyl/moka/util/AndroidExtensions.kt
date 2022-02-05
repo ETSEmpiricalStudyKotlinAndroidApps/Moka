@@ -3,17 +3,18 @@ package io.github.tonnyl.moka.util
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.os.Looper
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.ExperimentalPagingApi
+import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.auth.Authenticator
 import io.tonnyl.moka.common.data.AccessToken
 import io.tonnyl.moka.common.data.AuthenticatedUser
@@ -27,6 +28,9 @@ import logcat.asLog
 import logcat.logcat
 import okio.buffer
 import okio.source
+import java.io.File
+
+private const val TAG = "AndroidExtensions"
 
 @ExperimentalPagingApi
 @ExperimentalSerializationApi
@@ -110,6 +114,26 @@ fun Context.shareMedia(
     )
 }
 
-fun Context.isPermissionGranted(permission: String): Boolean {
-    return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+fun Context.downloadFileViaDownloadManager(
+    url: String,
+    accessToken: String?
+) {
+    try {
+        val request = DownloadManager.Request(Uri.parse(url)).apply {
+            if (accessToken.isNullOrEmpty()) {
+                addRequestHeader("Authorization", "Bearer $accessToken")
+            }
+            val filename = File(url).name
+            setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
+            setTitle(filename)
+            setDescription(this@downloadFileViaDownloadManager.getString(R.string.media_downloading))
+            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        }
+
+        (getSystemService(Context.DOWNLOAD_SERVICE) as? DownloadManager)?.enqueue(request)
+    } catch (e: Exception) {
+        logcat(tag = TAG, priority = LogPriority.ERROR) {
+            "failed to download file via download manager: ${e.asLog()}"
+        }
+    }
 }

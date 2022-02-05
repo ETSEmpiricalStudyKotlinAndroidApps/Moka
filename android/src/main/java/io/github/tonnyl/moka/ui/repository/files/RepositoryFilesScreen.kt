@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.repository.files
 
 import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -294,16 +295,25 @@ private fun ItemTreeEntry(
                 }
                 TreeEntryType.BLOB -> {
                     val filename = treeEntry.name
+                    val filePath = currentExpression.replace(":", "/")
+                    val url = "https://raw.githubusercontent.com/$login/$repoName/${filePath}/${filename}"
+
+                    val isDownloadDirectlyFile = FileUtils.isDownloadDirectlyFile(filename = filename)
+                    if (isDownloadDirectlyFile) {
+                        navController.navigate(
+                            route = Screen.DownloadFileDialog.route
+                                .replace("{${Screen.ARG_URL}}", Uri.encode(url))
+                        )
+
+                        return@clickable
+                    }
 
                     val isImage = FileUtils.isSupportedImage(filename)
                     val isVideo = FileUtils.isSupportedVideo(filename)
 
-                    val filePath = currentExpression.replace(":", "/")
-
                     if (isImage
                         || isVideo
                     ) {
-                        val url = "https://raw.githubusercontent.com/$login/$repoName/${filePath}/${filename}"
                         context.startActivity(Intent(context, MediaActivity::class.java).apply {
                             putExtra(MediaActivity.ARG_URL, url)
                             putExtra(MediaActivity.ARG_FILENAME, filename)

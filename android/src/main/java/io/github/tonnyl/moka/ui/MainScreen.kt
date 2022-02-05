@@ -53,6 +53,7 @@ import io.github.tonnyl.moka.ui.emojis.EmojisScreen
 import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiScreen
 import io.github.tonnyl.moka.ui.explore.ExploreScreen
 import io.github.tonnyl.moka.ui.file.FileScreen
+import io.github.tonnyl.moka.ui.file.download.DownloadFileDialog
 import io.github.tonnyl.moka.ui.inbox.InboxScreen
 import io.github.tonnyl.moka.ui.issue.IssueScreen
 import io.github.tonnyl.moka.ui.issues.IssuesScreen
@@ -176,9 +177,11 @@ sealed class Screen(val route: String) {
 
     object Feedback : Screen("feedback")
 
-    object AccountDialog: Screen("account_dialog")
+    object AccountDialog : Screen("account_dialog")
 
-    object ForkRepoDialog: Screen("fork_repo_dialog/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
+    object ForkRepoDialog : Screen("fork_repo_dialog/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
+
+    object DownloadFileDialog : Screen("download_file_dialog/{${ARG_URL}}")
 
     companion object {
 
@@ -237,6 +240,9 @@ sealed class Screen(val route: String) {
         const val ARG_FILE_PATH = "arg_file_path"
         const val ARG_FILE_EXTENSION = "arg_file_extension"
         const val ARG_FILE_NAME = "arg_file_name"
+
+        // should be encoded when passing.
+        const val ARG_URL = "arg_url"
     }
 
 }
@@ -1223,6 +1229,13 @@ private fun MainNavHost(
             ForkRepoDialog(
                 login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN) ?: return@dialog,
                 repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME) ?: return@dialog
+            )
+        }
+        dialog(route = Screen.DownloadFileDialog.route) { backStackEntry ->
+            currentRoute.value = Screen.DownloadFileDialog.route
+
+            DownloadFileDialog(
+                url = Uri.decode(backStackEntry.arguments?.getString(Screen.ARG_URL) ?: return@dialog)
             )
         }
     }

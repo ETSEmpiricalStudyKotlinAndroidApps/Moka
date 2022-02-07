@@ -317,7 +317,7 @@ private fun ReleaseScreenContent(
             leadingRes = R.string.release_assets,
             trailing = release.releaseAssets.totalCount.toString(),
             enablePlaceholder = enablePlaceholder,
-            modifier = Modifier.clickable(enabled = !enablePlaceholder) {
+            modifier = Modifier.clickable(enabled = !enablePlaceholder && release.releaseAssets.totalCount > 0) {
                 navController.navigate(
                     route = Screen.ReleaseAssets.route
                         .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)

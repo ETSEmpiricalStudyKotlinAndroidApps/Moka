@@ -1,7 +1,5 @@
 package io.github.tonnyl.moka.ui.release.assets
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -39,6 +37,7 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.viewModel
+import io.github.tonnyl.moka.util.downloadFileViaDownloadManager
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -47,9 +46,6 @@ import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.ReleaseAssetProvider
 import io.tonnyl.moka.graphql.fragment.ReleaseAsset
 import kotlinx.serialization.ExperimentalSerializationApi
-import logcat.LogPriority
-import logcat.asLog
-import logcat.logcat
 
 @ExperimentalPagingApi
 @ExperimentalMaterialApi
@@ -129,7 +125,8 @@ fun ReleaseAssetsScreen(
                         else -> {
                             ReleaseAssetsScreenContent(
                                 contentTopPadding = contentPadding.calculateTopPadding(),
-                                assets = assets
+                                assets = assets,
+                                accessToken = currentAccount.signedInAccount.accessToken.accessToken
                             )
                         }
                     }
@@ -171,6 +168,7 @@ fun ReleaseAssetsScreen(
 private fun ReleaseAssetsScreenContent(
     contentTopPadding: Dp,
     assets: LazyPagingItems<ReleaseAsset>,
+    accessToken: String
 ) {
     val assetPlaceholder = remember {
         ReleaseAssetProvider().values.elementAt(0)
@@ -189,7 +187,8 @@ private fun ReleaseAssetsScreenContent(
             items(count = defaultPagingConfig.initialLoadSize) {
                 ItemReleaseAsset(
                     asset = assetPlaceholder,
-                    enablePlaceholder = true
+                    enablePlaceholder = true,
+                    accessToken = accessToken
                 )
             }
         } else {
@@ -202,7 +201,8 @@ private fun ReleaseAssetsScreenContent(
                 if (item != null) {
                     ItemReleaseAsset(
                         asset = item,
-                        enablePlaceholder = false
+                        enablePlaceholder = false,
+                        accessToken = accessToken
                     )
                 }
             }
@@ -218,7 +218,8 @@ private fun ReleaseAssetsScreenContent(
 @Composable
 private fun ItemReleaseAsset(
     asset: ReleaseAsset,
-    enablePlaceholder: Boolean
+    enablePlaceholder: Boolean,
+    accessToken: String
 ) {
     val context = LocalContext.current
 
@@ -227,22 +228,10 @@ private fun ItemReleaseAsset(
             IconButton(
                 enabled = !enablePlaceholder,
                 onClick = {
-                    try {
-                        context.startActivity(
-                            Intent.makeMainSelectorActivity(
-                                Intent.ACTION_MAIN,
-                                Intent.CATEGORY_APP_BROWSER
-                            ).apply {
-                                data = Uri.parse(asset.downloadUrl)
-                                flags = Intent.FLAG_ACTIVITY_NEW_DOCUMENT
-                            }
-                        )
-                    } catch (e: Exception) {
-                        logcat(
-                            priority = LogPriority.ERROR,
-                            tag = "ItemReleaseAsset"
-                        ) { "failed to open browser\n${e.asLog()}" }
-                    }
+                    context.downloadFileViaDownloadManager(
+                        url = asset.downloadUrl,
+                        accessToken = accessToken
+                    )
                 },
                 content = {
                     Icon(
@@ -252,7 +241,6 @@ private fun ItemReleaseAsset(
                     )
                 },
                 modifier = Modifier
-                    .padding(end = ContentPaddingLargeSize)
                     .placeholder(
                         visible = enablePlaceholder,
                         highlight = PlaceholderHighlight.fade()
@@ -331,6 +319,7 @@ private fun ItemReleaseAssetPreview(
 ) {
     ItemReleaseAsset(
         asset = asset,
-        enablePlaceholder = false
+        enablePlaceholder = false,
+        accessToken = ""
     )
 }

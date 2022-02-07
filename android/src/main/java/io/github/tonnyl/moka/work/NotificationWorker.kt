@@ -7,7 +7,8 @@ import androidx.work.WorkerParameters
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.notifications.NotificationsCenter
 import io.ktor.client.statement.*
-import io.tonnyl.moka.common.db.data.Notification
+import io.tonnyl.moka.common.db.data.dbModel
+import io.tonnyl.moka.common.data.Notification as SerializableNotification
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -45,14 +46,14 @@ class NotificationWorker(
                     perPage = MAX_ITEM_SIZE
                 )
 
-                val notifications = json.decodeFromString<List<Notification>>(response.readText())
-                    .map {
-                        it.hasDisplayed = false
-                        it
-                    }
+                val notifications = json.decodeFromString<List<SerializableNotification>>(response.readText())
 
                 if (notifications.isNotEmpty()) {
-                    dao.insertAll(notifications)
+                    dao.insertAll(notifications.map {
+                        it.dbModel.apply {
+                            hasDisplayed = false
+                        }
+                    })
                 }
 
                 Result.success()

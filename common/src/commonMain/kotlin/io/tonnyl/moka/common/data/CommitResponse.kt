@@ -25,10 +25,10 @@ data class CommitResponse(
     val commit: Commit,
 
     @Contextual
-    val author: EventActor,
+    val author: EventActor?,
 
     @Contextual
-    val committer: EventActor,
+    val committer: EventActor?,
 
     @Contextual
     val parents: List<CommitParent>,

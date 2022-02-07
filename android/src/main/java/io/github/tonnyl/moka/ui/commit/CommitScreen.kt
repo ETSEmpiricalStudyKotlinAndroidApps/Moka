@@ -52,6 +52,7 @@ import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.CommitFile
 import io.tonnyl.moka.common.data.CommitResponse
+import io.tonnyl.moka.common.extensions.orGhostAvatarUrl
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.CommitFileProvider
 import io.tonnyl.moka.common.util.CommitResponseProvider
@@ -349,7 +350,7 @@ private fun ItemCommitDetails(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = rememberImagePainter(
-                    data = resp.author.avatarUrl,
+                    data = resp.author?.avatarUrl.orGhostAvatarUrl,
                     builder = {
                         createAvatarLoadRequest()
                     }
@@ -365,7 +366,7 @@ private fun ItemCommitDetails(
             )
             Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
             Text(
-                text = resp.author.login,
+                text = resp.author?.login ?: "ghost",
                 style = MaterialTheme.typography.body2,
                 modifier = Modifier.placeholder(
                     visible = enablePlaceholder,

@@ -63,10 +63,10 @@ import io.github.tonnyl.moka.widget.ItemLoadingState
 import io.tonnyl.moka.common.data.PullRequestTimelineItem
 import io.tonnyl.moka.common.data.extension.assigneeLogin
 import io.tonnyl.moka.common.data.extension.requestedReviewerLogin
+import io.tonnyl.moka.common.extensions.shortOid
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.PullRequestProvider
 import io.tonnyl.moka.common.util.PullRequestTimelineItemProvider
-import io.tonnyl.moka.common.util.toShortOid
 import io.tonnyl.moka.graphql.PullRequestQuery.PullRequest
 import io.tonnyl.moka.graphql.type.LockReason
 import io.tonnyl.moka.graphql.type.PullRequestReviewState
@@ -548,9 +548,9 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                     R.string.pull_request_force_pushed_branch,
                     event.baseRefForcePushedEvent!!.ref?.pullRequestTimelineItemRefFragment?.name
                         ?: stringResource(id = R.string.pull_request_unknown),
-                    event.baseRefForcePushedEvent!!.beforeCommit?.pullRequestTimelineItemCommitFragment?.oid?.toShortOid()
+                    event.baseRefForcePushedEvent!!.beforeCommit?.pullRequestTimelineItemCommitFragment?.oid?.shortOid
                         ?: stringResource(id = R.string.pull_request_unknown),
-                    event.baseRefForcePushedEvent!!.afterCommit?.pullRequestTimelineItemCommitFragment?.oid?.toShortOid()
+                    event.baseRefForcePushedEvent!!.afterCommit?.pullRequestTimelineItemCommitFragment?.oid?.shortOid
                         ?: stringResource(id = R.string.pull_request_unknown)
                 )
             )
@@ -665,9 +665,9 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
                     R.string.pull_request_force_pushed_branch,
                     event.headRefForcePushedEvent!!.ref?.pullRequestTimelineItemRefFragment?.name
                         ?: stringResource(id = R.string.pull_request_unknown),
-                    event.headRefForcePushedEvent!!.beforeCommit?.pullRequestTimelineItemCommitFragment?.oid?.toShortOid()
+                    event.headRefForcePushedEvent!!.beforeCommit?.pullRequestTimelineItemCommitFragment?.oid?.shortOid
                         ?: stringResource(id = R.string.pull_request_unknown),
-                    event.headRefForcePushedEvent!!.afterCommit?.pullRequestTimelineItemCommitFragment?.oid?.toShortOid()
+                    event.headRefForcePushedEvent!!.afterCommit?.pullRequestTimelineItemCommitFragment?.oid?.shortOid
                         ?: stringResource(id = R.string.pull_request_unknown)
                 )
             )
@@ -759,7 +759,7 @@ private fun eventData(event: PullRequestTimelineItem): IssuePullRequestEventData
             content = AnnotatedString(
                 text = stringResource(
                     id = R.string.pull_request_merged_commit,
-                    event.mergedEvent!!.commit?.pullRequestTimelineItemCommitFragment?.oid.toShortOid(),
+                    event.mergedEvent!!.commit?.pullRequestTimelineItemCommitFragment?.oid.shortOid,
                     event.mergedEvent!!.mergeRefName
                 )
             )

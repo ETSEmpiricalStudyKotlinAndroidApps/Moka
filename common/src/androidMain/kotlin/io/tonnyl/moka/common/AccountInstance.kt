@@ -32,12 +32,9 @@ actual class AccountInstance(
     actual val trendingApi = TrendingApi(ktorClient = unauthenticatedKtorClient)
     actual val userApi = UserApi(ktorClient = authenticatedKtorClient)
     actual val notificationApi = NotificationApi(ktorClient = authenticatedKtorClient)
-    actual val commitApi = CommitApi(ktorClient = unauthenticatedKtorClient)
+    actual val commitApi = CommitApi(ktorClient = authenticatedKtorClient)
     actual val repositoryContentApi = RepositoryContentApi(ktorClient = authenticatedKtorClient)
-    actual val repositoryApi = RepositoryApi(
-        authenticatedKtorClient = authenticatedKtorClient,
-        unauthenticatedKtorClient = unauthenticatedKtorClient
-    )
+    actual val repositoryApi = RepositoryApi(authenticatedKtorClient = authenticatedKtorClient)
 
     val database = MokaDataBase.getInstance(
         context = application,

@@ -11,10 +11,7 @@ import io.tonnyl.moka.common.data.PullRequestQuerySort
 import io.tonnyl.moka.common.network.KtorClient
 import kotlinx.datetime.Instant
 
-class RepositoryApi(
-    private val authenticatedKtorClient: HttpClient,
-    private val unauthenticatedKtorClient: HttpClient
-) {
+class RepositoryApi(private val authenticatedKtorClient: HttpClient) {
 
     /**
      * Create a fork for the authenticated user.
@@ -47,7 +44,7 @@ class RepositoryApi(
         sort: IssueQuerySort = IssueQuerySort.Created,
         since: Instant? = null
     ): HttpResponse {
-        return unauthenticatedKtorClient.get(urlString = "${KtorClient.GITHUB_V1_BASE_URL}/repos/$owner/$repo/issues") {
+        return authenticatedKtorClient.get(urlString = "${KtorClient.GITHUB_V1_BASE_URL}/repos/$owner/$repo/issues") {
             header("accept", "application/vnd.github.v3+json")
             parameter("state", state.rawValue)
             parameter("per_page", perPage.toString())
@@ -61,7 +58,7 @@ class RepositoryApi(
     }
 
     suspend fun issuesByUrl(url: String): HttpResponse {
-        return unauthenticatedKtorClient.get(urlString = url)
+        return authenticatedKtorClient.get(urlString = url)
     }
 
     /**
@@ -79,7 +76,7 @@ class RepositoryApi(
         direction: Direction = Direction.Descending,
         sort: PullRequestQuerySort = PullRequestQuerySort.Created,
     ): HttpResponse {
-        return unauthenticatedKtorClient.get(urlString = "${KtorClient.GITHUB_V1_BASE_URL}/repos/$owner/$repo/pulls") {
+        return authenticatedKtorClient.get(urlString = "${KtorClient.GITHUB_V1_BASE_URL}/repos/$owner/$repo/pulls") {
             header("accept", "application/vnd.github.v3+json")
             parameter("state", state.rawValue)
             parameter("per_page", perPage.toString())
@@ -90,7 +87,7 @@ class RepositoryApi(
     }
 
     suspend fun pullRequestsByUrl(url: String): HttpResponse {
-        return unauthenticatedKtorClient.get(urlString = url)
+        return authenticatedKtorClient.get(urlString = url)
     }
 
 }

@@ -1,11 +1,17 @@
 package io.github.tonnyl.moka.ui.explore
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -13,10 +19,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
@@ -26,13 +31,17 @@ import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.extension.displayStringResId
+import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.ViewModelFactory
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.explore.filters.FiltersType
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.ListSubheader
@@ -42,11 +51,11 @@ import io.tonnyl.moka.common.db.data.TrendingRepository
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.store.ExploreOptionsSerializer
 import io.tonnyl.moka.common.store.data.ExploreOptions
+import io.tonnyl.moka.common.store.data.ExploreTimeSpan
 import io.tonnyl.moka.common.store.data.urlParamValue
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.TrendingDeveloperProvider
 import io.tonnyl.moka.common.util.TrendingRepositoryProvider
-import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
@@ -70,18 +79,14 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
         }
     )
 
-    val exploreOptions by exploreViewModel.queryData.observeAsState(initial = ExploreOptionsSerializer.defaultValue)
+    val exploreOptions by exploreViewModel.options.observeAsState(initial = ExploreOptionsSerializer.defaultValue)
 
     val trendingDevelopers by exploreViewModel.developersLocalData.observeAsState(emptyList())
     val trendingRepositories by exploreViewModel.repositoriesLocalData.observeAsState(emptyList())
 
     val refreshStatus by exploreViewModel.refreshDataStatus.observeAsState()
 
-    val bottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val coroutineScope = rememberCoroutineScope()
-
-    ExploreFiltersScreen(sheetState = bottomSheetState) {
+    Box(modifier = Modifier.fillMaxSize()) {
         var topAppBarSize by remember { mutableStateOf(0) }
 
         val contentPadding = rememberInsetsPaddingValues(
@@ -111,25 +116,8 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
                     contentTopPadding = contentPadding.calculateTopPadding(),
                     trendingRepositories = trendingRepositories,
                     trendingDevelopers = trendingDevelopers,
-                    enablePlaceholder = refreshStatus?.status == Status.LOADING
-                            && refreshStatus?.data == true
-                )
-            }
-
-            FloatingActionButton(
-                onClick = {
-                    coroutineScope.launch {
-                        bottomSheetState.show()
-                    }
-                },
-                modifier = Modifier
-                    .align(alignment = Alignment.BottomEnd)
-                    .navigationBarsPadding()
-                    .padding(all = ContentPaddingLargeSize)
-            ) {
-                Icon(
-                    contentDescription = stringResource(id = R.string.notification_filters),
-                    painter = painterResource(id = R.drawable.ic_filter_24)
+                    enablePlaceholder = refreshStatus?.status == Status.LOADING,
+                    viewModel = exploreViewModel
                 )
             }
 
@@ -145,6 +133,7 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalPagerApi
@@ -152,6 +141,7 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
 private fun ExploreScreenContent(
     contentTopPadding: Dp,
     exploreOptions: ExploreOptions,
+    viewModel: ExploreViewModel,
     trendingRepositories: List<TrendingRepository>,
     trendingDevelopers: List<TrendingDeveloper>,
     enablePlaceholder: Boolean
@@ -171,12 +161,16 @@ private fun ExploreScreenContent(
 
         item {
             ListSubheader(
-                text = stringResource(
-                    id = R.string.explore_title,
-                    exploreOptions.exploreLanguage.name,
-                    stringResource(id = exploreOptions.timeSpan.displayStringResId)
-                ),
+                text = stringResource(id = R.string.explore_title),
                 enablePlaceholder = enablePlaceholder
+            )
+        }
+
+        item {
+            ExploreFiltersHeader(
+                exploreOptions = exploreOptions,
+                enablePlaceholder = enablePlaceholder,
+                viewModel = viewModel
             )
         }
 
@@ -229,21 +223,175 @@ private fun ExploreScreenContent(
     }
 }
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
-@ExperimentalPagerApi
+@ExperimentalMaterialApi
 @Composable
-@Preview(
-    name = "ExploreScreenContentPreview",
-    showBackground = true,
-    backgroundColor = 0xFFFFFF
-)
-private fun ExploreScreenContentPreview() {
-    ExploreScreenContent(
-        contentTopPadding = 0.dp,
-        exploreOptions = ExploreOptionsSerializer.defaultValue,
-        trendingRepositories = emptyList(),
-        trendingDevelopers = emptyList(),
-        enablePlaceholder = false
-    )
+private fun ExploreFiltersHeader(
+    viewModel: ExploreViewModel,
+    exploreOptions: ExploreOptions,
+    enablePlaceholder: Boolean
+) {
+    val timeSpanMenuState = remember { mutableStateOf(value = false) }
+    val navController = LocalNavController.current
+
+    LazyRow(
+        contentPadding = PaddingValues(
+            start = ContentPaddingLargeSize,
+            end = ContentPaddingLargeSize,
+            bottom = ContentPaddingLargeSize
+        ),
+        modifier = Modifier.fillMaxWidth()
+            .scrollable(
+                state = rememberScrollState(),
+                orientation = Orientation.Horizontal
+            )
+    ) {
+        item {
+            Box {
+                Chip(
+                    enabled = !enablePlaceholder,
+                    onClick = {
+                        timeSpanMenuState.value = true
+                    }
+                ) {
+                    Text(
+                        text = stringResource(id = exploreOptions.timeSpan.displayStringResId),
+                        modifier = Modifier.placeholder(
+                            visible = enablePlaceholder,
+                            color = MaterialTheme.colors.onSurface.copy(alpha = .1f),
+                            highlight = PlaceholderHighlight.fade()
+                        )
+                    )
+                    DownArrow(enablePlaceholder = enablePlaceholder)
+                }
+                TimespanDropDownMenus(
+                    showMenuState = timeSpanMenuState,
+                    exploreOptions = exploreOptions,
+                    viewModel = viewModel
+                )
+            }
+        }
+        item {
+            Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
+        }
+        item {
+            Chip(
+                enabled = !enablePlaceholder,
+                onClick = {
+                    navController.navigate(
+                        route = Screen.ExploreFilters.route
+                            .replace("{${Screen.ARG_EXPLORE_FILTERS_TYPE}}", FiltersType.ProgrammingLanguages.name)
+                    )
+                }
+            ) {
+                Text(
+                    text = exploreOptions.exploreLanguage.name,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        color = MaterialTheme.colors.onSurface.copy(alpha = .1f),
+                        highlight = PlaceholderHighlight.fade()
+                    )
+                )
+                DownArrow(enablePlaceholder = enablePlaceholder)
+            }
+        }
+        item {
+            Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
+        }
+        item {
+            Chip(
+                enabled = !enablePlaceholder,
+                onClick = {
+                    navController.navigate(
+                        route = Screen.ExploreFilters.route
+                            .replace("{${Screen.ARG_EXPLORE_FILTERS_TYPE}}", FiltersType.SpokenLanguages.name)
+                    )
+                }
+            ) {
+                Text(
+                    text = exploreOptions.exploreSpokenLanguage.name,
+                    modifier = Modifier.placeholder(
+                        visible = enablePlaceholder,
+                        color = MaterialTheme.colors.onSurface.copy(alpha = .1f),
+                        highlight = PlaceholderHighlight.fade()
+                    )
+                )
+                DownArrow(enablePlaceholder = enablePlaceholder)
+            }
+        }
+    }
+}
+
+@Composable
+private fun RowScope.DownArrow(enablePlaceholder: Boolean) {
+    if (enablePlaceholder) {
+        Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
+        Box(
+            modifier = Modifier
+                .size(size = RepositoryCardIconSize)
+                .align(alignment = Alignment.CenterVertically)
+                .placeholder(
+                    visible = true,
+                    color = MaterialTheme.colors.onSurface.copy(alpha = .1f),
+                    highlight = PlaceholderHighlight.fade()
+                )
+        )
+    } else {
+        Image(
+            imageVector = Icons.Outlined.ArrowDropDown,
+            contentDescription = null
+        )
+    }
+}
+
+@ExperimentalSerializationApi
+@Composable
+private fun TimespanDropDownMenus(
+    showMenuState: MutableState<Boolean>,
+    exploreOptions: ExploreOptions,
+    viewModel: ExploreViewModel
+) {
+    DropdownMenu(
+        expanded = showMenuState.value,
+        offset = DpOffset(
+            x = 0.dp,
+            y = -ContentPaddingSmallSize
+        ),
+        onDismissRequest = {
+            showMenuState.value = false
+        }
+    ) {
+        DropdownMenuItem(
+            onClick = {
+                viewModel.updateExploreOptions(
+                    timeSpan = ExploreTimeSpan.DAILY
+                )
+
+                showMenuState.value = false
+            }
+        ) {
+            Text(text = stringResource(id = R.string.explore_trending_filter_time_span_daily))
+        }
+        DropdownMenuItem(
+            onClick = {
+                viewModel.updateExploreOptions(
+                    timeSpan = ExploreTimeSpan.WEEKLY
+                )
+
+                showMenuState.value = false
+            }
+        ) {
+            Text(text = stringResource(id = R.string.explore_trending_filter_time_span_weekly))
+        }
+        DropdownMenuItem(
+            onClick = {
+                viewModel.updateExploreOptions(
+                    timeSpan = ExploreTimeSpan.MONTHLY
+                )
+
+                showMenuState.value = false
+            }) {
+            Text(text = stringResource(id = R.string.explore_trending_filter_time_span_monthly))
+        }
+    }
 }

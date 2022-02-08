@@ -393,8 +393,7 @@
 
     <string name="search_input_hint">Search repositories &amp; users</string>
 
-    <string name="explore_title">Explore (%1$s | %2$s)</string>
-    <string name="explore_filter_divider">&#160;|&#160;</string>
+    <string name="explore_title">Explore</string>
     <string name="explore_period_stars">%1$d stars %2$s</string> <!--123 stars today-->
     <string name="explore_filter_done">done</string>
     <string name="explore_trending_repositories">Repositories</string>
@@ -405,8 +404,8 @@
     <string name="explore_trending_filter_time_span_daily">Daily</string>
     <string name="explore_trending_filter_time_span_weekly">Weekly</string>
     <string name="explore_trending_filter_time_span_monthly">Monthly</string>
-    <string name="explore_trending_filter_languages">Languages</string>
-    <string name="explore_trending_filter_all_languages">All Languages</string>
+    <string name="explore_trending_filter_language">Language</string>
+    <string name="explore_trending_filter_spoken_language">Spoken Language</string>
     <string name="explore_trending_developers_content_empty_title">No trending developers yet</string>
     <string name="explore_trending_repositories_content_empty_title">No trending repositories yet</string>
     <string name="explore_trending_content_empty_action">Search</string>

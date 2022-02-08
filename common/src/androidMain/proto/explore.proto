@@ -13,6 +13,7 @@ message ExploreOptions {
 
   ExploreTimeSpan explore_time_span = 1;
   ExploreLanguage explore_language = 2;
+  ExploreSpokenLanguage explore_spoken_language = 3;
 
 }
 
@@ -21,5 +22,12 @@ message ExploreLanguage {
   string url_param = 1;
   string name = 2;
   string color = 3;
+
+}
+
+message ExploreSpokenLanguage {
+
+  string url_param = 1;
+  string name = 2;
 
 }

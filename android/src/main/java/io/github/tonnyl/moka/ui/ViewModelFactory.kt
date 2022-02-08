@@ -9,6 +9,7 @@ import io.github.tonnyl.moka.ui.branches.BranchesViewModel
 import io.github.tonnyl.moka.ui.commit.CommitViewModel
 import io.github.tonnyl.moka.ui.commits.CommitsViewModel
 import io.github.tonnyl.moka.ui.explore.ExploreViewModel
+import io.github.tonnyl.moka.ui.explore.filters.ExploreFiltersViewModel
 import io.github.tonnyl.moka.ui.file.FileViewModel
 import io.github.tonnyl.moka.ui.inbox.InboxViewModel
 import io.github.tonnyl.moka.ui.issue.IssueViewModel
@@ -136,6 +137,9 @@ class ViewModelFactory : ViewModelProvider.Factory {
                     app = extras.getApplication(),
                     extra = extras.getExtra(key = MediaViewModel.MEDIA_VIEW_MODEL_EXTRA_KEY)
                 )
+            }
+            ExploreFiltersViewModel::class.java -> {
+                ExploreFiltersViewModel(extra = extras.getExtra(key = ExploreFiltersViewModel.FILTERS_VIEW_MODEL_EXTRA_KEY))
             }
             else -> {
                 throw IllegalArgumentException("Unknown class $modelClass")

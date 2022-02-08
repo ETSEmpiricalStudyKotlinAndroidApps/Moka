@@ -4,6 +4,7 @@ import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
 import io.tonnyl.moka.common.store.data.ExploreLanguage
 import io.tonnyl.moka.common.store.data.ExploreOptions
+import io.tonnyl.moka.common.store.data.ExploreSpokenLanguage
 import io.tonnyl.moka.common.store.data.ExploreTimeSpan
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
@@ -21,8 +22,12 @@ object ExploreOptionsSerializer : Serializer<ExploreOptions> {
             timeSpan = ExploreTimeSpan.DAILY,
             exploreLanguage = ExploreLanguage(
                 urlParam = "",
-                name = "All Languages",
+                name = "All languages",
                 color = "#ECECEC"
+            ),
+            exploreSpokenLanguage = ExploreSpokenLanguage(
+                urlParam = "",
+                name = "All languages"
             )
         )
 

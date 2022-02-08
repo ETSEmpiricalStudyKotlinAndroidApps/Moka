@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
@@ -10,6 +11,7 @@ import io.tonnyl.moka.common.data.EmojiCategory
 import io.tonnyl.moka.common.data.SearchableEmoji
 import io.tonnyl.moka.common.serialization.json
 import io.tonnyl.moka.common.store.data.ExploreLanguage
+import io.tonnyl.moka.common.store.data.ExploreSpokenLanguage
 import io.tonnyl.moka.common.store.data.SignedInAccount
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,10 +30,20 @@ class MainViewModel(
 ) : AndroidViewModel(app) {
 
     private var allSearchableEmojis = mutableListOf<SearchableEmoji>()
+    private var allExploreProgrammingLanguages = listOf<ExploreLanguage>()
+    private var allExploreSpokenLanguages = listOf<ExploreSpokenLanguage>()
 
     private val _searchableEmojis = MutableLiveData<List<SearchableEmoji>>()
     val searchableEmojis: LiveData<List<SearchableEmoji>>
         get() = _searchableEmojis
+
+    private val _programmingLanguages = MutableLiveData<List<ExploreLanguage>>()
+    val programmingLanguages: LiveData<List<ExploreLanguage>>
+        get() = _programmingLanguages
+
+    private val _spokenLanguages = MutableLiveData<List<ExploreSpokenLanguage>>()
+    val spokenLanguages: LiveData<List<ExploreSpokenLanguage>>
+        get() = _spokenLanguages
 
     val emojis = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
         val emojis = mutableListOf<Pair<EmojiCategory, MutableList<Emoji>>>()
@@ -60,23 +72,6 @@ class MainViewModel(
         }
     }
 
-    val localLanguages: LiveData<List<ExploreLanguage>> = liveData(
-        context = viewModelScope.coroutineContext + Dispatchers.IO
-    ) {
-        try {
-            val result = app.assets.open("languages.json").use { inputStream ->
-                val jsonString = inputStream.source().buffer().readString(Charsets.UTF_8)
-                json.decodeFromString<List<ExploreLanguage>>(jsonString)
-            }
-
-            emit(result)
-        } catch (e: Exception) {
-            logcat(priority = LogPriority.ERROR) { e.asLog() }
-
-            emit(emptyList<ExploreLanguage>())
-        }
-    }
-
     init {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -93,6 +88,19 @@ class MainViewModel(
                 allSearchableEmojis.sortBy { it.name }
 
                 _searchableEmojis.postValue(allSearchableEmojis)
+
+                allExploreProgrammingLanguages = readListFromAssetAsLiveData(
+                    context = app,
+                    assetName = "languages.json"
+                )
+
+                allExploreSpokenLanguages = readListFromAssetAsLiveData(
+                    context = app,
+                    assetName = "spoken-languages.json"
+                )
+
+                _programmingLanguages.postValue(allExploreProgrammingLanguages)
+                _spokenLanguages.postValue(allExploreSpokenLanguages)
             } catch (e: Exception) {
                 logcat(priority = LogPriority.ERROR) { e.asLog() }
 
@@ -168,6 +176,56 @@ class MainViewModel(
             } catch (e: Exception) {
                 logcat(priority = LogPriority.ERROR) { e.asLog() }
             }
+        }
+    }
+
+    fun filterProgrammingLanguages(text: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if (text.isNullOrEmpty()) {
+                    if (_programmingLanguages.value != allExploreProgrammingLanguages) {
+                        _programmingLanguages.postValue(allExploreProgrammingLanguages)
+                    }
+                } else {
+                    _programmingLanguages.postValue(
+                        allExploreProgrammingLanguages.filter {
+                            it.name.contains(text, ignoreCase = true)
+                        }
+                    )
+                }
+            } catch (e: Exception) {
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
+            }
+        }
+    }
+
+    fun filterSpokenLanguages(text: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if (text.isNullOrEmpty()) {
+                    if (_spokenLanguages.value != allExploreSpokenLanguages) {
+                        _spokenLanguages.postValue(allExploreSpokenLanguages)
+                    }
+                } else {
+                    _spokenLanguages.postValue(
+                        allExploreSpokenLanguages.filter {
+                            it.name.contains(text, ignoreCase = true)
+                        }
+                    )
+                }
+            } catch (e: Exception) {
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
+            }
+        }
+    }
+
+    private inline fun <reified T> readListFromAssetAsLiveData(
+        context: Context,
+        assetName: String
+    ): List<T> {
+        return context.assets.open(assetName).use { inputStream ->
+            val jsonString = inputStream.source().buffer().readString(Charsets.UTF_8)
+            json.decodeFromString(jsonString)
         }
     }
 

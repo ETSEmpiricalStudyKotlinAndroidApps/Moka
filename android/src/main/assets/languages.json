@@ -1,2462 +1,2682 @@
 [
   {
-    "urlParam": "1c-enterprise",
+    "color": "#814CCC",
     "name": "1C Enterprise",
-    "color": "#814CCC"
+    "urlParam": "1c-enterprise"
+  },
+  {
+    "color": "#004289",
+    "name": "4D",
+    "urlParam": "4d"
   },
   {
     "urlParam": "",
-    "name": "All Languages",
+    "name": "All languages",
     "color": "#ECECEC"
   },
   {
-    "urlParam": "abap",
+    "color": "#E8274B",
     "name": "ABAP",
-    "color": "#E8274B"
+    "urlParam": "abap"
   },
   {
-    "urlParam": "abnf",
-    "name": "ABNF",
-    "color": "#ECECEC"
+    "color": "#555e25",
+    "name": "ABAP CDS",
+    "urlParam": "abap-cds"
   },
   {
-    "urlParam": "actionscript",
+    "color": "#882B0F",
     "name": "ActionScript",
-    "color": "#882B0F"
+    "urlParam": "actionscript"
   },
   {
-    "urlParam": "ada",
+    "color": "#02f88c",
     "name": "Ada",
-    "color": "#02F88C"
+    "urlParam": "ada"
   },
   {
-    "urlParam": "adobe-font-metrics",
+    "color": "#fa0f00",
     "name": "Adobe Font Metrics",
-    "color": "#ECECEC"
+    "urlParam": "adobe-font-metrics"
   },
   {
-    "urlParam": "agda",
+    "color": "#315665",
     "name": "Agda",
-    "color": "#315665"
+    "urlParam": "agda"
   },
   {
-    "urlParam": "ags-script",
+    "color": "#B9D9FF",
     "name": "AGS Script",
-    "color": "#B9D9FF"
+    "urlParam": "ags-script"
   },
   {
-    "urlParam": "alloy",
+    "color": "#34EB6B",
+    "name": "AIDL",
+    "urlParam": "aidl"
+  },
+  {
+    "color": "#3AA2B5",
+    "name": "AL",
+    "urlParam": "al"
+  },
+  {
+    "color": "#64C800",
     "name": "Alloy",
-    "color": "#64C800"
+    "urlParam": "alloy"
   },
   {
-    "urlParam": "alpine-abuild",
+    "color": "#0D597F",
     "name": "Alpine Abuild",
-    "color": "#ECECEC"
+    "urlParam": "alpine-abuild"
   },
   {
-    "urlParam": "ampl",
+    "color": "#A89663",
+    "name": "Altium Designer",
+    "urlParam": "altium-designer"
+  },
+  {
+    "color": "#E6EFBB",
     "name": "AMPL",
-    "color": "#E6EFBB"
+    "urlParam": "ampl"
   },
   {
-    "urlParam": "angelscript",
+    "color": "#C7D7DC",
     "name": "AngelScript",
-    "color": "#ECECEC"
+    "urlParam": "angelscript"
   },
   {
-    "urlParam": "ant-build-system",
+    "color": "#A9157E",
     "name": "Ant Build System",
-    "color": "#ECECEC"
+    "urlParam": "ant-build-system"
   },
   {
-    "urlParam": "antlr",
+    "color": "#9DC3FF",
     "name": "ANTLR",
-    "color": "#9DC3FF"
+    "urlParam": "antlr"
   },
   {
-    "urlParam": "apacheconf",
+    "color": "#d12127",
     "name": "ApacheConf",
-    "color": "#ECECEC"
+    "urlParam": "apacheconf"
   },
   {
-    "urlParam": "apex",
+    "color": "#1797c0",
     "name": "Apex",
-    "color": "#ECECEC"
+    "urlParam": "apex"
   },
   {
-    "urlParam": "api-blueprint",
+    "color": "#2ACCA8",
     "name": "API Blueprint",
-    "color": "#2ACCA8"
+    "urlParam": "api-blueprint"
   },
   {
-    "urlParam": "apl",
+    "color": "#5A8164",
     "name": "APL",
-    "color": "#5A8164"
+    "urlParam": "apl"
   },
   {
-    "urlParam": "apollo-guidance-computer",
+    "color": "#0B3D91",
     "name": "Apollo Guidance Computer",
-    "color": "#ECECEC"
+    "urlParam": "apollo-guidance-computer"
   },
   {
-    "urlParam": "applescript",
+    "color": "#101F1F",
     "name": "AppleScript",
-    "color": "#101F1F"
+    "urlParam": "applescript"
   },
   {
-    "urlParam": "arc",
+    "color": "#aa2afe",
     "name": "Arc",
-    "color": "#AA2AFE"
+    "urlParam": "arc"
   },
   {
-    "urlParam": "asciidoc",
+    "color": "#73a0c5",
     "name": "AsciiDoc",
-    "color": "#ECECEC"
+    "urlParam": "asciidoc"
   },
   {
-    "urlParam": "asn.1",
-    "name": "ASN.1",
-    "color": "#ECECEC"
+    "color": "#ECECEC",
+    "name": "ASL",
+    "urlParam": "asl"
   },
   {
-    "urlParam": "asp",
-    "name": "ASP",
-    "color": "#6A40FD"
+    "color": "#9400ff",
+    "name": "ASP.NET",
+    "urlParam": "asp.net"
   },
   {
-    "urlParam": "aspectj",
+    "color": "#a957b0",
     "name": "AspectJ",
-    "color": "#A957B0"
+    "urlParam": "aspectj"
   },
   {
-    "urlParam": "assembly",
+    "color": "#6E4C13",
     "name": "Assembly",
-    "color": "#6E4C13"
+    "urlParam": "assembly"
   },
   {
-    "urlParam": "ats",
+    "color": "#ff5a03",
+    "name": "Astro",
+    "urlParam": "astro"
+  },
+  {
+    "color": "#ff0000",
+    "name": "Asymptote",
+    "urlParam": "asymptote"
+  },
+  {
+    "color": "#1ac620",
     "name": "ATS",
-    "color": "#1AC620"
+    "urlParam": "ats"
   },
   {
-    "urlParam": "augeas",
+    "color": "#9CC134",
     "name": "Augeas",
-    "color": "#ECECEC"
+    "urlParam": "augeas"
   },
   {
-    "urlParam": "autohotkey",
+    "color": "#6594b9",
     "name": "AutoHotkey",
-    "color": "#6594b9"
+    "urlParam": "autohotkey"
   },
   {
-    "urlParam": "autoit",
+    "color": "#1C3552",
     "name": "AutoIt",
-    "color": "#1C3552"
+    "urlParam": "autoit"
   },
   {
-    "urlParam": "awk",
+    "color": "#0040FF",
+    "name": "Avro IDL",
+    "urlParam": "avro-idl"
+  },
+  {
+    "color": "#c30e9b",
     "name": "Awk",
-    "color": "#ECECEC"
+    "urlParam": "awk"
   },
   {
-    "urlParam": "ballerina",
+    "color": "#FF5000",
     "name": "Ballerina",
-    "color": "#ECECEC"
+    "urlParam": "ballerina"
   },
   {
-    "urlParam": "batchfile",
+    "color": "#ff0000",
+    "name": "BASIC",
+    "urlParam": "basic"
+  },
+  {
+    "color": "#C1F12E",
     "name": "Batchfile",
-    "color": "#C1F12E"
+    "urlParam": "batchfile"
   },
   {
-    "urlParam": "befunge",
+    "color": "#a52f4e",
+    "name": "Beef",
+    "urlParam": "beef"
+  },
+  {
+    "color": "#ECECEC",
     "name": "Befunge",
-    "color": "#ECECEC"
+    "urlParam": "befunge"
   },
   {
-    "urlParam": "bison",
+    "color": "#778899",
+    "name": "BibTeX",
+    "urlParam": "bibtex"
+  },
+  {
+    "color": "#519aba",
+    "name": "Bicep",
+    "urlParam": "bicep"
+  },
+  {
+    "color": "#6A463F",
     "name": "Bison",
-    "color": "#ECECEC"
+    "urlParam": "bison"
   },
   {
-    "urlParam": "bitbake",
+    "color": "#00bce4",
     "name": "BitBake",
-    "color": "#ECECEC"
+    "urlParam": "bitbake"
   },
   {
-    "urlParam": "blade",
+    "color": "#f7523f",
     "name": "Blade",
-    "color": "#ECECEC"
+    "urlParam": "blade"
   },
   {
-    "urlParam": "blitzbasic",
+    "color": "#00FFAE",
     "name": "BlitzBasic",
-    "color": "#ECECEC"
+    "urlParam": "blitzbasic"
   },
   {
-    "urlParam": "blitzmax",
+    "color": "#cd6400",
     "name": "BlitzMax",
-    "color": "#CD6400"
+    "urlParam": "blitzmax"
   },
   {
-    "urlParam": "bluespec",
+    "color": "#12223c",
     "name": "Bluespec",
-    "color": "#ECECEC"
+    "urlParam": "bluespec"
   },
   {
-    "urlParam": "boo",
+    "color": "#d4bec1",
     "name": "Boo",
-    "color": "#D4BEC1"
+    "urlParam": "boo"
   },
   {
-    "urlParam": "brainfuck",
+    "color": "#c80fa0",
+    "name": "Boogie",
+    "urlParam": "boogie"
+  },
+  {
+    "color": "#2F2530",
     "name": "Brainfuck",
-    "color": "#2F2530"
+    "urlParam": "brainfuck"
   },
   {
-    "urlParam": "brightscript",
+    "color": "#662D91",
     "name": "Brightscript",
-    "color": "#ECECEC"
+    "urlParam": "brightscript"
   },
   {
-    "urlParam": "bro",
-    "name": "Bro",
-    "color": "#ECECEC"
+    "color": "#ffd539",
+    "name": "Browserslist",
+    "urlParam": "browserslist"
   },
   {
-    "urlParam": "c",
+    "color": "#555555",
     "name": "C",
-    "color": "#555555"
+    "urlParam": "c"
   },
   {
-    "urlParam": "c%23",
+    "color": "#178600",
     "name": "C#",
-    "color": "#178600"
+    "urlParam": "csharp"
   },
   {
-    "urlParam": "c++",
+    "color": "#f34b7d",
     "name": "C++",
-    "color": "#F34B7D"
+    "urlParam": "c++"
   },
   {
-    "urlParam": "c-objdump",
-    "name": "C-ObjDump",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "c2hs-haskell",
+    "color": "#ECECEC",
     "name": "C2hs Haskell",
-    "color": "#ECECEC"
+    "urlParam": "c2hs-haskell"
   },
   {
-    "urlParam": "cap'n-proto",
-    "name": "Cap'n Proto",
-    "color": "#ECECEC"
+    "color": "#483465",
+    "name": "Cabal Config",
+    "urlParam": "cabal-config"
   },
   {
-    "urlParam": "cartocss",
+    "color": "#c42727",
+    "name": "Cap\u0027n Proto",
+    "urlParam": "cap\u0027n-proto"
+  },
+  {
+    "color": "#ECECEC",
     "name": "CartoCSS",
-    "color": "#ECECEC"
+    "urlParam": "cartocss"
   },
   {
-    "urlParam": "ceylon",
+    "color": "#dfa535",
     "name": "Ceylon",
-    "color": "#ECECEC"
+    "urlParam": "ceylon"
   },
   {
-    "urlParam": "chapel",
+    "color": "#8dc63f",
     "name": "Chapel",
-    "color": "#8DC63F"
+    "urlParam": "chapel"
   },
   {
-    "urlParam": "charity",
+    "color": "#ECECEC",
     "name": "Charity",
-    "color": "#ECECEC"
+    "urlParam": "charity"
   },
   {
-    "urlParam": "chuck",
+    "color": "#3f8000",
     "name": "ChucK",
-    "color": "#ECECEC"
+    "urlParam": "chuck"
   },
   {
-    "urlParam": "cirru",
+    "color": "#ccccff",
     "name": "Cirru",
-    "color": "#CCCCFF"
+    "urlParam": "cirru"
   },
   {
-    "urlParam": "clarion",
+    "color": "#db901e",
     "name": "Clarion",
-    "color": "#DB901E"
+    "urlParam": "clarion"
   },
   {
-    "urlParam": "clean",
+    "color": "#6a40fd",
+    "name": "Classic ASP",
+    "urlParam": "classic-asp"
+  },
+  {
+    "color": "#3F85AF",
     "name": "Clean",
-    "color": "#3F85AF"
+    "urlParam": "clean"
   },
   {
-    "urlParam": "click",
+    "color": "#E4E6F3",
     "name": "Click",
-    "color": "#E4E6F3"
+    "urlParam": "click"
   },
   {
-    "urlParam": "clips",
+    "color": "#00A300",
     "name": "CLIPS",
-    "color": "#ECECEC"
+    "urlParam": "clips"
   },
   {
-    "urlParam": "clojure",
+    "color": "#db5855",
     "name": "Clojure",
-    "color": "#DB5855"
+    "urlParam": "clojure"
   },
   {
-    "urlParam": "closure-templates",
+    "color": "#0d948f",
     "name": "Closure Templates",
-    "color": "#ECECEC"
+    "urlParam": "closure-templates"
   },
   {
-    "urlParam": "cloud-firestore-security-rules",
+    "color": "#FFA000",
     "name": "Cloud Firestore Security Rules",
-    "color": "#ECECEC"
+    "urlParam": "cloud-firestore-security-rules"
   },
   {
-    "urlParam": "cmake",
+    "color": "#DA3434",
     "name": "CMake",
-    "color": "#ECECEC"
+    "urlParam": "cmake"
   },
   {
-    "urlParam": "cobol",
+    "color": "#ECECEC",
     "name": "COBOL",
-    "color": "#ECECEC"
+    "urlParam": "cobol"
   },
   {
-    "urlParam": "coffeescript",
+    "color": "#140f46",
+    "name": "CodeQL",
+    "urlParam": "codeql"
+  },
+  {
+    "color": "#244776",
     "name": "CoffeeScript",
-    "color": "#244776"
+    "urlParam": "coffeescript"
   },
   {
-    "urlParam": "coldfusion",
+    "color": "#ed2cd6",
     "name": "ColdFusion",
-    "color": "#ED2CD6"
+    "urlParam": "coldfusion"
   },
   {
-    "urlParam": "coldfusion-cfc",
+    "color": "#ed2cd6",
     "name": "ColdFusion CFC",
-    "color": "#ECECEC"
+    "urlParam": "coldfusion-cfc"
   },
   {
-    "urlParam": "collada",
+    "color": "#F1A42B",
     "name": "COLLADA",
-    "color": "#ECECEC"
+    "urlParam": "collada"
   },
   {
-    "urlParam": "common-lisp",
+    "color": "#3fb68b",
     "name": "Common Lisp",
-    "color": "#3FB68B"
+    "urlParam": "common-lisp"
   },
   {
-    "urlParam": "common-workflow-language",
+    "color": "#B5314C",
     "name": "Common Workflow Language",
-    "color": "#ECECEC"
+    "urlParam": "common-workflow-language"
   },
   {
-    "urlParam": "component-pascal",
+    "color": "#B0CE4E",
     "name": "Component Pascal",
-    "color": "#B0CE4E"
+    "urlParam": "component-pascal"
   },
   {
-    "urlParam": "conll-u",
-    "name": "CoNLL-U",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "cool",
+    "color": "#ECECEC",
     "name": "Cool",
-    "color": "#ECECEC"
+    "urlParam": "cool"
   },
   {
-    "urlParam": "coq",
+    "color": "#d0b68c",
     "name": "Coq",
-    "color": "#ECECEC"
+    "urlParam": "coq"
   },
   {
-    "urlParam": "cpp-objdump",
-    "name": "Cpp-ObjDump",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "creole",
-    "name": "Creole",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "crystal",
+    "color": "#000100",
     "name": "Crystal",
-    "color": "#776791"
+    "urlParam": "crystal"
   },
   {
-    "urlParam": "cson",
+    "color": "#244776",
     "name": "CSON",
-    "color": "#ECECEC"
+    "urlParam": "cson"
   },
   {
-    "urlParam": "csound",
+    "color": "#1a1a1a",
     "name": "Csound",
-    "color": "#ECECEC"
+    "urlParam": "csound"
   },
   {
-    "urlParam": "csound-document",
+    "color": "#1a1a1a",
     "name": "Csound Document",
-    "color": "#ECECEC"
+    "urlParam": "csound-document"
   },
   {
-    "urlParam": "csound-score",
+    "color": "#1a1a1a",
     "name": "Csound Score",
-    "color": "#ECECEC"
+    "urlParam": "csound-score"
   },
   {
-    "urlParam": "css",
+    "color": "#563d7c",
     "name": "CSS",
-    "color": "#563D7C"
+    "urlParam": "css"
   },
   {
-    "urlParam": "csv",
+    "color": "#237346",
     "name": "CSV",
-    "color": "#ECECEC"
+    "urlParam": "csv"
   },
   {
-    "urlParam": "cuda",
+    "color": "#3A4E3A",
     "name": "Cuda",
-    "color": "#3A4E3A"
+    "urlParam": "cuda"
   },
   {
-    "urlParam": "cweb",
+    "color": "#5886E1",
+    "name": "CUE",
+    "urlParam": "cue"
+  },
+  {
+    "color": "#00007a",
     "name": "CWeb",
-    "color": "#ECECEC"
+    "urlParam": "cweb"
   },
   {
-    "urlParam": "cycript",
+    "color": "#ECECEC",
     "name": "Cycript",
-    "color": "#ECECEC"
+    "urlParam": "cycript"
   },
   {
-    "urlParam": "cython",
+    "color": "#fedf5b",
     "name": "Cython",
-    "color": "#ECECEC"
+    "urlParam": "cython"
   },
   {
-    "urlParam": "d",
+    "color": "#ba595e",
     "name": "D",
-    "color": "#BA595E"
+    "urlParam": "d"
   },
   {
-    "urlParam": "d-objdump",
-    "name": "D-ObjDump",
-    "color": "#ECECEC"
+    "color": "#FFEC25",
+    "name": "Dafny",
+    "urlParam": "dafny"
   },
   {
-    "urlParam": "darcs-patch",
+    "color": "#8eff23",
     "name": "Darcs Patch",
-    "color": "#ECECEC"
+    "urlParam": "darcs-patch"
   },
   {
-    "urlParam": "dart",
+    "color": "#00B4AB",
     "name": "Dart",
-    "color": "#00B4AB"
+    "urlParam": "dart"
   },
   {
-    "urlParam": "dataweave",
+    "color": "#003a52",
     "name": "DataWeave",
-    "color": "#ECECEC"
+    "urlParam": "dataweave"
   },
   {
-    "urlParam": "desktop",
-    "name": "desktop",
-    "color": "#ECECEC"
+    "color": "#dfafff",
+    "name": "Dhall",
+    "urlParam": "dhall"
   },
   {
-    "urlParam": "diff",
-    "name": "Diff",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "digital-command-language",
+    "color": "#ECECEC",
     "name": "DIGITAL Command Language",
-    "color": "#ECECEC"
+    "urlParam": "digital-command-language"
   },
   {
-    "urlParam": "dm",
+    "color": "#aace60",
+    "name": "DirectX 3D File",
+    "urlParam": "directx-3d-file"
+  },
+  {
+    "color": "#447265",
     "name": "DM",
-    "color": "#447265"
+    "urlParam": "dm"
   },
   {
-    "urlParam": "dns-zone",
-    "name": "DNS Zone",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "dockerfile",
+    "color": "#384d54",
     "name": "Dockerfile",
-    "color": "#ECECEC"
+    "urlParam": "dockerfile"
   },
   {
-    "urlParam": "dogescript",
+    "color": "#cca760",
     "name": "Dogescript",
-    "color": "#CCA760"
+    "urlParam": "dogescript"
   },
   {
-    "urlParam": "dtrace",
+    "color": "#ECECEC",
     "name": "DTrace",
-    "color": "#ECECEC"
+    "urlParam": "dtrace"
   },
   {
-    "urlParam": "dylan",
+    "color": "#6c616e",
     "name": "Dylan",
-    "color": "#6C616E"
+    "urlParam": "dylan"
   },
   {
-    "urlParam": "e",
+    "color": "#ccce35",
     "name": "E",
-    "color": "#CCCE35"
+    "urlParam": "e"
   },
   {
-    "urlParam": "eagle",
-    "name": "Eagle",
-    "color": "#814C05"
+    "color": "#2af0ff",
+    "name": "Earthly",
+    "urlParam": "earthly"
   },
   {
-    "urlParam": "easybuild",
+    "color": "#069406",
     "name": "Easybuild",
-    "color": "#ECECEC"
+    "urlParam": "easybuild"
   },
   {
-    "urlParam": "ebnf",
-    "name": "EBNF",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "ec",
+    "color": "#913960",
     "name": "eC",
-    "color": "#913960"
+    "urlParam": "ec"
   },
   {
-    "urlParam": "ecere-projects",
+    "color": "#913960",
     "name": "Ecere Projects",
-    "color": "#ECECEC"
+    "urlParam": "ecere-projects"
   },
   {
-    "urlParam": "ecl",
+    "color": "#8a1267",
     "name": "ECL",
-    "color": "#8A1267"
+    "urlParam": "ecl"
   },
   {
-    "urlParam": "eclipse",
+    "color": "#001d9d",
     "name": "ECLiPSe",
-    "color": "#ECECEC"
+    "urlParam": "eclipse"
   },
   {
-    "urlParam": "edje-data-collection",
-    "name": "Edje Data Collection",
-    "color": "#ECECEC"
+    "color": "#fff1f2",
+    "name": "EditorConfig",
+    "urlParam": "editorconfig"
   },
   {
-    "urlParam": "edn",
-    "name": "edn",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "eiffel",
+    "color": "#4d6977",
     "name": "Eiffel",
-    "color": "#946D57"
+    "urlParam": "eiffel"
   },
   {
-    "urlParam": "ejs",
+    "color": "#a91e50",
     "name": "EJS",
-    "color": "#ECECEC"
+    "urlParam": "ejs"
   },
   {
-    "urlParam": "elixir",
+    "color": "#6e4a7e",
     "name": "Elixir",
-    "color": "#6E4A7E"
+    "urlParam": "elixir"
   },
   {
-    "urlParam": "elm",
+    "color": "#60B5CC",
     "name": "Elm",
-    "color": "#60B5CC"
+    "urlParam": "elm"
   },
   {
-    "urlParam": "emacs-lisp",
+    "color": "#c065db",
     "name": "Emacs Lisp",
-    "color": "#C065DB"
+    "urlParam": "emacs-lisp"
   },
   {
-    "urlParam": "emberscript",
+    "color": "#FFF4F3",
     "name": "EmberScript",
-    "color": "#FFF4F3"
+    "urlParam": "emberscript"
   },
   {
-    "urlParam": "eml",
-    "name": "EML",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "eq",
+    "color": "#a78649",
     "name": "EQ",
-    "color": "#A78649"
+    "urlParam": "eq"
   },
   {
-    "urlParam": "erlang",
+    "color": "#B83998",
     "name": "Erlang",
-    "color": "#B83998"
+    "urlParam": "erlang"
   },
   {
-    "urlParam": "f%23",
+    "color": "#b845fc",
     "name": "F#",
-    "color": "#B845FC"
+    "urlParam": "fsharp"
   },
   {
-    "urlParam": "f*",
+    "color": "#572e30",
     "name": "F*",
-    "color": "#ECECEC"
+    "urlParam": "f*"
   },
   {
-    "urlParam": "factor",
+    "color": "#636746",
     "name": "Factor",
-    "color": "#636746"
+    "urlParam": "factor"
   },
   {
-    "urlParam": "fancy",
+    "color": "#7b9db4",
     "name": "Fancy",
-    "color": "#7B9DB4"
+    "urlParam": "fancy"
   },
   {
-    "urlParam": "fantom",
+    "color": "#14253c",
     "name": "Fantom",
-    "color": "#14253C"
+    "urlParam": "fantom"
   },
   {
-    "urlParam": "figlet-font",
+    "color": "#c37240",
+    "name": "Faust",
+    "urlParam": "faust"
+  },
+  {
+    "color": "#fff3d7",
+    "name": "Fennel",
+    "urlParam": "fennel"
+  },
+  {
+    "color": "#FFDDBB",
     "name": "FIGlet Font",
-    "color": "#ECECEC"
+    "urlParam": "figlet-font"
   },
   {
-    "urlParam": "filebench-wml",
+    "color": "#F6B900",
     "name": "Filebench WML",
-    "color": "#ECECEC"
+    "urlParam": "filebench-wml"
   },
   {
-    "urlParam": "filterscript",
+    "color": "#ECECEC",
     "name": "Filterscript",
-    "color": "#ECECEC"
+    "urlParam": "filterscript"
   },
   {
-    "urlParam": "fish",
+    "color": "#4aae47",
     "name": "fish",
-    "color": "#ECECEC"
+    "urlParam": "fish"
   },
   {
-    "urlParam": "flux",
+    "color": "#ffcc33",
+    "name": "Fluent",
+    "urlParam": "fluent"
+  },
+  {
+    "color": "#88ccff",
     "name": "FLUX",
-    "color": "#88CCFF"
+    "urlParam": "flux"
   },
   {
-    "urlParam": "formatted",
-    "name": "Formatted",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "forth",
+    "color": "#341708",
     "name": "Forth",
-    "color": "#341708"
+    "urlParam": "forth"
   },
   {
-    "urlParam": "fortran",
+    "color": "#4d41b1",
     "name": "Fortran",
-    "color": "#4D41B1"
+    "urlParam": "fortran"
   },
   {
-    "urlParam": "freemarker",
+    "color": "#4d41b1",
+    "name": "Fortran Free Form",
+    "urlParam": "fortran-free-form"
+  },
+  {
+    "color": "#867db1",
+    "name": "FreeBasic",
+    "urlParam": "freebasic"
+  },
+  {
+    "color": "#0050b2",
     "name": "FreeMarker",
-    "color": "#0050B2"
+    "urlParam": "freemarker"
   },
   {
-    "urlParam": "frege",
+    "color": "#00cafe",
     "name": "Frege",
-    "color": "#00CAFE"
+    "urlParam": "frege"
   },
   {
-    "urlParam": "g-code",
+    "color": "#5f021f",
+    "name": "Futhark",
+    "urlParam": "futhark"
+  },
+  {
+    "color": "#D08CF2",
     "name": "G-code",
-    "color": "#ECECEC"
+    "urlParam": "g-code"
   },
   {
-    "urlParam": "game-maker-language",
+    "color": "#71b417",
     "name": "Game Maker Language",
-    "color": "#8FB200"
+    "urlParam": "game-maker-language"
   },
   {
-    "urlParam": "gams",
+    "color": "#FFC766",
+    "name": "GAML",
+    "urlParam": "gaml"
+  },
+  {
+    "color": "#f49a22",
     "name": "GAMS",
-    "color": "#ECECEC"
+    "urlParam": "gams"
   },
   {
-    "urlParam": "gap",
+    "color": "#0000cc",
     "name": "GAP",
-    "color": "#ECECEC"
+    "urlParam": "gap"
   },
   {
-    "urlParam": "gcc-machine-description",
+    "color": "#FFCFAB",
     "name": "GCC Machine Description",
-    "color": "#ECECEC"
+    "urlParam": "gcc-machine-description"
   },
   {
-    "urlParam": "gdb",
+    "color": "#ECECEC",
     "name": "GDB",
-    "color": "#ECECEC"
+    "urlParam": "gdb"
   },
   {
-    "urlParam": "gdscript",
+    "color": "#355570",
     "name": "GDScript",
-    "color": "#ECECEC"
+    "urlParam": "gdscript"
   },
   {
-    "urlParam": "genie",
+    "color": "#003058",
+    "name": "GEDCOM",
+    "urlParam": "gedcom"
+  },
+  {
+    "color": "#701516",
+    "name": "Gemfile.lock",
+    "urlParam": "gemfile.lock"
+  },
+  {
+    "color": "#fb855d",
     "name": "Genie",
-    "color": "#FB855D"
+    "urlParam": "genie"
   },
   {
-    "urlParam": "genshi",
+    "color": "#951531",
     "name": "Genshi",
-    "color": "#ECECEC"
+    "urlParam": "genshi"
   },
   {
-    "urlParam": "gentoo-ebuild",
+    "color": "#9400ff",
     "name": "Gentoo Ebuild",
-    "color": "#ECECEC"
+    "urlParam": "gentoo-ebuild"
   },
   {
-    "urlParam": "gentoo-eclass",
+    "color": "#9400ff",
     "name": "Gentoo Eclass",
-    "color": "#ECECEC"
+    "urlParam": "gentoo-eclass"
   },
   {
-    "urlParam": "gerber-image",
+    "color": "#d20b00",
     "name": "Gerber Image",
-    "color": "#ECECEC"
+    "urlParam": "gerber-image"
   },
   {
-    "urlParam": "gettext-catalog",
-    "name": "Gettext Catalog",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "gherkin",
+    "color": "#5B2063",
     "name": "Gherkin",
-    "color": "#5B2063"
+    "urlParam": "gherkin"
   },
   {
-    "urlParam": "glsl",
+    "color": "#F44D27",
+    "name": "Git Attributes",
+    "urlParam": "git-attributes"
+  },
+  {
+    "color": "#F44D27",
+    "name": "Git Config",
+    "urlParam": "git-config"
+  },
+  {
+    "color": "#5686a5",
     "name": "GLSL",
-    "color": "#ECECEC"
+    "urlParam": "glsl"
   },
   {
-    "urlParam": "glyph",
+    "color": "#c1ac7f",
     "name": "Glyph",
-    "color": "#E4CC98"
+    "urlParam": "glyph"
   },
   {
-    "urlParam": "glyph-bitmap-distribution-format",
-    "name": "Glyph Bitmap Distribution Format",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "gn",
-    "name": "GN",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "gnuplot",
+    "color": "#f0a9f0",
     "name": "Gnuplot",
-    "color": "#F0A9F0"
+    "urlParam": "gnuplot"
   },
   {
-    "urlParam": "go",
+    "color": "#00ADD8",
     "name": "Go",
-    "color": "#375EAB"
+    "urlParam": "go"
   },
   {
-    "urlParam": "golo",
+    "color": "#00ADD8",
+    "name": "Go Checksums",
+    "urlParam": "go-checksums"
+  },
+  {
+    "color": "#00ADD8",
+    "name": "Go Module",
+    "urlParam": "go-module"
+  },
+  {
+    "color": "#88562A",
     "name": "Golo",
-    "color": "#88562A"
+    "urlParam": "golo"
   },
   {
-    "urlParam": "gosu",
+    "color": "#82937f",
     "name": "Gosu",
-    "color": "#82937F"
+    "urlParam": "gosu"
   },
   {
-    "urlParam": "grace",
+    "color": "#615f8b",
     "name": "Grace",
-    "color": "#ECECEC"
+    "urlParam": "grace"
   },
   {
-    "urlParam": "gradle",
+    "color": "#02303a",
     "name": "Gradle",
-    "color": "#ECECEC"
+    "urlParam": "gradle"
   },
   {
-    "urlParam": "grammatical-framework",
+    "color": "#ff0000",
     "name": "Grammatical Framework",
-    "color": "#79AA7A"
+    "urlParam": "grammatical-framework"
   },
   {
-    "urlParam": "graph-modeling-language",
-    "name": "Graph Modeling Language",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "graphql",
+    "color": "#e10098",
     "name": "GraphQL",
-    "color": "#ECECEC"
+    "urlParam": "graphql"
   },
   {
-    "urlParam": "graphviz-(dot)",
+    "color": "#2596be",
     "name": "Graphviz (DOT)",
-    "color": "#ECECEC"
+    "urlParam": "graphviz-(dot)"
   },
   {
-    "urlParam": "groovy",
+    "color": "#4298b8",
     "name": "Groovy",
-    "color": "#E69f56"
+    "urlParam": "groovy"
   },
   {
-    "urlParam": "groovy-server-pages",
+    "color": "#4298b8",
     "name": "Groovy Server Pages",
-    "color": "#ECECEC"
+    "urlParam": "groovy-server-pages"
   },
   {
-    "urlParam": "hack",
+    "color": "#878787",
     "name": "Hack",
-    "color": "#878787"
+    "urlParam": "hack"
   },
   {
-    "urlParam": "haml",
+    "color": "#ece2a9",
     "name": "Haml",
-    "color": "#ECECEC"
+    "urlParam": "haml"
   },
   {
-    "urlParam": "handlebars",
+    "color": "#f7931e",
     "name": "Handlebars",
-    "color": "#ECECEC"
+    "urlParam": "handlebars"
   },
   {
-    "urlParam": "haproxy",
+    "color": "#106da9",
     "name": "HAProxy",
-    "color": "#ECECEC"
+    "urlParam": "haproxy"
   },
   {
-    "urlParam": "harbour",
+    "color": "#0e60e3",
     "name": "Harbour",
-    "color": "#0E60E3"
+    "urlParam": "harbour"
   },
   {
-    "urlParam": "haskell",
+    "color": "#5e5086",
     "name": "Haskell",
-    "color": "#5E5086"
+    "urlParam": "haskell"
   },
   {
-    "urlParam": "haxe",
+    "color": "#df7900",
     "name": "Haxe",
-    "color": "#DF7900"
+    "urlParam": "haxe"
   },
   {
-    "urlParam": "hcl",
+    "color": "#ECECEC",
     "name": "HCL",
-    "color": "#ECECEC"
+    "urlParam": "hcl"
   },
   {
-    "urlParam": "hiveql",
+    "color": "#dce200",
     "name": "HiveQL",
-    "color": "#ECECEC"
+    "urlParam": "hiveql"
   },
   {
-    "urlParam": "hlsl",
+    "color": "#aace60",
     "name": "HLSL",
-    "color": "#ECECEC"
+    "urlParam": "hlsl"
   },
   {
-    "urlParam": "html",
+    "color": "#ffefaf",
+    "name": "HolyC",
+    "urlParam": "holyc"
+  },
+  {
+    "color": "#e34c26",
     "name": "HTML",
-    "color": "#E34C26"
+    "urlParam": "html"
   },
   {
-    "urlParam": "html+django",
-    "name": "HTML+Django",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "html+ecr",
+    "color": "#2e1052",
     "name": "HTML+ECR",
-    "color": "#ECECEC"
+    "urlParam": "html+ecr"
   },
   {
-    "urlParam": "html+eex",
+    "color": "#6e4a7e",
     "name": "HTML+EEX",
-    "color": "#ECECEC"
+    "urlParam": "html+eex"
   },
   {
-    "urlParam": "html+erb",
+    "color": "#701516",
     "name": "HTML+ERB",
-    "color": "#ECECEC"
+    "urlParam": "html+erb"
   },
   {
-    "urlParam": "html+php",
+    "color": "#4f5d95",
     "name": "HTML+PHP",
-    "color": "#ECECEC"
+    "urlParam": "html+php"
   },
   {
-    "urlParam": "html+razor",
+    "color": "#512be4",
     "name": "HTML+Razor",
-    "color": "#ECECEC"
+    "urlParam": "html+razor"
   },
   {
-    "urlParam": "http",
+    "color": "#005C9C",
     "name": "HTTP",
-    "color": "#ECECEC"
+    "urlParam": "http"
   },
   {
-    "urlParam": "hxml",
+    "color": "#f68712",
     "name": "HXML",
-    "color": "#ECECEC"
+    "urlParam": "hxml"
   },
   {
-    "urlParam": "hy",
+    "color": "#7790B2",
     "name": "Hy",
-    "color": "#7790B2"
+    "urlParam": "hy"
   },
   {
-    "urlParam": "hyphy",
+    "color": "#ECECEC",
     "name": "HyPhy",
-    "color": "#ECECEC"
+    "urlParam": "hyphy"
   },
   {
-    "urlParam": "idl",
+    "color": "#a3522f",
     "name": "IDL",
-    "color": "#A3522F"
+    "urlParam": "idl"
   },
   {
-    "urlParam": "idris",
+    "color": "#b30000",
     "name": "Idris",
-    "color": "#ECECEC"
+    "urlParam": "idris"
   },
   {
-    "urlParam": "igor-pro",
+    "color": "#000000",
+    "name": "Ignore List",
+    "urlParam": "ignore-list"
+  },
+  {
+    "color": "#0000cc",
     "name": "IGOR Pro",
-    "color": "#ECECEC"
+    "urlParam": "igor-pro"
   },
   {
-    "urlParam": "inform-7",
+    "color": "#99AAFF",
+    "name": "ImageJ Macro",
+    "urlParam": "imagej-macro"
+  },
+  {
+    "color": "#ECECEC",
     "name": "Inform 7",
-    "color": "#ECECEC"
+    "urlParam": "inform-7"
   },
   {
-    "urlParam": "ini",
+    "color": "#d1dbe0",
     "name": "INI",
-    "color": "#ECECEC"
+    "urlParam": "ini"
   },
   {
-    "urlParam": "inno-setup",
+    "color": "#264b99",
     "name": "Inno Setup",
-    "color": "#ECECEC"
+    "urlParam": "inno-setup"
   },
   {
-    "urlParam": "io",
+    "color": "#a9188d",
     "name": "Io",
-    "color": "#A9188D"
+    "urlParam": "io"
   },
   {
-    "urlParam": "ioke",
+    "color": "#078193",
     "name": "Ioke",
-    "color": "#078193"
+    "urlParam": "ioke"
   },
   {
-    "urlParam": "irc-log",
-    "name": "IRC log",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "isabelle",
+    "color": "#FEFE00",
     "name": "Isabelle",
-    "color": "#FEFE00"
+    "urlParam": "isabelle"
   },
   {
-    "urlParam": "isabelle-root",
+    "color": "#FEFE00",
     "name": "Isabelle ROOT",
-    "color": "#ECECEC"
+    "urlParam": "isabelle-root"
   },
   {
-    "urlParam": "j",
+    "color": "#9EEDFF",
     "name": "J",
-    "color": "#9EEDFF"
+    "urlParam": "j"
   },
   {
-    "urlParam": "jasmin",
+    "color": "#b07219",
+    "name": "JAR Manifest",
+    "urlParam": "jar-manifest"
+  },
+  {
+    "color": "#d03600",
     "name": "Jasmin",
-    "color": "#ECECEC"
+    "urlParam": "jasmin"
   },
   {
-    "urlParam": "java",
+    "color": "#b07219",
     "name": "Java",
-    "color": "#B07219"
+    "urlParam": "java"
   },
   {
-    "urlParam": "java-properties",
+    "color": "#2A6277",
     "name": "Java Properties",
-    "color": "#ECECEC"
+    "urlParam": "java-properties"
   },
   {
-    "urlParam": "java-server-pages",
+    "color": "#2A6277",
     "name": "Java Server Pages",
-    "color": "#ECECEC"
+    "urlParam": "java-server-pages"
   },
   {
-    "urlParam": "javascript",
+    "color": "#f1e05a",
     "name": "JavaScript",
-    "color": "#F1E05A"
+    "urlParam": "javascript"
   },
   {
-    "urlParam": "jflex",
+    "color": "#f1e05a",
+    "name": "JavaScript+ERB",
+    "urlParam": "javascript+erb"
+  },
+  {
+    "color": "#15c213",
+    "name": "Jest Snapshot",
+    "urlParam": "jest-snapshot"
+  },
+  {
+    "color": "#DBCA00",
     "name": "JFlex",
-    "color": "#ECECEC"
+    "urlParam": "jflex"
   },
   {
-    "urlParam": "jison",
+    "color": "#a52a22",
+    "name": "Jinja",
+    "urlParam": "jinja"
+  },
+  {
+    "color": "#56b3cb",
     "name": "Jison",
-    "color": "#ECECEC"
+    "urlParam": "jison"
   },
   {
-    "urlParam": "jison-lex",
+    "color": "#56b3cb",
     "name": "Jison Lex",
-    "color": "#ECECEC"
+    "urlParam": "jison-lex"
   },
   {
-    "urlParam": "jolie",
+    "color": "#843179",
     "name": "Jolie",
-    "color": "#843179"
+    "urlParam": "jolie"
   },
   {
-    "urlParam": "json",
+    "color": "#c7254e",
+    "name": "jq",
+    "urlParam": "jq"
+  },
+  {
+    "color": "#292929",
     "name": "JSON",
-    "color": "#ECECEC"
+    "urlParam": "json"
   },
   {
-    "urlParam": "json-with-comments",
+    "color": "#292929",
     "name": "JSON with Comments",
-    "color": "#ECECEC"
+    "urlParam": "json-with-comments"
   },
   {
-    "urlParam": "json5",
+    "color": "#267CB9",
     "name": "JSON5",
-    "color": "#ECECEC"
+    "urlParam": "json5"
   },
   {
-    "urlParam": "jsoniq",
+    "color": "#40d47e",
     "name": "JSONiq",
-    "color": "#ECECEC"
+    "urlParam": "jsoniq"
   },
   {
-    "urlParam": "jsonld",
+    "color": "#0c479c",
     "name": "JSONLD",
-    "color": "#ECECEC"
+    "urlParam": "jsonld"
   },
   {
-    "urlParam": "jsx",
-    "name": "JSX",
-    "color": "#ECECEC"
+    "color": "#0064bd",
+    "name": "Jsonnet",
+    "urlParam": "jsonnet"
   },
   {
-    "urlParam": "julia",
+    "color": "#a270ba",
     "name": "Julia",
-    "color": "#A270BA"
+    "urlParam": "julia"
   },
   {
-    "urlParam": "jupyter-notebook",
+    "color": "#DA5B0B",
     "name": "Jupyter Notebook",
-    "color": "#DA5B0B"
+    "urlParam": "jupyter-notebook"
   },
   {
-    "urlParam": "kicad-layout",
+    "color": "#773b37",
+    "name": "Kaitai Struct",
+    "urlParam": "kaitai-struct"
+  },
+  {
+    "color": "#6f8042",
+    "name": "KakouneScript",
+    "urlParam": "kakounescript"
+  },
+  {
+    "color": "#2f4aab",
     "name": "KiCad Layout",
-    "color": "#ECECEC"
+    "urlParam": "kicad-layout"
   },
   {
-    "urlParam": "kicad-legacy-layout",
+    "color": "#2f4aab",
     "name": "KiCad Legacy Layout",
-    "color": "#ECECEC"
+    "urlParam": "kicad-legacy-layout"
   },
   {
-    "urlParam": "kicad-schematic",
+    "color": "#2f4aab",
     "name": "KiCad Schematic",
-    "color": "#ECECEC"
+    "urlParam": "kicad-schematic"
   },
   {
-    "urlParam": "kit",
-    "name": "Kit",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "kotlin",
+    "color": "#A97BFF",
     "name": "Kotlin",
-    "color": "#F18E33"
+    "urlParam": "kotlin"
   },
   {
-    "urlParam": "krl",
+    "color": "#28430A",
     "name": "KRL",
-    "color": "#28431F"
+    "urlParam": "krl"
   },
   {
-    "urlParam": "labview",
+    "color": "#fede06",
     "name": "LabVIEW",
-    "color": "#ECECEC"
+    "urlParam": "labview"
   },
   {
-    "urlParam": "lasso",
+    "color": "#2980B9",
+    "name": "Lark",
+    "urlParam": "lark"
+  },
+  {
+    "color": "#999999",
     "name": "Lasso",
-    "color": "#999999"
+    "urlParam": "lasso"
   },
   {
-    "urlParam": "latte",
+    "color": "#f2a542",
     "name": "Latte",
-    "color": "#ECECEC"
+    "urlParam": "latte"
   },
   {
-    "urlParam": "lean",
+    "color": "#ECECEC",
     "name": "Lean",
-    "color": "#ECECEC"
+    "urlParam": "lean"
   },
   {
-    "urlParam": "less",
+    "color": "#1d365d",
     "name": "Less",
-    "color": "#ECECEC"
+    "urlParam": "less"
   },
   {
-    "urlParam": "lex",
+    "color": "#DBCA00",
     "name": "Lex",
-    "color": "#DBCA00"
+    "urlParam": "lex"
   },
   {
-    "urlParam": "lfe",
+    "color": "#4C3023",
     "name": "LFE",
-    "color": "#ECECEC"
+    "urlParam": "lfe"
   },
   {
-    "urlParam": "lilypond",
+    "color": "#9ccc7c",
     "name": "LilyPond",
-    "color": "#ECECEC"
+    "urlParam": "lilypond"
   },
   {
-    "urlParam": "limbo",
+    "color": "#ECECEC",
     "name": "Limbo",
-    "color": "#ECECEC"
+    "urlParam": "limbo"
   },
   {
-    "urlParam": "linker-script",
-    "name": "Linker Script",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "linux-kernel-module",
-    "name": "Linux Kernel Module",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "liquid",
+    "color": "#67b8de",
     "name": "Liquid",
-    "color": "#ECECEC"
+    "urlParam": "liquid"
   },
   {
-    "urlParam": "literate-agda",
+    "color": "#315665",
     "name": "Literate Agda",
-    "color": "#ECECEC"
+    "urlParam": "literate-agda"
   },
   {
-    "urlParam": "literate-coffeescript",
+    "color": "#244776",
     "name": "Literate CoffeeScript",
-    "color": "#ECECEC"
+    "urlParam": "literate-coffeescript"
   },
   {
-    "urlParam": "literate-haskell",
+    "color": "#5e5086",
     "name": "Literate Haskell",
-    "color": "#ECECEC"
+    "urlParam": "literate-haskell"
   },
   {
-    "urlParam": "livescript",
+    "color": "#499886",
     "name": "LiveScript",
-    "color": "#499886"
+    "urlParam": "livescript"
   },
   {
-    "urlParam": "llvm",
+    "color": "#185619",
     "name": "LLVM",
-    "color": "#185619"
+    "urlParam": "llvm"
   },
   {
-    "urlParam": "logos",
+    "color": "#ECECEC",
     "name": "Logos",
-    "color": "#ECECEC"
+    "urlParam": "logos"
   },
   {
-    "urlParam": "logtalk",
+    "color": "#295b9a",
     "name": "Logtalk",
-    "color": "#ECECEC"
+    "urlParam": "logtalk"
   },
   {
-    "urlParam": "lolcode",
+    "color": "#cc9900",
     "name": "LOLCODE",
-    "color": "#CC9900"
+    "urlParam": "lolcode"
   },
   {
-    "urlParam": "lookml",
+    "color": "#652B81",
     "name": "LookML",
-    "color": "#652B81"
+    "urlParam": "lookml"
   },
   {
-    "urlParam": "loomscript",
+    "color": "#ECECEC",
     "name": "LoomScript",
-    "color": "#ECECEC"
+    "urlParam": "loomscript"
   },
   {
-    "urlParam": "lsl",
+    "color": "#3d9970",
     "name": "LSL",
-    "color": "#3D9970"
+    "urlParam": "lsl"
   },
   {
-    "urlParam": "lua",
+    "color": "#000080",
     "name": "Lua",
-    "color": "#000080"
+    "urlParam": "lua"
   },
   {
-    "urlParam": "m",
+    "color": "#ECECEC",
     "name": "M",
-    "color": "#ECECEC"
+    "urlParam": "m"
   },
   {
-    "urlParam": "m4",
+    "color": "#ECECEC",
     "name": "M4",
-    "color": "#ECECEC"
+    "urlParam": "m4"
   },
   {
-    "urlParam": "m4sugar",
+    "color": "#ECECEC",
     "name": "M4Sugar",
-    "color": "#ECECEC"
+    "urlParam": "m4sugar"
   },
   {
-    "urlParam": "makefile",
+    "color": "#d8ffff",
+    "name": "Macaulay2",
+    "urlParam": "macaulay2"
+  },
+  {
+    "color": "#427819",
     "name": "Makefile",
-    "color": "#427819"
+    "urlParam": "makefile"
   },
   {
-    "urlParam": "mako",
+    "color": "#7e858d",
     "name": "Mako",
-    "color": "#ECECEC"
+    "urlParam": "mako"
   },
   {
-    "urlParam": "markdown",
+    "color": "#083fa1",
     "name": "Markdown",
-    "color": "#ECECEC"
+    "urlParam": "markdown"
   },
   {
-    "urlParam": "marko",
+    "color": "#42bff2",
     "name": "Marko",
-    "color": "#ECECEC"
+    "urlParam": "marko"
   },
   {
-    "urlParam": "mask",
+    "color": "#f97732",
     "name": "Mask",
-    "color": "#F97732"
+    "urlParam": "mask"
   },
   {
-    "urlParam": "mathematica",
+    "color": "#dd1100",
     "name": "Mathematica",
-    "color": "#ECECEC"
+    "urlParam": "mathematica"
   },
   {
-    "urlParam": "matlab",
+    "color": "#e16737",
     "name": "MATLAB",
-    "color": "#BB92AC"
+    "urlParam": "matlab"
   },
   {
-    "urlParam": "maven-pom",
-    "name": "Maven POM",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "max",
+    "color": "#c4a79c",
     "name": "Max",
-    "color": "#C4A79C"
+    "urlParam": "max"
   },
   {
-    "urlParam": "maxscript",
+    "color": "#00a6a6",
     "name": "MAXScript",
-    "color": "#00A6A6"
+    "urlParam": "maxscript"
   },
   {
-    "urlParam": "mediawiki",
-    "name": "MediaWiki",
-    "color": "#ECECEC"
+    "color": "#E22837",
+    "name": "mcfunction",
+    "urlParam": "mcfunction"
   },
   {
-    "urlParam": "mercury",
+    "color": "#ff2b2b",
     "name": "Mercury",
-    "color": "#FF2B2B"
+    "urlParam": "mercury"
   },
   {
-    "urlParam": "meson",
+    "color": "#007800",
     "name": "Meson",
-    "color": "#007800"
+    "urlParam": "meson"
   },
   {
-    "urlParam": "metal",
+    "color": "#8f14e9",
     "name": "Metal",
-    "color": "#8F14E9"
+    "urlParam": "metal"
   },
   {
-    "urlParam": "minid",
+    "color": "#ECECEC",
     "name": "MiniD",
-    "color": "#ECECEC"
+    "urlParam": "minid"
   },
   {
-    "urlParam": "mirah",
+    "color": "#c7a938",
     "name": "Mirah",
-    "color": "#C7A938"
+    "urlParam": "mirah"
   },
   {
-    "urlParam": "modelica",
+    "color": "#3d57c3",
+    "name": "mIRC Script",
+    "urlParam": "mirc-script"
+  },
+  {
+    "color": "#5EC8DB",
+    "name": "MLIR",
+    "urlParam": "mlir"
+  },
+  {
+    "color": "#de1d31",
     "name": "Modelica",
-    "color": "#ECECEC"
+    "urlParam": "modelica"
   },
   {
-    "urlParam": "modula-2",
+    "color": "#10253f",
     "name": "Modula-2",
-    "color": "#ECECEC"
+    "urlParam": "modula-2"
   },
   {
-    "urlParam": "modula-3",
+    "color": "#223388",
     "name": "Modula-3",
-    "color": "#ECECEC"
+    "urlParam": "modula-3"
   },
   {
-    "urlParam": "module-management-system",
+    "color": "#ECECEC",
     "name": "Module Management System",
-    "color": "#ECECEC"
+    "urlParam": "module-management-system"
   },
   {
-    "urlParam": "monkey",
+    "color": "#ECECEC",
     "name": "Monkey",
-    "color": "#ECECEC"
+    "urlParam": "monkey"
   },
   {
-    "urlParam": "moocode",
+    "color": "#ECECEC",
     "name": "Moocode",
-    "color": "#ECECEC"
+    "urlParam": "moocode"
   },
   {
-    "urlParam": "moonscript",
+    "color": "#ff4585",
     "name": "MoonScript",
-    "color": "#ECECEC"
+    "urlParam": "moonscript"
   },
   {
-    "urlParam": "mql4",
+    "color": "#fbb03b",
+    "name": "Motoko",
+    "urlParam": "motoko"
+  },
+  {
+    "color": "#005daa",
+    "name": "Motorola 68K Assembly",
+    "urlParam": "motorola-68k-assembly"
+  },
+  {
+    "color": "#62A8D6",
     "name": "MQL4",
-    "color": "#62A8D6"
+    "urlParam": "mql4"
   },
   {
-    "urlParam": "mql5",
+    "color": "#4A76B8",
     "name": "MQL5",
-    "color": "#4A76B8"
+    "urlParam": "mql5"
   },
   {
-    "urlParam": "mtml",
+    "color": "#b7e1f4",
     "name": "MTML",
-    "color": "#B7E1F4"
+    "urlParam": "mtml"
   },
   {
-    "urlParam": "muf",
+    "color": "#ECECEC",
     "name": "MUF",
-    "color": "#ECECEC"
+    "urlParam": "muf"
   },
   {
-    "urlParam": "mupad",
+    "color": "#244963",
     "name": "mupad",
-    "color": "#ECECEC"
+    "urlParam": "mupad"
   },
   {
-    "urlParam": "myghty",
+    "color": "#724b3b",
+    "name": "Mustache",
+    "urlParam": "mustache"
+  },
+  {
+    "color": "#ECECEC",
     "name": "Myghty",
-    "color": "#ECECEC"
+    "urlParam": "myghty"
   },
   {
-    "urlParam": "ncl",
+    "color": "#2d004d",
+    "name": "nanorc",
+    "urlParam": "nanorc"
+  },
+  {
+    "color": "#ECECEC",
+    "name": "NASL",
+    "urlParam": "nasl"
+  },
+  {
+    "color": "#28431f",
     "name": "NCL",
-    "color": "#28431F"
+    "urlParam": "ncl"
   },
   {
-    "urlParam": "nearley",
+    "color": "#990000",
     "name": "Nearley",
-    "color": "#ECECEC"
+    "urlParam": "nearley"
   },
   {
-    "urlParam": "nemerle",
+    "color": "#3d3c6e",
     "name": "Nemerle",
-    "color": "#3D3C6E"
+    "urlParam": "nemerle"
   },
   {
-    "urlParam": "nesc",
+    "color": "#94B0C7",
     "name": "nesC",
-    "color": "#94B0C7"
+    "urlParam": "nesc"
   },
   {
-    "urlParam": "netlinx",
+    "color": "#0aa0ff",
     "name": "NetLinx",
-    "color": "#0AA0FF"
+    "urlParam": "netlinx"
   },
   {
-    "urlParam": "netlinx+erb",
+    "color": "#747faa",
     "name": "NetLinx+ERB",
-    "color": "#747FAA"
+    "urlParam": "netlinx+erb"
   },
   {
-    "urlParam": "netlogo",
+    "color": "#ff6375",
     "name": "NetLogo",
-    "color": "#FF6375"
+    "urlParam": "netlogo"
   },
   {
-    "urlParam": "newlisp",
+    "color": "#87AED7",
     "name": "NewLisp",
-    "color": "#87AED7"
+    "urlParam": "newlisp"
   },
   {
-    "urlParam": "nextflow",
+    "color": "#3ac486",
     "name": "Nextflow",
-    "color": "#ECECEC"
+    "urlParam": "nextflow"
   },
   {
-    "urlParam": "nginx",
+    "color": "#009639",
     "name": "Nginx",
-    "color": "#9469E9"
+    "urlParam": "nginx"
   },
   {
-    "urlParam": "nim",
+    "color": "#ffc200",
     "name": "Nim",
-    "color": "#37775B"
+    "urlParam": "nim"
   },
   {
-    "urlParam": "ninja",
-    "name": "Ninja",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "nit",
+    "color": "#009917",
     "name": "Nit",
-    "color": "#009917"
+    "urlParam": "nit"
   },
   {
-    "urlParam": "nix",
+    "color": "#7e7eff",
     "name": "Nix",
-    "color": "#7E7EFF"
+    "urlParam": "nix"
   },
   {
-    "urlParam": "nl",
-    "name": "NL",
-    "color": "#ECECEC"
+    "color": "#cb3837",
+    "name": "NPM Config",
+    "urlParam": "npm-config"
   },
   {
-    "urlParam": "nsis",
+    "color": "#ECECEC",
     "name": "NSIS",
-    "color": "#ECECEC"
+    "urlParam": "nsis"
   },
   {
-    "urlParam": "nu",
+    "color": "#c9df40",
     "name": "Nu",
-    "color": "#C9DF40"
+    "urlParam": "nu"
   },
   {
-    "urlParam": "numpy",
+    "color": "#9C8AF9",
     "name": "NumPy",
-    "color": "#ECECEC"
+    "urlParam": "numpy"
   },
   {
-    "urlParam": "objdump",
-    "name": "ObjDump",
-    "color": "#ECECEC"
+    "color": "#3d8137",
+    "name": "Nunjucks",
+    "urlParam": "nunjucks"
   },
   {
-    "urlParam": "objective-c",
+    "color": "#111522",
+    "name": "NWScript",
+    "urlParam": "nwscript"
+  },
+  {
+    "color": "#438eff",
     "name": "Objective-C",
-    "color": "#438EFF"
+    "urlParam": "objective-c"
   },
   {
-    "urlParam": "objective-c++",
+    "color": "#6866fb",
     "name": "Objective-C++",
-    "color": "#6866FB"
+    "urlParam": "objective-c++"
   },
   {
-    "urlParam": "objective-j",
+    "color": "#ff0c5a",
     "name": "Objective-J",
-    "color": "#FF0C5A"
+    "urlParam": "objective-j"
   },
   {
-    "urlParam": "ocaml",
+    "color": "#424893",
+    "name": "ObjectScript",
+    "urlParam": "objectscript"
+  },
+  {
+    "color": "#3be133",
     "name": "OCaml",
-    "color": "#3BE133"
+    "urlParam": "ocaml"
   },
   {
-    "urlParam": "omgrofl",
+    "color": "#60AFFE",
+    "name": "Odin",
+    "urlParam": "odin"
+  },
+  {
+    "color": "#cabbff",
     "name": "Omgrofl",
-    "color": "#CABBFF"
+    "urlParam": "omgrofl"
   },
   {
-    "urlParam": "ooc",
+    "color": "#b0b77e",
     "name": "ooc",
-    "color": "#B0B77E"
+    "urlParam": "ooc"
   },
   {
-    "urlParam": "opa",
+    "color": "#ECECEC",
     "name": "Opa",
-    "color": "#ECECEC"
+    "urlParam": "opa"
   },
   {
-    "urlParam": "opal",
+    "color": "#f7ede0",
     "name": "Opal",
-    "color": "#f7EDE0"
+    "urlParam": "opal"
   },
   {
-    "urlParam": "opencl",
+    "color": "#7d9199",
+    "name": "Open Policy Agent",
+    "urlParam": "open-policy-agent"
+  },
+  {
+    "color": "#ed2e2d",
     "name": "OpenCL",
-    "color": "#ECECEC"
+    "urlParam": "opencl"
   },
   {
-    "urlParam": "openedge-abl",
+    "color": "#5ce600",
     "name": "OpenEdge ABL",
-    "color": "#ECECEC"
+    "urlParam": "openedge-abl"
   },
   {
-    "urlParam": "openrc-runscript",
+    "color": "#AA70FF",
+    "name": "OpenQASM",
+    "urlParam": "openqasm"
+  },
+  {
+    "color": "#ECECEC",
     "name": "OpenRC runscript",
-    "color": "#ECECEC"
+    "urlParam": "openrc-runscript"
   },
   {
-    "urlParam": "openscad",
+    "color": "#e5cd45",
     "name": "OpenSCAD",
-    "color": "#ECECEC"
+    "urlParam": "openscad"
   },
   {
-    "urlParam": "opentype-feature-file",
-    "name": "OpenType Feature File",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "org",
+    "color": "#77aa99",
     "name": "Org",
-    "color": "#ECECEC"
+    "urlParam": "org"
   },
   {
-    "urlParam": "ox",
+    "color": "#ECECEC",
     "name": "Ox",
-    "color": "#ECECEC"
+    "urlParam": "ox"
   },
   {
-    "urlParam": "oxygene",
+    "color": "#cdd0e3",
     "name": "Oxygene",
-    "color": "#CDD0E3"
+    "urlParam": "oxygene"
   },
   {
-    "urlParam": "oz",
+    "color": "#fab738",
     "name": "Oz",
-    "color": "#FAB738"
+    "urlParam": "oz"
   },
   {
-    "urlParam": "p4",
+    "color": "#7055b5",
     "name": "P4",
-    "color": "#7055B5"
+    "urlParam": "p4"
   },
   {
-    "urlParam": "pan",
+    "color": "#cc0000",
     "name": "Pan",
-    "color": "#CC0000"
+    "urlParam": "pan"
   },
   {
-    "urlParam": "papyrus",
+    "color": "#6600cc",
     "name": "Papyrus",
-    "color": "#6600CC"
+    "urlParam": "papyrus"
   },
   {
-    "urlParam": "parrot",
+    "color": "#f3ca0a",
     "name": "Parrot",
-    "color": "#F3CA0A"
+    "urlParam": "parrot"
   },
   {
-    "urlParam": "parrot-assembly",
+    "color": "#ECECEC",
     "name": "Parrot Assembly",
-    "color": "#ECECEC"
+    "urlParam": "parrot-assembly"
   },
   {
-    "urlParam": "parrot-internal-representation",
+    "color": "#ECECEC",
     "name": "Parrot Internal Representation",
-    "color": "#ECECEC"
+    "urlParam": "parrot-internal-representation"
   },
   {
-    "urlParam": "pascal",
+    "color": "#E3F171",
     "name": "Pascal",
-    "color": "#E3F171"
+    "urlParam": "pascal"
   },
   {
-    "urlParam": "pawn",
+    "color": "#dbb284",
     "name": "Pawn",
-    "color": "#DBB284"
+    "urlParam": "pawn"
   },
   {
-    "urlParam": "pep8",
+    "color": "#234d6b",
+    "name": "PEG.js",
+    "urlParam": "peg.js"
+  },
+  {
+    "color": "#C76F5B",
     "name": "Pep8",
-    "color": "#ECECEC"
+    "urlParam": "pep8"
   },
   {
-    "urlParam": "perl",
+    "color": "#0298c3",
     "name": "Perl",
-    "color": "#0298C3"
+    "urlParam": "perl"
   },
   {
-    "urlParam": "perl-6",
-    "name": "Perl 6",
-    "color": "#0000FB"
-  },
-  {
-    "urlParam": "php",
+    "color": "#4F5D95",
     "name": "PHP",
-    "color": "#4F5D95"
+    "urlParam": "php"
   },
   {
-    "urlParam": "pic",
-    "name": "Pic",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "pickle",
-    "name": "Pickle",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "picolisp",
+    "color": "#6067af",
     "name": "PicoLisp",
-    "color": "#ECECEC"
+    "urlParam": "picolisp"
   },
   {
-    "urlParam": "piglatin",
+    "color": "#fcd7de",
     "name": "PigLatin",
-    "color": "#ECECEC"
+    "urlParam": "piglatin"
   },
   {
-    "urlParam": "pike",
+    "color": "#005390",
     "name": "Pike",
-    "color": "#005390"
+    "urlParam": "pike"
   },
   {
-    "urlParam": "plpgsql",
+    "color": "#336790",
     "name": "PLpgSQL",
-    "color": "#ECECEC"
+    "urlParam": "plpgsql"
   },
   {
-    "urlParam": "plsql",
+    "color": "#dad8d8",
     "name": "PLSQL",
-    "color": "#DAD8d8"
+    "urlParam": "plsql"
   },
   {
-    "urlParam": "pod",
-    "name": "Pod",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "pod-6",
-    "name": "Pod 6",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "pogoscript",
+    "color": "#d80074",
     "name": "PogoScript",
-    "color": "#D80074"
+    "urlParam": "pogoscript"
   },
   {
-    "urlParam": "pony",
+    "color": "#ECECEC",
     "name": "Pony",
-    "color": "#ECECEC"
+    "urlParam": "pony"
   },
   {
-    "urlParam": "postcss",
+    "color": "#dc3a0c",
     "name": "PostCSS",
-    "color": "#ECECEC"
+    "urlParam": "postcss"
   },
   {
-    "urlParam": "postscript",
+    "color": "#da291c",
     "name": "PostScript",
-    "color": "#DA291C"
+    "urlParam": "postscript"
   },
   {
-    "urlParam": "pov-ray-sdl",
+    "color": "#6bac65",
     "name": "POV-Ray SDL",
-    "color": "#ECECEC"
+    "urlParam": "pov-ray-sdl"
   },
   {
-    "urlParam": "powerbuilder",
+    "color": "#8f0f8d",
     "name": "PowerBuilder",
-    "color": "#8F0F8D"
+    "urlParam": "powerbuilder"
   },
   {
-    "urlParam": "powershell",
+    "color": "#012456",
     "name": "PowerShell",
-    "color": "#012456"
+    "urlParam": "powershell"
   },
   {
-    "urlParam": "processing",
+    "color": "#0c344b",
+    "name": "Prisma",
+    "urlParam": "prisma"
+  },
+  {
+    "color": "#0096D8",
     "name": "Processing",
-    "color": "#0096D8"
+    "urlParam": "processing"
   },
   {
-    "urlParam": "prolog",
+    "color": "#74283c",
     "name": "Prolog",
-    "color": "#74283C"
+    "urlParam": "prolog"
   },
   {
-    "urlParam": "propeller-spin",
+    "color": "#de0000",
+    "name": "Promela",
+    "urlParam": "promela"
+  },
+  {
+    "color": "#7fa2a7",
     "name": "Propeller Spin",
-    "color": "#7FA2A7"
+    "urlParam": "propeller-spin"
   },
   {
-    "urlParam": "protocol-buffer",
-    "name": "Protocol Buffer",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "public-key",
-    "name": "Public Key",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "pug",
+    "color": "#a86454",
     "name": "Pug",
-    "color": "#ECECEC"
+    "urlParam": "pug"
   },
   {
-    "urlParam": "puppet",
+    "color": "#302B6D",
     "name": "Puppet",
-    "color": "#302B6D"
+    "urlParam": "puppet"
   },
   {
-    "urlParam": "pure-data",
-    "name": "Pure Data",
-    "color": "#91DE79"
-  },
-  {
-    "urlParam": "purebasic",
+    "color": "#5a6986",
     "name": "PureBasic",
-    "color": "#5A6986"
+    "urlParam": "purebasic"
   },
   {
-    "urlParam": "purescript",
+    "color": "#1D222D",
     "name": "PureScript",
-    "color": "#1D222D"
+    "urlParam": "purescript"
   },
   {
-    "urlParam": "python",
+    "color": "#3572A5",
     "name": "Python",
-    "color": "#3572A5"
+    "urlParam": "python"
   },
   {
-    "urlParam": "python-console",
+    "color": "#3572A5",
     "name": "Python console",
-    "color": "#ECECEC"
+    "urlParam": "python-console"
   },
   {
-    "urlParam": "python-traceback",
+    "color": "#3572A5",
     "name": "Python traceback",
-    "color": "#ECECEC"
+    "urlParam": "python-traceback"
   },
   {
-    "urlParam": "q",
+    "color": "#0040cd",
     "name": "q",
-    "color": "#ECECEC"
+    "urlParam": "q"
   },
   {
-    "urlParam": "qmake",
+    "color": "#fed659",
+    "name": "Q#",
+    "urlParam": "qsharp"
+  },
+  {
+    "color": "#ECECEC",
     "name": "QMake",
-    "color": "#ECECEC"
+    "urlParam": "qmake"
   },
   {
-    "urlParam": "qml",
+    "color": "#44a51c",
     "name": "QML",
-    "color": "#44A51C"
+    "urlParam": "qml"
   },
   {
-    "urlParam": "quake",
+    "color": "#00b841",
+    "name": "Qt Script",
+    "urlParam": "qt-script"
+  },
+  {
+    "color": "#882233",
     "name": "Quake",
-    "color": "#ECECEC"
+    "urlParam": "quake"
   },
   {
-    "urlParam": "r",
+    "color": "#198CE7",
     "name": "R",
-    "color": "#198CE7"
+    "urlParam": "r"
   },
   {
-    "urlParam": "racket",
+    "color": "#3c5caa",
     "name": "Racket",
-    "color": "#22228F"
+    "urlParam": "racket"
   },
   {
-    "urlParam": "ragel",
+    "color": "#9d5200",
     "name": "Ragel",
-    "color": "#9D5200"
+    "urlParam": "ragel"
   },
   {
-    "urlParam": "raml",
+    "color": "#0000fb",
+    "name": "Raku",
+    "urlParam": "raku"
+  },
+  {
+    "color": "#77d9fb",
     "name": "RAML",
-    "color": "#77D9FB"
+    "urlParam": "raml"
   },
   {
-    "urlParam": "rascal",
+    "color": "#fffaa0",
     "name": "Rascal",
-    "color": "#FFFAA0"
+    "urlParam": "rascal"
   },
   {
-    "urlParam": "raw-token-data",
-    "name": "Raw token data",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "rdoc",
+    "color": "#701516",
     "name": "RDoc",
-    "color": "#ECECEC"
+    "urlParam": "rdoc"
   },
   {
-    "urlParam": "realbasic",
+    "color": "#ECECEC",
     "name": "REALbasic",
-    "color": "#ECECEC"
+    "urlParam": "realbasic"
   },
   {
-    "urlParam": "reason",
+    "color": "#ff5847",
     "name": "Reason",
-    "color": "#ECECEC"
+    "urlParam": "reason"
   },
   {
-    "urlParam": "rebol",
+    "color": "#358a5b",
     "name": "Rebol",
-    "color": "#358A5B"
+    "urlParam": "rebol"
   },
   {
-    "urlParam": "red",
+    "color": "#0673ba",
+    "name": "Record Jar",
+    "urlParam": "record-jar"
+  },
+  {
+    "color": "#f50000",
     "name": "Red",
-    "color": "#F50000"
+    "urlParam": "red"
   },
   {
-    "urlParam": "redcode",
+    "color": "#ECECEC",
     "name": "Redcode",
-    "color": "#ECECEC"
+    "urlParam": "redcode"
   },
   {
-    "urlParam": "regular-expression",
+    "color": "#009a00",
     "name": "Regular Expression",
-    "color": "#ECECEC"
+    "urlParam": "regular-expression"
   },
   {
-    "urlParam": "ren'py",
-    "name": "Ren'Py",
-    "color": "#FF7F7F"
+    "color": "#ff7f7f",
+    "name": "Ren\u0027Py",
+    "urlParam": "ren\u0027py"
   },
   {
-    "urlParam": "renderscript",
+    "color": "#ECECEC",
     "name": "RenderScript",
-    "color": "#ECECEC"
+    "urlParam": "renderscript"
   },
   {
-    "urlParam": "restructuredtext",
+    "color": "#ed5051",
+    "name": "ReScript",
+    "urlParam": "rescript"
+  },
+  {
+    "color": "#141414",
     "name": "reStructuredText",
-    "color": "#ECECEC"
+    "urlParam": "restructuredtext"
   },
   {
-    "urlParam": "rexx",
+    "color": "#d90e09",
     "name": "REXX",
-    "color": "#ECECEC"
+    "urlParam": "rexx"
   },
   {
-    "urlParam": "rhtml",
-    "name": "RHTML",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "ring",
+    "color": "#2D54CB",
     "name": "Ring",
-    "color": "#ECECEC"
+    "urlParam": "ring"
   },
   {
-    "urlParam": "rmarkdown",
+    "color": "#A71E49",
+    "name": "Riot",
+    "urlParam": "riot"
+  },
+  {
+    "color": "#198ce7",
     "name": "RMarkdown",
-    "color": "#ECECEC"
+    "urlParam": "rmarkdown"
   },
   {
-    "urlParam": "robotframework",
+    "color": "#00c0b5",
     "name": "RobotFramework",
-    "color": "#ECECEC"
+    "urlParam": "robotframework"
   },
   {
-    "urlParam": "roff",
+    "color": "#ecdebe",
     "name": "Roff",
-    "color": "#ECDEBE"
+    "urlParam": "roff"
   },
   {
-    "urlParam": "rouge",
+    "color": "#ecdebe",
+    "name": "Roff Manpage",
+    "urlParam": "roff-manpage"
+  },
+  {
+    "color": "#cc0088",
     "name": "Rouge",
-    "color": "#CC0088"
+    "urlParam": "rouge"
   },
   {
-    "urlParam": "rpc",
+    "color": "#ECECEC",
     "name": "RPC",
-    "color": "#ECECEC"
+    "urlParam": "rpc"
   },
   {
-    "urlParam": "rpm-spec",
-    "name": "RPM Spec",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "ruby",
+    "color": "#701516",
     "name": "Ruby",
-    "color": "#701516"
+    "urlParam": "ruby"
   },
   {
-    "urlParam": "runoff",
+    "color": "#665a4e",
     "name": "RUNOFF",
-    "color": "#665A4E"
+    "urlParam": "runoff"
   },
   {
-    "urlParam": "rust",
+    "color": "#dea584",
     "name": "Rust",
-    "color": "#DEA584"
+    "urlParam": "rust"
   },
   {
-    "urlParam": "sage",
+    "color": "#ECECEC",
     "name": "Sage",
-    "color": "#ECECEC"
+    "urlParam": "sage"
   },
   {
-    "urlParam": "saltstack",
+    "color": "#646464",
     "name": "SaltStack",
-    "color": "#646464"
+    "urlParam": "saltstack"
   },
   {
-    "urlParam": "sas",
+    "color": "#B34936",
     "name": "SAS",
-    "color": "#B34936"
+    "urlParam": "sas"
   },
   {
-    "urlParam": "sass",
+    "color": "#a53b70",
     "name": "Sass",
-    "color": "#ECECEC"
+    "urlParam": "sass"
   },
   {
-    "urlParam": "scala",
+    "color": "#c22d40",
     "name": "Scala",
-    "color": "#C22D40"
+    "urlParam": "scala"
   },
   {
-    "urlParam": "scaml",
+    "color": "#bd181a",
     "name": "Scaml",
-    "color": "#ECECEC"
+    "urlParam": "scaml"
   },
   {
-    "urlParam": "scheme",
+    "color": "#1e4aec",
     "name": "Scheme",
-    "color": "#1E4AEC"
+    "urlParam": "scheme"
   },
   {
-    "urlParam": "scilab",
+    "color": "#ca0f21",
     "name": "Scilab",
-    "color": "#ECECEC"
+    "urlParam": "scilab"
   },
   {
-    "urlParam": "scss",
+    "color": "#c6538c",
     "name": "SCSS",
-    "color": "#ECECEC"
+    "urlParam": "scss"
   },
   {
-    "urlParam": "sed",
+    "color": "#64b970",
     "name": "sed",
-    "color": "#ECECEC"
+    "urlParam": "sed"
   },
   {
-    "urlParam": "self",
+    "color": "#0579aa",
     "name": "Self",
-    "color": "#0579AA"
+    "urlParam": "self"
   },
   {
-    "urlParam": "shaderlab",
+    "color": "#222c37",
     "name": "ShaderLab",
-    "color": "#ECECEC"
+    "urlParam": "shaderlab"
   },
   {
-    "urlParam": "shell",
+    "color": "#89e051",
     "name": "Shell",
-    "color": "#89E051"
+    "urlParam": "shell"
   },
   {
-    "urlParam": "shellsession",
+    "color": "#cecfcb",
+    "name": "ShellCheck Config",
+    "urlParam": "shellcheck-config"
+  },
+  {
+    "color": "#ECECEC",
     "name": "ShellSession",
-    "color": "#ECECEC"
+    "urlParam": "shellsession"
   },
   {
-    "urlParam": "shen",
+    "color": "#120F14",
     "name": "Shen",
-    "color": "#120F14"
+    "urlParam": "shen"
   },
   {
-    "urlParam": "slash",
+    "color": "#ECECEC",
+    "name": "Sieve",
+    "urlParam": "sieve"
+  },
+  {
+    "color": "#64E6AD",
+    "name": "Singularity",
+    "urlParam": "singularity"
+  },
+  {
+    "color": "#007eff",
     "name": "Slash",
-    "color": "#007EFF"
+    "urlParam": "slash"
   },
   {
-    "urlParam": "slice",
+    "color": "#003fa2",
     "name": "Slice",
-    "color": "#ECECEC"
+    "urlParam": "slice"
   },
   {
-    "urlParam": "slim",
+    "color": "#2b2b2b",
     "name": "Slim",
-    "color": "#ECECEC"
+    "urlParam": "slim"
   },
   {
-    "urlParam": "smali",
+    "color": "#ECECEC",
     "name": "Smali",
-    "color": "#ECECEC"
+    "urlParam": "smali"
   },
   {
-    "urlParam": "smalltalk",
+    "color": "#596706",
     "name": "Smalltalk",
-    "color": "#596706"
+    "urlParam": "smalltalk"
   },
   {
-    "urlParam": "smarty",
+    "color": "#f0c040",
     "name": "Smarty",
-    "color": "#ECECEC"
+    "urlParam": "smarty"
   },
   {
-    "urlParam": "smt",
+    "color": "#c94949",
+    "name": "SmPL",
+    "urlParam": "smpl"
+  },
+  {
+    "color": "#ECECEC",
     "name": "SMT",
-    "color": "#ECECEC"
+    "urlParam": "smt"
   },
   {
-    "urlParam": "solidity",
+    "color": "#AA6746",
     "name": "Solidity",
-    "color": "#ECECEC"
+    "urlParam": "solidity"
   },
   {
-    "urlParam": "sourcepawn",
+    "color": "#f69e1d",
     "name": "SourcePawn",
-    "color": "#5C7611"
+    "urlParam": "sourcepawn"
   },
   {
-    "urlParam": "sparql",
+    "color": "#0C4597",
     "name": "SPARQL",
-    "color": "#ECECEC"
+    "urlParam": "sparql"
   },
   {
-    "urlParam": "spline-font-database",
-    "name": "Spline Font Database",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "sqf",
+    "color": "#3F3F3F",
     "name": "SQF",
-    "color": "#3F3F3F"
+    "urlParam": "sqf"
   },
   {
-    "urlParam": "sql",
+    "color": "#e38c00",
     "name": "SQL",
-    "color": "#ECECEC"
+    "urlParam": "sql"
   },
   {
-    "urlParam": "sqlpl",
+    "color": "#e38c00",
     "name": "SQLPL",
-    "color": "#ECECEC"
+    "urlParam": "sqlpl"
   },
   {
-    "urlParam": "squirrel",
+    "color": "#800000",
     "name": "Squirrel",
-    "color": "#800000"
+    "urlParam": "squirrel"
   },
   {
-    "urlParam": "srecode-template",
+    "color": "#348a34",
     "name": "SRecode Template",
-    "color": "#348A34"
+    "urlParam": "srecode-template"
   },
   {
-    "urlParam": "stan",
+    "color": "#b2011d",
     "name": "Stan",
-    "color": "#B2011D"
+    "urlParam": "stan"
   },
   {
-    "urlParam": "standard-ml",
+    "color": "#dc566d",
     "name": "Standard ML",
-    "color": "#DC566D"
+    "urlParam": "standard-ml"
   },
   {
-    "urlParam": "stata",
+    "color": "#76d275",
+    "name": "Starlark",
+    "urlParam": "starlark"
+  },
+  {
+    "color": "#1a5f91",
     "name": "Stata",
-    "color": "#ECECEC"
+    "urlParam": "stata"
   },
   {
-    "urlParam": "ston",
-    "name": "STON",
-    "color": "#ECECEC"
+    "color": "#3fb34f",
+    "name": "StringTemplate",
+    "urlParam": "stringtemplate"
   },
   {
-    "urlParam": "stylus",
+    "color": "#ff6347",
     "name": "Stylus",
-    "color": "#ECECEC"
+    "urlParam": "stylus"
   },
   {
-    "urlParam": "subrip-text",
+    "color": "#9e0101",
     "name": "SubRip Text",
-    "color": "#ECECEC"
+    "urlParam": "subrip-text"
   },
   {
-    "urlParam": "sugarss",
+    "color": "#2fcc9f",
     "name": "SugarSS",
-    "color": "#ECECEC"
+    "urlParam": "sugarss"
   },
   {
-    "urlParam": "supercollider",
+    "color": "#46390b",
     "name": "SuperCollider",
-    "color": "#46390B"
+    "urlParam": "supercollider"
   },
   {
-    "urlParam": "svg",
+    "color": "#ff3e00",
+    "name": "Svelte",
+    "urlParam": "svelte"
+  },
+  {
+    "color": "#ff9900",
     "name": "SVG",
-    "color": "#ECECEC"
+    "urlParam": "svg"
   },
   {
-    "urlParam": "swift",
+    "color": "#F05138",
     "name": "Swift",
-    "color": "#FFAC45"
+    "urlParam": "swift"
   },
   {
-    "urlParam": "systemverilog",
+    "color": "#ECECEC",
+    "name": "SWIG",
+    "urlParam": "swig"
+  },
+  {
+    "color": "#DAE1C2",
     "name": "SystemVerilog",
-    "color": "#DAE1C2"
+    "urlParam": "systemverilog"
   },
   {
-    "urlParam": "tcl",
+    "color": "#e4cc98",
     "name": "Tcl",
-    "color": "#E4CC98"
+    "urlParam": "tcl"
   },
   {
-    "urlParam": "tcsh",
+    "color": "#ECECEC",
     "name": "Tcsh",
-    "color": "#ECECEC"
+    "urlParam": "tcsh"
   },
   {
-    "urlParam": "tea",
-    "name": "Tea",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "terra",
+    "color": "#00004c",
     "name": "Terra",
-    "color": "#00004C"
+    "urlParam": "terra"
   },
   {
-    "urlParam": "tex",
+    "color": "#3D6117",
     "name": "TeX",
-    "color": "#3D6117"
+    "urlParam": "tex"
   },
   {
-    "urlParam": "text",
-    "name": "Text",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "textile",
+    "color": "#ffe7ac",
     "name": "Textile",
-    "color": "#ECECEC"
+    "urlParam": "textile"
   },
   {
-    "urlParam": "thrift",
+    "color": "#df66e4",
+    "name": "TextMate Properties",
+    "urlParam": "textmate-properties"
+  },
+  {
+    "color": "#D12127",
     "name": "Thrift",
-    "color": "#ECECEC"
+    "urlParam": "thrift"
   },
   {
-    "urlParam": "ti-program",
+    "color": "#A0AA87",
     "name": "TI Program",
-    "color": "#A0AA87"
+    "urlParam": "ti-program"
   },
   {
-    "urlParam": "tla",
+    "color": "#4b0079",
     "name": "TLA",
-    "color": "#ECECEC"
+    "urlParam": "tla"
   },
   {
-    "urlParam": "toml",
+    "color": "#9c4221",
     "name": "TOML",
-    "color": "#ECECEC"
+    "urlParam": "toml"
   },
   {
-    "urlParam": "turing",
+    "color": "#e38c00",
+    "name": "TSQL",
+    "urlParam": "tsql"
+  },
+  {
+    "color": "#237346",
+    "name": "TSV",
+    "urlParam": "tsv"
+  },
+  {
+    "color": "#2b7489",
+    "name": "TSX",
+    "urlParam": "tsx"
+  },
+  {
+    "color": "#cf142b",
     "name": "Turing",
-    "color": "#CF142B"
+    "urlParam": "turing"
   },
   {
-    "urlParam": "turtle",
-    "name": "Turtle",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "twig",
+    "color": "#c1d026",
     "name": "Twig",
-    "color": "#ECECEC"
+    "urlParam": "twig"
   },
   {
-    "urlParam": "txl",
+    "color": "#0178b8",
     "name": "TXL",
-    "color": "#ECECEC"
+    "urlParam": "txl"
   },
   {
-    "urlParam": "type-language",
-    "name": "Type Language",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "typescript",
+    "color": "#2b7489",
     "name": "TypeScript",
-    "color": "#2B7489"
+    "urlParam": "typescript"
   },
   {
-    "urlParam": "unified-parallel-c",
+    "color": "#4e3617",
     "name": "Unified Parallel C",
-    "color": "#ECECEC"
+    "urlParam": "unified-parallel-c"
   },
   {
-    "urlParam": "unity3d-asset",
+    "color": "#222c37",
     "name": "Unity3D Asset",
-    "color": "#ECECEC"
+    "urlParam": "unity3d-asset"
   },
   {
-    "urlParam": "unix-assembly",
+    "color": "#ECECEC",
     "name": "Unix Assembly",
-    "color": "#ECECEC"
+    "urlParam": "unix-assembly"
   },
   {
-    "urlParam": "uno",
+    "color": "#9933cc",
     "name": "Uno",
-    "color": "#ECECEC"
+    "urlParam": "uno"
   },
   {
-    "urlParam": "unrealscript",
+    "color": "#a54c4d",
     "name": "UnrealScript",
-    "color": "#A54C4D"
+    "urlParam": "unrealscript"
   },
   {
-    "urlParam": "urweb",
+    "color": "#ccccee",
     "name": "UrWeb",
-    "color": "#ECECEC"
+    "urlParam": "urweb"
   },
   {
-    "urlParam": "vala",
+    "color": "#4f87c4",
+    "name": "V",
+    "urlParam": "v"
+  },
+  {
+    "color": "#fbe5cd",
     "name": "Vala",
-    "color": "#FBE5CD"
+    "urlParam": "vala"
   },
   {
-    "urlParam": "vcl",
+    "color": "#f26025",
+    "name": "Valve Data Format",
+    "urlParam": "valve-data-format"
+  },
+  {
+    "color": "#867db1",
+    "name": "VBA",
+    "urlParam": "vba"
+  },
+  {
+    "color": "#15dcdc",
+    "name": "VBScript",
+    "urlParam": "vbscript"
+  },
+  {
+    "color": "#148AA8",
     "name": "VCL",
-    "color": "#ECECEC"
+    "urlParam": "vcl"
   },
   {
-    "urlParam": "verilog",
+    "color": "#b2b7f8",
     "name": "Verilog",
-    "color": "#B2B7F8"
+    "urlParam": "verilog"
   },
   {
-    "urlParam": "vhdl",
+    "color": "#adb2cb",
     "name": "VHDL",
-    "color": "#ADB2CB"
+    "urlParam": "vhdl"
   },
   {
-    "urlParam": "vim-script",
-    "name": "Vim script",
-    "color": "#199F4B"
+    "color": "#199f4b",
+    "name": "Vim Help File",
+    "urlParam": "vim-help-file"
   },
   {
-    "urlParam": "visual-basic",
-    "name": "Visual Basic",
-    "color": "#945DB7"
+    "color": "#199f4b",
+    "name": "Vim Script",
+    "urlParam": "vim-script"
   },
   {
-    "urlParam": "volt",
+    "color": "#199f4b",
+    "name": "Vim Snippet",
+    "urlParam": "vim-snippet"
+  },
+  {
+    "color": "#945db7",
+    "name": "Visual Basic .NET",
+    "urlParam": "visual-basic-.net"
+  },
+  {
+    "color": "#1F1F1F",
     "name": "Volt",
-    "color": "#1F1F1F"
+    "urlParam": "volt"
   },
   {
-    "urlParam": "vue",
+    "color": "#41b883",
     "name": "Vue",
-    "color": "#2C3E50"
+    "urlParam": "vue"
   },
   {
-    "urlParam": "wavefront-material",
-    "name": "Wavefront Material",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "wavefront-object",
-    "name": "Wavefront Object",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "wdl",
+    "color": "#42f1f4",
     "name": "wdl",
-    "color": "#ECECEC"
+    "urlParam": "wdl"
   },
   {
-    "urlParam": "web-ontology-language",
+    "color": "#5b70bd",
     "name": "Web Ontology Language",
-    "color": "#9CC9DD"
+    "urlParam": "web-ontology-language"
   },
   {
-    "urlParam": "webassembly",
+    "color": "#04133b",
     "name": "WebAssembly",
-    "color": "#ECECEC"
+    "urlParam": "webassembly"
   },
   {
-    "urlParam": "webidl",
+    "color": "#ECECEC",
     "name": "WebIDL",
-    "color": "#ECECEC"
+    "urlParam": "webidl"
   },
   {
-    "urlParam": "windows-registry-entries",
+    "color": "#fc5757",
+    "name": "Wikitext",
+    "urlParam": "wikitext"
+  },
+  {
+    "color": "#52d5ff",
     "name": "Windows Registry Entries",
-    "color": "#ECECEC"
+    "urlParam": "windows-registry-entries"
   },
   {
-    "urlParam": "wisp",
+    "color": "#7582D1",
     "name": "wisp",
-    "color": "#7582D1"
+    "urlParam": "wisp"
   },
   {
-    "urlParam": "world-of-warcraft-addon-data",
+    "color": "#a23738",
+    "name": "Wollok",
+    "urlParam": "wollok"
+  },
+  {
+    "color": "#f7e43f",
     "name": "World of Warcraft Addon Data",
-    "color": "#ECECEC"
+    "urlParam": "world-of-warcraft-addon-data"
   },
   {
-    "urlParam": "x-bitmap",
-    "name": "X BitMap",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "x-font-directory-index",
-    "name": "X Font Directory Index",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "x-pixmap",
-    "name": "X PixMap",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "x10",
+    "color": "#4B6BEF",
     "name": "X10",
-    "color": "#4B6BEF"
+    "urlParam": "x10"
   },
   {
-    "urlParam": "xbase",
+    "color": "#403a40",
     "name": "xBase",
-    "color": "#403A40"
+    "urlParam": "xbase"
   },
   {
-    "urlParam": "xc",
+    "color": "#99DA07",
     "name": "XC",
-    "color": "#99DA07"
+    "urlParam": "xc"
   },
   {
-    "urlParam": "xcompose",
-    "name": "XCompose",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "xml",
+    "color": "#0060ac",
     "name": "XML",
-    "color": "#ECECEC"
+    "urlParam": "xml"
   },
   {
-    "urlParam": "xojo",
+    "color": "#0060ac",
+    "name": "XML Property List",
+    "urlParam": "xml-property-list"
+  },
+  {
+    "color": "#81bd41",
     "name": "Xojo",
-    "color": "#ECECEC"
+    "urlParam": "xojo"
   },
   {
-    "urlParam": "xpages",
-    "name": "XPages",
-    "color": "#ECECEC"
+    "color": "#285EEF",
+    "name": "Xonsh",
+    "urlParam": "xonsh"
   },
   {
-    "urlParam": "xproc",
+    "color": "#ECECEC",
     "name": "XProc",
-    "color": "#ECECEC"
+    "urlParam": "xproc"
   },
   {
-    "urlParam": "xquery",
+    "color": "#5232e7",
     "name": "XQuery",
-    "color": "#5232E7"
+    "urlParam": "xquery"
   },
   {
-    "urlParam": "xs",
+    "color": "#ECECEC",
     "name": "XS",
-    "color": "#ECECEC"
+    "urlParam": "xs"
   },
   {
-    "urlParam": "xslt",
+    "color": "#EB8CEB",
     "name": "XSLT",
-    "color": "#EB8CEB"
+    "urlParam": "xslt"
   },
   {
-    "urlParam": "xtend",
+    "color": "#24255d",
     "name": "Xtend",
-    "color": "#ECECEC"
+    "urlParam": "xtend"
   },
   {
-    "urlParam": "yacc",
+    "color": "#4B6C4B",
     "name": "Yacc",
-    "color": "#4B6C4B"
+    "urlParam": "yacc"
   },
   {
-    "urlParam": "yaml",
+    "color": "#cb171e",
     "name": "YAML",
-    "color": "#ECECEC"
+    "urlParam": "yaml"
   },
   {
-    "urlParam": "yang",
-    "name": "YANG",
-    "color": "#ECECEC"
-  },
-  {
-    "urlParam": "yara",
+    "color": "#220000",
     "name": "YARA",
-    "color": "#ECECEC"
+    "urlParam": "yara"
   },
   {
-    "urlParam": "yasnippet",
+    "color": "#32AB90",
     "name": "YASnippet",
-    "color": "#ECECEC"
+    "urlParam": "yasnippet"
   },
   {
-    "urlParam": "zephir",
+    "color": "#0d665e",
+    "name": "ZAP",
+    "urlParam": "zap"
+  },
+  {
+    "color": "#ECECEC",
+    "name": "Zeek",
+    "urlParam": "zeek"
+  },
+  {
+    "color": "#00BCD1",
+    "name": "ZenScript",
+    "urlParam": "zenscript"
+  },
+  {
+    "color": "#118f9e",
     "name": "Zephir",
-    "color": "#118F9E"
+    "urlParam": "zephir"
   },
   {
-    "urlParam": "zimpl",
+    "color": "#ec915c",
+    "name": "Zig",
+    "urlParam": "zig"
+  },
+  {
+    "color": "#dc75e5",
+    "name": "ZIL",
+    "urlParam": "zil"
+  },
+  {
+    "color": "#d67711",
     "name": "Zimpl",
-    "color": "#ECECEC"
+    "urlParam": "zimpl"
   }
 ]

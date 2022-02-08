@@ -37,6 +37,78 @@ import io.github.tonnyl.moka.ui.theme.LocalNavController
 
 @ExperimentalComposeUiApi
 @Composable
+fun SearchBox(
+    @StringRes hintResId: Int,
+    autoFocus: Boolean = true,
+    textState: MutableState<TextFieldValue>,
+    onFocusChanged: (Boolean) -> Unit = { },
+    onImeActionPerformed: () -> Unit = { },
+    onValueChange: () -> Unit = { }
+) {
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(autoFocus) {
+        if (autoFocus) {
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        }
+    }
+
+    Box(
+        contentAlignment = Alignment.CenterStart,
+        modifier = Modifier.padding(end = ContentPaddingLargeSize)
+    ) {
+        BasicTextField(
+            value = textState.value,
+            onValueChange = { textFieldValue ->
+                textState.value = textFieldValue
+                onValueChange()
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions {
+                focusManager.clearFocus(force = true)
+                onImeActionPerformed.invoke()
+            },
+            cursorBrush = SolidColor(MaterialTheme.colors.secondary),
+            textStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.onBackground),
+            modifier = Modifier
+                .focusable(enabled = true)
+                .focusRequester(focusRequester = focusRequester)
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        keyboardController?.show()
+                    } else {
+                        keyboardController?.hide()
+                    }
+
+                    onFocusChanged.invoke(it.isFocused)
+                }
+                .fillMaxWidth()
+                .horizontalScroll(
+                    state = rememberScrollState(),
+                    enabled = true
+                )
+        )
+        if (textState.value.text.isEmpty()) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = stringResource(id = hintResId),
+                    style = MaterialTheme.typography.subtitle1,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@ExperimentalComposeUiApi
+@Composable
 fun SearchBar(
     @StringRes hintResId: Int,
     modifier: Modifier = Modifier,
@@ -50,65 +122,13 @@ fun SearchBar(
 
     InsetAwareTopAppBar(
         title = {
-            val focusRequester = remember { FocusRequester() }
-            val focusManager = LocalFocusManager.current
-            val keyboardController = LocalSoftwareKeyboardController.current
-
-            LaunchedEffect(autoFocus) {
-                if (autoFocus) {
-                    focusRequester.requestFocus()
-                    keyboardController?.show()
-                }
-            }
-
-            Box(
-                contentAlignment = Alignment.CenterStart,
-                modifier = Modifier.padding(end = ContentPaddingLargeSize)
-            ) {
-                BasicTextField(
-                    value = textState.value,
-                    onValueChange = { textFieldValue ->
-                        textState.value = textFieldValue
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Search
-                    ),
-                    keyboardActions = KeyboardActions {
-                        focusManager.clearFocus(force = true)
-                        onImeActionPerformed.invoke()
-                    },
-                    cursorBrush = SolidColor(MaterialTheme.colors.secondary),
-                    textStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.onBackground),
-                    modifier = Modifier
-                        .focusable(enabled = true)
-                        .focusRequester(focusRequester = focusRequester)
-                        .onFocusChanged {
-                            if (it.isFocused) {
-                                keyboardController?.show()
-                            } else {
-                                keyboardController?.hide()
-                            }
-
-                            onFocusChanged.invoke(it.isFocused)
-                        }
-                        .fillMaxWidth()
-                        .horizontalScroll(
-                            state = rememberScrollState(),
-                            enabled = true
-                        )
-                )
-                if (textState.value.text.isEmpty()) {
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Text(
-                            text = stringResource(id = hintResId),
-                            style = MaterialTheme.typography.subtitle1,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-            }
+            SearchBox(
+                hintResId = hintResId,
+                autoFocus = autoFocus,
+                textState = textState,
+                onFocusChanged = onFocusChanged,
+                onImeActionPerformed = onImeActionPerformed
+            )
         },
         navigationIcon = {
             IconButton(

@@ -52,6 +52,8 @@ import io.github.tonnyl.moka.ui.commits.CommitsScreen
 import io.github.tonnyl.moka.ui.emojis.EmojisScreen
 import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiScreen
 import io.github.tonnyl.moka.ui.explore.ExploreScreen
+import io.github.tonnyl.moka.ui.explore.filters.ExploreFiltersScreen
+import io.github.tonnyl.moka.ui.explore.filters.FiltersType
 import io.github.tonnyl.moka.ui.file.FileScreen
 import io.github.tonnyl.moka.ui.file.download.DownloadFileDialog
 import io.github.tonnyl.moka.ui.inbox.InboxScreen
@@ -183,6 +185,8 @@ sealed class Screen(val route: String) {
 
     object DownloadFileDialog : Screen("download_file_dialog/{${ARG_URL}}")
 
+    object ExploreFilters : Screen("explore_filters/{${ARG_EXPLORE_FILTERS_TYPE}}")
+
     companion object {
 
         const val ARG_PROFILE_LOGIN = "arg_profile_login"
@@ -243,6 +247,8 @@ sealed class Screen(val route: String) {
 
         // should be encoded when passing.
         const val ARG_URL = "arg_url"
+
+        const val ARG_EXPLORE_FILTERS_TYPE = "arg_explore_filters_type"
     }
 
 }
@@ -1217,6 +1223,15 @@ private fun MainNavHost(
                 filename = backStackEntry.arguments?.getString(Screen.ARG_FILE_NAME)
                     ?: return@composable,
                 fileExtension = backStackEntry.arguments?.getString(Screen.ARG_FILE_EXTENSION)
+            )
+        }
+        composable(route = Screen.ExploreFilters.route) { backStackEntry ->
+            currentRoute.value = Screen.ExploreFilters.route
+
+            ExploreFiltersScreen(
+                filtersType = FiltersType.valueOf(
+                    backStackEntry.arguments?.getString(Screen.ARG_EXPLORE_FILTERS_TYPE) ?: return@composable
+                )
             )
         }
         dialog(route = Screen.AccountDialog.route) {

@@ -12,7 +12,13 @@ data class ExploreOptions(
     val timeSpan: ExploreTimeSpan,
 
     @ProtoNumber(1)
-    val exploreLanguage: ExploreLanguage
+    val exploreLanguage: ExploreLanguage,
+
+    @ProtoNumber(2)
+    val exploreSpokenLanguage: ExploreSpokenLanguage = ExploreSpokenLanguage(
+        urlParam = "",
+        name = "All languages"
+    )
 
 )
 
@@ -43,6 +49,18 @@ data class ExploreLanguage(
 
     @ProtoNumber(3)
     val color: String
+
+)
+
+@ExperimentalSerializationApi
+@Serializable
+data class ExploreSpokenLanguage(
+
+    @ProtoNumber(1)
+    val urlParam: String,
+
+    @ProtoNumber(2)
+    val name: String
 
 )
 

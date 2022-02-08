@@ -392,7 +392,7 @@ private fun CheckBoxOption(
 }
 
 @Composable
-private fun RadioButtonOption(
+fun RadioButtonOption(
     isChecked: Boolean,
     onCheckedChanged: (Boolean) -> Unit,
     @StringRes textResId: Int

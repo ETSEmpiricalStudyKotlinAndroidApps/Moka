@@ -348,13 +348,10 @@ private fun ItemPullRequestTimelineEvent(
 
     val navController = LocalNavController.current
     val navigateToProfile = {
-        navController.navigate(
-            route = Screen.Profile.route
-                .replace("{${Screen.ARG_PROFILE_LOGIN}}", data.login)
-                .replace(
-                    "{${Screen.ARG_PROFILE_TYPE}}",
-                    ProfileType.NOT_SPECIFIED.name
-                )
+        Screen.Profile.navigate(
+            navController = navController,
+            login = data.login,
+            type = ProfileType.NOT_SPECIFIED
         )
     }
 

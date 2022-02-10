@@ -141,14 +141,11 @@ fun RepositoryScreen(
                     when {
                         isLoading || repo != null -> {
                             fun navigateToUsersScreen(type: UsersType) {
-                                navController.navigate(
-                                    route = Screen.Users.route
-                                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                                        .replace(
-                                            "{${Screen.ARG_USERS_TYPE}}",
-                                            type.name
-                                        )
-                                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                Screen.Users.navigate(
+                                    navController = navController,
+                                    login = login,
+                                    type = type,
+                                    repoName = repoName
                                 )
                             }
 
@@ -163,14 +160,11 @@ fun RepositoryScreen(
                                     navigateToUsersScreen(type = UsersType.REPOSITORY_STARGAZERS)
                                 },
                                 onForksClicked = {
-                                    navController.navigate(
-                                        route = Screen.Repositories.route
-                                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                                            .replace(
-                                                "{${Screen.ARG_REPOSITORY_TYPE}}",
-                                                RepositoryType.FORKS.name
-                                            )
-                                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                    Screen.Repositories.navigate(
+                                        navController = navController,
+                                        login = login,
+                                        repoName = repoName,
+                                        type = RepositoryType.FORKS
                                     )
                                 },
                                 onPrsClicked = {
@@ -256,22 +250,13 @@ fun RepositoryScreen(
                             cutoutShape = CircleShape
                         ) {
                             IconButton(onClick = {
-                                navController.navigate(
-                                    route = Screen.RepositoryFiles.route
-                                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                                        .replace(
-                                            "{${Screen.ARG_EXPRESSION}}",
-                                            "${repo.defaultBranchRef?.ref?.name ?: "master"}:"
-                                        )
-                                        .replace(
-                                            "{${Screen.ARG_REF_PREFIX}}",
-                                            repo.defaultBranchRef?.ref?.prefix ?: "refs/heads/"
-                                        )
-                                        .replace(
-                                            "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
-                                            repo.defaultBranchRef?.ref?.name ?: "master"
-                                        )
+                                Screen.RepositoryFiles.navigate(
+                                    navController = navController,
+                                    login = login,
+                                    repoName = repoName,
+                                    expression = "${repo.defaultBranchRef?.ref?.name ?: "master"}:",
+                                    refPrefix = repo.defaultBranchRef?.ref?.prefix ?: "refs/heads/",
+                                    defaultBranchName = repo.defaultBranchRef?.ref?.name ?: "master"
                                 )
                             }) {
                                 Icon(
@@ -454,16 +439,10 @@ private fun RepositoryScreenContent(
             modifier = Modifier.padding(all = ContentPaddingLargeSize)
         ) {
             val navigateToProfile = {
-                navController.navigate(
-                    route = Screen.Profile.route
-                        .replace(
-                            "{${Screen.ARG_PROFILE_LOGIN}}",
-                            login
-                        )
-                        .replace(
-                            "{${Screen.ARG_PROFILE_TYPE}}",
-                            ProfileType.NOT_SPECIFIED.name
-                        )
+                Screen.Profile.navigate(
+                    navController = navController,
+                    login = login,
+                    type = ProfileType.NOT_SPECIFIED
                 )
             }
 
@@ -607,22 +586,13 @@ private fun RepositoryScreenContent(
             modifier = Modifier.clickable(
                 enabled = !enablePlaceholder,
                 onClick = {
-                    navController.navigate(
-                        route = Screen.Branches.route
-                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                            .replace(
-                                "{${Screen.ARG_REF_PREFIX}}",
-                                defaultBranchRef?.ref?.prefix ?: "refs/heads/"
-                            )
-                            .replace(
-                                "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
-                                defaultBranchRef?.ref?.name ?: return@clickable
-                            )
-                            .replace(
-                                "{${Screen.ARG_SELECTED_BRANCH_NAME}}",
-                                defaultBranchRef.ref.name
-                            )
+                    Screen.Branches.navigate(
+                        navController = navController,
+                        login = login,
+                        repoName = repoName,
+                        refPrefix = defaultBranchRef?.ref?.prefix ?: "refs/heads/",
+                        defaultBranchName = defaultBranchRef?.ref?.name ?: return@clickable,
+                        selectedBranchName = defaultBranchRef.ref.name
                     )
                 }
             )
@@ -729,12 +699,9 @@ private fun RepositoryScreenContent(
                         Chip(
                             text = topic.name,
                             onClick = {
-                                navController.navigate(
-                                    route = Screen.Search.route
-                                        .replace(
-                                            "{${Screen.ARG_INITIAL_SEARCH_KEYWORD}}",
-                                            topic.name
-                                        )
+                                Screen.Search.navigate(
+                                    navController = navController,
+                                    keyword = topic.name
                                 )
                             },
                             enablePlaceholder = enablePlaceholder

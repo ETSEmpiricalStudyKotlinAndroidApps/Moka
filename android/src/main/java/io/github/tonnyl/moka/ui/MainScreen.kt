@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -101,35 +102,151 @@ sealed class Screen(val route: String) {
 
     object About : Screen("about")
 
-    object Profile : Screen("profile/{${ARG_PROFILE_LOGIN}}/{${ARG_PROFILE_TYPE}}")
+    object Profile : Screen("profile/{${ARG_PROFILE_LOGIN}}/{${ARG_PROFILE_TYPE}}") {
+
+        fun navigate(
+            navController: NavController,
+            login: String,
+            type: ProfileType
+        ) {
+            navController.navigate(
+                route = route
+                    .replace("{$ARG_PROFILE_LOGIN}", login)
+                    .replace("{$ARG_PROFILE_TYPE}", type.name)
+            )
+        }
+
+    }
 
     object EditProfile :
         Screen("edit_profile?${ARG_EDIT_PROFILE_NAME}={${ARG_EDIT_PROFILE_NAME}}?${ARG_EDIT_PROFILE_BIO}={${ARG_EDIT_PROFILE_BIO}}?${ARG_EDIT_PROFILE_URL}={${ARG_EDIT_PROFILE_URL}}?${ARG_EDIT_PROFILE_COMPANY}={${ARG_EDIT_PROFILE_COMPANY}}?${ARG_EDIT_PROFILE_LOCATION}={${ARG_EDIT_PROFILE_LOCATION}}?${ARG_EDIT_PROFILE_TWITTER}={${ARG_EDIT_PROFILE_TWITTER}}")
 
     object Repository :
-        Screen("repository/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
+        Screen("repository/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}") {
+
+        fun navigate(
+            navController: NavController,
+            login: String,
+            repoName: String
+        ) {
+            navController.navigate(
+                route = route
+                    .replace("{$ARG_PROFILE_LOGIN}", login)
+                    .replace("{$ARG_REPOSITORY_NAME}", repoName)
+            )
+        }
+
+    }
 
     object RepositoryFiles :
-        Screen("repository_files?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_EXPRESSION}={${ARG_EXPRESSION}}&$ARG_REF_PREFIX={${ARG_REF_PREFIX}}&$ARG_DEFAULT_BRANCH_NAME={${ARG_DEFAULT_BRANCH_NAME}}")
+        Screen("repository_files?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_EXPRESSION}={${ARG_EXPRESSION}}&$ARG_REF_PREFIX={${ARG_REF_PREFIX}}&$ARG_DEFAULT_BRANCH_NAME={${ARG_DEFAULT_BRANCH_NAME}}") {
+
+        fun navigate(
+            navController: NavController,
+            login: String,
+            repoName: String,
+            expression: String,
+            refPrefix: String,
+            defaultBranchName: String
+        ) {
+            navController.navigate(
+                route = route
+                    .replace("{$ARG_PROFILE_LOGIN}", login)
+                    .replace("{$ARG_REPOSITORY_NAME}", repoName)
+                    .replace("{$ARG_EXPRESSION}", expression)
+                    .replace("{$ARG_REF_PREFIX}", refPrefix)
+                    .replace("{$ARG_DEFAULT_BRANCH_NAME}", defaultBranchName)
+            )
+        }
+
+    }
 
     object File :
         Screen("file?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_FILE_PATH}={${ARG_FILE_PATH}}&${ARG_FILE_NAME}={${ARG_FILE_NAME}}&${ARG_FILE_EXTENSION}={${ARG_FILE_EXTENSION}}")
 
     object Users :
-        Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}")
+        Screen("users/{${ARG_PROFILE_LOGIN}}/{${ARG_USERS_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}") {
+
+        fun navigate(
+            navController: NavController,
+            login: String,
+            type: UsersType,
+            repoName: String? = null
+        ) {
+            navController.navigate(
+                route = route
+                    .replace("{$ARG_PROFILE_LOGIN}", login)
+                    .replace("{$ARG_USERS_TYPE}", type.name)
+                    .apply {
+                        if (!repoName.isNullOrEmpty()) {
+                            replace("{$ARG_REPOSITORY_NAME}", repoName)
+                        }
+                    }
+            )
+        }
+
+    }
 
     object Repositories :
-        Screen("repositories/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}")
+        Screen("repositories/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_TYPE}}?${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}") {
+
+        fun navigate(
+            navController: NavController,
+            login: String,
+            repoName: String,
+            type: RepositoryType
+        ) {
+            navController.navigate(
+                route = route
+                    .replace("{$ARG_PROFILE_LOGIN}", login)
+                    .replace("{$ARG_REPOSITORY_TYPE}", type.name)
+                    .replace("{$ARG_REPOSITORY_NAME}", repoName)
+            )
+        }
+
+    }
 
     object Issues : Screen("issues/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
     object PullRequests : Screen("pull_requests/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
     object Issue :
-        Screen("issue/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_ISSUE_PR_NUMBER}}")
+        Screen("issue/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_ISSUE_PR_NUMBER}}") {
+
+        fun navigate(
+            navController: NavController,
+            login: String,
+            repoName: String,
+            number: Int
+        ) {
+            navController.navigate(
+                route = route
+                    .replace("{$ARG_PROFILE_LOGIN}", login)
+                    .replace("{$ARG_REPOSITORY_NAME}", repoName)
+                    .replace("{$ARG_ISSUE_PR_NUMBER}", number.toString())
+            )
+        }
+
+    }
 
     object PullRequest :
-        Screen("pull_request/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_ISSUE_PR_NUMBER}}")
+        Screen("pull_request/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_ISSUE_PR_NUMBER}}") {
+
+        fun navigate(
+            navController: NavController,
+            login: String,
+            repoName: String,
+            number: Int
+        ) {
+            navController.navigate(
+                route = route
+                    .replace("{$ARG_PROFILE_LOGIN}", login)
+                    .replace("{$ARG_REPOSITORY_NAME}", repoName)
+                    .replace("{$ARG_ISSUE_PR_NUMBER}", number.toString())
+            )
+        }
+
+    }
 
     object Emojis : Screen("emojis") {
 
@@ -146,7 +263,16 @@ sealed class Screen(val route: String) {
 
     }
 
-    object Search : Screen("search?${ARG_INITIAL_SEARCH_KEYWORD}={${ARG_INITIAL_SEARCH_KEYWORD}}")
+    object Search : Screen("search?${ARG_INITIAL_SEARCH_KEYWORD}={${ARG_INITIAL_SEARCH_KEYWORD}}") {
+
+        fun navigate(
+            navController: NavController,
+            keyword: String = ""
+        ) {
+            navController.navigate(route = route.replace("{$ARG_INITIAL_SEARCH_KEYWORD}", keyword))
+        }
+
+    }
 
     object RepositoryTopics :
         Screen("repository_topics/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
@@ -156,17 +282,67 @@ sealed class Screen(val route: String) {
 
     object Releases : Screen("releases/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
-    object Commit : Screen("commit/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_REF}}")
+    object Commit : Screen("commit/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_REF}}") {
+
+        fun navigate(
+            navController: NavController,
+            login: String,
+            repoName: String,
+            ref: String
+        ) {
+            navController.navigate(
+                route = route
+                    .replace("{$ARG_PROFILE_LOGIN}", login)
+                    .replace("{$ARG_REPOSITORY_NAME}", repoName)
+                    .replace("{$ARG_REF}", ref)
+            )
+        }
+
+    }
 
     object Branches :
         Screen("branches?${ARG_PROFILE_LOGIN}={${ARG_PROFILE_LOGIN}}&${ARG_REPOSITORY_NAME}={${ARG_REPOSITORY_NAME}}&${ARG_DEFAULT_BRANCH_NAME}={${ARG_DEFAULT_BRANCH_NAME}}&${ARG_SELECTED_BRANCH_NAME}={${ARG_SELECTED_BRANCH_NAME}}&${ARG_REF_PREFIX}={${ARG_REF_PREFIX}}") {
 
         const val RESULT_BRANCH_NAME = "result_branch_name"
 
+        fun navigate(
+            navController: NavController,
+            login: String,
+            repoName: String,
+            refPrefix: String,
+            defaultBranchName: String,
+            selectedBranchName: String
+        ) {
+            navController.navigate(
+                route = route
+                    .replace("{$ARG_PROFILE_LOGIN}", login)
+                    .replace("{$ARG_REPOSITORY_NAME}", repoName)
+                    .replace("{$ARG_REF_PREFIX}", refPrefix)
+                    .replace("{$ARG_DEFAULT_BRANCH_NAME}", defaultBranchName)
+                    .replace("{$ARG_SELECTED_BRANCH_NAME}", selectedBranchName)
+            )
+        }
+
     }
 
     object Release :
-        Screen("release/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_TAG_NAME}}")
+        Screen("release/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_TAG_NAME}}") {
+
+        fun navigate(
+            navController: NavController,
+            login: String,
+            repoName: String,
+            tagName: String
+        ) {
+            navController.navigate(
+                route = route
+                    .replace("{$ARG_PROFILE_LOGIN}", login)
+                    .replace("{$ARG_REPOSITORY_NAME}", repoName)
+                    .replace("{$ARG_TAG_NAME}", tagName)
+            )
+        }
+
+    }
 
     object ReleaseAssets :
         Screen("release_assets/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_TAG_NAME}}")
@@ -183,7 +359,16 @@ sealed class Screen(val route: String) {
 
     object DownloadFileDialog : Screen("download_file_dialog/{${ARG_URL}}")
 
-    object ExploreFilters : Screen("explore_filters/{${ARG_EXPLORE_FILTERS_TYPE}}")
+    object ExploreFilters : Screen("explore_filters/{${ARG_EXPLORE_FILTERS_TYPE}}") {
+
+        fun navigate(
+            navController: NavController,
+            type: FiltersType
+        ) {
+            navController.navigate(route = route.replace("{$ARG_EXPLORE_FILTERS_TYPE}", type.name))
+        }
+
+    }
 
     companion object {
 

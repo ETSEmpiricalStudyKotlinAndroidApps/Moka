@@ -144,10 +144,10 @@ fun ItemSearchedOrganization(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(enabled = !enablePlaceholder) {
-                navController.navigate(
-                    route = Screen.Profile.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", org.login)
-                        .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.ORGANIZATION.name)
+                Screen.Profile.navigate(
+                    navController = navController,
+                    login = org.login,
+                    type = ProfileType.ORGANIZATION
                 )
             }
             .padding(all = ContentPaddingLargeSize)

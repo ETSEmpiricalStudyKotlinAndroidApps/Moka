@@ -272,9 +272,9 @@ private fun ExploreFiltersHeader(
             Chip(
                 enabled = !enablePlaceholder,
                 onClick = {
-                    navController.navigate(
-                        route = Screen.ExploreFilters.route
-                            .replace("{${Screen.ARG_EXPLORE_FILTERS_TYPE}}", FiltersType.ProgrammingLanguages.name)
+                    Screen.ExploreFilters.navigate(
+                        navController = navController,
+                        type = FiltersType.ProgrammingLanguages
                     )
                 }
             ) {
@@ -296,9 +296,9 @@ private fun ExploreFiltersHeader(
             Chip(
                 enabled = !enablePlaceholder,
                 onClick = {
-                    navController.navigate(
-                        route = Screen.ExploreFilters.route
-                            .replace("{${Screen.ARG_EXPLORE_FILTERS_TYPE}}", FiltersType.SpokenLanguages.name)
+                    Screen.ExploreFilters.navigate(
+                        navController = navController,
+                        type = FiltersType.SpokenLanguages
                     )
                 }
             ) {

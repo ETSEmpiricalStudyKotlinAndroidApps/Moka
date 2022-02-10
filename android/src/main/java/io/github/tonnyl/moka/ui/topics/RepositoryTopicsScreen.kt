@@ -203,9 +203,9 @@ private fun ItemTopic(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(enabled = !enablePlaceholder) {
-                    navController.navigate(
-                        route = Screen.Search.route
-                            .replace("{${Screen.ARG_INITIAL_SEARCH_KEYWORD}}", topicName)
+                    Screen.Search.navigate(
+                        navController = navController,
+                        keyword = topicName
                     )
                 }
         ) {

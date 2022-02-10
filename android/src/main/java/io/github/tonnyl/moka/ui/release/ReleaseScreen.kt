@@ -301,11 +301,11 @@ private fun ReleaseScreenContent(
                 modifier = Modifier.clickable(
                     enabled = !enablePlaceholder
                 ) {
-                    navController.navigate(
-                        route = Screen.Commit.route
-                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                            .replace("{${Screen.ARG_REF}}", it)
+                    Screen.Commit.navigate(
+                        navController = navController,
+                        login = login,
+                        repoName = repoName,
+                        ref = it
                     )
                 }
             )

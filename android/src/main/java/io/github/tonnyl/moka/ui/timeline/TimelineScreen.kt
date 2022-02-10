@@ -251,17 +251,11 @@ private fun ItemTimelineEvent(
                         }
 
                         if (event.payload?.comment?.htmlUrl?.contains("pull") == true) {
-                            navController.navigate(
-                                route = Screen.Issue.route
-                                    .replace(
-                                        "{${Screen.ARG_PROFILE_LOGIN}}",
-                                        repoFullName[0]
-                                    )
-                                    .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoFullName[1])
-                                    .replace(
-                                        "{${Screen.ARG_ISSUE_PR_NUMBER}}",
-                                        issue.number.toString()
-                                    )
+                            Screen.Issue.navigate(
+                                navController = navController,
+                                login = repoFullName[0],
+                                repoName = repoFullName[1],
+                                number = issue.number
                             )
                         }
                     }
@@ -271,14 +265,27 @@ private fun ItemTimelineEvent(
                             login = event.payload?.member?.login ?: return@clickable,
                         )
                     }
-                    SerializableEvent.PULL_REQUEST_EVENT -> {
-
-                    }
-                    SerializableEvent.PULL_REQUEST_REVIEW_COMMENT_EVENT -> {
-
-                    }
+                    SerializableEvent.PULL_REQUEST_EVENT,
+                    SerializableEvent.PULL_REQUEST_REVIEW_COMMENT_EVENT,
                     SerializableEvent.PULL_REQUEST_REVIEW_EVENT -> {
+                        val pullRequest = event.payload?.pullRequest ?: return@clickable
+                        val repoFullName = (event.repo?.fullName
+                            ?: event.repo?.name
+                            ?: return@clickable
+                                ).split("/")
 
+                        if (repoFullName.size < 2) {
+                            return@clickable
+                        }
+
+                        if (event.payload?.comment?.htmlUrl?.contains("pull") == true) {
+                            Screen.PullRequest.navigate(
+                                navController = navController,
+                                login = repoFullName[0],
+                                repoName = repoFullName[1],
+                                number = pullRequest.number.toInt()
+                            )
+                        }
                     }
                     SerializableEvent.REPOSITORY_EVENT -> {
                         when (event.payload?.action) {
@@ -313,11 +320,11 @@ private fun ItemTimelineEvent(
                         }
 
                         val tagName = event.payload?.release?.tagName ?: return@clickable
-                        navController.navigate(
-                            route = Screen.Release.route
-                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", repoFullName[0])
-                                .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoFullName[1])
-                                .replace("{${Screen.ARG_TAG_NAME}}", tagName)
+                        Screen.Release.navigate(
+                            navController = navController,
+                            login = repoFullName[0],
+                            repoName = repoFullName[1],
+                            tagName = tagName
                         )
                     }
                     SerializableEvent.ORG_BLOCK_EVENT -> {
@@ -1349,10 +1356,10 @@ private fun navigateToRepositoryScreen(
     val login = loginAndRepoName.getOrNull(0) ?: return
     val repoName = loginAndRepoName.getOrNull(1) ?: return
 
-    navController.navigate(
-        route = Screen.Repository.route
-            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+    Screen.Repository.navigate(
+        navController = navController,
+        login = login,
+        repoName = repoName
     )
 }
 
@@ -1361,10 +1368,10 @@ private fun navigateToProfileScreen(
     login: String,
     profileType: ProfileType = ProfileType.USER
 ) {
-    navController.navigate(
-        route = Screen.Profile.route
-            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-            .replace("{${Screen.ARG_PROFILE_TYPE}}", profileType.name)
+    Screen.Profile.navigate(
+        navController = navController,
+        login = login,
+        type = profileType
     )
 }
 

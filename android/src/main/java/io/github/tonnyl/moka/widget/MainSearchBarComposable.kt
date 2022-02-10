@@ -40,7 +40,7 @@ fun MainSearchBar(
         avatarUrl = currentAccount.signedInAccount.account.avatarUrl,
         onMenuClicked = openDrawer,
         onTextClicked = {
-            navController.navigate(route = Screen.Search.route)
+            Screen.Search.navigate(navController = navController)
         },
         onAvatarClicked = {
             navController.navigate(route = Screen.AccountDialog.route)

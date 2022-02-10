@@ -253,11 +253,11 @@ private fun ItemPullRequest(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = !enablePlaceholder) {
-                navController.navigate(
-                    route = Screen.PullRequest.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", owner)
-                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", name)
-                        .replace("{${Screen.ARG_ISSUE_PR_NUMBER}}", pullRequest.number.toString())
+                Screen.PullRequest.navigate(
+                    navController = navController,
+                    login = owner,
+                    repoName = name,
+                    number = pullRequest.number
                 )
             }
             .padding(all = ContentPaddingLargeSize)
@@ -335,16 +335,10 @@ private fun ItemPullRequest(
                         .size(size = 24.dp)
                         .clip(shape = CircleShape)
                         .clickable(enabled = !enablePlaceholder) {
-                            navController.navigate(
-                                route = Screen.Profile.route
-                                    .replace(
-                                        "{${Screen.ARG_PROFILE_LOGIN}}",
-                                        pullRequest.user?.login ?: "ghost"
-                                    )
-                                    .replace(
-                                        "{${Screen.ARG_PROFILE_TYPE}}",
-                                        ProfileType.NOT_SPECIFIED.name
-                                    )
+                            Screen.Profile.navigate(
+                                navController = navController,
+                                login = pullRequest.user?.login ?: "ghost",
+                                type = ProfileType.NOT_SPECIFIED
                             )
                         }
                         .placeholder(

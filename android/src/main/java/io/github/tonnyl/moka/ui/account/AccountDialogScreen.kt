@@ -269,13 +269,10 @@ private fun ItemAccount(
                 OutlineChip(
                     text = stringResource(id = R.string.accounts_view_profile),
                     onClick = {
-                        navController.navigate(
-                            route = Screen.Profile.route
-                                .replace(
-                                    "{${Screen.ARG_PROFILE_LOGIN}}",
-                                    account.signedInAccount.account.login
-                                )
-                                .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
+                        Screen.Profile.navigate(
+                            navController = navController,
+                            login = account.signedInAccount.account.login,
+                            type = ProfileType.USER
                         )
                     }
                 )

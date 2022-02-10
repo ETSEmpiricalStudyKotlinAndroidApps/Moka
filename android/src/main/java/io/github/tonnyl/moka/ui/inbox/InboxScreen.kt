@@ -7,7 +7,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -233,13 +236,10 @@ private fun ItemNotification(
                 .size(size = IconSize)
                 .clip(shape = CircleShape)
                 .clickable(enabled = !enablePlaceholder) {
-                    navController.navigate(
-                        route = Screen.Profile.route
-                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", item.repository.owner.login)
-                            .replace(
-                                "{${Screen.ARG_PROFILE_TYPE}}",
-                                getRepositoryOwnerType(item.repository.owner).name
-                            )
+                    Screen.Profile.navigate(
+                        navController = navController,
+                        login = item.repository.owner.login,
+                        type = getRepositoryOwnerType(item.repository.owner)
                     )
                 }
                 .placeholder(
@@ -263,16 +263,10 @@ private fun ItemNotification(
                     },
                     modifier = Modifier
                         .clickable {
-                            navController.navigate(
-                                route = Screen.Repository.route
-                                    .replace(
-                                        "{${Screen.ARG_PROFILE_LOGIN}}",
-                                        item.repository.owner.login
-                                    )
-                                    .replace(
-                                        "{${Screen.ARG_REPOSITORY_NAME}}",
-                                        item.repository.name
-                                    )
+                            Screen.Repository.navigate(
+                                navController = navController,
+                                login = item.repository.owner.login,
+                                repoName = item.repository.name
                             )
                         }
                         .placeholder(

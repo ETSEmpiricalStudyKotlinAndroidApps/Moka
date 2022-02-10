@@ -50,13 +50,10 @@ fun RepositoryOwner(
                 .size(size = IssueTimelineEventAuthorAvatarSize)
                 .clip(shape = CircleShape)
                 .clickable(enabled = !enablePlaceholder) {
-                    navController.navigate(
-                        route = Screen.Profile.route
-                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                            .replace(
-                                "{${Screen.ARG_PROFILE_TYPE}}",
-                                ProfileType.NOT_SPECIFIED.name
-                            )
+                    Screen.Profile.navigate(
+                        navController = navController,
+                        login = login,
+                        type = ProfileType.NOT_SPECIFIED
                     )
                 }
                 .placeholder(
@@ -75,10 +72,10 @@ fun RepositoryOwner(
             color = MaterialTheme.colors.primary,
             modifier = Modifier
                 .clickable(enabled = !enablePlaceholder) {
-                    navController.navigate(
-                        route = Screen.Repository.route
-                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                            .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                    Screen.Repository.navigate(
+                        navController = navController,
+                        login = login,
+                        repoName = repoName
                     )
                 }
                 .placeholder(

@@ -249,13 +249,10 @@ private fun ItemIssue(
     val navController = LocalNavController.current
 
     val navigateToProfile = {
-        navController.navigate(
-            route = Screen.Profile.route
-                .replace("{${Screen.ARG_PROFILE_LOGIN}}", owner)
-                .replace(
-                    "{${Screen.ARG_PROFILE_TYPE}}",
-                    ProfileType.NOT_SPECIFIED.name
-                )
+        Screen.Profile.navigate(
+            navController = navController,
+            login = owner,
+            type = ProfileType.NOT_SPECIFIED
         )
     }
 
@@ -263,11 +260,11 @@ private fun ItemIssue(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = !enablePlaceholder) {
-                navController.navigate(
-                    route = Screen.Issue.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", owner)
-                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", name)
-                        .replace("{${Screen.ARG_ISSUE_PR_NUMBER}}", issue.number.toString())
+                Screen.Issue.navigate(
+                    navController = navController,
+                    login = owner,
+                    repoName = name,
+                    number = issue.number
                 )
             }
             .padding(all = ContentPaddingLargeSize)

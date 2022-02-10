@@ -389,14 +389,11 @@ private fun ProfileScreenContent(
                     number = user.repositories.totalCount,
                     category = stringResource(id = R.string.profile_repositories),
                     onClick = {
-                        navController.navigate(
-                            route = Screen.Repositories.route
-                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
-                                .replace(
-                                    "{${Screen.ARG_REPOSITORY_TYPE}}",
-                                    RepositoryType.OWNED.name
-                                )
-                                .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
+                        Screen.Repositories.navigate(
+                            navController = navController,
+                            login = user.login,
+                            repoName = "",
+                            type = RepositoryType.OWNED
                         )
                     },
                     enablePlaceholder = enablePlaceholder,
@@ -406,14 +403,11 @@ private fun ProfileScreenContent(
                     number = user.starredRepositories.totalCount,
                     category = stringResource(id = R.string.profile_stars),
                     onClick = {
-                        navController.navigate(
-                            route = Screen.Repositories.route
-                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
-                                .replace(
-                                    "{${Screen.ARG_REPOSITORY_TYPE}}",
-                                    RepositoryType.STARRED.name
-                                )
-                                .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
+                        Screen.Repositories.navigate(
+                            navController = navController,
+                            login = user.login,
+                            repoName = "",
+                            type = RepositoryType.STARRED
                         )
                     },
                     enablePlaceholder = enablePlaceholder,
@@ -423,10 +417,10 @@ private fun ProfileScreenContent(
                     number = user.followers.totalCount,
                     category = stringResource(id = R.string.profile_followers),
                     onClick = {
-                        navController.navigate(
-                            route = Screen.Users.route
-                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
-                                .replace("{${Screen.ARG_USERS_TYPE}}", UsersType.FOLLOWER.name)
+                        Screen.Users.navigate(
+                            navController = navController,
+                            login = user.login,
+                            type = UsersType.FOLLOWER
                         )
                     },
                     enablePlaceholder = enablePlaceholder,
@@ -438,10 +432,10 @@ private fun ProfileScreenContent(
                     number = user.following.totalCount,
                     category = stringResource(id = R.string.profile_following),
                     onClick = {
-                        navController.navigate(
-                            route = Screen.Users.route
-                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
-                                .replace("{${Screen.ARG_USERS_TYPE}}", UsersType.FOLLOWING.name)
+                        Screen.Users.navigate(
+                            navController = navController,
+                            login = user.login,
+                            type = UsersType.FOLLOWING
                         )
                     },
                     enablePlaceholder = enablePlaceholder,
@@ -704,13 +698,10 @@ private fun PinnedItemCard(
                             if (!login.isNullOrEmpty()
                                 && currentUserLogin != login
                             ) {
-                                navController.navigate(
-                                    route = Screen.Profile.route
-                                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                                        .replace(
-                                            "{${Screen.ARG_PROFILE_TYPE}}",
-                                            ProfileType.NOT_SPECIFIED.name
-                                        )
+                                Screen.Profile.navigate(
+                                    navController = navController,
+                                    login = login,
+                                    type = ProfileType.NOT_SPECIFIED
                                 )
                             }
                         }
@@ -777,13 +768,10 @@ private fun PinnedRepositoryCard(
             if (enablePlaceholder) {
                 return@PinnedItemCard
             }
-            navController.navigate(
-                route = Screen.Repository.route
-                    .replace(
-                        "{${Screen.ARG_PROFILE_LOGIN}}",
-                        repository.repositoryOwner.repositoryOwner.login
-                    )
-                    .replace("{${Screen.ARG_REPOSITORY_NAME}}", repository.name)
+            Screen.Repository.navigate(
+                navController = navController,
+                login = repository.repositoryOwner.repositoryOwner.login,
+                repoName = repository.name
             )
         },
         avatarUrl = repository.repositoryOwner.repositoryOwner.avatarUrl,

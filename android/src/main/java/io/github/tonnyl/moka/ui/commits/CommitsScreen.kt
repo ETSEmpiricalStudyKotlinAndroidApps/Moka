@@ -152,16 +152,13 @@ fun CommitsScreen(
             actions = {
                 TextButton(
                     onClick = {
-                        navController.navigate(
-                            route = Screen.Branches.route
-                                .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                                .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                                .replace("{${Screen.ARG_REF_PREFIX}}", refPrefix)
-                                .replace(
-                                    "{${Screen.ARG_DEFAULT_BRANCH_NAME}}",
-                                    defaultBranchName
-                                )
-                                .replace("{${Screen.ARG_SELECTED_BRANCH_NAME}}", selectedBranchName)
+                        Screen.Branches.navigate(
+                            navController = navController,
+                            login = login,
+                            repoName = repoName,
+                            refPrefix = refPrefix,
+                            defaultBranchName = defaultBranchName,
+                            selectedBranchName = selectedBranchName
                         )
                     }
                 ) {
@@ -244,11 +241,11 @@ private fun ItemCommit(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = !enablePlaceholder) {
-                navController.navigate(
-                    route = Screen.Commit.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                        .replace("{${Screen.ARG_REF}}", commit.oid)
+                Screen.Commit.navigate(
+                    navController = navController,
+                    login = login,
+                    repoName = repoName,
+                    ref = commit.oid
                 )
             }
             .padding(all = ContentPaddingLargeSize)

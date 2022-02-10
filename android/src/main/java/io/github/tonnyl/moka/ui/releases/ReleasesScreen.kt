@@ -217,11 +217,11 @@ private fun ItemRelease(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = !enablePlaceholder) {
-                navController.navigate(
-                    route = Screen.Release.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
-                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
-                        .replace("{${Screen.ARG_TAG_NAME}}", release.tagName)
+                Screen.Release.navigate(
+                    navController = navController,
+                    login = login,
+                    repoName = repoName,
+                    tagName = release.tagName
                 )
             }
             .padding(all = ContentPaddingLargeSize)

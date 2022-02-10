@@ -227,10 +227,10 @@ fun ItemUser(
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = !enablePlaceholder) {
-                navController.navigate(
-                    route = Screen.Profile.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", user.login)
-                        .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
+                Screen.Profile.navigate(
+                    navController = navController,
+                    login = user.login,
+                    type = ProfileType.USER
                 )
             }
             .padding(all = ContentPaddingLargeSize)

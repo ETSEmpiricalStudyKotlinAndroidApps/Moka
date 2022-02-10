@@ -48,10 +48,10 @@ fun TrendingRepositoryItem(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = !enablePlaceholder) {
-                navController.navigate(
-                    route = Screen.Repository.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", repository.author)
-                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repository.name)
+                Screen.Repository.navigate(
+                    navController = navController,
+                    login = repository.author,
+                    repoName = repository.name
                 )
             }
             .padding(all = ContentPaddingLargeSize)
@@ -68,10 +68,10 @@ fun TrendingRepositoryItem(
                 .size(size = IconSize)
                 .clip(shape = CircleShape)
                 .clickable(enabled = !enablePlaceholder) {
-                    navController.navigate(
-                        route = Screen.Profile.route
-                            .replace("{${Screen.ARG_PROFILE_LOGIN}}", repository.author)
-                            .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.NOT_SPECIFIED.name)
+                    Screen.Profile.navigate(
+                        navController = navController,
+                        login = repository.author,
+                        type = ProfileType.NOT_SPECIFIED
                     )
                 }
                 .placeholder(

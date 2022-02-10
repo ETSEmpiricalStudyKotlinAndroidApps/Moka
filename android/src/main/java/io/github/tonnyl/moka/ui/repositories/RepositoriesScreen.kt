@@ -357,13 +357,10 @@ fun ItemRepository(
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = !enablePlaceholder) {
-                navController.navigate(
-                    route = Screen.Repository.route
-                        .replace(
-                            "{${Screen.ARG_PROFILE_LOGIN}}",
-                            repo.repositoryOwner.repositoryOwner.login
-                        )
-                        .replace("{${Screen.ARG_REPOSITORY_NAME}}", repo.name)
+                Screen.Repository.navigate(
+                    navController = navController,
+                    login = repo.repositoryOwner.repositoryOwner.login,
+                    repoName = repo.name
                 )
             }
             .padding(all = ContentPaddingLargeSize)
@@ -380,13 +377,10 @@ fun ItemRepository(
                 .size(size = IconSize)
                 .clip(shape = CircleShape)
                 .clickable(enabled = !enablePlaceholder) {
-                    navController.navigate(
-                        route = Screen.Profile.route
-                            .replace(
-                                "{${Screen.ARG_PROFILE_LOGIN}}",
-                                repo.repositoryOwner.repositoryOwner.login
-                            )
-                            .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.NOT_SPECIFIED.name)
+                    Screen.Profile.navigate(
+                        navController = navController,
+                        login = repo.repositoryOwner.repositoryOwner.login,
+                        type = ProfileType.NOT_SPECIFIED
                     )
                 }
                 .placeholder(

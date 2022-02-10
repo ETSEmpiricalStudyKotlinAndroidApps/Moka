@@ -57,10 +57,10 @@ fun TrendingDeveloperItem(
                 }
             )
             .clickable(enabled = !enablePlaceholder) {
-                navController.navigate(
-                    route = Screen.Profile.route
-                        .replace("{${Screen.ARG_PROFILE_LOGIN}}", developer.username)
-                        .replace("{${Screen.ARG_PROFILE_TYPE}}", ProfileType.USER.name)
+                Screen.Profile.navigate(
+                    navController = navController,
+                    login = developer.username,
+                    type = ProfileType.USER
                 )
             }
             .width(width = 180.dp)

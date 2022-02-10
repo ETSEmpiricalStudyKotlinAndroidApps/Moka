@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
@@ -24,9 +23,7 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.tonnyl.moka.graphql.fragment.RepositoryOwner
 
-@ExperimentalCoilApi
 @Composable
 fun RepositoryOwner(
     avatarUrl: String?,
@@ -93,7 +90,6 @@ fun RepositoryOwner(
     }
 }
 
-@ExperimentalCoilApi
 @Preview(
     name = "RepositoryOwnerPreview",
     showBackground = true,

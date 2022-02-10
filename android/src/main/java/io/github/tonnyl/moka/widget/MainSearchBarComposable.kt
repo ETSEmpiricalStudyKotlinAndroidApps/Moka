@@ -11,10 +11,7 @@ import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -22,21 +19,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.account.AccountDialogScreen
 import io.github.tonnyl.moka.ui.theme.*
 import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
 @ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 fun MainSearchBar(
     openDrawer: (() -> Unit)?,
@@ -58,7 +48,6 @@ fun MainSearchBar(
     )
 }
 
-@ExperimentalCoilApi
 @Composable
 private fun MainSearchBarContent(
     modifier: Modifier,
@@ -149,7 +138,6 @@ private fun MainSearchBarContent(
     }
 }
 
-@ExperimentalCoilApi
 @Preview(
     showBackground = true,
     name = "MainSearchBarPreview",

@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.ui.explore
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
@@ -25,7 +24,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -59,9 +57,7 @@ import io.tonnyl.moka.common.util.TrendingRepositoryProvider
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
-@ExperimentalCoilApi
 @ExperimentalComposeUiApi
-@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @ExperimentalSerializationApi
 @Composable
@@ -134,7 +130,6 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
 }
 
 @ExperimentalMaterialApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalPagerApi
 @Composable
@@ -266,7 +261,6 @@ private fun ExploreFiltersHeader(
                 }
                 TimespanDropDownMenus(
                     showMenuState = timeSpanMenuState,
-                    exploreOptions = exploreOptions,
                     viewModel = viewModel
                 )
             }
@@ -348,7 +342,6 @@ private fun RowScope.DownArrow(enablePlaceholder: Boolean) {
 @Composable
 private fun TimespanDropDownMenus(
     showMenuState: MutableState<Boolean>,
-    exploreOptions: ExploreOptions,
     viewModel: ExploreViewModel
 ) {
     DropdownMenu(

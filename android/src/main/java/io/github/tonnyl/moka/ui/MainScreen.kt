@@ -5,7 +5,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -36,7 +35,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -254,11 +252,9 @@ sealed class Screen(val route: String) {
 }
 
 @ExperimentalAnimationApi
-@ExperimentalCoilApi
 @ExperimentalPagerApi
 @ExperimentalSerializationApi
 @ExperimentalComposeUiApi
-@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable
@@ -504,7 +500,6 @@ private data class MainNavigationRailMenu(
     val menuIconVector: ImageVector? = null
 )
 
-@ExperimentalMaterialApi
 @Composable
 private fun MainNavigationRail(
     currentRoute: String,
@@ -576,11 +571,9 @@ private fun MainNavigationRail(
 }
 
 @ExperimentalAnimationApi
-@ExperimentalCoilApi
 @ExperimentalPagerApi
 @ExperimentalSerializationApi
 @ExperimentalComposeUiApi
-@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable
@@ -1270,7 +1263,6 @@ private fun MainDrawerContentPreview() {
     )
 }
 
-@ExperimentalMaterialApi
 @Preview(
     name = "MainNavigationRailPreview",
     showBackground = true,

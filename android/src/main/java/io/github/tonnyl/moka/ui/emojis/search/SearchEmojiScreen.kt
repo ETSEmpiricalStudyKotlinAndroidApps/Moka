@@ -22,7 +22,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -38,7 +37,6 @@ import io.tonnyl.moka.common.util.SearchedEmojiItemProvider
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalComposeUiApi
 @Composable
@@ -74,7 +72,6 @@ fun SearchEmojiScreen() {
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 private fun SearchEmojiScreenContent(
     topAppBarSize: Int,
@@ -93,7 +90,6 @@ private fun SearchEmojiScreenContent(
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 private fun SearchedEmojiItem(emoji: SearchableEmoji) {
     val navController = LocalNavController.current
@@ -142,7 +138,6 @@ private fun SearchedEmojiItem(emoji: SearchableEmoji) {
     }
 }
 
-@ExperimentalCoilApi
 @Preview(
     name = "SearchedEmojiItemPreview",
     showBackground = true,

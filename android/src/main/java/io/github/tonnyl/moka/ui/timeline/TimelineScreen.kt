@@ -6,14 +6,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -29,7 +30,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -48,7 +48,6 @@ import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.db.data.Event
-import io.tonnyl.moka.common.db.data.EventOrg
 import io.tonnyl.moka.common.ui.ViewModelFactory
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.ui.timeline.TimelineViewModel
@@ -57,10 +56,7 @@ import io.tonnyl.moka.common.util.TimelineEventProvider
 import kotlinx.serialization.ExperimentalSerializationApi
 import io.tonnyl.moka.common.data.Event as SerializableEvent
 
-@ExperimentalCoilApi
-@ExperimentalComposeUiApi
 @ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable
 fun TimelineScreen(openDrawer: (() -> Unit)?) {
@@ -146,7 +142,6 @@ fun TimelineScreen(openDrawer: (() -> Unit)?) {
 
 }
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun TimelineScreenContent(
@@ -210,7 +205,6 @@ fun TimelineScreenContent(
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 private fun ItemTimelineEvent(
     event: Event,
@@ -229,8 +223,7 @@ private fun ItemTimelineEvent(
                     SerializableEvent.DELETE_EVENT -> {
                         navigateToRepositoryScreen(
                             navController = navController,
-                            fullName = event.repo?.name ?: return@clickable,
-                            org = event.org
+                            fullName = event.repo?.name ?: return@clickable
                         )
                     }
                     SerializableEvent.COMMIT_COMMENT_EVENT -> {
@@ -239,8 +232,7 @@ private fun ItemTimelineEvent(
                     SerializableEvent.FORK_EVENT -> {
                         navigateToRepositoryScreen(
                             navController = navController,
-                            fullName = event.payload?.forkee?.fullName ?: return@clickable,
-                            org = event.org
+                            fullName = event.payload?.forkee?.fullName ?: return@clickable
                         )
                     }
                     SerializableEvent.GOLLUM_EVENT -> {
@@ -296,8 +288,7 @@ private fun ItemTimelineEvent(
                             "unarchived" -> {
                                 navigateToRepositoryScreen(
                                     navController = navController,
-                                    fullName = event.repo?.name ?: return@clickable,
-                                    org = event.org
+                                    fullName = event.repo?.name ?: return@clickable
                                 )
                             }
                             "privatized",
@@ -1352,8 +1343,7 @@ private fun EventDetailedText(
 
 private fun navigateToRepositoryScreen(
     navController: NavController,
-    fullName: String,
-    org: EventOrg?
+    fullName: String
 ) {
     val loginAndRepoName = fullName.split("/")
     val login = loginAndRepoName.getOrNull(0) ?: return
@@ -1378,7 +1368,6 @@ private fun navigateToProfileScreen(
     )
 }
 
-@ExperimentalCoilApi
 @Preview(
     showBackground = true,
     name = "TimelineItemPreview",

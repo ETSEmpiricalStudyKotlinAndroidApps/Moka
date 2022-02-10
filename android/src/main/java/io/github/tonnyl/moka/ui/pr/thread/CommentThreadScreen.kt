@@ -24,7 +24,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -43,7 +42,6 @@ import io.tonnyl.moka.common.util.IssueTimelineEventProvider
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun CommentTreadScreen(nodeId: String) {
@@ -138,7 +136,6 @@ fun CommentTreadScreen(nodeId: String) {
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 private fun CommentThreadScreenContent(
     contentTopPadding: Dp,

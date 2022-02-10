@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -45,9 +44,7 @@ import io.tonnyl.moka.common.network.Status
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 fun EditStatusScreen(
     initialEmoji: String?,
@@ -146,8 +143,6 @@ fun EditStatusScreen(
     }
 }
 
-@ExperimentalCoilApi
-@ExperimentalMaterialApi
 @Composable
 private fun EditStatusScreenContent(
     topAppBarSize: Int,
@@ -606,8 +601,6 @@ private fun ExpireAtDropdownMenu(
 
 // Preview section start
 
-@ExperimentalCoilApi
-@ExperimentalMaterialApi
 @Preview(
     showBackground = true,
     name = "EditScreenContentPreview",

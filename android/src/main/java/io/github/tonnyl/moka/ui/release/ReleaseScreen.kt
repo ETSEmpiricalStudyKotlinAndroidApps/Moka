@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -42,7 +41,6 @@ import io.tonnyl.moka.graphql.fragment.Release
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun ReleaseScreen(
@@ -129,7 +127,6 @@ fun ReleaseScreen(
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 private fun ReleaseScreenContent(
     padding: PaddingValues,

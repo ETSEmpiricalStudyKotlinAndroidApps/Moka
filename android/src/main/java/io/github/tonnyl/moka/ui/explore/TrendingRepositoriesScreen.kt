@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
@@ -37,7 +36,6 @@ import io.tonnyl.moka.common.util.TrendingRepositoryProvider
 import io.tonnyl.moka.common.util.formatWithSuffix
 import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun TrendingRepositoryItem(
@@ -206,7 +204,6 @@ fun TrendingRepositoryItem(
     }
 }
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Preview(
     name = "TrendingRepositoriesScreenPreview",

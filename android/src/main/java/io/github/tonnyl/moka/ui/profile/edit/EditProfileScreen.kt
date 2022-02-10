@@ -33,7 +33,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
 @ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 fun EditProfileScreen(
     initialName: String?,

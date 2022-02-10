@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.emojis
 
 import android.webkit.URLUtil
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -50,9 +48,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
-@ExperimentalFoundationApi
 @Composable
 fun EmojisScreen() {
     val emojis by LocalMainViewModel.current.emojis.observeAsState(initial = emptyList())
@@ -103,8 +99,6 @@ fun EmojisScreen() {
     }
 }
 
-@ExperimentalCoilApi
-@ExperimentalFoundationApi
 @Composable
 private fun EmojisScreenContent(
     topAppBarSize: Int,
@@ -294,7 +288,6 @@ private fun RowScope.EmojiCategoryButton(
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 private fun ItemEmoji(
     emoji: Emoji?,
@@ -337,7 +330,6 @@ private fun ItemEmoji(
 /**
  * [LazyVerticalGrid] doesn't have any support for merging cells.
  */
-@ExperimentalCoilApi
 @Composable
 private fun ItemEmojiRow(
     emoji0: Emoji?,
@@ -402,7 +394,6 @@ private fun ItemEmojiCategory(category: EmojiCategory) {
     }
 }
 
-@ExperimentalCoilApi
 @Preview(
     name = "EmojiItemPreview",
     showBackground = true,

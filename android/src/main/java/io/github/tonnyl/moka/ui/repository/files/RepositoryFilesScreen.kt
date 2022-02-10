@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -52,7 +51,6 @@ import io.tonnyl.moka.graphql.fragment.TreeEntry
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalAnimationApi
-@ExperimentalCoilApi
 @ExperimentalPagingApi
 @ExperimentalMaterialApi
 @ExperimentalSerializationApi
@@ -178,7 +176,6 @@ fun RepositoryFilesScreen(
 }
 
 @ExperimentalAnimationApi
-@ExperimentalCoilApi
 @ExperimentalPagingApi
 @ExperimentalMaterialApi
 @ExperimentalSerializationApi
@@ -230,7 +227,6 @@ private fun RepositoryFilesScreenContent(
 
 @ExperimentalAnimationApi
 @ExperimentalSerializationApi
-@ExperimentalCoilApi
 @ExperimentalPagingApi
 @ExperimentalMaterialApi
 @Composable
@@ -354,7 +350,6 @@ private fun ItemTreeEntry(
 }
 
 @ExperimentalAnimationApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalPagingApi
 @ExperimentalMaterialApi

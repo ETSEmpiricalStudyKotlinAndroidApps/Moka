@@ -66,7 +66,6 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 @ExperimentalAnimationApi
-@ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalPagingApi
@@ -698,9 +697,8 @@ private fun BoxScope.AnimatedBottomBar(
     )
 }
 
-@ExperimentalAnimationApi
-@ExperimentalMaterialApi
 @ExperimentalCoilApi
+@ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @ExperimentalPagingApi
 @Preview(

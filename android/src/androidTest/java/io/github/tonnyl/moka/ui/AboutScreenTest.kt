@@ -7,18 +7,21 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.WindowInsets
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.ui.about.AboutScreenContent
 import io.github.tonnyl.moka.ui.about.AboutScreenTestTag
 import io.github.tonnyl.moka.ui.about.OnAboutItemClick
 import io.github.tonnyl.moka.ui.theme.MokaTheme
+import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalMaterialApi
+@ExperimentalSerializationApi
+@ExperimentalPagingApi
 @ExperimentalAnimatedInsets
 class AboutScreenTest {
 
@@ -27,15 +30,13 @@ class AboutScreenTest {
 
     private lateinit var activity: ComponentActivity
 
-    @ExperimentalMaterialApi
     @Before
     fun setUp() {
         composeTestRule.activityRule.scenario.onActivity { newActivity ->
             activity = newActivity
 
-            val windowInsets = WindowInsets()
             composeTestRule.setContent {
-                CompositionLocalProvider(LocalWindowInsets provides windowInsets) {
+                CompositionLocalProvider {
                     MokaTheme {
                         AboutScreenContent(
                             topAppBarSize = 0,

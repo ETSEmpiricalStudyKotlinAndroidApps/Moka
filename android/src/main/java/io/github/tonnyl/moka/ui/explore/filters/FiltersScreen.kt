@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.explore.filters
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
@@ -55,7 +54,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalComposeUiApi
 @ExperimentalPagingApi
-@ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -223,7 +221,6 @@ fun ExploreFiltersScreen(filtersType: FiltersType) {
     }
 }
 
-@ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable

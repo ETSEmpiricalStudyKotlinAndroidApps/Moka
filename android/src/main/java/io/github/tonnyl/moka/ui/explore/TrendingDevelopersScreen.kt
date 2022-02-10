@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
@@ -36,7 +35,6 @@ import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.tonnyl.moka.common.db.data.TrendingDeveloper
 import io.tonnyl.moka.common.util.TrendingDeveloperProvider
 
-@ExperimentalCoilApi
 @Composable
 fun TrendingDeveloperItem(
     index: Int,
@@ -168,7 +166,6 @@ private fun trendingDeveloperDescContent(
     }
 }
 
-@ExperimentalCoilApi
 @Preview(
     name = "TrendingDeveloperItemPreview",
     showBackground = true,

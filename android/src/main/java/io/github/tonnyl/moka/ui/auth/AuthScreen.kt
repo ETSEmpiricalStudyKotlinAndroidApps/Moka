@@ -32,7 +32,6 @@ import io.tonnyl.moka.common.network.Status
 import kotlinx.datetime.Clock
 
 @ExperimentalPagingApi
-@ExperimentalMaterialApi
 @Composable
 fun AuthScreen(
     authTokenAndUserResource: Resource<Pair<String, AuthenticatedUser>>?,
@@ -134,7 +133,6 @@ fun AuthScreen(
 }
 
 @ExperimentalPagingApi
-@ExperimentalMaterialApi
 @Preview(name = "AuthScreen", showBackground = true)
 @Composable
 private fun AuthScreenContentPreview() {

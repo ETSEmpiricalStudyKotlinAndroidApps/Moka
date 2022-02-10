@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -61,7 +60,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
 @ExperimentalAnimationApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -174,7 +172,6 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
 }
 
 @ExperimentalAnimationApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Composable
@@ -653,7 +650,6 @@ private fun PinnedItemIconifiedText(
     )
 }
 
-@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 private fun PinnedItemCard(
@@ -765,7 +761,6 @@ private fun PinnedItemCard(
     }
 }
 
-@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 private fun PinnedRepositoryCard(
@@ -845,7 +840,6 @@ private fun PinnedRepositoryCard(
     }
 }
 
-@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 private fun PinnedGistCard(
@@ -913,7 +907,6 @@ private fun PinnedGistCard(
 // Preview section start
 
 @ExperimentalAnimationApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
 @Preview(

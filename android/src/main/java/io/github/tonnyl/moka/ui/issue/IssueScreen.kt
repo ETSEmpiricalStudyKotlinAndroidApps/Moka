@@ -40,7 +40,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -83,7 +82,6 @@ data class IssuePullRequestEventData(
 )
 
 @ExperimentalPagingApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun IssueScreen(
@@ -191,7 +189,6 @@ fun IssueScreen(
     }
 }
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 private fun IssueScreenContent(
@@ -337,7 +334,6 @@ private fun IssueScreenContent(
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 fun ItemIssueTimelineEvent(
     event: IssueTimelineItem,
@@ -834,7 +830,6 @@ private fun eventData(event: IssueTimelineItem): IssuePullRequestEventData? {
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 fun IssueOrPullRequestHeader(
     repoOwner: String,
@@ -902,7 +897,6 @@ fun IssueOrPullRequestHeader(
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 fun IssueTimelineCommentItem(
     avatarUrl: String?,
@@ -1103,7 +1097,6 @@ fun IssueTimelineCommentItem(
     }
 }
 
-@ExperimentalCoilApi
 @Preview(
     name = "IssueTimelineEventItemPreview",
     showBackground = true,

@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.widget
 
 import androidx.annotation.StringRes
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
@@ -10,7 +9,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import io.github.tonnyl.moka.R
 
-@ExperimentalMaterialApi
 @Composable
 fun SnackBarErrorMessage(
     scaffoldState: ScaffoldState,

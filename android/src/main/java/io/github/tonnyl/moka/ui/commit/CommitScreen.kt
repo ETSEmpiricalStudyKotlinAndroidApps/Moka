@@ -32,7 +32,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -59,7 +58,6 @@ import io.tonnyl.moka.common.util.CommitResponseProvider
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun CommitScreen(
@@ -166,7 +164,6 @@ fun CommitScreen(
 }
 
 @ExperimentalSerializationApi
-@ExperimentalCoilApi
 @Composable
 private fun CommitScreenContent(
     contentTopPadding: Dp,
@@ -327,7 +324,6 @@ private fun buildDiffAnnotatedString(patch: String?): AnnotatedString? {
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 private fun ItemCommitDetails(
     resp: CommitResponse,
@@ -463,7 +459,6 @@ private fun ItemCommitDetails(
     }
 }
 
-@ExperimentalCoilApi
 @Preview(
     name = "ItemCommitDetailsPreview",
     showBackground = true,

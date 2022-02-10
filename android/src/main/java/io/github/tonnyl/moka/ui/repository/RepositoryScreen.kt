@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.insets.LocalWindowInsets
@@ -70,7 +69,6 @@ private const val MAX_LANGUAGE_DISPLAY_COUNT = 20
 
 @ExperimentalPagingApi
 @ExperimentalComposeUiApi
-@ExperimentalCoilApi
 @ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @ExperimentalMaterialApi
@@ -417,7 +415,6 @@ fun RepositoryScreen(
 
 }
 
-@ExperimentalCoilApi
 @ExperimentalAnimationApi
 @Composable
 private fun RepositoryScreenContent(
@@ -1031,7 +1028,6 @@ private fun WatchOptionItem(
     }
 }
 
-@ExperimentalCoilApi
 @ExperimentalAnimationApi
 @Preview(showBackground = true, name = "RepositoryScreenContentPreview")
 @Composable

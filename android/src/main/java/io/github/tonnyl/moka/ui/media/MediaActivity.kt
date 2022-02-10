@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -14,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.paging.ExperimentalPagingApi
-import coil.annotation.ExperimentalCoilApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.ui.MainViewModel
 import io.github.tonnyl.moka.ui.ViewModelFactory
@@ -25,10 +23,8 @@ import io.github.tonnyl.moka.ui.theme.MediaTheme
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalAnimationApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @ExperimentalPagingApi
-@ExperimentalMaterialApi
 class MediaActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel> {

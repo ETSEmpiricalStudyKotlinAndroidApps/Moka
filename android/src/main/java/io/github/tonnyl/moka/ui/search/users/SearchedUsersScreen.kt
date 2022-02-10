@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
@@ -46,7 +45,6 @@ import io.tonnyl.moka.common.util.UserItemProvider
 import io.tonnyl.moka.graphql.fragment.OrganizationListItemFragment
 import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
@@ -93,7 +91,6 @@ fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
     }
 }
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgItem>) {
@@ -136,7 +133,6 @@ private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgI
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 fun ItemSearchedOrganization(
     org: OrganizationListItemFragment,
@@ -212,7 +208,6 @@ fun ItemSearchedOrganization(
     }
 }
 
-@ExperimentalCoilApi
 @Preview(
     name = "ItemSearchedOrganizationPreview",
     showBackground = true,

@@ -29,7 +29,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -63,7 +62,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
 @ExperimentalMaterialApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun RepositoriesScreen(
@@ -300,7 +298,6 @@ fun RepositoriesScreen(
     }
 }
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 private fun RepositoriesScreenContent(
@@ -348,7 +345,6 @@ private fun RepositoriesScreenContent(
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 fun ItemRepository(
     repo: RepositoryListItemFragment,
@@ -509,7 +505,6 @@ fun ItemRepository(
     }
 }
 
-@ExperimentalCoilApi
 @Preview(
     name = "ItemRepositoryPreview",
     showBackground = true,

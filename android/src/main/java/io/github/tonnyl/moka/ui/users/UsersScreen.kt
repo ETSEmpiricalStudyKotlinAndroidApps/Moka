@@ -25,7 +25,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -52,7 +51,6 @@ import io.tonnyl.moka.graphql.fragment.UserListItemFragment
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun UsersScreen(
@@ -170,7 +168,6 @@ fun UsersScreen(
     }
 }
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 private fun UsersScreenScreen(
@@ -218,7 +215,6 @@ private fun UsersScreenScreen(
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 fun ItemUser(
     user: UserListItemFragment,
@@ -317,7 +313,6 @@ fun ItemUser(
     }
 }
 
-@ExperimentalCoilApi
 @Preview(
     name = "ItemUserPreview",
     showBackground = true,

@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
@@ -21,7 +20,6 @@ import io.tonnyl.moka.common.util.RepositoryItemProvider
 import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
 import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryListItemFragment>) {
@@ -68,7 +66,6 @@ fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryListItemF
     }
 }
 
-@ExperimentalCoilApi
 @ExperimentalSerializationApi
 @Composable
 private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<RepositoryListItemFragment>) {

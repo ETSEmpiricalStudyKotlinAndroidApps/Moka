@@ -162,6 +162,8 @@ dependencies {
 
     implementation(Deps.jsoup)
 
+    debugImplementation(Deps.leakCanary)
+
     testImplementation(Deps.Test.junit)
     testImplementation(Deps.Test.mockitoCore)
     testImplementation(Deps.Test.hamcrestAll)

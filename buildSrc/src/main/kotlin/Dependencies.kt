@@ -49,6 +49,7 @@ object Versions {
     const val ktor = "1.6.7"
     const val firebaseAnalyticsKtx = "20.0.2"
     const val firebaseCrashlytics = "18.2.6"
+    const val leakCanary = "2.8.1"
     const val junit = "4.13.2"
     const val androidJunit = "1.1.4-alpha03"
     const val androidTestCore = "1.4.1-alpha03"
@@ -65,6 +66,7 @@ object Deps {
     const val jsoup = "org.jsoup:jsoup:${Versions.jsoup}"
     const val logcat = "com.squareup.logcat:logcat:${Versions.logcat}"
     const val desugaring = "com.android.tools:desugar_jdk_libs:${Versions.desugaring}"
+    const val leakCanary = "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"
 
     object GradlePlugin {
 

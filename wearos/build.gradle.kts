@@ -100,4 +100,6 @@ dependencies {
     implementation(Deps.AndroidX.UI.wearFoundation)
     implementation(Deps.AndroidX.UI.wearMaterial)
     implementation(Deps.AndroidX.UI.wearNavigation)
+
+    debugImplementation(Deps.leakCanary)
 }

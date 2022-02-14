@@ -155,11 +155,6 @@ class MokaApp : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
 
-        AndroidLogcatLogger.installOnDebuggableApp(
-            application = this,
-            minPriority = LogPriority.VERBOSE
-        )
-
         accountManager.addOnAccountsUpdatedListener(
             accountListener,
             null,

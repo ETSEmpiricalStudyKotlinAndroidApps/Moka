@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,12 +18,15 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -60,6 +65,7 @@ import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.IssueTimelineItem
 import io.tonnyl.moka.common.data.extension.assigneeLogin
+import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.IssueProvider
 import io.tonnyl.moka.common.util.IssueTimelineEventProvider
@@ -67,6 +73,7 @@ import io.tonnyl.moka.graphql.IssueQuery.Issue
 import io.tonnyl.moka.graphql.fragment.ReactionGroup
 import io.tonnyl.moka.graphql.type.CommentAuthorAssociation
 import io.tonnyl.moka.graphql.type.LockReason
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -81,6 +88,7 @@ data class IssuePullRequestEventData(
     val nodeId: String? = null
 )
 
+@ExperimentalComposeUiApi
 @ExperimentalPagingApi
 @ExperimentalSerializationApi
 @Composable
@@ -104,8 +112,15 @@ fun IssueScreen(
     )
 
     val issueTimelineItems = viewModel.issueTimelineFlow.collectAsLazyPagingItems()
+    val addedComments = viewModel.addedTimelineComments.observeAsState()
 
     val issue by viewModel.issueLiveData.observeAsState()
+
+    val addCommentResource by viewModel.addCommentResource.observeAsState()
+
+    val lazyListState = rememberLazyListState()
+
+    val scope = rememberCoroutineScope()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
@@ -116,56 +131,98 @@ fun IssueScreen(
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
         )
 
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = issueTimelineItems.loadState.refresh is LoadState.Loading),
-            onRefresh = issueTimelineItems::refresh,
-            indicatorPadding = contentPadding,
-            indicator = { state, refreshTriggerDistance ->
-                DefaultSwipeRefreshIndicator(
-                    state = state,
-                    refreshTriggerDistance = refreshTriggerDistance
-                )
-            }
-        ) {
-            when {
-                issueTimelineItems.loadState.refresh is LoadState.NotLoading
-                        && issueTimelineItems.loadState.append is LoadState.NotLoading
-                        && issueTimelineItems.loadState.prepend is LoadState.NotLoading
-                        && issueTimelineItems.itemCount == 0
-                        && issue == null -> {
+        val scaffoldState = rememberScaffoldState()
 
+        val softKeyboardController = LocalSoftwareKeyboardController.current
+        val focusManager = LocalFocusManager.current
+
+        Scaffold(
+            content = {
+                SwipeRefresh(
+                    state = rememberSwipeRefreshState(isRefreshing = issueTimelineItems.loadState.refresh is LoadState.Loading),
+                    onRefresh = issueTimelineItems::refresh,
+                    indicatorPadding = contentPadding,
+                    indicator = { state, refreshTriggerDistance ->
+                        DefaultSwipeRefreshIndicator(
+                            state = state,
+                            refreshTriggerDistance = refreshTriggerDistance
+                        )
+                    }
+                ) {
+                    when {
+                        issueTimelineItems.loadState.refresh is LoadState.NotLoading
+                                && issueTimelineItems.loadState.append is LoadState.NotLoading
+                                && issueTimelineItems.loadState.prepend is LoadState.NotLoading
+                                && issueTimelineItems.itemCount == 0
+                                && issue == null -> {
+
+                        }
+                        issueTimelineItems.loadState.refresh is LoadState.NotLoading
+                                && issueTimelineItems.itemCount == 0
+                                && issue == null -> {
+                            EmptyScreenContent(
+                                icon = R.drawable.ic_menu_timeline_24,
+                                title = R.string.timeline_content_empty_title,
+                                retry = R.string.common_retry,
+                                action = R.string.timeline_content_empty_action
+                            )
+                        }
+                        issueTimelineItems.loadState.refresh is LoadState.Error
+                                && issueTimelineItems.itemCount == 0
+                                && issue == null -> {
+                            EmptyScreenContent(
+                                icon = R.drawable.ic_menu_inbox_24,
+                                title = R.string.common_error_requesting_data,
+                                retry = R.string.common_retry,
+                                action = R.string.notification_content_empty_action
+                            )
+                        }
+                        else -> {
+                            IssueScreenContent(
+                                contentTopPadding = contentPadding.calculateTopPadding(),
+                                owner = owner,
+                                name = name,
+                                issue = issue,
+                                timelineItems = issueTimelineItems,
+                                textState = viewModel.commentText,
+                                onSend = {
+                                    viewModel.addComment()
+                                    softKeyboardController?.hide()
+                                    focusManager.clearFocus(force = true)
+                                },
+                                isSending = addCommentResource?.status == Status.LOADING,
+                                addedComments = addedComments.value?.second.orEmpty(),
+                                lazyListState = lazyListState
+                            )
+                        }
+                    }
                 }
-                issueTimelineItems.loadState.refresh is LoadState.NotLoading
-                        && issueTimelineItems.itemCount == 0
-                        && issue == null -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_timeline_24,
-                        title = R.string.timeline_content_empty_title,
-                        retry = R.string.common_retry,
-                        action = R.string.timeline_content_empty_action
+
+                LaunchedEffect(key1 = addCommentResource?.status) {
+                    if (addCommentResource?.status == Status.SUCCESS
+                        && lazyListState.layoutInfo.totalItemsCount > 0
+                    ) {
+                        scope.launch {
+                            lazyListState.scrollToItem(lazyListState.layoutInfo.totalItemsCount - 1)
+                        }
+                    }
+                }
+
+                if (addCommentResource?.status == Status.ERROR) {
+                    SnackBarErrorMessage(
+                        scaffoldState = scaffoldState,
+                        messageId = R.string.issue_pr_failed_to_add_comment,
+                        action = viewModel::addComment
                     )
                 }
-                issueTimelineItems.loadState.refresh is LoadState.Error
-                        && issueTimelineItems.itemCount == 0
-                        && issue == null -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_inbox_24,
-                        title = R.string.common_error_requesting_data,
-                        retry = R.string.common_retry,
-                        action = R.string.notification_content_empty_action
-                    )
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = it) { data: SnackbarData ->
+                    Snackbar(snackbarData = data)
                 }
-                else -> {
-                    IssueScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
-                        owner = owner,
-                        name = name,
-                        issue = issue,
-                        timelineItems = issueTimelineItems
-                    )
-                }
-            }
-        }
+            },
+            scaffoldState = scaffoldState
+        )
 
         val navController = LocalNavController.current
 
@@ -196,7 +253,12 @@ private fun IssueScreenContent(
     owner: String,
     name: String,
     issue: Issue?,
-    timelineItems: LazyPagingItems<IssueTimelineItem>
+    timelineItems: LazyPagingItems<IssueTimelineItem>,
+    addedComments: List<IssueTimelineItem>,
+    textState: MutableState<String>,
+    onSend: () -> Unit,
+    isSending: Boolean,
+    lazyListState: LazyListState
 ) {
     val timelinePlaceholder = remember {
         IssueTimelineEventProvider().values.first()
@@ -207,129 +269,159 @@ private fun IssueScreenContent(
 
     val enablePlaceholder = timelineItems.loadState.refresh is LoadState.Loading
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        if (enablePlaceholder) {
+    Column {
+        LazyColumn(
+            state = lazyListState,
+            modifier = Modifier.weight(weight = 1f)
+        ) {
             item {
-                IssueOrPullRequestHeader(
-                    repoOwner = owner,
-                    repoName = name,
-                    number = issuePlaceholder.number,
-                    title = issuePlaceholder.title,
-                    caption = stringResource(
-                        id = R.string.issue_pr_info_format,
-                        stringResource(
-                            id = if (issuePlaceholder.closed) {
-                                R.string.issue_pr_status_closed
-                            } else {
-                                R.string.issue_pr_status_open
-                            }
-                        ),
-                        stringResource(
-                            id = R.string.issue_pr_created_by,
-                            issuePlaceholder.author?.actor?.login ?: "ghost"
-                        ),
-                        DateUtils.getRelativeTimeSpanString(
-                            issuePlaceholder.createdAt.toEpochMilliseconds(),
-                            System.currentTimeMillis(),
-                            DateUtils.MINUTE_IN_MILLIS
-                        ) as String
-                    ),
-                    avatarUrl = issuePlaceholder.author?.actor?.avatarUrl,
-                    viewerCanReact = issuePlaceholder.viewerCanReact,
-                    reactionGroups = issuePlaceholder.reactionGroups?.map { it.reactionGroup },
-                    authorLogin = issuePlaceholder.author?.actor?.login,
-                    authorAssociation = issuePlaceholder.authorAssociation,
-                    displayHtml = issuePlaceholder.bodyHTML.takeIf { it.isNotEmpty() }
-                        ?: stringResource(id = R.string.no_description_provided),
-                    commentCreatedAt = issuePlaceholder.createdAt,
-                    enablePlaceholder = true
-                )
+                Spacer(modifier = Modifier.height(height = contentTopPadding))
             }
-        } else if (issue != null) {
-            item {
-                IssueOrPullRequestHeader(
-                    repoOwner = owner,
-                    repoName = name,
-                    number = issue.number,
-                    title = issue.title,
-                    caption = stringResource(
-                        id = R.string.issue_pr_info_format,
-                        stringResource(
-                            id = if (issue.closed) {
-                                R.string.issue_pr_status_closed
-                            } else {
-                                R.string.issue_pr_status_open
-                            }
-                        ),
-                        stringResource(
-                            id = R.string.issue_pr_created_by,
-                            issue.author?.actor?.login ?: "ghost"
-                        ),
-                        DateUtils.getRelativeTimeSpanString(
-                            issue.createdAt.toEpochMilliseconds(),
-                            System.currentTimeMillis(),
-                            DateUtils.MINUTE_IN_MILLIS
-                        ) as String
-                    ),
-                    avatarUrl = issue.author?.actor?.avatarUrl,
-                    viewerCanReact = issue.viewerCanReact,
-                    reactionGroups = issue.reactionGroups?.map { it.reactionGroup },
-                    authorLogin = issue.author?.actor?.login,
-                    authorAssociation = issue.authorAssociation,
-                    displayHtml = issue.bodyHTML.takeIf { it.isNotEmpty() }
-                        ?: stringResource(id = R.string.no_description_provided),
-                    commentCreatedAt = issue.createdAt,
-                    enablePlaceholder = false
-                )
-            }
-        }
 
-        item {
-            ItemLoadingState(loadState = timelineItems.loadState.prepend)
-        }
-
-        if (enablePlaceholder) {
-            items(count = defaultPagingConfig.initialLoadSize) {
-                ItemIssueTimelineEvent(
-                    event = timelinePlaceholder,
-                    enablePlaceholder = enablePlaceholder
-                )
-            }
-        } else {
-            itemsIndexed(
-                items = timelineItems,
-                key = { _, item ->
-                    item.hashCode()
+            if (enablePlaceholder) {
+                item {
+                    IssueOrPullRequestHeader(
+                        repoOwner = owner,
+                        repoName = name,
+                        number = issuePlaceholder.number,
+                        title = issuePlaceholder.title,
+                        caption = stringResource(
+                            id = R.string.issue_pr_info_format,
+                            stringResource(
+                                id = if (issuePlaceholder.closed) {
+                                    R.string.issue_pr_status_closed
+                                } else {
+                                    R.string.issue_pr_status_open
+                                }
+                            ),
+                            stringResource(
+                                id = R.string.issue_pr_created_by,
+                                issuePlaceholder.author?.actor?.login ?: "ghost"
+                            ),
+                            DateUtils.getRelativeTimeSpanString(
+                                issuePlaceholder.createdAt.toEpochMilliseconds(),
+                                System.currentTimeMillis(),
+                                DateUtils.MINUTE_IN_MILLIS
+                            ) as String
+                        ),
+                        avatarUrl = issuePlaceholder.author?.actor?.avatarUrl,
+                        viewerCanReact = issuePlaceholder.viewerCanReact,
+                        reactionGroups = issuePlaceholder.reactionGroups?.map { it.reactionGroup },
+                        authorLogin = issuePlaceholder.author?.actor?.login,
+                        authorAssociation = issuePlaceholder.authorAssociation,
+                        displayHtml = issuePlaceholder.bodyHTML.takeIf { it.isNotEmpty() }
+                            ?: stringResource(id = R.string.no_description_provided),
+                        commentCreatedAt = issuePlaceholder.createdAt,
+                        enablePlaceholder = true
+                    )
                 }
-            ) { _, item ->
-                if (item != null) {
-                    if (item.issueComment != null) {
-                        IssueTimelineCommentItem(
-                            avatarUrl = item.issueComment!!.author?.actor?.avatarUrl,
-                            viewerCanReact = item.issueComment!!.viewerCanReact,
-                            reactionGroups = item.issueComment!!.reactionGroups?.map { it.reactionGroup },
-                            authorLogin = item.issueComment!!.author?.actor?.login,
-                            authorAssociation = item.issueComment!!.authorAssociation,
-                            displayHtml = item.issueComment!!.body,
-                            commentCreatedAt = item.issueComment!!.createdAt,
-                            enablePlaceholder = enablePlaceholder
-                        )
-                    } else {
-                        ItemIssueTimelineEvent(
-                            event = item,
-                            enablePlaceholder = enablePlaceholder
-                        )
+            } else if (issue != null) {
+                item {
+                    IssueOrPullRequestHeader(
+                        repoOwner = owner,
+                        repoName = name,
+                        number = issue.number,
+                        title = issue.title,
+                        caption = stringResource(
+                            id = R.string.issue_pr_info_format,
+                            stringResource(
+                                id = if (issue.closed) {
+                                    R.string.issue_pr_status_closed
+                                } else {
+                                    R.string.issue_pr_status_open
+                                }
+                            ),
+                            stringResource(
+                                id = R.string.issue_pr_created_by,
+                                issue.author?.actor?.login ?: "ghost"
+                            ),
+                            DateUtils.getRelativeTimeSpanString(
+                                issue.createdAt.toEpochMilliseconds(),
+                                System.currentTimeMillis(),
+                                DateUtils.MINUTE_IN_MILLIS
+                            ) as String
+                        ),
+                        avatarUrl = issue.author?.actor?.avatarUrl,
+                        viewerCanReact = issue.viewerCanReact,
+                        reactionGroups = issue.reactionGroups?.map { it.reactionGroup },
+                        authorLogin = issue.author?.actor?.login,
+                        authorAssociation = issue.authorAssociation,
+                        displayHtml = issue.bodyHTML.takeIf { it.isNotEmpty() }
+                            ?: stringResource(id = R.string.no_description_provided),
+                        commentCreatedAt = issue.createdAt,
+                        enablePlaceholder = false
+                    )
+                }
+            }
+
+            item {
+                ItemLoadingState(loadState = timelineItems.loadState.prepend)
+            }
+
+            if (enablePlaceholder) {
+                items(count = defaultPagingConfig.initialLoadSize) {
+                    ItemIssueTimelineEvent(
+                        event = timelinePlaceholder,
+                        enablePlaceholder = enablePlaceholder
+                    )
+                }
+            } else {
+                itemsIndexed(
+                    items = timelineItems,
+                    key = { _, item ->
+                        item.hashCode()
+                    }
+                ) { _, item ->
+                    if (item != null) {
+                        if (item.issueComment != null) {
+                            IssueTimelineCommentItem(
+                                avatarUrl = item.issueComment!!.author?.actor?.avatarUrl,
+                                viewerCanReact = item.issueComment!!.viewerCanReact,
+                                reactionGroups = item.issueComment!!.reactionGroups?.map { it.reactionGroup },
+                                authorLogin = item.issueComment!!.author?.actor?.login,
+                                authorAssociation = item.issueComment!!.authorAssociation,
+                                displayHtml = item.issueComment!!.body,
+                                commentCreatedAt = item.issueComment!!.createdAt,
+                                enablePlaceholder = enablePlaceholder
+                            )
+                        } else {
+                            ItemIssueTimelineEvent(
+                                event = item,
+                                enablePlaceholder = enablePlaceholder
+                            )
+                        }
                     }
                 }
+
+                items(count = addedComments.size) {
+                    val item = addedComments[it]
+                    IssueTimelineCommentItem(
+                        avatarUrl = item.issueComment!!.author?.actor?.avatarUrl,
+                        viewerCanReact = item.issueComment!!.viewerCanReact,
+                        reactionGroups = item.issueComment!!.reactionGroups?.map { it.reactionGroup },
+                        authorLogin = item.issueComment!!.author?.actor?.login,
+                        authorAssociation = item.issueComment!!.authorAssociation,
+                        displayHtml = item.issueComment!!.body,
+                        commentCreatedAt = item.issueComment!!.createdAt,
+                        enablePlaceholder = enablePlaceholder
+                    )
+                }
+            }
+
+            item {
+                ItemLoadingState(loadState = timelineItems.loadState.append)
             }
         }
 
-        item {
-            ItemLoadingState(loadState = timelineItems.loadState.append)
+        if (issue != null) {
+            BottomInputBar(
+                textState = textState,
+                onSend = onSend,
+                isSending = isSending,
+                lockReason = issue.activeLockReason,
+                viewerCanEdit = issue.authorAssociation == CommentAuthorAssociation.COLLABORATOR
+                        || issue.authorAssociation == CommentAuthorAssociation.OWNER
+            )
         }
     }
 }

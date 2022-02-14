@@ -286,6 +286,9 @@
     <string name="pr_status_closed_image_content_description">Pull request closed</string>
     <string name="pr_status_open_image_content_description">Pull request open</string>
     <string name="pr_status_merged_image_content_description">Pull request merged</string>
+    <string name="issue_pr_comment">Comment</string>
+    <string name="issue_pr_failed_to_add_comment">Failed to add a comment.</string>
+    <string name="issue_pr_conversation_locked">This conversation has been locked as %1$s and limited to collaborators.</string>
 
     <string name="issue">Issue</string>
     <string name="issue_timeline_issue_pr_number_with_blank_prefix">&#160;#%1$d</string>

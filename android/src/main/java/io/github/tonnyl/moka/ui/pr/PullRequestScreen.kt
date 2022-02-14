@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,12 +15,15 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -55,23 +60,25 @@ import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.toColor
-import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
-import io.github.tonnyl.moka.widget.EmptyScreenContent
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.github.tonnyl.moka.widget.ItemLoadingState
+import io.github.tonnyl.moka.widget.*
+import io.tonnyl.moka.common.data.IssueTimelineItem
 import io.tonnyl.moka.common.data.PullRequestTimelineItem
 import io.tonnyl.moka.common.data.extension.assigneeLogin
 import io.tonnyl.moka.common.data.extension.requestedReviewerLogin
 import io.tonnyl.moka.common.extensions.shortOid
+import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.PullRequestProvider
 import io.tonnyl.moka.common.util.PullRequestTimelineItemProvider
 import io.tonnyl.moka.graphql.PullRequestQuery.PullRequest
+import io.tonnyl.moka.graphql.type.CommentAuthorAssociation
 import io.tonnyl.moka.graphql.type.LockReason
 import io.tonnyl.moka.graphql.type.PullRequestReviewState
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalComposeUiApi
 @ExperimentalPagingApi
 @ExperimentalSerializationApi
 @Composable
@@ -97,6 +104,13 @@ fun PullRequestScreen(
 
     val pullRequest by viewModel.pullRequest.observeAsState()
     val prTimelineItems = viewModel.prTimelineFlow.collectAsLazyPagingItems()
+    val addedComments = viewModel.addedTimelineComments.observeAsState()
+
+    val addCommentResource by viewModel.addCommentResource.observeAsState()
+
+    val lazyListState = rememberLazyListState()
+
+    val scope = rememberCoroutineScope()
 
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
@@ -107,56 +121,99 @@ fun PullRequestScreen(
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
         )
 
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = prTimelineItems.loadState.refresh is LoadState.Loading),
-            onRefresh = prTimelineItems::refresh,
-            indicatorPadding = contentPadding,
-            indicator = { state, refreshTriggerDistance ->
-                DefaultSwipeRefreshIndicator(
-                    state = state,
-                    refreshTriggerDistance = refreshTriggerDistance
-                )
-            }
-        ) {
-            when {
-                prTimelineItems.loadState.refresh is LoadState.NotLoading
-                        && prTimelineItems.loadState.append is LoadState.NotLoading
-                        && prTimelineItems.loadState.prepend is LoadState.NotLoading
-                        && prTimelineItems.itemCount == 0
-                        && pullRequest == null -> {
+        val scaffoldState = rememberScaffoldState()
 
+        val softKeyboardController = LocalSoftwareKeyboardController.current
+        val focusManager = LocalFocusManager.current
+
+        Scaffold(
+            content = {
+                SwipeRefresh(
+                    state = rememberSwipeRefreshState(isRefreshing = prTimelineItems.loadState.refresh is LoadState.Loading),
+                    onRefresh = prTimelineItems::refresh,
+                    indicatorPadding = contentPadding,
+                    indicator = { state, refreshTriggerDistance ->
+                        DefaultSwipeRefreshIndicator(
+                            state = state,
+                            refreshTriggerDistance = refreshTriggerDistance
+                        )
+                    }
+                ) {
+                    when {
+                        prTimelineItems.loadState.refresh is LoadState.NotLoading
+                                && prTimelineItems.loadState.append is LoadState.NotLoading
+                                && prTimelineItems.loadState.prepend is LoadState.NotLoading
+                                && prTimelineItems.itemCount == 0
+                                && pullRequest == null -> {
+
+                        }
+                        prTimelineItems.loadState.refresh is LoadState.NotLoading
+                                && prTimelineItems.itemCount == 0
+                                && pullRequest == null -> {
+                            EmptyScreenContent(
+                                icon = R.drawable.ic_menu_timeline_24,
+                                title = R.string.timeline_content_empty_title,
+                                retry = R.string.common_retry,
+                                action = R.string.timeline_content_empty_action
+                            )
+                        }
+                        prTimelineItems.loadState.refresh is LoadState.Error
+                                && prTimelineItems.itemCount == 0
+                                && pullRequest == null -> {
+                            EmptyScreenContent(
+                                icon = R.drawable.ic_menu_inbox_24,
+                                title = R.string.common_error_requesting_data,
+                                retry = R.string.common_retry,
+                                action = R.string.notification_content_empty_action
+                            )
+                        }
+                        else -> {
+                            PullRequestScreenContent(
+                                contentTopPadding = contentPadding.calculateTopPadding(),
+                                pullRequest = pullRequest,
+                                owner = owner,
+                                name = name,
+                                timelineItems = prTimelineItems,
+                                textState = viewModel.commentText,
+                                onSend = {
+                                    viewModel.addComment()
+                                    softKeyboardController?.hide()
+                                    focusManager.clearFocus(force = true)
+                                },
+                                isSending = addCommentResource?.status == Status.LOADING,
+                                addedComments = addedComments.value?.second.orEmpty(),
+                                lazyListState = lazyListState
+                            )
+                        }
+                    }
                 }
-                prTimelineItems.loadState.refresh is LoadState.NotLoading
-                        && prTimelineItems.itemCount == 0
-                        && pullRequest == null -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_timeline_24,
-                        title = R.string.timeline_content_empty_title,
-                        retry = R.string.common_retry,
-                        action = R.string.timeline_content_empty_action
+
+                LaunchedEffect(key1 = addCommentResource?.status) {
+                    if (addCommentResource?.status == Status.SUCCESS
+                        && lazyListState.layoutInfo.totalItemsCount > 0
+                    ) {
+                        scope.launch {
+                            lazyListState.scrollToItem(lazyListState.layoutInfo.totalItemsCount - 1)
+                        }
+                    }
+                }
+
+                if (addCommentResource?.status == Status.ERROR) {
+                    SnackBarErrorMessage(
+                        scaffoldState = scaffoldState,
+                        messageId = R.string.issue_pr_failed_to_add_comment,
+                        action = viewModel::addComment
                     )
                 }
-                prTimelineItems.loadState.refresh is LoadState.Error
-                        && prTimelineItems.itemCount == 0
-                        && pullRequest == null -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_inbox_24,
-                        title = R.string.common_error_requesting_data,
-                        retry = R.string.common_retry,
-                        action = R.string.notification_content_empty_action
-                    )
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = it) { data: SnackbarData ->
+                    Snackbar(snackbarData = data)
                 }
-                else -> {
-                    PullRequestScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
-                        pullRequest = pullRequest,
-                        owner = owner,
-                        name = name,
-                        timelineItems = prTimelineItems
-                    )
-                }
-            }
-        }
+            },
+            scaffoldState = scaffoldState
+        )
+
 
         val navController = LocalNavController.current
 
@@ -187,7 +244,12 @@ private fun PullRequestScreenContent(
     owner: String,
     name: String,
     pullRequest: PullRequest?,
-    timelineItems: LazyPagingItems<PullRequestTimelineItem>
+    timelineItems: LazyPagingItems<PullRequestTimelineItem>,
+    addedComments: List<IssueTimelineItem>,
+    textState: MutableState<String>,
+    onSend: () -> Unit,
+    isSending: Boolean,
+    lazyListState: LazyListState
 ) {
     val pullRequestPlaceholder = remember {
         PullRequestProvider().values.first()
@@ -198,70 +260,30 @@ private fun PullRequestScreenContent(
 
     val enablePlaceholder = timelineItems.loadState.refresh is LoadState.Loading
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        if (enablePlaceholder) {
+    Column {
+        LazyColumn(
+            state = lazyListState,
+            modifier = Modifier.weight(weight = 1f)
+        ) {
             item {
-                IssueOrPullRequestHeader(
-                    repoOwner = owner,
-                    repoName = name,
-                    number = pullRequestPlaceholder.number,
-                    title = pullRequestPlaceholder.title,
-                    caption = stringResource(
-                        id = R.string.issue_pr_info_format,
-                        stringResource(
-                            id = when {
-                                pullRequestPlaceholder.closed -> {
-                                    R.string.issue_pr_status_closed
-                                }
-                                pullRequestPlaceholder.merged -> {
-                                    R.string.issue_pr_status_merged
-                                }
-                                else -> {
-                                    R.string.issue_pr_status_open
-                                }
-                            }
-                        ),
-                        stringResource(
-                            id = R.string.issue_pr_created_by,
-                            pullRequestPlaceholder.author?.actor?.login ?: "ghost"
-                        ),
-                        DateUtils.getRelativeTimeSpanString(
-                            pullRequestPlaceholder.createdAt.toEpochMilliseconds(),
-                            System.currentTimeMillis(),
-                            DateUtils.MINUTE_IN_MILLIS
-                        ) as String
-                    ),
-                    avatarUrl = pullRequestPlaceholder.author?.actor?.avatarUrl,
-                    viewerCanReact = pullRequestPlaceholder.viewerCanReact,
-                    reactionGroups = pullRequestPlaceholder.reactionGroups?.map { it.reactionGroup },
-                    authorLogin = pullRequestPlaceholder.author?.actor?.login,
-                    authorAssociation = pullRequestPlaceholder.authorAssociation,
-                    displayHtml = pullRequestPlaceholder.bodyHTML.takeIf { it.isNotEmpty() }
-                        ?: stringResource(id = R.string.no_description_provided),
-                    commentCreatedAt = pullRequestPlaceholder.createdAt,
-                    enablePlaceholder = true
-                )
+                Spacer(modifier = Modifier.height(height = contentTopPadding))
             }
-        } else {
-            if (pullRequest != null) {
+
+            if (enablePlaceholder) {
                 item {
                     IssueOrPullRequestHeader(
                         repoOwner = owner,
                         repoName = name,
-                        number = pullRequest.number,
-                        title = pullRequest.title,
+                        number = pullRequestPlaceholder.number,
+                        title = pullRequestPlaceholder.title,
                         caption = stringResource(
                             id = R.string.issue_pr_info_format,
                             stringResource(
                                 id = when {
-                                    pullRequest.closed -> {
+                                    pullRequestPlaceholder.closed -> {
                                         R.string.issue_pr_status_closed
                                     }
-                                    pullRequest.merged -> {
+                                    pullRequestPlaceholder.merged -> {
                                         R.string.issue_pr_status_merged
                                     }
                                     else -> {
@@ -271,72 +293,143 @@ private fun PullRequestScreenContent(
                             ),
                             stringResource(
                                 id = R.string.issue_pr_created_by,
-                                pullRequest.author?.actor?.login ?: "ghost"
+                                pullRequestPlaceholder.author?.actor?.login ?: "ghost"
                             ),
                             DateUtils.getRelativeTimeSpanString(
-                                pullRequest.createdAt.toEpochMilliseconds(),
+                                pullRequestPlaceholder.createdAt.toEpochMilliseconds(),
                                 System.currentTimeMillis(),
                                 DateUtils.MINUTE_IN_MILLIS
                             ) as String
                         ),
-                        avatarUrl = pullRequest.author?.actor?.avatarUrl,
-                        viewerCanReact = pullRequest.viewerCanReact,
-                        reactionGroups = pullRequest.reactionGroups?.map { it.reactionGroup },
-                        authorLogin = pullRequest.author?.actor?.login,
-                        authorAssociation = pullRequest.authorAssociation,
-                        displayHtml = pullRequest.bodyHTML.takeIf { it.isNotEmpty() }
+                        avatarUrl = pullRequestPlaceholder.author?.actor?.avatarUrl,
+                        viewerCanReact = pullRequestPlaceholder.viewerCanReact,
+                        reactionGroups = pullRequestPlaceholder.reactionGroups?.map { it.reactionGroup },
+                        authorLogin = pullRequestPlaceholder.author?.actor?.login,
+                        authorAssociation = pullRequestPlaceholder.authorAssociation,
+                        displayHtml = pullRequestPlaceholder.bodyHTML.takeIf { it.isNotEmpty() }
                             ?: stringResource(id = R.string.no_description_provided),
-                        commentCreatedAt = pullRequest.createdAt,
-                        enablePlaceholder = false
+                        commentCreatedAt = pullRequestPlaceholder.createdAt,
+                        enablePlaceholder = true
                     )
                 }
-            }
-        }
-
-        item {
-            ItemLoadingState(loadState = timelineItems.loadState.prepend)
-        }
-
-        if (enablePlaceholder) {
-            items(count = defaultPagingConfig.initialLoadSize) {
-                ItemPullRequestTimelineEvent(
-                    timelineItem = timelinePlaceholder,
-                    enablePlaceholder = true
-                )
-            }
-        } else {
-            itemsIndexed(
-                items = timelineItems,
-                key = { index, _ ->
-                    index
-                }
-            ) { _, item ->
-                if (item != null) {
-                    if (item.issueComment != null) {
-                        IssueTimelineCommentItem(
-                            avatarUrl = item.issueComment!!.author?.actor?.avatarUrl,
-                            viewerCanReact = item.issueComment!!.viewerCanReact,
-                            reactionGroups = item.issueComment!!.reactionGroups?.map { it.reactionGroup },
-                            authorLogin = item.issueComment!!.author?.actor?.login,
-                            authorAssociation = item.issueComment!!.authorAssociation,
-                            displayHtml = item.issueComment!!.body,
-                            commentCreatedAt = item.issueComment!!.createdAt,
-                            enablePlaceholder = false
-                        )
-                    } else {
-                        ItemPullRequestTimelineEvent(
-                            timelineItem = item,
+            } else {
+                if (pullRequest != null) {
+                    item {
+                        IssueOrPullRequestHeader(
+                            repoOwner = owner,
+                            repoName = name,
+                            number = pullRequest.number,
+                            title = pullRequest.title,
+                            caption = stringResource(
+                                id = R.string.issue_pr_info_format,
+                                stringResource(
+                                    id = when {
+                                        pullRequest.closed -> {
+                                            R.string.issue_pr_status_closed
+                                        }
+                                        pullRequest.merged -> {
+                                            R.string.issue_pr_status_merged
+                                        }
+                                        else -> {
+                                            R.string.issue_pr_status_open
+                                        }
+                                    }
+                                ),
+                                stringResource(
+                                    id = R.string.issue_pr_created_by,
+                                    pullRequest.author?.actor?.login ?: "ghost"
+                                ),
+                                DateUtils.getRelativeTimeSpanString(
+                                    pullRequest.createdAt.toEpochMilliseconds(),
+                                    System.currentTimeMillis(),
+                                    DateUtils.MINUTE_IN_MILLIS
+                                ) as String
+                            ),
+                            avatarUrl = pullRequest.author?.actor?.avatarUrl,
+                            viewerCanReact = pullRequest.viewerCanReact,
+                            reactionGroups = pullRequest.reactionGroups?.map { it.reactionGroup },
+                            authorLogin = pullRequest.author?.actor?.login,
+                            authorAssociation = pullRequest.authorAssociation,
+                            displayHtml = pullRequest.bodyHTML.takeIf { it.isNotEmpty() }
+                                ?: stringResource(id = R.string.no_description_provided),
+                            commentCreatedAt = pullRequest.createdAt,
                             enablePlaceholder = false
                         )
                     }
                 }
             }
+
+            item {
+                ItemLoadingState(loadState = timelineItems.loadState.prepend)
+            }
+
+            if (enablePlaceholder) {
+                items(count = defaultPagingConfig.initialLoadSize) {
+                    ItemPullRequestTimelineEvent(
+                        timelineItem = timelinePlaceholder,
+                        enablePlaceholder = true
+                    )
+                }
+            } else {
+                itemsIndexed(
+                    items = timelineItems,
+                    key = { index, _ ->
+                        index
+                    }
+                ) { _, item ->
+                    if (item != null) {
+                        if (item.issueComment != null) {
+                            IssueTimelineCommentItem(
+                                avatarUrl = item.issueComment!!.author?.actor?.avatarUrl,
+                                viewerCanReact = item.issueComment!!.viewerCanReact,
+                                reactionGroups = item.issueComment!!.reactionGroups?.map { it.reactionGroup },
+                                authorLogin = item.issueComment!!.author?.actor?.login,
+                                authorAssociation = item.issueComment!!.authorAssociation,
+                                displayHtml = item.issueComment!!.body,
+                                commentCreatedAt = item.issueComment!!.createdAt,
+                                enablePlaceholder = false
+                            )
+                        } else {
+                            ItemPullRequestTimelineEvent(
+                                timelineItem = item,
+                                enablePlaceholder = false
+                            )
+                        }
+                    }
+                }
+
+                items(count = addedComments.size) {
+                    val item = addedComments[it]
+                    IssueTimelineCommentItem(
+                        avatarUrl = item.issueComment!!.author?.actor?.avatarUrl,
+                        viewerCanReact = item.issueComment!!.viewerCanReact,
+                        reactionGroups = item.issueComment!!.reactionGroups?.map { it.reactionGroup },
+                        authorLogin = item.issueComment!!.author?.actor?.login,
+                        authorAssociation = item.issueComment!!.authorAssociation,
+                        displayHtml = item.issueComment!!.body,
+                        commentCreatedAt = item.issueComment!!.createdAt,
+                        enablePlaceholder = enablePlaceholder
+                    )
+                }
+            }
+
+            item {
+                ItemLoadingState(loadState = timelineItems.loadState.append)
+            }
         }
 
-        item {
-            ItemLoadingState(loadState = timelineItems.loadState.append)
+        if (pullRequest != null) {
+            BottomInputBar(
+                textState = textState,
+                onSend = onSend,
+                isSending = isSending,
+                lockReason = pullRequest.activeLockReason,
+                viewerCanEdit = pullRequest.authorAssociation == CommentAuthorAssociation.COLLABORATOR
+                        || pullRequest.authorAssociation == CommentAuthorAssociation.OWNER
+            )
         }
     }
+
 }
 
 @Composable

@@ -37,7 +37,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
@@ -125,7 +124,7 @@ fun IssueScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -141,7 +140,7 @@ fun IssueScreen(
                 SwipeRefresh(
                     state = rememberSwipeRefreshState(isRefreshing = issueTimelineItems.loadState.refresh is LoadState.Loading),
                     onRefresh = issueTimelineItems::refresh,
-                    indicatorPadding = contentPadding,
+                    indicatorPadding = contentPaddings,
                     indicator = { state, refreshTriggerDistance ->
                         DefaultSwipeRefreshIndicator(
                             state = state,
@@ -179,7 +178,7 @@ fun IssueScreen(
                         }
                         else -> {
                             IssueScreenContent(
-                                contentTopPadding = contentPadding.calculateTopPadding(),
+                                contentPaddings = contentPaddings,
                                 owner = owner,
                                 name = name,
                                 issue = issue,
@@ -249,7 +248,7 @@ fun IssueScreen(
 @ExperimentalSerializationApi
 @Composable
 private fun IssueScreenContent(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     owner: String,
     name: String,
     issue: Issue?,
@@ -272,12 +271,9 @@ private fun IssueScreenContent(
     Column {
         LazyColumn(
             state = lazyListState,
+            contentPadding = contentPaddings,
             modifier = Modifier.weight(weight = 1f)
         ) {
-            item {
-                Spacer(modifier = Modifier.height(height = contentTopPadding))
-            }
-
             if (enablePlaceholder) {
                 item {
                     IssueOrPullRequestHeader(
@@ -354,9 +350,7 @@ private fun IssueScreenContent(
                 }
             }
 
-            item {
-                ItemLoadingState(loadState = timelineItems.loadState.prepend)
-            }
+            ItemLoadingState(loadState = timelineItems.loadState.prepend)
 
             if (enablePlaceholder) {
                 items(count = defaultPagingConfig.initialLoadSize) {
@@ -408,9 +402,7 @@ private fun IssueScreenContent(
                 }
             }
 
-            item {
-                ItemLoadingState(loadState = timelineItems.loadState.append)
-            }
+            ItemLoadingState(loadState = timelineItems.loadState.append)
         }
 
         if (issue != null) {

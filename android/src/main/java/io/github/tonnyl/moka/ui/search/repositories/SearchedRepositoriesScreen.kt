@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.search.repositories
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -8,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
@@ -23,6 +26,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 @Composable
 fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryListItemFragment>) {
+    val contentPaddings = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.navigationBars)
+
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = repositories.loadState.refresh is LoadState.Loading),
         onRefresh = repositories::refresh,
@@ -60,7 +65,10 @@ fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryListItemF
                 )
             }
             else -> {
-                SearchedRepositoriesScreenContent(repositories = repositories)
+                SearchedRepositoriesScreenContent(
+                    contentPaddings = contentPaddings,
+                    repositories = repositories
+                )
             }
         }
     }
@@ -68,15 +76,16 @@ fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryListItemF
 
 @ExperimentalSerializationApi
 @Composable
-private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<RepositoryListItemFragment>) {
+private fun SearchedRepositoriesScreenContent(
+    contentPaddings: PaddingValues,
+    repositories: LazyPagingItems<RepositoryListItemFragment>
+) {
     val repoPlaceholder = remember {
         RepositoryItemProvider().values.first()
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            ItemLoadingState(loadState = repositories.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = repositories.loadState.prepend)
 
         if (repositories.loadState.refresh is LoadState.Loading) {
             items(count = defaultPagingConfig.initialLoadSize) {
@@ -100,8 +109,7 @@ private fun SearchedRepositoriesScreenContent(repositories: LazyPagingItems<Repo
                 }
             }
         }
-        item {
-            ItemLoadingState(loadState = repositories.loadState.append)
-        }
+
+        ItemLoadingState(loadState = repositories.loadState.append)
     }
 }

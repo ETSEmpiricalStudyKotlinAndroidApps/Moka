@@ -12,13 +12,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -77,7 +75,7 @@ fun UsersScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -86,7 +84,7 @@ fun UsersScreen(
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = users.loadState.refresh is LoadState.Loading),
             onRefresh = users::refresh,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -121,7 +119,7 @@ fun UsersScreen(
                 }
                 else -> {
                     UsersScreenScreen(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
+                        contentPaddings = contentPaddings,
                         users = users
                     )
                 }
@@ -171,20 +169,14 @@ fun UsersScreen(
 @ExperimentalSerializationApi
 @Composable
 private fun UsersScreenScreen(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     users: LazyPagingItems<UserListItemFragment>
 ) {
     val userPlaceholder = remember {
         UserItemProvider().values.last()
     }
-    LazyColumn {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        item {
-            ItemLoadingState(loadState = users.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = users.loadState.prepend)
 
         if (users.loadState.refresh is LoadState.Loading) {
             items(count = defaultPagingConfig.initialLoadSize) {
@@ -209,9 +201,7 @@ private fun UsersScreenScreen(
             }
         }
 
-        item {
-            ItemLoadingState(loadState = users.loadState.append)
-        }
+        ItemLoadingState(loadState = users.loadState.append)
     }
 }
 

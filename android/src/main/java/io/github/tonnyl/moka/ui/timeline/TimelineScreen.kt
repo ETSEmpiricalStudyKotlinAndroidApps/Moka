@@ -22,7 +22,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.NavController
 import androidx.paging.ExperimentalPagingApi
@@ -78,7 +77,7 @@ fun TimelineScreen(openDrawer: (() -> Unit)?) {
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -87,7 +86,7 @@ fun TimelineScreen(openDrawer: (() -> Unit)?) {
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = events.loadState.refresh is LoadState.Loading),
             onRefresh = events::refresh,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -122,7 +121,7 @@ fun TimelineScreen(openDrawer: (() -> Unit)?) {
                 }
                 else -> {
                     TimelineScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
+                        contentPadding = contentPaddings,
                         events = events,
                         enablePlaceholder = isNeedDisplayPlaceholder == true
                     )
@@ -145,21 +144,16 @@ fun TimelineScreen(openDrawer: (() -> Unit)?) {
 @ExperimentalSerializationApi
 @Composable
 fun TimelineScreenContent(
-    contentTopPadding: Dp,
+    contentPadding: PaddingValues,
     events: LazyPagingItems<Event>,
     enablePlaceholder: Boolean
 ) {
     val eventPlaceholder = remember {
         TimelineEventProvider().values.first()
     }
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
 
-        item {
-            ItemLoadingState(loadState = events.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPadding) {
+        ItemLoadingState(loadState = events.loadState.prepend)
 
         if (enablePlaceholder) {
             items(count = defaultPagingConfig.initialLoadSize) { index ->
@@ -198,10 +192,7 @@ fun TimelineScreenContent(
             }
         }
 
-
-        item {
-            ItemLoadingState(loadState = events.loadState.append)
-        }
+        ItemLoadingState(loadState = events.loadState.append)
     }
 }
 

@@ -22,6 +22,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import coil.compose.rememberImagePainter
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
@@ -48,6 +50,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 @Composable
 fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
+    val contentPaddings = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.navigationBars)
+
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = users.loadState.refresh is LoadState.Loading),
         onRefresh = users::refresh,
@@ -85,7 +89,10 @@ fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
                 )
             }
             else -> {
-                SearchedUsersScreenContent(users = users)
+                SearchedUsersScreenContent(
+                    users = users,
+                    contentPaddings = contentPaddings
+                )
             }
         }
     }
@@ -93,14 +100,15 @@ fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
 
 @ExperimentalSerializationApi
 @Composable
-private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgItem>) {
+private fun SearchedUsersScreenContent(
+    contentPaddings: PaddingValues,
+    users: LazyPagingItems<SearchedUserOrOrgItem>
+) {
     val userPlaceholder = remember {
         UserItemProvider().values.last()
     }
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            ItemLoadingState(loadState = users.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = users.loadState.prepend)
 
         if (users.loadState.refresh is LoadState.Loading) {
             items(count = defaultPagingConfig.initialLoadSize) {
@@ -127,9 +135,7 @@ private fun SearchedUsersScreenContent(users: LazyPagingItems<SearchedUserOrOrgI
                 }
             }
         }
-        item {
-            ItemLoadingState(loadState = users.loadState.append)
-        }
+        ItemLoadingState(loadState = users.loadState.append)
     }
 }
 

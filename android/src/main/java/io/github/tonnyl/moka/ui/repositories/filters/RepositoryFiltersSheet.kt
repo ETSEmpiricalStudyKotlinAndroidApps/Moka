@@ -58,7 +58,7 @@ fun RepositoryFiltersSheet(
 
         var warn by remember { mutableStateOf(false) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -147,13 +147,9 @@ fun RepositoryFiltersSheet(
         Scaffold(
             content = {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
+                    contentPadding = contentPaddings,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    item {
-                        Spacer(modifier = Modifier.height(height = contentPadding.calculateTopPadding()))
-                    }
-
                     when (queryOptionState.value) {
                         is Forks -> {
                             repositoryOrders()

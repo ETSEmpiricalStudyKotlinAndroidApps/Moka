@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -167,7 +166,7 @@ fun RepositoriesScreen(
 
     var topAppBarSize by remember { mutableStateOf(0) }
 
-    val contentPadding = rememberInsetsPaddingValues(
+    val contentPaddings = rememberInsetsPaddingValues(
         insets = LocalWindowInsets.current.systemBars,
         applyTop = false,
         additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -193,7 +192,7 @@ fun RepositoriesScreen(
             SwipeRefresh(
                 state = rememberSwipeRefreshState(isRefreshing = repositories.loadState.refresh is LoadState.Loading),
                 onRefresh = repositories::refresh,
-                indicatorPadding = contentPadding,
+                indicatorPadding = contentPaddings,
                 indicator = { state, refreshTriggerDistance ->
                     DefaultSwipeRefreshIndicator(
                         state = state,
@@ -228,7 +227,7 @@ fun RepositoriesScreen(
                     }
                     else -> {
                         RepositoriesScreenContent(
-                            contentTopPadding = contentPadding.calculateTopPadding(),
+                            contentPaddings = contentPaddings,
                             repositories = repositories
                         )
                     }
@@ -301,20 +300,14 @@ fun RepositoriesScreen(
 @ExperimentalSerializationApi
 @Composable
 private fun RepositoriesScreenContent(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     repositories: LazyPagingItems<RepositoryListItemFragment>
 ) {
     val repoPlaceholder = remember {
         RepositoryItemProvider().values.first()
     }
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        item {
-            ItemLoadingState(loadState = repositories.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = repositories.loadState.prepend)
 
         if (repositories.loadState.refresh is LoadState.Loading) {
             items(count = defaultPagingConfig.initialLoadSize) {
@@ -339,9 +332,7 @@ private fun RepositoriesScreenContent(
             }
         }
 
-        item {
-            ItemLoadingState(loadState = repositories.loadState.append)
-        }
+        ItemLoadingState(loadState = repositories.loadState.append)
     }
 }
 

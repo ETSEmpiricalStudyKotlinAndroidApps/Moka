@@ -4,7 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -20,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
@@ -83,7 +84,7 @@ fun RepositoryFilesScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -92,7 +93,7 @@ fun RepositoryFilesScreen(
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = entries.value?.status == Status.LOADING),
             onRefresh = viewModel::refresh,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -112,8 +113,7 @@ fun RepositoryFilesScreen(
                 }
                 else -> {
                     RepositoryFilesScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
-                        contentBottomPadding = contentPadding.calculateBottomPadding(),
+                        contentPaddings = contentPaddings,
                         entries = entries.value?.data.orEmpty(),
                         enablePlaceholder = entries.value?.status == Status.LOADING && entries.value?.data.isNullOrEmpty(),
                         login = login,
@@ -178,8 +178,7 @@ fun RepositoryFilesScreen(
 @ExperimentalSerializationApi
 @Composable
 private fun RepositoryFilesScreenContent(
-    contentTopPadding: Dp,
-    contentBottomPadding: Dp,
+    contentPaddings: PaddingValues,
     entries: List<TreeEntry>,
     enablePlaceholder: Boolean,
     login: String,
@@ -190,11 +189,7 @@ private fun RepositoryFilesScreenContent(
     val entryPlaceholder = remember {
         TreeEntryProvider().values.first()
     }
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
+    LazyColumn(contentPadding = contentPaddings) {
         items(
             count = if (enablePlaceholder) {
                 defaultPagingConfig.initialLoadSize
@@ -214,10 +209,6 @@ private fun RepositoryFilesScreenContent(
                 currentExpression = expression,
                 defaultBranchName = defaultBranchName
             )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(height = contentBottomPadding))
         }
     }
 }

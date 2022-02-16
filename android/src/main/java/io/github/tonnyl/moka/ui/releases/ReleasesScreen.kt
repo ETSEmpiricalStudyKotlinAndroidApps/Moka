@@ -19,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -73,7 +72,7 @@ fun ReleasesScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -82,7 +81,7 @@ fun ReleasesScreen(
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = releases.loadState.refresh is LoadState.Loading),
             onRefresh = releases::refresh,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -118,7 +117,7 @@ fun ReleasesScreen(
                 }
                 else -> {
                     ReleasesScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
+                        contentPaddings = contentPaddings,
                         releases = releases,
                         login = login,
                         repoName = repoName
@@ -154,7 +153,7 @@ fun ReleasesScreen(
 @ExperimentalSerializationApi
 @Composable
 private fun ReleasesScreenContent(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     login: String,
     repoName: String,
     releases: LazyPagingItems<ReleaseListItem>
@@ -162,14 +161,8 @@ private fun ReleasesScreenContent(
     val releasePlaceholder = remember {
         ReleaseListItemProvider().values.first()
     }
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        item {
-            ItemLoadingState(loadState = releases.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = releases.loadState.prepend)
 
         val isInitialLoading = releases.loadState.refresh is LoadState.Loading
         if (isInitialLoading) {
@@ -197,9 +190,7 @@ private fun ReleasesScreenContent(
             }
         }
 
-        item {
-            ItemLoadingState(loadState = releases.loadState.append)
-        }
+        ItemLoadingState(loadState = releases.loadState.append)
     }
 }
 

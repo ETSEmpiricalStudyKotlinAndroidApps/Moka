@@ -1,6 +1,8 @@
 package io.github.tonnyl.moka.widget
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -17,14 +19,13 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.IconSize
 
-@Composable
-fun ItemLoadingState(loadState: LoadState) {
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        when (loadState) {
-            LoadState.Loading -> {
+fun LazyListScope.ItemLoadingState(loadState: LoadState) {
+    if (loadState == LoadState.Loading) {
+        item {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colors.secondary,
                     modifier = Modifier
@@ -32,7 +33,13 @@ fun ItemLoadingState(loadState: LoadState) {
                         .size(size = IconSize)
                 )
             }
-            is LoadState.Error -> {
+        }
+    } else if (loadState is LoadState.Error) {
+        item {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(all = ContentPaddingLargeSize)
@@ -50,9 +57,6 @@ fun ItemLoadingState(loadState: LoadState) {
                     }
                 }
             }
-            else -> {
-
-            }
         }
     }
 }
@@ -60,11 +64,15 @@ fun ItemLoadingState(loadState: LoadState) {
 @Composable
 @Preview(showBackground = true, name = "ItemLoadingStateLoadingPreview")
 private fun ItemLoadingStateLoadingPreview() {
-    ItemLoadingState(loadState = LoadState.Loading)
+    LazyColumn {
+        ItemLoadingState(loadState = LoadState.Loading)
+    }
 }
 
 @Composable
 @Preview(showBackground = true, name = "ItemLoadingStateErrorPreview")
 private fun ItemLoadingStateErrorPreview() {
-    ItemLoadingState(loadState = LoadState.Error(IllegalStateException()))
+    LazyColumn {
+        ItemLoadingState(loadState = LoadState.Error(IllegalStateException()))
+    }
 }

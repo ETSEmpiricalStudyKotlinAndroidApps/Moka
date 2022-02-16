@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
@@ -85,7 +84,7 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
     Box(modifier = Modifier.fillMaxSize()) {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -99,7 +98,7 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
                 onRefresh = {
                     exploreViewModel.refreshTrendingData()
                 },
-                indicatorPadding = contentPadding,
+                indicatorPadding = contentPaddings,
                 indicator = { state, refreshTriggerDistance ->
                     DefaultSwipeRefreshIndicator(
                         state = state,
@@ -109,7 +108,7 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
             ) {
                 ExploreScreenContent(
                     exploreOptions = exploreOptions,
-                    contentTopPadding = contentPadding.calculateTopPadding(),
+                    contentPadding = contentPaddings,
                     trendingRepositories = trendingRepositories,
                     trendingDevelopers = trendingDevelopers,
                     enablePlaceholder = refreshStatus?.status == Status.LOADING,
@@ -134,7 +133,7 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
 @ExperimentalPagerApi
 @Composable
 private fun ExploreScreenContent(
-    contentTopPadding: Dp,
+    contentPadding: PaddingValues,
     exploreOptions: ExploreOptions,
     viewModel: ExploreViewModel,
     trendingRepositories: List<TrendingRepository>,
@@ -149,11 +148,7 @@ private fun ExploreScreenContent(
         TrendingDeveloperProvider().values.first()
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
+    LazyColumn(contentPadding = contentPadding) {
         item {
             ListSubheader(
                 text = stringResource(id = R.string.explore_title),

@@ -15,7 +15,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
@@ -32,10 +31,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.ViewModelFactory
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
-import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.downloadFileViaDownloadManager
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
@@ -76,7 +72,7 @@ fun ReleaseAssetsScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -89,7 +85,7 @@ fun ReleaseAssetsScreen(
                 SwipeRefresh(
                     state = rememberSwipeRefreshState(isRefreshing = assets.loadState.refresh is LoadState.Loading),
                     onRefresh = assets::refresh,
-                    indicatorPadding = contentPadding,
+                    indicatorPadding = contentPaddings,
                     indicator = { state, refreshTriggerDistance ->
                         DefaultSwipeRefreshIndicator(
                             state = state,
@@ -124,7 +120,7 @@ fun ReleaseAssetsScreen(
                         }
                         else -> {
                             ReleaseAssetsScreenContent(
-                                contentTopPadding = contentPadding.calculateTopPadding(),
+                                contentPaddings = contentPaddings,
                                 assets = assets,
                                 accessToken = currentAccount.signedInAccount.accessToken.accessToken
                             )
@@ -166,7 +162,7 @@ fun ReleaseAssetsScreen(
 @ExperimentalSerializationApi
 @Composable
 private fun ReleaseAssetsScreenContent(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     assets: LazyPagingItems<ReleaseAsset>,
     accessToken: String
 ) {
@@ -174,14 +170,8 @@ private fun ReleaseAssetsScreenContent(
         ReleaseAssetProvider().values.elementAt(0)
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        item {
-            ItemLoadingState(loadState = assets.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = assets.loadState.prepend)
 
         if (assets.loadState.refresh is LoadState.Loading) {
             items(count = defaultPagingConfig.initialLoadSize) {
@@ -208,9 +198,7 @@ private fun ReleaseAssetsScreenContent(
             }
         }
 
-        item {
-            ItemLoadingState(loadState = assets.loadState.append)
-        }
+        ItemLoadingState(loadState = assets.loadState.append)
     }
 }
 

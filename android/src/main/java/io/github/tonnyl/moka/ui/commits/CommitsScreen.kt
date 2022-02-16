@@ -19,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -78,7 +77,7 @@ fun CommitsScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -87,7 +86,7 @@ fun CommitsScreen(
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = commits.loadState.refresh is LoadState.Loading),
             onRefresh = commits::refresh,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -123,7 +122,7 @@ fun CommitsScreen(
                 }
                 else -> {
                     CommitsScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
+                        contentPaddings = contentPaddings,
                         commits = commits,
                         login = login,
                         repoName = repoName
@@ -179,7 +178,7 @@ fun CommitsScreen(
 @ExperimentalSerializationApi
 @Composable
 private fun CommitsScreenContent(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     commits: LazyPagingItems<CommitListItem>,
     login: String,
     repoName: String
@@ -187,14 +186,8 @@ private fun CommitsScreenContent(
     val commitPlaceholder = remember {
         CommitProvider().values.first()
     }
-    LazyColumn {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        item {
-            ItemLoadingState(loadState = commits.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = commits.loadState.prepend)
 
         val isInitialLoading = commits.loadState.refresh is LoadState.Loading
         if (isInitialLoading) {
@@ -222,9 +215,7 @@ private fun CommitsScreenContent(
             }
         }
 
-        item {
-            ItemLoadingState(loadState = commits.loadState.append)
-        }
+        ItemLoadingState(loadState = commits.loadState.append)
     }
 }
 

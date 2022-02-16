@@ -25,7 +25,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -86,7 +85,7 @@ fun CommitScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -95,7 +94,7 @@ fun CommitScreen(
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = files.loadState.refresh is LoadState.Loading),
             onRefresh = files::refresh,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -131,7 +130,7 @@ fun CommitScreen(
                 }
                 else -> {
                     CommitScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
+                        contentPaddings = contentPaddings,
                         files = files,
                         commitResp = commitResp
                     )
@@ -166,7 +165,7 @@ fun CommitScreen(
 @ExperimentalSerializationApi
 @Composable
 private fun CommitScreenContent(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     files: LazyPagingItems<CommitFile>,
     commitResp: CommitResponse?
 ) {
@@ -177,14 +176,8 @@ private fun CommitScreenContent(
         CommitFileProvider().values.first()
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        item {
-            ItemLoadingState(loadState = files.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = files.loadState.prepend)
 
         val isInitialLoading = files.loadState.refresh is LoadState.Loading
         item {
@@ -219,9 +212,7 @@ private fun CommitScreenContent(
             }
         }
 
-        item {
-            ItemLoadingState(loadState = files.loadState.append)
-        }
+        ItemLoadingState(loadState = files.loadState.append)
     }
 }
 

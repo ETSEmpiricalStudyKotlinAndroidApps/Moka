@@ -78,10 +78,7 @@ fun EditStatusScreen(
         return
     }
 
-    Box(
-        modifier = Modifier
-            .navigationBarsPadding()
-    ) {
+    Box(modifier = Modifier.navigationBarsPadding()) {
         var topAppBarSize by remember { mutableStateOf(0) }
 
         val mainViewModel = LocalMainViewModel.current

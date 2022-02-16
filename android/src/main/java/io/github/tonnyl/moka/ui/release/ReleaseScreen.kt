@@ -84,7 +84,7 @@ fun ReleaseScreen(
         when {
             isLoading || release != null -> {
                 ReleaseScreenContent(
-                    padding = contentPadding,
+                    contentPaddings = contentPadding,
                     login = login,
                     repoName = repoName,
                     release = release ?: releasePlaceholder,
@@ -129,7 +129,7 @@ fun ReleaseScreen(
 
 @Composable
 private fun ReleaseScreenContent(
-    padding: PaddingValues,
+    contentPaddings: PaddingValues,
     login: String,
     repoName: String,
     release: Release,
@@ -142,10 +142,7 @@ private fun ReleaseScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(state = rememberScrollState())
-            .padding(
-                top = padding.calculateTopPadding(),
-                bottom = padding.calculateBottomPadding()
-            )
+            .padding(paddingValues = contentPaddings)
     ) {
         RepositoryOwner(
             avatarUrl = release.repository.owner.repositoryOwner.avatarUrl,

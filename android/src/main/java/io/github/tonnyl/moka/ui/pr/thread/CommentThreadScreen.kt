@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -63,7 +62,7 @@ fun CommentTreadScreen(nodeId: String) {
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -72,7 +71,7 @@ fun CommentTreadScreen(nodeId: String) {
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = thread.loadState.refresh is LoadState.Loading),
             onRefresh = thread::refresh,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -107,7 +106,7 @@ fun CommentTreadScreen(nodeId: String) {
                 }
                 else -> {
                     CommentThreadScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
+                        contentPaddings = contentPaddings,
                         thread = thread
                     )
                 }
@@ -138,7 +137,7 @@ fun CommentTreadScreen(nodeId: String) {
 
 @Composable
 private fun CommentThreadScreenContent(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     thread: LazyPagingItems<CommentWithSimplifiedDiffHunk>
 ) {
     val timelinePlaceholder = remember {
@@ -147,11 +146,7 @@ private fun CommentThreadScreenContent(
 
     val enablePlaceholder = thread.loadState.refresh is LoadState.Loading
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
+    LazyColumn(contentPadding = contentPaddings) {
         if (enablePlaceholder) {
             items(count = defaultPagingConfig.initialLoadSize) {
                 ItemIssueTimelineEvent(

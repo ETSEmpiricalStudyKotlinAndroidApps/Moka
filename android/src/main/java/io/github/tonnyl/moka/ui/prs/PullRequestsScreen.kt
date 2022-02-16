@@ -20,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
@@ -86,7 +85,7 @@ fun PullRequestsScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -95,7 +94,7 @@ fun PullRequestsScreen(
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = prs.loadState.refresh is LoadState.Loading),
             onRefresh = prs::refresh,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -130,7 +129,7 @@ fun PullRequestsScreen(
                 }
                 else -> {
                     PullRequestsScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
+                        contentPaddings = contentPaddings,
                         owner = owner,
                         name = name,
                         prs = prs
@@ -190,7 +189,7 @@ fun PullRequestsScreen(
 @ExperimentalSerializationApi
 @Composable
 fun PullRequestsScreenContent(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     owner: String,
     name: String,
     prs: LazyPagingItems<PullRequestListItem>,
@@ -198,14 +197,8 @@ fun PullRequestsScreenContent(
     val prPlaceholder = remember {
         PullRequestItemProvider().values.elementAt(2)
     }
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        item {
-            ItemLoadingState(loadState = prs.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = prs.loadState.prepend)
 
         if (prs.loadState.refresh is LoadState.Loading) {
             items(count = defaultPagingConfig.initialLoadSize) {
@@ -234,9 +227,7 @@ fun PullRequestsScreenContent(
             }
         }
 
-        item {
-            ItemLoadingState(loadState = prs.loadState.append)
-        }
+        ItemLoadingState(loadState = prs.loadState.append)
     }
 }
 

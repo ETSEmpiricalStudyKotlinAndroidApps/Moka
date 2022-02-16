@@ -73,7 +73,7 @@ fun FileScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -87,7 +87,7 @@ fun FileScreen(
                         || fileResource?.status == Status.LOADING
             ),
             onRefresh = viewModel::geFileContent,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -100,7 +100,7 @@ fun FileScreen(
             when {
                 fileContent != null -> {
                     FileScreenContent(
-                        contentPadding = contentPadding,
+                        contentPadding = contentPaddings,
                         fileContent = fileContent.first,
                         lang = fileContent.second
                     )

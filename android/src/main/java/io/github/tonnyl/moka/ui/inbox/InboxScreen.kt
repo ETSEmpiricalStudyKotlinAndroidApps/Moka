@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
@@ -81,7 +80,7 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -90,7 +89,7 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = notifications.loadState.refresh is LoadState.Loading),
             onRefresh = notifications::refresh,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -125,7 +124,7 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
                 }
                 else -> {
                     InboxScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
+                        contentPaddings = contentPaddings,
                         notifications = notifications,
                         enablePlaceholder = isNeedDisplayPlaceholder == true
                     )
@@ -147,7 +146,7 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
 @ExperimentalSerializationApi
 @Composable
 private fun InboxScreenContent(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     notifications: LazyPagingItems<Notification>,
     enablePlaceholder: Boolean
 ) {
@@ -155,14 +154,8 @@ private fun InboxScreenContent(
         NotificationProvider().values.elementAt(0)
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        item {
-            ItemLoadingState(loadState = notifications.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = notifications.loadState.prepend)
 
         if (enablePlaceholder) {
             items(count = defaultPagingConfig.initialLoadSize) { index ->
@@ -201,10 +194,7 @@ private fun InboxScreenContent(
             }
         }
 
-
-        item {
-            ItemLoadingState(loadState = notifications.loadState.append)
-        }
+        ItemLoadingState(loadState = notifications.loadState.append)
     }
 }
 

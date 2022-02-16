@@ -111,7 +111,7 @@ fun RepositoryScreen(
 
     var topAppBarSize by remember { mutableStateOf(0) }
 
-    val contentPadding = rememberInsetsPaddingValues(
+    val contentPaddings = rememberInsetsPaddingValues(
         insets = LocalWindowInsets.current.systemBars,
         applyTop = false,
         additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -120,7 +120,7 @@ fun RepositoryScreen(
     WatchOptionsBottomSheet(
         currentState = subscriptionState?.data,
         state = bottomSheetState,
-        bottomPadding = contentPadding.calculateBottomPadding(),
+        bottomPadding = contentPaddings.calculateBottomPadding(),
         updateSubscription = {
             viewModel.updateSubscription(it)
             coroutineScope.launch {
@@ -128,10 +128,7 @@ fun RepositoryScreen(
             }
         }
     ) {
-        Box(
-            modifier = Modifier
-                .navigationBarsPadding()
-        ) {
+        Box(modifier = Modifier.navigationBarsPadding()) {
             val navController = LocalNavController.current
 
             val isLoading = repositoryResource?.status == Status.LOADING

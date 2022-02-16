@@ -20,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
@@ -129,7 +128,7 @@ fun IssuesScreen(
                 }
                 else -> {
                     IssuesScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
+                        contentPaddings = contentPadding,
                         owner = owner,
                         name = name,
                         prs = issues
@@ -189,7 +188,7 @@ fun IssuesScreen(
 @ExperimentalSerializationApi
 @Composable
 fun IssuesScreenContent(
-    contentTopPadding: Dp,
+    contentPaddings: PaddingValues,
     owner: String,
     name: String,
     prs: LazyPagingItems<IssueListItem>,
@@ -197,14 +196,8 @@ fun IssuesScreenContent(
     val issuePlaceholder = remember {
         IssueItemProvider().values.elementAt(1)
     }
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        item {
-            ItemLoadingState(loadState = prs.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = prs.loadState.prepend)
 
         if (prs.loadState.refresh is LoadState.Loading) {
             items(count = defaultPagingConfig.initialLoadSize) {
@@ -233,9 +226,7 @@ fun IssuesScreenContent(
             }
         }
 
-        item {
-            ItemLoadingState(loadState = prs.loadState.append)
-        }
+        ItemLoadingState(loadState = prs.loadState.append)
     }
 }
 

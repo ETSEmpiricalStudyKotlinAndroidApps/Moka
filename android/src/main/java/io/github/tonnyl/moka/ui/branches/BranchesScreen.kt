@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -79,7 +78,7 @@ fun BranchesScreen(
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
+        val contentPaddings = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
             additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
@@ -88,7 +87,7 @@ fun BranchesScreen(
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = branches.loadState.refresh is LoadState.Loading),
             onRefresh = branches::refresh,
-            indicatorPadding = contentPadding,
+            indicatorPadding = contentPaddings,
             indicator = { state, refreshTriggerDistance ->
                 DefaultSwipeRefreshIndicator(
                     state = state,
@@ -124,8 +123,7 @@ fun BranchesScreen(
                 }
                 else -> {
                     BranchesScreenContent(
-                        contentTopPadding = contentPadding.calculateTopPadding(),
-                        contentBottomPadding = contentPadding.calculateBottomPadding(),
+                        contentPaddings = contentPaddings,
                         branches = branches,
                         defaultBranchName = defaultBranchName,
                         selectedBranchName = selectedBranchName
@@ -162,8 +160,7 @@ fun BranchesScreen(
 @ExperimentalSerializationApi
 @Composable
 private fun BranchesScreenContent(
-    contentTopPadding: Dp,
-    contentBottomPadding: Dp,
+    contentPaddings: PaddingValues,
     branches: LazyPagingItems<Ref>,
     defaultBranchName: String,
     selectedBranchName: String
@@ -171,14 +168,8 @@ private fun BranchesScreenContent(
     val branchPlaceholder = remember {
         BranchProvider().values.first()
     }
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Spacer(modifier = Modifier.height(height = contentTopPadding))
-        }
-
-        item {
-            ItemLoadingState(loadState = branches.loadState.prepend)
-        }
+    LazyColumn(contentPadding = contentPaddings) {
+        ItemLoadingState(loadState = branches.loadState.prepend)
 
         val isInitialLoading = branches.loadState.refresh is LoadState.Loading
         if (isInitialLoading) {
@@ -206,13 +197,7 @@ private fun BranchesScreenContent(
             }
         }
 
-        item {
-            ItemLoadingState(loadState = branches.loadState.append)
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(height = contentBottomPadding))
-        }
+        ItemLoadingState(loadState = branches.loadState.append)
     }
 }
 

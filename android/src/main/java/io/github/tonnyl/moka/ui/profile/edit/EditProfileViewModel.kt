@@ -99,7 +99,7 @@ class EditProfileViewModel(private val extra: EditProfileViewModelExtra) : ViewM
                     "twitter_username" to twitterUsername.value
                 )
 
-                val updateResponse = withContext(Dispatchers.IO) {
+                withContext(Dispatchers.IO) {
                     extra.accountInstance.userApi.updateUseInformation(body)
                 }
 

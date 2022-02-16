@@ -2,7 +2,9 @@ package io.github.tonnyl.moka.ui.account
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.provider.Settings
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +33,8 @@ import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.about.URL_OF_PRIVACY_POLICY
+import io.github.tonnyl.moka.ui.about.URL_OF_TERMS_OF_SERVICE
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
@@ -171,6 +175,10 @@ private fun AccountDialogScreenContent(accounts: List<AccountInstance>) {
                     .background(color = MaterialTheme.colors.onBackground.copy(ContentAlpha.medium))
             )
         }
+
+        val customTabsIntent = CustomTabsIntent.Builder()
+            .build()
+
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = stringResource(id = R.string.about_privacy_policy),
@@ -183,6 +191,7 @@ private fun AccountDialogScreenContent(accounts: List<AccountInstance>) {
                     }
                     .clip(shape = MaterialTheme.shapes.medium)
                     .clickable {
+                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_PRIVACY_POLICY))
                         navController.navigateUp()
                     }
                     .padding(all = ContentPaddingMediumSize)
@@ -198,6 +207,7 @@ private fun AccountDialogScreenContent(accounts: List<AccountInstance>) {
                     }
                     .clip(shape = MaterialTheme.shapes.medium)
                     .clickable {
+                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_TERMS_OF_SERVICE))
                         navController.navigateUp()
                     }
                     .padding(all = ContentPaddingMediumSize)

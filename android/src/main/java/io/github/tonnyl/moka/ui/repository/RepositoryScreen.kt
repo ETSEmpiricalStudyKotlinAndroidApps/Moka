@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.repository
 
 import android.text.format.DateUtils
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -277,18 +278,30 @@ fun RepositoryScreen(
                                     }
                                 }) {
                                     Icon(
-                                        contentDescription = stringResource(id = R.string.repository_subscription),
+                                        contentDescription = stringResource(
+                                            id = R.string.repository_subscription_status,
+                                            stringResource(
+                                                id = when (subscriptionState?.data) {
+                                                    SubscriptionState.IGNORED -> {
+                                                        R.string.repository_subscription_ignored
+                                                    }
+                                                    SubscriptionState.SUBSCRIBED -> {
+                                                        R.string.repository_subscription_subscribed
+                                                    }
+                                                    SubscriptionState.UNSUBSCRIBED -> {
+                                                        R.string.repository_subscription_unsubscribed
+                                                    }
+                                                    else -> {
+                                                        R.string.repository_subscription_unknown
+                                                    }
+                                                }
+                                            )
+                                        ),
                                         painter = painterResource(
-                                            id = when (subscriptionState?.data) {
-                                                SubscriptionState.IGNORED -> {
-                                                    R.drawable.ic_notifications_off
-                                                }
-                                                SubscriptionState.SUBSCRIBED -> {
-                                                    R.drawable.ic_eye_24
-                                                }
-                                                else -> {
-                                                    R.drawable.ic_visibility_off_24
-                                                }
+                                            id = if (subscriptionState?.data == SubscriptionState.IGNORED) {
+                                                R.drawable.ic_notifications_off
+                                            } else {
+                                                R.drawable.ic_eye_24
                                             }
                                         )
                                     )
@@ -392,6 +405,14 @@ fun RepositoryScreen(
                 duration = SnackbarDuration.Long,
                 dismissAction = viewModel::clearForkState
             )
+        }
+    }
+
+    if (bottomSheetState.isVisible) {
+        BackHandler {
+            coroutineScope.launch {
+                bottomSheetState.hide()
+            }
         }
     }
 

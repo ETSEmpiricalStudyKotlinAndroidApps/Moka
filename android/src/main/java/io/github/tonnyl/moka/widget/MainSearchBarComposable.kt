@@ -112,28 +112,24 @@ private fun MainSearchBarContent(
                     }
                 )
             }
-            Image(
-                painter = rememberImagePainter(
-                    data = avatarUrl,
-                    builder = {
-                        createAvatarLoadRequest()
-                    }
-                ),
-                contentDescription = stringResource(id = R.string.navigation_header_avatar_desc),
-                modifier = Modifier
-                    .clip(shape = CircleShape)
-                    .height(height = IconSize)
-                    .width(width = IconSize + ContentPaddingSmallSize)
-                    .clickable(onClick = onAvatarClicked)
-                    .padding(
-                        start = ContentPaddingSmallSize,
-                        top = ContentPaddingSmallSize,
-                        end = ContentPaddingMediumSize,
-                        bottom = ContentPaddingSmallSize
-                    )
-                    .clip(shape = CircleShape)
-                    .align(alignment = Alignment.CenterEnd)
-            )
+            Row(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
+                Image(
+                    painter = rememberImagePainter(
+                        data = avatarUrl,
+                        builder = {
+                            createAvatarLoadRequest()
+                        }
+                    ),
+                    contentDescription = stringResource(id = R.string.navigation_header_avatar_desc),
+                    modifier = Modifier
+                        .size(size = IconSize)
+                        .clip(shape = CircleShape)
+                        .clickable(onClick = onAvatarClicked)
+                        .padding(all = ContentPaddingSmallSize)
+                        .clip(shape = CircleShape)
+                )
+                Spacer(modifier = Modifier.width(width = ContentPaddingSmallSize))
+            }
         }
     }
 }

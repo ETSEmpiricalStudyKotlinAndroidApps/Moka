@@ -26,7 +26,7 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 fun NumberCategoryText(
     number: Int,
     category: String,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)?,
     enablePlaceholder: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -35,7 +35,12 @@ fun NumberCategoryText(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable(onClick = onClick, enabled = !enablePlaceholder)
+            .clickable(
+                enabled = !enablePlaceholder && onClick != null,
+                onClick = {
+                    onClick?.invoke()
+                },
+            )
             .padding(vertical = ContentPaddingLargeSize)
     ) {
         Text(
@@ -70,7 +75,7 @@ fun NumberCategoryText(
 private fun NumberCategoryTextPreview() {
     NumberCategoryText(
         number = 11,
-        category = stringResource(id = R.string.repository_projects),
+        category = stringResource(id = R.string.user_profile_contributions_last_year),
         onClick = {},
         enablePlaceholder = false
     )

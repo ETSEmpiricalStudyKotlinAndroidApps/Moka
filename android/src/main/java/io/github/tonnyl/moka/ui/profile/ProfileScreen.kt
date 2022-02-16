@@ -266,12 +266,12 @@ private fun ProfileScreenContent(
                     contentAlignment = Alignment.Center,
                     transitionSpec = {
                         fadeIn() with fadeOut()
-                    }
+                    },
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
                 ) {
                     OutlinedButton(
                         enabled = !enablePlaceholder,
-                        onClick = { viewModel?.toggleFollow() },
-                        modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                        onClick = { viewModel?.toggleFollow() }
                     ) {
                         Text(
                             text = stringResource(
@@ -442,9 +442,9 @@ private fun ProfileScreenContent(
                     modifier = Modifier.weight(weight = 1f)
                 )
                 NumberCategoryText(
-                    number = user.projects.totalCount,
-                    category = stringResource(id = R.string.repository_projects),
-                    onClick = { },
+                    number = user.contributionsCollection.contributionsCollection.contributionCalendar.totalContributions,
+                    category = stringResource(id = R.string.user_profile_contributions_last_year),
+                    onClick = null,
                     enablePlaceholder = enablePlaceholder,
                     modifier = Modifier.weight(weight = 1f)
                 )

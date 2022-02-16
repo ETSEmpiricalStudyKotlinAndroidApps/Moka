@@ -239,8 +239,8 @@ private fun AboutScreenContentPreview() {
     )
 }
 
-private const val URL_OF_PRIVACY_POLICY = "https://tonnyl.github.io/android/privacy-policy.html"
-private const val URL_OF_TERMS_OF_SERVICE = "https://tonnyl.github.io/android/terms-conditions.html"
+const val URL_OF_PRIVACY_POLICY = "https://tonnyl.github.io/android/privacy-policy.html"
+const val URL_OF_TERMS_OF_SERVICE = "https://tonnyl.github.io/android/terms-conditions.html"
 private const val URL_OF_OPEN_SOURCE_LICENSES =
     "https://tonnyl.github.io/android/open-source-licenses.html"
 const val URL_OF_FAQ = "https://tonnyl.github.io/guide/general.html"

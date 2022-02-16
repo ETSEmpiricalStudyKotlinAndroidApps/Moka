@@ -70,6 +70,7 @@
     <string name="user_profile_content_empty_title">User not found</string>
     <string name="user_profile_content_empty_action">Search</string>
     <string name="user_profile_pinned_item_caption_format">%1$s \n&#160;\n&#160;\n&#160;</string>
+    <string name="user_profile_contributions_last_year">contributions last year</string>
 
     <string name="event_at">&#160;at&#160;</string>
     <string name="event_to">&#160;to&#160;</string>
@@ -213,7 +214,6 @@
     <string name="repository_basic_info">Basic info</string>
     <string name="repository_issues">Issues</string>
     <string name="repository_pull_requests">Pull requests</string>
-    <string name="repository_projects">Projects</string>
     <string name="repository_branches">Branch</string>
     <string name="repository_releases">Releases</string>
     <string name="repository_language">Language</string>
@@ -257,13 +257,18 @@
     </plurals>
     <string name="repository_update_time">Updated %1$s</string>
     <string name="repository_subscription">Notifications</string>
+    <string name="repository_subscription_status">Notifications status: %1$s</string>
     <string name="repository_subscription_current_selection">Current selection</string>
     <string name="repository_subscription_ignore">Ignore</string>
+    <string name="repository_subscription_ignored">ignored</string>
     <string name="repository_subscription_ignore_desc">You will never be notified.</string>
     <string name="repository_subscription_subscribe">Subscribe</string>
+    <string name="repository_subscription_subscribed">subscribed</string>
     <string name="repository_subscription_subscribe_desc">You will be notified for all conversations.</string>
     <string name="repository_subscription_unsubscribe">Unsubscribe</string>
+    <string name="repository_subscription_unsubscribed">unsubscribed</string>
     <string name="repository_subscription_unsubscribe_desc">You will only be notified when participating or @mentioned.</string>
+    <string name="repository_subscription_unknown">unknown</string>
     <string name="repository_fork_alert_title">Fork %1$s?</string>
     <string name="repository_fork_alert_message">This will create a fork for you.</string>
     <string name="repository_fork_failed">Can\'t create a fork.</string>

@@ -1413,7 +1413,8 @@ private fun MainNavHost(
             )
         }
         dialog(route = Screen.AccountDialog.route) {
-            currentRoute.value = Screen.AccountDialog.route
+            // nav drawer/rail selected item ui not right
+            // currentRoute.value = Screen.AccountDialog.route
             AccountDialogScreen()
         }
         dialog(route = Screen.ForkRepoDialog.route) { backStackEntry ->

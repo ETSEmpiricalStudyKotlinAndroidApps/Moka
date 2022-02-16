@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.ViewModelFactory
@@ -71,7 +72,7 @@ fun EditProfileScreen(
     val location by viewModel.location.observeAsState()
     val twitterUsername by viewModel.twitterUsername.observeAsState()
 
-    Box {
+    Box(modifier = Modifier.navigationBarsPadding()) {
         var topAppBarSize by remember { mutableStateOf(0) }
 
         val navController = LocalNavController.current
@@ -139,21 +140,22 @@ fun EditProfileScreen(
                         || company != initialCompany
                         || location != initialLocation
                         || twitterUsername != initialTwitter
-                IconButton(
-                    onClick = {
-                        if (enabled) {
-                            viewModel.updateUserInformation()
-                        } else {
-                            navController.navigateUp()
-                        }
-                    },
-                    // ☹️ actions of TopAppBar have set emphasis internally...
-                    // So in theory, setting enabled won't change the appearance at all.
-                    enabled = enabled
-                ) {
-                    if (updateState?.status == Status.LOADING) {
-                        LottieLoadingComponent()
-                    } else {
+
+                if (updateState?.status == Status.LOADING) {
+                    LottieLoadingComponent(modifier = Modifier.size(size = IconSize))
+                } else {
+                    IconButton(
+                        onClick = {
+                            if (enabled) {
+                                viewModel.updateUserInformation()
+                            } else {
+                                navController.navigateUp()
+                            }
+                        },
+                        // ☹️ actions of TopAppBar have set emphasis internally...
+                        // So in theory, setting enabled won't change the appearance at all.
+                        enabled = enabled
+                    ) {
                         Icon(
                             contentDescription = stringResource(id = R.string.done_image_description),
                             imageVector = Icons.Outlined.Check

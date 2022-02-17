@@ -53,11 +53,9 @@ class MainActivity : ComponentActivity() {
             val windowInsetsControllerCompat =
                 remember { ViewCompat.getWindowInsetsController(window.decorView) }
 
-            val accounts by viewModel.getApplication<MokaApp>().accountInstancesLiveData.observeAsState(
-                initial = emptyList()
-            )
+            val accounts by viewModel.getApplication<MokaApp>().accountInstancesLiveData.observeAsState(initial = emptyList())
 
-            if (accounts.isNullOrEmpty()) {
+            if (accounts.isEmpty()) {
                 return@setContent
             }
 
@@ -72,7 +70,22 @@ class MainActivity : ComponentActivity() {
             ) {
                 MokaTheme {
                     Surface {
-                        MainScreen()
+                        MainScreen(
+                            startDestination = when (intent.action) {
+                                ACTION_SEARCH -> {
+                                    Screen.Search
+                                }
+                                ACTION_EXPLORE -> {
+                                    Screen.Explore
+                                }
+                                ACTION_INBOX -> {
+                                    Screen.Inbox
+                                }
+                                else -> {
+                                    Screen.Timeline
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -88,6 +101,17 @@ class MainActivity : ComponentActivity() {
             ContributionCalendarWorker.startOrCancelWorker(this)
             app.triggerNotificationWorker()
         }
+    }
+
+    companion object {
+
+        /**
+         * @see [@xml/shortcuts]
+         */
+        private const val ACTION_SEARCH = "io.github.tonnyl.moka.ACTION_SEARCH"
+        private const val ACTION_EXPLORE = "io.github.tonnyl.moka.ACTION_EXPLORE"
+        private const val ACTION_INBOX = "io.github.tonnyl.moka.ACTION_INBOX"
+
     }
 
 }

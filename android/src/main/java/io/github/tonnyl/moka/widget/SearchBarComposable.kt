@@ -19,9 +19,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -32,8 +34,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.LocalWindowInsets
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @ExperimentalComposeUiApi
 @Composable
@@ -48,11 +53,17 @@ fun SearchBox(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(autoFocus) {
         if (autoFocus) {
-            focusRequester.requestFocus()
-            keyboardController?.show()
+            scope.launch {
+                // It is really weired the keyboard may not display properly if there is no delay.
+                // Can reproduce this bug by launching search screen from app launcher shortcut.
+                delay(1)
+                focusRequester.requestFocus()
+                keyboardController?.show()
+            }
         }
     }
 
@@ -94,6 +105,7 @@ fun SearchBox(
                     state = rememberScrollState(),
                     enabled = true
                 )
+                .clearFocusOnKeyboardDismiss()
         )
         if (textState.value.text.isEmpty()) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -134,6 +146,34 @@ fun SearchBar(
         elevation = elevation,
         modifier = modifier
     )
+}
+
+/**
+ * A workaround taken from https://stackoverflow.com/a/68420874/5835014
+ * for https://issuetracker.google.com/issues/192433071.
+ */
+private fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
+    var isFocused by remember { mutableStateOf(false) }
+    var keyboardAppearedSinceLastFocused by remember { mutableStateOf(false) }
+    if (isFocused) {
+        val imeIsVisible = LocalWindowInsets.current.ime.isVisible
+        val focusManager = LocalFocusManager.current
+        LaunchedEffect(imeIsVisible) {
+            if (imeIsVisible) {
+                keyboardAppearedSinceLastFocused = true
+            } else if (keyboardAppearedSinceLastFocused) {
+                focusManager.clearFocus()
+            }
+        }
+    }
+    onFocusEvent {
+        if (isFocused != it.isFocused) {
+            isFocused = it.isFocused
+            if (isFocused) {
+                keyboardAppearedSinceLastFocused = false
+            }
+        }
+    }
 }
 
 @SuppressLint("UnrememberedMutableState")

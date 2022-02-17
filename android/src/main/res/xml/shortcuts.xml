@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_search"
+        android:shortcutId="search"
+        android:shortcutLongLabel="@string/search_history_action"
+        android:shortcutShortLabel="@string/search_history_action">
+
+        <intent
+            android:action="io.github.tonnyl.moka.ACTION_SEARCH"
+            android:targetClass="io.github.tonnyl.moka.ui.MainActivity"
+            android:targetPackage="io.github.tonnyl.moka" />
+
+        <categories android:name="android.shortcut.conversation" />
+
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_explore"
+        android:shortcutId="explore"
+        android:shortcutLongLabel="@string/navigation_menu_explore"
+        android:shortcutShortLabel="@string/navigation_menu_explore">
+
+        <intent
+            android:action="io.github.tonnyl.moka.ACTION_EXPLORE"
+            android:targetClass="io.github.tonnyl.moka.ui.MainActivity"
+            android:targetPackage="io.github.tonnyl.moka" />
+
+        <categories android:name="android.shortcut.conversation" />
+
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_inbox"
+        android:shortcutId="inbox"
+        android:shortcutLongLabel="@string/navigation_menu_inbox"
+        android:shortcutShortLabel="@string/navigation_menu_inbox">
+
+        <intent
+            android:action="io.github.tonnyl.moka.ACTION_INBOX"
+            android:targetClass="io.github.tonnyl.moka.ui.MainActivity"
+            android:targetPackage="io.github.tonnyl.moka" />
+
+        <categories android:name="android.shortcut.conversation" />
+
+    </shortcut>
+
+</shortcuts>

@@ -443,7 +443,7 @@ sealed class Screen(val route: String) {
 @ExperimentalMaterialApi
 @ExperimentalPagingApi
 @Composable
-fun MainScreen() {
+fun MainScreen(startDestination: Screen) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
@@ -491,7 +491,10 @@ fun MainScreen() {
                 )
             }
         ) {
-            MainNavHost(currentRoute = currentRoute) {
+            MainNavHost(
+                currentRoute = currentRoute,
+                startDestination = startDestination
+            ) {
                 coroutineScope.launch {
                     drawerState.open()
                 }
@@ -508,6 +511,7 @@ fun MainScreen() {
             )
             MainNavHost(
                 currentRoute = currentRoute,
+                startDestination = startDestination,
                 openDrawer = null
             )
         }
@@ -764,11 +768,12 @@ private fun MainNavigationRail(
 @Composable
 private fun MainNavHost(
     currentRoute: MutableState<String>,
+    startDestination: Screen,
     openDrawer: (() -> Unit)?
 ) {
     NavHost(
         navController = LocalNavController.current,
-        startDestination = Screen.Timeline.route
+        startDestination = startDestination.route
     ) {
         composable(route = Screen.Timeline.route) {
             currentRoute.value = Screen.Timeline.route

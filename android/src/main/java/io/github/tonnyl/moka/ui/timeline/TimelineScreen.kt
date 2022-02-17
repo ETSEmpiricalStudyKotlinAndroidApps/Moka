@@ -269,14 +269,12 @@ private fun ItemTimelineEvent(
                             return@clickable
                         }
 
-                        if (event.payload?.comment?.htmlUrl?.contains("pull") == true) {
-                            Screen.PullRequest.navigate(
-                                navController = navController,
-                                login = repoFullName[0],
-                                repoName = repoFullName[1],
-                                number = pullRequest.number.toInt()
-                            )
-                        }
+                        Screen.PullRequest.navigate(
+                            navController = navController,
+                            login = repoFullName[0],
+                            repoName = repoFullName[1],
+                            number = pullRequest.number.toInt()
+                        )
                     }
                     SerializableEvent.REPOSITORY_EVENT -> {
                         when (event.payload?.action) {

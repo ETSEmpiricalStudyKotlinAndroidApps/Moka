@@ -34,10 +34,7 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.DividerSize
 import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.widget.EmojiComponent
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.github.tonnyl.moka.widget.LottieLoadingComponent
-import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.SearchableEmoji
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
@@ -123,14 +120,9 @@ fun EditStatusScreen(
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.edit_status)) },
             navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.Close
-                        )
-                    }
+                AppBarNavigationIcon(
+                    contentDescription = stringResource(id = R.string.navigate_close),
+                    imageVector = Icons.Outlined.Close
                 )
             },
             modifier = Modifier

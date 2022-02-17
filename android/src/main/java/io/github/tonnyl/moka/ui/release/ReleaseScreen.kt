@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -105,20 +107,10 @@ fun ReleaseScreen(
             }
         }
 
-        val navController = LocalNavController.current
-
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.release)) },
             navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.ArrowBack
-                        )
-                    }
-                )
+                AppBarNavigationIcon()
             },
             modifier = Modifier
                 .fillMaxWidth()

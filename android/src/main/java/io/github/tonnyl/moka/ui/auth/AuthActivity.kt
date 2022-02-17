@@ -29,6 +29,7 @@ import io.github.tonnyl.moka.ui.MainActivity
 import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MokaTheme
+import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.tonnyl.moka.common.ui.auth.AuthEvent.FinishAndGo
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -84,14 +85,10 @@ class AuthActivity : ComponentActivity() {
                         InsetAwareTopAppBar(
                             title = { Text("") },
                             navigationIcon = {
-                                IconButton(
+                                AppBarNavigationIcon(
                                     onClick = { finish() },
-                                    content = {
-                                        Icon(
-                                            contentDescription = stringResource(id = R.string.navigate_up),
-                                            imageVector = Icons.Outlined.Close
-                                        )
-                                    }
+                                    imageVector = Icons.Outlined.Close,
+                                    contentDescription = stringResource(id = R.string.navigate_close)
                                 )
                             },
                             elevation = 0.dp,

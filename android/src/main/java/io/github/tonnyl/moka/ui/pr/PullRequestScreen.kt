@@ -213,21 +213,10 @@ fun PullRequestScreen(
             scaffoldState = scaffoldState
         )
 
-
-        val navController = LocalNavController.current
-
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.pull_request)) },
             navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.ArrowBack
-                        )
-                    }
-                )
+                AppBarNavigationIcon()
             },
             modifier = Modifier
                 .fillMaxWidth()

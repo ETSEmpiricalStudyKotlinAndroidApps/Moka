@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
@@ -223,20 +222,10 @@ fun IssueScreen(
             scaffoldState = scaffoldState
         )
 
-        val navController = LocalNavController.current
-
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.issue)) },
             navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.ArrowBack
-                        )
-                    }
-                )
+                AppBarNavigationIcon()
             },
             modifier = Modifier
                 .fillMaxWidth()

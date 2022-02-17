@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -32,12 +31,8 @@ import io.github.tonnyl.moka.ui.settings.SettingsViewModel.Companion.SETTINGS_VI
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
-import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.viewModel
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.github.tonnyl.moka.widget.PreferenceCategoryText
-import io.github.tonnyl.moka.widget.PreferenceDivider
-import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.store.SettingSerializer
 import io.tonnyl.moka.common.store.data.KeepData
@@ -162,23 +157,12 @@ fun SettingScreen() {
             scaffoldState = scaffoldState
         )
 
-        val navController = LocalNavController.current
         InsetAwareTopAppBar(
             title = {
                 Text(text = stringResource(id = R.string.navigation_menu_settings))
             },
             navigationIcon = {
-                IconButton(
-                    onClick = {
-                        navController.navigateUp()
-                    },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.ArrowBack
-                        )
-                    }
-                )
+                AppBarNavigationIcon()
             },
             modifier = Modifier
                 .fillMaxWidth()

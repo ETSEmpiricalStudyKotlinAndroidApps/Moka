@@ -43,6 +43,7 @@ import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.toColor
+import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.SearchBox
 import io.tonnyl.moka.common.store.ExploreOptionsSerializer
@@ -186,7 +187,7 @@ fun ExploreFiltersScreen(filtersType: FiltersType) {
                 }
             },
             navigationIcon = {
-                IconButton(
+                AppBarNavigationIcon(
                     onClick = {
                         if (showSearchBox) {
                             showSearchBox = false
@@ -194,12 +195,8 @@ fun ExploreFiltersScreen(filtersType: FiltersType) {
                             navController.navigateUp()
                         }
                     },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.Close
-                        )
-                    }
+                    imageVector = Icons.Outlined.Close,
+                    contentDescription = stringResource(id = R.string.navigate_close)
                 )
             },
             actions = {

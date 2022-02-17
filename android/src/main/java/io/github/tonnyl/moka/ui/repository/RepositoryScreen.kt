@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.*
@@ -370,15 +369,7 @@ fun RepositoryScreen(
             InsetAwareTopAppBar(
                 title = { Text(text = stringResource(id = R.string.repository)) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = { navController.navigateUp() },
-                        content = {
-                            Icon(
-                                contentDescription = stringResource(id = R.string.navigate_up),
-                                imageVector = Icons.Outlined.ArrowBack
-                            )
-                        }
-                    )
+                    AppBarNavigationIcon()
                 },
                 modifier = Modifier
                     .fillMaxWidth()

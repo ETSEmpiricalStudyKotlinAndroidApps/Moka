@@ -11,9 +11,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -33,7 +34,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.LocalNavController
 
 @ExperimentalComposeUiApi
 @Composable
@@ -118,8 +118,6 @@ fun SearchBar(
     onImeActionPerformed: () -> Unit = { },
     elevation: Dp = 4.dp
 ) {
-    val navController = LocalNavController.current
-
     InsetAwareTopAppBar(
         title = {
             SearchBox(
@@ -131,17 +129,7 @@ fun SearchBar(
             )
         },
         navigationIcon = {
-            IconButton(
-                onClick = {
-                    navController.navigateUp()
-                },
-                content = {
-                    Icon(
-                        contentDescription = stringResource(id = R.string.navigate_up),
-                        imageVector = Icons.Outlined.ArrowBack
-                    )
-                }
-            )
+            AppBarNavigationIcon()
         },
         elevation = elevation,
         modifier = modifier

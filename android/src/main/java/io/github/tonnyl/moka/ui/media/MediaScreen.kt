@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Share
@@ -59,6 +58,7 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.DropDownMenuAppBarOffset
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.viewModel
+import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -246,17 +246,7 @@ fun MediaScreen(
                 contentColor = Color.White,
                 elevation = 0.dp,
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            activity.finish()
-                        },
-                        content = {
-                            Icon(
-                                contentDescription = stringResource(id = R.string.navigate_up),
-                                imageVector = Icons.Outlined.ArrowBack
-                            )
-                        }
-                    )
+                    AppBarNavigationIcon(onClick = { activity.finish() })
                 }
             )
         }

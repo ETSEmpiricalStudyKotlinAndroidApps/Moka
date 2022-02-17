@@ -26,6 +26,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.viewModel
+import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
@@ -123,14 +124,9 @@ fun EditProfileScreen(
                 Text(text = stringResource(id = R.string.edit_profile_title))
             },
             navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.Close
-                        )
-                    }
+                AppBarNavigationIcon(
+                    imageVector = Icons.Outlined.Close,
+                    contentDescription = stringResource(id = R.string.navigate_close)
                 )
             },
             actions = {

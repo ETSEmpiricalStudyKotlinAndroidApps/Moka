@@ -113,15 +113,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.profile_title)) },
             navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.ArrowBack
-                        )
-                    }
-                )
+                AppBarNavigationIcon()
             },
             actions = {
                 val userValue = user?.data

@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -138,8 +136,6 @@ fun PullRequestsScreen(
             }
         }
 
-        val navController = LocalNavController.current
-
         val showMenuState = remember {
             mutableStateOf(false)
         }
@@ -147,15 +143,7 @@ fun PullRequestsScreen(
         InsetAwareTopAppBar(
             title = { Text(text = stringResource(id = R.string.pull_requests)) },
             navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.ArrowBack
-                        )
-                    }
-                )
+                AppBarNavigationIcon()
             },
             actions = {
                 if (prs.loadState.refresh is LoadState.NotLoading

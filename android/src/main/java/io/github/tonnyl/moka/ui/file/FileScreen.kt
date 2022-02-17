@@ -11,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -33,10 +32,10 @@ import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.file.FileViewModel.Companion.FILE_VIEW_MODEL_EXTRA_KEY
 import io.github.tonnyl.moka.ui.theme.DropDownMenuAppBarOffset
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
-import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.isDarkModeOn
 import io.github.tonnyl.moka.util.safeStartActivity
+import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -116,8 +115,6 @@ fun FileScreen(
             }
         }
 
-        val navController = LocalNavController.current
-
         val showMenuState = remember { mutableStateOf(false) }
 
         InsetAwareTopAppBar(
@@ -177,15 +174,7 @@ fun FileScreen(
                 }
             },
             navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.ArrowBack
-                        )
-                    }
-                )
+                AppBarNavigationIcon()
             },
             modifier = Modifier
                 .fillMaxWidth()

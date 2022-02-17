@@ -23,6 +23,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption
 import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption.*
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
+import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import io.tonnyl.moka.graphql.type.*
@@ -276,18 +277,14 @@ fun RepositoryFiltersSheet(
                 Text(text = stringResource(id = R.string.notification_filters))
             },
             navigationIcon = {
-                IconButton(
+                AppBarNavigationIcon(
                     onClick = {
                         coroutineScope.launch {
                             bottomSheetState.hide()
                         }
                     },
-                    content = {
-                        Icon(
-                            contentDescription = stringResource(id = R.string.navigate_up),
-                            imageVector = Icons.Outlined.Close
-                        )
-                    }
+                    contentDescription = stringResource(id = R.string.navigate_close),
+                    imageVector = Icons.Outlined.Close
                 )
             },
             actions = {

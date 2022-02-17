@@ -7,7 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
@@ -26,6 +29,7 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MokaTheme
+import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.WebViewComposable
 import io.tonnyl.moka.common.network.KtorClient
@@ -115,14 +119,10 @@ class AuthBrowserActivity : ComponentActivity() {
                                     )
                                 },
                                 navigationIcon = {
-                                    IconButton(
+                                    AppBarNavigationIcon(
                                         onClick = { finish() },
-                                        content = {
-                                            Icon(
-                                                contentDescription = stringResource(id = R.string.navigate_up),
-                                                imageVector = Icons.Outlined.Close
-                                            )
-                                        }
+                                        imageVector = Icons.Outlined.Close,
+                                        contentDescription = stringResource(id = R.string.navigate_close)
                                     )
                                 },
                                 elevation = 0.dp,

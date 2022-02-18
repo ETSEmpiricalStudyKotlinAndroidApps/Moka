@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
+import com.benasher44.uuid.Uuid
 import io.tonnyl.moka.common.data.PullRequestTimelineItem
 import io.tonnyl.moka.common.data.extension.checkedEndCursor
 import io.tonnyl.moka.common.data.extension.checkedStartCursor
@@ -103,8 +104,8 @@ class PullRequestTimelineDataSource(
         return null
     }
 
-    private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Node): PullRequestTimelineItem {
-        return PullRequestTimelineItem(
+    private fun initTimelineItemWithRawData(node: PullRequestTimelineItemsQuery.Node): PullRequestTimelineItem? {
+        val item = PullRequestTimelineItem(
             addedToProjectEvent = node.addedToProjectEventFragment,
             assignedEvent = node.assignedEventFragment,
             baseRefChangedEvent = node.baseRefChangedEventFragment,
@@ -144,10 +145,18 @@ class PullRequestTimelineDataSource(
             unlockedEvent = node.unlockedEventFragment,
             unpinnedEvent = node.unpinnedEventFragment
         )
+
+        if (item.hashCode() == 0) {
+            return null
+        }
+
+        return item.apply {
+            id = Uuid.randomUUID().toString()
+        }
     }
 
-    private fun initTimelineItemWithRawData(node: PullRequestQuery.Node): PullRequestTimelineItem {
-        return PullRequestTimelineItem(
+    private fun initTimelineItemWithRawData(node: PullRequestQuery.Node): PullRequestTimelineItem? {
+        val item = PullRequestTimelineItem(
             addedToProjectEvent = node.addedToProjectEventFragment,
             assignedEvent = node.assignedEventFragment,
             baseRefChangedEvent = node.baseRefChangedEventFragment,
@@ -187,6 +196,14 @@ class PullRequestTimelineDataSource(
             unlockedEvent = node.unlockedEventFragment,
             unpinnedEvent = node.unpinnedEventFragment
         )
+
+        if (item.hashCode() == 0) {
+            return null
+        }
+
+        return item.apply {
+            id = Uuid.randomUUID().toString()
+        }
     }
 
 }

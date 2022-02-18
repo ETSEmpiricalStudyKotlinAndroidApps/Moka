@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.Pager
 import androidx.paging.cachedIn
+import com.benasher44.uuid.Uuid
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.IssueTimelineItem
 import io.tonnyl.moka.common.network.Resource
@@ -94,7 +95,12 @@ class PullRequestViewModel(private val extra: PullRequestViewModelExtra) : ViewM
                 if (comment != null
                     && v != null
                 ) {
-                    v.second.add(IssueTimelineItem(issueComment = comment))
+                    v.second.add(
+                        IssueTimelineItem(
+                            id = Uuid.randomUUID().toString(),
+                            issueComment = comment
+                        )
+                    )
                     _addedTimelineComments.value = v.copy(v.first + 1, v.second)
                 }
 

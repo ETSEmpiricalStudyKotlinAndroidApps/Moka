@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
+import com.benasher44.uuid.Uuid
 import io.tonnyl.moka.common.data.IssueTimelineItem
 import io.tonnyl.moka.common.data.extension.checkedEndCursor
 import io.tonnyl.moka.common.data.extension.checkedStartCursor
@@ -97,8 +98,8 @@ class IssueTimelineDataSource(
         }
     }
 
-    private fun initTimelineItemWithRawData(node: IssueTimelineItemsQuery.Node): IssueTimelineItem {
-        return IssueTimelineItem(
+    private fun initTimelineItemWithRawData(node: IssueTimelineItemsQuery.Node): IssueTimelineItem? {
+        val item = IssueTimelineItem(
             addedToProjectEvent = node.addedToProjectEventFragment,
             assignedEvent = node.assignedEventFragment,
             closedEvent = node.closedEventFragment,
@@ -122,10 +123,18 @@ class IssueTimelineDataSource(
             unlockedEvent = node.unlockedEventFragment,
             unpinnedEvent = node.unpinnedEventFragment
         )
+
+        if (item.hashCode() == 0) {
+            return null
+        }
+
+        return item.apply {
+            id = Uuid.randomUUID().toString()
+        }
     }
 
-    private fun initTimelineItemWithRawData(node: IssueQuery.Node): IssueTimelineItem {
-        return IssueTimelineItem(
+    private fun initTimelineItemWithRawData(node: IssueQuery.Node): IssueTimelineItem? {
+        val item = IssueTimelineItem(
             addedToProjectEvent = node.addedToProjectEventFragment,
             assignedEvent = node.assignedEventFragment,
             closedEvent = node.closedEventFragment,
@@ -149,6 +158,14 @@ class IssueTimelineDataSource(
             unlockedEvent = node.unlockedEventFragment,
             unpinnedEvent = node.unpinnedEventFragment
         )
+
+        if (item.hashCode() == 0) {
+            return null
+        }
+
+        return item.apply {
+            id = Uuid.randomUUID().toString()
+        }
     }
 
     override fun getRefreshKey(state: PagingState<String, IssueTimelineItem>): String? {

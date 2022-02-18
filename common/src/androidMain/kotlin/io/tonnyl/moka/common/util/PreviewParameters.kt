@@ -443,7 +443,12 @@ private val assignedEvent = AssignedEventFragment(
 class IssueTimelineEventProvider : PreviewParameterProvider<IssueTimelineItem> {
 
     override val values: Sequence<IssueTimelineItem>
-        get() = sequenceOf(IssueTimelineItem(assignedEvent = assignedEvent))
+        get() = sequenceOf(
+            IssueTimelineItem(
+                id = "",
+                assignedEvent = assignedEvent
+            )
+        )
 
 }
 
@@ -493,7 +498,10 @@ class IssueTimelineCommentProvider : PreviewParameterProvider<IssueTimelineItem>
 
     override val values: Sequence<IssueTimelineItem>
         get() = sequenceOf(
-            IssueTimelineItem(issueComment = commentEvent)
+            IssueTimelineItem(
+                id = "",
+                issueComment = commentEvent
+            )
         )
 
 }
@@ -502,8 +510,14 @@ class IssueTimelineItemProvider : PreviewParameterProvider<IssueTimelineItem> {
 
     override val values: Sequence<IssueTimelineItem>
         get() = sequenceOf(
-            IssueTimelineItem(issueComment = commentEvent),
-            IssueTimelineItem(assignedEvent = assignedEvent)
+            IssueTimelineItem(
+                id = "",
+                issueComment = commentEvent
+            ),
+            IssueTimelineItem(
+                id = "",
+                assignedEvent = assignedEvent
+            )
         )
 
 }

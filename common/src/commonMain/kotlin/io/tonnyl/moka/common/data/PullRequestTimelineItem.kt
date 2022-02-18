@@ -4,6 +4,8 @@ import io.tonnyl.moka.graphql.fragment.*
 
 data class PullRequestTimelineItem(
 
+    var id: String? = null,
+
     val addedToProjectEvent: AddedToProjectEventFragment? = null,
 
     val assignedEvent: AssignedEventFragment? = null,

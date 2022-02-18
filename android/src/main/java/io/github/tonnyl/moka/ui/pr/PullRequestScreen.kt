@@ -201,7 +201,8 @@ fun PullRequestScreen(
                     SnackBarErrorMessage(
                         scaffoldState = scaffoldState,
                         messageId = R.string.issue_pr_failed_to_add_comment,
-                        action = viewModel::addComment
+                        action = viewModel::addComment,
+                        dismissAction = viewModel::onErrorDismissed
                     )
                 }
             },

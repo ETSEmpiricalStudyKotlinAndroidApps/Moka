@@ -225,13 +225,15 @@ fun RepositoryScreen(
                     if (starredState?.status == Status.ERROR) {
                         SnackBarErrorMessage(
                             scaffoldState = scaffoldState,
-                            action = viewModel::toggleStar
+                            action = viewModel::toggleStar,
+                            dismissAction = viewModel::onToggleStarErrorDismissed
                         )
                     } else if (subscriptionState?.status == Status.ERROR) {
                         SnackBarErrorMessage(
                             scaffoldState = scaffoldState,
                             action = null,
-                            actionId = null
+                            actionId = null,
+                            dismissAction = viewModel::onUpdateSubscriptionErrorDismissed
                         )
                     }
                 },

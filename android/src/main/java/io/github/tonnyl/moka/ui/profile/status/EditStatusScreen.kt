@@ -20,7 +20,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.ExperimentalPagingApi
@@ -28,7 +27,6 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.DividerSize
@@ -36,7 +34,6 @@ import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.SearchableEmoji
-import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -53,11 +50,6 @@ fun EditStatusScreen(
 
     val clearStatus by viewModel.clearStatusState.observeAsState(null)
     val setStatus by viewModel.updateStatusState.observeAsState(null)
-
-    val expireAt by viewModel.expiresAt.observeAsState()
-    val emoji by viewModel.emojiName.observeAsState()
-    val message by viewModel.message.observeAsState()
-    val dnd by viewModel.limitedAvailability.observeAsState()
 
     val navController = LocalNavController.current
     if (clearStatus?.status == Status.SUCCESS) {
@@ -85,28 +77,13 @@ fun EditStatusScreen(
                 EditStatusScreenContent(
                     topAppBarSize = topAppBarSize,
                     scaffoldState = scaffoldState,
-                    clearStatusStatus = clearStatus,
-                    setStatusStatus = setStatus,
 
-                    emojiState = emoji,
-                    updateEmoji = { viewModel.updateEmoji(it) },
-
-                    messageState = message,
-                    updateMessage = { viewModel.updateMessage(it) },
-
-                    expireAtState = expireAt,
-                    updateExpireAt = { viewModel.updateExpireAt(it) },
-
-                    dndState = dnd,
-                    updateDnd = { viewModel.updateLimitedAvailability(it) },
+                    viewModel = viewModel,
 
                     getEmojiByName = { mainViewModel.getEmojiByName(it) },
                     initialEmoji = initialEmoji,
                     initialMessage = initialMessage,
-                    initialIndicatesLimitedAvailability = initialIndicatesLimitedAvailability,
-                    showEmojis = { navController.navigate(route = Screen.Emojis.route) },
-                    updateStatus = viewModel::updateStatus,
-                    clearStatus = viewModel::clearStatus
+                    initialIndicatesLimitedAvailability = initialIndicatesLimitedAvailability
                 )
             },
             snackbarHost = {
@@ -132,37 +109,32 @@ fun EditStatusScreen(
     }
 }
 
+@ExperimentalSerializationApi
 @Composable
 private fun EditStatusScreenContent(
     topAppBarSize: Int,
     scaffoldState: ScaffoldState,
 
-    clearStatusStatus: Resource<UserStatus?>?, // 🤔
-    setStatusStatus: Resource<UserStatus?>?, // 🙃
-
-    emojiState: String?,
-    updateEmoji: (String) -> Unit,
-
-    messageState: String?,
-    updateMessage: (String) -> Unit,
-
-    expireAtState: ExpireAt?,
-    updateExpireAt: (ExpireAt) -> Unit,
-
-    dndState: Boolean?,
-    updateDnd: (Boolean) -> Unit,
+    viewModel: EditStatusViewModel,
 
     getEmojiByName: (String) -> SearchableEmoji?,
     initialEmoji: String?,
     initialMessage: String?,
     initialIndicatesLimitedAvailability: Boolean?,
-    showEmojis: () -> Unit,
-    updateStatus: () -> Unit,
-    clearStatus: () -> Unit
 ) {
     val slowToResponse = stringResource(id = R.string.edit_status_busy_message)
 
     var couldDisplayErrorMessage by remember { mutableStateOf(false) }
+
+    val clearStatusStatus by viewModel.clearStatusState.observeAsState()
+    val setStatusStatus by viewModel.updateStatusState.observeAsState()
+
+    val emoji by viewModel.emojiName.observeAsState()
+    val expireAt by viewModel.expiresAt.observeAsState()
+    val message by viewModel.message.observeAsState()
+    val dnd by viewModel.limitedAvailability.observeAsState()
+
+    val navController = LocalNavController.current
 
     Column {
         LazyColumn(
@@ -182,20 +154,24 @@ private fun EditStatusScreenContent(
                         .padding(horizontal = ContentPaddingLargeSize)
                 ) {
                     EmojiComponent(
-                        emoji = emojiState,
+                        emoji = emoji,
                         getEmojiByName = getEmojiByName,
                         enablePlaceholder = false,
                         modifier = Modifier
                             .clip(shape = MaterialTheme.shapes.medium)
                             .align(alignment = Alignment.CenterVertically)
-                            .clickable(onClick = showEmojis)
+                            .clickable(
+                                onClick = {
+                                    navController.navigate(route = Screen.Emojis.route)
+                                }
+                            )
                     )
                     Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                     // todo Make text field single-lined.
                     OutlinedTextField(
-                        value = messageState ?: "",
+                        value = message ?: "",
                         onValueChange = {
-                            updateMessage.invoke(it.trim())
+                            viewModel.updateMessage(it.trim())
                         },
                         label = {
                             Text(text = stringResource(id = R.string.edit_status_hint_whats_happening))
@@ -236,14 +212,14 @@ private fun EditStatusScreenContent(
                     emojiStart = R.string.edit_status_suggestion_on_vacation_emoji,
                     messageStart = R.string.edit_status_suggestion_on_vacation_message,
                     onStartItemClicked = {
-                        updateEmoji.invoke(onVacationEmoji)
-                        updateMessage.invoke(onVacationMessage)
+                        viewModel.updateEmoji(onVacationEmoji)
+                        viewModel.updateMessage(onVacationMessage)
                     },
                     emojiEnd = R.string.edit_status_suggestion_working_remotely_emoji,
                     messageEnd = R.string.edit_status_suggestion_working_remotely_message,
                     onEndItemClicked = {
-                        updateEmoji.invoke(workingRemotelyEmoji)
-                        updateMessage.invoke(workingRemoteMessage)
+                        viewModel.updateEmoji(workingRemotelyEmoji)
+                        viewModel.updateMessage(workingRemoteMessage)
                     }
                 )
             }
@@ -260,14 +236,14 @@ private fun EditStatusScreenContent(
                     emojiStart = R.string.edit_status_suggestion_out_sick_emoji,
                     messageStart = R.string.edit_status_suggestion_out_sick_message,
                     onStartItemClicked = {
-                        updateEmoji.invoke(outSickEmoji)
-                        updateMessage.invoke(outSickMessage)
+                        viewModel.updateEmoji(outSickEmoji)
+                        viewModel.updateMessage(outSickMessage)
                     },
                     emojiEnd = R.string.edit_status_suggestion_commuting_emoji,
                     messageEnd = R.string.edit_status_suggestion_commuting_message,
                     onEndItemClicked = {
-                        updateEmoji.invoke(commutingEmoji)
-                        updateMessage.invoke(commutingMessage)
+                        viewModel.updateEmoji(commutingEmoji)
+                        viewModel.updateMessage(commutingMessage)
                     }
                 )
             }
@@ -284,33 +260,33 @@ private fun EditStatusScreenContent(
                     emojiStart = R.string.edit_status_suggestion_in_a_meeting_emoji,
                     messageStart = R.string.edit_status_suggestion_in_a_meeting_message,
                     onStartItemClicked = {
-                        updateEmoji.invoke(inAMeetingEmoji)
-                        updateMessage.invoke(inAMeetingMessage)
+                        viewModel.updateEmoji(inAMeetingEmoji)
+                        viewModel.updateMessage(inAMeetingMessage)
                     },
                     emojiEnd = R.string.edit_status_suggestion_focusing_emoji,
                     messageEnd = R.string.edit_status_suggestion_focusing_message,
                     onEndItemClicked = {
-                        updateEmoji.invoke(focusingEmoji)
-                        updateMessage.invoke(focusingMessage)
+                        viewModel.updateEmoji(focusingEmoji)
+                        viewModel.updateMessage(focusingMessage)
                     }
                 )
             }
             item {
                 Row {
                     val updateUI = {
-                        if (dndState == true) {
-                            if (messageState.isNullOrEmpty()) {
-                                updateMessage.invoke(slowToResponse)
+                        if (dnd == true) {
+                            if (message.isNullOrEmpty()) {
+                                viewModel.updateMessage(slowToResponse)
                             }
-                        } else if (messageState == slowToResponse) {
-                            updateMessage.invoke("")
+                        } else if (message == slowToResponse) {
+                            viewModel.updateMessage("")
                         }
                     }
                     Spacer(modifier = Modifier.width(width = ContentPaddingLargeSize))
                     Checkbox(
-                        checked = dndState ?: false,
+                        checked = dnd ?: false,
                         onCheckedChange = {
-                            updateDnd.invoke(it)
+                            viewModel.updateLimitedAvailability(it)
                             updateUI.invoke()
                         },
                         modifier = Modifier.align(alignment = Alignment.CenterVertically)
@@ -321,7 +297,7 @@ private fun EditStatusScreenContent(
                             .align(alignment = Alignment.CenterVertically)
                             .clip(shape = MaterialTheme.shapes.medium)
                             .clickable {
-                                updateDnd.invoke(!(dndState ?: false))
+                                viewModel.updateLimitedAvailability(!(dnd ?: false))
                                 updateUI.invoke()
                             }
                             .padding(all = ContentPaddingLargeSize)
@@ -375,7 +351,7 @@ private fun EditStatusScreenContent(
                     Row(modifier = Modifier.padding(vertical = ContentPaddingLargeSize)) {
                         Text(
                             text = stringResource(
-                                id = when (expireAtState) {
+                                id = when (expireAt) {
                                     ExpireAt.Never,
                                     null -> {
                                         R.string.edit_status_clear_status_never
@@ -405,7 +381,9 @@ private fun EditStatusScreenContent(
                     }
                     ExpireAtDropdownMenu(
                         expandedState = expandedState,
-                        updateExpireAt = updateExpireAt
+                        updateExpireAt = {
+                            viewModel.updateExpireAt(it)
+                        }
                     )
                 }
             }
@@ -422,13 +400,13 @@ private fun EditStatusScreenContent(
                 val (setStatusButtonRef, setStatusLoadingRef, spacerRef, clearStatusButtonRef, clearStatusLoadingRef) = createRefs()
                 Button(
                     onClick = {
-                        updateStatus.invoke()
+                        viewModel.updateStatus()
                         couldDisplayErrorMessage = true
                     },
-                    enabled = messageState != initialMessage
-                            || emojiState != initialEmoji
-                            || (dndState ?: false) != (initialIndicatesLimitedAvailability ?: false)
-                            || (expireAtState != null && (!messageState.isNullOrEmpty() || !emojiState.isNullOrEmpty())),
+                    enabled = message != initialMessage
+                            || emoji != initialEmoji
+                            || (dnd ?: false) != (initialIndicatesLimitedAvailability ?: false)
+                            || (expireAt != null && (!message.isNullOrEmpty() || !emoji.isNullOrEmpty())),
                     modifier = Modifier
                         .constrainAs(ref = setStatusButtonRef) {
                             end.linkTo(anchor = parent.end)
@@ -461,7 +439,7 @@ private fun EditStatusScreenContent(
                 )
                 TextButton(
                     onClick = {
-                        clearStatus.invoke()
+                        viewModel.clearStatus()
                         couldDisplayErrorMessage = true
                     },
                     enabled = initialEmoji != null,
@@ -496,12 +474,14 @@ private fun EditStatusScreenContent(
         if (clearStatusStatus?.status == Status.ERROR) {
             SnackBarErrorMessage(
                 scaffoldState = scaffoldState,
-                action = clearStatus
+                action = viewModel::clearStatus,
+                dismissAction = viewModel::onClearStatusErrorDismissed
             )
         } else if (setStatusStatus?.status == Status.ERROR) {
             SnackBarErrorMessage(
                 scaffoldState = scaffoldState,
-                action = updateStatus
+                action = viewModel::updateStatus,
+                dismissAction = viewModel::onUpdateStatusErrorDismissed
             )
         }
     }
@@ -587,42 +567,3 @@ private fun ExpireAtDropdownMenu(
         Item(R.string.edit_status_clear_status_today, ExpireAt.Today)
     }
 }
-
-// Preview section start
-
-@Preview(
-    showBackground = true,
-    name = "EditScreenContentPreview",
-    backgroundColor = 0xFFFFFF
-)
-@Composable
-private fun EditScreenContentPreview() {
-    EditStatusScreenContent(
-        topAppBarSize = 0,
-        scaffoldState = rememberScaffoldState(),
-        clearStatusStatus = null,
-        setStatusStatus = null,
-
-        emojiState = null,
-        updateEmoji = {},
-
-        messageState = null,
-        updateMessage = {},
-
-        expireAtState = null,
-        updateExpireAt = {},
-
-        dndState = null,
-        updateDnd = {},
-
-        getEmojiByName = { null },
-        initialEmoji = ":dart:",
-        initialMessage = null,
-        initialIndicatesLimitedAvailability = false,
-        showEmojis = {},
-        updateStatus = {},
-        clearStatus = {}
-    )
-}
-
-// Preview section end

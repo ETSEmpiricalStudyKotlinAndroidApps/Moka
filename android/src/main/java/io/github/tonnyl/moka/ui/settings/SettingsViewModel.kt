@@ -31,12 +31,12 @@ class SettingsViewModel(
     private val extra: SettingsViewModelExtra
 ) : AndroidViewModel(app) {
 
-    private val _updateSettingsStatus = MutableLiveData<Status>()
-    val updateSettingsStatus: LiveData<Status>
+    private val _updateSettingsStatus = MutableLiveData<Status?>()
+    val updateSettingsStatus: LiveData<Status?>
         get() = _updateSettingsStatus
 
-    private val _clearHistoryStatus = MutableLiveData<Status>()
-    val clearHistoryStatus: LiveData<Status>
+    private val _clearHistoryStatus = MutableLiveData<Status?>()
+    val clearHistoryStatus: LiveData<Status?>
         get() = _clearHistoryStatus
 
     val settingsDataStore = getApplication<MokaApp>().settingsDataStore
@@ -79,6 +79,10 @@ class SettingsViewModel(
         }
     }
 
+    fun onUpdateSettingsErrorDismissed() {
+        _updateSettingsStatus.value = null
+    }
+
     fun clearSearchHistory(updateStatus: Boolean = true) {
         viewModelScope.launch {
             try {
@@ -103,6 +107,10 @@ class SettingsViewModel(
                 }
             }
         }
+    }
+
+    fun onClearSearchHistoryUiDismissed() {
+        _clearHistoryStatus.value = null
     }
 
     companion object {

@@ -10,9 +10,11 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -33,6 +35,7 @@ import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import io.tonnyl.moka.common.network.Status
 import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalComposeUiApi
 @ExperimentalPagingApi
 @ExperimentalSerializationApi
 @Composable
@@ -100,7 +103,8 @@ fun EditProfileScreen(
                     Status.ERROR -> {
                         SnackBarErrorMessage(
                             scaffoldState = scaffoldState,
-                            action = viewModel::updateUserInformation
+                            action = viewModel::updateUserInformation,
+                            dismissAction = viewModel::onErrorDismissed
                         )
                     }
                     Status.SUCCESS -> {
@@ -119,6 +123,7 @@ fun EditProfileScreen(
             scaffoldState = scaffoldState
         )
 
+        val keyboardController = LocalSoftwareKeyboardController.current
         InsetAwareTopAppBar(
             title = {
                 Text(text = stringResource(id = R.string.edit_profile_title))
@@ -142,6 +147,7 @@ fun EditProfileScreen(
                 } else {
                     IconButton(
                         onClick = {
+                            keyboardController?.hide()
                             if (enabled) {
                                 viewModel.updateUserInformation()
                             } else {

@@ -40,12 +40,13 @@ class IssueViewModel(private val extra: IssueViewModelExtra) : ViewModel() {
         get() = _issueLiveData
 
     private val _addedTimelineComments = MutableLiveData(Pair(Long.MIN_VALUE, mutableListOf<IssueTimelineItem>()))
+
     @Suppress("UNCHECKED_CAST")
     val addedTimelineComments: LiveData<Pair<Long, List<IssueTimelineItem>>>
         get() = _addedTimelineComments as LiveData<Pair<Long, List<IssueTimelineItem>>>
 
-    private val _addCommentResource = MutableLiveData<Resource<Unit>>()
-    val addCommentResource: LiveData<Resource<Unit>>
+    private val _addCommentResource = MutableLiveData<Resource<Unit>?>()
+    val addCommentResource: LiveData<Resource<Unit>?>
         get() = _addCommentResource
 
     val commentText = mutableStateOf("")
@@ -108,6 +109,10 @@ class IssueViewModel(private val extra: IssueViewModelExtra) : ViewModel() {
                 _addCommentResource.value = Resource.error(data = null, exception = e)
             }
         }
+    }
+
+    fun onErrorDismissed() {
+        _addCommentResource.value = null
     }
 
     companion object {

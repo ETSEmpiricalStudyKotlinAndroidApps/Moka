@@ -29,8 +29,8 @@ data class EditProfileViewModelExtra(
 @ExperimentalSerializationApi
 class EditProfileViewModel(private val extra: EditProfileViewModelExtra) : ViewModel() {
 
-    private val _loadingStatus = MutableLiveData<Resource<Unit>>()
-    val loadingStatus: LiveData<Resource<Unit>>
+    private val _loadingStatus = MutableLiveData<Resource<Unit>?>()
+    val loadingStatus: LiveData<Resource<Unit>?>
         get() = _loadingStatus
 
     private val _name = MutableLiveData(extra.initialName)
@@ -110,6 +110,10 @@ class EditProfileViewModel(private val extra: EditProfileViewModelExtra) : ViewM
                 _loadingStatus.value = Resource.error(null, null)
             }
         }
+    }
+
+    fun onErrorDismissed() {
+        _loadingStatus.value = null
     }
 
     companion object {

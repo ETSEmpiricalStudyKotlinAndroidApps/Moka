@@ -32,12 +32,12 @@ data class EditStatusViewModelExtra(
 @ExperimentalSerializationApi
 class EditStatusViewModel(private val extra: EditStatusViewModelExtra) : ViewModel() {
 
-    private val _updateStatusState = MutableLiveData<Resource<UserStatus?>>()
-    val updateStatusState: LiveData<Resource<UserStatus?>>
+    private val _updateStatusState = MutableLiveData<Resource<UserStatus?>?>()
+    val updateStatusState: LiveData<Resource<UserStatus?>?>
         get() = _updateStatusState
 
-    private val _clearStatusState = MutableLiveData<Resource<UserStatus?>>()
-    val clearStatusState: LiveData<Resource<UserStatus?>>
+    private val _clearStatusState = MutableLiveData<Resource<UserStatus?>?>()
+    val clearStatusState: LiveData<Resource<UserStatus?>?>
         get() = _clearStatusState
 
     private val _emojiName = MutableLiveData<String?>(extra.initialEmoji)
@@ -170,6 +170,14 @@ class EditStatusViewModel(private val extra: EditStatusViewModelExtra) : ViewMod
 
     fun updateExpireAt(expireAt: ExpireAt) {
         _expiresAt.value = expireAt
+    }
+
+    fun onClearStatusErrorDismissed() {
+        _clearStatusState.value = null
+    }
+
+    fun onUpdateStatusErrorDismissed() {
+        _updateStatusState.value = null
     }
 
     companion object {

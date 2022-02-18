@@ -127,7 +127,8 @@ fun SettingScreen() {
                 if (updateSettingsState == Status.ERROR) {
                     SnackBarErrorMessage(
                         scaffoldState = scaffoldState,
-                        messageId = R.string.update_settings_failed
+                        messageId = R.string.update_settings_failed,
+                        dismissAction = viewModel::onUpdateSettingsErrorDismissed
                     )
                 }
 
@@ -135,13 +136,15 @@ fun SettingScreen() {
                     Status.SUCCESS -> {
                         SnackBarErrorMessage(
                             scaffoldState = scaffoldState,
-                            messageId = R.string.clear_search_history_succeeded
+                            messageId = R.string.clear_search_history_succeeded,
+                            dismissAction = viewModel::onClearSearchHistoryUiDismissed
                         )
                     }
                     Status.ERROR -> {
                         SnackBarErrorMessage(
                             scaffoldState = scaffoldState,
-                            messageId = R.string.clear_search_history_failed
+                            messageId = R.string.clear_search_history_failed,
+                            dismissAction = viewModel::onClearSearchHistoryUiDismissed
                         )
                     }
                     else -> {

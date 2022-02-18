@@ -46,12 +46,12 @@ class RepositoryViewModel(private val extra: RepositoryViewModelExtra) : ViewMod
     val readmeHtml: LiveData<Resource<String>>
         get() = _readmeHtml
 
-    private val _starState = MutableLiveData<Resource<Boolean?>>()
-    val starState: LiveData<Resource<Boolean?>>
+    private val _starState = MutableLiveData<Resource<Boolean?>?>()
+    val starState: LiveData<Resource<Boolean?>?>
         get() = _starState
 
-    private val _subscriptionState = MutableLiveData<Resource<SubscriptionState?>>()
-    val subscriptionState: LiveData<Resource<SubscriptionState?>>
+    private val _subscriptionState = MutableLiveData<Resource<SubscriptionState?>?>()
+    val subscriptionState: LiveData<Resource<SubscriptionState?>?>
         get() = _subscriptionState
 
     private val _forkState = MutableLiveData<Resource<Boolean?>>()
@@ -150,6 +150,10 @@ class RepositoryViewModel(private val extra: RepositoryViewModelExtra) : ViewMod
         }
     }
 
+    fun onToggleStarErrorDismissed() {
+        _starState.value = null
+    }
+
     fun updateSubscription(state: SubscriptionState) {
         val repo = repository.value?.data ?: return
         if (_subscriptionState.value?.status == Status.LOADING
@@ -186,6 +190,10 @@ class RepositoryViewModel(private val extra: RepositoryViewModelExtra) : ViewMod
                 )
             }
         }
+    }
+
+    fun onUpdateSubscriptionErrorDismissed() {
+        _subscriptionState.value = null
     }
 
     fun fork() {

@@ -24,6 +24,7 @@ import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption
 import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption.*
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
+import io.github.tonnyl.moka.widget.InsetAwareSnackbar
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import io.tonnyl.moka.graphql.type.*
@@ -266,7 +267,7 @@ fun RepositoryFiltersSheet(
             },
             snackbarHost = {
                 SnackbarHost(hostState = it) { data: SnackbarData ->
-                    Snackbar(snackbarData = data)
+                    InsetAwareSnackbar(data = data)
                 }
             },
             scaffoldState = scaffoldState

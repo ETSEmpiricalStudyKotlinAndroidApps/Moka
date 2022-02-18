@@ -217,7 +217,7 @@ fun IssueScreen(
             },
             snackbarHost = {
                 SnackbarHost(hostState = it) { data: SnackbarData ->
-                    Snackbar(snackbarData = data)
+                    InsetAwareSnackbar(data = data)
                 }
             },
             scaffoldState = scaffoldState

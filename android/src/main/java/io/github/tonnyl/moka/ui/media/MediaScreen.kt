@@ -59,6 +59,7 @@ import io.github.tonnyl.moka.ui.theme.DropDownMenuAppBarOffset
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
+import io.github.tonnyl.moka.widget.InsetAwareSnackbar
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -147,7 +148,7 @@ fun MediaScreen(
             },
             snackbarHost = {
                 SnackbarHost(hostState = it) { data: SnackbarData ->
-                    Snackbar(snackbarData = data)
+                    InsetAwareSnackbar(data = data)
                 }
             }
         )
@@ -163,23 +164,20 @@ fun MediaScreen(
                 )
             }
             saveWorkInfo?.find { it.state == WorkInfo.State.SUCCEEDED } != null -> {
-                val text = stringResource(id = R.string.media_saved)
-                LaunchedEffect(Unit) {
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message = text,
-                        duration = SnackbarDuration.Short
-                    )
-                }
+                SnackBarErrorMessage(
+                    scaffoldState = scaffoldState,
+                    messageId = R.string.media_saved,
+                    actionId = null
+                )
             }
             mediaType == MediaType.Video
                     && (saveWorkInfo?.find { !it.state.isFinished } != null || shareWorkInfo?.find { !it.state.isFinished } != null) -> {
-                val text = stringResource(id = R.string.media_downloading)
-                LaunchedEffect(Unit) {
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message = text,
-                        duration = SnackbarDuration.Indefinite
-                    )
-                }
+                SnackBarErrorMessage(
+                    scaffoldState = scaffoldState,
+                    messageId = R.string.media_downloading,
+                    actionId = null,
+                    duration = SnackbarDuration.Indefinite
+                )
             }
         }
 

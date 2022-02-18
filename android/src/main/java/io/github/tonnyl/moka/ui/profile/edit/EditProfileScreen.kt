@@ -28,10 +28,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.viewModel
-import io.github.tonnyl.moka.widget.AppBarNavigationIcon
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.github.tonnyl.moka.widget.LottieLoadingComponent
-import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -117,7 +114,7 @@ fun EditProfileScreen(
             },
             snackbarHost = {
                 SnackbarHost(hostState = it) { data: SnackbarData ->
-                    Snackbar(snackbarData = data)
+                    InsetAwareSnackbar(data = data)
                 }
             },
             scaffoldState = scaffoldState

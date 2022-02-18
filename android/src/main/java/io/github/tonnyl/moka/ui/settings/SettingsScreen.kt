@@ -153,8 +153,8 @@ fun SettingScreen() {
                 }
             },
             snackbarHost = {
-                SnackbarHost(hostState = it) { data: SnackbarData ->
-                    Snackbar(snackbarData = data)
+                SnackbarHost(hostState = it) { data ->
+                    InsetAwareSnackbar(data = data)
                 }
             },
             scaffoldState = scaffoldState

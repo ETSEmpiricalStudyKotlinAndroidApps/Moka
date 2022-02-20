@@ -12,7 +12,6 @@ import androidx.annotation.WorkerThread
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.navigation.NavDeepLinkBuilder
 import androidx.paging.ExperimentalPagingApi
 import coil.imageLoader
 import coil.request.ImageRequest
@@ -123,10 +122,15 @@ object NotificationsCenter {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val contentPendingIntent = NavDeepLinkBuilder(context)
-            .setComponentName(MainActivity::class.java)
-            .setArguments(null)
-            .createPendingIntent()
+        val contentPendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            Intent(context, MainActivity::class.java).apply {
+                action = MainActivity.ACTION_INBOX
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
         // build intents end
 
         val content = n.toDisplayContentText(context)

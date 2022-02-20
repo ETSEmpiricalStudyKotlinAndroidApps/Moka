@@ -110,7 +110,7 @@ class MainActivity : ComponentActivity() {
          */
         private const val ACTION_SEARCH = "io.github.tonnyl.moka.ACTION_SEARCH"
         private const val ACTION_EXPLORE = "io.github.tonnyl.moka.ACTION_EXPLORE"
-        private const val ACTION_INBOX = "io.github.tonnyl.moka.ACTION_INBOX"
+        const val ACTION_INBOX = "io.github.tonnyl.moka.ACTION_INBOX"
 
     }
 

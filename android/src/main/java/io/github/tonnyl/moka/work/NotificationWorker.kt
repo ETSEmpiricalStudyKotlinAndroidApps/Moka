@@ -8,7 +8,6 @@ import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.notifications.NotificationsCenter
 import io.ktor.client.statement.*
 import io.tonnyl.moka.common.db.data.dbModel
-import io.tonnyl.moka.common.data.Notification as SerializableNotification
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -18,14 +17,15 @@ import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
+import io.tonnyl.moka.common.data.Notification as SerializableNotification
 
 @ExperimentalPagingApi
+@ExperimentalSerializationApi
 class NotificationWorker(
     appContext: Context,
     params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
 
-    @OptIn(ExperimentalSerializationApi::class)
     override suspend fun doWork(): Result {
         logcat(priority = LogPriority.INFO) { "NotificationWorker do work" }
 
@@ -68,7 +68,7 @@ class NotificationWorker(
             // Westworld Season 2; Episode 1
             val journeyIntoNight = now.hour >= 23 || now.hour <= 6
 
-            if (journeyIntoNight) {
+            if (!journeyIntoNight) {
                 try {
                     dao.notificationsToDisplayWithLimit(MAX_NOTIFICATION_SIZE).let { notifations ->
                         if (notifations.isNotEmpty()) {

@@ -4,10 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.tonnyl.moka.common.data.Direction
-import io.tonnyl.moka.common.data.IssuePullRequestQueryState
-import io.tonnyl.moka.common.data.IssueQuerySort
-import io.tonnyl.moka.common.data.PullRequestQuerySort
+import io.tonnyl.moka.common.data.*
 import io.tonnyl.moka.common.network.KtorClient
 import kotlinx.datetime.Instant
 
@@ -87,6 +84,10 @@ class RepositoryApi(private val authenticatedKtorClient: HttpClient) {
     }
 
     suspend fun pullRequestsByUrl(url: String): HttpResponse {
+        return authenticatedKtorClient.get(urlString = url)
+    }
+
+    suspend fun releaseByUrl(url: String): ReleaseResponse {
         return authenticatedKtorClient.get(urlString = url)
     }
 

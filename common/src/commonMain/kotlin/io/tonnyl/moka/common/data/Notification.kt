@@ -206,3 +206,14 @@ enum class NotificationReasons {
     OTHER,
 
 }
+
+@Serializable
+enum class SubjectType {
+
+    PullRequest,
+
+    Issue,
+
+    Release
+
+}

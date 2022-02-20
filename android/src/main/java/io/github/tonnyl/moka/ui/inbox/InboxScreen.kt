@@ -7,10 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -23,8 +20,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
@@ -51,8 +46,10 @@ import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.NotificationReasons
+import io.tonnyl.moka.common.data.SubjectType
 import io.tonnyl.moka.common.db.data.Notification
 import io.tonnyl.moka.common.db.data.NotificationRepositoryOwner
+import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.NotificationProvider
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -73,62 +70,96 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
         }
     )
 
+    val navController = LocalNavController.current
+
     val isNeedDisplayPlaceholder by inboxViewModel.isNeedDisplayPlaceholderLiveData.observeAsState()
 
     val notifications = inboxViewModel.notificationsFlow.collectAsLazyPagingItems()
 
+    var pendingJumpAction by inboxViewModel.pendingJumpState
+    pendingJumpAction?.let { (login, repoName, tagName) ->
+        Screen.Release.navigate(
+            navController = navController,
+            login = login,
+            repoName = repoName,
+            tagName = tagName
+        )
+
+        pendingJumpAction = null
+    }
+
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPaddings = rememberInsetsPaddingValues(
-            insets = LocalWindowInsets.current.systemBars,
-            applyTop = false,
-            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
-        )
+        val scaffoldState = rememberScaffoldState()
 
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = notifications.loadState.refresh is LoadState.Loading),
-            onRefresh = notifications::refresh,
-            indicatorPadding = contentPaddings,
-            indicator = { state, refreshTriggerDistance ->
-                DefaultSwipeRefreshIndicator(
-                    state = state,
-                    refreshTriggerDistance = refreshTriggerDistance
-                )
-            }
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(hostState = it) { data: SnackbarData ->
+                    InsetAwareSnackbar(data = data)
+                }
+            },
+            scaffoldState = scaffoldState
         ) {
-            when {
-                notifications.loadState.refresh is LoadState.NotLoading
-                        && notifications.loadState.append is LoadState.NotLoading
-                        && notifications.loadState.prepend is LoadState.NotLoading
-                        && notifications.itemCount == 0 -> {
+            val contentPaddings = rememberInsetsPaddingValues(
+                insets = LocalWindowInsets.current.systemBars,
+                applyTop = false,
+                additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
+            )
 
-                }
-                notifications.loadState.refresh is LoadState.NotLoading
-                        && notifications.itemCount == 0 -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_inbox_24,
-                        title = R.string.notification_content_empty_title,
-                        retry = R.string.common_retry,
-                        action = R.string.notification_content_empty_action
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing = notifications.loadState.refresh is LoadState.Loading),
+                onRefresh = notifications::refresh,
+                indicatorPadding = contentPaddings,
+                indicator = { state, refreshTriggerDistance ->
+                    DefaultSwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = refreshTriggerDistance
                     )
                 }
-                notifications.loadState.refresh is LoadState.Error
-                        && notifications.itemCount == 0 -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_inbox_24,
-                        title = R.string.common_error_requesting_data,
-                        retry = R.string.common_retry,
-                        action = R.string.notification_content_empty_action
-                    )
+            ) {
+                when {
+                    notifications.loadState.refresh is LoadState.NotLoading
+                            && notifications.loadState.append is LoadState.NotLoading
+                            && notifications.loadState.prepend is LoadState.NotLoading
+                            && notifications.itemCount == 0 -> {
+
+                    }
+                    notifications.loadState.refresh is LoadState.NotLoading
+                            && notifications.itemCount == 0 -> {
+                        EmptyScreenContent(
+                            icon = R.drawable.ic_menu_inbox_24,
+                            title = R.string.notification_content_empty_title,
+                            retry = R.string.common_retry,
+                            action = R.string.notification_content_empty_action
+                        )
+                    }
+                    notifications.loadState.refresh is LoadState.Error
+                            && notifications.itemCount == 0 -> {
+                        EmptyScreenContent(
+                            icon = R.drawable.ic_menu_inbox_24,
+                            title = R.string.common_error_requesting_data,
+                            retry = R.string.common_retry,
+                            action = R.string.notification_content_empty_action
+                        )
+                    }
+                    else -> {
+                        InboxScreenContent(
+                            contentPaddings = contentPaddings,
+                            notifications = notifications,
+                            enablePlaceholder = isNeedDisplayPlaceholder == true,
+                            viewModel = inboxViewModel
+                        )
+                    }
                 }
-                else -> {
-                    InboxScreenContent(
-                        contentPaddings = contentPaddings,
-                        notifications = notifications,
-                        enablePlaceholder = isNeedDisplayPlaceholder == true
-                    )
-                }
+            }
+
+            val releaseData by inboxViewModel.releaseData.observeAsState()
+            if (releaseData?.status == Status.ERROR) {
+                SnackBarErrorMessage(
+                    scaffoldState = scaffoldState,
+                    dismissAction = inboxViewModel::onReleaseDataErrorDismissed
+                )
             }
         }
 
@@ -143,12 +174,14 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
     }
 }
 
+@ExperimentalPagingApi
 @ExperimentalSerializationApi
 @Composable
 private fun InboxScreenContent(
     contentPaddings: PaddingValues,
     notifications: LazyPagingItems<Notification>,
-    enablePlaceholder: Boolean
+    enablePlaceholder: Boolean,
+    viewModel: InboxViewModel
 ) {
     val notificationPlaceholder = remember {
         NotificationProvider().values.elementAt(0)
@@ -168,7 +201,8 @@ private fun InboxScreenContent(
 
                 ItemNotification(
                     item = notificationPlaceholder,
-                    enablePlaceholder = true
+                    enablePlaceholder = true,
+                    viewModel = viewModel
                 )
             }
         } else {
@@ -188,7 +222,8 @@ private fun InboxScreenContent(
                 if (item != null) {
                     ItemNotification(
                         item = item,
-                        enablePlaceholder = false
+                        enablePlaceholder = false,
+                        viewModel = viewModel
                     )
                 }
             }
@@ -198,10 +233,13 @@ private fun InboxScreenContent(
     }
 }
 
+@ExperimentalSerializationApi
+@ExperimentalPagingApi
 @Composable
 private fun ItemNotification(
     item: Notification,
-    enablePlaceholder: Boolean
+    enablePlaceholder: Boolean,
+    viewModel: InboxViewModel
 ) {
     val navController = LocalNavController.current
 
@@ -209,7 +247,49 @@ private fun ItemNotification(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(enabled = !enablePlaceholder) {
+                val repoFullName = item.repository.fullName.split("/")
+                if (repoFullName.size < 2) {
+                    return@clickable
+                }
+                val login = repoFullName[0]
+                val repoName = repoFullName[1]
 
+                when (item.subject.type) {
+                    SubjectType.PullRequest.toString(),
+                    SubjectType.Issue.toString() -> {
+                        // url example: https://api.github.com/repos/google/accompanist/pulls/1036
+                        val number = item.subject.url.split("/").lastOrNull()?.toIntOrNull() ?: return@clickable
+                        if (item.subject.type == SubjectType.PullRequest.toString()) {
+                            Screen.PullRequest.navigate(
+                                navController = navController,
+                                login = login,
+                                repoName = repoName,
+                                number = number
+                            )
+                        } else {
+                            Screen.Issue.navigate(
+                                navController = navController,
+                                login = login,
+                                repoName = repoName,
+                                number = number
+                            )
+                        }
+                    }
+                    SubjectType.Release.toString() -> {
+                        viewModel.fetchReleaseData(
+                            url = item.subject.url,
+                            login = login,
+                            repoName = repoName
+                        )
+                    }
+                    else -> {
+                        Screen.Repository.navigate(
+                            navController = navController,
+                            login = login,
+                            repoName = repoName
+                        )
+                    }
+                }
             }
             .padding(all = ContentPaddingLargeSize)
             .fillMaxWidth()
@@ -369,23 +449,4 @@ private fun getRepositoryOwnerType(owner: NotificationRepositoryOwner): ProfileT
             ProfileType.NOT_SPECIFIED
         }
     }
-}
-
-@Preview(
-    showBackground = true,
-    name = "NotificationItemPreview",
-    backgroundColor = 0xFFFFFF
-)
-@Composable
-private fun NotificationItemPreview(
-    @PreviewParameter(
-        provider = NotificationProvider::class,
-        limit = 1
-    )
-    notification: Notification
-) {
-    ItemNotification(
-        item = notification,
-        enablePlaceholder = false
-    )
 }

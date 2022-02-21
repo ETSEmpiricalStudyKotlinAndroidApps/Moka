@@ -1,4 +1,4 @@
-name: Android
+name: wearOS
 
 on:
   push:
@@ -22,4 +22,4 @@ jobs:
           java-version: 11
 
       - name: Build Project
-        run: ./gradlew android:bundleRelease
+        run: ./gradlew wearos:bundleRelease

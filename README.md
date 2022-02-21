@@ -1,6 +1,7 @@
 # Moka
 
 [![Android Build status](https://github.com/TonnyL/Moka/workflows/Android/badge.svg)](https://github.com/TonnyL/Moka/actions?query=workflow%3Aandroid)
+[![Android Build status](https://github.com/TonnyL/Moka/workflows/wearOS/badge.svg)](https://github.com/TonnyL/Moka/actions?query=workflow%3Awearos)
 [![iOS Build status](https://github.com/TonnyL/Moka/workflows/iOS/badge.svg)](https://github.com/TonnyL/Moka/actions?query=workflow%3Aios)
 
 An Android app for github.com.

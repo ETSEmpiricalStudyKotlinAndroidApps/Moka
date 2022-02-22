@@ -406,7 +406,8 @@ private fun PullRequestScreenContent(
                 onSend = onSend,
                 isSending = isSending,
                 lockReason = pullRequest.activeLockReason,
-                viewerCanEdit = pullRequest.authorAssociation == CommentAuthorAssociation.COLLABORATOR
+                viewerCanEdit = pullRequest.activeLockReason == null
+                        || pullRequest.authorAssociation == CommentAuthorAssociation.COLLABORATOR
                         || pullRequest.authorAssociation == CommentAuthorAssociation.OWNER
             )
         }

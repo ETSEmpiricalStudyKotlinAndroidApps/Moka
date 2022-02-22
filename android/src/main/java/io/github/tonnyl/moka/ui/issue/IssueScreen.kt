@@ -401,7 +401,8 @@ private fun IssueScreenContent(
                 onSend = onSend,
                 isSending = isSending,
                 lockReason = issue.activeLockReason,
-                viewerCanEdit = issue.authorAssociation == CommentAuthorAssociation.COLLABORATOR
+                viewerCanEdit = issue.activeLockReason == null
+                        || issue.authorAssociation == CommentAuthorAssociation.COLLABORATOR
                         || issue.authorAssociation == CommentAuthorAssociation.OWNER
             )
         }

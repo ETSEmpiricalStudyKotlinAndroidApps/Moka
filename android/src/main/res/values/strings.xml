@@ -615,4 +615,11 @@
     <string name="media_downloading">Downloading…</string>
     <string name="media_saved">Saved.</string>
 
+    <string name="create_issue">Create Issue</string>
+    <string name="create_issue_title_hint">Title</string>
+    <string name="create_issue_body_hint">Leave a comment</string>
+    <string name="create_issue_discard_changes_alert_title">Unsaved changes</string>
+    <string name="create_issue_discard_changes_alert_message">Are you sure you want to discard this new issue? Your message will be lost.</string>
+    <string name="create_issue_discard_changes_alert_confirm">Discard changes</string>
+
 </resources>

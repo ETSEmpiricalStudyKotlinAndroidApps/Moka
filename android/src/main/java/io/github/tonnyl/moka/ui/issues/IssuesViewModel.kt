@@ -15,6 +15,7 @@ data class IssuesViewModelExtra(
     val accountInstance: AccountInstance,
     val owner: String,
     val name: String,
+    val repoId: String,
     val queryState: IssuePullRequestQueryState
 )
 

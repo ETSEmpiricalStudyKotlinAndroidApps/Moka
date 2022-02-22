@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +58,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @Composable
 fun IssuesScreen(
     owner: String,
-    name: String
+    name: String,
+    repoId: String
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
@@ -71,6 +74,7 @@ fun IssuesScreen(
                 accountInstance = currentAccount,
                 owner = owner,
                 name = name,
+                repoId = repoId,
                 queryState = queryState.value
             )
         },
@@ -79,51 +83,81 @@ fun IssuesScreen(
 
     val issues = viewModel.issuesFlow.collectAsLazyPagingItems()
 
+    val isLoadingFinished = issues.loadState.refresh is LoadState.NotLoading
+            && issues.itemCount > 0
+
     Box {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPadding = rememberInsetsPaddingValues(
-            insets = LocalWindowInsets.current.systemBars,
-            applyTop = false,
-            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
-        )
+        val scaffoldState = rememberScaffoldState()
 
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = issues.loadState.refresh is LoadState.Loading),
-            onRefresh = issues::refresh,
-            indicatorPadding = contentPadding,
-            indicator = { state, refreshTriggerDistance ->
-                DefaultSwipeRefreshIndicator(
-                    state = state,
-                    refreshTriggerDistance = refreshTriggerDistance
-                )
-            }
+        val navController = LocalNavController.current
+
+        Scaffold(
+            scaffoldState = scaffoldState,
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate(
+                            route = Screen.CreateIssue.route.replace(
+                                "{${Screen.ARG_REPO_ID}}",
+                                repoId
+                            )
+                        )
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        tint = MaterialTheme.colors.onSecondary,
+                        contentDescription = stringResource(id = R.string.create_issue)
+                    )
+                }
+            },
+            floatingActionButtonPosition = FabPosition.End
         ) {
-            when {
-                issues.loadState.refresh is LoadState.NotLoading
-                        && issues.loadState.append is LoadState.NotLoading
-                        && issues.loadState.prepend is LoadState.NotLoading
-                        && issues.itemCount == 0 -> {
+            val contentPadding = rememberInsetsPaddingValues(
+                insets = LocalWindowInsets.current.systemBars,
+                applyTop = false,
+                additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
+            )
 
-                }
-                issues.loadState.refresh is LoadState.NotLoading
-                        && issues.itemCount == 0 -> {
-                    EmptyScreenContent(
-                        titleId = R.string.common_no_data_found,
-                        action = issues::retry
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing = issues.loadState.refresh is LoadState.Loading),
+                onRefresh = issues::refresh,
+                indicatorPadding = contentPadding,
+                indicator = { state, refreshTriggerDistance ->
+                    DefaultSwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = refreshTriggerDistance
                     )
                 }
-                issues.loadState.refresh is LoadState.Error
-                        && issues.itemCount == 0 -> {
-                    EmptyScreenContent(action = issues::retry)
-                }
-                else -> {
-                    IssuesScreenContent(
-                        contentPaddings = contentPadding,
-                        owner = owner,
-                        name = name,
-                        prs = issues
-                    )
+            ) {
+                when {
+                    issues.loadState.refresh is LoadState.NotLoading
+                            && issues.loadState.append is LoadState.NotLoading
+                            && issues.loadState.prepend is LoadState.NotLoading
+                            && issues.itemCount == 0 -> {
+
+                    }
+                    issues.loadState.refresh is LoadState.NotLoading
+                            && issues.itemCount == 0 -> {
+                        EmptyScreenContent(
+                            titleId = R.string.common_no_data_found,
+                            action = issues::retry
+                        )
+                    }
+                    issues.loadState.refresh is LoadState.Error
+                            && issues.itemCount == 0 -> {
+                        EmptyScreenContent(action = issues::retry)
+                    }
+                    else -> {
+                        IssuesScreenContent(
+                            contentPaddings = contentPadding,
+                            owner = owner,
+                            name = name,
+                            prs = issues
+                        )
+                    }
                 }
             }
         }
@@ -138,9 +172,7 @@ fun IssuesScreen(
                 AppBarNavigationIcon()
             },
             actions = {
-                if (issues.loadState.refresh is LoadState.NotLoading
-                    && issues.itemCount > 0
-                ) {
+                if (isLoadingFinished) {
                     Box {
                         IconButton(
                             onClick = {

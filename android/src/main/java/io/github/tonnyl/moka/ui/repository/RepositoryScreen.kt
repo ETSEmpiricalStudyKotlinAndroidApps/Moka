@@ -175,6 +175,10 @@ fun RepositoryScreen(
                                         route = Screen.Issues.route
                                             .replace("{${Screen.ARG_PROFILE_LOGIN}}", login)
                                             .replace("{${Screen.ARG_REPOSITORY_NAME}}", repoName)
+                                            .replace(
+                                                "{${Screen.ARG_REPO_ID}}",
+                                                repo?.id ?: return@RepositoryScreenContent
+                                            )
                                     )
                                 },
                                 onCommitsClicked = {

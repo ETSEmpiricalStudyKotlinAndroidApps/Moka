@@ -152,7 +152,7 @@ fun SearchBar(
  * A workaround taken from https://stackoverflow.com/a/68420874/5835014
  * for https://issuetracker.google.com/issues/192433071.
  */
-private fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
+fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
     var isFocused by remember { mutableStateOf(false) }
     var keyboardAppearedSinceLastFocused by remember { mutableStateOf(false) }
     if (isFocused) {

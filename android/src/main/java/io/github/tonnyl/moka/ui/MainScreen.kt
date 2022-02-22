@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.NavController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -58,6 +59,7 @@ import io.github.tonnyl.moka.ui.file.download.DownloadFileDialog
 import io.github.tonnyl.moka.ui.inbox.InboxScreen
 import io.github.tonnyl.moka.ui.issue.IssueScreen
 import io.github.tonnyl.moka.ui.issues.IssuesScreen
+import io.github.tonnyl.moka.ui.issues.create.CreateIssueScreen
 import io.github.tonnyl.moka.ui.pr.PullRequestScreen
 import io.github.tonnyl.moka.ui.pr.thread.CommentTreadScreen
 import io.github.tonnyl.moka.ui.profile.ProfileScreen
@@ -206,7 +208,19 @@ sealed class Screen(val route: String) {
 
     }
 
-    object Issues : Screen("issues/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
+    object Issues : Screen("issues/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_REPO_ID}}") {
+
+        fun route(
+            login: String,
+            repoName: String,
+            repoId: String
+        ): String {
+            return route.replace("{$ARG_PROFILE_LOGIN}", login)
+                .replace("{$ARG_REPOSITORY_NAME}", repoName)
+                .replace("{$ARG_REPO_ID}", repoId)
+        }
+
+    }
 
     object PullRequests : Screen("pull_requests/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
@@ -217,13 +231,15 @@ sealed class Screen(val route: String) {
             navController: NavController,
             login: String,
             repoName: String,
-            number: Int
+            number: Int,
+            builder: (NavOptionsBuilder.() -> Unit) = { }
         ) {
             navController.navigate(
                 route = route
                     .replace("{$ARG_PROFILE_LOGIN}", login)
                     .replace("{$ARG_REPOSITORY_NAME}", repoName)
-                    .replace("{$ARG_ISSUE_PR_NUMBER}", number.toString())
+                    .replace("{$ARG_ISSUE_PR_NUMBER}", number.toString()),
+                builder = builder
             )
         }
 
@@ -370,6 +386,8 @@ sealed class Screen(val route: String) {
 
     }
 
+    object CreateIssue : Screen("create_issue/{${ARG_REPO_ID}}")
+
     companion object {
 
         const val ARG_PROFILE_LOGIN = "arg_profile_login"
@@ -432,6 +450,8 @@ sealed class Screen(val route: String) {
         const val ARG_URL = "arg_url"
 
         const val ARG_EXPLORE_FILTERS_TYPE = "arg_explore_filters_type"
+
+        const val ARG_REPO_ID = "arg_repo_id"
     }
 
 }
@@ -1010,15 +1030,17 @@ private fun MainNavHost(
                 },
                 navArgument(name = Screen.ARG_REPOSITORY_NAME) {
                     type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_REPO_ID) {
+                    type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
             currentRoute.value = Screen.Issues.route
             IssuesScreen(
-                owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                    ?: return@composable,
-                name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
-                    ?: return@composable
+                owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN) ?: return@composable,
+                name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME) ?: return@composable,
+                repoId = backStackEntry.arguments?.getString(Screen.ARG_REPO_ID) ?: return@composable
             )
         }
         composable(
@@ -1436,6 +1458,18 @@ private fun MainNavHost(
             DownloadFileDialog(
                 url = Uri.decode(backStackEntry.arguments?.getString(Screen.ARG_URL) ?: return@dialog)
             )
+        }
+        composable(
+            route = Screen.CreateIssue.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_REPO_ID) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.CreateIssue.route
+
+            CreateIssueScreen(repoId = backStackEntry.arguments?.getString(Screen.ARG_REPO_ID) ?: return@composable)
         }
     }
 }

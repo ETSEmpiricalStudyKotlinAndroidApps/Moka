@@ -14,6 +14,7 @@ import io.github.tonnyl.moka.ui.file.FileViewModel
 import io.github.tonnyl.moka.ui.inbox.InboxViewModel
 import io.github.tonnyl.moka.ui.issue.IssueViewModel
 import io.github.tonnyl.moka.ui.issues.IssuesViewModel
+import io.github.tonnyl.moka.ui.issues.create.CreateIssueViewModel
 import io.github.tonnyl.moka.ui.media.MediaViewModel
 import io.github.tonnyl.moka.ui.pr.PullRequestViewModel
 import io.github.tonnyl.moka.ui.pr.thread.CommentThreadViewModel
@@ -140,6 +141,9 @@ class ViewModelFactory : ViewModelProvider.Factory {
             }
             ExploreFiltersViewModel::class.java -> {
                 ExploreFiltersViewModel(extra = extras.getExtra(key = ExploreFiltersViewModel.FILTERS_VIEW_MODEL_EXTRA_KEY))
+            }
+            CreateIssueViewModel::class.java -> {
+                CreateIssueViewModel(extra = extras.getExtra(key = CreateIssueViewModel.CREATE_ISSUE_VIEW_MODEL_EXTRA_KEY))
             }
             else -> {
                 throw IllegalArgumentException("Unknown class $modelClass")

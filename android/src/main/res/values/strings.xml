@@ -1,7 +1,7 @@
 <resources>
     <string name="common_retry">Retry</string>
     <string name="common_error_requesting_data">Error while requesting data.</string>
-    <string name="empty_screen_icon_content_description">No data</string>
+    <string name="common_no_data_found">No data found</string>
     <string name="users_avatar_content_description">User\'s avatar image</string>
     <string name="repository_owners_avatar_image_content_description">Repository owner\'s avatar image</string>
     <string name="issue_pr_timeline_event_image_content_description">Event type image</string>
@@ -67,7 +67,6 @@
     <string name="user_profile_link_desc" translation_description="The content description of link image of user profile.">Link</string>
     <string name="user_profile_link_action" translation_description="The open action text of snackabar when click the link image of user profile.">Open</string>
     <string name="user_profile_edit_profile">Edit profile</string>
-    <string name="user_profile_content_empty_title">User not found</string>
     <string name="user_profile_content_empty_action">Search</string>
     <string name="user_profile_pinned_item_caption_format">%1$s \n&#160;\n&#160;\n&#160;</string>
     <string name="user_profile_contributions_last_year">contributions last year</string>
@@ -397,8 +396,6 @@
     <string name="notification_caption_formatted">%1$s - %2$s</string>
     <string name="notification_mark_as_read">Mark as read</string>
     <string name="notification_unsubscribe">Unsubscribe</string>
-    <string name="notification_content_empty_title">You haven\'t received any notifications yet</string>
-    <string name="notification_content_empty_action">Check Timeline</string>
 
     <string name="search_input_hint">Search repositories &amp; users</string>
 
@@ -418,9 +415,6 @@
     <string name="explore_trending_developers_content_empty_title">No trending developers yet</string>
     <string name="explore_trending_repositories_content_empty_title">No trending repositories yet</string>
     <string name="explore_trending_content_empty_action">Search</string>
-
-    <string name="timeline_content_empty_title">You haven\'t received any events yet</string>
-    <string name="timeline_content_empty_action">Explore More</string>
 
     <string name="search_tab_repositories">Repositories</string>
     <string name="search_tab_users">Users</string>

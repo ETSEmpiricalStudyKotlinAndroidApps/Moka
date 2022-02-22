@@ -97,14 +97,12 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
             }
             else -> {
                 EmptyScreenContent(
-                    iconVector = Icons.Outlined.Person,
-                    title = if (user?.status == Status.ERROR) {
-                        R.string.user_profile_content_empty_title
-                    } else {
+                    titleId = if (user?.status == Status.ERROR) {
                         R.string.common_error_requesting_data
+                    } else {
+                        R.string.common_no_data_found
                     },
-                    retry = R.string.common_retry,
-                    action = R.string.user_profile_content_empty_action
+                    action = viewModel::refreshData
                 )
             }
         }

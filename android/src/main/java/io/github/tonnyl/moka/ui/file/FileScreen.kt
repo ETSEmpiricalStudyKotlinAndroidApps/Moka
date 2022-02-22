@@ -105,12 +105,7 @@ fun FileScreen(
                     )
                 }
                 fileResource?.status == Status.ERROR -> { // todo display more error info and help user to download the raw file.
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_inbox_24,
-                        title = R.string.common_error_requesting_data,
-                        retry = R.string.common_retry,
-                        action = R.string.notification_content_empty_action
-                    )
+                    EmptyScreenContent(action = viewModel::geFileContent)
                 }
             }
         }

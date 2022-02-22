@@ -101,16 +101,7 @@ fun RepositoryFilesScreen(
             }
         ) {
             when {
-                entries.value?.status == Status.ERROR
-                        && entries.value?.data.isNullOrEmpty() -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_inbox_24,
-                        title = R.string.common_error_requesting_data,
-                        retry = R.string.common_retry,
-                        action = R.string.notification_content_empty_action
-                    )
-                }
-                else -> {
+                entries.value?.data != null -> {
                     RepositoryFilesScreenContent(
                         contentPaddings = contentPaddings,
                         entries = entries.value?.data.orEmpty(),
@@ -119,6 +110,16 @@ fun RepositoryFilesScreen(
                         repoName = repoName,
                         expression = expression,
                         defaultBranchName = defaultBranchName
+                    )
+                }
+                else -> {
+                    EmptyScreenContent(
+                        titleId = if (entries.value?.status == Status.ERROR) {
+                            R.string.common_error_requesting_data
+                        } else {
+                            R.string.common_no_data_found
+                        },
+                        action = viewModel::refresh
                     )
                 }
             }

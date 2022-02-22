@@ -59,6 +59,10 @@ class RepositoryViewModel(private val extra: RepositoryViewModelExtra) : ViewMod
         get() = _forkState
 
     init {
+        refresh()
+    }
+
+    fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {
             _repository.postValue(Resource.loading(null))
 

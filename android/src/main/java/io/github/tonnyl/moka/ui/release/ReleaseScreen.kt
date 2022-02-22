@@ -11,8 +11,6 @@ import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -95,14 +93,12 @@ fun ReleaseScreen(
             }
             else -> {
                 EmptyScreenContent(
-                    iconVector = Icons.Outlined.Person,
-                    title = if (releaseResource?.status == Status.ERROR) {
-                        R.string.user_profile_content_empty_title
-                    } else {
+                    titleId = if (releaseResource?.status == Status.ERROR) {
                         R.string.common_error_requesting_data
+                    } else {
+                        R.string.common_no_data_found
                     },
-                    retry = R.string.common_retry,
-                    action = R.string.user_profile_content_empty_action
+                    action = viewModel::refresh
                 )
             }
         }

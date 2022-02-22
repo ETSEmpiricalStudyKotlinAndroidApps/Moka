@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -210,14 +209,12 @@ fun RepositoryScreen(
                         }
                         else -> {
                             EmptyScreenContent(
-                                iconVector = Icons.Outlined.Person,
-                                title = if (repositoryResource?.status == Status.ERROR) {
-                                    R.string.user_profile_content_empty_title
-                                } else {
+                                titleId = if (repositoryResource?.status == Status.ERROR) {
                                     R.string.common_error_requesting_data
+                                } else {
+                                    R.string.common_no_data_found
                                 },
-                                retry = R.string.common_retry,
-                                action = R.string.user_profile_content_empty_action
+                                action = viewModel::refresh
                             )
                         }
                     }

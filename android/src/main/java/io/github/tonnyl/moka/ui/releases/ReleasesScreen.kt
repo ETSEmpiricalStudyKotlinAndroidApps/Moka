@@ -98,20 +98,13 @@ fun ReleasesScreen(
                 releases.loadState.refresh is LoadState.NotLoading
                         && releases.itemCount == 0 -> {
                     EmptyScreenContent(
-                        icon = R.drawable.ic_menu_timeline_24,
-                        title = R.string.timeline_content_empty_title,
-                        retry = R.string.common_retry,
-                        action = R.string.timeline_content_empty_action
+                        titleId = R.string.common_no_data_found,
+                        action = releases::retry
                     )
                 }
                 releases.loadState.refresh is LoadState.Error
                         && releases.itemCount == 0 -> {
-                    EmptyScreenContent(
-                        icon = R.drawable.ic_menu_inbox_24,
-                        title = R.string.common_error_requesting_data,
-                        retry = R.string.common_retry,
-                        action = R.string.notification_content_empty_action
-                    )
+                    EmptyScreenContent(action = releases::retry)
                 }
                 else -> {
                     ReleasesScreenContent(

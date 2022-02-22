@@ -50,10 +50,32 @@ class NotificationWorker(
 
                 if (notifications.isNotEmpty()) {
                     dao.insertAll(notifications.map {
+                        val existing = dao.notificationById(it.id)
                         it.dbModel.apply {
-                            hasDisplayed = false
+                            hasDisplayed = (existing?.hasDisplayed ?: false)
                         }
                     })
+                }
+
+                val now = Clock.System.now()
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                // Westworld Season 2; Episode 1
+                val journeyIntoNight = now.hour >= 23 || now.hour <= 6
+
+                if (!journeyIntoNight) {
+                    try {
+                        dao.notificationsToDisplayWithLimit(MAX_NOTIFICATION_SIZE).let { notifations ->
+                            if (notifations.isNotEmpty()) {
+                                NotificationsCenter.showNotifications(
+                                    context = applicationContext,
+                                    notifications = notifations,
+                                    accountId = accountInstance.signedInAccount.account.id
+                                )
+                            }
+                        }
+                    } catch (e: Exception) {
+                        logcat(priority = LogPriority.ERROR) { "query data from db error\n${e.asLog()}" }
+                    }
                 }
 
                 Result.success()
@@ -61,27 +83,6 @@ class NotificationWorker(
                 logcat(priority = LogPriority.ERROR) { "pull data from server error\n${e.asLog()}" }
 
                 Result.failure()
-            }
-
-            val now = Clock.System.now()
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-            // Westworld Season 2; Episode 1
-            val journeyIntoNight = now.hour >= 23 || now.hour <= 6
-
-            if (!journeyIntoNight) {
-                try {
-                    dao.notificationsToDisplayWithLimit(MAX_NOTIFICATION_SIZE).let { notifations ->
-                        if (notifations.isNotEmpty()) {
-                            NotificationsCenter.showNotifications(
-                                context = applicationContext,
-                                notifications = notifations,
-                                accountId = accountInstance.signedInAccount.account.id
-                            )
-                        }
-                    }
-                } catch (e: Exception) {
-                    logcat(priority = LogPriority.ERROR) { "query data from db error\n${e.asLog()}" }
-                }
             }
         }
 

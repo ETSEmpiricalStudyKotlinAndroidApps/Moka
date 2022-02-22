@@ -12,10 +12,10 @@ import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
+@ExperimentalSerializationApi
 @ExperimentalPagingApi
 class NotificationDismissReceiver : BroadcastReceiver() {
 
-    @OptIn(ExperimentalSerializationApi::class)
     override fun onReceive(context: Context?, intent: Intent?) {
         context ?: return
         intent ?: return

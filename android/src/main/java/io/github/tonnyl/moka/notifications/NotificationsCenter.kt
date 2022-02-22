@@ -66,6 +66,12 @@ object NotificationsCenter {
         n: Notification,
         accountId: Long
     ): Int {
+        val service = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val find = service.activeNotifications.find { it.id == n.id.hashCode() }
+        if (find != null) {
+            return -1
+        }
+
         val manager = NotificationManagerCompat.from(context)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -18,7 +18,7 @@ interface NotificationDao {
      * SQLite does not have a boolean data type.
      * Room maps it to an INTEGER column, mapping true to 1 and false to 0.
      */
-    @Query("SELECT * FROM notification WHERE has_displayed = 0 ORDER BY updated_at ASC LIMIT :limit")
+    @Query("SELECT * FROM notification WHERE unread == 1 AND has_displayed = 0 ORDER BY updated_at DESC LIMIT :limit")
     fun notificationsToDisplayWithLimit(limit: Int): List<Notification>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

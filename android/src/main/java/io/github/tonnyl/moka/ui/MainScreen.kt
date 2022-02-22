@@ -179,11 +179,7 @@ sealed class Screen(val route: String) {
                 route = route
                     .replace("{$ARG_PROFILE_LOGIN}", login)
                     .replace("{$ARG_USERS_TYPE}", type.name)
-                    .apply {
-                        if (!repoName.isNullOrEmpty()) {
-                            replace("{$ARG_REPOSITORY_NAME}", repoName)
-                        }
-                    }
+                    .replace("{$ARG_REPOSITORY_NAME}", repoName.orEmpty())
             )
         }
 

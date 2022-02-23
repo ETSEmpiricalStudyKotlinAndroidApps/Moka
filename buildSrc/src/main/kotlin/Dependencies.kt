@@ -12,6 +12,7 @@ object Versions {
     const val kotlin = "1.6.10"
     const val dateTime = "0.3.2"
     const val coroutines = "1.6.0-RC3"
+    const val coroutinesNativeMt = "1.6.0-native-mt"
     const val serializationJson = "1.3.2"
     const val serializationProtoBuf = "1.3.2"
     const val browser = "1.4.0"
@@ -87,7 +88,7 @@ object Deps {
 
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
         const val coroutinesCore =
-            "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
+            "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesNativeMt}"
         const val coroutinesAndroid =
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
         const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.dateTime}"

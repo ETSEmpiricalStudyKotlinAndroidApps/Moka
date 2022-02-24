@@ -1,7 +1,6 @@
 package io.tonnyl.moka.common.ui.timeline
 
 import androidx.lifecycle.*
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.cachedIn
@@ -38,15 +37,6 @@ class TimelineViewModel(extra: TimelineViewModelExtra) : ViewModel() {
                     .eventsByCreatedAt()
             }
         ).flow.cachedIn(viewModelScope)
-    }
-
-    companion object {
-
-        private object TimelineViewModelExtraKeyImpl : CreationExtras.Key<TimelineViewModelExtra>
-
-        val TIMELINE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<TimelineViewModelExtra> =
-            TimelineViewModelExtraKeyImpl
-
     }
 
 }

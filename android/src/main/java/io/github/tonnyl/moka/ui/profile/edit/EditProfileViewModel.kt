@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Resource
 import kotlinx.coroutines.Dispatchers
@@ -114,16 +113,6 @@ class EditProfileViewModel(private val extra: EditProfileViewModelExtra) : ViewM
 
     fun onErrorDismissed() {
         _loadingStatus.value = null
-    }
-
-    companion object {
-
-        private object EditProfileViewModelExtraKeyImpl :
-            CreationExtras.Key<EditProfileViewModelExtra>
-
-        val EDIT_PROFILE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<EditProfileViewModelExtra> =
-            EditProfileViewModelExtraKeyImpl
-
     }
 
 }

@@ -23,7 +23,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -42,9 +42,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.CommitFile
 import io.tonnyl.moka.common.data.CommitResponse
@@ -64,14 +62,15 @@ fun CommitScreen(
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<CommitViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[CommitViewModel.COMMIT_VIEW_MODEL_EXTRA_KEY] = CommitViewModelExtra(
-                accountInstance = currentAccount,
-                owner = owner,
-                repo = repo,
-                ref = ref
+    val viewModel = viewModel(
+        initializer = {
+            CommitViewModel(
+                extra = CommitViewModelExtra(
+                    accountInstance = currentAccount,
+                    owner = owner,
+                    repo = repo,
+                    ref = ref
+                )
             )
         }
     )

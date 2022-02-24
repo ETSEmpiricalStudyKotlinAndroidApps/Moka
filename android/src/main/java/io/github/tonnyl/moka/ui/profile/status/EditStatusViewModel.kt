@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.apollographql.apollo3.api.Optional
 import io.github.tonnyl.moka.data.UserStatus
 import io.tonnyl.moka.common.AccountInstance
@@ -178,16 +177,6 @@ class EditStatusViewModel(private val extra: EditStatusViewModelExtra) : ViewMod
 
     fun onUpdateStatusErrorDismissed() {
         _updateStatusState.value = null
-    }
-
-    companion object {
-
-        private object EditStatusViewModelExtraKeyImpl :
-            CreationExtras.Key<EditStatusViewModelExtra>
-
-        val EDIT_STATUS_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<EditStatusViewModelExtra> =
-            EditStatusViewModelExtraKeyImpl
-
     }
 
 }

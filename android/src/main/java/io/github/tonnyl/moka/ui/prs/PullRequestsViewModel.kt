@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.ui.prs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
@@ -33,16 +32,6 @@ class PullRequestsViewModel(extra: PullRequestsViewModelExtra) : ViewModel() {
                 )
             }
         ).flow.cachedIn(viewModelScope)
-    }
-
-    companion object {
-
-        private object PullRequestsViewModelExtraKeyImpl :
-            CreationExtras.Key<PullRequestsViewModelExtra>
-
-        val PULL_REQUESTS_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<PullRequestsViewModelExtra> =
-            PullRequestsViewModelExtraKeyImpl
-
     }
 
 }

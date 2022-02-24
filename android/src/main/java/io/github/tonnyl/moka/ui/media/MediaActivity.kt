@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.media
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,10 +13,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.ui.MainViewModel
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
@@ -27,9 +29,13 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalPagingApi
 class MediaActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<MainViewModel> {
-        ViewModelFactory()
-    }
+    private val viewModel by viewModels<MainViewModel>(
+        extrasProducer = {
+            MutableCreationExtras().apply {
+                this[APPLICATION_KEY] = this@MediaActivity.applicationContext as Application
+            }
+        }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

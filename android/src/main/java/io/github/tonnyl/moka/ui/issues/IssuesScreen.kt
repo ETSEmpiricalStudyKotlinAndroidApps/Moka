@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -38,13 +38,11 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.IssueListItem
 import io.tonnyl.moka.common.data.IssuePrState
@@ -67,15 +65,16 @@ fun IssuesScreen(
         mutableStateOf(IssuePullRequestQueryState.All)
     }
 
-    val viewModel = viewModel<IssuesViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[IssuesViewModel.ISSUES_VIEW_MODEL_EXTRA_KEY] = IssuesViewModelExtra(
-                accountInstance = currentAccount,
-                owner = owner,
-                name = name,
-                repoId = repoId,
-                queryState = queryState.value
+    val viewModel = viewModel(
+        initializer = {
+            IssuesViewModel(
+                extra = IssuesViewModelExtra(
+                    accountInstance = currentAccount,
+                    owner = owner,
+                    name = name,
+                    repoId = repoId,
+                    queryState = queryState.value
+                )
             )
         },
         key = queryState.value.rawValue

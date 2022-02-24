@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui.auth
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -19,6 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -26,7 +29,6 @@ import com.google.accompanist.insets.statusBarsPadding
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainActivity
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MokaTheme
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
@@ -37,17 +39,17 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalPagingApi
 class AuthActivity : ComponentActivity() {
 
-    @OptIn(ExperimentalSerializationApi::class)
     private val viewModel by viewModels<AuthViewModel>(
-        factoryProducer = {
-            ViewModelFactory()
+        extrasProducer = {
+            MutableCreationExtras().apply {
+                this[APPLICATION_KEY] = this@AuthActivity.applicationContext as Application
+            }
         }
     )
 
     @OptIn(
         ExperimentalSerializationApi::class,
-        ExperimentalAnimatedInsets::class,
-        ExperimentalMaterialApi::class
+        ExperimentalAnimatedInsets::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

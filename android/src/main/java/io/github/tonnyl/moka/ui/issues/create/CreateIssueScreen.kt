@@ -27,19 +27,17 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IconSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import kotlinx.coroutines.delay
@@ -54,12 +52,13 @@ import kotlinx.serialization.ExperimentalSerializationApi
 fun CreateIssueScreen(repoId: String) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<CreateIssueViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[CreateIssueViewModel.CREATE_ISSUE_VIEW_MODEL_EXTRA_KEY] = CreateIssueViewModelExtra(
-                accountInstance = currentAccount,
-                repoId = repoId
+    val viewModel = viewModel(
+        initializer = {
+            CreateIssueViewModel(
+                extra = CreateIssueViewModelExtra(
+                    accountInstance = currentAccount,
+                    repoId = repoId
+                )
             )
         }
     )

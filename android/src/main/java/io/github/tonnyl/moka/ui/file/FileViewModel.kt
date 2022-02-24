@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.HighlightLanguage
@@ -84,15 +83,6 @@ class FileViewModel(
                 _file.value = Resource.error(exception = e, data = null)
             }
         }
-    }
-
-    companion object {
-
-        private object FileViewModelExtraKeyImpl : CreationExtras.Key<FileViewModelExtra>
-
-        val FILE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<FileViewModelExtra> =
-            FileViewModelExtraKeyImpl
-
     }
 
 }

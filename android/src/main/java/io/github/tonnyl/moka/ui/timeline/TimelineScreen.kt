@@ -22,7 +22,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -44,10 +44,8 @@ import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.db.data.Event
-import io.tonnyl.moka.common.ui.ViewModelFactory
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.ui.timeline.TimelineViewModel
 import io.tonnyl.moka.common.ui.timeline.TimelineViewModelExtra
@@ -61,12 +59,13 @@ import io.tonnyl.moka.common.data.Event as SerializableEvent
 fun TimelineScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val timelineViewModel = viewModel<TimelineViewModel>(
+    val timelineViewModel = viewModel(
         key = currentAccount.toString(),
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[TimelineViewModel.TIMELINE_VIEW_MODEL_EXTRA_KEY] = TimelineViewModelExtra(
-                accountInstance = currentAccount
+        initializer = {
+            TimelineViewModel(
+                extra = TimelineViewModelExtra(
+                    accountInstance = currentAccount
+                )
             )
         }
     )

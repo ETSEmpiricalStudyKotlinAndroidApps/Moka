@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -28,11 +28,9 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.issue.IssueTimelineCommentItem
 import io.github.tonnyl.moka.ui.issue.ItemIssueTimelineEvent
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.EmptyScreenContent
@@ -47,14 +45,14 @@ import kotlinx.serialization.ExperimentalSerializationApi
 fun CommentTreadScreen(nodeId: String) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<CommentThreadViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[CommentThreadViewModel.COMMENT_THREAD_VIEW_MODEL_EXTRA_KEY] =
-                CommentThreadViewModelExtra(
+    val viewModel = viewModel(
+        initializer = {
+            CommentThreadViewModel(
+                extra = CommentThreadViewModelExtra(
                     accountInstance = currentAccount,
                     nodeId = nodeId
                 )
+            )
         }
     )
 

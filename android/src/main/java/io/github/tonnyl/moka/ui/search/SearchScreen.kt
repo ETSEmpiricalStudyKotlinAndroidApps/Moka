@@ -23,8 +23,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -35,13 +34,10 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.ViewModelFactory
-import io.github.tonnyl.moka.ui.search.SearchViewModel.Companion.SEARCH_VIEW_MODEL_EXTRA_KEY
 import io.github.tonnyl.moka.ui.search.repositories.SearchedRepositoriesScreen
 import io.github.tonnyl.moka.ui.search.users.SearchedUsersScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.SearchBar
 import io.tonnyl.moka.common.data.SearchedUserOrOrgItem
 import io.tonnyl.moka.common.store.data.Query
@@ -68,15 +64,16 @@ private enum class SearchType {
 fun SearchScreen(initialSearchKeyword: String) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<SearchViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[SEARCH_VIEW_MODEL_EXTRA_KEY] = SearchScreenViewModelExtra(
-                accountInstance = currentAccount,
-                initialSearchKeyword = initialSearchKeyword
+    val app = LocalContext.current.applicationContext as Application
+    val viewModel = viewModel(
+        initializer = {
+            SearchViewModel(
+                extra = SearchScreenViewModelExtra(
+                    accountInstance = currentAccount,
+                    initialSearchKeyword = initialSearchKeyword
+                ),
+                app = app
             )
-            this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] =
-                LocalContext.current.applicationContext as Application
         }
     )
     val input = viewModel.userInput.value ?: ""

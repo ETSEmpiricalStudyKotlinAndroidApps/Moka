@@ -20,18 +20,14 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.ViewModelFactory
-import io.github.tonnyl.moka.ui.settings.SettingsViewModel.Companion.SETTINGS_VIEW_MODEL_EXTRA_KEY
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.store.SettingSerializer
@@ -70,12 +66,13 @@ data class OnSettingItemClick(
 fun SettingScreen() {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<SettingsViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[APPLICATION_KEY] = LocalContext.current.applicationContext as Application
-            this[SETTINGS_VIEW_MODEL_EXTRA_KEY] =
-                SettingsViewModelExtra(accountInstance = currentAccount)
+    val app = LocalContext.current.applicationContext as Application
+    val viewModel = viewModel(
+        initializer = {
+            SettingsViewModel(
+                extra = SettingsViewModelExtra(accountInstance = currentAccount),
+                app = app
+            )
         }
     )
 

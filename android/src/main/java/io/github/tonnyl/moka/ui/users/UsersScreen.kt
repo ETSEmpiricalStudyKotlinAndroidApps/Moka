@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -35,11 +35,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.ui.users.UsersViewModel.Companion.USERS_VIEW_MODEL_EXTRA_KEY
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.UserItemProvider
@@ -56,14 +53,15 @@ fun UsersScreen(
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<UsersViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[USERS_VIEW_MODEL_EXTRA_KEY] = UsersViewModelExtra(
-                accountInstance = currentAccount,
-                login = login,
-                repoName = repoName,
-                usersType = usersType
+    val viewModel = viewModel(
+        initializer = {
+            UsersViewModel(
+                extra = UsersViewModelExtra(
+                    accountInstance = currentAccount,
+                    login = login,
+                    repoName = repoName,
+                    usersType = usersType
+                )
             )
         }
     )

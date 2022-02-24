@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.ui.commits
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
@@ -32,15 +31,6 @@ class CommitsViewModel(extra: CommitsViewModelExtra) : ViewModel() {
                 )
             }
         ).flow.cachedIn(viewModelScope)
-    }
-
-    companion object {
-
-        private object CommitsViewModelExtraKeyImpl : CreationExtras.Key<CommitsViewModelExtra>
-
-        val COMMITS_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<CommitsViewModelExtra> =
-            CommitsViewModelExtraKeyImpl
-
     }
 
 }

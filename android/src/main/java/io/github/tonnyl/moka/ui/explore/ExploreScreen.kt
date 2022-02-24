@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -36,10 +36,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.extension.displayStringResId
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.explore.filters.FiltersType
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.ListSubheader
 import io.github.tonnyl.moka.widget.MainSearchBar
@@ -64,12 +62,13 @@ import kotlinx.serialization.ExperimentalSerializationApi
 fun ExploreScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val exploreViewModel = viewModel<ExploreViewModel>(
+    val exploreViewModel = viewModel(
         key = LocalAccountInstance.current.toString(),
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[ExploreViewModel.EXPLORE_VIEW_MODEL_EXTRA_KEY] = ExploreViewModelExtra(
-                accountInstance = currentAccount
+        initializer = {
+            ExploreViewModel(
+                extra = ExploreViewModelExtra(
+                    accountInstance = currentAccount
+                )
             )
         }
     )

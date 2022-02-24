@@ -20,8 +20,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -40,10 +39,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.NotificationReasons
 import io.tonnyl.moka.common.data.SubjectType
@@ -59,13 +56,13 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @Composable
 fun InboxScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
-    val inboxViewModel = viewModel<InboxViewModel>(
+    val app = LocalContext.current.applicationContext as Application
+    val inboxViewModel = viewModel(
         key = currentAccount.toString(),
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[APPLICATION_KEY] = LocalContext.current.applicationContext as Application
-            this[InboxViewModel.INBOX_VIEW_MODEL_EXTRA_KEY] = InboxViewModelExtra(
-                accountInstance = currentAccount
+        initializer = {
+            InboxViewModel(
+                extra = InboxViewModelExtra(accountInstance = currentAccount),
+                app = app
             )
         }
     )

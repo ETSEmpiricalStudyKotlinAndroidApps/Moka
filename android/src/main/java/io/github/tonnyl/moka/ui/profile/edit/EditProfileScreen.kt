@@ -19,15 +19,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -46,11 +44,10 @@ fun EditProfileScreen(
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<EditProfileViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[EditProfileViewModel.EDIT_PROFILE_VIEW_MODEL_EXTRA_KEY] =
-                EditProfileViewModelExtra(
+    val viewModel = viewModel(
+        initializer = {
+            EditProfileViewModel(
+                extra = EditProfileViewModelExtra(
                     accountInstance = currentAccount,
                     initialName = initialName,
                     initialBio = initialBio,
@@ -59,6 +56,7 @@ fun EditProfileScreen(
                     initialLocation = initialLocation,
                     initialTwitter = initialTwitter
                 )
+            )
         }
     )
 

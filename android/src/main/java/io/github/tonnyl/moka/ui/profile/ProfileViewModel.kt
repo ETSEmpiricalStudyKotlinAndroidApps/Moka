@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
@@ -160,15 +159,6 @@ class ProfileViewModel(private val extra: ProfileViewModelExtra) : ViewModel() {
                     )
             }
         }
-    }
-
-    companion object {
-
-        private object ProfileViewModelExtraKeyImpl : CreationExtras.Key<ProfileViewModelExtra>
-
-        val PROFILE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<ProfileViewModelExtra> =
-            ProfileViewModelExtraKeyImpl
-
     }
 
 }

@@ -30,18 +30,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -71,12 +69,13 @@ fun ExploreFiltersScreen(filtersType: FiltersType) {
 
     val navController = LocalNavController.current
 
-    val viewModel = viewModel<ExploreFiltersViewModel>(
+    val viewModel = viewModel(
         key = LocalAccountInstance.current.toString(),
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[ExploreFiltersViewModel.FILTERS_VIEW_MODEL_EXTRA_KEY] = ExploreFiltersViewModelExtra(
-                accountInstance = currentAccount
+        initializer = {
+            ExploreFiltersViewModel(
+                extra = ExploreFiltersViewModelExtra(
+                    accountInstance = currentAccount
+                )
             )
         }
     )

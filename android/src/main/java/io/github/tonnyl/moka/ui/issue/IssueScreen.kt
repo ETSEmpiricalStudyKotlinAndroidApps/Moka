@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -54,11 +54,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.reaction.AddReactionDialogScreen
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.IssueTimelineItem
@@ -97,14 +95,15 @@ fun IssueScreen(
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<IssueViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[IssueViewModel.ISSUE_VIEW_MODEL_EXTRA_KEY] = IssueViewModelExtra(
-                accountInstance = currentAccount,
-                owner = owner,
-                name = name,
-                number = number
+    val viewModel = viewModel(
+        initializer = {
+            IssueViewModel(
+                extra = IssueViewModelExtra(
+                    accountInstance = currentAccount,
+                    owner = owner,
+                    name = name,
+                    number = number
+                )
             )
         }
     )

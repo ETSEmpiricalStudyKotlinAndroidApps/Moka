@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingData
@@ -140,11 +139,6 @@ class SearchViewModel(
     companion object {
 
         private const val MAX_SEARCH_HISTORY_SIZE = 3
-
-        private object SearchViewModelExtraKeyImpl : CreationExtras.Key<SearchScreenViewModelExtra>
-
-        val SEARCH_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<SearchScreenViewModelExtra> =
-            SearchViewModelExtraKeyImpl
 
     }
 

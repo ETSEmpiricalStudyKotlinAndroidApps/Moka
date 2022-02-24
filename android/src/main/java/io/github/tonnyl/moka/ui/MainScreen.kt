@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
@@ -826,18 +826,19 @@ private fun MainNavHost(
             currentRoute.value = Screen.Profile.route
 
             val currentAccount = LocalAccountInstance.current ?: return@composable
+            val login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN) ?: return@composable
 
-            val viewModel = viewModel<ProfileViewModel>(
+            val viewModel = viewModel(
                 key = currentAccount.signedInAccount.account.login,
-                factory = ViewModelFactory(),
-                defaultCreationExtras = MutableCreationExtras().apply {
-                    this[ProfileViewModel.PROFILE_VIEW_MODEL_EXTRA_KEY] = ProfileViewModelExtra(
-                        accountInstance = currentAccount,
-                        login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
-                            ?: return@composable,
-                        profileType = ProfileType.valueOf(
-                            backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
-                                ?: ProfileType.NOT_SPECIFIED.name
+                initializer = {
+                    ProfileViewModel(
+                        extra = ProfileViewModelExtra(
+                            accountInstance = currentAccount,
+                            login = login,
+                            profileType = ProfileType.valueOf(
+                                backStackEntry.arguments?.getString(Screen.ARG_PROFILE_TYPE)
+                                    ?: ProfileType.NOT_SPECIFIED.name
+                            )
                         )
                     )
                 }
@@ -937,16 +938,16 @@ private fun MainNavHost(
             val initialIndicatesLimitedAvailability = backStackEntry.arguments?.getBoolean(
                 Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY
             )
-            val viewModel = viewModel<EditStatusViewModel>(
-                factory = ViewModelFactory(),
-                defaultCreationExtras = MutableCreationExtras().apply {
-                    this[EditStatusViewModel.EDIT_STATUS_VIEW_MODEL_EXTRA_KEY] =
-                        EditStatusViewModelExtra(
+            val viewModel = viewModel(
+                initializer = {
+                    EditStatusViewModel(
+                        extra = EditStatusViewModelExtra(
                             accountInstance = currentAccount,
                             initialEmoji = initialEmoji,
                             initialMessage = initialMessage,
                             initialIndicatesLimitedAvailability = initialIndicatesLimitedAvailability
                         )
+                    )
                 }
             )
 

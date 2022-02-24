@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -28,9 +28,7 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.downloadFileViaDownloadManager
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
@@ -49,16 +47,16 @@ fun ReleaseAssetsScreen(
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<ReleaseAssetsViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[ReleaseAssetsViewModel.RELEASES_VIEW_MODEL_EXTRA_KEY] =
-                ReleaseAssetsViewModelExtra(
+    val viewModel = viewModel(
+        initializer = {
+            ReleaseAssetsViewModel(
+                extra = ReleaseAssetsViewModelExtra(
                     accountInstance = currentAccount,
                     login = login,
                     repoName = repoName,
                     tagName = tagName
                 )
+            )
         }
     )
 

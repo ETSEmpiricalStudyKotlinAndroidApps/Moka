@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import io.github.tonnyl.moka.util.HtmlHandler
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Resource
@@ -65,15 +64,6 @@ class ReleaseViewModel(private val extra: ReleaseViewModelExtra) : ViewModel() {
                 _release.postValue(Resource.error(e, release.value?.data))
             }
         }
-    }
-
-    companion object {
-
-        private object ReleaseViewModelExtraKeyImpl : CreationExtras.Key<ReleaseViewModelExtra>
-
-        val RELEASE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<ReleaseViewModelExtra> =
-            ReleaseViewModelExtraKeyImpl
-
     }
 
 }

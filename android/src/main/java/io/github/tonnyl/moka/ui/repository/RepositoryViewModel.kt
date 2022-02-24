@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import io.github.tonnyl.moka.util.HtmlHandler
 import io.github.tonnyl.moka.util.updateOnAnyThread
 import io.tonnyl.moka.common.AccountInstance
@@ -227,16 +226,6 @@ class RepositoryViewModel(private val extra: RepositoryViewModelExtra) : ViewMod
         _forkState.value?.let {
             _forkState.updateOnAnyThread(newValue = it.copy(data = false))
         }
-    }
-
-    companion object {
-
-        private object RepositoryViewModelExtraKeyImpl :
-            CreationExtras.Key<RepositoryViewModelExtra>
-
-        val REPOSITORY_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<RepositoryViewModelExtra> =
-            RepositoryViewModelExtraKeyImpl
-
     }
 
 }

@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -36,13 +36,11 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.IssuePrState
 import io.tonnyl.moka.common.data.IssuePullRequestQueryState
@@ -64,17 +62,17 @@ fun PullRequestsScreen(
         mutableStateOf(IssuePullRequestQueryState.All)
     }
 
-    val viewModel = viewModel<PullRequestsViewModel>(
+    val viewModel = viewModel(
         key = queryState.value.rawValue,
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[PullRequestsViewModel.PULL_REQUESTS_VIEW_MODEL_EXTRA_KEY] =
-                PullRequestsViewModelExtra(
+        initializer = {
+            PullRequestsViewModel(
+                extra = PullRequestsViewModelExtra(
                     accountInstance = currentAccount,
                     owner = owner,
                     name = name,
                     state = queryState.value
                 )
+            )
         }
     )
 

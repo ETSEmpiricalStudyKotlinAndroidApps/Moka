@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.ui.branches
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
@@ -40,16 +39,6 @@ class BranchesViewModel(extra: BranchesViewModelExtra) : ViewModel() {
     fun invalidateDataSource(sort: RefOrder) {
         dataSource.sort = sort
         dataSource.invalidate()
-    }
-
-    companion object {
-
-        private object BranchesViewModelExtraKeyImpl :
-            CreationExtras.Key<BranchesViewModelExtra>
-
-        val BRANCHES_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<BranchesViewModelExtra> =
-            BranchesViewModelExtraKeyImpl
-
     }
 
 }

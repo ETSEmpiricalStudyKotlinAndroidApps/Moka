@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.tonnyl.moka.common.AccountInstance
@@ -111,15 +110,6 @@ class SettingsViewModel(
 
     fun onClearSearchHistoryUiDismissed() {
         _clearHistoryStatus.value = null
-    }
-
-    companion object {
-
-        private object SettingsViewModelExtraKeyImpl : CreationExtras.Key<SettingsViewModelExtra>
-
-        val SETTINGS_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<SettingsViewModelExtra> =
-            SettingsViewModelExtraKeyImpl
-
     }
 
 }

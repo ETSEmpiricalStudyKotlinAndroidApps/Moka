@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -37,13 +37,10 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption.*
-import io.github.tonnyl.moka.ui.repositories.RepositoriesViewModel.Companion.REPOSITORIES_VIEW_MODEL_EXTRA_KEY
 import io.github.tonnyl.moka.ui.repositories.filters.RepositoryFiltersSheet
 import io.github.tonnyl.moka.ui.theme.*
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
@@ -100,14 +97,15 @@ fun RepositoriesScreen(
     }
     val queryOption by queryOptionState
 
-    val viewModel = viewModel<RepositoriesViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[REPOSITORIES_VIEW_MODEL_EXTRA_KEY] = RepositoriesViewModelExtra(
-                accountInstance = currentAccount,
-                login = login,
-                repoName = repoName,
-                queryOption = queryOption
+    val viewModel = viewModel(
+        initializer = {
+            RepositoriesViewModel(
+                extra = RepositoriesViewModelExtra(
+                    accountInstance = currentAccount,
+                    login = login,
+                    repoName = repoName,
+                    queryOption = queryOption
+                )
             )
         },
         key = queryOption.toString()

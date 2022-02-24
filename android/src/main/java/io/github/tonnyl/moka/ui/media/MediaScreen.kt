@@ -40,8 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.work.WorkInfo
 import coil.annotation.ExperimentalCoilApi
@@ -53,11 +52,9 @@ import com.google.android.exoplayer2.Player.REPEAT_MODE_ALL
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.DropDownMenuAppBarOffset
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareSnackbar
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
@@ -80,15 +77,17 @@ fun MediaScreen(
     val account = LocalAccountInstance.current ?: return
     val displayBarsState = remember { mutableStateOf(true) }
 
-    val viewModel = viewModel<MediaViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[APPLICATION_KEY] = activity.applicationContext as Application
-            this[MediaViewModel.MEDIA_VIEW_MODEL_EXTRA_KEY] = MediaViewModelExtra(
-                url = url,
-                filename = filename,
-                accountInstance = account,
-                mediaType = mediaType
+    val app = activity.applicationContext as Application
+    val viewModel = viewModel(
+        initializer = {
+            MediaViewModel(
+                extra = MediaViewModelExtra(
+                    url = url,
+                    filename = filename,
+                    accountInstance = account,
+                    mediaType = mediaType
+                ),
+                app = app
             )
         }
     )

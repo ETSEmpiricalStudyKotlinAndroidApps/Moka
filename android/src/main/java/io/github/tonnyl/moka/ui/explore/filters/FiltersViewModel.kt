@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.explore.filters
 
 import androidx.lifecycle.*
-import androidx.lifecycle.viewmodel.CreationExtras
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.store.ExploreOptionsSerializer
 import io.tonnyl.moka.common.store.data.ExploreLanguage
@@ -49,15 +48,6 @@ class ExploreFiltersViewModel(private val extra: ExploreFiltersViewModelExtra): 
                 logcat(priority = LogPriority.ERROR) { e.asLog() }
             }
         }
-    }
-
-    companion object {
-
-        private object FiltersViewModelExtraKeyImpl : CreationExtras.Key<ExploreFiltersViewModelExtra>
-
-        val FILTERS_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<ExploreFiltersViewModelExtra> =
-            FiltersViewModelExtraKeyImpl
-
     }
 
 }

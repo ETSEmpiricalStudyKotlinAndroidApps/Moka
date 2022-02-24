@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.users
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.Pager
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.ui.defaultPagingConfig
@@ -30,15 +29,6 @@ class UsersViewModel(extra: UsersViewModelExtra) : ViewModel() {
                 )
             }
         ).flow
-    }
-
-    companion object {
-
-        private object UsersViewModelExtraKeyImpl : CreationExtras.Key<UsersViewModelExtra>
-
-        val USERS_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<UsersViewModelExtra> =
-            UsersViewModelExtraKeyImpl
-
     }
 
 }

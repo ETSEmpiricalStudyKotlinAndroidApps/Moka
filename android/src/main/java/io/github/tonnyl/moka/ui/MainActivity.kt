@@ -1,5 +1,6 @@
 package io.github.tonnyl.moka.ui
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,6 +17,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
@@ -30,9 +33,13 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 class MainActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<MainViewModel> {
-        ViewModelFactory()
-    }
+    private val viewModel by viewModels<MainViewModel>(
+        extrasProducer = {
+            MutableCreationExtras().apply {
+                this[APPLICATION_KEY] = this@MainActivity.applicationContext as Application
+            }
+        }
+    )
 
     @OptIn(
         ExperimentalAnimationApi::class,

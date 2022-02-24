@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.ui.releases
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
@@ -30,15 +29,6 @@ class ReleasesViewModel(extra: ReleasesViewModelExtra) : ViewModel() {
                 )
             }
         ).flow.cachedIn(viewModelScope)
-    }
-
-    companion object {
-
-        private object ReleasesViewModelExtraKeyImpl : CreationExtras.Key<ReleasesViewModelExtra>
-
-        val RELEASES_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<ReleasesViewModelExtra> =
-            ReleasesViewModelExtraKeyImpl
-
     }
 
 }

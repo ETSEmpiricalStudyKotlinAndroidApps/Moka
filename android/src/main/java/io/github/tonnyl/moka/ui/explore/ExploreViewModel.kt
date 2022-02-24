@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.explore
 
 import androidx.lifecycle.*
-import androidx.lifecycle.viewmodel.CreationExtras
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.db.data.dbModel
 import io.tonnyl.moka.common.network.Resource
@@ -114,15 +113,6 @@ class ExploreViewModel(private val extra: ExploreViewModelExtra) : ViewModel() {
                 logcat(priority = LogPriority.ERROR) { e.asLog() }
             }
         }
-    }
-
-    companion object {
-
-        private object ExploreViewModelExtraKeyImpl : CreationExtras.Key<ExploreViewModelExtra>
-
-        val EXPLORE_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<ExploreViewModelExtra> =
-            ExploreViewModelExtraKeyImpl
-
     }
 
 }

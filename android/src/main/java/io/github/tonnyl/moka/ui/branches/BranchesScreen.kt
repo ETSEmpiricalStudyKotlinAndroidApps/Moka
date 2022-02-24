@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -35,12 +35,10 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.ui.viewModel
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.BranchProvider
@@ -60,14 +58,15 @@ fun BranchesScreen(
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<BranchesViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[BranchesViewModel.BRANCHES_VIEW_MODEL_EXTRA_KEY] = BranchesViewModelExtra(
-                accountInstance = currentAccount,
-                login = login,
-                repoName = repoName,
-                refPrefix = refPrefix
+    val viewModel = viewModel(
+        initializer = {
+            BranchesViewModel(
+                extra = BranchesViewModelExtra(
+                    accountInstance = currentAccount,
+                    login = login,
+                    repoName = repoName,
+                    refPrefix = refPrefix
+                )
             )
         }
     )

@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.cachedIn
@@ -91,15 +90,6 @@ class InboxViewModel(
 
     fun onReleaseDataErrorDismissed() {
         _releaseData.value = null
-    }
-
-    companion object {
-
-        private object InboxViewModelExtraKeyImpl : CreationExtras.Key<InboxViewModelExtra>
-
-        val INBOX_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<InboxViewModelExtra> =
-            InboxViewModelExtraKeyImpl
-
     }
 
 }

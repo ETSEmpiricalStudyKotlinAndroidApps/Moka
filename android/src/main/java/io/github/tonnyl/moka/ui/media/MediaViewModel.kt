@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.ExperimentalPagingApi
 import androidx.work.*
 import com.google.android.exoplayer2.MediaItem
@@ -143,15 +142,6 @@ class MediaViewModel(
         super.onCleared()
         workManager.cancelUniqueWork(saveWorkerName)
         workManager.cancelUniqueWork(shareWorkerName)
-    }
-
-    companion object {
-
-        private object MediaViewModelExtraKeyImpl : CreationExtras.Key<MediaViewModelExtra>
-
-        val MEDIA_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<MediaViewModelExtra> =
-            MediaViewModelExtraKeyImpl
-
     }
 
 }

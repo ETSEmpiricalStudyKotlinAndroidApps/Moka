@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.TreeEntryType
 import io.tonnyl.moka.common.data.treeEntryType
@@ -68,16 +67,6 @@ class RepositoryFilesViewModel(private val extra: RepositoryFilesViewModelExtra)
                 _entry.postValue(Resource.error(exception = e, data = entry.value?.data))
             }
         }
-    }
-
-    companion object {
-
-        private object RepositoryFilesViewModelExtraKeyImpl :
-            CreationExtras.Key<RepositoryFilesViewModelExtra>
-
-        val REPOSITORY_FILES_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<RepositoryFilesViewModelExtra> =
-            RepositoryFilesViewModelExtraKeyImpl
-
     }
 
 }

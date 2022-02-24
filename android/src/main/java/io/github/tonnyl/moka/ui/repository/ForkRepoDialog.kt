@@ -7,13 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.ViewModelFactory
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import io.github.tonnyl.moka.ui.viewModel
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi
@@ -26,13 +24,14 @@ fun ForkRepoDialog(
 ) {
     val currentAccount = LocalAccountInstance.current ?: return
 
-    val viewModel = viewModel<RepositoryViewModel>(
-        factory = ViewModelFactory(),
-        defaultCreationExtras = MutableCreationExtras().apply {
-            this[RepositoryViewModel.REPOSITORY_VIEW_MODEL_EXTRA_KEY] = RepositoryViewModelExtra(
-                accountInstance = currentAccount,
-                login = login,
-                repositoryName = repoName
+    val viewModel = viewModel(
+        initializer = {
+            RepositoryViewModel(
+                extra = RepositoryViewModelExtra(
+                    accountInstance = currentAccount,
+                    login = login,
+                    repositoryName = repoName
+                )
             )
         }
     )

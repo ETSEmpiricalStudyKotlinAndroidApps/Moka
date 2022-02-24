@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
@@ -40,15 +39,6 @@ class CommitViewModel(extra: CommitViewModelExtra) : ViewModel() {
                 )
             }
         ).flow.cachedIn(viewModelScope)
-    }
-
-    companion object {
-
-        private object CommitViewModelExtraKeyImpl : CreationExtras.Key<CommitViewModelExtra>
-
-        val COMMIT_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<CommitViewModelExtra> =
-            CommitViewModelExtraKeyImpl
-
     }
 
 }

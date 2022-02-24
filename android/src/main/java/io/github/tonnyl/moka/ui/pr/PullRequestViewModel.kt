@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import com.benasher44.uuid.Uuid
@@ -119,16 +118,6 @@ class PullRequestViewModel(private val extra: PullRequestViewModelExtra) : ViewM
 
     fun onErrorDismissed() {
         _addCommentResource.value = null
-    }
-
-    companion object {
-
-        private object PullRequestViewModelExtraKeyImpl :
-            CreationExtras.Key<PullRequestViewModelExtra>
-
-        val PULL_REQUEST_VIEW_MODEL_EXTRA_KEY: CreationExtras.Key<PullRequestViewModelExtra> =
-            PullRequestViewModelExtraKeyImpl
-
     }
 
 }

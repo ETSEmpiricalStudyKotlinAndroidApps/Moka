@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
 import io.github.tonnyl.moka.data.UserStatus
 import io.tonnyl.moka.common.AccountInstance
+import io.tonnyl.moka.common.data.ExpireAt
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.graphql.ChangeUserStatusMutation

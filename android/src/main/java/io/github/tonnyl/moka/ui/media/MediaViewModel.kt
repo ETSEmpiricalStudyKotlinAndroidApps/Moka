@@ -16,6 +16,7 @@ import io.github.tonnyl.moka.work.DownloadMediaWorker
 import io.github.tonnyl.moka.work.SaveMediaWorker
 import io.github.tonnyl.moka.work.ShareMediaWorker
 import io.tonnyl.moka.common.AccountInstance
+import io.tonnyl.moka.common.data.MediaType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

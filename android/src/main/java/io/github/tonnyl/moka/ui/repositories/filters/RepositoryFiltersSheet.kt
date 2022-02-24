@@ -20,13 +20,13 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption
-import io.github.tonnyl.moka.ui.repositories.RepositoriesQueryOption.*
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareSnackbar
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import io.tonnyl.moka.common.data.RepositoriesQueryOption
+import io.tonnyl.moka.common.data.RepositoriesQueryOption.*
 import io.tonnyl.moka.graphql.type.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.explore.filters
+package io.tonnyl.moka.common.data
 
 enum class FiltersType {
 

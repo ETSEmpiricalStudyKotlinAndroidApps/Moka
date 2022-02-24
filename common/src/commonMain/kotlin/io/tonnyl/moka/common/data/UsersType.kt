@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.users
+package io.tonnyl.moka.common.data
 
 enum class UsersType {
 

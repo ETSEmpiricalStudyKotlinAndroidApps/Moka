@@ -22,6 +22,7 @@ import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MediaTheme
+import io.tonnyl.moka.common.data.MediaType
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalAnimationApi

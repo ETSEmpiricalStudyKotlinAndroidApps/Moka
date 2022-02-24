@@ -35,9 +35,10 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.*
+import io.tonnyl.moka.common.data.ProfileType
+import io.tonnyl.moka.common.data.UsersType
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.UserItemProvider
 import io.tonnyl.moka.graphql.fragment.UserListItemFragment

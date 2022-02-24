@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
+import io.tonnyl.moka.common.data.RepositoriesQueryOption
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import kotlinx.serialization.ExperimentalSerializationApi
 

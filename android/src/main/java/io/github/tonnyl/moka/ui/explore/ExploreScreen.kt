@@ -36,11 +36,11 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.extension.displayStringResId
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.explore.filters.FiltersType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.ListSubheader
 import io.github.tonnyl.moka.widget.MainSearchBar
+import io.tonnyl.moka.common.data.FiltersType
 import io.tonnyl.moka.common.db.data.TrendingDeveloper
 import io.tonnyl.moka.common.db.data.TrendingRepository
 import io.tonnyl.moka.common.network.Status

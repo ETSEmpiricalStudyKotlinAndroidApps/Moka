@@ -44,6 +44,7 @@ import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.SearchBox
+import io.tonnyl.moka.common.data.FiltersType
 import io.tonnyl.moka.common.store.ExploreOptionsSerializer
 import io.tonnyl.moka.common.store.data.ExploreLanguage
 import io.tonnyl.moka.common.store.data.ExploreOptions

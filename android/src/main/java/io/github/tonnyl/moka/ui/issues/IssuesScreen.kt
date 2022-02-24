@@ -38,7 +38,6 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
@@ -47,6 +46,7 @@ import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.IssueListItem
 import io.tonnyl.moka.common.data.IssuePrState
 import io.tonnyl.moka.common.data.IssuePullRequestQueryState
+import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.IssueItemProvider
 import kotlinx.serialization.ExperimentalSerializationApi

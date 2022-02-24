@@ -27,11 +27,11 @@ import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.DividerSize
 import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.db.data.TrendingDeveloper
 import io.tonnyl.moka.common.util.TrendingDeveloperProvider
 

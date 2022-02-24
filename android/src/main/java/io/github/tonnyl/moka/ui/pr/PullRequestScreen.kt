@@ -54,11 +54,11 @@ import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.issue.IssueOrPullRequestHeader
 import io.github.tonnyl.moka.ui.issue.IssuePullRequestEventData
 import io.github.tonnyl.moka.ui.issue.IssueTimelineCommentItem
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.toColor
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.IssueTimelineItem
+import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.data.PullRequestTimelineItem
 import io.tonnyl.moka.common.data.extension.assigneeLogin
 import io.tonnyl.moka.common.data.extension.requestedReviewerLogin

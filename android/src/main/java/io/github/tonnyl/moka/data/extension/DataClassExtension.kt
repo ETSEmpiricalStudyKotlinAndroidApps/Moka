@@ -6,10 +6,10 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import androidx.core.content.res.ResourcesCompat
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.tonnyl.moka.common.data.AccessToken
 import io.tonnyl.moka.common.data.AuthenticatedUser
 import io.tonnyl.moka.common.data.NotificationReasons
+import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.db.data.Notification
 import io.tonnyl.moka.common.db.data.NotificationRepositoryOwner
 import io.tonnyl.moka.common.store.data.Account

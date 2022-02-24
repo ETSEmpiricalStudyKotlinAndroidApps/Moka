@@ -36,11 +36,11 @@ import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.about.URL_OF_PRIVACY_POLICY
 import io.github.tonnyl.moka.ui.about.URL_OF_TERMS_OF_SERVICE
 import io.github.tonnyl.moka.ui.auth.AuthActivity
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.OutlineChip
 import io.tonnyl.moka.common.AccountInstance
+import io.tonnyl.moka.common.data.ProfileType
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalPagingApi

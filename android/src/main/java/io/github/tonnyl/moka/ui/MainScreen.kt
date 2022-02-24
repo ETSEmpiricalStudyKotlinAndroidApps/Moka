@@ -53,7 +53,6 @@ import io.github.tonnyl.moka.ui.emojis.EmojisScreen
 import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiScreen
 import io.github.tonnyl.moka.ui.explore.ExploreScreen
 import io.github.tonnyl.moka.ui.explore.filters.ExploreFiltersScreen
-import io.github.tonnyl.moka.ui.explore.filters.FiltersType
 import io.github.tonnyl.moka.ui.file.FileScreen
 import io.github.tonnyl.moka.ui.file.download.DownloadFileDialog
 import io.github.tonnyl.moka.ui.inbox.InboxScreen
@@ -63,7 +62,6 @@ import io.github.tonnyl.moka.ui.issues.create.CreateIssueScreen
 import io.github.tonnyl.moka.ui.pr.PullRequestScreen
 import io.github.tonnyl.moka.ui.pr.thread.CommentTreadScreen
 import io.github.tonnyl.moka.ui.profile.ProfileScreen
-import io.github.tonnyl.moka.ui.profile.ProfileType
 import io.github.tonnyl.moka.ui.profile.ProfileViewModel
 import io.github.tonnyl.moka.ui.profile.ProfileViewModelExtra
 import io.github.tonnyl.moka.ui.profile.edit.EditProfileScreen
@@ -75,7 +73,6 @@ import io.github.tonnyl.moka.ui.release.ReleaseScreen
 import io.github.tonnyl.moka.ui.release.assets.ReleaseAssetsScreen
 import io.github.tonnyl.moka.ui.releases.ReleasesScreen
 import io.github.tonnyl.moka.ui.repositories.RepositoriesScreen
-import io.github.tonnyl.moka.ui.repositories.RepositoryType
 import io.github.tonnyl.moka.ui.repository.ForkRepoDialog
 import io.github.tonnyl.moka.ui.repository.RepositoryScreen
 import io.github.tonnyl.moka.ui.repository.files.RepositoryFilesScreen
@@ -88,7 +85,10 @@ import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.timeline.TimelineScreen
 import io.github.tonnyl.moka.ui.topics.RepositoryTopicsScreen
 import io.github.tonnyl.moka.ui.users.UsersScreen
-import io.github.tonnyl.moka.ui.users.UsersType
+import io.tonnyl.moka.common.data.FiltersType
+import io.tonnyl.moka.common.data.ProfileType
+import io.tonnyl.moka.common.data.RepositoryType
+import io.tonnyl.moka.common.data.UsersType
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 

@@ -59,6 +59,7 @@ import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareSnackbar
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import io.tonnyl.moka.common.data.MediaType
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.math.max
 import kotlin.math.roundToInt

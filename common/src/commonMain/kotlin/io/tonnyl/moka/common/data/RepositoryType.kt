@@ -1,4 +1,4 @@
-package io.github.tonnyl.moka.ui.repositories
+package io.tonnyl.moka.common.data
 
 enum class RepositoryType {
 

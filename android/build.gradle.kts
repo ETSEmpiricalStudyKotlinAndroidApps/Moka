@@ -126,9 +126,10 @@ dependencies {
     implementation(Deps.AndroidX.UI.viewBinding)
     implementation(Deps.AndroidX.UI.constraintLayout)
 
-    // Google
-    implementation(Deps.Google.firebaseAnalyticsKtx)
-    implementation(Deps.Google.firebaseCrashlytics)
+    implementation(Deps.Google.Firebase.analyticsKtx)
+    implementation(Deps.Google.Firebase.crashlytics)
+    implementation(platform(Deps.Google.Firebase.bom))
+
     implementation(Deps.Google.material)
     implementation(Deps.Google.material3)
     implementation(Deps.Google.Accompanist.insets)

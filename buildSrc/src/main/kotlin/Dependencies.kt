@@ -16,29 +16,30 @@ object Versions {
     const val serializationProtoBuf = "1.3.2"
     const val browser = "1.4.0"
     const val lifecycle = "2.2.0"
-    const val liveData = "2.5.0-alpha02"
-    const val viewModelCompose = "2.5.0-alpha02"
-    const val navigation = "2.5.0-alpha02"
+    const val liveData = "2.5.0-alpha03"
+    const val viewModelCompose = "2.5.0-alpha03"
+    const val lifecycleRuntime = "2.5.0-alpha03"
+    const val navigation = "2.5.0-alpha03"
     const val paging = "3.1.0"
     const val pagingCompose = "1.0.0-alpha14"
     const val workManager = "2.8.0-alpha01"
-    const val room = "2.4.1"
-    const val ui = "1.2.0-alpha03"
+    const val room = "2.5.0-alpha01"
+    const val ui = "1.2.0-alpha04"
     const val composeDesktop = "1.2.0-alpha01-dev609"
     const val constraintLayoutCompose = "1.0.0"
     const val wearOSCompose = "1.0.0-alpha16"
     const val dataStore = "1.0.0"
-    const val activityCompose = "1.5.0-alpha02"
+    const val activityCompose = "1.5.0-alpha03"
     const val splashScreen = "1.0.0-beta01"
     const val accompanist = "0.24.2-alpha"
     const val material = "1.6.0-alpha02"
-    const val material3 = "1.0.0-alpha05"
-    const val glance = "1.0.0-alpha02"
+    const val material3 = "1.0.0-alpha06"
+    const val glance = "1.0.0-alpha03"
     const val kspApi = "1.6.10-1.0.2"
     const val wearOS = "17.1.0"
-    const val wear = "1.3.0-alpha01"
+    const val wear = "1.3.0-alpha02"
     const val swipeRefresh = "1.2.0-alpha01"
-    const val lottie = "4.2.2"
+    const val lottie = "5.0.1"
     const val okhttpLoggingInterceptor = "4.7.2"
     const val apollo = "3.0.0"
     const val commonMark = "0.15.2"
@@ -47,8 +48,9 @@ object Versions {
     const val jsoup = "1.12.1"
     const val logcat = "0.1"
     const val ktor = "1.6.7"
-    const val firebaseAnalyticsKtx = "20.0.2"
-    const val firebaseCrashlytics = "18.2.6"
+    const val analyticsKtx = "20.1.0"
+    const val crashlytics = "18.2.8"
+    const val bom = "29.1.0"
     const val leakCanary = "2.8.1"
     const val junit = "4.13.2"
     const val androidJunit = "1.1.4-alpha03"
@@ -115,7 +117,7 @@ object Deps {
             const val viewModelCompose =
                 "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.viewModelCompose}"
             const val runtimeKtx =
-                "androidx.lifecycle:lifecycle-runtime:${Versions.lifecycle}"
+                "androidx.lifecycle:lifecycle-runtime:${Versions.lifecycleRuntime}"
 
         }
 
@@ -204,10 +206,14 @@ object Deps {
 
         }
 
-        const val firebaseAnalyticsKtx =
-            "com.google.firebase:firebase-analytics-ktx:${Versions.firebaseAnalyticsKtx}"
-        const val firebaseCrashlytics =
-            "com.google.firebase:firebase-crashlytics:${Versions.firebaseCrashlytics}"
+        object Firebase {
+
+            const val analyticsKtx = "com.google.firebase:firebase-analytics-ktx:${Versions.analyticsKtx}"
+            const val crashlytics = "com.google.firebase:firebase-crashlytics:${Versions.crashlytics}"
+            const val bom = "com.google.firebase:firebase-bom:${Versions.bom}"
+
+        }
+
         const val material = "com.google.android.material:material:${Versions.material}"
         const val material3 = "androidx.compose.material3:material3:${Versions.material3}"
         const val kspApi = "com.google.devtools.ksp:symbol-processing-api:${Versions.kspApi}"

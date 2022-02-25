@@ -1,7 +1,5 @@
 package io.github.tonnyl.moka
 
-import android.accounts.AccountManager
-import android.accounts.OnAccountsUpdateListener
 import android.app.Application
 import android.os.Build.VERSION.SDK_INT
 import androidx.datastore.core.DataStore
@@ -15,30 +13,20 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.decode.SvgDecoder
 import coil.util.CoilUtils
-import io.github.tonnyl.moka.data.extension.toPBAccessToken
-import io.github.tonnyl.moka.data.extension.toPbAccount
-import io.github.tonnyl.moka.ui.auth.Authenticator
 import io.github.tonnyl.moka.work.NotificationWorker
 import io.tonnyl.moka.common.AccountInstance
-import io.tonnyl.moka.common.data.AccessToken
-import io.tonnyl.moka.common.data.AuthenticatedUser
 import io.tonnyl.moka.common.network.KtorClient
-import io.tonnyl.moka.common.serialization.json
 import io.tonnyl.moka.common.store.AccountSerializer
 import io.tonnyl.moka.common.store.SettingSerializer
 import io.tonnyl.moka.common.store.data.NotificationSyncInterval
 import io.tonnyl.moka.common.store.data.Settings
-import io.tonnyl.moka.common.store.data.SignedInAccount
 import io.tonnyl.moka.common.store.data.SignedInAccounts
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
-import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
@@ -50,10 +38,6 @@ import java.util.concurrent.TimeUnit
 @ExperimentalSerializationApi
 class MokaApp : Application(), ImageLoaderFactory {
 
-    val accountManager: AccountManager by lazy {
-        AccountManager.get(this)
-    }
-
     val okHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -62,73 +46,6 @@ class MokaApp : Application(), ImageLoaderFactory {
     }
 
     val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-
-    private val accountListener by lazy {
-        OnAccountsUpdateListener { onDeviceAccountsRawData ->
-            applicationScope.launch(Dispatchers.IO) {
-                try {
-                    val onDeviceAccountAndTokenPairs = onDeviceAccountsRawData.mapNotNull {
-                        val account = runCatching {
-                            json.decodeFromString<AuthenticatedUser>(
-                                accountManager.getUserData(
-                                    it,
-                                    Authenticator.KEY_AUTH_USER_INFO
-                                )
-                            )
-                        }.getOrNull()
-                        val token = runCatching {
-                            json.decodeFromString<AccessToken>(
-                                accountManager.blockingGetAuthToken(
-                                    it,
-                                    Authenticator.KEY_AUTH_TOKEN,
-                                    true
-                                )
-                            )
-                        }.getOrNull()
-                        if (account == null || token == null) {
-                            null
-                        } else {
-                            Pair(account, token)
-                        }
-                    }
-
-                    val sortedAccounts = mutableListOf<Pair<AuthenticatedUser, AccessToken>>()
-
-                    val existingAccounts = accountsDataStore.data.single().accounts
-                    existingAccounts.forEach { signedInAccount ->
-                        val onDeviceAccount =
-                            onDeviceAccountAndTokenPairs.find { it.first.id == signedInAccount.account.id }
-                        if (onDeviceAccount != null) {
-                            sortedAccounts.add(onDeviceAccount)
-                        }
-                    }
-
-                    onDeviceAccountAndTokenPairs.forEach { onDeviceAccountAndTokenPair ->
-                        val hasAdded =
-                            sortedAccounts.find { it.first.id == onDeviceAccountAndTokenPair.first.id }
-                        if (hasAdded != null) {
-                            sortedAccounts.add(onDeviceAccountAndTokenPair)
-                        }
-                    }
-
-                    accountsDataStore.updateData { store ->
-                        store.copy(
-                            accounts = sortedAccounts.map { (onDeviceAccount, token) ->
-                                SignedInAccount(
-                                    account = onDeviceAccount.toPbAccount(),
-                                    accessToken = token.toPBAccessToken()
-                                )
-                            }
-                        )
-                    }
-                } catch (e: Exception) {
-                    logcat(priority = LogPriority.ERROR) { e.asLog() }
-                }
-            }
-
-            triggerNotificationWorker()
-        }
-    }
 
     val settingsDataStore: DataStore<Settings> by dataStore(
         fileName = "global_settings.pb",
@@ -150,16 +67,6 @@ class MokaApp : Application(), ImageLoaderFactory {
                 )
             }
         }.asLiveData(timeoutInMs = Long.MAX_VALUE)
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-
-        accountManager.addOnAccountsUpdatedListener(
-            accountListener,
-            null,
-            true
-        )
     }
 
     override fun newImageLoader(): ImageLoader {

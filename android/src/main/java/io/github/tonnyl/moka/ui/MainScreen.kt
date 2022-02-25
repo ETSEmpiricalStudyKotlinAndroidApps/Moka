@@ -46,6 +46,8 @@ import io.github.tonnyl.moka.data.toNonNullUserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
 import io.github.tonnyl.moka.ui.about.URL_OF_FAQ
 import io.github.tonnyl.moka.ui.account.AccountDialogScreen
+import io.github.tonnyl.moka.ui.account.manage.LogoutConfirmDialog
+import io.github.tonnyl.moka.ui.account.manage.ManageAccountsScreen
 import io.github.tonnyl.moka.ui.branches.BranchesScreen
 import io.github.tonnyl.moka.ui.commit.CommitScreen
 import io.github.tonnyl.moka.ui.commits.CommitsScreen
@@ -384,6 +386,10 @@ sealed class Screen(val route: String) {
 
     object CreateIssue : Screen("create_issue/{${ARG_REPO_ID}}")
 
+    object ManageAccounts : Screen(route = "manage_accounts")
+
+    object LogOutConfirmDialog : Screen(route = "log_out_confirm/{${ARG_ACCOUNT_ID}}")
+
     companion object {
 
         const val ARG_PROFILE_LOGIN = "arg_profile_login"
@@ -448,6 +454,8 @@ sealed class Screen(val route: String) {
         const val ARG_EXPLORE_FILTERS_TYPE = "arg_explore_filters_type"
 
         const val ARG_REPO_ID = "arg_repo_id"
+
+        const val ARG_ACCOUNT_ID = "arg_account_id"
     }
 
 }
@@ -1467,6 +1475,25 @@ private fun MainNavHost(
             currentRoute.value = Screen.CreateIssue.route
 
             CreateIssueScreen(repoId = backStackEntry.arguments?.getString(Screen.ARG_REPO_ID) ?: return@composable)
+        }
+        composable(route = Screen.ManageAccounts.route) {
+            currentRoute.value = Screen.ManageAccounts.route
+
+            ManageAccountsScreen()
+        }
+        dialog(
+            route = Screen.LogOutConfirmDialog.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_ACCOUNT_ID) {
+                    type = NavType.LongType
+                }
+            )
+        ) { navBackStackEntry ->
+            currentRoute.value = Screen.LogOutConfirmDialog.route
+
+            LogoutConfirmDialog(
+                accountId = navBackStackEntry.arguments?.getLong(Screen.ARG_ACCOUNT_ID) ?: return@dialog
+            )
         }
     }
 }

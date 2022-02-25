@@ -179,6 +179,19 @@ class MainViewModel(
         }
     }
 
+    fun deleteAccount(account: SignedInAccount) {
+        viewModelScope.launch {
+            try {
+                val app = getApplication<MokaApp>()
+                app.accountsDataStore.updateData { store ->
+                    store.copy(accounts = store.accounts.filter { it != account })
+                }
+            } catch (e: Exception) {
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
+            }
+        }
+    }
+
     fun filterProgrammingLanguages(text: String?) {
         viewModelScope.launch(Dispatchers.IO) {
             try {

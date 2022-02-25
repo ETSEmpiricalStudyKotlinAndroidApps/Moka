@@ -1,7 +1,5 @@
 package io.github.tonnyl.moka.util
 
-import android.accounts.Account
-import android.accounts.AccountManager
 import android.app.Activity
 import android.app.DownloadManager
 import android.content.Context
@@ -9,20 +7,14 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
-import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.auth.Authenticator
-import io.tonnyl.moka.common.data.AccessToken
-import io.tonnyl.moka.common.data.AuthenticatedUser
 import io.tonnyl.moka.common.data.Emoji
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
@@ -31,27 +23,6 @@ import okio.source
 import java.io.File
 
 private const val TAG = "AndroidExtensions"
-
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
-fun AccountManager.insertNewAccount(token: AccessToken, user: AuthenticatedUser) {
-    val userString = runCatching {
-        json.encodeToString(user)
-    }.getOrNull() ?: return
-    val tokenString = kotlin.runCatching {
-        json.encodeToString(token)
-    }.getOrNull() ?: return
-
-    val account = Account(user.id.toString(), Authenticator.KEY_ACCOUNT_TYPE)
-
-    addAccountExplicitly(
-        account,
-        System.currentTimeMillis().toString(),
-        Bundle().apply {
-            putString(Authenticator.KEY_AUTH_USER_INFO, userString)
-        })
-    setAuthToken(account, Authenticator.KEY_AUTH_TOKEN, tokenString)
-}
 
 val Resources.isDarkModeOn: Boolean
     get() = (configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) == Configuration.UI_MODE_NIGHT_YES

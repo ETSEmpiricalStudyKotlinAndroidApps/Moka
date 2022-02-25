@@ -55,21 +55,6 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:theme="@style/AppTheme.PostSplashScreenTheme" />
 
-        <service
-            android:name=".ui.auth.AuthenticationService"
-            android:enabled="true"
-            android:exported="false">
-
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
-
-        </service>
-
         <receiver android:name=".notifications.NotificationDismissReceiver" />
 
         <receiver android:name=".notifications.NotificationCallbackReceiver" />

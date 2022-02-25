@@ -11,7 +11,6 @@ import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
 import io.github.tonnyl.moka.data.extension.toPbAccount
 import io.github.tonnyl.moka.ui.Event
-import io.github.tonnyl.moka.util.insertNewAccount
 import io.github.tonnyl.moka.util.updateOnAnyThread
 import io.tonnyl.moka.common.data.AuthenticatedUser
 import io.tonnyl.moka.common.network.KtorClient
@@ -62,11 +61,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     UserApi(ktorClient = KtorClient.unauthenticatedKtorClient)
                         .getAuthenticatedUser(accessToken = accessTokenResp.accessToken)
                 }
-
-                getApplication<MokaApp>().accountManager.insertNewAccount(
-                    token = accessTokenResp,
-                    user = authenticatedUserResp
-                )
 
                 getApplication<MokaApp>().accountsDataStore.updateData { signedInAccounts ->
                     val newAccounts = signedInAccounts.accounts.toMutableList()

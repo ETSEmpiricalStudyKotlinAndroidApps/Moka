@@ -482,7 +482,12 @@
     <string name="accounts_avatar_of_account" translation_description="Content description of signed-in account's avatar image.">Signed-in account\'s avatar image</string>
     <string name="accounts_view_profile">View profile</string>
     <string name="accounts_add_another_account">Add another account</string>
-    <string name="accounts_manage_your_github_account">Manage your Github account</string>
+    <string name="accounts_manage_accounts">Manage accounts</string>
+
+    <string name="manage_accounts">Manage accounts</string>
+    <string name="manage_accounts_logout">Log out</string>
+    <string name="manage_accounts_logout_alert_title">Log out account %1$s?\n&#160;</string>
+    <string name="manage_accounts_logout_alert_message">Are you sure you want to log out?\n\nLogging out removes all your local data including composed drafts.</string>
 
     <string name="emoji_image_placeholder_content_description">Emoji image placeholder</string>
     <string name="emoji_image_content_description">Emoji image</string>

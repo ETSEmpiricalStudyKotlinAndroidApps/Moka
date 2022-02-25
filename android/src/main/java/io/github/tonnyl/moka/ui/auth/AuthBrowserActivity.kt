@@ -7,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -40,8 +39,7 @@ class AuthBrowserActivity : ComponentActivity() {
 
     @OptIn(
         ExperimentalSerializationApi::class,
-        ExperimentalAnimatedInsets::class,
-        ExperimentalMaterialApi::class
+        ExperimentalAnimatedInsets::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

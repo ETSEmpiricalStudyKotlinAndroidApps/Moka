@@ -43,8 +43,7 @@ class KtorClient(
         const val GITHUB_AUTHORIZE_CALLBACK_URI_HOST = "callback"
 
         // Scope
-        const val SCOPE =
-            "repo+admin:org+admin:public_key+admin:repo_hook+admin:org_hook+gist+notifications+user+delete_repo+write:discussion+admin:gpg_key"
+        const val SCOPE = "repo+read:org+gist+notifications+user+delete_repo+write:discussion"
 
         val unauthenticatedKtorClient = KtorClient(
             requireAuth = false,

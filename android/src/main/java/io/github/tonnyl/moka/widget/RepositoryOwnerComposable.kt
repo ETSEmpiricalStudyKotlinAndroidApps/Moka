@@ -1,6 +1,5 @@
 package io.github.tonnyl.moka.widget
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -12,12 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
@@ -38,14 +35,8 @@ fun RepositoryOwner(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.padding(all = ContentPaddingLargeSize)
     ) {
-        Image(
-            painter = rememberImagePainter(
-                data = avatarUrl,
-                builder = {
-                    createAvatarLoadRequest()
-                }
-            ),
-            contentDescription = stringResource(id = R.string.repository_owners_avatar_image_content_description),
+        AvatarImage(
+            url = avatarUrl,
             modifier = Modifier
                 .size(size = IssueTimelineEventAuthorAvatarSize)
                 .clip(shape = CircleShape)

@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.repositories
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,7 +25,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -35,7 +33,6 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.repositories.filters.RepositoryFiltersSheet
 import io.github.tonnyl.moka.ui.theme.*
@@ -333,14 +330,8 @@ fun ItemRepository(
             }
             .padding(all = ContentPaddingLargeSize)
     ) {
-        Image(
-            painter = rememberImagePainter(
-                data = repo.repositoryOwner.repositoryOwner.avatarUrl,
-                builder = {
-                    createAvatarLoadRequest()
-                }
-            ),
-            contentDescription = stringResource(id = R.string.users_avatar_content_description),
+        AvatarImage(
+            url = repo.repositoryOwner.repositoryOwner.avatarUrl,
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)

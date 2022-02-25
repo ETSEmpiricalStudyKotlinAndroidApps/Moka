@@ -21,15 +21,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.toColor
+import io.github.tonnyl.moka.widget.AvatarImage
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.db.data.TrendingRepository
 import io.tonnyl.moka.common.util.TrendingRepositoryProvider
@@ -56,14 +55,8 @@ fun TrendingRepositoryItem(
             }
             .padding(all = ContentPaddingLargeSize)
     ) {
-        Image(
-            painter = rememberImagePainter(
-                data = repository.avatar,
-                builder = {
-                    createAvatarLoadRequest()
-                }
-            ),
-            contentDescription = stringResource(id = R.string.repository_owners_avatar_image_content_description),
+        AvatarImage(
+            url = repository.avatar,
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)

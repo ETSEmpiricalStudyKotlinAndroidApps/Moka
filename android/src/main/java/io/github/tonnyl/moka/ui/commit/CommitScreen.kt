@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.commit
 
 import android.text.format.DateUtils
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,7 +28,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderDefaults
@@ -41,7 +39,6 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.CommitFile
@@ -315,14 +312,8 @@ private fun ItemCommitDetails(
         )
         Spacer(modifier = Modifier.height(height = ContentPaddingSmallSize))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = rememberImagePainter(
-                    data = resp.author?.avatarUrl.orGhostAvatarUrl,
-                    builder = {
-                        createAvatarLoadRequest()
-                    }
-                ),
-                contentDescription = stringResource(id = R.string.accounts_avatar_of_account),
+            AvatarImage(
+                url = resp.author?.avatarUrl.orGhostAvatarUrl,
                 modifier = Modifier
                     .size(size = IssueTimelineEventAuthorAvatarSize)
                     .clip(shape = CircleShape)

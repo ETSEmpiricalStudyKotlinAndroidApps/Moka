@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.account.manage
 
 import android.content.Intent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -19,18 +18,17 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.paging.ExperimentalPagingApi
-import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.theme.IconSize
 import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
+import io.github.tonnyl.moka.widget.AvatarImage
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.tonnyl.moka.common.AccountInstance
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -112,14 +110,8 @@ private fun ManageAccountsScreenContent(
         items(count = accounts.size) {
             ListItem(
                 icon = {
-                    Image(
-                        painter = rememberImagePainter(
-                            data = accounts[it].signedInAccount.account.avatarUrl,
-                            builder = {
-                                createAvatarLoadRequest()
-                            }
-                        ),
-                        contentDescription = stringResource(id = R.string.users_avatar_content_description),
+                    AvatarImage(
+                        url = accounts[it].signedInAccount.account.avatarUrl,
                         modifier = Modifier
                             .size(size = IconSize)
                             .clip(shape = CircleShape)

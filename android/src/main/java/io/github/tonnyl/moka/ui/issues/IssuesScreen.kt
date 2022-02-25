@@ -27,7 +27,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -36,7 +35,6 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
@@ -325,14 +323,8 @@ private fun ItemIssue(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(start = 40.dp)
             ) {
-                Image(
-                    painter = rememberImagePainter(
-                        data = issue.user?.avatarUrl,
-                        builder = {
-                            createAvatarLoadRequest()
-                        }
-                    ),
-                    contentDescription = stringResource(id = R.string.users_avatar_content_description),
+                AvatarImage(
+                    url = issue.user?.avatarUrl,
                     modifier = Modifier
                         .size(size = 24.dp)
                         .clip(shape = CircleShape)

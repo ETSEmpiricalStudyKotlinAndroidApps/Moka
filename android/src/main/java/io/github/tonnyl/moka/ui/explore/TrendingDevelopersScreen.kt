@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.explore
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -20,17 +19,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.DividerSize
 import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.widget.AvatarImage
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.db.data.TrendingDeveloper
 import io.tonnyl.moka.common.util.TrendingDeveloperProvider
@@ -70,14 +68,8 @@ fun TrendingDeveloperItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(all = ContentPaddingLargeSize)
         ) {
-            Image(
-                painter = rememberImagePainter(
-                    data = developer.avatar,
-                    builder = {
-                        createAvatarLoadRequest()
-                    }
-                ),
-                contentDescription = stringResource(id = R.string.users_avatar_content_description),
+            AvatarImage(
+                url = developer.avatar,
                 modifier = Modifier
                     .size(size = 80.dp)
                     .clip(shape = CircleShape)

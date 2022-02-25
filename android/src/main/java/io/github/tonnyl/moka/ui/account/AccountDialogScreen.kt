@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,15 +28,14 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.ExperimentalPagingApi
-import coil.compose.rememberImagePainter
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.about.URL_OF_PRIVACY_POLICY
 import io.github.tonnyl.moka.ui.about.URL_OF_TERMS_OF_SERVICE
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.widget.AvatarImage
 import io.github.tonnyl.moka.widget.OutlineChip
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.ProfileType
@@ -246,14 +244,8 @@ private fun ItemAccount(
                 bottom = ContentPaddingMediumSize
             )
     ) {
-        Image(
-            painter = rememberImagePainter(
-                data = account.signedInAccount.account.avatarUrl,
-                builder = {
-                    createAvatarLoadRequest()
-                }
-            ),
-            contentDescription = stringResource(id = R.string.accounts_avatar_of_account),
+        AvatarImage(
+            url = account.signedInAccount.account.avatarUrl,
             modifier = Modifier
                 .size(size = IconSize)
                 .clip(shape = CircleShape)

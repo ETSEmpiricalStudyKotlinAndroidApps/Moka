@@ -13,7 +13,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -32,14 +34,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.ExperimentalPagingApi
-import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.safeStartActivity
@@ -193,14 +193,8 @@ private fun ProfileScreenContent(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.padding(all = ContentPaddingLargeSize)
         ) {
-            Image(
-                painter = rememberImagePainter(
-                    data = user?.avatarUrl ?: organization?.avatarUrl,
-                    builder = {
-                        createAvatarLoadRequest()
-                    }
-                ),
-                contentDescription = stringResource(id = R.string.users_avatar_content_description),
+            AvatarImage(
+                url = user?.avatarUrl ?: organization?.avatarUrl,
                 modifier = Modifier
                     .size(size = 92.dp)
                     .clip(shape = CircleShape)
@@ -670,14 +664,8 @@ private fun PinnedItemCard(
             )
     ) {
         Row(modifier = Modifier.padding(all = ContentPaddingLargeSize)) {
-            Image(
-                painter = rememberImagePainter(
-                    data = avatarUrl,
-                    builder = {
-                        createAvatarLoadRequest()
-                    }
-                ),
-                contentDescription = stringResource(id = R.string.users_avatar_content_description),
+            AvatarImage(
+                url = avatarUrl,
                 modifier = Modifier
                     .size(size = IconSize)
                     .clip(shape = CircleShape)

@@ -479,7 +479,6 @@
     <string name="users_content_empty_title">No users found</string>
     <string name="users_content_empty_action">Back to profile</string>
 
-    <string name="accounts_avatar_of_account" translation_description="Content description of signed-in account's avatar image.">Signed-in account\'s avatar image</string>
     <string name="accounts_view_profile">View profile</string>
     <string name="accounts_add_another_account">Add another account</string>
     <string name="accounts_manage_accounts">Manage accounts</string>

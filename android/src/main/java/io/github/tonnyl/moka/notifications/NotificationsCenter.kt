@@ -79,6 +79,12 @@ object NotificationsCenter {
         }
 
         // build intents start
+        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_IMMUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+
         val markAsReadIntent = Intent(context, NotificationCallbackReceiver::class.java).apply {
             action = NotificationCallbackReceiver.ACTION_MARK_AS_READ
             putExtra(NotificationCallbackReceiver.EXTRA_ACCOUNT_ID, accountId)
@@ -88,7 +94,7 @@ object NotificationsCenter {
             context,
             0,
             markAsReadIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            pendingIntentFlags
         )
         val readAction = NotificationCompat.Action.Builder(
             R.drawable.ic_check_24,
@@ -107,7 +113,7 @@ object NotificationsCenter {
             context,
             0,
             unsubscribeIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            pendingIntentFlags
         )
         val unsubscribeAction = NotificationCompat.Action.Builder(
             R.drawable.ic_notifications_off,
@@ -125,7 +131,7 @@ object NotificationsCenter {
             context,
             0,
             dismissIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            pendingIntentFlags
         )
 
         val contentPendingIntent = PendingIntent.getActivity(
@@ -135,7 +141,7 @@ object NotificationsCenter {
                 action = MainActivity.ACTION_INBOX
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             },
-            PendingIntent.FLAG_UPDATE_CURRENT
+            pendingIntentFlags
         )
         // build intents end
 

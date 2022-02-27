@@ -69,7 +69,8 @@ data class EventPayload(
     /**
      * Only for [Event.RELEASE_EVENT]
      */
-    var release: EventRelease? = null,
+    @SerialName("release")
+    var eventRelease: EventRelease? = null,
 
     /**
      * Only for [Event.ORG_BLOCK_EVENT]

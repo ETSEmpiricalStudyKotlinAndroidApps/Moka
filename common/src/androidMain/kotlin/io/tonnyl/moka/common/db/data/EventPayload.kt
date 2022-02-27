@@ -498,7 +498,7 @@ val SerializableEventPayload.dbModel: EventPayload
         member = member?.dbModel,
         team = team?.dbModel,
         organization = organization?.dbModel,
-        release = release?.dbModel,
+        release = eventRelease?.dbModel,
         blockedUser = blockedUser?.dbModel,
         projectCard = projectCard?.dbModel,
         projectColumn = projectColumn?.dbModel,

@@ -6,8 +6,97 @@
   Copyright © 2022 orgName. All rights reserved.
 */
 
+"Common.ErrorMessage" = "Error while requesting data.";
+"Common.Retry" = "Retry";
+"Common.NoDataFound" = "No data found";
+
+"Common.Time.JustNow" = "Just now";
+"Common.Time.MinutesAgo" = "%d minutes ago";
+"Common.Time.OneHourAgo" = "1 hour ago";
+"Common.Time.HoursAgo" = "%d hours ago";
+"Common.Time.OneDayAgo" = "1 day ago";
+"Common.Time.DaysAgo" = "%d days ago";
+
 "UnknownLanguage" = "Unknown";
 "NoDescriptionProvided" = "No description provided.";
 
-"Explore" = "Explore";
 "Explore.PeriodStars" = "%d stars %@";
+
+"MainTab.Timeline" = "Timeline";
+"MainTab.Explore" = "Explore";
+"MainTab.Inbox" = "Inbox";
+"MainTab.Search" = "Search";
+
+"Issue.Pr.Number" = "#%d";
+
+"Timeline.Event.At" = " at ";
+"Timeline.Event.To" = " to ";
+"Timeline.Event.From" = " from ";
+"Timeline.Event.Starred" = " starred ";
+"Timeline.Event.Created" = " created ";
+"Timeline.Event.Updated" = " updated ";
+"Timeline.Event.Edited" = " edited ";
+"Timeline.Event.Deleted" = " deleted ";
+"Timeline.Event.Opened" = " opened ";
+"Timeline.Event.Transferred" = " transferred ";
+"Timeline.Event.Pinned" = " pinned ";
+"Timeline.Event.Unpinned" = " unpinned ";
+"Timeline.Event.Closed" = " closed ";
+"Timeline.Event.Reopened" = " reopened ";
+"Timeline.Event.Assigned" = " assigned ";
+"Timeline.Event.Unassigned" = " unassigned ";
+"Timeline.Event.Labeled" = " labeled ";
+"Timeline.Event.Unlabeled" = " unlabeled ";
+"Timeline.Event.Milestoned" = " milestoned ";
+"Timeline.Event.Demilestoned" = " demilestoned ";
+"Timeline.Event.Added" = " added ";
+"Timeline.Event.OpenSourced" = " open-sourced ";
+"Timeline.Event.Synchronized" = " synchronized ";
+"Timeline.Event.ReviewRequested" = " requested review on ";
+"Timeline.Event.ReviewRequestRemoved" = " removed review-request on ";
+"Timeline.Event.Submitted" = " submitted ";
+"Timeline.Event.Dismissed" = " dismissed ";
+"Timeline.Event.Archived" = " archived ";
+"Timeline.Event.Unarchived" = " unarchived ";
+"Timeline.Event.Publicized" = " publicized ";
+"Timeline.Event.Privatized" = " privatized ";
+"Timeline.Event.PushedTo" = " pushed to ";
+"Timeline.Event.AddedTeamRepository" = " added repository ";
+"Timeline.Event.Downloaded" = " downloaded ";
+"Timeline.Event.Followed" = " followed ";
+"Timeline.Event.Forked" = " forked ";
+"Timeline.Event.Released" = " released ";
+"Timeline.Event.ForkApply" = " applied a patch ";
+"Timeline.Event.Blocked" = " blocked ";
+"Timeline.Event.Unblocked" = " unblocked ";
+"Timeline.Event.Moved" = " moved ";
+"Timeline.Event.Converted" = " converted ";
+"Timeline.Event.Removed" = " removed ";
+"Timeline.Event.Invited" = " invited ";
+"Timeline.Event.CommentOnCommit" = " commented on commit ";
+
+"Timeline.Event.Branch" = "branch ";
+"Timeline.Event.Tag" = "tag ";
+"Timeline.Event.Gist" = "Gist ";
+"Timeline.Event.Gollum" = "a wiki page in ";
+"Timeline.Event.Issue" = "issue ";
+"Timeline.Event.Issue.Comment" = "a comment on issue ";
+"Timeline.Event.PullRequest" = "pull request ";
+"Timeline.Event.PullRequest.ReviewComment" = "a review comment on pull request ";
+"Timeline.Event.PullRequest.Review" = "a review on pull request ";
+"Timeline.Event.Repository" = "repository ";
+"Timeline.Event.ProjectCard" = "a project card ";
+"Timeline.Event.ProjectColumn" = "a project column ";
+
+"Inbox.Notification.Reason.Assign" = "Assign";
+"Inbox.Notification.Reason.Author" = "Author";
+"Inbox.Notification.Reason.Comment" = "Comment";
+"Inbox.Notification.Reason.Invitation" = "Invitation";
+"Inbox.Notification.Reason.Manual" = "Manual";
+"Inbox.Notification.Reason.Mention" = "Mention";
+"Inbox.Notification.Reason.ReviewRequested" = "Review Requested";
+"Inbox.Notification.Reason.StateChange" = "State Change";
+"Inbox.Notification.Reason.Subscribed" = "Subscribed";
+"Inbox.Notification.Reason.TeamMention" = "Team Mention";
+"Inbox.Notification.Reason.Other" = "Other";
+"Inbox.Notification.Divider" = " - ";

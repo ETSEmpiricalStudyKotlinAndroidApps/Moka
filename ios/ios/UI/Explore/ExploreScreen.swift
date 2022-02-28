@@ -64,7 +64,7 @@ struct ExploreScreen: View {
                         viewModel.refresh()
                     }
                 }
-            }.navigationTitle(NSLocalizedString("Explore", comment: ""))
+            }.navigationTitle(NSLocalizedString("MainTab.Explore", comment: ""))
         }
     }
 }
@@ -79,13 +79,10 @@ struct TrendingDeveloperItem: View {
             Spacer(minLength: index == 0 ? 20 : nil)
             NavigationLink(destination: ProfileScreen(login: developer.username, profileType: .user)) {
                 VStack(alignment: .center) {
-                    AsyncImage(url: URL(string: developer.avatar)!) { image in
-                        image.resizable()
-                            .aspectRatio(contentMode: .fit)
-                    } placeholder: {
-                        Color.gray
-                    }.frame(width: 80, height: 80, alignment: .center)
-                        .clipShape(Circle())
+                    AvatarView(
+                        url: developer.avatar,
+                        size: 80
+                    )
                     Text(developer.name ?? developer.username)
                         .font(.body)
                     Text(developer.username)
@@ -113,13 +110,7 @@ struct TrendingRepositoryItem: View {
     var body: some View {
         NavigationLink(destination: RepositoryScreen(login: repo.author, repoName: repo.name)) {
             HStack(alignment: .top) {
-                AsyncImage(url: URL(string: repo.avatar)) { image in
-                    image.resizable()
-                        .aspectRatio(contentMode: .fit)
-                } placeholder: {
-                    Color.gray
-                }.frame(width: 40, height: 40, alignment: .center)
-                    .clipShape(Circle())
+                AvatarView(url: repo.avatar)
                 VStack(alignment: .leading) {
                     Text("\(repo.author)/\(repo.name)")
                         .font(.body)

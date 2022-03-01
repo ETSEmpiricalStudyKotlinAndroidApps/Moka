@@ -100,6 +100,7 @@ fun CreateIssueScreen(repoId: String) {
                     SnackBarErrorMessage(
                         scaffoldState = scaffoldState,
                         action = viewModel::create,
+                        actionId = R.string.common_retry,
                         dismissAction = viewModel::onCreateIssueErrorDismissed
                     )
                 }
@@ -274,7 +275,8 @@ private fun CreateIssueScreenContent(
                     it.invoke()
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(all = ContentPaddingLargeSize)
                 .focusable(enabled = true)
                 .focusRequester(focusRequester = titleFocusRequester)
@@ -302,7 +304,8 @@ private fun CreateIssueScreenContent(
                     it.invoke()
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .weight(weight = 1f)
                 .padding(all = ContentPaddingLargeSize)
                 .focusable(enabled = true)

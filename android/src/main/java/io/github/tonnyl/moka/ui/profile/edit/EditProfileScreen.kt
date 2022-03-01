@@ -99,6 +99,7 @@ fun EditProfileScreen(
                         SnackBarErrorMessage(
                             scaffoldState = scaffoldState,
                             action = viewModel::updateUserInformation,
+                            actionId = R.string.common_retry,
                             dismissAction = viewModel::onErrorDismissed
                         )
                     }

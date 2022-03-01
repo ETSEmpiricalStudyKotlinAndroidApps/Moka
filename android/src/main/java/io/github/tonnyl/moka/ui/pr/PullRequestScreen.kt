@@ -190,6 +190,7 @@ fun PullRequestScreen(
                         scaffoldState = scaffoldState,
                         messageId = R.string.issue_pr_failed_to_add_comment,
                         action = viewModel::addComment,
+                        actionId = R.string.common_retry,
                         dismissAction = viewModel::onErrorDismissed
                     )
                 }

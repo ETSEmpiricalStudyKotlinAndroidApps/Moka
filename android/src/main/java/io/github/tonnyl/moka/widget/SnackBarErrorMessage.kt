@@ -16,7 +16,7 @@ fun SnackBarErrorMessage(
     @StringRes
     messageId: Int = R.string.common_error_requesting_data,
     @StringRes
-    actionId: Int? = R.string.common_retry,
+    actionId: Int? = null,
     duration: SnackbarDuration = SnackbarDuration.Short,
     dismissAction: (() -> Unit)? = null
 ) {

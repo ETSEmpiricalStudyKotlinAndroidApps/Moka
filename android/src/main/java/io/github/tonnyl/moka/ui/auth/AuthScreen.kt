@@ -126,6 +126,7 @@ fun AuthScreen(
             SnackBarErrorMessage(
                 scaffoldState = scaffoldState,
                 action = getStarted,
+                actionId = R.string.common_retry,
                 duration = SnackbarDuration.Indefinite
             )
         }

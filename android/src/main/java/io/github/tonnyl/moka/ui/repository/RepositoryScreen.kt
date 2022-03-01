@@ -226,6 +226,7 @@ fun RepositoryScreen(
                         SnackBarErrorMessage(
                             scaffoldState = scaffoldState,
                             action = viewModel::toggleStar,
+                            actionId = R.string.common_retry,
                             dismissAction = viewModel::onToggleStarErrorDismissed
                         )
                     } else if (subscriptionState?.status == Status.ERROR) {
@@ -385,6 +386,7 @@ fun RepositoryScreen(
             SnackBarErrorMessage(
                 scaffoldState = scaffoldState,
                 action = viewModel::fork,
+                actionId = R.string.common_retry,
                 messageId = R.string.repository_fork_failed,
                 dismissAction = viewModel::clearForkState
             )

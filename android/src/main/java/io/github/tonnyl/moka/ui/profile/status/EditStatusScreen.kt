@@ -476,12 +476,14 @@ private fun EditStatusScreenContent(
             SnackBarErrorMessage(
                 scaffoldState = scaffoldState,
                 action = viewModel::clearStatus,
+                actionId = R.string.common_retry,
                 dismissAction = viewModel::onClearStatusErrorDismissed
             )
         } else if (setStatusStatus?.status == Status.ERROR) {
             SnackBarErrorMessage(
                 scaffoldState = scaffoldState,
                 action = viewModel::updateStatus,
+                actionId = R.string.common_retry,
                 dismissAction = viewModel::onUpdateStatusErrorDismissed
             )
         }

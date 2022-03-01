@@ -123,17 +123,6 @@ object NotificationsCenter {
             .setShowsUserInterface(false)
             .build()
 
-        val dismissIntent = Intent(context, NotificationDismissReceiver::class.java).apply {
-            putExtra(NotificationDismissReceiver.EXTRA_ACCOUNT_ID, accountId)
-            putExtra(NotificationDismissReceiver.EXTRA_NOTIFICATION_ID, n.id)
-        }
-        val dismissPendingIntent = PendingIntent.getBroadcast(
-            context,
-            0,
-            dismissIntent,
-            pendingIntentFlags
-        )
-
         val contentPendingIntent = PendingIntent.getActivity(
             context,
             0,
@@ -155,7 +144,6 @@ object NotificationsCenter {
             .addAction(readAction)
             .addAction(unsubscribeAction)
             .setContentIntent(contentPendingIntent)
-            .setDeleteIntent(dismissPendingIntent)
 
         n.repository.owner.avatarUrl.let { avatarUrl ->
             if (avatarUrl.isNotEmpty()) {

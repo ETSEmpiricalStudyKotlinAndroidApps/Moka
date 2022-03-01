@@ -55,8 +55,6 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:theme="@style/AppTheme.PostSplashScreenTheme" />
 
-        <receiver android:name=".notifications.NotificationDismissReceiver" />
-
         <receiver android:name=".notifications.NotificationCallbackReceiver" />
 
         <receiver

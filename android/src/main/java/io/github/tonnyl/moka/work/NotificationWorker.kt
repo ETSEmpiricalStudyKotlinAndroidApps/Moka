@@ -64,14 +64,20 @@ class NotificationWorker(
 
                 if (!journeyIntoNight) {
                     try {
-                        dao.notificationsToDisplayWithLimit(MAX_NOTIFICATION_SIZE).let { notifations ->
-                            if (notifations.isNotEmpty()) {
-                                NotificationsCenter.showNotifications(
-                                    context = applicationContext,
-                                    notifications = notifations,
-                                    accountId = accountInstance.signedInAccount.account.id
-                                )
-                            }
+                        dao.notificationsToDisplayWithLimit(MAX_NOTIFICATION_SIZE)
+                            .let { localNotifications ->
+                                if (localNotifications.isNotEmpty()) {
+                                    NotificationsCenter.showNotifications(
+                                        context = applicationContext,
+                                        notifications = localNotifications,
+                                        accountId = accountInstance.signedInAccount.account.id
+                                    )
+
+                                    notifications.forEach { notification ->
+                                        accountInstance.database.notificationsDao()
+                                            .markAsDisplayed(notification.id)
+                                    }
+                                }
                         }
                     } catch (e: Exception) {
                         logcat(priority = LogPriority.ERROR) { "query data from db error\n${e.asLog()}" }

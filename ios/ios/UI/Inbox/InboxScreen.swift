@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import SwiftUIX
 import common
 
 struct InboxScreen: View {
@@ -16,17 +17,34 @@ struct InboxScreen: View {
     var body: some View {
         NavigationView {
             let data = viewModel.notificationsResource?.data?.array ?? []
+            let status = viewModel.notificationsResource?.status
             
-            ScrollView {
-                LazyVStack(alignment: .leading) {
-                    ForEach(0..<data.count, id: \.self) { i in
-                        NotificationItem(
-                            notification: data[i],
-                            index: i,
-                            totalDataCount: data.count
-                        ) {
-                            viewModel.loadData(forceRefresh: false)
+            ZStack {
+                if !data.isEmpty {
+                    ScrollView {
+                        LazyVStack(alignment: .leading) {
+                            ForEach(0..<data.count, id: \.self) { i in
+                                NotificationItem(
+                                    notification: data[i],
+                                    index: i,
+                                    totalDataCount: data.count
+                                ) {
+                                    viewModel.loadData(forceRefresh: false)
+                                }
+                            }
                         }
+                    }
+                } else if status == .error {
+                    EmptyScreen() {
+                        viewModel.loadData(forceRefresh: true)
+                    }
+                } else if status == .loading {
+                    ActivityIndicator()
+                        .animated(true)
+                        .style(.regular)
+                } else {
+                    EmptyScreen(msgString: NSLocalizedString("Common.NoDataFound", comment: ""), actionString: "Common.Retry") {
+                        viewModel.loadData(forceRefresh: true)
                     }
                 }
             }

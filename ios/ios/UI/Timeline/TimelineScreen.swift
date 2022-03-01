@@ -7,8 +7,8 @@
 //
 
 import SwiftUI
+import SwiftUIX
 import common
-import Kingfisher
 
 struct TimelineScreen: View {
     
@@ -20,17 +20,28 @@ struct TimelineScreen: View {
             let status = viewModel.eventsResource?.status
             
             ZStack {
-                ScrollView {
-                    LazyVStack(alignment: .leading) {
-                        ForEach(0..<data.count + 1, id: \.self) { i in
-                            makeItemView(index: i, data: data, status: status) {
-                                viewModel.loadData(forceRefresh: false)
+                if !data.isEmpty {
+                    ScrollView {
+                        LazyVStack(alignment: .leading) {
+                            ForEach(0..<data.count + 1, id: \.self) { i in
+                                makeItemView(index: i, data: data, status: status) {
+                                    viewModel.loadData(forceRefresh: false)
+                                }
                             }
                         }
                     }
-                }
-                .refreshable {
-                    viewModel.loadData(forceRefresh: true)
+                } else if status == .error {
+                    EmptyScreen() {
+                        viewModel.loadData(forceRefresh: true)
+                    }
+                } else if status == .loading {
+                    ActivityIndicator()
+                        .animated(true)
+                        .style(.regular)
+                } else {
+                    EmptyScreen(msgString: NSLocalizedString("Common.NoDataFound", comment: ""), actionString: "Common.Retry") {
+                        viewModel.loadData(forceRefresh: true)
+                    }
                 }
             }
             .navigationTitle(NSLocalizedString("MainTab.Timeline", comment: ""))

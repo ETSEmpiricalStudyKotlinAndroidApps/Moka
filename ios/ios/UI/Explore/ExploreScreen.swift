@@ -7,7 +7,6 @@
 //
 
 import common
-import Foundation
 import SwiftUI
 import SwiftUIX
 
@@ -17,54 +16,61 @@ struct ExploreScreen: View {
     var body: some View {
         NavigationView {
             let data = viewModel.dataResource?.data
+            let status = viewModel.dataResource?.status
             let repos = data?.second.array ?? []
             let developers = data?.first.array ?? []
             
             ZStack {
-                if repos.isEmpty {
-                    switch viewModel.dataResource?.status {
-                    case Status.loading:
-                        ActivityIndicator()
-                            .animated(true)
-                            .style(.regular)
-                    case Status.error:
-                        Text("\(viewModel.dataResource?.e?.message ?? "")")
-                    default:
-                        Text("\(viewModel.dataResource?.e?.message ?? "")")
-                    }
-                } else {
-                    List(repos) { repo in
-                        if repos.first == repo {
-                            VStack {
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    LazyHStack {
-                                        ForEach(0..<developers.count) { i in
-                                            TrendingDeveloperItem(
-                                                developer: developers[i],
-                                                index: i,
-                                                count: developers.count
-                                            )
-                                        }
-                                    }.frame(
-                                        minWidth: 0,
-                                        maxWidth: .infinity,
-                                        minHeight: 80,
-                                        maxHeight: .infinity,
-                                        alignment: .topLeading
-                                    )
+                if !repos.isEmpty
+                    || !developers.isEmpty {
+                    ScrollView {
+                        LazyVStack(alignment: .leading) {
+                            let extraItemCount = developers.isEmpty ? 0 : 1
+                            ForEach(0..<repos.count + extraItemCount) { i in
+                                if extraItemCount == 1
+                                    && i == 0 {
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        LazyHStack {
+                                            ForEach(0..<developers.count) { i in
+                                                TrendingDeveloperItem(
+                                                    developer: developers[i],
+                                                    index: i,
+                                                    count: developers.count
+                                                )
+                                            }
+                                        }.frame(
+                                            minWidth: 0,
+                                            maxWidth: .infinity,
+                                            minHeight: 80,
+                                            maxHeight: .infinity,
+                                            alignment: .topLeading
+                                        )
+                                    }
+                                    .padding(.leading, -10)
+                                    .padding(.trailing, -10)
                                 }
-                                .padding(.leading, -20)
-                                .padding(.trailing, -20)
+                                
+                                if i < repos.count {
+                                    TrendingRepositoryItem(repo: repos[i])
+                                }
                             }
                         }
-                        TrendingRepositoryItem(repo: repo)
                     }
-                    .listStyle(PlainListStyle())
-                    .refreshable {
+                } else if status == .error {
+                    EmptyScreen() {
+                        viewModel.refresh()
+                    }
+                } else if status == .loading {
+                    ActivityIndicator()
+                        .animated(true)
+                        .style(.regular)
+                } else {
+                    EmptyScreen(msgString: NSLocalizedString("Common.NoDataFound", comment: ""), actionString: "Common.Retry") {
                         viewModel.refresh()
                     }
                 }
-            }.navigationTitle(NSLocalizedString("MainTab.Explore", comment: ""))
+            }
+            .navigationTitle(NSLocalizedString("MainTab.Explore", comment: ""))
         }
     }
 }
@@ -78,7 +84,7 @@ struct TrendingDeveloperItem: View {
         HStack {
             Spacer(minLength: index == 0 ? 20 : nil)
             NavigationLink(destination: ProfileScreen(login: developer.username, profileType: .user)) {
-                VStack(alignment: .center) {
+                VStack(alignment: .center, spacing: 5) {
                     AvatarView(
                         url: developer.avatar,
                         size: 80
@@ -97,6 +103,7 @@ struct TrendingDeveloperItem: View {
                 .overlay(
                     RoundedRectangle(cornerRadius: 4.0)
                         .stroke(lineWidth: 1.0)
+                        .foregroundColor(.systemGray)
                 )
             }.buttonStyle(PlainButtonStyle())
             Spacer(minLength: index == count - 1 ? 20 : 0)
@@ -109,16 +116,18 @@ struct TrendingRepositoryItem: View {
     
     var body: some View {
         NavigationLink(destination: RepositoryScreen(login: repo.author, repoName: repo.name)) {
-            HStack(alignment: .top) {
+            HStack(alignment: .top, spacing: 10) {
                 AvatarView(url: repo.avatar)
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 5) {
                     Text("\(repo.author)/\(repo.name)")
                         .font(.body)
+                        .foregroundColor(.systemBlue)
                     Text(repo.description_ ?? NSLocalizedString("NoDescriptionProvided", comment: ""))
                         .font(.caption)
+                        .lineLimit(3)
                     Text(String(format: NSLocalizedString("Explore.PeriodStars", comment: ""), repo.currentPeriodStars, "today"))
                         .font(.caption)
-                    HStack(alignment: .center) {
+                    HStack(alignment: .center, spacing: 5) {
                         Text(repo.language ?? NSLocalizedString("UnknownLanguage", comment: ""))
                             .font(.caption2)
                         Text("\(repo.stars)")
@@ -126,8 +135,9 @@ struct TrendingRepositoryItem: View {
                         Text("\(repo.forks)")
                             .font(.caption2)
                     }
-                }.padding(.leading, 20)
+                }
             }
+            .padding(10)
         }.buttonStyle(PlainButtonStyle())
     }
 }

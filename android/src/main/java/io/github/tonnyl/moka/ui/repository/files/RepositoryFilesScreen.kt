@@ -98,12 +98,15 @@ fun RepositoryFilesScreen(
                 )
             }
         ) {
+            val enablePlaceholder =
+                entries.value?.status == Status.LOADING && entries.value?.data.isNullOrEmpty()
             when {
-                entries.value?.data != null -> {
+                enablePlaceholder
+                        || entries.value?.data != null -> {
                     RepositoryFilesScreenContent(
                         contentPaddings = contentPaddings,
                         entries = entries.value?.data.orEmpty(),
-                        enablePlaceholder = entries.value?.status == Status.LOADING && entries.value?.data.isNullOrEmpty(),
+                        enablePlaceholder = enablePlaceholder,
                         login = login,
                         repoName = repoName,
                         expression = expression,
@@ -267,9 +270,11 @@ private fun ItemTreeEntry(
                 TreeEntryType.BLOB -> {
                     val filename = treeEntry.name
                     val filePath = currentExpression.replace(":", "/")
-                    val url = "https://raw.githubusercontent.com/$login/$repoName/${filePath}/${filename}"
+                    val url =
+                        "https://raw.githubusercontent.com/$login/$repoName/${filePath}/${filename}"
 
-                    val isDownloadDirectlyFile = FileUtils.isDownloadDirectlyFile(filename = filename)
+                    val isDownloadDirectlyFile =
+                        FileUtils.isDownloadDirectlyFile(filename = filename)
                     if (isDownloadDirectlyFile) {
                         navController.navigate(
                             route = Screen.DownloadFileDialog.route

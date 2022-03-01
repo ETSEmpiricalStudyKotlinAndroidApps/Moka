@@ -53,6 +53,7 @@ import io.github.tonnyl.moka.ui.commit.CommitScreen
 import io.github.tonnyl.moka.ui.commits.CommitsScreen
 import io.github.tonnyl.moka.ui.emojis.EmojisScreen
 import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiScreen
+import io.github.tonnyl.moka.ui.exception.ExceptionDetailsScreen
 import io.github.tonnyl.moka.ui.explore.ExploreScreen
 import io.github.tonnyl.moka.ui.explore.filters.ExploreFiltersScreen
 import io.github.tonnyl.moka.ui.file.FileScreen
@@ -390,6 +391,8 @@ sealed class Screen(val route: String) {
 
     object LogOutConfirmDialog : Screen(route = "log_out_confirm/{${ARG_ACCOUNT_ID}}")
 
+    object ExceptionDetails : Screen(route = "exception_details/{${ARG_EXCEPTION_DETAILS}}")
+
     companion object {
 
         const val ARG_PROFILE_LOGIN = "arg_profile_login"
@@ -456,6 +459,8 @@ sealed class Screen(val route: String) {
         const val ARG_REPO_ID = "arg_repo_id"
 
         const val ARG_ACCOUNT_ID = "arg_account_id"
+
+        const val ARG_EXCEPTION_DETAILS = "arg_exception_details"
     }
 
 }
@@ -1492,8 +1497,24 @@ private fun MainNavHost(
             currentRoute.value = Screen.LogOutConfirmDialog.route
 
             LogoutConfirmDialog(
-                accountId = navBackStackEntry.arguments?.getLong(Screen.ARG_ACCOUNT_ID) ?: return@dialog
+                accountId = navBackStackEntry.arguments?.getLong(Screen.ARG_ACCOUNT_ID)
+                    ?: return@dialog
             )
+        }
+        composable(
+            route = Screen.ExceptionDetails.route,
+            arguments = listOf(
+                navArgument(name = Screen.ARG_EXCEPTION_DETAILS) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            currentRoute.value = Screen.ExceptionDetails.route
+
+            ExceptionDetailsScreen(
+                details = backStackEntry.arguments?.getString(Screen.ARG_EXCEPTION_DETAILS)?.let {
+                    Uri.decode(it)
+                } ?: return@composable)
         }
     }
 }

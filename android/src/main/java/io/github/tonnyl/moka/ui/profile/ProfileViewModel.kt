@@ -33,7 +33,7 @@ data class ProfileViewModelExtra(
 )
 
 @ExperimentalSerializationApi
-class ProfileViewModel(private val extra: ProfileViewModelExtra) : ViewModel() {
+class ProfileViewModel(val extra: ProfileViewModelExtra) : ViewModel() {
 
     private val _userProfile = MutableLiveData<Resource<User>>()
     val userProfile: LiveData<Resource<User>>

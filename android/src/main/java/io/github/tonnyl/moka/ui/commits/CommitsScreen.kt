@@ -105,7 +105,10 @@ fun CommitsScreen(
                 }
                 commits.loadState.refresh is LoadState.Error
                         && commits.itemCount == 0 -> {
-                    EmptyScreenContent(action = commits::retry)
+                    EmptyScreenContent(
+                        action = commits::retry,
+                        throwable = (commits.loadState.refresh as LoadState.Error).error
+                    )
                 }
                 else -> {
                     CommitsScreenContent(

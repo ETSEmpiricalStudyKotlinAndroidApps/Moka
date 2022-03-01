@@ -94,7 +94,10 @@ fun CommentTreadScreen(nodeId: String) {
                 }
                 thread.loadState.refresh is LoadState.Error
                         && thread.itemCount == 0 -> {
-                    EmptyScreenContent(action = thread::retry)
+                    EmptyScreenContent(
+                        action = thread::retry,
+                        throwable = (thread.loadState.refresh as LoadState.Error).error
+                    )
                 }
                 else -> {
                     CommentThreadScreenContent(

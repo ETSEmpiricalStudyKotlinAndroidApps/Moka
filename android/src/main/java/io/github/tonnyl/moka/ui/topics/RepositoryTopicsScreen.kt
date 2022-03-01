@@ -98,7 +98,10 @@ fun RepositoryTopicsScreen(
                 }
                 topics.loadState.refresh is LoadState.Error
                         && topics.itemCount == 0 -> {
-                    EmptyScreenContent(action = topics::retry)
+                    EmptyScreenContent(
+                        action = topics::retry,
+                        throwable = (topics.loadState.refresh as LoadState.Error).error
+                    )
                 }
                 else -> {
                     RepositoriesScreenContent(

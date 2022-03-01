@@ -626,4 +626,8 @@
     <string name="create_issue_discard_changes_alert_message">Are you sure you want to discard this new issue? Your message will be lost.</string>
     <string name="create_issue_discard_changes_alert_confirm">Discard changes</string>
 
+    <string name="exception_details">Something wrong…</string>
+    <string name="report_to_moka_team">Report to Moka team</string>
+    <string name="report_succeeded">Reported</string>
+
 </resources>

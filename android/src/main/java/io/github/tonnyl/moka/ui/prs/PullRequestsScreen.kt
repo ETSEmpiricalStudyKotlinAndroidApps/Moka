@@ -112,7 +112,10 @@ fun PullRequestsScreen(
                 }
                 prs.loadState.refresh is LoadState.Error
                         && prs.itemCount == 0 -> {
-                    EmptyScreenContent(action = prs::retry)
+                    EmptyScreenContent(
+                        action = prs::retry,
+                        throwable = (prs.loadState.refresh as LoadState.Error).error
+                    )
                 }
                 else -> {
                     PullRequestsScreenContent(

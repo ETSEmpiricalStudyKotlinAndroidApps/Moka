@@ -26,3 +26,8 @@ val LottieLoadingAnimationSize = 196.dp
  * @see [androidx.compose.material.AppBarHeight]
  */
 val DropDownMenuAppBarOffset = DpOffset(x = 0.dp, y = (-56).dp)
+
+/**
+ * @see [androidx.compose.material.AppBarHeight]
+ */
+val AppBarHeight = 56.dp

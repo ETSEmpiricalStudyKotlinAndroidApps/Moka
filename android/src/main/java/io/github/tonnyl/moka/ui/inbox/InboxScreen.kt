@@ -128,7 +128,10 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
                     }
                     notifications.loadState.refresh is LoadState.Error
                             && notifications.itemCount == 0 -> {
-                        EmptyScreenContent(action = notifications::retry)
+                        EmptyScreenContent(
+                            action = notifications::retry,
+                            throwable = (notifications.loadState.refresh as LoadState.Error).error
+                        )
                     }
                     else -> {
                         InboxScreenContent(
@@ -245,7 +248,10 @@ private fun ItemNotification(
                     SubjectType.PullRequest.toString(),
                     SubjectType.Issue.toString() -> {
                         // url example: https://api.github.com/repos/google/accompanist/pulls/1036
-                        val number = item.subject.url.split("/").lastOrNull()?.toIntOrNull() ?: return@clickable
+                        val number = item.subject.url
+                            .split("/")
+                            .lastOrNull()
+                            ?.toIntOrNull() ?: return@clickable
                         if (item.subject.type == SubjectType.PullRequest.toString()) {
                             Screen.PullRequest.navigate(
                                 navController = navController,

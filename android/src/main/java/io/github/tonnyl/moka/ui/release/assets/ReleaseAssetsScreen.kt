@@ -28,7 +28,9 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
+import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
+import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.downloadFileViaDownloadManager
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
@@ -102,7 +104,10 @@ fun ReleaseAssetsScreen(
                         }
                         assets.loadState.refresh is LoadState.Error
                                 && assets.itemCount == 0 -> {
-                            EmptyScreenContent(action = assets::retry)
+                            EmptyScreenContent(
+                                action = assets::retry,
+                                throwable = (assets.loadState.refresh as LoadState.Error).error
+                            )
                         }
                         else -> {
                             ReleaseAssetsScreenContent(

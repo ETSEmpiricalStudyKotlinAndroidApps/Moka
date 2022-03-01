@@ -113,7 +113,10 @@ fun CommitScreen(
                 }
                 files.loadState.refresh is LoadState.Error
                         && files.itemCount == 0 -> {
-                    EmptyScreenContent(action = files::retry)
+                    EmptyScreenContent(
+                        action = files::retry,
+                        throwable = (files.loadState.refresh as LoadState.Error).error
+                    )
                 }
                 else -> {
                     CommitScreenContent(

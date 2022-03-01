@@ -120,7 +120,8 @@ fun RepositoryFilesScreen(
                         } else {
                             R.string.common_no_data_found
                         },
-                        action = viewModel::refresh
+                        action = viewModel::refresh,
+                        throwable = entries.value?.e
                     )
                 }
             }

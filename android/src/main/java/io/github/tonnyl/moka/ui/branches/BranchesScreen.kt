@@ -110,7 +110,10 @@ fun BranchesScreen(
                 }
                 branches.loadState.refresh is LoadState.Error
                         && branches.itemCount == 0 -> {
-                    EmptyScreenContent(action = branches::retry)
+                    EmptyScreenContent(
+                        action = branches::retry,
+                        throwable = (branches.loadState.refresh as LoadState.Error).error
+                    )
                 }
                 else -> {
                     BranchesScreenContent(

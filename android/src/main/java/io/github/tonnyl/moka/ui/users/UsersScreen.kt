@@ -102,7 +102,10 @@ fun UsersScreen(
                 }
                 users.loadState.refresh is LoadState.Error
                         && users.itemCount == 0 -> {
-                    EmptyScreenContent(action = users::retry)
+                    EmptyScreenContent(
+                        action = users::retry,
+                        throwable = (users.loadState.refresh as LoadState.Error).error
+                    )
                 }
                 else -> {
                     UsersScreenScreen(

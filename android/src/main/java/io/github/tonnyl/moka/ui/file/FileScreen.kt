@@ -103,7 +103,10 @@ fun FileScreen(
                     )
                 }
                 fileResource?.status == Status.ERROR -> { // todo display more error info and help user to download the raw file.
-                    EmptyScreenContent(action = viewModel::geFileContent)
+                    EmptyScreenContent(
+                        action = viewModel::geFileContent,
+                        throwable = fileResource?.e
+                    )
                 }
             }
         }

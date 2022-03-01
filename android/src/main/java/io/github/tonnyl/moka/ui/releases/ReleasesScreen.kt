@@ -102,7 +102,10 @@ fun ReleasesScreen(
                 }
                 releases.loadState.refresh is LoadState.Error
                         && releases.itemCount == 0 -> {
-                    EmptyScreenContent(action = releases::retry)
+                    EmptyScreenContent(
+                        action = releases::retry,
+                        throwable = (releases.loadState.refresh as LoadState.Error).error
+                    )
                 }
                 else -> {
                     ReleasesScreenContent(

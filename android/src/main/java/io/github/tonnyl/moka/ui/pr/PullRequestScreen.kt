@@ -152,7 +152,10 @@ fun PullRequestScreen(
                         prTimelineItems.loadState.refresh is LoadState.Error
                                 && prTimelineItems.itemCount == 0
                                 && pullRequest == null -> {
-                            EmptyScreenContent(action = prTimelineItems::retry)
+                            EmptyScreenContent(
+                                action = prTimelineItems::retry,
+                                throwable = (prTimelineItems.loadState.refresh as LoadState.Error).error
+                            )
                         }
                         else -> {
                             PullRequestScreenContent(

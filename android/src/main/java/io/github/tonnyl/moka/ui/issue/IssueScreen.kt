@@ -162,7 +162,10 @@ fun IssueScreen(
                         issueTimelineItems.loadState.refresh is LoadState.Error
                                 && issueTimelineItems.itemCount == 0
                                 && issue == null -> {
-                            EmptyScreenContent(action = issueTimelineItems::retry)
+                            EmptyScreenContent(
+                                action = issueTimelineItems::retry,
+                                throwable = (issueTimelineItems.loadState.refresh as LoadState.Error).error
+                            )
                         }
                         else -> {
                             IssueScreenContent(

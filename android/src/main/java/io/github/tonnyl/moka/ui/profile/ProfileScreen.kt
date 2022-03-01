@@ -103,7 +103,18 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                     } else {
                         R.string.common_no_data_found
                     },
-                    action = viewModel::refreshData
+                    action = viewModel::refreshData,
+                    throwable = when (viewModel.extra.profileType) {
+                        ProfileType.USER -> {
+                            user?.e
+                        }
+                        ProfileType.ORGANIZATION -> {
+                            organization?.e
+                        }
+                        ProfileType.NOT_SPECIFIED -> {
+                            user?.e ?: organization?.e
+                        }
+                    }
                 )
             }
         }

@@ -217,6 +217,7 @@ fun RepositoryScreen(
                                 } else {
                                     R.string.common_no_data_found
                                 },
+                                throwable = repositoryResource?.e,
                                 action = viewModel::refresh
                             )
                         }

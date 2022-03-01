@@ -106,7 +106,10 @@ fun TimelineScreen(openDrawer: (() -> Unit)?) {
                 }
                 events.loadState.refresh is LoadState.Error
                         && events.itemCount == 0 -> {
-                    EmptyScreenContent(action = events::retry)
+                    EmptyScreenContent(
+                        action = events::retry,
+                        throwable = (events.loadState.refresh as LoadState.Error).error
+                    )
                 }
                 else -> {
                     TimelineScreenContent(

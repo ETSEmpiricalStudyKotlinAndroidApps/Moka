@@ -55,7 +55,10 @@ fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryListItemF
             }
             repositories.loadState.refresh is LoadState.Error
                     && repositories.itemCount == 0 -> {
-                EmptyScreenContent(action = repositories::retry)
+                EmptyScreenContent(
+                    action = repositories::retry,
+                    throwable = (repositories.loadState.refresh as LoadState.Error).error
+                )
             }
             else -> {
                 SearchedRepositoriesScreenContent(

@@ -145,7 +145,10 @@ fun IssuesScreen(
                     }
                     issues.loadState.refresh is LoadState.Error
                             && issues.itemCount == 0 -> {
-                        EmptyScreenContent(action = issues::retry)
+                        EmptyScreenContent(
+                            action = issues::retry,
+                            throwable = (issues.loadState.refresh as LoadState.Error).error
+                        )
                     }
                     else -> {
                         IssuesScreenContent(

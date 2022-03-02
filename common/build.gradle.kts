@@ -1,4 +1,8 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import java.util.*
 import org.jetbrains.compose.compose
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
@@ -6,6 +10,7 @@ plugins {
     id("kotlinx-serialization")
     id("com.apollographql.apollo3").version(Versions.apollo)
     id("com.google.devtools.ksp").version(Versions.kspApi)
+    id("com.codingfeline.buildkonfig")
 }
 
 repositories {
@@ -139,7 +144,7 @@ kotlin {
 }
 
 dependencies {
-    ksp(Deps.AndroidX.Room.compiler)
+    add("kspAndroid", Deps.AndroidX.Room.compiler)
 }
 
 android {
@@ -180,7 +185,32 @@ apollo {
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+// Don't move the position.
+// Its config `packageName` has some conflicts with apollo's `packageName`.
+buildkonfig {
+    packageName = "io.tonnyl.moka.common.build"
+    objectName = "BuildConfig"
+    exposeObjectWithName = "CommonBuildConfig"
+
+    val localProperties = gradleLocalProperties(rootDir)
+    defaultConfigs {
+        buildConfigField(STRING, "CLIENT_ID", "client_id_placeholder")
+        buildConfigField(STRING, "CLIENT_SECRET", "client_secret_placeholder")
+    }
+
+    targetConfigs {
+        create("android") {
+            buildConfigField(STRING, "CLIENT_ID", "${localProperties.getProperty("ANDROID_CLIENT_ID")}")
+            buildConfigField(STRING, "CLIENT_SECRET", "${localProperties.getProperty("ANDROID_CLIENT_SECRET")}")
+        }
+        create("ios") {
+            buildConfigField(STRING, "CLIENT_ID", "${localProperties.getProperty("IOS_CLIENT_ID")}")
+            buildConfigField(STRING, "CLIENT_SECRET", "${localProperties.getProperty("IOS_CLIENT_SECRET")}")
+        }
+    }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs = listOf(
@@ -188,4 +218,9 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
             "-Xjvm-default=compatibility"
         )
     }
+}
+
+// run `generateBuildKonfig` for every build.
+tasks.build {
+    dependsOn("generateBuildKonfig")
 }

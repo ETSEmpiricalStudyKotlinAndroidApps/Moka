@@ -6,11 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
-import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.util.updateOnAnyThread
+import io.tonnyl.moka.common.build.CommonBuildConfig
 import io.tonnyl.moka.common.data.Account
 import io.tonnyl.moka.common.data.SignedInAccount
 import io.tonnyl.moka.common.network.KtorClient
@@ -49,8 +49,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
                 val accessTokenResp = withContext(Dispatchers.IO) {
                     AccessTokenApi(ktorClient = KtorClient.unauthenticatedKtorClient).getAccessToken(
-                        clientId = BuildConfig.CLIENT_ID,
-                        clientSecret = BuildConfig.CLIENT_SECRET,
+                        clientId = CommonBuildConfig.CLIENT_ID,
+                        clientSecret = CommonBuildConfig.CLIENT_SECRET,
                         code = param.code,
                         redirectUrl = KtorClient.GITHUB_AUTHORIZE_CALLBACK_URI,
                         state = param.state

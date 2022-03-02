@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
@@ -15,13 +16,8 @@ android {
 
     compileSdk = Versions.compileSdk
 
-    val localProperties = Properties()
-    var hasPropertiesFile = false
-    val localPropertiesFile = project.rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        hasPropertiesFile = true
-        localProperties.load(localPropertiesFile.inputStream())
-    }
+    val localProperties = gradleLocalProperties(rootDir)
+    val hasPropertiesFile = localProperties.getProperty("STORE_FILE_PATH") != null
 
     val versionProperties = Properties()
     val versionPropertiesFile = project.rootProject.file("version.properties")
@@ -34,19 +30,11 @@ android {
         versionCode = versionProperties.getProperty("versionCode").toInt()
         versionName = versionProperties.getProperty("versionName")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        if (hasPropertiesFile) {
-            buildConfigField("String", "CLIENT_ID", "\"${localProperties["CLIENT_ID"]}\"")
-            buildConfigField("String", "CLIENT_SECRET", "\"${localProperties["CLIENT_SECRET"]}\"")
-        } else { // CI
-            buildConfigField("String", "CLIENT_ID", "\"client_id_placeholder\"")
-            buildConfigField("String", "CLIENT_SECRET", "\"client_secret_placeholder\"")
-        }
     }
 
     val releaseSignConfig = "release"
-    if (hasPropertiesFile) {
-        signingConfigs {
+    signingConfigs {
+        if (hasPropertiesFile) {
             create(releaseSignConfig) {
                 storeFile = rootProject.file(localProperties.getProperty("STORE_FILE_PATH"))
                 storePassword = localProperties.getProperty("STORE_PASSWORD")

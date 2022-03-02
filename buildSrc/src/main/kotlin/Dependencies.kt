@@ -8,6 +8,7 @@ object Versions {
     const val androidGradle = "7.0.4"
     const val gmsGoogleServiceGradle = "4.3.10"
     const val firebaseCrashlyticsGradle = "2.8.1"
+    const val buildKonfig = "0.11.0"
     const val desugaring = "1.1.5"
     const val kotlin = "1.6.10"
     const val dateTime = "0.3.2"
@@ -81,6 +82,7 @@ object Deps {
             "com.google.firebase:firebase-crashlytics-gradle:${Versions.firebaseCrashlyticsGradle}"
         const val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}"
         const val compose = "org.jetbrains.compose:compose-gradle-plugin:${Versions.composeDesktop}"
+        const val buildKonfig = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:${Versions.buildKonfig}"
 
     }
 

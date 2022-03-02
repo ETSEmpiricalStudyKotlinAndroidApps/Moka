@@ -20,11 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.navigationBarsPadding
-import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.LottieLoadingAnimationSize
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import io.tonnyl.moka.common.build.CommonBuildConfig
 import io.tonnyl.moka.common.data.Account
 import io.tonnyl.moka.common.network.KtorClient
 import io.tonnyl.moka.common.network.Resource
@@ -87,7 +87,7 @@ fun AuthScreen(
             launcher.launch(Intent(context, AuthBrowserActivity::class.java).apply {
                 putExtra(
                     AuthBrowserActivity.ARG_URL,
-                    "${KtorClient.GITHUB_AUTHORIZE_URL}?client_id=${BuildConfig.CLIENT_ID}&redirect_uri=${KtorClient.GITHUB_AUTHORIZE_CALLBACK_URI}&scope=${KtorClient.SCOPE}&state=${
+                    "${KtorClient.GITHUB_AUTHORIZE_URL}?client_id=${CommonBuildConfig.CLIENT_ID}&redirect_uri=${KtorClient.GITHUB_AUTHORIZE_CALLBACK_URI}&scope=${KtorClient.SCOPE}&state=${
                         Clock.System.now().toEpochMilliseconds()
                     }"
                 )

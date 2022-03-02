@@ -15,6 +15,7 @@ buildscript {
         classpath(Deps.GradlePlugin.firebaseCrashlyticsGradle)
         classpath(Deps.GradlePlugin.serialization)
         classpath(Deps.GradlePlugin.compose)
+        classpath(Deps.GradlePlugin.buildKonfig)
     }
 }
 

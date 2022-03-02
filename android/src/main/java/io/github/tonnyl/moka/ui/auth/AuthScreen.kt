@@ -25,16 +25,18 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.LottieLoadingAnimationSize
 import io.github.tonnyl.moka.widget.LottieLoadingComponent
 import io.github.tonnyl.moka.widget.SnackBarErrorMessage
-import io.tonnyl.moka.common.data.AuthenticatedUser
+import io.tonnyl.moka.common.data.Account
 import io.tonnyl.moka.common.network.KtorClient
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import kotlinx.datetime.Clock
+import kotlinx.serialization.ExperimentalSerializationApi
 
+@ExperimentalSerializationApi
 @ExperimentalPagingApi
 @Composable
 fun AuthScreen(
-    authTokenAndUserResource: Resource<Pair<String, AuthenticatedUser>>?,
+    authTokenAndUserResource: Resource<Pair<String, Account>>?,
     scaffoldState: ScaffoldState,
     getAuthToken: (AuthParameter) -> Unit
 ) {
@@ -133,6 +135,7 @@ fun AuthScreen(
     }
 }
 
+@ExperimentalSerializationApi
 @ExperimentalPagingApi
 @Preview(name = "AuthScreen", showBackground = true)
 @Composable

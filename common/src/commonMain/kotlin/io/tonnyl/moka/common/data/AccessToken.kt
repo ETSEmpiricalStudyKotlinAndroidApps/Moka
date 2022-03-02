@@ -1,17 +1,11 @@
 package io.tonnyl.moka.common.data
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+expect class AccessToken {
 
-@Serializable
-data class AccessToken(
+    val accessToken: String
 
-    @SerialName("access_token")
-    val accessToken: String,
+    val scope: String
 
-    val scope: String,
-
-    @SerialName("token_type")
     val tokenType: String
 
-)
+}

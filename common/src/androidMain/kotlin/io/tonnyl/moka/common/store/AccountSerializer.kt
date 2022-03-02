@@ -2,7 +2,7 @@ package io.tonnyl.moka.common.store
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import io.tonnyl.moka.common.store.data.SignedInAccounts
+import io.tonnyl.moka.common.data.SignedInAccounts
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromByteArray

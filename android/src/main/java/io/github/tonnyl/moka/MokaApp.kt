@@ -15,12 +15,12 @@ import coil.decode.SvgDecoder
 import coil.util.CoilUtils
 import io.github.tonnyl.moka.work.NotificationWorker
 import io.tonnyl.moka.common.AccountInstance
+import io.tonnyl.moka.common.data.SignedInAccounts
 import io.tonnyl.moka.common.network.KtorClient
 import io.tonnyl.moka.common.store.AccountSerializer
 import io.tonnyl.moka.common.store.SettingSerializer
 import io.tonnyl.moka.common.store.data.NotificationSyncInterval
 import io.tonnyl.moka.common.store.data.Settings
-import io.tonnyl.moka.common.store.data.SignedInAccounts
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

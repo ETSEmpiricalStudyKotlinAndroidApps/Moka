@@ -9,16 +9,15 @@ import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
-import io.github.tonnyl.moka.data.extension.toPbAccount
 import io.github.tonnyl.moka.ui.Event
 import io.github.tonnyl.moka.util.updateOnAnyThread
-import io.tonnyl.moka.common.data.AuthenticatedUser
+import io.tonnyl.moka.common.data.Account
+import io.tonnyl.moka.common.data.SignedInAccount
 import io.tonnyl.moka.common.network.KtorClient
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.network.api.AccessTokenApi
 import io.tonnyl.moka.common.network.api.UserApi
-import io.tonnyl.moka.common.store.data.SignedInAccount
 import io.tonnyl.moka.common.ui.auth.AuthEvent
 import io.tonnyl.moka.common.ui.auth.AuthEvent.FinishAndGo
 import kotlinx.coroutines.Dispatchers
@@ -29,12 +28,13 @@ import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
+@ExperimentalSerializationApi
 @ExperimentalPagingApi
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _authTokenAndUserResult =
-        MutableLiveData<Resource<Pair<String, AuthenticatedUser>>>()
-    val authTokenAndUserResult: LiveData<Resource<Pair<String, AuthenticatedUser>>>
+        MutableLiveData<Resource<Pair<String, Account>>>()
+    val authTokenAndUserResult: LiveData<Resource<Pair<String, Account>>>
         get() = _authTokenAndUserResult
 
     private val _event = MutableLiveData<Event<AuthEvent>>()
@@ -73,7 +73,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                             existingAccountIndex,
                             SignedInAccount(
                                 accessToken = accessTokenResp.toPBAccessToken(),
-                                account = authenticatedUserResp.toPbAccount()
+                                account = authenticatedUserResp
                             )
                         )
                     } else {
@@ -81,7 +81,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                             0,
                             SignedInAccount(
                                 accessToken = accessTokenResp.toPBAccessToken(),
-                                account = authenticatedUserResp.toPbAccount()
+                                account = authenticatedUserResp
                             )
                         )
                     }

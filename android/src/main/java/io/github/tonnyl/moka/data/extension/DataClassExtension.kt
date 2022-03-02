@@ -7,48 +7,13 @@ import android.text.style.ForegroundColorSpan
 import androidx.core.content.res.ResourcesCompat
 import io.github.tonnyl.moka.R
 import io.tonnyl.moka.common.data.AccessToken
-import io.tonnyl.moka.common.data.AuthenticatedUser
 import io.tonnyl.moka.common.data.NotificationReasons
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.db.data.Notification
 import io.tonnyl.moka.common.db.data.NotificationRepositoryOwner
-import io.tonnyl.moka.common.store.data.Account
 import io.tonnyl.moka.common.store.data.ExploreTimeSpan
 import kotlinx.serialization.ExperimentalSerializationApi
-import io.tonnyl.moka.common.store.data.AccessToken as PBAccessToken
-
-@ExperimentalSerializationApi
-fun AuthenticatedUser.toPbAccount(): Account {
-    val user = this
-    return Account(
-        login = user.login,
-        id = user.id,
-        nodeId = user.nodeId,
-        avatarUrl = user.avatarUrl,
-        htmlUrl = user.htmlUrl,
-        type = user.type,
-        siteAdmin = user.siteAdmin,
-        name = user.name,
-        company = user.company,
-        blog = user.blog,
-        location = user.location,
-        email = user.email,
-        hireable = user.hireable,
-        bio = user.bio,
-        publicRepos = user.publicRepos,
-        publicGists = user.publicGists,
-        followers = user.followers,
-        following = user.following,
-        createdAt = user.createdAt.toString(),
-        updatedAt = user.updatedAt.toString(),
-        privateGists = user.privateGists,
-        totalPrivateRepos = user.totalPrivateRepos,
-        ownedPrivateRepos = user.ownedPrivateRepos,
-        diskUsage = user.diskUsage,
-        collaborators = user.collaborators,
-        twoFactorAuthentication = user.twoFactorAuthentication
-    )
-}
+import io.tonnyl.moka.common.data.AccessToken as PBAccessToken
 
 @ExperimentalSerializationApi
 fun AccessToken.toPBAccessToken(): PBAccessToken {

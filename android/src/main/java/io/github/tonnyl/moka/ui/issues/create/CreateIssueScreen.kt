@@ -49,7 +49,10 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalPagingApi
 @ExperimentalSerializationApi
 @Composable
-fun CreateIssueScreen(repoId: String) {
+fun CreateIssueScreen(
+    repoId: String,
+    defaultComment: String?
+) {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val viewModel = viewModel(
@@ -57,7 +60,8 @@ fun CreateIssueScreen(repoId: String) {
             CreateIssueViewModel(
                 extra = CreateIssueViewModelExtra(
                     accountInstance = currentAccount,
-                    repoId = repoId
+                    repoId = repoId,
+                    defaultComment = defaultComment
                 )
             )
         }
@@ -286,12 +290,6 @@ private fun CreateIssueScreenContent(
             value = bodyState.value,
             onValueChange = {
                 bodyState.value = it
-            },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-            keyboardActions = KeyboardActions {
-                if (titleState.value.isNotEmpty()) {
-                    create.invoke()
-                }
             },
             cursorBrush = SolidColor(TextFieldDefaults.textFieldColors().cursorColor(isError = false).value),
             textStyle = MaterialTheme.typography.body1,

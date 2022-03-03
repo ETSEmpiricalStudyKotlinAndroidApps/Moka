@@ -632,4 +632,6 @@
     <string name="report_to_moka_team">Report to Moka team</string>
     <string name="report_succeeded">Reported</string>
 
+    <string name="feedback_confirm_message">Feedback will be submitted as an issue to repository TonnyL/Moka-Feedback, are you sure to continue?</string>
+
 </resources>

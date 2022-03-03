@@ -56,6 +56,7 @@ import io.github.tonnyl.moka.ui.emojis.search.SearchEmojiScreen
 import io.github.tonnyl.moka.ui.exception.ExceptionDetailsScreen
 import io.github.tonnyl.moka.ui.explore.ExploreScreen
 import io.github.tonnyl.moka.ui.explore.filters.ExploreFiltersScreen
+import io.github.tonnyl.moka.ui.feedback.FeedbackConfirmDialog
 import io.github.tonnyl.moka.ui.file.FileScreen
 import io.github.tonnyl.moka.ui.file.download.DownloadFileDialog
 import io.github.tonnyl.moka.ui.inbox.InboxScreen
@@ -207,7 +208,8 @@ sealed class Screen(val route: String) {
 
     }
 
-    object Issues : Screen("issues/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_REPO_ID}}") {
+    object Issues :
+        Screen("issues/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}/{${ARG_REPO_ID}}") {
 
         fun route(
             login: String,
@@ -370,7 +372,8 @@ sealed class Screen(val route: String) {
 
     object AccountDialog : Screen("account_dialog")
 
-    object ForkRepoDialog : Screen("fork_repo_dialog/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
+    object ForkRepoDialog :
+        Screen("fork_repo_dialog/{${ARG_PROFILE_LOGIN}}/{${ARG_REPOSITORY_NAME}}")
 
     object DownloadFileDialog : Screen("download_file_dialog/{${ARG_URL}}")
 
@@ -385,13 +388,31 @@ sealed class Screen(val route: String) {
 
     }
 
-    object CreateIssue : Screen("create_issue/{${ARG_REPO_ID}}")
+    object CreateIssue :
+        Screen("create_issue/{${ARG_REPO_ID}}?${ARG_DEFAULT_COMMENT}={${ARG_DEFAULT_COMMENT}}") {
+
+        fun navigate(
+            navController: NavController,
+            repoId: String,
+            defaultComment: String? = null,
+            builder: (NavOptionsBuilder.() -> Unit) = { }
+        ) {
+            navController.navigate(
+                route = route.replace("{$ARG_REPO_ID}", repoId)
+                    .replace("{${ARG_DEFAULT_COMMENT}}", Uri.encode(defaultComment.orEmpty())),
+                builder = builder
+            )
+        }
+
+    }
 
     object ManageAccounts : Screen(route = "manage_accounts")
 
     object LogOutConfirmDialog : Screen(route = "log_out_confirm/{${ARG_ACCOUNT_ID}}")
 
     object ExceptionDetails : Screen(route = "exception_details/{${ARG_EXCEPTION_DETAILS}}")
+
+    object FeedbackConfirmDialog : Screen(route = "feedback_confirm")
 
     companion object {
 
@@ -461,6 +482,8 @@ sealed class Screen(val route: String) {
         const val ARG_ACCOUNT_ID = "arg_account_id"
 
         const val ARG_EXCEPTION_DETAILS = "arg_exception_details"
+
+        const val ARG_DEFAULT_COMMENT = "arg_default_comment"
     }
 
 }
@@ -490,7 +513,7 @@ fun MainScreen(startDestination: Screen) {
                     .launchUrl(context, Uri.parse(URL_OF_FAQ))
             }
             Screen.Feedback.route -> {
-
+                navController.navigate(route = Screen.FeedbackConfirmDialog.route)
             }
             else -> {
                 navController.navigateUp()
@@ -839,7 +862,8 @@ private fun MainNavHost(
             currentRoute.value = Screen.Profile.route
 
             val currentAccount = LocalAccountInstance.current ?: return@composable
-            val login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN) ?: return@composable
+            val login =
+                backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN) ?: return@composable
 
             val viewModel = viewModel(
                 key = currentAccount.signedInAccount.account.login,
@@ -1048,9 +1072,12 @@ private fun MainNavHost(
         ) { backStackEntry ->
             currentRoute.value = Screen.Issues.route
             IssuesScreen(
-                owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN) ?: return@composable,
-                name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME) ?: return@composable,
-                repoId = backStackEntry.arguments?.getString(Screen.ARG_REPO_ID) ?: return@composable
+                owner = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@composable,
+                name = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@composable,
+                repoId = backStackEntry.arguments?.getString(Screen.ARG_REPO_ID)
+                    ?: return@composable
             )
         }
         composable(
@@ -1445,7 +1472,8 @@ private fun MainNavHost(
 
             ExploreFiltersScreen(
                 filtersType = FiltersType.valueOf(
-                    backStackEntry.arguments?.getString(Screen.ARG_EXPLORE_FILTERS_TYPE) ?: return@composable
+                    backStackEntry.arguments?.getString(Screen.ARG_EXPLORE_FILTERS_TYPE)
+                        ?: return@composable
                 )
             )
         }
@@ -1458,15 +1486,19 @@ private fun MainNavHost(
             currentRoute.value = Screen.ForkRepoDialog.route
 
             ForkRepoDialog(
-                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN) ?: return@dialog,
-                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME) ?: return@dialog
+                login = backStackEntry.arguments?.getString(Screen.ARG_PROFILE_LOGIN)
+                    ?: return@dialog,
+                repoName = backStackEntry.arguments?.getString(Screen.ARG_REPOSITORY_NAME)
+                    ?: return@dialog
             )
         }
         dialog(route = Screen.DownloadFileDialog.route) { backStackEntry ->
             currentRoute.value = Screen.DownloadFileDialog.route
 
             DownloadFileDialog(
-                url = Uri.decode(backStackEntry.arguments?.getString(Screen.ARG_URL) ?: return@dialog)
+                url = Uri.decode(
+                    backStackEntry.arguments?.getString(Screen.ARG_URL) ?: return@dialog
+                )
             )
         }
         composable(
@@ -1474,12 +1506,23 @@ private fun MainNavHost(
             arguments = listOf(
                 navArgument(name = Screen.ARG_REPO_ID) {
                     type = NavType.StringType
+                },
+                navArgument(name = Screen.ARG_DEFAULT_COMMENT) {
+                    type = NavType.StringType
+                    nullable = true
                 }
             )
         ) { backStackEntry ->
             currentRoute.value = Screen.CreateIssue.route
 
-            CreateIssueScreen(repoId = backStackEntry.arguments?.getString(Screen.ARG_REPO_ID) ?: return@composable)
+            CreateIssueScreen(
+                repoId = backStackEntry.arguments?.getString(Screen.ARG_REPO_ID)
+                    ?: return@composable,
+                defaultComment = backStackEntry.arguments?.getString(Screen.ARG_DEFAULT_COMMENT)
+                    ?.let {
+                        Uri.decode(it)
+                    }
+            )
         }
         composable(route = Screen.ManageAccounts.route) {
             currentRoute.value = Screen.ManageAccounts.route
@@ -1515,6 +1558,11 @@ private fun MainNavHost(
                 details = backStackEntry.arguments?.getString(Screen.ARG_EXCEPTION_DETAILS)?.let {
                     Uri.decode(it)
                 } ?: return@composable)
+        }
+        dialog(route = Screen.FeedbackConfirmDialog.route) {
+            currentRoute.value = Screen.FeedbackConfirmDialog.route
+
+            FeedbackConfirmDialog()
         }
     }
 }

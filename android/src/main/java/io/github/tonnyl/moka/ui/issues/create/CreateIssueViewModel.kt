@@ -20,7 +20,8 @@ import logcat.logcat
 @ExperimentalSerializationApi
 data class CreateIssueViewModelExtra(
     val accountInstance: AccountInstance,
-    val repoId: String
+    val repoId: String,
+    val defaultComment: String?
 )
 
 @ExperimentalSerializationApi
@@ -31,7 +32,7 @@ class CreateIssueViewModel(private val extra: CreateIssueViewModelExtra) : ViewM
         get() = _createIssueLiveData
 
     val titleState = mutableStateOf(value = "")
-    val bodyState = mutableStateOf(value = "")
+    val bodyState = mutableStateOf(value = extra.defaultComment.orEmpty())
 
     fun create() {
         val title = titleState.value

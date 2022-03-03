@@ -95,11 +95,9 @@ fun IssuesScreen(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        navController.navigate(
-                            route = Screen.CreateIssue.route.replace(
-                                "{${Screen.ARG_REPO_ID}}",
-                                repoId
-                            )
+                        Screen.CreateIssue.navigate(
+                            navController = navController,
+                            repoId = repoId
                         )
                     }
                 ) {

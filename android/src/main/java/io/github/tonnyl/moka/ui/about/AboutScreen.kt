@@ -90,7 +90,9 @@ fun AboutScreen() {
                     onFaqClick = {
                         customTabsIntent.launchUrl(context, Uri.parse(URL_OF_FAQ))
                     },
-                    onFeedbackClick = {},
+                    onFeedbackClick = {
+                        navController.navigate(route = Screen.FeedbackConfirmDialog.route)
+                    },
                     onTelegramChannelClick = {
                         customTabsIntent.launchUrl(context, Uri.parse(newslettersChannel))
                     },

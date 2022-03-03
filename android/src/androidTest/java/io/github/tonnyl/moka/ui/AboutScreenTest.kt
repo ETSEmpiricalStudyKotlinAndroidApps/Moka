@@ -43,12 +43,13 @@ class AboutScreenTest {
                             onItemClick = OnAboutItemClick(
                                 onWhatsNewClick = {},
                                 onViewInStoreClick = {},
-                                onJoinBetaClick = {},
                                 onPrivacyPolicyClick = {},
                                 onTermsOfServiceClick = {},
                                 onOpenSourceLicensesClick = {},
                                 onFaqClick = {},
-                                onFeedbackClick = {}
+                                onFeedbackClick = {},
+                                onAuthorClick = {},
+                                onTelegramChannelClick = {}
                             )
                         )
                     }

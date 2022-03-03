@@ -422,17 +422,19 @@
     <string name="projects_content_empty_title">No projects yet</string>
     <string name="projects_content_empty_action">Create new</string>
 
-    <string name="about_version_info_category">Version &amp; Update</string>
+    <string name="about_version_info_category">Version</string>
     <string name="about_build_version_title">Build version</string>
     <string name="about_whats_new_title">What\'s new?</string>
     <string name="about_view_in_google_play_store_title">View in Google Play Store</string>
-    <string name="about_join_the_beta_program_title">Join the beta program</string>
     <string name="about_terms_privacy_category">Terms &amp; Privacy</string>
     <string name="about_privacy_policy">Privacy policy</string>
     <string name="about_terms_of_service">Terms of Service</string>
     <string name="about_view_source_code_title">View source code</string>
     <string name="about_open_source_licenses_title">Open source licenses</string>
-    <string name="about_others_category">Others</string>
+    <string name="about_other_category">Other</string>
+    <string name="about_contact">Contact</string>
+    <string name="about_contact_telegram">Newsletters</string>
+    <string name="about_contact_author">Author</string>
 
     <string name="settings_theme_category">Theme</string>
     <string name="settings_theme_title">Choose theme</string>

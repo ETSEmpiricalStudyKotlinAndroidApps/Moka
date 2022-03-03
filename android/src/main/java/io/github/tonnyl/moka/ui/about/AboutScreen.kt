@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
@@ -20,29 +18,34 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
-import io.github.tonnyl.moka.widget.AppBarNavigationIcon
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.github.tonnyl.moka.widget.PreferenceCategoryText
-import io.github.tonnyl.moka.widget.PreferenceDivider
+import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.widget.*
+import io.tonnyl.moka.common.data.ProfileType
+import kotlinx.serialization.ExperimentalSerializationApi
 
 const val AboutScreenTestTag = "AboutScreenTestTag"
 
 data class OnAboutItemClick(
     val onWhatsNewClick: () -> Unit,
     val onViewInStoreClick: () -> Unit,
-    val onJoinBetaClick: () -> Unit,
     val onPrivacyPolicyClick: () -> Unit,
     val onTermsOfServiceClick: () -> Unit,
     val onOpenSourceLicensesClick: () -> Unit,
     val onFaqClick: () -> Unit,
-    val onFeedbackClick: () -> Unit
+    val onFeedbackClick: () -> Unit,
+    val onTelegramChannelClick: () -> Unit,
+    val onAuthorClick: () -> Unit
 )
 
+@ExperimentalSerializationApi
+@ExperimentalPagingApi
 @ExperimentalMaterialApi
 @Composable
 fun AboutScreen() {
@@ -52,33 +55,55 @@ fun AboutScreen() {
         val context = LocalContext.current
         val customTabsIntent = CustomTabsIntent.Builder()
             .build()
-        AboutScreenContent(
-            topAppBarSize = topAppBarSize,
-            onItemClick = OnAboutItemClick(
-                onWhatsNewClick = {
-                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_CHANGELOG))
-                },
-                onViewInStoreClick = {
-                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_GOOGLE_PLAY))
-                },
-                onJoinBetaClick = {
-                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_JOINING_BETA))
-                },
-                onPrivacyPolicyClick = {
-                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_PRIVACY_POLICY))
-                },
-                onTermsOfServiceClick = {
-                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_TERMS_OF_SERVICE))
-                },
-                onOpenSourceLicensesClick = {
-                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_OPEN_SOURCE_LICENSES))
-                },
-                onFaqClick = {
-                    customTabsIntent.launchUrl(context, Uri.parse(URL_OF_FAQ))
-                },
-                onFeedbackClick = {}
+
+        val scaffoldState = rememberScaffoldState()
+
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(hostState = it) { data ->
+                    InsetAwareSnackbar(data = data)
+                }
+            },
+            scaffoldState = scaffoldState
+        ) {
+            val newslettersChannel = URL_OF_NEWSLETTERS
+            val navController = LocalNavController.current
+
+            AboutScreenContent(
+                topAppBarSize = topAppBarSize,
+                onItemClick = OnAboutItemClick(
+                    onWhatsNewClick = {
+                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_CHANGELOG))
+                    },
+                    onViewInStoreClick = {
+                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_GOOGLE_PLAY))
+                    },
+                    onPrivacyPolicyClick = {
+                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_PRIVACY_POLICY))
+                    },
+                    onTermsOfServiceClick = {
+                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_TERMS_OF_SERVICE))
+                    },
+                    onOpenSourceLicensesClick = {
+                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_OPEN_SOURCE_LICENSES))
+                    },
+                    onFaqClick = {
+                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_FAQ))
+                    },
+                    onFeedbackClick = {},
+                    onTelegramChannelClick = {
+                        customTabsIntent.launchUrl(context, Uri.parse(newslettersChannel))
+                    },
+                    onAuthorClick = {
+                        Screen.Profile.navigate(
+                            navController = navController,
+                            login = "TonnyL",
+                            type = ProfileType.USER
+                        )
+                    }
+                )
             )
-        )
+        }
 
         InsetAwareTopAppBar(
             title = {
@@ -139,14 +164,45 @@ fun AboutScreenContent(
             ) {
                 Text(text = stringResource(id = R.string.about_view_in_google_play_store_title))
             }
+            PreferenceDivider()
+        }
+        item {
+            PreferenceCategoryText(text = stringResource(id = R.string.about_contact))
         }
         item {
             ListItem(
-                modifier = Modifier.clickable {
-                    onItemClick.onJoinBetaClick.invoke()
-                }
+                secondaryText = {
+                    Text(text = URL_OF_NEWSLETTERS)
+                },
+                modifier = Modifier.clickable(
+                    enabled = true,
+                    onClick = onItemClick.onTelegramChannelClick
+                )
             ) {
-                Text(text = stringResource(id = R.string.about_join_the_beta_program_title))
+                Text(text = stringResource(id = R.string.about_contact_telegram))
+            }
+        }
+        item {
+            ListItem(
+                secondaryText = {
+                    Text(text = AUTHOR_GITHUB_NAME)
+                },
+                modifier = Modifier.clickable(
+                    enabled = true,
+                    onClick = onItemClick.onAuthorClick
+                )
+            ) {
+                Text(text = stringResource(id = R.string.about_contact_author))
+            }
+        }
+        item {
+            ListItem(
+                modifier = Modifier.clickable(
+                    enabled = true,
+                    onClick = onItemClick.onFeedbackClick
+                )
+            ) {
+                Text(text = stringResource(id = R.string.navigation_menu_feedback))
             }
             PreferenceDivider()
         }
@@ -173,7 +229,7 @@ fun AboutScreenContent(
             PreferenceDivider()
         }
         item {
-            PreferenceCategoryText(text = stringResource(id = R.string.about_others_category))
+            PreferenceCategoryText(text = stringResource(id = R.string.about_other_category))
         }
         item {
             ListItem(
@@ -189,15 +245,6 @@ fun AboutScreenContent(
                 }
             ) {
                 Text(text = stringResource(id = R.string.navigation_menu_faq_help))
-            }
-        }
-        item {
-            ListItem(
-                modifier = Modifier.clickable {
-                    onItemClick.onFeedbackClick.invoke()
-                }
-            ) {
-                Text(text = stringResource(id = R.string.navigation_menu_feedback))
             }
         }
         item {
@@ -220,12 +267,13 @@ private fun AboutScreenContentPreview() {
         onItemClick = OnAboutItemClick(
             onWhatsNewClick = {},
             onViewInStoreClick = {},
-            onJoinBetaClick = {},
             onPrivacyPolicyClick = {},
             onTermsOfServiceClick = {},
             onOpenSourceLicensesClick = {},
             onFaqClick = {},
-            onFeedbackClick = {}
+            onFeedbackClick = {},
+            onAuthorClick = {},
+            onTelegramChannelClick = {}
         )
     )
 }
@@ -239,6 +287,5 @@ private const val URL_OF_CHANGELOG = "https://tonnyl.github.io/android/changelog
 private const val URL_OF_GOOGLE_PLAY =
     "https://play.google.com/store/apps/details?id=io.github.tonnyl.moka"
 
-// todo replace with formal link
-private const val URL_OF_JOINING_BETA =
-    "https://play.google.com/apps/internaltest/4699138972138868013"
+private const val URL_OF_NEWSLETTERS = "https://t.me/moka_newsletters"
+private const val AUTHOR_GITHUB_NAME = "@TonnyL"

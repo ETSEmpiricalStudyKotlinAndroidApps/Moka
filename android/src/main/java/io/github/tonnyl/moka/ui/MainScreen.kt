@@ -83,6 +83,7 @@ import io.github.tonnyl.moka.ui.repository.files.RepositoryFilesScreen
 import io.github.tonnyl.moka.ui.search.SearchScreen
 import io.github.tonnyl.moka.ui.settings.SettingScreen
 import io.github.tonnyl.moka.ui.status.GitHubStatusScreen
+import io.github.tonnyl.moka.ui.status.incident.IncidentScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
@@ -417,6 +418,8 @@ sealed class Screen(val route: String) {
 
     object GitHubStatus : Screen(route = "github_status")
 
+    object GitHubIncident : Screen(route = "github_incident/{${ARG_INCIDENT_ID}}")
+
     companion object {
 
         const val ARG_PROFILE_LOGIN = "arg_profile_login"
@@ -487,6 +490,8 @@ sealed class Screen(val route: String) {
         const val ARG_EXCEPTION_DETAILS = "arg_exception_details"
 
         const val ARG_DEFAULT_COMMENT = "arg_default_comment"
+
+        const val ARG_INCIDENT_ID = "arg_incident_id"
     }
 
 }
@@ -1587,6 +1592,13 @@ private fun MainNavHost(
             currentRoute.value = Screen.GitHubStatus.route
 
             GitHubStatusScreen()
+        }
+        composable(route = Screen.GitHubIncident.route) { backStackEntry ->
+            currentRoute.value = Screen.GitHubIncident.route
+
+            IncidentScreen(
+                incidentId = backStackEntry.arguments?.getString(Screen.ARG_INCIDENT_ID) ?: return@composable
+            )
         }
     }
 }

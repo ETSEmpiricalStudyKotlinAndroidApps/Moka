@@ -1,6 +1,7 @@
 package io.github.tonnyl.moka.ui.status
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -32,10 +33,8 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
-import io.github.tonnyl.moka.ui.theme.IconSize
-import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.formatDateWithDefaultLocale
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.*
@@ -166,6 +165,7 @@ private fun GitHubStatusScreenContent(
             items(count = 6) {
                 GitHubStatusComponentItem(
                     component = placeholder.components.first(),
+                    incidents = status?.incidents.orEmpty(),
                     enablePlaceholder = true
                 )
             }
@@ -173,6 +173,7 @@ private fun GitHubStatusScreenContent(
             items(status?.components.orEmpty().size) {
                 GitHubStatusComponentItem(
                     component = status?.components.orEmpty()[it],
+                    incidents = status?.incidents.orEmpty(),
                     enablePlaceholder = false
                 )
             }
@@ -242,8 +243,16 @@ private fun GitHubStatusStatusItem(
 @Composable
 private fun GitHubStatusComponentItem(
     component: GitHubStatusComponent,
+    incidents: List<GitHubIncident>,
     enablePlaceholder: Boolean
 ) {
+    val navController = LocalNavController.current
+    val associatedIncident = incidents.find { i ->
+        i.components.find { c ->
+            c.id == component.id
+        } != null
+    }
+
     ListItem(
         secondaryText = {
             Text(
@@ -296,6 +305,14 @@ private fun GitHubStatusComponentItem(
                         modifier = modifier
                     )
                 }
+            }
+        },
+        modifier = Modifier.clickable(enabled = !enablePlaceholder && associatedIncident != null) {
+            if (associatedIncident != null) {
+                navController.navigate(
+                    route = Screen.GitHubIncident.route
+                        .replace("{${Screen.ARG_INCIDENT_ID}}", associatedIncident.id)
+                )
             }
         }
     ) {
@@ -358,7 +375,7 @@ private fun GitHubStatusScreenContentPreview(
     )
 }
 
-private val GitHubStatusStatusIndicator.color: Color
+val GitHubStatusStatusIndicator.color: Color
     get() = when (this) {
         None -> {
             StatusColorGreen
@@ -434,8 +451,8 @@ private fun GitHubStatusComponentStatus.icon(): Any {
     }
 }
 
-private val StatusColorGreen = Color(0xff28a745)
-private val StatusColorOrange = Color(0xffe36209)
-private val StatusColorYellow = Color(0xffdbab09)
-private val StatusColorRed = Color(0xffdc3545)
-private val StatusColorBlue = Color(0xff0366d6)
+val StatusColorGreen = Color(0xff28a745)
+val StatusColorOrange = Color(0xffe36209)
+val StatusColorYellow = Color(0xffdbab09)
+val StatusColorRed = Color(0xffdc3545)
+val StatusColorBlue = Color(0xff0366d6)

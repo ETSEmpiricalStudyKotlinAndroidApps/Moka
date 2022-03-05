@@ -648,4 +648,7 @@
     <string name="github_status_under_maintenance">Under Maintenance</string>
     <string name="github_status_updated_at">Updated at %1$s</string>
 
+    <string name="github_incident">Incident</string>
+    <string name="github_incident_status_and_body">%1$s - %2$s</string>
+
 </resources>

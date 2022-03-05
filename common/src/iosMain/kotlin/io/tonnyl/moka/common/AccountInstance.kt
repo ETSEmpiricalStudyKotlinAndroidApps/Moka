@@ -18,6 +18,7 @@ actual class AccountInstance(private val accessToken: String) {
     actual val commitApi = CommitApi(ktorClient = authenticatedKtorClient)
     actual val repositoryContentApi = RepositoryContentApi(ktorClient = authenticatedKtorClient)
     actual val repositoryApi = RepositoryApi(authenticatedKtorClient = authenticatedKtorClient)
+    actual val gitHubStatusApi = GitHubStatusApi(ktorClient = KtorClient.unauthenticatedKtorClient)
 
     actual val apolloGraphQLClient = ApolloGraphQLClient(accessToken = accessToken)
 

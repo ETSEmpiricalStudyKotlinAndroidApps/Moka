@@ -39,6 +39,7 @@ actual class AccountInstance(
     actual val commitApi = CommitApi(ktorClient = authenticatedKtorClient)
     actual val repositoryContentApi = RepositoryContentApi(ktorClient = authenticatedKtorClient)
     actual val repositoryApi = RepositoryApi(authenticatedKtorClient = authenticatedKtorClient)
+    actual val gitHubStatusApi = GitHubStatusApi(ktorClient = unauthenticatedKtorClient)
 
     val database = MokaDataBase.getInstance(
         context = application,

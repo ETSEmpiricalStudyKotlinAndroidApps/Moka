@@ -12,6 +12,7 @@ expect class AccountInstance {
     val commitApi: CommitApi
     val repositoryContentApi: RepositoryContentApi
     val repositoryApi: RepositoryApi
+    val gitHubStatusApi: GitHubStatusApi
 
     val apolloGraphQLClient: ApolloGraphQLClient
 

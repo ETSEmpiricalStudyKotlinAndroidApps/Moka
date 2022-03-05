@@ -82,6 +82,7 @@ import io.github.tonnyl.moka.ui.repository.RepositoryScreen
 import io.github.tonnyl.moka.ui.repository.files.RepositoryFilesScreen
 import io.github.tonnyl.moka.ui.search.SearchScreen
 import io.github.tonnyl.moka.ui.settings.SettingScreen
+import io.github.tonnyl.moka.ui.status.GitHubStatusScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
@@ -414,6 +415,8 @@ sealed class Screen(val route: String) {
 
     object FeedbackConfirmDialog : Screen(route = "feedback_confirm")
 
+    object GitHubStatus : Screen(route = "github_status")
+
     companion object {
 
         const val ARG_PROFILE_LOGIN = "arg_profile_login"
@@ -618,6 +621,17 @@ fun MainDrawerContent(
         }
         item {
             MainDrawerMenuItem(
+                vectorRes = R.drawable.ic_api,
+                textRes = R.string.navigation_menu_github_status,
+                selected = currentRoute == Screen.GitHubStatus.route,
+                onClick = {
+                    navigate.invoke(Screen.GitHubStatus.route)
+                }
+            )
+            Divider(modifier = Modifier.fillMaxWidth())
+        }
+        item {
+            MainDrawerMenuItem(
                 vector = Icons.Outlined.Settings,
                 textRes = R.string.navigation_menu_settings,
                 selected = false,
@@ -762,6 +776,11 @@ private fun MainNavigationRail(
             screen = Screen.Inbox,
             menuText = stringResource(id = R.string.navigation_menu_inbox),
             menuIconPainter = painterResource(id = R.drawable.ic_menu_inbox_24)
+        ),
+        MainNavigationRailMenu(
+            screen = Screen.GitHubStatus,
+            menuText = stringResource(id = R.string.navigation_menu_github_status),
+            menuIconPainter = painterResource(id = R.drawable.ic_api)
         ),
         MainNavigationRailMenu(
             screen = Screen.Settings,
@@ -1563,6 +1582,11 @@ private fun MainNavHost(
             currentRoute.value = Screen.FeedbackConfirmDialog.route
 
             FeedbackConfirmDialog()
+        }
+        composable(route = Screen.GitHubStatus.route) {
+            currentRoute.value = Screen.GitHubStatus.route
+
+            GitHubStatusScreen()
         }
     }
 }

@@ -1733,3 +1733,111 @@ class HistoryQueriesProvider : PreviewParameterProvider<Query> {
         )
 
 }
+
+class GitHubStatusProvider : PreviewParameterProvider<GitHubStatus> {
+
+    override val values: Sequence<GitHubStatus>
+        get() = sequenceOf(
+            GitHubStatus(
+                page = GitHubStatusPage(
+                    id = "kctbh9vrtdwd",
+                    name = "GitHub",
+                    url = "https://www.githubstatus.com",
+                    timeZone = "Etc/UTC",
+                    updatedAt = Instant.parse("2022-03-01T08:09:21.192Z")
+                ),
+                components = listOf(
+                    GitHubStatusComponent(
+                        id = "brv1bkgrwx7q",
+                        name = "API Requests",
+                        status = GitHubStatusComponentStatus.Operational,
+                        createdAt = Instant.parse("2017-01-31T20:01:46.621Z"),
+                        updatedAt = Instant.parse("2021-11-27T23:31:00.090Z"),
+                        position = 2,
+                        description = "Requests for GitHub APIs",
+                        showcase = false,
+                        onlyShowIfDegraded = false
+                    ),
+                    GitHubStatusComponent(
+                        id = "8l4ygp009s5s",
+                        name = "Git Operations",
+                        status = GitHubStatusComponentStatus.Operational,
+                        createdAt = Instant.parse("2017-01-31T20:05:05.370Z"),
+                        updatedAt = Instant.parse("2022-01-29T21:09:15.078Z"),
+                        position = 1,
+                        description = "Performance of git clones, pulls, pushes, and associated operations",
+                        showcase = false,
+                        onlyShowIfDegraded = false
+                    )
+                ),
+                status = GitHubStatusStatus(
+                    indicator = GitHubStatusStatusIndicator.None,
+                    description = "All Systems Operational"
+                ),
+                incidents = listOf(
+                    GitHubIncident(
+                        id = "416ft5p3mr89",
+                        name = "Incident with Pull Requests",
+                        status = GitHubIncidentStatus.Investigating,
+                        createdAt = Instant.parse("2022-03-04T15:30:22.821Z"),
+                        updatedAt = Instant.parse("2022-03-04T15:30:31.536Z"),
+                        monitoringAt = null,
+                        resolvedAt = null,
+                        impact = GitHubStatusStatusIndicator.Minor,
+                        shortlink = "https://stspg.io/yfjxdqbc12vh",
+                        startedAt = Instant.parse("2022-03-04T15:30:22.815Z"),
+                        pageId = "kctbh9vrtdwd",
+                        incidentUpdates = listOf(
+                            GitHubIncidentUpdate(
+                                id = "lcc22kp4qg68",
+                                status = GitHubIncidentStatus.Resolved,
+                                body = "This incident has been resolved.",
+                                incidentId = "416ft5p3mr89",
+                                createdAt = Instant.parse("2022-03-04T16:37:48.602Z"),
+                                updatedAt = Instant.parse("2022-03-04T16:37:48.602Z"),
+                                displayAt = Instant.parse("2022-03-04T16:37:48.602Z"),
+                                affectedComponents = null,
+                                deliverNotifications = true,
+                                customTweet = null,
+                                tweetId = null
+                            ),
+                            GitHubIncidentUpdate(
+                                id = "yc2t5ydfk96r",
+                                status = GitHubIncidentStatus.Investigating,
+                                body = "We are investigating reports of degraded performance for Pull Requests.",
+                                incidentId = "416ft5p3mr89",
+                                createdAt = Instant.parse("2022-03-04T15:30:22.852Z"),
+                                updatedAt = Instant.parse("2022-03-04T15:30:22.852Z"),
+                                displayAt = Instant.parse("2022-03-04T15:30:22.852Z"),
+                                affectedComponents = listOf(
+                                    GitHubIncidentAffectedComponent(
+                                        code = "hhtssxt0f5v2",
+                                        name = "Pull Requests",
+                                        oldStatus = GitHubStatusComponentStatus.Operational,
+                                        newStatus = GitHubStatusComponentStatus.Operational
+                                    )
+                                ),
+                                deliverNotifications = true,
+                                customTweet = null,
+                                tweetId = null
+                            )
+                        ),
+                        components = listOf(
+                            GitHubStatusComponent(
+                                id = "hhtssxt0f5v2",
+                                name = "Pull Requests",
+                                status = GitHubStatusComponentStatus.PartialOutage,
+                                createdAt = Instant.parse("2020-09-02T15:39:06.329Z"),
+                                updatedAt = Instant.parse("2022-03-04T15:30:31.516Z"),
+                                position = 6,
+                                description = "Requests for Pull Requests on GitHub.com",
+                                showcase = false,
+                                onlyShowIfDegraded = false
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+}

@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import io.github.tonnyl.moka.R
 import io.tonnyl.moka.common.data.Emoji
 import io.tonnyl.moka.common.serialization.json
+import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
@@ -21,6 +22,8 @@ import logcat.logcat
 import okio.buffer
 import okio.source
 import java.io.File
+import java.text.DateFormat
+import java.util.*
 
 private const val TAG = "AndroidExtensions"
 
@@ -107,4 +110,13 @@ fun Context.downloadFileViaDownloadManager(
             "failed to download file via download manager: ${e.asLog()}"
         }
     }
+}
+
+fun Instant.formatDateWithDefaultLocale(
+    dateStyle: Int = DateFormat.DEFAULT,
+    timeStyle: Int = DateFormat.SHORT
+): String {
+    val date = Date(toEpochMilliseconds())
+    return DateFormat.getDateTimeInstance(dateStyle, timeStyle, Locale.getDefault())
+        .format(date)
 }

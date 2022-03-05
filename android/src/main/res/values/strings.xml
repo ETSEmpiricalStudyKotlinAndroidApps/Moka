@@ -38,6 +38,7 @@
     <string name="navigation_menu_about" translation_description="The about menu item title of navigation drawer.">About</string>
     <string name="navigation_menu_faq_help">FAQs &amp; Help</string>
     <string name="navigation_menu_feedback">Feedback</string>
+    <string name="navigation_menu_github_status">GitHub Status</string>
 
     <string name="repository_name_unknown" translation_description="If it is unable to get a repository's name, then display this value.">Unknown</string>
     <string name="programming_language_unknown" translation_description="If a repository does not have a programming language, then display this value.">Unknown</string>
@@ -625,13 +626,26 @@
     <string name="create_issue_title_hint">Title</string>
     <string name="create_issue_body_hint">Leave a comment</string>
     <string name="create_issue_discard_changes_alert_title">Unsaved changes</string>
-    <string name="create_issue_discard_changes_alert_message">Are you sure you want to discard this new issue? Your message will be lost.</string>
+    <string name="create_issue_discard_changes_alert_message">Are you sure you want to discard this new issue? Your
+        message will be lost.
+    </string>
     <string name="create_issue_discard_changes_alert_confirm">Discard changes</string>
 
     <string name="exception_details">Something wrong…</string>
     <string name="report_to_moka_team">Report to Moka team</string>
     <string name="report_succeeded">Reported</string>
 
-    <string name="feedback_confirm_message">Feedback will be submitted as an issue to repository TonnyL/Moka-Feedback, are you sure to continue?</string>
+    <string name="feedback_confirm_message">Feedback will be submitted as an issue to repository TonnyL/Moka-Feedback,
+        are you sure to continue?
+    </string>
+
+    <string name="github_status_title">GitHub Status</string>
+
+    <string name="github_status_operational">Operational</string>
+    <string name="github_status_degraded_performance">Degraded Performance</string>
+    <string name="github_status_partial_outage">Partial Outage</string>
+    <string name="github_status_major_outage">Major Outage</string>
+    <string name="github_status_under_maintenance">Under Maintenance</string>
+    <string name="github_status_updated_at">Updated at %1$s</string>
 
 </resources>

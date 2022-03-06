@@ -100,3 +100,14 @@
 "Inbox.Notification.Reason.TeamMention" = "Team Mention";
 "Inbox.Notification.Reason.Other" = "Other";
 "Inbox.Notification.Divider" = " - ";
+
+"GitHubStatus" = "GitHub Status";
+"GitHubStatus.Operational" = "Operational";
+"GitHubStatus.DegradedPerformance" = "Degraded Performance";
+"GitHubStatus.PartialOutage" = "Partial Outage";
+"GitHubStatus.MajorOutage" = "Major Outage";
+"GitHubStatus.UnderMaintenance" = "Under Maintenance";
+"GitHubStatus.UpdatedAt" = "Updated at %@";
+
+"GitHubIncident" = "Incident";
+"GitHubIncident.StatusAndBody" = "%@ - %@";

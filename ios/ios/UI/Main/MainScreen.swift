@@ -17,41 +17,44 @@ enum TabIdentifier {
 
 struct MainScreen: View {
     @State private var selectedTab: TabIdentifier = .timeline
- 
+    private var mainViewModel = MainScreenViewModel()
+    
     var body: some View {
         TabView(selection: $selectedTab){
-            TimelineScreen().tabItem {
-                VStack {
-                    Image(systemName: "waveform.path.ecg")
-                    Text(NSLocalizedString("MainTab.Timeline", comment: ""))
+            TimelineScreen()
+                .tabItem {
+                    Label(NSLocalizedString("MainTab.Timeline", comment: ""), systemImage: "waveform.path.ecg")
+                        .environment(\.symbolVariants, .none)
                 }
-            }.tag(TabIdentifier.timeline)
+                .tag(TabIdentifier.timeline)
+                .environmentObject(mainViewModel)
             
-            ExploreScreen().tabItem {
-                VStack {
-                    Image(systemName: "safari")
-                    Text(NSLocalizedString("MainTab.Explore", comment: ""))
+            ExploreScreen()
+                .tabItem {
+                    Label(NSLocalizedString("MainTab.Explore", comment: ""),systemImage: "safari")
+                        .environment(\.symbolVariants, .none)
                 }
-            }.tag(TabIdentifier.explore)
+                .tag(TabIdentifier.explore)
+                .environmentObject(mainViewModel)
             
-            InboxScreen().tabItem {
-                VStack {
-                    Image(systemName: "tray")
-                    Text(NSLocalizedString("MainTab.Inbox", comment: ""))
+            InboxScreen()
+                .tabItem {
+                    Label(NSLocalizedString("MainTab.Inbox", comment: ""), systemImage: "tray")
+                        .environment(\.symbolVariants, .none)
                 }
-            }.tag(TabIdentifier.inbox)
+                .tag(TabIdentifier.inbox)
+                .environmentObject(mainViewModel)
             
-            SearchScreen().tabItem {
-                VStack {
-                    Image(systemName: "magnifyingglass")
-                    Text(NSLocalizedString("MainTab.Search", comment: ""))
+            SearchScreen()
+                .tabItem {
+                    Label(NSLocalizedString("MainTab.Search", comment: ""), systemImage: "magnifyingglass")
+                        .environment(\.symbolVariants, .none)
                 }
-            }.tag(TabIdentifier.search)
+                .tag(TabIdentifier.search)
+                .environmentObject(mainViewModel)
         }
     }
 }
-
-
 
 #if DEBUG
 struct MainScreen_Previews: PreviewProvider {

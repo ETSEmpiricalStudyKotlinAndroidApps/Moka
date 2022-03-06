@@ -20,12 +20,14 @@
 		BA63B3C627CDF4C600A55C91 /* EmptyScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA63B3C527CDF4C600A55C91 /* EmptyScreen.swift */; };
 		BA73672B27C775A1006D3A17 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BA73672D27C775A1006D3A17 /* Localizable.strings */; };
 		BA73673027C77D0F006D3A17 /* RepositoryScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA73672F27C77D0F006D3A17 /* RepositoryScreen.swift */; };
-		BA9624E427CB2DB000EAEA58 /* TimelineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9624E327CB2DB000EAEA58 /* TimelineViewModel.swift */; };
-		BA9624E627CB589500EAEA58 /* InboxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9624E527CB589500EAEA58 /* InboxViewModel.swift */; };
 		BA9624E927CB775000EAEA58 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = BA9624E827CB775000EAEA58 /* Kingfisher */; };
 		BA9624EB27CB829D00EAEA58 /* UIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9624EA27CB829D00EAEA58 /* UIExtensions.swift */; };
 		BA9B91EB2730494D0033F096 /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = BAAF30B6272D9E690049EBD2 /* SwiftUIX */; };
-		BAAF30BA272DAAE60049EBD2 /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAF30B9272DAAE60049EBD2 /* ExploreViewModel.swift */; };
+		BA9EF17327D3AEE5000161F0 /* GitHubStatusScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF17227D3AEE5000161F0 /* GitHubStatusScreen.swift */; };
+		BA9EF17527D3AF0B000161F0 /* GitHubStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF17427D3AF0B000161F0 /* GitHubStatusViewModel.swift */; };
+		BA9EF17827D3C8F5000161F0 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF17727D3C8F5000161F0 /* SettingsScreen.swift */; };
+		BA9EF17C27D4794C000161F0 /* MainScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF17B27D4794C000161F0 /* MainScreenViewModel.swift */; };
+		BA9EF17E27D4A626000161F0 /* ProfileNavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF17D27D4A626000161F0 /* ProfileNavigationItem.swift */; };
 		BAAF30BC272DAEC00049EBD2 /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAF30BB272DAEC00049EBD2 /* ProfileScreen.swift */; };
 		BAAF30BE272DB0400049EBD2 /* ExploreScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAF30BD272DB0400049EBD2 /* ExploreScreen.swift */; };
 		BAE4C5E327C77F5E007F6030 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE4C5E227C77F5E007F6030 /* ProfileViewModel.swift */; };
@@ -51,10 +53,12 @@
 		BA63B3C527CDF4C600A55C91 /* EmptyScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyScreen.swift; sourceTree = "<group>"; };
 		BA73672C27C775A1006D3A17 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BA73672F27C77D0F006D3A17 /* RepositoryScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryScreen.swift; sourceTree = "<group>"; };
-		BA9624E327CB2DB000EAEA58 /* TimelineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineViewModel.swift; sourceTree = "<group>"; };
-		BA9624E527CB589500EAEA58 /* InboxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxViewModel.swift; sourceTree = "<group>"; };
 		BA9624EA27CB829D00EAEA58 /* UIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIExtensions.swift; sourceTree = "<group>"; };
-		BAAF30B9272DAAE60049EBD2 /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
+		BA9EF17227D3AEE5000161F0 /* GitHubStatusScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubStatusScreen.swift; sourceTree = "<group>"; };
+		BA9EF17427D3AF0B000161F0 /* GitHubStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubStatusViewModel.swift; sourceTree = "<group>"; };
+		BA9EF17727D3C8F5000161F0 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
+		BA9EF17B27D4794C000161F0 /* MainScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewModel.swift; sourceTree = "<group>"; };
+		BA9EF17D27D4A626000161F0 /* ProfileNavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileNavigationItem.swift; sourceTree = "<group>"; };
 		BAAF30BB272DAEC00049EBD2 /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
 		BAAF30BD272DB0400049EBD2 /* ExploreScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreScreen.swift; sourceTree = "<group>"; };
 		BAE4C5E227C77F5E007F6030 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
@@ -104,7 +108,6 @@
 			isa = PBXGroup;
 			children = (
 				BA09EE9727CA879F006803E6 /* TimelineScreen.swift */,
-				BA9624E327CB2DB000EAEA58 /* TimelineViewModel.swift */,
 			);
 			path = Timeline;
 			sourceTree = "<group>";
@@ -113,7 +116,6 @@
 			isa = PBXGroup;
 			children = (
 				BA09EE9A27CA8814006803E6 /* InboxScreen.swift */,
-				BA9624E527CB589500EAEA58 /* InboxViewModel.swift */,
 			);
 			path = Inbox;
 			sourceTree = "<group>";
@@ -130,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				BA09EE9427CA8248006803E6 /* MainScreen.swift */,
+				BA9EF17B27D4794C000161F0 /* MainScreenViewModel.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -150,6 +153,7 @@
 				BA09EEA427CB2551006803E6 /* ItemLoadingStateView.swift */,
 				BA0D7A8B27CCBDD0000BC7F4 /* AvatarView.swift */,
 				BA63B3C527CDF4C600A55C91 /* EmptyScreen.swift */,
+				BA9EF17D27D4A626000161F0 /* ProfileNavigationItem.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -157,6 +161,8 @@
 		BA1D91F927C638F80095C0B5 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				BA9EF17627D3C8E3000161F0 /* Settings */,
+				BA9EF17127D3AEC3000161F0 /* GitHubStatus */,
 				BA09EEA327CB252B006803E6 /* Components */,
 				BA09EE9F27CA88AD006803E6 /* Main */,
 				BA09EE9C27CA882C006803E6 /* Search */,
@@ -172,7 +178,6 @@
 		BA1D91FA27C639780095C0B5 /* Explore */ = {
 			isa = PBXGroup;
 			children = (
-				BAAF30B9272DAAE60049EBD2 /* ExploreViewModel.swift */,
 				BAAF30BD272DB0400049EBD2 /* ExploreScreen.swift */,
 			);
 			path = Explore;
@@ -203,6 +208,23 @@
 				BAE4C5E427C77FB5007F6030 /* RepositoryViewModel.swift */,
 			);
 			path = Repository;
+			sourceTree = "<group>";
+		};
+		BA9EF17127D3AEC3000161F0 /* GitHubStatus */ = {
+			isa = PBXGroup;
+			children = (
+				BA9EF17227D3AEE5000161F0 /* GitHubStatusScreen.swift */,
+				BA9EF17427D3AF0B000161F0 /* GitHubStatusViewModel.swift */,
+			);
+			path = GitHubStatus;
+			sourceTree = "<group>";
+		};
+		BA9EF17627D3C8E3000161F0 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				BA9EF17727D3C8F5000161F0 /* SettingsScreen.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		BAF61B2427CC904000A03E37 /* Frameworks */ = {
@@ -323,17 +345,19 @@
 				BA9624EB27CB829D00EAEA58 /* UIExtensions.swift in Sources */,
 				BAE4C5E527C77FB5007F6030 /* RepositoryViewModel.swift in Sources */,
 				BA09EE9E27CA883A006803E6 /* SearchScreen.swift in Sources */,
+				BA9EF17C27D4794C000161F0 /* MainScreenViewModel.swift in Sources */,
 				BA09EE9527CA8248006803E6 /* MainScreen.swift in Sources */,
-				BAAF30BA272DAAE60049EBD2 /* ExploreViewModel.swift in Sources */,
-				BA9624E427CB2DB000EAEA58 /* TimelineViewModel.swift in Sources */,
 				BA09EEA527CB2551006803E6 /* ItemLoadingStateView.swift in Sources */,
 				BAE4C5E327C77F5E007F6030 /* ProfileViewModel.swift in Sources */,
+				BA9EF17327D3AEE5000161F0 /* GitHubStatusScreen.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				BA5CD73627C61B01003F211C /* ArrayClass.swift in Sources */,
+				BA9EF17E27D4A626000161F0 /* ProfileNavigationItem.swift in Sources */,
 				BA09EE9B27CA8814006803E6 /* InboxScreen.swift in Sources */,
+				BA9EF17827D3C8F5000161F0 /* SettingsScreen.swift in Sources */,
 				BA5CD73927C62432003F211C /* Pair.swift in Sources */,
 				BAF61B2827CCA73A00A03E37 /* FoundationExtensions.swift in Sources */,
-				BA9624E627CB589500EAEA58 /* InboxViewModel.swift in Sources */,
+				BA9EF17527D3AF0B000161F0 /* GitHubStatusViewModel.swift in Sources */,
 				BA09EE9827CA879F006803E6 /* TimelineScreen.swift in Sources */,
 				BA0D7A8C27CCBDD0000BC7F4 /* AvatarView.swift in Sources */,
 				BAAF30BC272DAEC00049EBD2 /* ProfileScreen.swift in Sources */,
@@ -477,7 +501,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3PJ4L646A5;
+				DEVELOPMENT_TEAM = L69RZAXVCK;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../common/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = ios/Info.plist;
@@ -506,7 +530,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3PJ4L646A5;
+				DEVELOPMENT_TEAM = L69RZAXVCK;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../common/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = ios/Info.plist;

@@ -10,10 +10,16 @@ import SwiftUI
 
 struct SearchScreen: View {
     
+    @EnvironmentObject var viewModel: MainScreenViewModel
+    
     var body: some View {
-        ZStack {
-            
-        }.navigationTitle(NSLocalizedString("MainTab.Search", comment: ""))
+        NavigationView {
+            ZStack {
+                
+            }
+            .navigationTitle(NSLocalizedString("MainTab.Search", comment: ""))
+            .navigationBarItems(trailing: ProfileNavigationItem())
+        }
     }
     
 }

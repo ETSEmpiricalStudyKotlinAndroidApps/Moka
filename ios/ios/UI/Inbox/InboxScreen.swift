@@ -12,7 +12,7 @@ import common
 
 struct InboxScreen: View {
     
-    @ObservedObject var viewModel = InboxViewModel()
+    @EnvironmentObject var viewModel: MainScreenViewModel
     
     var body: some View {
         NavigationView {
@@ -29,14 +29,14 @@ struct InboxScreen: View {
                                     index: i,
                                     totalDataCount: data.count
                                 ) {
-                                    viewModel.loadData(forceRefresh: false)
+                                    viewModel.loadNotificationsData(forceRefresh: false)
                                 }
                             }
                         }
                     }
                 } else if status == .error {
                     EmptyScreen() {
-                        viewModel.loadData(forceRefresh: true)
+                        viewModel.loadNotificationsData(forceRefresh: true)
                     }
                 } else if status == .loading {
                     ActivityIndicator()
@@ -44,11 +44,12 @@ struct InboxScreen: View {
                         .style(.regular)
                 } else {
                     EmptyScreen(msgString: NSLocalizedString("Common.NoDataFound", comment: ""), actionString: "Common.Retry") {
-                        viewModel.loadData(forceRefresh: true)
+                        viewModel.loadNotificationsData(forceRefresh: true)
                     }
                 }
             }
             .navigationTitle(NSLocalizedString("MainTab.Inbox", comment: ""))
+            .navigationBarItems(trailing: ProfileNavigationItem())
         }
     }
     

@@ -12,7 +12,7 @@ import common
 
 struct TimelineScreen: View {
     
-    @ObservedObject var viewModel = TimelineViewModel()
+    @EnvironmentObject var viewModel: MainScreenViewModel
     
     var body: some View {
         NavigationView {
@@ -25,14 +25,14 @@ struct TimelineScreen: View {
                         LazyVStack(alignment: .leading) {
                             ForEach(0..<data.count + 1, id: \.self) { i in
                                 makeItemView(index: i, data: data, status: status) {
-                                    viewModel.loadData(forceRefresh: false)
+                                    viewModel.loadEventsData(forceRefresh: true)
                                 }
                             }
                         }
                     }
                 } else if status == .error {
                     EmptyScreen() {
-                        viewModel.loadData(forceRefresh: true)
+                        viewModel.loadEventsData(forceRefresh: true)
                     }
                 } else if status == .loading {
                     ActivityIndicator()
@@ -40,11 +40,12 @@ struct TimelineScreen: View {
                         .style(.regular)
                 } else {
                     EmptyScreen(msgString: NSLocalizedString("Common.NoDataFound", comment: ""), actionString: "Common.Retry") {
-                        viewModel.loadData(forceRefresh: true)
+                        viewModel.loadEventsData(forceRefresh: true)
                     }
                 }
             }
             .navigationTitle(NSLocalizedString("MainTab.Timeline", comment: ""))
+            .navigationBarItems(trailing: ProfileNavigationItem())
         }
     }
     
@@ -60,7 +61,7 @@ private func makeItemView(
         if index == data.count {
             if status == nil
                 || data.isEmpty {
-                EmptyView()
+                Spacer(minLength: 55)
             } else {
                 ItemLoadingStateView(status: status!)
             }

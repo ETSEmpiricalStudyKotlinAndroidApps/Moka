@@ -11,12 +11,13 @@ import SwiftUI
 import SwiftUIX
 
 struct ExploreScreen: View {
-    @ObservedObject var viewModel = ExploreViewModel()
+    
+    @EnvironmentObject var viewModel: MainScreenViewModel
     
     var body: some View {
         NavigationView {
-            let data = viewModel.dataResource?.data
-            let status = viewModel.dataResource?.status
+            let data = viewModel.exploreResource?.data
+            let status = viewModel.exploreResource?.status
             let repos = data?.second.array ?? []
             let developers = data?.first.array ?? []
             
@@ -58,7 +59,7 @@ struct ExploreScreen: View {
                     }
                 } else if status == .error {
                     EmptyScreen() {
-                        viewModel.refresh()
+                        viewModel.loadExploreData()
                     }
                 } else if status == .loading {
                     ActivityIndicator()
@@ -66,11 +67,12 @@ struct ExploreScreen: View {
                         .style(.regular)
                 } else {
                     EmptyScreen(msgString: NSLocalizedString("Common.NoDataFound", comment: ""), actionString: "Common.Retry") {
-                        viewModel.refresh()
+                        viewModel.loadExploreData()
                     }
                 }
             }
             .navigationTitle(NSLocalizedString("MainTab.Explore", comment: ""))
+            .navigationBarItems(trailing: ProfileNavigationItem())
         }
     }
 }

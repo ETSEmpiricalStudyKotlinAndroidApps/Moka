@@ -6,6 +6,8 @@
 //  Copyright © 2022 orgName. All rights reserved.
 //
 
+import common
+
 extension Optional where Wrapped  == String {
     
     var isNullOrEmpty: Bool {
@@ -26,6 +28,14 @@ extension Optional where Wrapped  == String {
         }
         
         return self!
+    }
+    
+}
+
+extension Error {
+    
+    var kotlinException: KotlinException {
+        return KotlinException(message: self.localizedDescription)
     }
     
 }

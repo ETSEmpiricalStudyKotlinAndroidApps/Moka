@@ -9,6 +9,7 @@
 import Foundation
 import common
 import Then
+import SwiftUI
 
 extension TrendingDeveloper: Identifiable {
     
@@ -32,13 +33,20 @@ extension IssueListItem: Identifiable {
 extension PullRequestListItem: Identifiable {
     
 }
+extension GitHubStatus: Identifiable {
+    
+}
 
-private func formatDate(date: Foundation.Date) -> String {
-    let dateFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMdd", options: 0, locale: Locale.current)
+private func formatDate(
+    date: Foundation.Date,
+    timeStyle: DateFormatter.Style = .none,
+    dateStyle: DateFormatter.Style = .full
+) -> String {
+    let dateFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMdd'T'HH:mm:ss", options: 0, locale: Locale.current)
     
     return DateFormatter().then {
-        $0.timeStyle = .none
-        $0.dateStyle = .full
+        $0.timeStyle = timeStyle
+        $0.dateStyle = dateStyle
         $0.dateFormat = dateFormat
     }.string(from: date)
 }
@@ -74,4 +82,19 @@ extension Kotlinx_datetimeInstant {
         
         return formatDate(date: now.addingTimeInterval(TimeInterval(diff)))
     }
+    
+    public func dateTimeString(
+        timeStyle: DateFormatter.Style = .none,
+        dateStyle: DateFormatter.Style = .full
+    ) -> String {
+        let now = Foundation.Date()
+        let diff = Int64(now.timeIntervalSince1970) - epochSeconds
+        
+        return formatDate(
+            date: now.addingTimeInterval(TimeInterval(diff)),
+            timeStyle: timeStyle,
+            dateStyle: dateStyle
+        )
+    }
+    
 }

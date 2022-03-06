@@ -29,12 +29,11 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.DropDownMenuAppBarOffset
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
+import io.github.tonnyl.moka.util.displayExceptionDetails
+import io.github.tonnyl.moka.util.downloadFileViaDownloadManager
 import io.github.tonnyl.moka.util.isDarkModeOn
 import io.github.tonnyl.moka.util.safeStartActivity
-import io.github.tonnyl.moka.widget.AppBarNavigationIcon
-import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
-import io.github.tonnyl.moka.widget.EmptyScreenContent
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
+import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -70,43 +69,83 @@ fun FileScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         var topAppBarSize by remember { mutableStateOf(0) }
 
-        val contentPaddings = rememberInsetsPaddingValues(
-            insets = LocalWindowInsets.current.systemBars,
-            applyTop = false,
-            additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
-        )
+        val scaffoldState = rememberScaffoldState()
 
-        val fileResource by viewModel.file.observeAsState()
-
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(
-                isRefreshing = fileResource == null
-                        || fileResource?.status == Status.LOADING
-            ),
-            onRefresh = viewModel::geFileContent,
-            indicatorPadding = contentPaddings,
-            indicator = { state, refreshTriggerDistance ->
-                DefaultSwipeRefreshIndicator(
-                    state = state,
-                    refreshTriggerDistance = refreshTriggerDistance
-                )
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(hostState = it) { data: SnackbarData ->
+                    InsetAwareSnackbar(data = data)
+                }
             },
-            modifier = Modifier.fillMaxSize()
+            scaffoldState = scaffoldState
         ) {
-            val fileContent = fileResource?.data
-            when {
-                fileContent != null -> {
-                    FileScreenContent(
-                        contentPadding = contentPaddings,
-                        fileContent = fileContent.first,
-                        lang = fileContent.second
+            val contentPaddings = rememberInsetsPaddingValues(
+                insets = LocalWindowInsets.current.systemBars,
+                applyTop = false,
+                additionalTop = with(LocalDensity.current) { topAppBarSize.toDp() }
+            )
+
+            val fileResource by viewModel.file.observeAsState()
+
+            val redirectedResource by viewModel.redirectedUrl.observeAsState()
+
+            if (redirectedResource != null) {
+                if (!redirectedResource!!.data.isNullOrEmpty()) {
+                    LocalContext.current.downloadFileViaDownloadManager(
+                        url = redirectedResource!!.data!!,
+                        accessToken = currentAccount.signedInAccount.accessToken.accessToken
+                    )
+
+                    viewModel.onRedirectedDataErrorDismissed()
+                } else if (redirectedResource?.e != null) {
+                    SnackBarErrorMessage(
+                        scaffoldState = scaffoldState,
+                        dismissAction = viewModel::onRedirectedDataErrorDismissed
                     )
                 }
-                fileResource?.status == Status.ERROR -> { // todo display more error info and help user to download the raw file.
-                    EmptyScreenContent(
-                        action = viewModel::geFileContent,
-                        throwable = fileResource?.e
+            }
+
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(
+                    isRefreshing = fileResource == null
+                            || fileResource?.status == Status.LOADING
+                ),
+                onRefresh = viewModel::geFileContent,
+                indicatorPadding = contentPaddings,
+                indicator = { state, refreshTriggerDistance ->
+                    DefaultSwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = refreshTriggerDistance
                     )
+                },
+                modifier = Modifier.fillMaxSize()
+            ) {
+                val fileContent = fileResource?.data
+                when {
+                    fileContent != null -> {
+                        FileScreenContent(
+                            contentPadding = contentPaddings,
+                            fileContent = fileContent.first,
+                            lang = fileContent.second
+                        )
+                    }
+                    fileResource?.status == Status.ERROR -> {
+                        if (fileResource?.e.displayExceptionDetails) {
+                            EmptyScreenContent(
+                                action = {
+                                    viewModel.getRedirectedUrl(url = "https://github.com/$login/$repoName/blob/${filePath}/${filename}?raw=true")
+                                },
+                                actionId = R.string.download_file_directly,
+                                titleId = R.string.download_file_directly_message,
+                                throwable = fileResource?.e
+                            )
+                        } else {
+                            EmptyScreenContent(
+                                action = viewModel::geFileContent,
+                                throwable = fileResource?.e
+                            )
+                        }
+                    }
                 }
             }
         }

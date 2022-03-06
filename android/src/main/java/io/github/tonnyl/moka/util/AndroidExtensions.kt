@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Environment
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import io.github.tonnyl.moka.R
 import io.tonnyl.moka.common.data.Emoji
 import io.tonnyl.moka.common.serialization.json
@@ -22,6 +23,7 @@ import logcat.logcat
 import okio.buffer
 import okio.source
 import java.io.File
+import java.nio.channels.UnresolvedAddressException
 import java.text.DateFormat
 import java.util.*
 
@@ -120,3 +122,8 @@ fun Instant.formatDateWithDefaultLocale(
     return DateFormat.getDateTimeInstance(dateStyle, timeStyle, Locale.getDefault())
         .format(date)
 }
+
+val Throwable?.displayExceptionDetails: Boolean
+    get() = this != null
+            && this !is ApolloNetworkException
+            && this !is UnresolvedAddressException

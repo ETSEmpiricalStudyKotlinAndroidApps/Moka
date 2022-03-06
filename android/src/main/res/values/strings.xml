@@ -566,7 +566,14 @@
 
     <string name="files">Files</string>
     <string name="download_file_alert_title">Download File</string>
-    <string name="download_file_alert_message">The file is too large, or it is not supported to view this file. Do you want to download it?</string>
+    <string name="download_file_alert_message">The file is too large, or it is not supported to view this file. Do you
+        want to download it?
+    </string>
+
+    <string name="download_file_directly">Download directly</string>
+    <string name="download_file_directly_message">Failed to get file content, download it directly via system
+        downloader?
+    </string>
 
     <string name="branches">Branches</string>
     <string name="branch_default">Default</string>

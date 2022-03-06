@@ -17,15 +17,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.apollographql.apollo3.exception.ApolloNetworkException
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.util.displayExceptionDetails
 import io.tonnyl.moka.common.util.isNetworkAvailable
 import logcat.asLog
-import java.nio.channels.UnresolvedAddressException
 
 @Composable
 fun EmptyScreenContent(
@@ -37,9 +36,6 @@ fun EmptyScreenContent(
     action: () -> Unit
 ) {
     val navController = LocalNavController.current
-    val displayExceptionDetails = throwable != null
-            && throwable !is ApolloNetworkException
-            && throwable !is UnresolvedAddressException
 
     Box(
         contentAlignment = Alignment.Center,
@@ -54,8 +50,8 @@ fun EmptyScreenContent(
                 modifier = Modifier
                     .align(alignment = Alignment.CenterHorizontally)
                     .clip(shape = MaterialTheme.shapes.medium)
-                    .clickable(enabled = displayExceptionDetails) {
-                        if (displayExceptionDetails) {
+                    .clickable(enabled = throwable.displayExceptionDetails) {
+                        if (throwable.displayExceptionDetails) {
                             navController.navigate(
                                 route = Screen.ExceptionDetails.route
                                     .replace(

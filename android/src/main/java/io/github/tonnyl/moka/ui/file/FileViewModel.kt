@@ -10,6 +10,7 @@ import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.HighlightLanguage
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Resource
+import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,6 +41,10 @@ class FileViewModel(
     private val _file = MutableLiveData<Resource<Pair<String, String?>>>()
     val file: LiveData<Resource<Pair<String, String?>>>
         get() = _file
+
+    private val _redirectedUrl = MutableLiveData<Resource<String>?>()
+    val redirectedUrl: LiveData<Resource<String>?>
+        get() = _redirectedUrl
 
     init {
         geFileContent()
@@ -83,6 +88,32 @@ class FileViewModel(
                 _file.value = Resource.error(exception = e, data = null)
             }
         }
+    }
+
+    fun getRedirectedUrl(url: String) {
+        if (redirectedUrl.value?.status == Status.LOADING) {
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                _redirectedUrl.value = Resource.loading(data = null)
+
+                val result = extra.accountInstance.repositoryContentApi.getRedirectedUrl(url = url)
+
+                _redirectedUrl.value = Resource.success(data = result)
+            } catch (e: Exception) {
+                logcat(priority = LogPriority.ERROR) {
+                    e.asLog()
+                }
+
+                _redirectedUrl.value = Resource.error(exception = e, data = null)
+            }
+        }
+    }
+
+    fun onRedirectedDataErrorDismissed() {
+        _redirectedUrl.value = null
     }
 
 }

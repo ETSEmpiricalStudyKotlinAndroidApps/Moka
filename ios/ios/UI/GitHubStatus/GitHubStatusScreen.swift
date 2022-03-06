@@ -159,6 +159,8 @@ struct GitHubStatusComponentItem: View {
     
     let component: GitHubStatusComponent
     let incidents: Array<GitHubIncident>
+
+    let associatedIncident: GitHubIncident?
     
     init(
         component: GitHubStatusComponent,
@@ -166,9 +168,30 @@ struct GitHubStatusComponentItem: View {
     ) {
         self.component = component
         self.incidents = incidents
+        
+        associatedIncident = incidents.first(
+            where: { incident in
+                incident.components.first(
+                    where: {
+                        $0.id == component.id
+                    }
+                ) != nil
+            }
+        )
     }
     
     var body: some View {
+        if associatedIncident != nil {
+            NavigationLink(destination: GitHubIncidentScreen(incident: associatedIncident!)) {
+                content
+            }
+            .buttonStyle(PlainButtonStyle())
+        } else {
+            content
+        }
+    }
+    
+    private var content: some View {
         VStack {
             HStack {
                 VStack(

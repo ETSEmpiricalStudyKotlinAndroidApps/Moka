@@ -39,3 +39,11 @@ extension Error {
     }
     
 }
+
+extension Optional where Wrapped == Array<Any> {
+    
+    var orEmpty: Array<Any> {
+        return self == nil ? [] : self!
+    }
+    
+}

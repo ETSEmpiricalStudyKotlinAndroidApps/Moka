@@ -211,6 +211,12 @@ fun PullRequestScreen(
             navigationIcon = {
                 AppBarNavigationIcon()
             },
+            actions = {
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://github.com/${owner}/${name}/pull/${number}"
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }

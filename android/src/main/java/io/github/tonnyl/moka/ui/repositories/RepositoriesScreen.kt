@@ -41,6 +41,7 @@ import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.data.RepositoriesQueryOption.*
 import io.tonnyl.moka.common.data.RepositoryType
+import io.tonnyl.moka.common.data.RepositoryType.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.RepositoryItemProvider
 import io.tonnyl.moka.common.util.formatWithSuffix
@@ -63,7 +64,7 @@ fun RepositoriesScreen(
     val queryOptionState = remember {
         mutableStateOf(
             when (repositoryType) {
-                RepositoryType.STARRED -> {
+                STARRED -> {
                     Starred(
                         order = StarOrder(
                             direction = OrderDirection.DESC,
@@ -71,7 +72,7 @@ fun RepositoriesScreen(
                         )
                     )
                 }
-                RepositoryType.OWNED -> {
+                OWNED -> {
                     Owned(
                         isAffiliationCollaborator = false,
                         isAffiliationOwner = true,
@@ -82,7 +83,7 @@ fun RepositoriesScreen(
                         privacy = null
                     )
                 }
-                RepositoryType.FORKS -> {
+                FORKS -> {
                     Forks(
                         order = RepositoryOrder(
                             direction = OrderDirection.DESC,
@@ -226,13 +227,13 @@ fun RepositoriesScreen(
                     Text(
                         text = stringResource(
                             id = when (repositoryType) {
-                                RepositoryType.STARRED -> {
+                                STARRED -> {
                                     R.string.profile_stars
                                 }
-                                RepositoryType.OWNED -> {
+                                OWNED -> {
                                     R.string.profile_repositories
                                 }
-                                RepositoryType.FORKS -> {
+                                FORKS -> {
                                     R.string.repository_forks
                                 }
                             }
@@ -257,6 +258,23 @@ fun RepositoriesScreen(
                             )
                         }
                     }
+
+                    val url = when (repositoryType) {
+                        STARRED -> {
+                            "https://github.com/${login}?tab=stars"
+                        }
+                        OWNED -> {
+                            "https://github.com/${login}?tab=repositories"
+                        }
+                        FORKS -> {
+                            "https://github.com/${login}/${repoName}/network/members"
+                        }
+                    }
+
+                    ShareAndOpenInBrowserMenu(
+                        showMenuState = remember { mutableStateOf(false) },
+                        text = url
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()

@@ -39,6 +39,7 @@ import io.github.tonnyl.moka.ui.search.users.SearchedUsersScreen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.widget.SearchBar
+import io.github.tonnyl.moka.widget.ShareAndOpenInBrowserMenu
 import io.tonnyl.moka.common.data.SearchedUserOrOrgItem
 import io.tonnyl.moka.common.store.data.Query
 import io.tonnyl.moka.common.store.data.SearchHistory
@@ -123,6 +124,15 @@ fun SearchScreen(initialSearchKeyword: String) {
                 displaySearchHistory = hasFocus
             },
             elevation = 0.dp,
+            actions = {
+                val inputText = textState.value.text
+                if (inputText.isNotEmpty()) {
+                    ShareAndOpenInBrowserMenu(
+                        showMenuState = remember { mutableStateOf(false) },
+                        text = "https://github.com/search?q=${inputText}"
+                    )
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }

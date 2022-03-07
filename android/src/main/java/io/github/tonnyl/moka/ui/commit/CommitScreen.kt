@@ -135,6 +135,12 @@ fun CommitScreen(
             navigationIcon = {
                 AppBarNavigationIcon()
             },
+            actions = {
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://github.com/${owner}/${repo}/commit/${ref}"
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }

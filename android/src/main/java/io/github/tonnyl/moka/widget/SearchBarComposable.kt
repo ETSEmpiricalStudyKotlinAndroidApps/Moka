@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -128,7 +129,8 @@ fun SearchBar(
     textState: MutableState<TextFieldValue>,
     onFocusChanged: (Boolean) -> Unit = { },
     onImeActionPerformed: () -> Unit = { },
-    elevation: Dp = 4.dp
+    elevation: Dp = 4.dp,
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
     InsetAwareTopAppBar(
         title = {
@@ -140,6 +142,7 @@ fun SearchBar(
                 onImeActionPerformed = onImeActionPerformed
             )
         },
+        actions = actions,
         navigationIcon = {
             AppBarNavigationIcon()
         },

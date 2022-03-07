@@ -2,23 +2,17 @@ package io.github.tonnyl.moka.ui.file
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.Intent
-import android.net.Uri
 import android.webkit.WebView
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.ExperimentalPagingApi
@@ -27,12 +21,10 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.ui.theme.DropDownMenuAppBarOffset
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.displayExceptionDetails
 import io.github.tonnyl.moka.util.downloadFileViaDownloadManager
 import io.github.tonnyl.moka.util.isDarkModeOn
-import io.github.tonnyl.moka.util.safeStartActivity
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -150,63 +142,15 @@ fun FileScreen(
             }
         }
 
-        val showMenuState = remember { mutableStateOf(false) }
-
         InsetAwareTopAppBar(
             title = {
                 Text(text = filename)
             },
             actions = {
-                Box {
-                    IconButton(
-                        onClick = {
-                            showMenuState.value = true
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.MoreVert,
-                            contentDescription = stringResource(id = R.string.more_actions_image_content_description)
-                        )
-                    }
-
-                    DropdownMenu(
-                        expanded = showMenuState.value,
-                        onDismissRequest = {
-                            showMenuState.value = false
-                        },
-                        offset = DropDownMenuAppBarOffset
-                    ) {
-                        val context = LocalContext.current
-                        val fullUrl =
-                            "https://github.com/$login/$repoName/blob/${filePath}/${filename}"
-                        DropdownMenuItem(
-                            onClick = {
-                                showMenuState.value = false
-
-                                val sendIntent = Intent().apply {
-                                    action = Intent.ACTION_SEND
-                                    putExtra(Intent.EXTRA_TEXT, fullUrl)
-                                    type = "text/plain"
-                                }
-                                val shareIntent = Intent.createChooser(sendIntent, null)
-                                context.safeStartActivity(shareIntent)
-                            }
-                        ) {
-                            Text(text = stringResource(id = R.string.share))
-                        }
-                        DropdownMenuItem(
-                            onClick = {
-                                showMenuState.value = false
-
-                                CustomTabsIntent.Builder()
-                                    .build()
-                                    .launchUrl(context, Uri.parse(fullUrl))
-                            }
-                        ) {
-                            Text(text = stringResource(id = R.string.open_in_browser))
-                        }
-                    }
-                }
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://github.com/$login/$repoName/blob/${filePath}/${filename}"
+                )
             },
             navigationIcon = {
                 AppBarNavigationIcon()

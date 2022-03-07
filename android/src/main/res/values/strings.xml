@@ -2,11 +2,11 @@
     <string name="common_retry">Retry</string>
     <string name="common_error_requesting_data">Error while requesting data.</string>
     <string name="common_no_data_found">No data found</string>
-    <string name="users_avatar_content_description">User\'s avatar image</string>
-    <string name="repository_owners_avatar_image_content_description">Repository owner\'s avatar image</string>
-    <string name="issue_pr_timeline_event_image_content_description">Event type image</string>
-    <string name="more_actions_image_content_description">More actions image</string>
-    <string name="add_reaction_image_content_description">Add reaction image</string>
+    <string name="users_avatar_content_description">User\'s avatar</string>
+    <string name="repository_owners_avatar_image_content_description">Repository owner\'s avatar</string>
+    <string name="issue_pr_timeline_event_image_content_description">Event type</string>
+    <string name="more_actions_image_content_description">More actions</string>
+    <string name="add_reaction_image_content_description">Add reaction</string>
 
     <string name="see_all">See all</string>
 
@@ -16,7 +16,7 @@
     <string name="notification_channel_github_notifications">GitHub notifications</string>
     <string name="notification_subtext_format">%1$s %2$s</string><!-- 2 new notification from 1 repository -->
     <plurals name="new_notifications_count">
-        <item quantity="zero" />
+        <item quantity="zero"/>
         <item quantity="one">1 new notification</item>
         <item quantity="other">%1$d new notifications</item>
     </plurals>

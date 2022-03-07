@@ -1,7 +1,5 @@
 package io.github.tonnyl.moka.ui.about
 
-import android.net.Uri
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +24,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalNavController
+import io.github.tonnyl.moka.util.openInBrowser
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.ProfileType
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -53,8 +52,6 @@ fun AboutScreen() {
         var topAppBarSize by remember { mutableStateOf(0) }
 
         val context = LocalContext.current
-        val customTabsIntent = CustomTabsIntent.Builder()
-            .build()
 
         val scaffoldState = rememberScaffoldState()
 
@@ -73,28 +70,28 @@ fun AboutScreen() {
                 topAppBarSize = topAppBarSize,
                 onItemClick = OnAboutItemClick(
                     onWhatsNewClick = {
-                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_CHANGELOG))
+                        context.openInBrowser(URL_OF_CHANGELOG)
                     },
                     onViewInStoreClick = {
-                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_GOOGLE_PLAY))
+                        context.openInBrowser(URL_OF_GOOGLE_PLAY)
                     },
                     onPrivacyPolicyClick = {
-                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_PRIVACY_POLICY))
+                        context.openInBrowser(URL_OF_PRIVACY_POLICY)
                     },
                     onTermsOfServiceClick = {
-                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_TERMS_OF_SERVICE))
+                        context.openInBrowser(URL_OF_TERMS_OF_SERVICE)
                     },
                     onOpenSourceLicensesClick = {
-                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_OPEN_SOURCE_LICENSES))
+                        context.openInBrowser(URL_OF_OPEN_SOURCE_LICENSES)
                     },
                     onFaqClick = {
-                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_FAQ))
+                        context.openInBrowser(URL_OF_FAQ)
                     },
                     onFeedbackClick = {
                         navController.navigate(route = Screen.FeedbackConfirmDialog.route)
                     },
                     onTelegramChannelClick = {
-                        customTabsIntent.launchUrl(context, Uri.parse(newslettersChannel))
+                        context.openInBrowser(newslettersChannel)
                     },
                     onAuthorClick = {
                         Screen.Profile.navigate(

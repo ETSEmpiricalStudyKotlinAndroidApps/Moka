@@ -188,6 +188,11 @@ fun IssuesScreen(
                         )
                     }
                 }
+
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://github.com/${owner}/${name}/issues"
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

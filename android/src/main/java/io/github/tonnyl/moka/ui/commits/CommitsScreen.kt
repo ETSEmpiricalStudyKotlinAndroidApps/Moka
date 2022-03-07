@@ -149,6 +149,11 @@ fun CommitsScreen(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
+
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://github.com/${login}/${repoName}/commits"
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

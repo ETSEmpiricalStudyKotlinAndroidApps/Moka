@@ -108,6 +108,12 @@ fun ReleaseScreen(
             navigationIcon = {
                 AppBarNavigationIcon()
             },
+            actions = {
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://github.com/${login}/${repoName}/releases/tag/${tagName}"
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }

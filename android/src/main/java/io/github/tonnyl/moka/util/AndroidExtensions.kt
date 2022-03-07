@@ -9,6 +9,7 @@ import android.content.res.Resources
 import android.net.Uri
 import android.os.Environment
 import android.os.Looper
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.MutableLiveData
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import io.github.tonnyl.moka.R
@@ -66,7 +67,6 @@ fun Context.safeStartActivity(
         actionWhenError?.invoke(e)
     }
 }
-
 fun Context.shareMedia(
     uri: Uri,
     mimeType: String?
@@ -127,3 +127,19 @@ val Throwable?.displayExceptionDetails: Boolean
     get() = this != null
             && this !is ApolloNetworkException
             && this !is UnresolvedAddressException
+
+fun Context.shareText(text: String) {
+    val sendIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, text)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    safeStartActivity(shareIntent)
+}
+
+fun Context.openInBrowser(url: String) {
+    CustomTabsIntent.Builder()
+        .build()
+        .launchUrl(this, Uri.parse(url))
+}

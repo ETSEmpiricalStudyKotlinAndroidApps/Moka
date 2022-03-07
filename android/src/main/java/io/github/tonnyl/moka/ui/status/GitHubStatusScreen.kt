@@ -132,6 +132,12 @@ fun GitHubStatusScreen() {
             navigationIcon = {
                 AppBarNavigationIcon()
             },
+            actions = {
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://www.githubstatus.com/"
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }

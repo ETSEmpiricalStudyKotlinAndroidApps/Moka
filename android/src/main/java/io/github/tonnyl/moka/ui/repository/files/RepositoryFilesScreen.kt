@@ -35,10 +35,7 @@ import io.github.tonnyl.moka.ui.media.MediaActivity
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.FileUtils
-import io.github.tonnyl.moka.widget.AppBarNavigationIcon
-import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
-import io.github.tonnyl.moka.widget.EmptyScreenContent
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
+import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.MediaType
 import io.tonnyl.moka.common.data.TreeEntryType
 import io.tonnyl.moka.common.data.treeEntryType
@@ -158,6 +155,17 @@ fun RepositoryFilesScreen(
                         )
                     }
                 }
+
+                val path = if (expression.endsWith(":")) {
+                    expression.subSequence(0, expression.length - 1)
+                } else {
+                    expression.replace(":", "/")
+                }
+
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://github.com/${login}/${repoName}/tree/${path}"
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

@@ -221,6 +221,12 @@ fun IssueScreen(
             navigationIcon = {
                 AppBarNavigationIcon()
             },
+            actions = {
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://github.com/${owner}/${name}/issues/${number}"
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onSizeChanged { topAppBarSize = it.height }

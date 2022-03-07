@@ -165,6 +165,11 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                         )
                     }
                 }
+
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://github.com/${viewModel.extra.login}"
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

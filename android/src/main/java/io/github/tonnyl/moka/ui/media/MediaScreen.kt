@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.*
@@ -53,12 +52,8 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
-import io.github.tonnyl.moka.ui.theme.DropDownMenuAppBarOffset
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
-import io.github.tonnyl.moka.widget.AppBarNavigationIcon
-import io.github.tonnyl.moka.widget.InsetAwareSnackbar
-import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.github.tonnyl.moka.widget.SnackBarErrorMessage
+import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.MediaType
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.math.max
@@ -181,7 +176,6 @@ fun MediaScreen(
             }
         }
 
-        var showMenu by remember { mutableStateOf(false) }
         AnimatedVisibility(
             visible = displayBarsState.value,
             enter = slideInVertically() + fadeIn(),
@@ -199,45 +193,16 @@ fun MediaScreen(
                 },
                 actions = {
                     if (mediaType == MediaType.Video) {
-                        Box {
-                            IconButton(
-                                onClick = {
-                                    showMenu = true
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.MoreVert,
-                                    contentDescription = stringResource(id = R.string.more_actions_image_content_description)
-                                )
+                        ShareAndOpenInBrowserMenu(
+                            showMenuState = remember { mutableStateOf(false) },
+                            text = "",
+                            share = {
+                                viewModel.enqueueShareWork()
+                            },
+                            openInBrowser = {
+                                viewModel.enqueueSaveWork()
                             }
-
-                            DropdownMenu(
-                                expanded = showMenu,
-                                onDismissRequest = {
-                                    showMenu = false
-                                },
-                                offset = DropDownMenuAppBarOffset
-                            ) {
-                                DropdownMenuItem(
-                                    onClick = {
-                                        showMenu = false
-
-                                        viewModel.enqueueShareWork()
-                                    }
-                                ) {
-                                    Text(text = stringResource(id = R.string.share))
-                                }
-                                DropdownMenuItem(
-                                    onClick = {
-                                        showMenu = false
-
-                                        viewModel.enqueueSaveWork()
-                                    }
-                                ) {
-                                    Text(text = stringResource(id = R.string.media_save))
-                                }
-                            }
-                        }
+                        )
                     }
                 },
                 backgroundColor = Color.Black.copy(alpha = .2f),

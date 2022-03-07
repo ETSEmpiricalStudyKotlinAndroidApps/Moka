@@ -36,6 +36,7 @@ import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.data.UsersType
+import io.tonnyl.moka.common.data.UsersType.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.UserItemProvider
 import io.tonnyl.moka.graphql.fragment.UserListItemFragment
@@ -121,16 +122,16 @@ fun UsersScreen(
                 Text(
                     text =
                     when (usersType) {
-                        UsersType.FOLLOWER -> {
+                        FOLLOWER -> {
                             stringResource(id = R.string.users_followers_title, login)
                         }
-                        UsersType.FOLLOWING -> {
+                        FOLLOWING -> {
                             stringResource(id = R.string.users_following_title, login)
                         }
-                        UsersType.REPOSITORY_STARGAZERS -> {
+                        REPOSITORY_STARGAZERS -> {
                             stringResource(id = R.string.repository_stargazers)
                         }
-                        UsersType.REPOSITORY_WATCHERS -> {
+                        REPOSITORY_WATCHERS -> {
                             stringResource(id = R.string.repository_watchers)
                         }
                     }
@@ -138,6 +139,27 @@ fun UsersScreen(
             },
             navigationIcon = {
                 AppBarNavigationIcon()
+            },
+            actions = {
+                val url = when (usersType) {
+                    FOLLOWER -> {
+                        "https://github.com/${login}?tab=followers"
+                    }
+                    FOLLOWING -> {
+                        "https://github.com/${login}?tab=following"
+                    }
+                    REPOSITORY_STARGAZERS -> {
+                        "https://github.com/${login}/${repoName}/stargazers"
+                    }
+                    REPOSITORY_WATCHERS -> {
+                        "https://github.com/${login}/${repoName}/watchers"
+                    }
+                }
+
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = url
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

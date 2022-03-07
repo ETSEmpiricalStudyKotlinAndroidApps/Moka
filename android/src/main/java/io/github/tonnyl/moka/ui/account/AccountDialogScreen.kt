@@ -2,8 +2,6 @@ package io.github.tonnyl.moka.ui.account
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -35,6 +33,7 @@ import io.github.tonnyl.moka.ui.about.URL_OF_PRIVACY_POLICY
 import io.github.tonnyl.moka.ui.about.URL_OF_TERMS_OF_SERVICE
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.theme.*
+import io.github.tonnyl.moka.util.openInBrowser
 import io.github.tonnyl.moka.widget.AvatarImage
 import io.github.tonnyl.moka.widget.OutlineChip
 import io.tonnyl.moka.common.AccountInstance
@@ -176,9 +175,6 @@ private fun AccountDialogScreenContent(accounts: List<AccountInstance>) {
             )
         }
 
-        val customTabsIntent = CustomTabsIntent.Builder()
-            .build()
-
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = stringResource(id = R.string.about_privacy_policy),
@@ -191,7 +187,7 @@ private fun AccountDialogScreenContent(accounts: List<AccountInstance>) {
                     }
                     .clip(shape = MaterialTheme.shapes.medium)
                     .clickable {
-                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_PRIVACY_POLICY))
+                        context.openInBrowser(URL_OF_PRIVACY_POLICY)
                         navController.navigateUp()
                     }
                     .padding(all = ContentPaddingMediumSize)
@@ -207,7 +203,7 @@ private fun AccountDialogScreenContent(accounts: List<AccountInstance>) {
                     }
                     .clip(shape = MaterialTheme.shapes.medium)
                     .clickable {
-                        customTabsIntent.launchUrl(context, Uri.parse(URL_OF_TERMS_OF_SERVICE))
+                        context.openInBrowser(URL_OF_TERMS_OF_SERVICE)
                         navController.navigateUp()
                     }
                     .padding(all = ContentPaddingMediumSize)

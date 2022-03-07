@@ -31,6 +31,7 @@ import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.formatDateWithDefaultLocale
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
+import io.github.tonnyl.moka.widget.ShareAndOpenInBrowserMenu
 import io.tonnyl.moka.common.data.GitHubIncident
 import io.tonnyl.moka.common.data.GitHubIncidentStatus
 import io.tonnyl.moka.common.data.GitHubIncidentStatus.*
@@ -76,6 +77,12 @@ fun IncidentScreen(incidentId: String) {
             },
             navigationIcon = {
                 AppBarNavigationIcon()
+            },
+            actions = {
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://www.githubstatus.com/incidents/${incidentId}"
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

@@ -3,7 +3,6 @@ package io.github.tonnyl.moka.ui
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -91,6 +90,7 @@ import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.ui.timeline.TimelineScreen
 import io.github.tonnyl.moka.ui.topics.RepositoryTopicsScreen
 import io.github.tonnyl.moka.ui.users.UsersScreen
+import io.github.tonnyl.moka.util.openInBrowser
 import io.tonnyl.moka.common.data.FiltersType
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.data.RepositoryType
@@ -516,9 +516,7 @@ fun MainScreen(startDestination: Screen) {
     val navigate: (String) -> Unit = { route ->
         when (route) {
             Screen.FAQ.route -> {
-                CustomTabsIntent.Builder()
-                    .build()
-                    .launchUrl(context, Uri.parse(URL_OF_FAQ))
+                context.openInBrowser(URL_OF_FAQ)
             }
             Screen.Feedback.route -> {
                 navController.navigate(route = Screen.FeedbackConfirmDialog.route)

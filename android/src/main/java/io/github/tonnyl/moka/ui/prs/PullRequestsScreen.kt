@@ -158,6 +158,11 @@ fun PullRequestsScreen(
                         )
                     }
                 }
+
+                ShareAndOpenInBrowserMenu(
+                    showMenuState = remember { mutableStateOf(false) },
+                    text = "https://github.com/${owner}/${name}/pulls"
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

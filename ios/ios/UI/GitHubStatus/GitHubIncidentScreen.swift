@@ -55,19 +55,15 @@ struct GitHubIncidentScreen: View {
     let incident: GitHubIncident
     
     var body: some View {
-        if incident != nil {
-            ScrollView {
-                LazyVStack(alignment: .leading) {
-                    IncidentInfoItem(incident: incident)
-                    ForEach(0..<incident.incidentUpdates.count, id: \.self) { i in
-                        IncidentUpdateItem(update: incident.incidentUpdates[i])
-                    }
+        ScrollView {
+            LazyVStack(alignment: .leading) {
+                IncidentInfoItem(incident: incident)
+                ForEach(0..<incident.incidentUpdates.count, id: \.self) { i in
+                    IncidentUpdateItem(update: incident.incidentUpdates[i])
                 }
             }
-            .navigationTitle(NSLocalizedString("GitHubIncident", comment: ""))
-        }else {
-            EmptyView()
         }
+        .navigationTitle(NSLocalizedString("GitHubIncident", comment: ""))
     }
 }
 

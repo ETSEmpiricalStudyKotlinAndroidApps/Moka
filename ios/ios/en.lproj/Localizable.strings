@@ -9,6 +9,7 @@
 "Common.ErrorMessage" = "Error while requesting data.";
 "Common.Retry" = "Retry";
 "Common.NoDataFound" = "No data found";
+"Common.Done" = "Done";
 
 "Common.Time.JustNow" = "Just now";
 "Common.Time.MinutesAgo" = "%d minutes ago";
@@ -111,3 +112,20 @@
 
 "GitHubIncident" = "Incident";
 "GitHubIncident.StatusAndBody" = "%@ - %@";
+
+"Settings" = "Settings";
+"Settings.ManageAccounts" = "Manage Accounts";
+"Settings.Notifications" = "Notifications";
+"Settings.FAQsAndHelp" = "FAQs & Help";
+"Settings.PrivacyPolicy" = "Privacy Policy";
+"Settings.TermsOfService" = "Terms of Service";
+"Settings.OpenSourceLicense" = "Open Source Licenses";
+"Settings.Author" = "Author";
+"Settings.Newsletters" = "Newsletters";
+"Settings.Feedback" = "Feedback";
+"Settings.Appearance" = "Appearance";
+"Settings.Appearance.Auto" = "Automatic";
+"Settings.Appearance.Dark" = "Dark";
+"Settings.Appearance.Light" = "Light";
+"Settings.Versions" = "Version";
+"Settings.WhatsNew" = "What's New";

@@ -72,7 +72,7 @@ struct ExploreScreen: View {
                 }
             }
             .navigationTitle(NSLocalizedString("MainTab.Explore", comment: ""))
-            .navigationBarItems(trailing: ProfileNavigationItem())
+            .navigationBarItems(trailing: SettingsNavigationItem())
         }
     }
 }

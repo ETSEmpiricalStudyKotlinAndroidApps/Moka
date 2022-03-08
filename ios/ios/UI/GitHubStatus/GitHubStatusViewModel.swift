@@ -28,7 +28,9 @@ class GitHubStatusViewModel: ObservableObject {
         
         api.getSummary() { resp, error in
             if error != nil {
-                self.statusResource = Resource(status: .error, data: self.statusResource?.data, e: error?.kotlinException)
+                DispatchQueue.main.async {
+                    self.statusResource = Resource(status: .error, data: self.statusResource?.data, e: error?.kotlinException)
+                }
             } else {
                 if resp is common.ResultSuccess<GitHubStatus> {
                     var success = (resp as! common.ResultSuccess<GitHubStatus>).value
@@ -43,11 +45,15 @@ class GitHubStatusViewModel: ObservableObject {
                         )
                     }
                     
-                    self.statusResource = Resource(status: .success, data: success, e: nil)
+                    DispatchQueue.main.async {
+                        self.statusResource = Resource(status: .success, data: success, e: nil)
+                    }
                 } else {
                     let failure = (resp as! common.ResultFailure<GitHubStatus>).error
                     
-                    self.statusResource = Resource(status: .error, data: nil, e: failure)
+                    DispatchQueue.main.async {
+                        self.statusResource = Resource(status: .error, data: nil, e: failure)
+                    }
                 }
             }
         }

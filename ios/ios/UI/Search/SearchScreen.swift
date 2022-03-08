@@ -18,7 +18,7 @@ struct SearchScreen: View {
                 
             }
             .navigationTitle(NSLocalizedString("MainTab.Search", comment: ""))
-            .navigationBarItems(trailing: ProfileNavigationItem())
+            .navigationBarItems(trailing: SettingsNavigationItem())
         }
     }
     

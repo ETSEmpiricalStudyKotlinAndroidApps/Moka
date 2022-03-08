@@ -49,7 +49,7 @@ struct InboxScreen: View {
                 }
             }
             .navigationTitle(NSLocalizedString("MainTab.Inbox", comment: ""))
-            .navigationBarItems(trailing: ProfileNavigationItem())
+            .navigationBarItems(trailing: SettingsNavigationItem())
         }
     }
     

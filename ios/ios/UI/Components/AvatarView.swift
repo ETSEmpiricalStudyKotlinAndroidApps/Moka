@@ -13,6 +13,7 @@ struct AvatarView: View {
     
     private let url: String
     private let size: CGFloat?
+    private let padding: CGFloat?
     
     init(url: String?) {
         self.init(
@@ -23,12 +24,14 @@ struct AvatarView: View {
     
     init(
         url: String?,
-        size: CGFloat?
+        size: CGFloat?,
+        padding: CGFloat? = 4
     ) {
         self.url = url.ifNullOrEmpty {
             "https://avatars.githubusercontent.com/u/10137"
         }
         self.size = size
+        self.padding = padding
     }
     
     var body: some View {
@@ -39,8 +42,10 @@ struct AvatarView: View {
             .fade(duration: 0.25)
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .frame(width: size, height: size, alignment: .center)
             .clipShape(Circle())
+            .padding(padding ?? 0)
+            .frame(width: size, height: size, alignment: .center)
+            
     }
     
 }

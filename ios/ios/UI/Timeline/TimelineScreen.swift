@@ -45,7 +45,7 @@ struct TimelineScreen: View {
                 }
             }
             .navigationTitle(NSLocalizedString("MainTab.Timeline", comment: ""))
-            .navigationBarItems(trailing: ProfileNavigationItem())
+            .navigationBarItems(trailing: SettingsNavigationItem())
         }
     }
     

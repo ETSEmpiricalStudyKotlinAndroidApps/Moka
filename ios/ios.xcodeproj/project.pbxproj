@@ -17,6 +17,10 @@
 		BA0D7A8C27CCBDD0000BC7F4 /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0D7A8B27CCBDD0000BC7F4 /* AvatarView.swift */; };
 		BA5CD73627C61B01003F211C /* ArrayClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5CD73527C61B01003F211C /* ArrayClass.swift */; };
 		BA5CD73927C62432003F211C /* Pair.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5CD73827C62432003F211C /* Pair.swift */; };
+		BA5E5A6E27D6E334002696E8 /* SettingsOptionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5E5A6D27D6E334002696E8 /* SettingsOptionItem.swift */; };
+		BA5E5A7027D6F48D002696E8 /* AppearanceSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5E5A6F27D6F48D002696E8 /* AppearanceSettingsScreen.swift */; };
+		BA5E5A7527D70D57002696E8 /* ManageAccountsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5E5A7427D70D57002696E8 /* ManageAccountsScreen.swift */; };
+		BA5E5A7827D70ED6002696E8 /* NotificationSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5E5A7727D70ED6002696E8 /* NotificationSettingsScreen.swift */; };
 		BA63B3C627CDF4C600A55C91 /* EmptyScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA63B3C527CDF4C600A55C91 /* EmptyScreen.swift */; };
 		BA73672B27C775A1006D3A17 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BA73672D27C775A1006D3A17 /* Localizable.strings */; };
 		BA73673027C77D0F006D3A17 /* RepositoryScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA73672F27C77D0F006D3A17 /* RepositoryScreen.swift */; };
@@ -27,7 +31,7 @@
 		BA9EF17527D3AF0B000161F0 /* GitHubStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF17427D3AF0B000161F0 /* GitHubStatusViewModel.swift */; };
 		BA9EF17827D3C8F5000161F0 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF17727D3C8F5000161F0 /* SettingsScreen.swift */; };
 		BA9EF17C27D4794C000161F0 /* MainScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF17B27D4794C000161F0 /* MainScreenViewModel.swift */; };
-		BA9EF17E27D4A626000161F0 /* ProfileNavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF17D27D4A626000161F0 /* ProfileNavigationItem.swift */; };
+		BA9EF17E27D4A626000161F0 /* SettingsNavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF17D27D4A626000161F0 /* SettingsNavigationItem.swift */; };
 		BA9EF18527D4DD38000161F0 /* GitHubIncidentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9EF18427D4DD38000161F0 /* GitHubIncidentScreen.swift */; };
 		BAAF30BC272DAEC00049EBD2 /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAF30BB272DAEC00049EBD2 /* ProfileScreen.swift */; };
 		BAAF30BE272DB0400049EBD2 /* ExploreScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAF30BD272DB0400049EBD2 /* ExploreScreen.swift */; };
@@ -51,6 +55,10 @@
 		BA1E71C327304DFC00FA7A84 /* ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA5CD73527C61B01003F211C /* ArrayClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayClass.swift; sourceTree = "<group>"; };
 		BA5CD73827C62432003F211C /* Pair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pair.swift; sourceTree = "<group>"; };
+		BA5E5A6D27D6E334002696E8 /* SettingsOptionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsOptionItem.swift; sourceTree = "<group>"; };
+		BA5E5A6F27D6F48D002696E8 /* AppearanceSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsScreen.swift; sourceTree = "<group>"; };
+		BA5E5A7427D70D57002696E8 /* ManageAccountsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageAccountsScreen.swift; sourceTree = "<group>"; };
+		BA5E5A7727D70ED6002696E8 /* NotificationSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsScreen.swift; sourceTree = "<group>"; };
 		BA63B3C527CDF4C600A55C91 /* EmptyScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyScreen.swift; sourceTree = "<group>"; };
 		BA73672C27C775A1006D3A17 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BA73672F27C77D0F006D3A17 /* RepositoryScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryScreen.swift; sourceTree = "<group>"; };
@@ -59,7 +67,7 @@
 		BA9EF17427D3AF0B000161F0 /* GitHubStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubStatusViewModel.swift; sourceTree = "<group>"; };
 		BA9EF17727D3C8F5000161F0 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		BA9EF17B27D4794C000161F0 /* MainScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewModel.swift; sourceTree = "<group>"; };
-		BA9EF17D27D4A626000161F0 /* ProfileNavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileNavigationItem.swift; sourceTree = "<group>"; };
+		BA9EF17D27D4A626000161F0 /* SettingsNavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsNavigationItem.swift; sourceTree = "<group>"; };
 		BA9EF18427D4DD38000161F0 /* GitHubIncidentScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubIncidentScreen.swift; sourceTree = "<group>"; };
 		BAAF30BB272DAEC00049EBD2 /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
 		BAAF30BD272DB0400049EBD2 /* ExploreScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreScreen.swift; sourceTree = "<group>"; };
@@ -155,7 +163,8 @@
 				BA09EEA427CB2551006803E6 /* ItemLoadingStateView.swift */,
 				BA0D7A8B27CCBDD0000BC7F4 /* AvatarView.swift */,
 				BA63B3C527CDF4C600A55C91 /* EmptyScreen.swift */,
-				BA9EF17D27D4A626000161F0 /* ProfileNavigationItem.swift */,
+				BA9EF17D27D4A626000161F0 /* SettingsNavigationItem.swift */,
+				BA5E5A6D27D6E334002696E8 /* SettingsOptionItem.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -225,7 +234,10 @@
 		BA9EF17627D3C8E3000161F0 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				BA5E5A7727D70ED6002696E8 /* NotificationSettingsScreen.swift */,
+				BA5E5A7427D70D57002696E8 /* ManageAccountsScreen.swift */,
 				BA9EF17727D3C8F5000161F0 /* SettingsScreen.swift */,
+				BA5E5A6F27D6F48D002696E8 /* AppearanceSettingsScreen.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -343,6 +355,7 @@
 			files = (
 				BAAF30BE272DB0400049EBD2 /* ExploreScreen.swift in Sources */,
 				BA63B3C627CDF4C600A55C91 /* EmptyScreen.swift in Sources */,
+				BA5E5A7027D6F48D002696E8 /* AppearanceSettingsScreen.swift in Sources */,
 				BA09EEA227CA899A006803E6 /* DataExtensions.swift in Sources */,
 				BA73673027C77D0F006D3A17 /* RepositoryScreen.swift in Sources */,
 				BA9624EB27CB829D00EAEA58 /* UIExtensions.swift in Sources */,
@@ -350,12 +363,15 @@
 				BA09EE9E27CA883A006803E6 /* SearchScreen.swift in Sources */,
 				BA9EF17C27D4794C000161F0 /* MainScreenViewModel.swift in Sources */,
 				BA09EE9527CA8248006803E6 /* MainScreen.swift in Sources */,
+				BA5E5A7527D70D57002696E8 /* ManageAccountsScreen.swift in Sources */,
+				BA5E5A6E27D6E334002696E8 /* SettingsOptionItem.swift in Sources */,
 				BA09EEA527CB2551006803E6 /* ItemLoadingStateView.swift in Sources */,
 				BAE4C5E327C77F5E007F6030 /* ProfileViewModel.swift in Sources */,
 				BA9EF17327D3AEE5000161F0 /* GitHubStatusScreen.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				BA5CD73627C61B01003F211C /* ArrayClass.swift in Sources */,
-				BA9EF17E27D4A626000161F0 /* ProfileNavigationItem.swift in Sources */,
+				BA9EF17E27D4A626000161F0 /* SettingsNavigationItem.swift in Sources */,
+				BA5E5A7827D70ED6002696E8 /* NotificationSettingsScreen.swift in Sources */,
 				BA09EE9B27CA8814006803E6 /* InboxScreen.swift in Sources */,
 				BA9EF18527D4DD38000161F0 /* GitHubIncidentScreen.swift in Sources */,
 				BA9EF17827D3C8F5000161F0 /* SettingsScreen.swift in Sources */,

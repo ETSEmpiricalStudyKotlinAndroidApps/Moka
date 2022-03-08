@@ -63,7 +63,7 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val exploreViewModel = viewModel(
-        key = LocalAccountInstance.current.toString(),
+        key = currentAccount.signedInAccount.account.id.toString(),
         initializer = {
             ExploreViewModel(
                 extra = ExploreViewModelExtra(

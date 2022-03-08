@@ -57,7 +57,7 @@ fun TimelineScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
 
     val timelineViewModel = viewModel(
-        key = currentAccount.toString(),
+        key = currentAccount.signedInAccount.account.id.toString(),
         initializer = {
             TimelineViewModel(
                 extra = TimelineViewModelExtra(

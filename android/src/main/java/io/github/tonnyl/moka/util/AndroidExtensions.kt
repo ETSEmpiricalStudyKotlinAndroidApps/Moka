@@ -13,8 +13,10 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.MutableLiveData
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import io.github.tonnyl.moka.R
+import io.tonnyl.moka.common.data.Account
 import io.tonnyl.moka.common.data.Emoji
 import io.tonnyl.moka.common.serialization.json
+import io.tonnyl.moka.graphql.ViewerQuery
 import kotlinx.datetime.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
@@ -142,4 +144,37 @@ fun Context.openInBrowser(url: String) {
     CustomTabsIntent.Builder()
         .build()
         .launchUrl(this, Uri.parse(url))
+}
+
+@ExperimentalSerializationApi
+fun ViewerQuery.Viewer.toAccount(existing: Account): Account {
+    val viewer = this.user
+    return Account(
+        login = viewer.login,
+        id = existing.id,
+        nodeId = viewer.id,
+        avatarUrl = viewer.avatarUrl,
+        htmlUrl = viewer.url,
+        type = existing.type,
+        siteAdmin = viewer.isSiteAdmin,
+        name = viewer.name,
+        company = viewer.company,
+        blog = viewer.websiteUrl,
+        location = viewer.location,
+        email = viewer.email,
+        hireable = viewer.isHireable,
+        bio = viewer.bio,
+        publicRepos = existing.publicRepos,
+        publicGists = existing.publicGists,
+        followers = viewer.followers.totalCount.toLong(),
+        following = viewer.following.totalCount.toLong(),
+        createdAt = viewer.createdAt.toString(),
+        updatedAt = viewer.updatedAt.toString(),
+        privateGists = existing.privateGists,
+        totalPrivateRepos = existing.totalPrivateRepos,
+        ownedPrivateRepos = existing.ownedPrivateRepos,
+        diskUsage = existing.diskUsage,
+        collaborators = existing.collaborators,
+        twoFactorAuthentication = existing.twoFactorAuthentication
+    )
 }

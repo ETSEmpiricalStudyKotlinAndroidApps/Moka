@@ -103,10 +103,13 @@ class MainActivity : ComponentActivity() {
             if (accountInstances.isEmpty()) {
                 startActivity(Intent(this, AuthActivity::class.java))
                 finish()
+
+                return@observe
             }
 
             ContributionCalendarWorker.startOrCancelWorker(this)
             app.triggerNotificationWorker()
+            viewModel.getUserProfile(accountInstances.first())
         }
     }
 

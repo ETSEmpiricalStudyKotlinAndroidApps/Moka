@@ -6,13 +6,13 @@ import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.util.readEmojisFromAssets
-import io.tonnyl.moka.common.data.Emoji
-import io.tonnyl.moka.common.data.EmojiCategory
-import io.tonnyl.moka.common.data.SearchableEmoji
-import io.tonnyl.moka.common.data.SignedInAccount
+import io.github.tonnyl.moka.util.toAccount
+import io.tonnyl.moka.common.AccountInstance
+import io.tonnyl.moka.common.data.*
 import io.tonnyl.moka.common.serialization.json
 import io.tonnyl.moka.common.store.data.ExploreLanguage
 import io.tonnyl.moka.common.store.data.ExploreSpokenLanguage
+import io.tonnyl.moka.graphql.ViewerQuery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -109,26 +109,45 @@ class MainViewModel(
         }
     }
 
-    fun getUserProfile() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            try {
-//                val response = runBlocking {
-//                    GraphQLClient.apolloClient
-//                        .query(
-//                            ViewerQuery.builder()
-//                                .build()
-//                        )
-//                        .execute()
-//                }
-//
-//                Timber.d("get viewer info call success, resp = $response")
-//
-//                loginUserProfile.postValue(response.data())
-//            } catch (e: Exception) {
-//                Timber.e(e, "get viewer info call error: ${e.message}")
-//
-//            }
-//        }
+    fun getUserProfile(account: AccountInstance) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val accountFromRemote = account.apolloGraphQLClient
+                    .apolloClient.query(
+                        query = ViewerQuery()
+                    )
+                    .execute()
+                    .data
+                    ?.viewer
+                    ?.toAccount(existing = account.signedInAccount.account)
+
+                if (accountFromRemote != null
+                    && accountFromRemote != account.signedInAccount.account
+                ) {
+                    getApplication<MokaApp>().accountsDataStore.updateData { signedInAccounts ->
+                        val newSignedInAccounts = signedInAccounts.accounts.toMutableList()
+                        val index = newSignedInAccounts.indexOfFirst {
+                            it.account.id == account.signedInAccount.account.id
+                        }
+
+                        if (index >= 0) {
+                            newSignedInAccounts.removeAt(index)
+                            newSignedInAccounts.add(
+                                index,
+                                SignedInAccount(
+                                    accessToken = account.signedInAccount.accessToken,
+                                    account = accountFromRemote
+                                )
+                            )
+                        }
+
+                        SignedInAccounts(accounts = newSignedInAccounts)
+                    }
+                }
+            } catch (e: Exception) {
+                logcat(priority = LogPriority.ERROR) { e.asLog() }
+            }
+        }
     }
 
     fun filterSearchable(text: String?) {

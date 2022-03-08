@@ -55,7 +55,7 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
     val app = LocalContext.current.applicationContext as Application
     val inboxViewModel = viewModel(
-        key = currentAccount.toString(),
+        key = currentAccount.signedInAccount.account.id.toString(),
         initializer = {
             InboxViewModel(
                 extra = InboxViewModelExtra(accountInstance = currentAccount),

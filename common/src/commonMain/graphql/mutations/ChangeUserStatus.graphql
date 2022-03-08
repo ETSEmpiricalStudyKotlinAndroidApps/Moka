@@ -4,5 +4,8 @@ mutation changeUserStatus($input: ChangeUserStatusInput!) {
     changeUserStatus(input: $input) {
         # A unique identifier for the client performing the mutation.
         clientMutationId
+        status {
+            ...UserStatus
+        }
     }
 }

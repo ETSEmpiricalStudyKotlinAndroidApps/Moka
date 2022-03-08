@@ -40,6 +40,7 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.safeStartActivity
@@ -69,6 +70,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
     val organization by viewModel.organizationProfile.observeAsState()
     val user by viewModel.userProfile.observeAsState()
     val followState by viewModel.followState.observeAsState()
+    val userStatus by viewModel.status.observeAsState()
 
     val userPlaceholder = remember {
         UserProvider().values.first()
@@ -89,6 +91,7 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                     topAppBarSize = topAppBarSize,
                     currentLoginUser = currentAccount.signedInAccount.account.login,
                     user = userPlaceholder.takeIf { isLoading } ?: user?.data,
+                    userStatus = userStatus,
                     organization = organization?.data,
                     follow = followState?.data,
                     getEmojiByName = mainViewModel::getEmojiByName,
@@ -186,6 +189,7 @@ private fun ProfileScreenContent(
     topAppBarSize: Int,
     currentLoginUser: String,
     user: User?,
+    userStatus: UserStatus?,
     organization: Organization?,
     follow: Boolean?,
     enablePlaceholder: Boolean,
@@ -293,7 +297,7 @@ private fun ProfileScreenContent(
         }
 
         if (user != null
-            && (user.status != null || user.isViewer)
+            && (userStatus != null || user.isViewer)
         ) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -306,7 +310,7 @@ private fun ProfileScreenContent(
                         color = MaterialTheme.colors.onBackground.copy(alpha = .12f)
                     ),
                     elevation = 0.dp,
-                    backgroundColor = if (user.status?.userStatus?.indicatesLimitedAvailability == true) {
+                    backgroundColor = if (userStatus?.indicatesLimitedAvailability == true) {
                         userStatusDndYellow.copy(alpha = .2f)
                     } else {
                         MaterialTheme.colors.surface
@@ -320,18 +324,18 @@ private fun ProfileScreenContent(
                         if (user.isViewer) {
                             var route = Screen.EditStatus.route
 
-                            val userStatus = user.status
-                            route = route.replace(
-                                "{${Screen.ARG_EDIT_STATUS_EMOJI}}",
-                                userStatus?.userStatus?.emoji.toString()
-                            )
+                            route = route
+                                .replace(
+                                    "{${Screen.ARG_EDIT_STATUS_EMOJI}}",
+                                    userStatus?.emoji.toString()
+                                )
                                 .replace(
                                     "{${Screen.ARG_EDIT_STATUS_MESSAGE}}",
-                                    userStatus?.userStatus?.message ?: ""
+                                    userStatus?.message ?: ""
                                 )
                                 .replace(
                                     "{${Screen.ARG_EDIT_STATUS_LIMIT_AVAILABILITY}}",
-                                    (user.status?.userStatus?.indicatesLimitedAvailability
+                                    (userStatus?.indicatesLimitedAvailability
                                         ?: false).toString()
                                 )
                             navController.navigate(route = route)
@@ -343,14 +347,14 @@ private fun ProfileScreenContent(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         EmojiComponent(
-                            emoji = user.status?.userStatus?.emoji,
+                            emoji = userStatus?.emoji,
                             getEmojiByName = getEmojiByName,
                             enablePlaceholder = enablePlaceholder
                         )
                         val scrollState = rememberScrollState()
                         Row(modifier = Modifier.horizontalScroll(state = scrollState)) {
                             Text(
-                                text = user.status?.userStatus?.message.takeIf { !it.isNullOrEmpty() }
+                                text = userStatus?.message.takeIf { !it.isNullOrEmpty() }
                                     ?: stringResource(id = R.string.edit_status_set_status),
                                 style = MaterialTheme.typography.body1,
                                 maxLines = 1,
@@ -908,6 +912,7 @@ private fun ProfileScreenPreview(
     ProfileScreenContent(
         currentLoginUser = "",
         user = user,
+        userStatus = null,
         organization = null,
         follow = false,
         getEmojiByName = {

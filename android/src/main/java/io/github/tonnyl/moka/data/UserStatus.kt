@@ -5,7 +5,6 @@ import io.github.tonnyl.moka.parcelization.InstantParceler
 import kotlinx.datetime.Instant
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.TypeParceler
-import io.tonnyl.moka.graphql.fragment.UserStatus as RawUserStatus
 
 /**
  * The user's description of what they're currently doing.
@@ -51,15 +50,3 @@ data class UserStatus(
     val updatedAt: Instant
 
 ) : Parcelable
-
-fun UserStatus.toNonNullUserStatus(): RawUserStatus {
-    return RawUserStatus(
-        createdAt,
-        emoji,
-        expiresAt,
-        id,
-        indicatesLimitedAvailability,
-        message,
-        updatedAt
-    )
-}

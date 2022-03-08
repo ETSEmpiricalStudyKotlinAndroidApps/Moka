@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
 import io.github.tonnyl.moka.data.UserStatus
+import io.github.tonnyl.moka.data.extension.dataType
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.ExpireAt
 import io.tonnyl.moka.common.network.Resource
@@ -73,6 +74,7 @@ class EditStatusViewModel(private val extra: EditStatusViewModelExtra) : ViewMod
                                 ChangeUserStatusInput()
                             )
                         )
+                        .execute()
                 }
 
                 _clearStatusState.value = Resource.success(null)
@@ -123,7 +125,7 @@ class EditStatusViewModel(private val extra: EditStatusViewModelExtra) : ViewMod
                         null
                     }
                 }
-                withContext(Dispatchers.IO) {
+                val resp = withContext(Dispatchers.IO) {
                     extra.accountInstance.apolloGraphQLClient.apolloClient
                         .mutation(
                             mutation = ChangeUserStatusMutation(
@@ -135,19 +137,24 @@ class EditStatusViewModel(private val extra: EditStatusViewModelExtra) : ViewMod
                                 )
                             )
                         )
+                        .execute()
                 }
 
-                _updateStatusState.value = Resource.success(
-                    UserStatus(
-                        createdAt = Clock.System.now(),
-                        emoji = _emojiName.value,
-                        id = "",
-                        indicatesLimitedAvailability = _limitedAvailability.value == true,
-                        message = message.value,
-                        expiresAt = instant,
-                        updatedAt = Clock.System.now()
+                val status = resp.data
+                    ?.changeUserStatus
+                    ?.status
+                    ?.userStatus
+
+                if (status != null) {
+                    _updateStatusState.value = Resource.success(data = status.dataType)
+                } else {
+                    _updateStatusState.value = Resource.error(
+                        resp.errors?.firstOrNull()?.let {
+                            RuntimeException(it.message)
+                        },
+                        null
                     )
-                )
+                }
             } catch (e: Exception) {
                 logcat(priority = LogPriority.ERROR) { e.asLog() }
 

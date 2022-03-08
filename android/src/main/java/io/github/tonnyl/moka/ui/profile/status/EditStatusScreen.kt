@@ -56,14 +56,18 @@ fun EditStatusScreen(
     if (clearStatus?.status == Status.SUCCESS) {
         navController.previousBackStackEntry?.savedStateHandle
             ?.set(Screen.EditStatus.RESULT_UPDATE_STATUS, clearStatus?.data)
-        navController.navigateUp()
+        if (navController.currentDestination?.route == Screen.EditStatus.route) {
+            navController.navigateUp()
+        }
 
         return
     }
     if (setStatus?.status == Status.SUCCESS) {
         navController.previousBackStackEntry?.savedStateHandle
             ?.set(Screen.EditStatus.RESULT_UPDATE_STATUS, setStatus?.data)
-        navController.navigateUp()
+        if (navController.currentDestination?.route == Screen.EditStatus.route) {
+            navController.navigateUp()
+        }
 
         return
     }

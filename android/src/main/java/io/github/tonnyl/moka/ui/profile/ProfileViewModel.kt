@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.tonnyl.moka.data.UserStatus
+import io.github.tonnyl.moka.data.extension.dataType
+import io.github.tonnyl.moka.util.updateOnAnyThread
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.network.Resource
@@ -15,7 +18,6 @@ import io.tonnyl.moka.graphql.UnfollowUserMutation
 import io.tonnyl.moka.graphql.UserQuery
 import io.tonnyl.moka.graphql.fragment.Organization
 import io.tonnyl.moka.graphql.fragment.User
-import io.tonnyl.moka.graphql.fragment.UserStatus
 import io.tonnyl.moka.graphql.type.FollowUserInput
 import io.tonnyl.moka.graphql.type.UnfollowUserInput
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +48,10 @@ class ProfileViewModel(val extra: ProfileViewModelExtra) : ViewModel() {
     private val _followState = MutableLiveData<Resource<Boolean?>>(null)
     val followState: LiveData<Resource<Boolean?>>
         get() = _followState
+
+    private val _status = MutableLiveData<UserStatus?>()
+    val status: LiveData<UserStatus?>
+        get() = _status
 
     init {
         refreshData()
@@ -78,6 +84,8 @@ class ProfileViewModel(val extra: ProfileViewModelExtra) : ViewModel() {
                 ).execute().data?.user?.user
 
                 _userProfile.postValue(Resource.success(user))
+
+                _status.updateOnAnyThread(newValue = user?.status?.userStatus?.dataType)
 
                 if (user?.viewerCanFollow == true) {
                     _followState.postValue(Resource.success(user.viewerIsFollowing))
@@ -146,20 +154,7 @@ class ProfileViewModel(val extra: ProfileViewModelExtra) : ViewModel() {
 
     @MainThread
     fun updateUserStatusIfNeeded(newStatus: UserStatus?) {
-        _userProfile.value?.data?.let { user ->
-            if (user.status?.userStatus != newStatus) {
-                _userProfile.value =
-                    Resource.success(
-                        user.copy(
-                            status = if (newStatus != null) {
-                                user.status?.copy(userStatus = newStatus)
-                            } else {
-                                null
-                            }
-                        )
-                    )
-            }
-        }
+        _status.updateOnAnyThread(newStatus)
     }
 
 }

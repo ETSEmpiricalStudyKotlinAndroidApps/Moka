@@ -12,7 +12,9 @@ import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.db.data.Notification
 import io.tonnyl.moka.common.db.data.NotificationRepositoryOwner
 import io.tonnyl.moka.common.store.data.ExploreTimeSpan
+import io.tonnyl.moka.graphql.fragment.UserStatus
 import kotlinx.serialization.ExperimentalSerializationApi
+import io.github.tonnyl.moka.data.UserStatus as DataUserStatus
 import io.tonnyl.moka.common.data.AccessToken as PBAccessToken
 
 @ExperimentalSerializationApi
@@ -108,3 +110,14 @@ fun Notification?.toDisplayContentText(context: Context): CharSequence {
 
     return spannable
 }
+
+val UserStatus.dataType: DataUserStatus
+    get() = DataUserStatus(
+        createdAt = createdAt,
+        emoji = emoji,
+        expiresAt = expiresAt,
+        id = id,
+        indicatesLimitedAvailability = indicatesLimitedAvailability,
+        message = message,
+        updatedAt = updatedAt
+    )

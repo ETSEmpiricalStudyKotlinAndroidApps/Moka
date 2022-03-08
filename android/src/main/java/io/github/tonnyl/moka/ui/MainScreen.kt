@@ -41,7 +41,6 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserStatus
-import io.github.tonnyl.moka.data.toNonNullUserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
 import io.github.tonnyl.moka.ui.about.URL_OF_FAQ
 import io.github.tonnyl.moka.ui.account.AccountDialogScreen
@@ -507,7 +506,7 @@ fun MainScreen(startDestination: Screen) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
-    val currentRoute = remember { mutableStateOf(Screen.Timeline.route) }
+    val currentRoute = remember { mutableStateOf(startDestination.route) }
 
     val navController = LocalNavController.current
 
@@ -880,7 +879,6 @@ private fun MainNavHost(
                 }
             )
         ) { backStackEntry ->
-            backStackEntry.defaultViewModelCreationExtras
             currentRoute.value = Screen.Profile.route
 
             val currentAccount = LocalAccountInstance.current ?: return@composable
@@ -903,12 +901,17 @@ private fun MainNavHost(
                 }
             )
 
-            backStackEntry.savedStateHandle
-                .getLiveData<UserStatus>(Screen.EditStatus.RESULT_UPDATE_STATUS)
-                .value
-                ?.let {
-                    viewModel.updateUserStatusIfNeeded(it.toNonNullUserStatus())
-                }
+            if (backStackEntry.savedStateHandle.contains(Screen.EditStatus.RESULT_UPDATE_STATUS)) {
+                backStackEntry.savedStateHandle
+                    .getLiveData<UserStatus>(Screen.EditStatus.RESULT_UPDATE_STATUS)
+                    .value
+                    .let {
+                        viewModel.updateUserStatusIfNeeded(it)
+                    }
+
+                backStackEntry.savedStateHandle
+                    .remove<UserStatus>(Screen.EditStatus.RESULT_UPDATE_STATUS)
+            }
 
             ProfileScreen(viewModel = viewModel)
         }
@@ -1013,10 +1016,12 @@ private fun MainNavHost(
             backStackEntry.savedStateHandle
                 .getLiveData<String>(Screen.Emojis.RESULT_EMOJI)
                 .value
-                ?.let { resultEmoji ->
-                    if (resultEmoji.isNotEmpty()) {
+                .let { resultEmoji ->
+                    if (!resultEmoji.isNullOrEmpty()) {
                         viewModel.updateEmoji(resultEmoji)
                     }
+
+                    backStackEntry.savedStateHandle.remove<String>(Screen.Emojis.RESULT_EMOJI)
                 }
 
             EditStatusScreen(
@@ -1179,7 +1184,9 @@ private fun MainNavHost(
                 navController.previousBackStackEntry?.savedStateHandle
                     ?.set(Screen.Emojis.RESULT_EMOJI, resultEmoji)
 
-                navController.navigateUp()
+                if (navController.currentDestination?.route == Screen.Emojis.route) {
+                    navController.navigateUp()
+                }
             } else {
                 EmojisScreen()
             }

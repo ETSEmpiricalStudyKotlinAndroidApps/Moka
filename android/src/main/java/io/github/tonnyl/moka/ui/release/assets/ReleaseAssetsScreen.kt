@@ -15,7 +15,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -36,11 +35,7 @@ import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.ReleaseAssetProvider
 import io.tonnyl.moka.graphql.fragment.ReleaseAsset
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 fun ReleaseAssetsScreen(
     login: String,
@@ -139,8 +134,6 @@ fun ReleaseAssetsScreen(
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 private fun ReleaseAssetsScreenContent(
     contentPaddings: PaddingValues,
@@ -183,7 +176,6 @@ private fun ReleaseAssetsScreenContent(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun ItemReleaseAsset(
     asset: ReleaseAsset,
@@ -276,7 +268,6 @@ private fun ItemReleaseAsset(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 @Preview(name = "ItemReleaseAssetPreview")
 private fun ItemReleaseAssetPreview(

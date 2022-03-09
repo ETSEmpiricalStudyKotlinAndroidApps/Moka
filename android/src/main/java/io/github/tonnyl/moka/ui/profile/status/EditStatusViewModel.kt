@@ -17,12 +17,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.*
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class EditStatusViewModelExtra(
     val accountInstance: AccountInstance,
     val initialEmoji: String?,
@@ -30,7 +28,6 @@ data class EditStatusViewModelExtra(
     val initialIndicatesLimitedAvailability: Boolean?
 )
 
-@ExperimentalSerializationApi
 class EditStatusViewModel(private val extra: EditStatusViewModelExtra) : ViewModel() {
 
     private val _updateStatusState = MutableLiveData<Resource<UserStatus?>?>()

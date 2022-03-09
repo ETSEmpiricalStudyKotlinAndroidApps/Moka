@@ -18,7 +18,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusRequester
@@ -41,7 +40,6 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@ExperimentalComposeUiApi
 @Composable
 fun SearchBox(
     @StringRes hintResId: Int,
@@ -120,7 +118,6 @@ fun SearchBox(
     }
 }
 
-@ExperimentalComposeUiApi
 @Composable
 fun SearchBar(
     @StringRes hintResId: Int,
@@ -180,7 +177,6 @@ fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
 }
 
 @SuppressLint("UnrememberedMutableState")
-@ExperimentalComposeUiApi
 @Preview(name = "SearchBarPreview", showBackground = true)
 @Composable
 private fun SearchBarPreview() {

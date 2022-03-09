@@ -33,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -58,12 +57,7 @@ import io.tonnyl.moka.graphql.fragment.Gist
 import io.tonnyl.moka.graphql.fragment.Organization
 import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
 import io.tonnyl.moka.graphql.fragment.User
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalAnimationApi
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel) {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -181,9 +175,6 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
     }
 }
 
-@ExperimentalAnimationApi
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 private fun ProfileScreenContent(
     topAppBarSize: Int,
@@ -563,7 +554,6 @@ private fun ProfileScreenContent(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun ContactListItem(
     @DrawableRes iconRes: Int? = null,
@@ -649,7 +639,6 @@ private fun PinnedItemIconifiedText(
     )
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun PinnedItemCard(
     navController: NavController,
@@ -751,7 +740,6 @@ private fun PinnedItemCard(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun PinnedRepositoryCard(
     navController: NavController,
@@ -827,7 +815,6 @@ private fun PinnedRepositoryCard(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun PinnedGistCard(
     navController: NavController,
@@ -892,10 +879,6 @@ private fun PinnedGistCard(
 }
 
 // Preview section start
-
-@ExperimentalAnimationApi
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Preview(
     showBackground = true,
     name = "ProfileScreen",

@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.work
 
 import android.content.Context
-import androidx.paging.ExperimentalPagingApi
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.github.tonnyl.moka.MokaApp
@@ -12,15 +11,12 @@ import io.tonnyl.moka.common.serialization.json
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 import io.tonnyl.moka.common.data.Notification as SerializableNotification
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 class NotificationWorker(
     appContext: Context,
     params: WorkerParameters

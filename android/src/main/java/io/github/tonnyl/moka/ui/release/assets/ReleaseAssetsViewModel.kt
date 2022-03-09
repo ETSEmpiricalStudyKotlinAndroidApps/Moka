@@ -6,9 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.ui.defaultPagingConfig
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 data class ReleaseAssetsViewModelExtra(
     val accountInstance: AccountInstance,
     val login: String,
@@ -16,7 +14,6 @@ data class ReleaseAssetsViewModelExtra(
     val tagName: String
 )
 
-@ExperimentalSerializationApi
 class ReleaseAssetsViewModel(extra: ReleaseAssetsViewModelExtra) : ViewModel() {
 
     val assets by lazy(LazyThreadSafetyMode.NONE) {

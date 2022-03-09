@@ -20,7 +20,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -46,10 +45,7 @@ import io.tonnyl.moka.common.db.data.NotificationRepositoryOwner
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.NotificationProvider
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 @Composable
 fun InboxScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -164,8 +160,6 @@ fun InboxScreen(openDrawer: (() -> Unit)?) {
     }
 }
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 private fun InboxScreenContent(
     contentPaddings: PaddingValues,
@@ -223,8 +217,6 @@ private fun InboxScreenContent(
     }
 }
 
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 @Composable
 private fun ItemNotification(
     item: Notification,

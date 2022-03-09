@@ -16,7 +16,6 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -37,7 +36,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -68,7 +66,6 @@ import io.tonnyl.moka.graphql.type.CommentAuthorAssociation
 import io.tonnyl.moka.graphql.type.LockReason
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
-import kotlinx.serialization.ExperimentalSerializationApi
 
 data class IssuePullRequestEventData(
     val iconResId: Int?,
@@ -81,9 +78,6 @@ data class IssuePullRequestEventData(
     val nodeId: String? = null
 )
 
-@ExperimentalComposeUiApi
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun IssueScreen(
     owner: String,
@@ -234,7 +228,6 @@ fun IssueScreen(
     }
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun IssueScreenContent(
     contentPaddings: PaddingValues,

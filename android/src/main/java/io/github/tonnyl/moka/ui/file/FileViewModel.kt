@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.HighlightLanguage
 import io.tonnyl.moka.common.AccountInstance
@@ -15,7 +14,6 @@ import io.tonnyl.moka.common.serialization.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
 import logcat.asLog
@@ -23,7 +21,6 @@ import logcat.logcat
 import okio.buffer
 import okio.source
 
-@ExperimentalSerializationApi
 data class FileViewModelExtra(
     val accountInstance: AccountInstance,
     val url: String,
@@ -31,8 +28,6 @@ data class FileViewModelExtra(
     val fileExtension: String?
 )
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 class FileViewModel(
     app: Application,
     private val extra: FileViewModelExtra

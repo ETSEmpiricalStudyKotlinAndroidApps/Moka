@@ -6,9 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.ui.defaultPagingConfig
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 data class CommitsViewModelExtra(
     val accountInstance: AccountInstance,
     val login: String,
@@ -16,7 +14,6 @@ data class CommitsViewModelExtra(
     val qualifiedName: String
 )
 
-@ExperimentalSerializationApi
 class CommitsViewModel(extra: CommitsViewModelExtra) : ViewModel() {
 
     val commitsFlow by lazy(LazyThreadSafetyMode.NONE) {

@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -36,10 +35,7 @@ import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.util.ReleaseProvider
 import io.tonnyl.moka.graphql.fragment.Release
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun ReleaseScreen(
     login: String,

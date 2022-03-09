@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -36,10 +35,7 @@ import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.ExpireAt
 import io.tonnyl.moka.common.data.SearchableEmoji
 import io.tonnyl.moka.common.network.Status
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun EditStatusScreen(
     initialEmoji: String?,
@@ -114,7 +110,6 @@ fun EditStatusScreen(
     }
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun EditStatusScreenContent(
     topAppBarSize: Int,

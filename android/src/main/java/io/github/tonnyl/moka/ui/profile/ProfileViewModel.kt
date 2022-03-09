@@ -22,19 +22,16 @@ import io.tonnyl.moka.graphql.type.FollowUserInput
 import io.tonnyl.moka.graphql.type.UnfollowUserInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class ProfileViewModelExtra(
     val accountInstance: AccountInstance,
     val login: String,
     val profileType: ProfileType
 )
 
-@ExperimentalSerializationApi
 class ProfileViewModel(val extra: ProfileViewModelExtra) : ViewModel() {
 
     private val _userProfile = MutableLiveData<Resource<User>>()

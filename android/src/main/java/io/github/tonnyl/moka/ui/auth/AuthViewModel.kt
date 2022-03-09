@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
 import io.github.tonnyl.moka.ui.Event
@@ -23,13 +22,10 @@ import io.tonnyl.moka.common.ui.auth.AuthEvent.FinishAndGo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _authTokenAndUserResult =
@@ -41,7 +37,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     val event: LiveData<Event<AuthEvent>>
         get() = _event
 
-    @ExperimentalSerializationApi
     fun getAccessToken(param: AuthParameter) {
         viewModelScope.launch {
             try {

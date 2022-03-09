@@ -18,9 +18,7 @@ import io.tonnyl.moka.common.store.data.ContributionCalendar
 import io.tonnyl.moka.common.store.data.ExploreOptions
 import io.tonnyl.moka.common.store.data.RecentEmojis
 import io.tonnyl.moka.common.store.data.SearchHistory
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 actual class AccountInstance(
     application: Application,
     private val unauthenticatedKtorClient: HttpClient,

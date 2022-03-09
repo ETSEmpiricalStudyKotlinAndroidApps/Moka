@@ -21,9 +21,7 @@ import io.github.tonnyl.moka.widget.ItemLoadingState
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.RepositoryItemProvider
 import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 @Composable
 fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryListItemFragment>) {
     val contentPaddings = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.navigationBars)
@@ -70,7 +68,6 @@ fun SearchedRepositoriesScreen(repositories: LazyPagingItems<RepositoryListItemF
     }
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun SearchedRepositoriesScreenContent(
     contentPaddings: PaddingValues,

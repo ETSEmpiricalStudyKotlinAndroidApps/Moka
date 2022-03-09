@@ -19,12 +19,10 @@ import io.tonnyl.moka.graphql.type.AddCommentInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class PullRequestViewModelExtra(
     val accountInstance: AccountInstance,
     val owner: String,
@@ -32,7 +30,6 @@ data class PullRequestViewModelExtra(
     val number: Int
 )
 
-@ExperimentalSerializationApi
 class PullRequestViewModel(private val extra: PullRequestViewModelExtra) : ViewModel() {
 
     private val _pullRequest = MutableLiveData<PullRequest>()

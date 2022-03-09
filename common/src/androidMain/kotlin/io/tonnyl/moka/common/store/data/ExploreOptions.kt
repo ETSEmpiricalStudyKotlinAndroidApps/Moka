@@ -1,10 +1,8 @@
 package io.tonnyl.moka.common.store.data
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
 
-@ExperimentalSerializationApi
 @Serializable
 data class ExploreOptions(
 
@@ -22,7 +20,6 @@ data class ExploreOptions(
 
 )
 
-@ExperimentalSerializationApi
 @Serializable
 enum class ExploreTimeSpan {
 
@@ -37,7 +34,6 @@ enum class ExploreTimeSpan {
 
 }
 
-@ExperimentalSerializationApi
 @Serializable
 data class ExploreLanguage(
 
@@ -52,7 +48,6 @@ data class ExploreLanguage(
 
 )
 
-@ExperimentalSerializationApi
 @Serializable
 data class ExploreSpokenLanguage(
 
@@ -64,7 +59,6 @@ data class ExploreSpokenLanguage(
 
 )
 
-@ExperimentalSerializationApi
 val ExploreTimeSpan.urlParamValue: String
     get() = when (this) {
         ExploreTimeSpan.DAILY -> {

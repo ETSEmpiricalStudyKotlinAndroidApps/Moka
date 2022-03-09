@@ -4,15 +4,12 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import androidx.paging.ExperimentalPagingApi
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.github.tonnyl.moka.util.FileUtils
 import kotlinx.datetime.Clock
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
@@ -22,8 +19,6 @@ import java.io.FileInputStream
 /**
  * Only available for saving images/videos.
  */
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 class SaveMediaWorker(
     appContext: Context,
     params: WorkerParameters

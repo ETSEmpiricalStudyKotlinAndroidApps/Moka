@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -27,10 +26,7 @@ import io.github.tonnyl.moka.util.downloadFileViaDownloadManager
 import io.github.tonnyl.moka.util.isDarkModeOn
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun FileScreen(
     login: String,

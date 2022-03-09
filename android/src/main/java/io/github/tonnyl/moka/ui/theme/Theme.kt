@@ -10,19 +10,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.paging.ExperimentalPagingApi
-import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import io.github.tonnyl.moka.MokaApp
 import io.tonnyl.moka.common.store.SettingSerializer
 import io.tonnyl.moka.common.store.data.Theme
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
-@ExperimentalAnimatedInsets
 @Composable
 fun MokaTheme(content: @Composable () -> Unit) {
     val settings by (LocalContext.current.applicationContext as MokaApp).settingsDataStore

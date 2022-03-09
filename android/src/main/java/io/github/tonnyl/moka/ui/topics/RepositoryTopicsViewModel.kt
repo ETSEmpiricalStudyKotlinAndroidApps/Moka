@@ -6,16 +6,13 @@ import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.ui.defaultPagingConfig
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 data class RepositoryTopicsViewModelExtra(
     val accountInstance: AccountInstance,
     val login: String,
     val repoName: String
 )
 
-@ExperimentalSerializationApi
 class RepositoryTopicsViewModel(extra: RepositoryTopicsViewModelExtra) : ViewModel() {
 
     val topicsFlow by lazy(LazyThreadSafetyMode.NONE) {

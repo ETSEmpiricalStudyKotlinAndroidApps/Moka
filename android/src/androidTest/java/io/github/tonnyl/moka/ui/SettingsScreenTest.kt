@@ -1,14 +1,12 @@
 package io.github.tonnyl.moka.ui
 
 import androidx.activity.ComponentActivity
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.settings.*
 import io.github.tonnyl.moka.ui.theme.MokaTheme
@@ -18,7 +16,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalAnimatedInsets
 class SettingsScreenTest {
 
     @get:Rule
@@ -26,7 +23,6 @@ class SettingsScreenTest {
 
     private lateinit var activity: ComponentActivity
 
-    @ExperimentalMaterialApi
     @Before
     fun setUp() {
         composeTestRule.activityRule.scenario.onActivity { newActivity ->

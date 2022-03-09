@@ -21,20 +21,17 @@ import io.tonnyl.moka.graphql.type.SubscriptionState
 import io.tonnyl.moka.graphql.type.UpdateSubscriptionInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 import java.nio.charset.StandardCharsets
 
-@ExperimentalSerializationApi
 data class RepositoryViewModelExtra(
     val accountInstance: AccountInstance,
     val login: String,
     val repositoryName: String
 )
 
-@ExperimentalSerializationApi
 class RepositoryViewModel(private val extra: RepositoryViewModelExtra) : ViewModel() {
 
     private val _repository = MutableLiveData<Resource<Repository>>()

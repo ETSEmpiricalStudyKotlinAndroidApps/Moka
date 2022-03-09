@@ -21,9 +21,7 @@ import androidx.compose.ui.unit.dp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.*
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 @Composable
 fun MainSearchBar(
     openDrawer: (() -> Unit)?,

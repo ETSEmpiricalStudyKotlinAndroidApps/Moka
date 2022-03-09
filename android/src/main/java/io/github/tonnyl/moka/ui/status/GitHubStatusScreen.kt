@@ -42,10 +42,7 @@ import io.tonnyl.moka.common.data.GitHubStatusComponentStatus.*
 import io.tonnyl.moka.common.data.GitHubStatusStatusIndicator.*
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.util.GitHubStatusProvider
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 fun GitHubStatusScreen() {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -145,7 +142,6 @@ fun GitHubStatusScreen() {
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun GitHubStatusScreenContent(
     contentPaddings: PaddingValues,
@@ -194,7 +190,6 @@ private fun GitHubStatusScreenContent(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun GitHubStatusStatusItem(
     status: GitHubStatusStatus,
@@ -245,7 +240,6 @@ private fun GitHubStatusStatusItem(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun GitHubStatusComponentItem(
     component: GitHubStatusComponent,
@@ -360,7 +354,6 @@ private fun GitHubStatusPageItem(
     }
 }
 
-@ExperimentalMaterialApi
 @Preview(
     name = "GitHubStatusScreenContentPreview",
     showBackground = true,

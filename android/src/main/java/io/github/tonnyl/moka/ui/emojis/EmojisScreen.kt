@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import androidx.paging.ExperimentalPagingApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -45,10 +44,7 @@ import io.tonnyl.moka.common.data.EmojiCategory
 import io.tonnyl.moka.common.util.EmojiCategoryProvider
 import io.tonnyl.moka.common.util.EmojiItemProvider
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun EmojisScreen() {
     val emojis by LocalMainViewModel.current.emojis.observeAsState(initial = emptyList())

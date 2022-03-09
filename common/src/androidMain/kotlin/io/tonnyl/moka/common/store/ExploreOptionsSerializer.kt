@@ -6,7 +6,6 @@ import io.tonnyl.moka.common.store.data.ExploreLanguage
 import io.tonnyl.moka.common.store.data.ExploreOptions
 import io.tonnyl.moka.common.store.data.ExploreSpokenLanguage
 import io.tonnyl.moka.common.store.data.ExploreTimeSpan
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
@@ -14,7 +13,6 @@ import kotlinx.serialization.protobuf.ProtoBuf
 import java.io.InputStream
 import java.io.OutputStream
 
-@ExperimentalSerializationApi
 object ExploreOptionsSerializer : Serializer<ExploreOptions> {
 
     override val defaultValue: ExploreOptions

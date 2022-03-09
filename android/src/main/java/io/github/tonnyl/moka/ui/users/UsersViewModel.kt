@@ -5,9 +5,7 @@ import androidx.paging.Pager
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.UsersType
 import io.tonnyl.moka.common.ui.defaultPagingConfig
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 data class UsersViewModelExtra(
     val accountInstance: AccountInstance,
     val login: String,
@@ -15,7 +13,6 @@ data class UsersViewModelExtra(
     val usersType: UsersType
 )
 
-@ExperimentalSerializationApi
 class UsersViewModel(extra: UsersViewModelExtra) : ViewModel() {
 
     val usersFlow by lazy {

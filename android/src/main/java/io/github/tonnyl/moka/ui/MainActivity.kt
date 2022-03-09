@@ -6,31 +6,22 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigation.compose.rememberNavController
-import androidx.paging.ExperimentalPagingApi
-import com.google.accompanist.insets.ExperimentalAnimatedInsets
-import com.google.accompanist.pager.ExperimentalPagerApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.ui.auth.AuthActivity
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.work.ContributionCalendarWorker
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>(
@@ -41,14 +32,6 @@ class MainActivity : ComponentActivity() {
         }
     )
 
-    @OptIn(
-        ExperimentalAnimationApi::class,
-        ExperimentalPagerApi::class,
-        ExperimentalAnimatedInsets::class,
-        ExperimentalComposeUiApi::class,
-        ExperimentalMaterialApi::class,
-        ExperimentalPagingApi::class
-    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

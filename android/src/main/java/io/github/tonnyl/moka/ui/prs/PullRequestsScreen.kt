@@ -20,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -45,10 +44,7 @@ import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.data.PullRequestListItem
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.PullRequestItemProvider
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun PullRequestsScreen(
     owner: String,
@@ -171,7 +167,6 @@ fun PullRequestsScreen(
     }
 }
 
-@ExperimentalSerializationApi
 @Composable
 fun PullRequestsScreenContent(
     contentPaddings: PaddingValues,

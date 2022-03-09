@@ -19,12 +19,10 @@ import io.tonnyl.moka.graphql.type.AddCommentInput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class IssueViewModelExtra(
     val accountInstance: AccountInstance,
     val owner: String,
@@ -32,7 +30,6 @@ data class IssueViewModelExtra(
     val number: Int
 )
 
-@ExperimentalSerializationApi
 class IssueViewModel(private val extra: IssueViewModelExtra) : ViewModel() {
 
     private val _issueLiveData = MutableLiveData<Issue>()

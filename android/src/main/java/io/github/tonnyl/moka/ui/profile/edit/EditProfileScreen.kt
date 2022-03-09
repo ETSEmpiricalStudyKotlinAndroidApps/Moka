@@ -10,7 +10,6 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -20,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -28,11 +26,7 @@ import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalComposeUiApi
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun EditProfileScreen(
     initialName: String?,

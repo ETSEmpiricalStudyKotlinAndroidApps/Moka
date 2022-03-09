@@ -12,7 +12,6 @@ import androidx.annotation.WorkerThread
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.paging.ExperimentalPagingApi
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -21,13 +20,11 @@ import io.github.tonnyl.moka.data.extension.toDisplayContentText
 import io.github.tonnyl.moka.ui.MainActivity
 import io.tonnyl.moka.common.db.data.Notification
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 import android.app.Notification as AndroidNotification
 
-@ExperimentalPagingApi
 object NotificationsCenter {
 
     private const val NOTIFICATION_CHANNEL_ID = "notification_channel_id"
@@ -35,7 +32,6 @@ object NotificationsCenter {
     private const val NOTIFICATION_GROUP = "io.github.tonnyl.moka.GITHUB_NOTIFICATION"
     private const val SUMMARY_ID = 0
 
-    @ExperimentalSerializationApi
     @WorkerThread
     fun showNotifications(
         context: Context,
@@ -59,7 +55,6 @@ object NotificationsCenter {
             .cancel(notificationId)
     }
 
-    @ExperimentalSerializationApi
     @WorkerThread
     private fun showNotification(
         context: Context,

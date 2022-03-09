@@ -30,10 +30,7 @@ import io.tonnyl.moka.common.data.RepositoriesQueryOption.*
 import io.tonnyl.moka.graphql.type.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 fun RepositoryFiltersSheet(
     queryOptionState: MutableState<RepositoriesQueryOption>,

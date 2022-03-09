@@ -1,7 +1,6 @@
 package io.github.tonnyl.moka.ui.inbox
 
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -22,7 +21,6 @@ import logcat.asLog
 import logcat.logcat
 import io.tonnyl.moka.common.data.Notification as SerializableNotification
 
-@ExperimentalPagingApi
 class NotificationRemoteMediator(
     private val notificationsApi: NotificationApi,
     private val database: MokaDataBase,

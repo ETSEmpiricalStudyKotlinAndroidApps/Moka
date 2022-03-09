@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.ui.status.incident
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.Text
@@ -38,10 +37,7 @@ import io.tonnyl.moka.common.data.GitHubIncidentStatus.*
 import io.tonnyl.moka.common.data.GitHubIncidentUpdate
 import io.tonnyl.moka.common.data.GitHubStatus
 import io.tonnyl.moka.common.util.GitHubStatusProvider
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 fun IncidentScreen(incidentId: String) {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -91,7 +87,6 @@ fun IncidentScreen(incidentId: String) {
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun IncidentScreenContent(
     paddingValues: PaddingValues,
@@ -111,7 +106,6 @@ private fun IncidentScreenContent(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun IncidentInfoItem(
     incident: GitHubIncident
@@ -124,7 +118,6 @@ private fun IncidentInfoItem(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun IncidentUpdateItem(item: GitHubIncidentUpdate) {
     ListItem(
@@ -155,8 +148,6 @@ private fun IncidentUpdateItem(item: GitHubIncidentUpdate) {
     }
 }
 
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Preview(
     name = "IncidentScreenContentPreview",
     showBackground = true,

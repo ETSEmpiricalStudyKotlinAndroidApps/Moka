@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -25,19 +24,15 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class SearchScreenViewModelExtra(
     val accountInstance: AccountInstance,
     val initialSearchKeyword: String
 )
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 class SearchViewModel(
     app: Application,
     private val extra: SearchScreenViewModelExtra

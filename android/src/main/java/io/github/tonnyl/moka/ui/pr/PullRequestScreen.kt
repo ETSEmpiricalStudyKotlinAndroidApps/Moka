@@ -14,7 +14,6 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -34,7 +33,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -70,11 +68,7 @@ import io.tonnyl.moka.graphql.type.LockReason
 import io.tonnyl.moka.graphql.type.PullRequestReviewState
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalComposeUiApi
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun PullRequestScreen(
     owner: String,
@@ -224,7 +218,6 @@ fun PullRequestScreen(
     }
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun PullRequestScreenContent(
     contentPaddings: PaddingValues,

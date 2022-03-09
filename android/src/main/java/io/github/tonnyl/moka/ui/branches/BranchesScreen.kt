@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -21,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -43,11 +41,7 @@ import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.BranchProvider
 import io.tonnyl.moka.graphql.fragment.Ref
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 fun BranchesScreen(
     login: String,
@@ -146,8 +140,6 @@ fun BranchesScreen(
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 private fun BranchesScreenContent(
     contentPaddings: PaddingValues,
@@ -191,7 +183,6 @@ private fun BranchesScreenContent(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun ItemBranch(
     ref: Ref,
@@ -245,7 +236,6 @@ private fun ItemBranch(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 @Preview(name = "ItemBranchPreview", showBackground = true, backgroundColor = 0xFFFFFF)
 private fun ItemBranchPreview(

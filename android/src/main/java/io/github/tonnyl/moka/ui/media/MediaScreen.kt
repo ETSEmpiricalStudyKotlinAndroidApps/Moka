@@ -40,9 +40,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.work.WorkInfo
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.android.exoplayer2.ExoPlayer
@@ -55,14 +53,9 @@ import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.MediaType
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-@ExperimentalAnimationApi
-@ExperimentalCoilApi
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 @Composable
 fun MediaScreen(
     activity: MediaActivity,
@@ -216,7 +209,6 @@ fun MediaScreen(
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 private fun BoxScope.ImageScreenContent(
     url: String,
@@ -355,8 +347,6 @@ private fun BoxScope.ImageScreenContent(
     }
 }
 
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 @Composable
 private fun BoxScope.ImageContentBottomBar(
     displayBarsState: MutableState<Boolean>,
@@ -431,8 +421,6 @@ private fun BoxScope.ImageContentBottomBar(
     }
 }
 
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 @Composable
 private fun BoxScope.VideoContentBottomBar(
     displayBarsState: MutableState<Boolean>,
@@ -481,9 +469,6 @@ private fun BoxScope.VideoContentBottomBar(
     }
 }
 
-@ExperimentalAnimationApi
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 @Composable
 private fun BoxScope.VideoScreenContent(
     displayBarsState: MutableState<Boolean>,
@@ -650,10 +635,6 @@ private fun BoxScope.AnimatedBottomBar(
     )
 }
 
-@ExperimentalCoilApi
-@ExperimentalAnimationApi
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 @Preview(
     name = "MediaScreenPreview",
     backgroundColor = 0x000000,

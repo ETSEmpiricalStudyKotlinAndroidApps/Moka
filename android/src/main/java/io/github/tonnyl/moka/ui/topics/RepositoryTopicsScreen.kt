@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -16,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -36,11 +34,7 @@ import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.RepositoryTopicProvider
 import io.tonnyl.moka.graphql.fragment.RepositoryTopic
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 fun RepositoryTopicsScreen(
     login: String,
@@ -126,8 +120,6 @@ fun RepositoryTopicsScreen(
     }
 }
 
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 private fun RepositoriesScreenContent(
     contentPaddings: PaddingValues,
@@ -164,7 +156,6 @@ private fun RepositoriesScreenContent(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun ItemTopic(
     topic: RepositoryTopic,
@@ -194,7 +185,6 @@ private fun ItemTopic(
     }
 }
 
-@ExperimentalMaterialApi
 @Preview(name = "ItemTopicPreview", showBackground = true)
 @Composable
 private fun ItemTopicPreview(

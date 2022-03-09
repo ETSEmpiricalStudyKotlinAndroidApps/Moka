@@ -3,7 +3,6 @@ package io.github.tonnyl.moka.ui
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,7 +13,6 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
@@ -35,10 +33,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
-import com.google.accompanist.pager.ExperimentalPagerApi
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.UserStatus
 import io.github.tonnyl.moka.ui.about.AboutScreen
@@ -95,7 +91,6 @@ import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.data.RepositoryType
 import io.tonnyl.moka.common.data.UsersType
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 
 sealed class Screen(val route: String) {
 
@@ -495,12 +490,6 @@ sealed class Screen(val route: String) {
 
 }
 
-@ExperimentalAnimationApi
-@ExperimentalPagerApi
-@ExperimentalSerializationApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterialApi
-@ExperimentalPagingApi
 @Composable
 fun MainScreen(startDestination: Screen) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -575,7 +564,6 @@ fun MainScreen(startDestination: Screen) {
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun MainDrawerContent(
     currentRoute: String,
@@ -687,7 +675,6 @@ private fun MainDrawerHeader() {
     )
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun MainDrawerMenuItem(
     @DrawableRes vectorRes: Int? = null,
@@ -832,12 +819,6 @@ private fun MainNavigationRail(
     }
 }
 
-@ExperimentalAnimationApi
-@ExperimentalPagerApi
-@ExperimentalSerializationApi
-@ExperimentalComposeUiApi
-@ExperimentalMaterialApi
-@ExperimentalPagingApi
 @Composable
 private fun MainNavHost(
     currentRoute: MutableState<String>,
@@ -1608,7 +1589,6 @@ private fun MainNavHost(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 @Preview(
     name = "MainDrawerContentPreview",

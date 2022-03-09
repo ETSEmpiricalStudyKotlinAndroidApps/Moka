@@ -175,9 +175,18 @@ dependencies {
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
-        freeCompilerArgs = listOf(
+        freeCompilerArgs = freeCompilerArgs + listOf(
             "-Xskip-prerelease-check",
-            "-Xjvm-default=compatibility"
+            "-Xjvm-default=compatibility",
+            "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi",
+            "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
+            "-Xopt-in=androidx.compose.runtime.ExperimentalComposeApi",
+            "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi",
+            "-Xopt-in=androidx.paging.ExperimentalPagingApi",
+            "-Xopt-in=com.google.accompanist.insets.ExperimentalAnimatedInsets",
+            "-Xopt-in=com.google.accompanist.pager.ExperimentalPagerApi",
+            "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
+            "-Xopt-in=coil.annotation.ExperimentalCoilApi"
         )
     }
 }

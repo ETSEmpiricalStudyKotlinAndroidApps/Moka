@@ -7,9 +7,7 @@ import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.graphql.type.RefOrder
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 data class BranchesViewModelExtra(
     val accountInstance: AccountInstance,
     val login: String,
@@ -17,7 +15,6 @@ data class BranchesViewModelExtra(
     val refPrefix: String
 )
 
-@ExperimentalSerializationApi
 class BranchesViewModel(extra: BranchesViewModelExtra) : ViewModel() {
 
     private val dataSource by lazy(LazyThreadSafetyMode.NONE) {

@@ -6,25 +6,20 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class InboxViewModelExtra(
     val accountInstance: AccountInstance,
 )
 
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 class InboxViewModel(
     private val extra: InboxViewModelExtra,
     app: Application
@@ -42,7 +37,6 @@ class InboxViewModel(
 
     val pendingJumpState = mutableStateOf<Triple<String, String, String>?>(value = null)
 
-    @ExperimentalPagingApi
     val notificationsFlow by lazy(LazyThreadSafetyMode.NONE) {
         Pager(
             config = defaultPagingConfig,

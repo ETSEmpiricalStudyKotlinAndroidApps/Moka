@@ -1,14 +1,12 @@
 package io.tonnyl.moka.common.data
 
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoIntegerType
 import kotlinx.serialization.protobuf.ProtoNumber
 import kotlinx.serialization.protobuf.ProtoType
 
-@ExperimentalSerializationApi
 @Serializable
 actual data class Account(
 

@@ -6,7 +6,6 @@ import io.tonnyl.moka.common.store.data.KeepData
 import io.tonnyl.moka.common.store.data.NotificationSyncInterval
 import io.tonnyl.moka.common.store.data.Settings
 import io.tonnyl.moka.common.store.data.Theme
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
@@ -14,7 +13,6 @@ import kotlinx.serialization.protobuf.ProtoBuf
 import java.io.InputStream
 import java.io.OutputStream
 
-@ExperimentalSerializationApi
 object SettingSerializer : Serializer<Settings> {
 
     override val defaultValue: Settings

@@ -13,11 +13,9 @@ import io.tonnyl.moka.common.db.data.Notification
 import io.tonnyl.moka.common.db.data.NotificationRepositoryOwner
 import io.tonnyl.moka.common.store.data.ExploreTimeSpan
 import io.tonnyl.moka.graphql.fragment.UserStatus
-import kotlinx.serialization.ExperimentalSerializationApi
 import io.github.tonnyl.moka.data.UserStatus as DataUserStatus
 import io.tonnyl.moka.common.data.AccessToken as PBAccessToken
 
-@ExperimentalSerializationApi
 fun AccessToken.toPBAccessToken(): PBAccessToken {
     val token = this
     return PBAccessToken(
@@ -27,7 +25,6 @@ fun AccessToken.toPBAccessToken(): PBAccessToken {
     )
 }
 
-@ExperimentalSerializationApi
 val ExploreTimeSpan.displayStringResId: Int
     get() = when (this) {
         ExploreTimeSpan.DAILY -> {

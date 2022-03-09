@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
@@ -37,14 +36,12 @@ import io.tonnyl.moka.common.store.data.Settings
 import io.tonnyl.moka.common.store.data.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.serialization.ExperimentalSerializationApi
 
 const val SettingScreenTestTag = "SettingScreenTestTag"
 const val ChooseThemeTestTag = "ChooseThemeTestTag"
 const val EnableNotificationsTestTag = "EnableNotificationsTestTag"
 const val SyncIntervalTestTag = "SyncIntervalTestTag"
 
-@ExperimentalSerializationApi
 data class OnSettingItemClick(
     val onThemeClick: (Theme) -> Unit,
     val onEnableNotificationClick: (Boolean) -> Unit,
@@ -59,9 +56,6 @@ data class OnSettingItemClick(
     val onClearImageCacheClick: () -> Unit
 )
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 fun SettingScreen() {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -172,8 +166,6 @@ fun SettingScreen() {
 
 }
 
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 fun SettingScreenContent(
     topAppBarSize: Int,
@@ -495,7 +487,6 @@ fun SettingScreenContent(
     }
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun getThemeValuesText(theme: Theme): String {
     return stringResource(
@@ -513,7 +504,6 @@ private fun getThemeValuesText(theme: Theme): String {
     )
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun getNotificationSyncIntervalsText(intervals: NotificationSyncInterval): String {
     return stringResource(
@@ -543,7 +533,6 @@ private fun getNotificationSyncIntervalsText(intervals: NotificationSyncInterval
     )
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun getKeepDataTimesText(keepData: KeepData): String {
     return stringResource(
@@ -567,8 +556,6 @@ private fun getKeepDataTimesText(keepData: KeepData): String {
     )
 }
 
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Preview(
     name = "SettingScreenContent",
     showBackground = true,

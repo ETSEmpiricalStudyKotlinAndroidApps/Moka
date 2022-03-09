@@ -14,7 +14,6 @@ import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -22,12 +21,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.statusBarsPadding
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
@@ -51,14 +48,8 @@ import io.tonnyl.moka.common.store.data.urlParamValue
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.TrendingDeveloperProvider
 import io.tonnyl.moka.common.util.TrendingRepositoryProvider
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalComposeUiApi
-@ExperimentalPagerApi
-@ExperimentalSerializationApi
 @Composable
-@ExperimentalMaterialApi
 fun ExploreScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
 
@@ -127,9 +118,6 @@ fun ExploreScreen(openDrawer: (() -> Unit)?) {
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
-@ExperimentalPagerApi
 @Composable
 private fun ExploreScreenContent(
     contentPadding: PaddingValues,
@@ -212,8 +200,6 @@ private fun ExploreScreenContent(
     }
 }
 
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 private fun ExploreFiltersHeader(
     viewModel: ExploreViewModel,
@@ -332,7 +318,6 @@ private fun RowScope.DownArrow(enablePlaceholder: Boolean) {
     }
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun TimespanDropDownMenus(
     showMenuState: MutableState<Boolean>,

@@ -1,10 +1,8 @@
 package io.tonnyl.moka.common.store.data
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
 
-@ExperimentalSerializationApi
 @Serializable
 data class Settings(
 
@@ -38,7 +36,6 @@ data class Settings(
 
 )
 
-@ExperimentalSerializationApi
 @Serializable
 enum class Theme {
 
@@ -53,7 +50,6 @@ enum class Theme {
 
 }
 
-@ExperimentalSerializationApi
 @Serializable
 enum class NotificationSyncInterval {
 
@@ -80,7 +76,6 @@ enum class NotificationSyncInterval {
 
 }
 
-@ExperimentalSerializationApi
 @Serializable
 enum class KeepData {
 

@@ -19,7 +19,6 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -32,7 +31,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
@@ -50,12 +48,7 @@ import io.tonnyl.moka.common.store.data.ExploreLanguage
 import io.tonnyl.moka.common.store.data.ExploreOptions
 import io.tonnyl.moka.common.store.data.ExploreSpokenLanguage
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalComposeUiApi
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 fun ExploreFiltersScreen(filtersType: FiltersType) {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -218,8 +211,6 @@ fun ExploreFiltersScreen(filtersType: FiltersType) {
     }
 }
 
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 private fun LanguageItem(
     navController: NavController,
@@ -262,8 +253,6 @@ private fun LanguageItem(
     )
 }
 
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 private fun SpokenLanguageItem(
     navController: NavController,

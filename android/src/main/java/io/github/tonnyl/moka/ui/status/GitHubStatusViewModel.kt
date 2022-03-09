@@ -9,12 +9,10 @@ import io.tonnyl.moka.common.data.GitHubStatus
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 class GitHubStatusViewModel(val accountInstance: AccountInstance) : ViewModel() {
 
     private val _gitHubStatus = MutableLiveData<GitHubStatus>()

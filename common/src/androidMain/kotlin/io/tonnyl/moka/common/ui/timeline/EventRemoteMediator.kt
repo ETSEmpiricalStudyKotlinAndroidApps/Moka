@@ -1,7 +1,6 @@
 package io.tonnyl.moka.common.ui.timeline
 
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -18,14 +17,12 @@ import io.tonnyl.moka.common.network.api.EventApi
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 import io.tonnyl.moka.common.data.Event as SerializableEvent
 
-@ExperimentalPagingApi
 class EventRemoteMediator(
     private val login: String,
     private val eventApi: EventApi,
@@ -33,7 +30,6 @@ class EventRemoteMediator(
     private val isNeedDisplayPlaceholder: MutableLiveData<Boolean>
 ) : RemoteMediator<Int, Event>() {
 
-    @OptIn(ExperimentalSerializationApi::class)
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, Event>

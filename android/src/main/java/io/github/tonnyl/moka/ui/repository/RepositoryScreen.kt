@@ -18,7 +18,6 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -35,7 +34,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -58,17 +56,11 @@ import io.tonnyl.moka.graphql.fragment.Language
 import io.tonnyl.moka.graphql.fragment.Repository
 import io.tonnyl.moka.graphql.type.SubscriptionState
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.math.min
 
 private const val MAX_DISPLAY_COUNT_OF_TOPICS = 8
 private const val MAX_LANGUAGE_DISPLAY_COUNT = 20
 
-@ExperimentalPagingApi
-@ExperimentalComposeUiApi
-@ExperimentalAnimationApi
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 fun RepositoryScreen(
     login: String,
@@ -420,7 +412,6 @@ fun RepositoryScreen(
 
 }
 
-@ExperimentalAnimationApi
 @Composable
 private fun RepositoryScreenContent(
     topAppBarSize: Int,
@@ -887,7 +878,6 @@ private fun LanguageLabel(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun WatchOptionsBottomSheet(
     state: ModalBottomSheetState,
@@ -948,7 +938,6 @@ private fun WatchOptionsBottomSheet(
     )
 }
 
-@ExperimentalMaterialApi
 @Composable
 private fun WatchOptionItem(
     state: SubscriptionState,
@@ -1009,7 +998,6 @@ private fun WatchOptionItem(
     }
 }
 
-@ExperimentalAnimationApi
 @Preview(showBackground = true, name = "RepositoryScreenContentPreview")
 @Composable
 private fun RepositoryScreenContentPreview(
@@ -1059,7 +1047,6 @@ private fun LanguageProgressBarPreview() {
     )
 }
 
-@ExperimentalMaterialApi
 @Preview(
     showBackground = true,
     backgroundColor = 0xFFFFFF,

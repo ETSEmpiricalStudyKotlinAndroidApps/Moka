@@ -2,8 +2,9 @@ package io.github.tonnyl.moka.work
 
 import android.content.Context
 import androidx.core.content.FileProvider
-import androidx.paging.ExperimentalPagingApi
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.util.StorageManager
@@ -12,13 +13,10 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.logcat
 import java.io.File
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 class DownloadMediaWorker(
     appContext: Context,
     params: WorkerParameters

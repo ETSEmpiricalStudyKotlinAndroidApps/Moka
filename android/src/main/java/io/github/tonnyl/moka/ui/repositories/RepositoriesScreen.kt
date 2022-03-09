@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -48,11 +47,7 @@ import io.tonnyl.moka.common.util.formatWithSuffix
 import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
 import io.tonnyl.moka.graphql.type.*
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 fun RepositoriesScreen(
     login: String,
@@ -292,7 +287,6 @@ fun RepositoriesScreen(
     }
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun RepositoriesScreenContent(
     contentPaddings: PaddingValues,

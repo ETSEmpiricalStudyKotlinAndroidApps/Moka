@@ -18,7 +18,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -40,10 +39,7 @@ import io.tonnyl.moka.common.data.UsersType.*
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.UserItemProvider
 import io.tonnyl.moka.graphql.fragment.UserListItemFragment
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun UsersScreen(
     login: String,
@@ -168,7 +164,6 @@ fun UsersScreen(
     }
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun UsersScreenScreen(
     contentPaddings: PaddingValues,

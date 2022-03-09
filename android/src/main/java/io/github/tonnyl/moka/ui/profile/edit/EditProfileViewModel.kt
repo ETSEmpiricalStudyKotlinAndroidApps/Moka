@@ -9,12 +9,10 @@ import io.tonnyl.moka.common.network.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class EditProfileViewModelExtra(
     val accountInstance: AccountInstance,
     val initialName: String?,
@@ -25,7 +23,6 @@ data class EditProfileViewModelExtra(
     val initialTwitter: String?
 )
 
-@ExperimentalSerializationApi
 class EditProfileViewModel(private val extra: EditProfileViewModelExtra) : ViewModel() {
 
     private val _loadingStatus = MutableLiveData<Resource<Unit>?>()

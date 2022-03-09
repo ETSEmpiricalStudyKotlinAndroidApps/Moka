@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.work.*
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -21,9 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 data class MediaViewModelExtra(
     val accountInstance: AccountInstance,
     val url: String,
@@ -31,8 +28,6 @@ data class MediaViewModelExtra(
     val mediaType: MediaType
 )
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 class MediaViewModel(
     app: Application,
     private val extra: MediaViewModelExtra

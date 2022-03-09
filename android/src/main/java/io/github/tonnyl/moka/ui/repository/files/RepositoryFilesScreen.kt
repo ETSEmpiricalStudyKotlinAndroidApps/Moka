@@ -2,7 +2,6 @@ package io.github.tonnyl.moka.ui.repository.files
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,7 +20,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -43,12 +41,7 @@ import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.TreeEntryProvider
 import io.tonnyl.moka.graphql.fragment.TreeEntry
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalAnimationApi
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 fun RepositoryFilesScreen(
     login: String,
@@ -174,10 +167,6 @@ fun RepositoryFilesScreen(
     }
 }
 
-@ExperimentalAnimationApi
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 private fun RepositoryFilesScreenContent(
     contentPaddings: PaddingValues,
@@ -215,10 +204,6 @@ private fun RepositoryFilesScreenContent(
     }
 }
 
-@ExperimentalAnimationApi
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
 @Composable
 private fun ItemTreeEntry(
     treeEntry: TreeEntry,
@@ -338,10 +323,6 @@ private fun ItemTreeEntry(
     }
 }
 
-@ExperimentalAnimationApi
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
 @Composable
 @Preview(
     name = "ItemTreeEntryPreview",

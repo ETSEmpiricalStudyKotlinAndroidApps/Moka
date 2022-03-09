@@ -5,7 +5,6 @@ import android.os.Build.VERSION.SDK_INT
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import androidx.lifecycle.asLiveData
-import androidx.paging.ExperimentalPagingApi
 import androidx.work.*
 import coil.ImageLoader
 import coil.ImageLoaderFactory
@@ -26,7 +25,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
@@ -34,8 +32,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 class MokaApp : Application(), ImageLoaderFactory {
 
     val okHttpClient by lazy {

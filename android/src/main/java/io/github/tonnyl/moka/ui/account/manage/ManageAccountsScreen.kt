@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.MokaApp
@@ -31,11 +30,7 @@ import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.AvatarImage
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.tonnyl.moka.common.AccountInstance
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 @Composable
 fun ManageAccountsScreen() {
     Box {
@@ -93,9 +88,6 @@ fun ManageAccountsScreen() {
     }
 }
 
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 private fun ManageAccountsScreenContent(
     contentPadding: PaddingValues,

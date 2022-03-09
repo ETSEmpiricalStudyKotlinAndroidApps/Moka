@@ -9,9 +9,7 @@ import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.CommitResponse
 import io.tonnyl.moka.common.ui.defaultPagingConfig
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 data class CommitViewModelExtra(
     val accountInstance: AccountInstance,
     val owner: String,
@@ -19,7 +17,6 @@ data class CommitViewModelExtra(
     val ref: String
 )
 
-@ExperimentalSerializationApi
 class CommitViewModel(extra: CommitViewModelExtra) : ViewModel() {
 
     private val _commitResp = MutableLiveData<CommitResponse>()

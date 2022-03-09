@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Status
@@ -13,18 +12,14 @@ import io.tonnyl.moka.common.store.data.KeepData
 import io.tonnyl.moka.common.store.data.NotificationSyncInterval
 import io.tonnyl.moka.common.store.data.Theme
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class SettingsViewModelExtra(
     val accountInstance: AccountInstance,
 )
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 class SettingsViewModel(
     app: Application,
     private val extra: SettingsViewModelExtra

@@ -2,14 +2,10 @@ package io.github.tonnyl.moka.work
 
 import android.content.Context
 import android.net.Uri
-import androidx.paging.ExperimentalPagingApi
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.github.tonnyl.moka.util.shareMedia
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 class ShareMediaWorker(
     appContext: Context,
     params: WorkerParameters

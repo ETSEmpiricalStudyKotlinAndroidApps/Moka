@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.BuildConfig
@@ -27,7 +26,6 @@ import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.util.openInBrowser
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.ProfileType
-import kotlinx.serialization.ExperimentalSerializationApi
 
 const val AboutScreenTestTag = "AboutScreenTestTag"
 
@@ -43,9 +41,6 @@ data class OnAboutItemClick(
     val onAuthorClick: () -> Unit
 )
 
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
 @Composable
 fun AboutScreen() {
     Box {
@@ -118,7 +113,6 @@ fun AboutScreen() {
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun AboutScreenContent(
     topAppBarSize: Int,
@@ -252,7 +246,6 @@ fun AboutScreenContent(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 @Preview(
     name = "AboutScreenContentPreview",

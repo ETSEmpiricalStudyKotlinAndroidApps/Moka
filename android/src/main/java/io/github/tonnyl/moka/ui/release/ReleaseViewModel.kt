@@ -11,12 +11,10 @@ import io.tonnyl.moka.graphql.ReleaseQuery
 import io.tonnyl.moka.graphql.fragment.Release
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class ReleaseViewModelExtra(
     val accountInstance: AccountInstance,
     val login: String,
@@ -24,7 +22,6 @@ data class ReleaseViewModelExtra(
     val tagName: String
 )
 
-@ExperimentalSerializationApi
 class ReleaseViewModel(private val extra: ReleaseViewModelExtra) : ViewModel() {
 
     private val _release = MutableLiveData<Resource<Release>>()

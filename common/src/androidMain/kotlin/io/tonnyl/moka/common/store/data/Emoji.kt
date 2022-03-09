@@ -1,10 +1,8 @@
 package io.tonnyl.moka.common.store.data
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
 
-@ExperimentalSerializationApi
 @Serializable
 data class Emoji(
 
@@ -25,7 +23,6 @@ data class Emoji(
 
 )
 
-@ExperimentalSerializationApi
 @Serializable
 data class RecentEmojis(
 

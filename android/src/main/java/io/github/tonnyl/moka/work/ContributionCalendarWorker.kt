@@ -4,7 +4,6 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import androidx.paging.ExperimentalPagingApi
 import androidx.work.*
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.widget.contribution.ContributionCalendarAppWidgetReceiver
@@ -13,19 +12,16 @@ import io.tonnyl.moka.common.store.data.ContributionCalendarMonth
 import io.tonnyl.moka.common.store.data.ContributionCalendarWeek
 import io.tonnyl.moka.graphql.UsersContributionsCollectionQuery
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 import java.util.concurrent.TimeUnit
 
-@ExperimentalPagingApi
 class ContributionCalendarWorker(
     appContext: Context,
     params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
 
-    @OptIn(ExperimentalSerializationApi::class)
     override suspend fun doWork(): Result {
         logcat(priority = LogPriority.INFO, tag = TAG) { "start work" }
 
@@ -106,12 +102,10 @@ class ContributionCalendarWorker(
         applicationContext.sendBroadcast(intent)
     }
 
-    @ExperimentalPagingApi
     companion object {
 
         const val TAG = "ContributionCalendarWorker"
 
-        @ExperimentalSerializationApi
         fun startOrCancelWorker(context: Context) {
             val app = context.applicationContext as MokaApp
             app.applicationScope.launch {

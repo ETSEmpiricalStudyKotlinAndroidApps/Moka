@@ -42,9 +42,7 @@ import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.SearchedOrganizationItemProvider
 import io.tonnyl.moka.common.util.UserItemProvider
 import io.tonnyl.moka.graphql.fragment.OrganizationListItemFragment
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 @Composable
 fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
     val contentPaddings = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.navigationBars)
@@ -91,7 +89,6 @@ fun SearchedUsersScreen(users: LazyPagingItems<SearchedUserOrOrgItem>) {
     }
 }
 
-@ExperimentalSerializationApi
 @Composable
 private fun SearchedUsersScreenContent(
     contentPaddings: PaddingValues,

@@ -13,7 +13,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -25,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
@@ -38,12 +36,7 @@ import io.github.tonnyl.moka.widget.AvatarImage
 import io.github.tonnyl.moka.widget.OutlineChip
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.ProfileType
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalComposeUiApi
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 fun AccountDialogScreen() {
     val accounts by LocalMainViewModel.current.getApplication<MokaApp>().accountInstancesLiveData.observeAsState(
@@ -64,9 +57,6 @@ fun AccountDialogScreen() {
     }
 }
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
-@ExperimentalMaterialApi
 @Composable
 private fun AccountDialogScreenContent(accounts: List<AccountInstance>) {
     val context = LocalContext.current
@@ -212,8 +202,6 @@ private fun AccountDialogScreenContent(accounts: List<AccountInstance>) {
     }
 }
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 private fun ItemAccount(
     isCurrentLoginUser: Boolean,
@@ -282,10 +270,7 @@ private fun ItemAccount(
 }
 
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @SuppressLint("UnrememberedMutableState")
-@ExperimentalMaterialApi
 @Preview(
     showBackground = true,
     name = "AccountDialogScreenContentPreview"

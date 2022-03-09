@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -47,11 +46,8 @@ import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.ui.timeline.TimelineViewModel
 import io.tonnyl.moka.common.ui.timeline.TimelineViewModelExtra
 import io.tonnyl.moka.common.util.TimelineEventProvider
-import kotlinx.serialization.ExperimentalSerializationApi
 import io.tonnyl.moka.common.data.Event as SerializableEvent
 
-@ExperimentalSerializationApi
-@ExperimentalPagingApi
 @Composable
 fun TimelineScreen(openDrawer: (() -> Unit)?) {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -133,7 +129,6 @@ fun TimelineScreen(openDrawer: (() -> Unit)?) {
 
 }
 
-@ExperimentalSerializationApi
 @Composable
 fun TimelineScreenContent(
     contentPadding: PaddingValues,

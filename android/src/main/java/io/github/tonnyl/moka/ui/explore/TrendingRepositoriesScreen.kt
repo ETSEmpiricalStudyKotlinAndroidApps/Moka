@@ -33,9 +33,7 @@ import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.db.data.TrendingRepository
 import io.tonnyl.moka.common.util.TrendingRepositoryProvider
 import io.tonnyl.moka.common.util.formatWithSuffix
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 @Composable
 fun TrendingRepositoryItem(
     repository: TrendingRepository,
@@ -197,7 +195,6 @@ fun TrendingRepositoryItem(
     }
 }
 
-@ExperimentalSerializationApi
 @Preview(
     name = "TrendingRepositoriesScreenPreview",
     showBackground = true,

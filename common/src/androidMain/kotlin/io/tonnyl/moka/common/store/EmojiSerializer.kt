@@ -3,7 +3,6 @@ package io.tonnyl.moka.common.store
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
 import io.tonnyl.moka.common.store.data.RecentEmojis
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
@@ -11,7 +10,6 @@ import kotlinx.serialization.protobuf.ProtoBuf
 import java.io.InputStream
 import java.io.OutputStream
 
-@ExperimentalSerializationApi
 object EmojiSerializer : Serializer<RecentEmojis> {
 
     override val defaultValue: RecentEmojis

@@ -10,7 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
@@ -24,12 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
@@ -46,7 +43,6 @@ import io.tonnyl.moka.common.store.data.SearchHistory
 import io.tonnyl.moka.common.util.HistoryQueriesProvider
 import io.tonnyl.moka.graphql.fragment.RepositoryListItemFragment
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 
 private enum class SearchType {
 
@@ -56,11 +52,6 @@ private enum class SearchType {
 
 }
 
-@ExperimentalPagingApi
-@ExperimentalMaterialApi
-@ExperimentalPagerApi
-@ExperimentalSerializationApi
-@ExperimentalComposeUiApi
 @Composable
 fun SearchScreen(initialSearchKeyword: String) {
     val currentAccount = LocalAccountInstance.current ?: return
@@ -140,9 +131,6 @@ fun SearchScreen(initialSearchKeyword: String) {
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
-@ExperimentalPagerApi
 @Composable
 private fun SearchScreenContent(
     topAppBarSize: Int,
@@ -254,8 +242,6 @@ private fun SearchScreenContent(
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Composable
 private fun ItemSearchHistory(
     query: Query,
@@ -286,8 +272,6 @@ private fun ItemSearchHistory(
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalSerializationApi
 @Preview(
     name = "ItemSearchHistoryPreview",
     backgroundColor = 0xFFFFFF

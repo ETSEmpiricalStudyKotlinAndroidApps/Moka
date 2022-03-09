@@ -12,19 +12,16 @@ import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.graphql.CreateIssueMutation
 import io.tonnyl.moka.graphql.type.CreateIssueInput
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class CreateIssueViewModelExtra(
     val accountInstance: AccountInstance,
     val repoId: String,
     val defaultComment: String?
 )
 
-@ExperimentalSerializationApi
 class CreateIssueViewModel(private val extra: CreateIssueViewModelExtra) : ViewModel() {
 
     private val _createIssueLiveData = MutableLiveData<Resource<CreateIssueMutation.Issue>?>()

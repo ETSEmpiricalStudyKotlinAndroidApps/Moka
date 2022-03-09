@@ -12,12 +12,10 @@ import io.tonnyl.moka.graphql.CurrentLevelTreeViewQuery
 import io.tonnyl.moka.graphql.fragment.TreeEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class RepositoryFilesViewModelExtra(
     val accountInstance: AccountInstance,
     val login: String,
@@ -25,7 +23,6 @@ data class RepositoryFilesViewModelExtra(
     val expression: String
 )
 
-@ExperimentalSerializationApi
 class RepositoryFilesViewModel(private val extra: RepositoryFilesViewModelExtra) : ViewModel() {
 
     private val _entry = MutableLiveData<Resource<List<TreeEntry>>>()

@@ -50,7 +50,6 @@ import io.tonnyl.moka.graphql.type.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toLocalDate
-import kotlinx.serialization.ExperimentalSerializationApi
 
 class TimelineEventProvider : PreviewParameterProvider<Event> {
 
@@ -1723,7 +1722,6 @@ class ContributionCalendarProvider : PreviewParameterProvider<ContributionCalend
 
 }
 
-@ExperimentalSerializationApi
 class HistoryQueriesProvider : PreviewParameterProvider<Query> {
 
     override val values: Sequence<Query>

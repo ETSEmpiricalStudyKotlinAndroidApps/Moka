@@ -6,16 +6,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.BuildConfig
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun FeedbackConfirmDialog() {
     LocalAccountInstance.current ?: return

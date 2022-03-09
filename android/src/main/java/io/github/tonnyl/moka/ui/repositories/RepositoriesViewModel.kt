@@ -7,9 +7,7 @@ import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.RepositoriesQueryOption
 import io.tonnyl.moka.common.ui.defaultPagingConfig
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 data class RepositoriesViewModelExtra(
     val accountInstance: AccountInstance,
     val login: String,
@@ -17,7 +15,6 @@ data class RepositoriesViewModelExtra(
     val queryOption: RepositoriesQueryOption
 )
 
-@ExperimentalSerializationApi
 class RepositoriesViewModel(extra: RepositoriesViewModelExtra) : ViewModel() {
 
     val repositoriesFlow by lazy(LazyThreadSafetyMode.NONE) {

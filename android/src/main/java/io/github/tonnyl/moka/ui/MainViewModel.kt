@@ -3,7 +3,6 @@ package io.github.tonnyl.moka.ui
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.*
-import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.util.readEmojisFromAssets
 import io.github.tonnyl.moka.util.toAccount
@@ -15,7 +14,6 @@ import io.tonnyl.moka.common.store.data.ExploreSpokenLanguage
 import io.tonnyl.moka.graphql.ViewerQuery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
 import logcat.asLog
@@ -23,8 +21,6 @@ import logcat.logcat
 import okio.buffer
 import okio.source
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 class MainViewModel(
     app: Application
 ) : AndroidViewModel(app) {

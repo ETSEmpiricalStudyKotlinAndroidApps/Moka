@@ -11,13 +11,11 @@ import io.tonnyl.moka.common.network.api.CommitApi
 import io.tonnyl.moka.common.serialization.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 class CommitDataSource(
     private val initialResp: MutableLiveData<CommitResponse>,
     private val commitApi: CommitApi,

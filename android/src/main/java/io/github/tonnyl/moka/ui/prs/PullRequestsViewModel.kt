@@ -7,9 +7,7 @@ import androidx.paging.cachedIn
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.IssuePullRequestQueryState
 import io.tonnyl.moka.common.ui.defaultPagingConfig
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 data class PullRequestsViewModelExtra(
     val accountInstance: AccountInstance,
     val owner: String,
@@ -17,7 +15,6 @@ data class PullRequestsViewModelExtra(
     val state: IssuePullRequestQueryState
 )
 
-@ExperimentalSerializationApi
 class PullRequestsViewModel(extra: PullRequestsViewModelExtra) : ViewModel() {
 
     val prsFlow by lazy(LazyThreadSafetyMode.NONE) {

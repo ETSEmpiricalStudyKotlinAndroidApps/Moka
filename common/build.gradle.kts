@@ -1,6 +1,5 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import java.util.*
 import org.jetbrains.compose.compose
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -215,7 +214,9 @@ tasks.withType<KotlinCompile>().configureEach {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs = listOf(
             "-Xskip-prerelease-check",
-            "-Xjvm-default=compatibility"
+            "-Xjvm-default=compatibility",
+            "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
+            "-Xopt-in=androidx.paging.ExperimentalPagingApi"
         )
     }
 }

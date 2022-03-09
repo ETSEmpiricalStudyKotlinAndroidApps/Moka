@@ -1,23 +1,23 @@
 package io.github.tonnyl.moka.ui.explore.filters
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.store.ExploreOptionsSerializer
 import io.tonnyl.moka.common.store.data.ExploreLanguage
 import io.tonnyl.moka.common.store.data.ExploreOptions
 import io.tonnyl.moka.common.store.data.ExploreSpokenLanguage
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalSerializationApi
 data class ExploreFiltersViewModelExtra(
     val accountInstance: AccountInstance
 )
 
-@ExperimentalSerializationApi
 class ExploreFiltersViewModel(private val extra: ExploreFiltersViewModelExtra): ViewModel() {
 
     private val _options =

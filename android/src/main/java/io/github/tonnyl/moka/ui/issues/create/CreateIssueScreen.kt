@@ -15,7 +15,6 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -29,7 +28,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.paging.ExperimentalPagingApi
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
@@ -42,12 +40,7 @@ import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.network.Status
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalComposeUiApi
-@ExperimentalAnimationApi
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
 @Composable
 fun CreateIssueScreen(
     repoId: String,
@@ -235,7 +228,6 @@ private fun DiscardAlert(
     )
 }
 
-@ExperimentalComposeUiApi
 @Composable
 private fun CreateIssueScreenContent(
     contentPadding: PaddingValues,
@@ -328,7 +320,6 @@ private fun TextFieldHint(
     }
 }
 
-@ExperimentalComposeUiApi
 @SuppressLint("UnrememberedMutableState")
 @Preview(
     name = "CreateIssueScreenContentPreview",

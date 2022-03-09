@@ -3,19 +3,15 @@ package io.github.tonnyl.moka.notifications
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.paging.ExperimentalPagingApi
 import io.github.tonnyl.moka.MokaApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 
-@ExperimentalPagingApi
 class NotificationCallbackReceiver : BroadcastReceiver() {
 
-    @OptIn(ExperimentalSerializationApi::class)
     override fun onReceive(context: Context?, intent: Intent?) {
         context ?: return
         intent ?: return

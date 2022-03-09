@@ -1,11 +1,9 @@
 package io.tonnyl.moka.common.store.data
 
 import kotlinx.datetime.LocalDate
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
 
-@ExperimentalSerializationApi
 @Serializable
 data class ContributionCalendar(
 
@@ -26,7 +24,6 @@ data class ContributionCalendar(
 
 )
 
-@ExperimentalSerializationApi
 @Serializable
 data class ContributionCalendarMonth(
 
@@ -44,7 +41,6 @@ data class ContributionCalendarMonth(
 
 )
 
-@ExperimentalSerializationApi
 @Serializable
 data class ContributionCalendarDay(
 
@@ -65,7 +61,6 @@ data class ContributionCalendarDay(
 
 )
 
-@ExperimentalSerializationApi
 @Serializable
 data class ContributionCalendarWeek(
 

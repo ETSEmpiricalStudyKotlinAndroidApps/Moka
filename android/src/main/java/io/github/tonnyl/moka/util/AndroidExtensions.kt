@@ -18,7 +18,6 @@ import io.tonnyl.moka.common.data.Emoji
 import io.tonnyl.moka.common.serialization.json
 import io.tonnyl.moka.graphql.ViewerQuery
 import kotlinx.datetime.Instant
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import logcat.LogPriority
 import logcat.asLog
@@ -35,7 +34,6 @@ private const val TAG = "AndroidExtensions"
 val Resources.isDarkModeOn: Boolean
     get() = (configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) == Configuration.UI_MODE_NIGHT_YES
 
-@ExperimentalSerializationApi
 fun Context.readEmojisFromAssets(): List<Emoji> {
     return assets.open("emojis.json").use { inputStream ->
         val jsonString = inputStream.source().buffer().readString(Charsets.UTF_8)
@@ -146,7 +144,6 @@ fun Context.openInBrowser(url: String) {
         .launchUrl(this, Uri.parse(url))
 }
 
-@ExperimentalSerializationApi
 fun ViewerQuery.Viewer.toAccount(existing: Account): Account {
     val viewer = this.user
     return Account(

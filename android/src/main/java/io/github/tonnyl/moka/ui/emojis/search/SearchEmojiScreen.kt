@@ -10,7 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
@@ -21,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.paging.ExperimentalPagingApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -34,11 +32,7 @@ import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.widget.SearchBar
 import io.tonnyl.moka.common.data.SearchableEmoji
 import io.tonnyl.moka.common.util.SearchedEmojiItemProvider
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
-@ExperimentalSerializationApi
-@ExperimentalComposeUiApi
 @Composable
 fun SearchEmojiScreen() {
     val mainViewModel = LocalMainViewModel.current

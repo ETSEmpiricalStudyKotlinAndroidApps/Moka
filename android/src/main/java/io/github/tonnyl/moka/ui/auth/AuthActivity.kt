@@ -22,8 +22,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.MutableCreationExtras
-import androidx.paging.ExperimentalPagingApi
-import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import io.github.tonnyl.moka.R
@@ -34,9 +32,7 @@ import io.github.tonnyl.moka.ui.theme.MokaTheme
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
 import io.tonnyl.moka.common.ui.auth.AuthEvent.FinishAndGo
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalPagingApi
 class AuthActivity : ComponentActivity() {
 
     private val viewModel by viewModels<AuthViewModel>(
@@ -47,10 +43,6 @@ class AuthActivity : ComponentActivity() {
         }
     )
 
-    @OptIn(
-        ExperimentalSerializationApi::class,
-        ExperimentalAnimatedInsets::class
-    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

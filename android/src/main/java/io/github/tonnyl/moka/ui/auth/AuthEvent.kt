@@ -1,4 +1,4 @@
-package io.tonnyl.moka.common.ui.auth
+package io.github.tonnyl.moka.ui.auth
 
 sealed class AuthEvent {
 

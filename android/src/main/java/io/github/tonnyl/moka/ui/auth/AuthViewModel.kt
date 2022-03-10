@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.tonnyl.moka.MokaApp
 import io.github.tonnyl.moka.data.extension.toPBAccessToken
 import io.github.tonnyl.moka.ui.Event
+import io.github.tonnyl.moka.ui.auth.AuthEvent.FinishAndGo
 import io.github.tonnyl.moka.util.updateOnAnyThread
 import io.tonnyl.moka.common.build.CommonBuildConfig
 import io.tonnyl.moka.common.data.Account
@@ -17,8 +18,6 @@ import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
 import io.tonnyl.moka.common.network.api.AccessTokenApi
 import io.tonnyl.moka.common.network.api.UserApi
-import io.tonnyl.moka.common.ui.auth.AuthEvent
-import io.tonnyl.moka.common.ui.auth.AuthEvent.FinishAndGo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

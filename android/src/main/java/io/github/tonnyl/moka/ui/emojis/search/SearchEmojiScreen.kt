@@ -24,7 +24,6 @@ import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
@@ -32,6 +31,7 @@ import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.widget.SearchBar
 import io.tonnyl.moka.common.data.SearchableEmoji
 import io.tonnyl.moka.common.util.SearchedEmojiItemProvider
+import io.tonnyl.moka.common.util.createAvatarLoadRequest
 
 @Composable
 fun SearchEmojiScreen() {

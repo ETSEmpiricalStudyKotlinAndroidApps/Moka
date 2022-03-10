@@ -8,9 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.cachedIn
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.network.Resource
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 import kotlinx.coroutines.launch
 import logcat.LogPriority
 import logcat.asLog

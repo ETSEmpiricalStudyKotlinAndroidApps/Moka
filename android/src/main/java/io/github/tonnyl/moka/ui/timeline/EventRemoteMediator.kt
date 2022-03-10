@@ -1,4 +1,4 @@
-package io.tonnyl.moka.common.ui.timeline
+package io.github.tonnyl.moka.ui.timeline
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LoadType

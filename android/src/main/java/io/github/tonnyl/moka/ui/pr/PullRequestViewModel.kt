@@ -8,11 +8,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.cachedIn
 import com.benasher44.uuid.Uuid
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.tonnyl.moka.common.AccountInstance
 import io.tonnyl.moka.common.data.IssueTimelineItem
 import io.tonnyl.moka.common.network.Resource
 import io.tonnyl.moka.common.network.Status
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.graphql.AddCommentMutation
 import io.tonnyl.moka.graphql.PullRequestQuery.PullRequest
 import io.tonnyl.moka.graphql.type.AddCommentInput

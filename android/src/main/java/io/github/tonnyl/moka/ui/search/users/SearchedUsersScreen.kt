@@ -28,6 +28,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IconSize
 import io.github.tonnyl.moka.ui.theme.LocalNavController
@@ -38,7 +39,6 @@ import io.github.tonnyl.moka.widget.EmptyScreenContent
 import io.github.tonnyl.moka.widget.ItemLoadingState
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.data.SearchedUserOrOrgItem
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.SearchedOrganizationItemProvider
 import io.tonnyl.moka.common.util.UserItemProvider
 import io.tonnyl.moka.graphql.fragment.OrganizationListItemFragment

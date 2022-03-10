@@ -4,4 +4,5 @@
     <string name="auth_get_started">GET STARTED</string>
     <string name="auth_logo_image_content_description">Moka logo</string>
     <string name="no_description_provided">No description provided.</string>
+    <string name="users_avatar_content_description">User\'s avatar</string>
 </resources>

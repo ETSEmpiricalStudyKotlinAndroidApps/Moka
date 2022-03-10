@@ -86,7 +86,9 @@ kotlin {
 
                 api(Deps.AndroidX.dataStore)
 
-                implementation(Deps.Kotlin.serializationProtoBuf)
+                api(Deps.Coil.compose)
+
+                api(Deps.Kotlin.serializationProtoBuf)
 
                 api(Deps.AndroidX.Room.common)
                 api(Deps.AndroidX.Room.runtime)

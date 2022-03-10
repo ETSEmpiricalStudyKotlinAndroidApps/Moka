@@ -33,12 +33,12 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
 import io.github.tonnyl.moka.widget.*
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.BranchProvider
 import io.tonnyl.moka.graphql.fragment.Ref
 

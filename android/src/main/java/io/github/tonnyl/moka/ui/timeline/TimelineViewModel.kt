@@ -1,4 +1,4 @@
-package io.tonnyl.moka.common.ui.timeline
+package io.github.tonnyl.moka.ui.timeline
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.cachedIn
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.tonnyl.moka.common.AccountInstance
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 
 data class TimelineViewModelExtra(
     val accountInstance: AccountInstance

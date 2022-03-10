@@ -27,12 +27,12 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingSmallSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.util.downloadFileViaDownloadManager
 import io.github.tonnyl.moka.widget.*
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.ReleaseAssetProvider
 import io.tonnyl.moka.graphql.fragment.ReleaseAsset
 

@@ -1,23 +1,14 @@
 package io.tonnyl.moka.common.util
 
-import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.CreationExtras
+import coil.request.ImageRequest
+import io.tonnyl.moka.common.R
 import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
-
-fun CreationExtras.getApplication(): Application {
-    return checkNotNull(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-}
-
-fun <T> CreationExtras.getExtra(key: CreationExtras.Key<T>): T {
-    return checkNotNull(this[key])
-}
 
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return false
@@ -39,4 +30,12 @@ fun Context.isNetworkAvailable(): Boolean {
     }
 
     return false
+}
+
+fun ImageRequest.Builder.createAvatarLoadRequest(): ImageRequest.Builder {
+    return apply {
+        placeholder(drawableResId = R.drawable.avatar_placeholder)
+        error(drawableResId = R.drawable.avatar_placeholder)
+        crossfade(enable = true)
+    }
 }

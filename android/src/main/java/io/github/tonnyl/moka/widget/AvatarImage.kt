@@ -6,8 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import coil.compose.rememberImagePainter
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.tonnyl.moka.common.extensions.orGhostAvatarUrl
+import io.tonnyl.moka.common.util.createAvatarLoadRequest
 
 @Composable
 fun AvatarImage(

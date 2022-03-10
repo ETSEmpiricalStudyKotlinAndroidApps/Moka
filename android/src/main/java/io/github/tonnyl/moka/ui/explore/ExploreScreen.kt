@@ -33,6 +33,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.data.extension.displayStringResId
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.DefaultSwipeRefreshIndicator
 import io.github.tonnyl.moka.widget.ListSubheader
@@ -45,7 +46,6 @@ import io.tonnyl.moka.common.store.ExploreOptionsSerializer
 import io.tonnyl.moka.common.store.data.ExploreOptions
 import io.tonnyl.moka.common.store.data.ExploreTimeSpan
 import io.tonnyl.moka.common.store.data.urlParamValue
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.TrendingDeveloperProvider
 import io.tonnyl.moka.common.util.TrendingRepositoryProvider
 

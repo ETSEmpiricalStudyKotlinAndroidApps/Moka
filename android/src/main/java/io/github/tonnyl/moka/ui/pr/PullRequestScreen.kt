@@ -46,6 +46,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.github.tonnyl.moka.ui.issue.IssueOrPullRequestHeader
 import io.github.tonnyl.moka.ui.issue.IssuePullRequestEventData
 import io.github.tonnyl.moka.ui.issue.IssueTimelineCommentItem
@@ -59,7 +60,6 @@ import io.tonnyl.moka.common.data.extension.assigneeLogin
 import io.tonnyl.moka.common.data.extension.requestedReviewerLogin
 import io.tonnyl.moka.common.extensions.shortOid
 import io.tonnyl.moka.common.network.Status
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.PullRequestProvider
 import io.tonnyl.moka.common.util.PullRequestTimelineItemProvider
 import io.tonnyl.moka.graphql.PullRequestQuery.PullRequest

@@ -29,6 +29,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.github.tonnyl.moka.ui.media.MediaActivity
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
 import io.github.tonnyl.moka.ui.theme.LocalNavController
@@ -38,7 +39,6 @@ import io.tonnyl.moka.common.data.MediaType
 import io.tonnyl.moka.common.data.TreeEntryType
 import io.tonnyl.moka.common.data.treeEntryType
 import io.tonnyl.moka.common.network.Status
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.TreeEntryProvider
 import io.tonnyl.moka.graphql.fragment.TreeEntry
 

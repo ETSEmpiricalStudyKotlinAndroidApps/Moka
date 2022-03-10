@@ -27,11 +27,11 @@ import com.google.accompanist.insets.statusBarsPadding
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.EventObserver
 import io.github.tonnyl.moka.ui.MainActivity
+import io.github.tonnyl.moka.ui.auth.AuthEvent.FinishAndGo
 import io.github.tonnyl.moka.ui.theme.LocalWindowInsetsController
 import io.github.tonnyl.moka.ui.theme.MokaTheme
 import io.github.tonnyl.moka.widget.AppBarNavigationIcon
 import io.github.tonnyl.moka.widget.InsetAwareTopAppBar
-import io.tonnyl.moka.common.ui.auth.AuthEvent.FinishAndGo
 
 class AuthActivity : ComponentActivity() {
 

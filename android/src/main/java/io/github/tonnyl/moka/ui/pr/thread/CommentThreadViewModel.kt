@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.cachedIn
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.tonnyl.moka.common.AccountInstance
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 
 data class CommentThreadViewModelExtra(
     val accountInstance: AccountInstance,

@@ -33,6 +33,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.IssueTimelineEventAuthorAvatarSize
 import io.github.tonnyl.moka.ui.theme.LocalAccountInstance
@@ -42,7 +43,6 @@ import io.tonnyl.moka.common.data.IssuePrState
 import io.tonnyl.moka.common.data.IssuePullRequestQueryState
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.data.PullRequestListItem
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.PullRequestItemProvider
 
 @Composable

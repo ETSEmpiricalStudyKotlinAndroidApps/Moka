@@ -49,6 +49,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.github.tonnyl.moka.ui.reaction.AddReactionDialogScreen
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.util.toColor
@@ -57,7 +58,6 @@ import io.tonnyl.moka.common.data.IssueTimelineItem
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.data.extension.assigneeLogin
 import io.tonnyl.moka.common.network.Status
-import io.tonnyl.moka.common.ui.defaultPagingConfig
 import io.tonnyl.moka.common.util.IssueProvider
 import io.tonnyl.moka.common.util.IssueTimelineEventProvider
 import io.tonnyl.moka.graphql.IssueQuery.Issue

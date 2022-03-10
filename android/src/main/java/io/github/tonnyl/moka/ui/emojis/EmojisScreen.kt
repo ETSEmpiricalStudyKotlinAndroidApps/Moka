@@ -32,7 +32,6 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.tonnyl.moka.R
-import io.github.tonnyl.moka.network.createAvatarLoadRequest
 import io.github.tonnyl.moka.ui.Screen
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
 import io.github.tonnyl.moka.ui.theme.LocalMainViewModel
@@ -43,6 +42,7 @@ import io.tonnyl.moka.common.data.Emoji
 import io.tonnyl.moka.common.data.EmojiCategory
 import io.tonnyl.moka.common.util.EmojiCategoryProvider
 import io.tonnyl.moka.common.util.EmojiItemProvider
+import io.tonnyl.moka.common.util.createAvatarLoadRequest
 import kotlinx.coroutines.launch
 
 @Composable

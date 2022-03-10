@@ -1,4 +1,4 @@
-package io.tonnyl.moka.common.ui
+package io.github.tonnyl.moka.ui
 
 import androidx.paging.PagingConfig
 

@@ -38,13 +38,11 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.Screen
+import io.github.tonnyl.moka.ui.defaultPagingConfig
 import io.github.tonnyl.moka.ui.theme.*
 import io.github.tonnyl.moka.widget.*
 import io.tonnyl.moka.common.data.ProfileType
 import io.tonnyl.moka.common.db.data.Event
-import io.tonnyl.moka.common.ui.defaultPagingConfig
-import io.tonnyl.moka.common.ui.timeline.TimelineViewModel
-import io.tonnyl.moka.common.ui.timeline.TimelineViewModelExtra
 import io.tonnyl.moka.common.util.TimelineEventProvider
 import io.tonnyl.moka.common.data.Event as SerializableEvent
 

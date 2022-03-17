@@ -354,39 +354,40 @@ fun SettingScreenContent(
                 }
             }
         }
+//        item {
+//            PreferenceDivider()
+//            PreferenceCategoryText(text = stringResource(id = R.string.settings_drafts_category))
+//        }
+//        item {
+//            ListItem(
+//                modifier = Modifier.clickable {
+//                    onSettingItemClick.onAutoSaveClick.invoke(!settings.autoSave)
+//                },
+//                trailing = {
+//                    Switch(
+//                        colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.secondary),
+//                        checked = settings.autoSave,
+//                        onCheckedChange = {
+//                            onSettingItemClick.onAutoSaveClick.invoke(!settings.autoSave)
+//                        }
+//                    )
+//                }
+//            ) {
+//                Text(text = stringResource(id = R.string.settings_auto_save_title))
+//            }
+//        }
+//        item {
+//            ListItem(
+//                modifier = Modifier.clickable {
+//
+//                }
+//            ) {
+//                Text(text = stringResource(id = R.string.settings_clear_drafts_title))
+//            }
+//            PreferenceDivider()
+//        }
         item {
             PreferenceDivider()
-            PreferenceCategoryText(text = stringResource(id = R.string.settings_drafts_category))
-        }
-        item {
-            ListItem(
-                modifier = Modifier.clickable {
-                    onSettingItemClick.onAutoSaveClick.invoke(!settings.autoSave)
-                },
-                trailing = {
-                    Switch(
-                        colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.secondary),
-                        checked = settings.autoSave,
-                        onCheckedChange = {
-                            onSettingItemClick.onAutoSaveClick.invoke(!settings.autoSave)
-                        }
-                    )
-                }
-            ) {
-                Text(text = stringResource(id = R.string.settings_auto_save_title))
-            }
-        }
-        item {
-            ListItem(
-                modifier = Modifier.clickable {
-
-                }
-            ) {
-                Text(text = stringResource(id = R.string.settings_clear_drafts_title))
-            }
-            PreferenceDivider()
-        }
-        item {
             PreferenceCategoryText(text = stringResource(id = R.string.settings_search_category))
         }
         item {
@@ -415,72 +416,72 @@ fun SettingScreenContent(
             ListItem(modifier = Modifier.clickable(onClick = onSettingItemClick.onClearSearchHistory)) {
                 Text(text = stringResource(id = R.string.settings_clear_search_history_title))
             }
-            PreferenceDivider()
+//            PreferenceDivider()
         }
-        item {
-            PreferenceCategoryText(text = stringResource(id = R.string.settings_cache_category))
-        }
-        item {
-            Box {
-                ListItem(
-                    modifier = Modifier.clickable {
-                        keepDataExpanded = true
-                    },
-                    secondaryText = {
-                        Text(text = getKeepDataTimesText(settings.keepData))
-                    }
-                ) {
-                    Text(text = stringResource(id = R.string.settings_keep_data_title))
-                }
-                DropdownMenu(
-                    expanded = keepDataExpanded,
-                    onDismissRequest = {
-                        keepDataExpanded = false
-                    },
-                    offset = DpOffset(
-                        x = ContentPaddingLargeSize,
-                        y = (-48).dp
-                    )
-                ) {
-                    KeepData.values()
-                        .map { keepDataOption ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    keepDataExpanded = false
-                                    onSettingItemClick.onKeepDataClick.invoke(keepDataOption)
-                                },
-                                modifier = Modifier.background(
-                                    color = if (keepDataOption == settings.keepData) {
-                                        MaterialTheme.colors.onBackground.copy(alpha = .12f)
-                                    } else {
-                                        MaterialTheme.colors.background
-                                    }
-                                )
-                            ) {
-                                Text(text = getKeepDataTimesText(keepDataOption))
-                            }
-                        }
-                }
-            }
-        }
-        item {
-            ListItem(
-                modifier = Modifier.clickable {
-
-                }
-            ) {
-                Text(text = stringResource(id = R.string.settings_clear_local_data_title))
-            }
-        }
-        item {
-            ListItem(
-                modifier = Modifier.clickable {
-
-                }
-            ) {
-                Text(text = stringResource(id = R.string.settings_clear_image_cache_title))
-            }
-        }
+//        item {
+//            PreferenceCategoryText(text = stringResource(id = R.string.settings_cache_category))
+//        }
+//        item {
+//            Box {
+//                ListItem(
+//                    modifier = Modifier.clickable {
+//                        keepDataExpanded = true
+//                    },
+//                    secondaryText = {
+//                        Text(text = getKeepDataTimesText(settings.keepData))
+//                    }
+//                ) {
+//                    Text(text = stringResource(id = R.string.settings_keep_data_title))
+//                }
+//                DropdownMenu(
+//                    expanded = keepDataExpanded,
+//                    onDismissRequest = {
+//                        keepDataExpanded = false
+//                    },
+//                    offset = DpOffset(
+//                        x = ContentPaddingLargeSize,
+//                        y = (-48).dp
+//                    )
+//                ) {
+//                    KeepData.values()
+//                        .map { keepDataOption ->
+//                            DropdownMenuItem(
+//                                onClick = {
+//                                    keepDataExpanded = false
+//                                    onSettingItemClick.onKeepDataClick.invoke(keepDataOption)
+//                                },
+//                                modifier = Modifier.background(
+//                                    color = if (keepDataOption == settings.keepData) {
+//                                        MaterialTheme.colors.onBackground.copy(alpha = .12f)
+//                                    } else {
+//                                        MaterialTheme.colors.background
+//                                    }
+//                                )
+//                            ) {
+//                                Text(text = getKeepDataTimesText(keepDataOption))
+//                            }
+//                        }
+//                }
+//            }
+//        }
+//        item {
+//            ListItem(
+//                modifier = Modifier.clickable {
+//
+//                }
+//            ) {
+//                Text(text = stringResource(id = R.string.settings_clear_local_data_title))
+//            }
+//        }
+//        item {
+//            ListItem(
+//                modifier = Modifier.clickable {
+//
+//                }
+//            ) {
+//                Text(text = stringResource(id = R.string.settings_clear_image_cache_title))
+//            }
+//        }
         item {
             Spacer(modifier = Modifier.height(height = ContentPaddingMediumSize))
         }

@@ -1085,34 +1085,34 @@ fun IssueTimelineCommentItem(
                     )
                 }
                 Spacer(modifier = Modifier.width(width = ContentPaddingMediumSize))
-                Icon(
-                    contentDescription = stringResource(id = R.string.add_reaction_image_content_description),
-                    painter = painterResource(id = R.drawable.ic_emoji_emotions_24),
-                    modifier = Modifier
-                        .size(size = IconSize)
-                        .clickable(enabled = !enablePlaceholder) {
-                            reactionDialogState.value = true
-                        }
-                        .padding(all = ContentPaddingMediumSize)
-                        .placeholder(
-                            visible = enablePlaceholder,
-                            highlight = PlaceholderHighlight.fade()
-                        )
-                )
-                Icon(
-                    contentDescription = stringResource(id = R.string.more_actions_image_content_description),
-                    imageVector = Icons.Outlined.MoreVert,
-                    modifier = Modifier
-                        .size(size = IconSize)
-                        .clickable(enabled = !enablePlaceholder) {
-
-                        }
-                        .padding(all = ContentPaddingMediumSize)
-                        .placeholder(
-                            visible = enablePlaceholder,
-                            highlight = PlaceholderHighlight.fade()
-                        )
-                )
+//                Icon(
+//                    contentDescription = stringResource(id = R.string.add_reaction_image_content_description),
+//                    painter = painterResource(id = R.drawable.ic_emoji_emotions_24),
+//                    modifier = Modifier
+//                        .size(size = IconSize)
+//                        .clickable(enabled = !enablePlaceholder) {
+//                            reactionDialogState.value = true
+//                        }
+//                        .padding(all = ContentPaddingMediumSize)
+//                        .placeholder(
+//                            visible = enablePlaceholder,
+//                            highlight = PlaceholderHighlight.fade()
+//                        )
+//                )
+//                Icon(
+//                    contentDescription = stringResource(id = R.string.more_actions_image_content_description),
+//                    imageVector = Icons.Outlined.MoreVert,
+//                    modifier = Modifier
+//                        .size(size = IconSize)
+//                        .clickable(enabled = !enablePlaceholder) {
+//
+//                        }
+//                        .padding(all = ContentPaddingMediumSize)
+//                        .placeholder(
+//                            visible = enablePlaceholder,
+//                            highlight = PlaceholderHighlight.fade()
+//                        )
+//                )
             }
         }
         var webView by remember { mutableStateOf<ThemedWebView?>(null) }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +16,7 @@ import androidx.paging.LoadState
 import io.github.tonnyl.moka.R
 import io.github.tonnyl.moka.ui.theme.ContentPaddingLargeSize
 import io.github.tonnyl.moka.ui.theme.ContentPaddingMediumSize
-import io.github.tonnyl.moka.ui.theme.IconSize
+import io.github.tonnyl.moka.ui.theme.DefaultIconButtonSizeModifier
 
 fun LazyListScope.ItemLoadingState(loadState: LoadState) {
     if (loadState == LoadState.Loading) {
@@ -26,11 +25,10 @@ fun LazyListScope.ItemLoadingState(loadState: LoadState) {
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colors.secondary,
+                LottieLoadingComponent(
                     modifier = Modifier
                         .padding(all = ContentPaddingMediumSize)
-                        .size(size = IconSize)
+                        .size(size = DefaultIconButtonSizeModifier)
                 )
             }
         }

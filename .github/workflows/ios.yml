@@ -25,4 +25,4 @@ jobs:
       - name: Xcode build
         run: |
           cd ios/
-          xcodebuild clean build -scheme ios -destination 'platform=iOS Simulator,name=iPhone 11,OS=15.2'
+          xcodebuild clean build -scheme ios -destination 'platform=iOS Simulator,name=iPhone 11,OS=15.4'

@@ -258,23 +258,23 @@ private fun ReleaseScreenContent(
                 }
             }
         }
-        ReactionGroupComponent(
-            groups = release.reactionGroups.orEmpty().map { it.reactionGroup },
-            tailingReactButton = true,
-            viewerCanReact = release.viewerCanReact,
-            react = {},
-            enablePlaceholder = enablePlaceholder,
-            modifier = Modifier.padding(
-                start = ContentPaddingLargeSize,
-                end = ContentPaddingLargeSize,
-                bottom = ContentPaddingLargeSize,
-                top = if (enablePlaceholder) {
-                    ContentPaddingLargeSize
-                } else {
-                    0.dp
-                }
-            )
-        )
+//        ReactionGroupComponent(
+//            groups = release.reactionGroups.orEmpty().map { it.reactionGroup },
+//            tailingReactButton = true,
+//            viewerCanReact = release.viewerCanReact,
+//            react = {},
+//            enablePlaceholder = enablePlaceholder,
+//            modifier = Modifier.padding(
+//                start = ContentPaddingLargeSize,
+//                end = ContentPaddingLargeSize,
+//                bottom = ContentPaddingLargeSize,
+//                top = if (enablePlaceholder) {
+//                    ContentPaddingLargeSize
+//                } else {
+//                    0.dp
+//                }
+//            )
+//        )
         InfoListItem(
             leadingRes = R.string.release_tag,
             trailing = release.tagName,
